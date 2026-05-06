@@ -18,7 +18,11 @@ export function VoiceSelector({ language, selectedVoiceId, onSelect }: VoiceSele
             key={preset.id}
             type="button"
             onClick={() => onSelect(preset.id)}
-            className={`rounded-lg border px-3 py-2 text-left text-xs ${selectedVoiceId === preset.id ? 'border-amber-300 bg-amber-100/95 text-amber-900' : 'border-slate-600 bg-slate-900/60 text-slate-100'}`}
+            className={`rounded-xl border px-3 py-3 text-left text-sm ${
+              selectedVoiceId === preset.id
+                ? 'border-amber-300 bg-amber-100/95 text-amber-900'
+                : 'border-slate-600 bg-slate-900/60 text-slate-100'
+            }`}
           >
             {t(language, `voice.${preset.id}`)}
           </button>

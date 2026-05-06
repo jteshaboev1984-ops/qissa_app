@@ -135,7 +135,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#f6f1e7] text-slate-900">
-      <div className="mx-auto max-w-xl p-4 sm:p-6">
+      <div className="mx-auto max-w-md p-4 sm:p-6">
         <header className="mb-4 flex items-center justify-between">
           <h1 className="text-lg font-semibold">{t(language, 'app.title')}</h1>
           <select value={language} onChange={(e) => updateLanguage(e.target.value as Language)} className="rounded-lg border bg-white px-3 py-2 text-sm">
