@@ -15,6 +15,12 @@ interface HomeScreenProps {
 export function HomeScreen({ language, selections, seriesState, episode, onCreateFirstSeries, onContinueStory, onResetStory }: HomeScreenProps) {
   const world = stylePacks.find((pack) => pack.id === selections.stylePackId)
 
+  const ageKeyByGroup = {
+    '3-5': 'age.3_5',
+    '6-8': 'age.6_8',
+    '9-10': 'age.9_10',
+  } as const
+
   const hasContinuableStory = Boolean(
     seriesState &&
       seriesState.episodeCount > 0 &&
@@ -26,7 +32,7 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
       <h2 className="text-2xl font-semibold text-slate-900">{t(language, 'home.ready')}</h2>
 
       <div className="rounded-2xl bg-amber-50/80 p-4 text-sm leading-relaxed text-slate-700">
-        <p>{t(language, 'onboarding.age')}: {t(language, `age.${selections.ageGroup.replace('-', '_')}` as const)}</p>
+        <p>{t(language, 'onboarding.age')}: {t(language, ageKeyByGroup[selections.ageGroup])}</p>
         <p>{t(language, 'onboarding.language')}: {t(language, `language.${selections.language}` as const)}</p>
         <p>{t(language, 'onboarding.hero')}: {t(language, `hero.${selections.heroType}` as const)}</p>
         <p>{t(language, 'onboarding.world')}: {world?.title[language]}</p>
