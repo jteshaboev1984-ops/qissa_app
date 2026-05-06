@@ -1,4 +1,4 @@
-import type { Episode, Language, OnboardingSelections, SeriesState } from '../types/qissa'
+import type { Episode, Language, OnboardingSelections, ReaderPreferences, SeriesState } from '../types/qissa'
 
 export type AppScreen = 'welcome' | 'onboarding' | 'home' | 'story'
 
@@ -10,6 +10,7 @@ const STORAGE_KEYS = {
   seriesState: `${KEY_PREFIX}:seriesState`,
   currentEpisode: `${KEY_PREFIX}:currentEpisode`,
   screen: `${KEY_PREFIX}:screen`,
+  readerPreferences: `${KEY_PREFIX}:readerPreferences`,
 } as const
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
@@ -49,6 +50,19 @@ export const isSeriesState = (value: unknown): value is SeriesState => {
     Array.isArray(value.choiceHistory) &&
     isRecord(value.canonState) &&
     typeof value.episodeCount === 'number'
+}
+
+
+export const isReaderPreferences = (value: unknown): value is ReaderPreferences => {
+  if (!isRecord(value)) return false
+  return (value.textSize === 'small' || value.textSize === 'medium' || value.textSize === 'large' || value.textSize === 'extra_large') &&
+    (value.fontMode === 'standard' || value.fontMode === 'soft' || value.fontMode === 'dyslexia_friendly') &&
+    (value.lineSpacing === 'normal' || value.lineSpacing === 'relaxed' || value.lineSpacing === 'wide') &&
+    (value.theme === 'light' || value.theme === 'warm' || value.theme === 'night') &&
+    typeof value.showTextWithAudio === 'boolean' &&
+    typeof value.audioOnlyNightMode === 'boolean' &&
+    (value.voicePresetId === 'soft_female' || value.voicePresetId === 'calm_male' || value.voicePresetId === 'neutral_storyteller' || value.voicePresetId === 'cheerful_daytime') &&
+    (value.defaultPlaybackMode === 'read' || value.defaultPlaybackMode === 'listen')
 }
 
 export const isEpisode = (value: unknown): value is Episode => {
@@ -109,9 +123,14 @@ export const localPersistence = {
     return isEpisode(value) ? value : null
   },
   saveScreen: (value: AppScreen) => safeSet(STORAGE_KEYS.screen, value),
+  saveReaderPreferences: (value: ReaderPreferences) => safeSet(STORAGE_KEYS.readerPreferences, value),
   loadScreen: (): AppScreen | null => {
     const value = safeGet<unknown>(STORAGE_KEYS.screen)
     return isAppScreen(value) ? value : null
+  },
+  loadReaderPreferences: (): ReaderPreferences | null => {
+    const value = safeGet<unknown>(STORAGE_KEYS.readerPreferences)
+    return isReaderPreferences(value) ? value : null
   },
 
   clearEpisodeAndScreen: () => {
