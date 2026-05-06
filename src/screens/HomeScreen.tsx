@@ -9,9 +9,10 @@ interface HomeScreenProps {
   episode: Episode | null
   onCreateFirstSeries: () => void
   onContinueStory: () => void
+  onResetStory: () => void
 }
 
-export function HomeScreen({ language, selections, seriesState, episode, onCreateFirstSeries, onContinueStory }: HomeScreenProps) {
+export function HomeScreen({ language, selections, seriesState, episode, onCreateFirstSeries, onContinueStory, onResetStory }: HomeScreenProps) {
   const world = stylePacks.find((pack) => pack.id === selections.stylePackId)
 
   const hasContinuableStory = Boolean(
@@ -43,6 +44,13 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
           {t(language, 'home.create_first_series')} · {t(language, 'home.next_create_series')}
         </button>
       )}
+
+      <div className="rounded-2xl bg-slate-100 p-4 text-center">
+        <p className="mb-3 text-sm text-slate-700">{t(language, 'home.restart_story')}</p>
+        <button className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800" onClick={onResetStory}>
+          {t(language, 'home.reset_story')}
+        </button>
+      </div>
     </section>
   )
 }
