@@ -11,6 +11,7 @@ export type I18nKey =
   | 'hero.girl_hero' | 'hero.boy_hero' | 'hero.animal' | 'hero.magical_hero' | 'hero.custom' | 'hero.custom_placeholder'
   | 'mode.series' | 'mode.one_time'
   | 'mood.bedtime' | 'mood.kind_adventure'
+  | 'story.read_mode' | 'story.listen_mode' | 'story.listen_placeholder' | 'story.audio_controls' | 'story.make_choice' | 'story.words_preview' | 'story.choice_confirmation'
 
 export type I18nDictionary = Record<I18nKey, string>
 
@@ -25,8 +26,9 @@ const ru: I18nDictionary = {
 'hero.girl_hero':'Девочка-герой','hero.boy_hero':'Мальчик-герой','hero.animal':'Животное','hero.magical_hero':'Волшебный герой','hero.custom':'Свой герой','hero.custom_placeholder':'Например: маленький барс, Лола, Амир, добрый робот',
 'mode.series':'Сказочный сериал','mode.one_time':'Разовая сказка',
 'mood.bedtime':'Перед сном','mood.kind_adventure':'Доброе приключение',
+'story.read_mode':'Читать','story.listen_mode':'Слушать','story.listen_placeholder':'Здесь будет спокойное прослушивание с обложкой эпизода и управлением аудио.','story.audio_controls':'Управление аудио','story.make_choice':'Что выберет герой?','story.words_preview':'Слова из истории (по желанию)','story.choice_confirmation':'Выбор принят. Следующий шаг — сохранить его в памяти истории.',
 }
-const uz: I18nDictionary = { ...ru, 'hero.custom_placeholder': 'Masalan: kichik bars, Lola, Amir, mehribon robot' }
-const kz: I18nDictionary = { ...ru, 'hero.custom_placeholder': 'Мысалы: кішкентай барыс, Лола, Әмір, мейірімді робот' }
+const uz: I18nDictionary = { ...ru, 'hero.custom_placeholder': 'Masalan: kichik bars, Lola, Amir, mehribon robot', 'story.read_mode': 'O‘qish', 'story.listen_mode': 'Tinglash', 'story.listen_placeholder': 'Bu yerda epizod muqovasi va audio boshqaruvi ko‘rinadi.', 'story.audio_controls': 'Audio boshqaruvi', 'story.make_choice': 'Qahramon nimani tanlaydi?', 'story.words_preview': 'Hikoyadagi so‘zlar (ixtiyoriy)', 'story.choice_confirmation': 'Tanlov qabul qilindi. Keyingi qadam — uni hikoya xotirasida saqlash.' }
+const kz: I18nDictionary = { ...ru, 'hero.custom_placeholder': 'Мысалы: кішкентай барыс, Лола, Әмір, мейірімді робот', 'story.read_mode': 'Оқу', 'story.listen_mode': 'Тыңдау', 'story.listen_placeholder': 'Мұнда эпизод мұқабасы мен аудио басқару көрсетіледі.', 'story.audio_controls': 'Аудио басқару', 'story.make_choice': 'Кейіпкер нені таңдайды?', 'story.words_preview': 'Оқиға сөздері (қалау бойынша)', 'story.choice_confirmation': 'Таңдау қабылданды. Келесі қадам — оны оқиға жадында сақтау.' }
 
 export const dictionaries: Record<Language, I18nDictionary> = { ru, uz, kz }

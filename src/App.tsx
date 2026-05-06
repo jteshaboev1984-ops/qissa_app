@@ -2,15 +2,18 @@ import { useState } from 'react'
 import { OnboardingFlow } from './features/onboarding/OnboardingFlow'
 import { t } from './lib/i18n'
 import { HomeScreen } from './screens/HomeScreen'
+import { StoryScreen } from './screens/StoryScreen'
 import { WelcomeScreen } from './screens/WelcomeScreen'
-import type { Language, OnboardingSelections } from './types/qissa'
+import { createStoryEpisode } from './lib/storyAgent'
+import type { Episode, Language, OnboardingSelections } from './types/qissa'
 
-type Screen = 'welcome' | 'onboarding' | 'home'
+type Screen = 'welcome' | 'onboarding' | 'home' | 'story'
 
 function App() {
   const [language, setLanguage] = useState<Language>('ru')
   const [screen, setScreen] = useState<Screen>('welcome')
   const [selections, setSelections] = useState<OnboardingSelections | null>(null)
+  const [episode, setEpisode] = useState<Episode | null>(null)
 
   return (
     <div className="min-h-screen bg-[#f6f1e7] text-slate-900">
@@ -24,7 +27,8 @@ function App() {
 
         {screen === 'welcome' && <WelcomeScreen language={language} onStart={() => setScreen('onboarding')} />}
         {screen === 'onboarding' && <OnboardingFlow language={language} onLanguageChange={setLanguage} onComplete={(value) => { setSelections(value); setScreen('home') }} />}
-        {screen === 'home' && selections && <HomeScreen language={language} selections={selections} />}
+        {screen === 'home' && selections && <HomeScreen language={language} selections={selections} onCreateFirstSeries={() => { const firstEpisode = createStoryEpisode(selections); setEpisode(firstEpisode); setScreen('story') }} />}
+        {screen === 'story' && episode && <StoryScreen language={language} episode={episode} />}
       </div>
     </div>
   )
