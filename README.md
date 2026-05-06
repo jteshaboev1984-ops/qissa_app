@@ -1,13 +1,49 @@
 # QISSA App
 
-QISSA is a family AI storytelling app for children in Central Asia.
+QISSA is a family AI storytelling clickable prototype for children in Central Asia.
 
-The MVP focuses on:
-- personal fairy-tale series;
-- memory of child choices;
-- safe AI-only story generation;
-- warm reading and listening experience;
-- visual style packs;
-- optional RU/EN vocabulary layer.
+## Local development
 
-This repository follows the QISSA project document pack and AGENTS.md instructions.
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start dev server:
+   ```bash
+   npm run dev
+   ```
+3. Run typecheck:
+   ```bash
+   npm run typecheck
+   ```
+4. Create production build:
+   ```bash
+   npm run build
+   ```
+5. Preview production build locally:
+   ```bash
+   npm run preview
+   ```
+
+## Manual smoke test (prototype flow)
+
+- Welcome
+- Onboarding
+- Create first series
+- Select choice
+- Continue next episode
+- Refresh page and confirm story state persists
+- Open Aa settings
+- Switch read/listen mode
+- Reset story
+
+## Constraints preserved
+
+This prototype intentionally keeps local/mock behavior only:
+- no real AI API calls;
+- no real TTS;
+- no backend;
+- no auth;
+- no payments;
+- no voice cloning;
+- no AI image generation.

@@ -57,12 +57,16 @@ export function OnboardingFlow({ language, onLanguageChange, onComplete }: Onboa
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-slate-900">{t(language, 'onboarding.age')}</h2>
           <div className="grid gap-3">
-            {(['3-5', '6-8', '9-10'] as AgeGroup[]).map((age) => (
+            {([
+              { value: '3-5', key: 'age.3_5' },
+              { value: '6-8', key: 'age.6_8' },
+              { value: '9-10', key: 'age.9_10' },
+            ] as const).map(({ value, key }) => (
               <OptionCard
-                key={age}
-                title={t(language, `age.${age.replace('-', '_')}` as const)}
-                selected={draft.ageGroup === age}
-                onClick={() => setDraft({ ...draft, ageGroup: age })}
+                key={value}
+                title={t(language, key)}
+                selected={draft.ageGroup === value}
+                onClick={() => setDraft({ ...draft, ageGroup: value as AgeGroup })}
               />
             ))}
           </div>
