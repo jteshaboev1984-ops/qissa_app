@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { OptionCard } from '../../components/OptionCard'
 import { stylePacks } from '../../data/stylePacks'
 import { t } from '../../lib/i18n'
 import type { AgeGroup, HeroType, Language, OnboardingSelections, StoryMode, StoryMood } from '../../types/qissa'
-import { OptionCard } from '../../components/OptionCard'
 import { onboardingSteps } from './onboardingSteps'
 
 interface OnboardingFlowProps {
@@ -37,15 +37,33 @@ export function OnboardingFlow({ language, onLanguageChange, onComplete }: Onboa
   const back = () => setStepIndex((prev) => Math.max(0, prev - 1))
 
   return (
-    <div className="space-y-5">
-      <p className="text-sm text-slate-500">{stepIndex + 1} / {onboardingSteps.length}</p>
+    <div className="space-y-5 rounded-3xl bg-white p-5 shadow-sm sm:p-6">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-sm text-slate-500">
+          <p>{t(language, 'onboarding.title')}</p>
+          <p>{stepIndex + 1} / {onboardingSteps.length}</p>
+        </div>
+        <div className="h-2 rounded-full bg-slate-100">
+          <div
+            className="h-2 rounded-full bg-amber-400 transition-all"
+            style={{
+              width: `${((stepIndex + 1) / onboardingSteps.length) * 100}%`,
+            }}
+          />
+        </div>
+      </div>
 
       {step === 'age' && (
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold">{t(language, 'onboarding.age')}</h2>
+          <h2 className="text-xl font-semibold text-slate-900">{t(language, 'onboarding.age')}</h2>
           <div className="grid gap-3">
             {(['3-5', '6-8', '9-10'] as AgeGroup[]).map((age) => (
-              <OptionCard key={age} title={t(language, `age.${age.replace('-', '_')}` as const)} selected={draft.ageGroup === age} onClick={() => setDraft({ ...draft, ageGroup: age })} />
+              <OptionCard
+                key={age}
+                title={t(language, `age.${age.replace('-', '_')}` as const)}
+                selected={draft.ageGroup === age}
+                onClick={() => setDraft({ ...draft, ageGroup: age })}
+              />
             ))}
           </div>
         </section>
@@ -53,7 +71,7 @@ export function OnboardingFlow({ language, onLanguageChange, onComplete }: Onboa
 
       {step === 'language' && (
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold">{t(language, 'onboarding.language')}</h2>
+          <h2 className="text-xl font-semibold text-slate-900">{t(language, 'onboarding.language')}</h2>
           <div className="grid gap-3">
             {(['ru', 'uz', 'kz'] as Language[]).map((value) => (
               <OptionCard
@@ -72,10 +90,15 @@ export function OnboardingFlow({ language, onLanguageChange, onComplete }: Onboa
 
       {step === 'hero' && (
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold">{t(language, 'onboarding.hero')}</h2>
+          <h2 className="text-xl font-semibold text-slate-900">{t(language, 'onboarding.hero')}</h2>
           <div className="grid gap-3">
             {(['girl_hero', 'boy_hero', 'animal', 'magical_hero', 'custom'] as HeroType[]).map((hero) => (
-              <OptionCard key={hero} title={t(language, `hero.${hero}` as const)} selected={draft.heroType === hero} onClick={() => setDraft({ ...draft, heroType: hero })} />
+              <OptionCard
+                key={hero}
+                title={t(language, `hero.${hero}` as const)}
+                selected={draft.heroType === hero}
+                onClick={() => setDraft({ ...draft, heroType: hero })}
+              />
             ))}
           </div>
           {draft.heroType === 'custom' && (
@@ -91,7 +114,7 @@ export function OnboardingFlow({ language, onLanguageChange, onComplete }: Onboa
 
       {step === 'world' && (
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold">{t(language, 'onboarding.world')}</h2>
+          <h2 className="text-xl font-semibold text-slate-900">{t(language, 'onboarding.world')}</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {stylePacks.map((pack) => (
               <OptionCard
@@ -100,7 +123,14 @@ export function OnboardingFlow({ language, onLanguageChange, onComplete }: Onboa
                 description={pack.description[language]}
                 selected={draft.stylePackId === pack.id}
                 onClick={() => setDraft({ ...draft, stylePackId: pack.id })}
-                preview={<div className="mb-3 h-10 w-full rounded-xl" style={{ background: `linear-gradient(90deg, ${pack.palette.primary}, ${pack.palette.secondary}, ${pack.palette.accent})` }} />}
+                preview={
+                  <div
+                    className="mb-3 h-12 w-full rounded-xl"
+                    style={{
+                      background: `linear-gradient(90deg, ${pack.palette.primary}, ${pack.palette.secondary}, ${pack.palette.accent})`,
+                    }}
+                  />
+                }
               />
             ))}
           </div>
@@ -110,18 +140,28 @@ export function OnboardingFlow({ language, onLanguageChange, onComplete }: Onboa
       {step === 'mode_mood' && (
         <section className="space-y-5">
           <div className="space-y-3">
-            <h2 className="text-xl font-semibold">{t(language, 'onboarding.story_mode')}</h2>
+            <h2 className="text-xl font-semibold text-slate-900">{t(language, 'onboarding.story_mode')}</h2>
             <div className="grid gap-3">
               {(['series', 'one_time'] as StoryMode[]).map((mode) => (
-                <OptionCard key={mode} title={t(language, mode === 'series' ? 'mode.series' : 'mode.one_time')} selected={draft.storyMode === mode} onClick={() => setDraft({ ...draft, storyMode: mode })} />
+                <OptionCard
+                  key={mode}
+                  title={t(language, mode === 'series' ? 'mode.series' : 'mode.one_time')}
+                  selected={draft.storyMode === mode}
+                  onClick={() => setDraft({ ...draft, storyMode: mode })}
+                />
               ))}
             </div>
           </div>
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold">{t(language, 'onboarding.mood')}</h3>
+            <h3 className="text-lg font-semibold text-slate-900">{t(language, 'onboarding.mood')}</h3>
             <div className="grid gap-3">
               {(['bedtime', 'kind_adventure'] as StoryMood[]).map((mood) => (
-                <OptionCard key={mood} title={t(language, `mood.${mood}` as const)} selected={draft.storyMood === mood} onClick={() => setDraft({ ...draft, storyMood: mood })} />
+                <OptionCard
+                  key={mood}
+                  title={t(language, `mood.${mood}` as const)}
+                  selected={draft.storyMood === mood}
+                  onClick={() => setDraft({ ...draft, storyMood: mood })}
+                />
               ))}
             </div>
           </div>
@@ -129,11 +169,22 @@ export function OnboardingFlow({ language, onLanguageChange, onComplete }: Onboa
       )}
 
       <div className="flex gap-3 pt-2">
-        <button type="button" onClick={back} disabled={stepIndex === 0} className="rounded-xl border border-slate-300 px-4 py-2 text-sm disabled:opacity-50">
+        <button
+          type="button"
+          onClick={back}
+          disabled={stepIndex === 0}
+          className="rounded-xl border border-slate-300 px-4 py-3 text-sm font-medium disabled:opacity-50"
+        >
           {t(language, 'actions.back')}
         </button>
-        <button type="button" onClick={next}  className="rounded-xl bg-amber-500 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">
-          {stepIndex === onboardingSteps.length - 1 ? t(language, 'actions.start_story') : t(language, 'actions.next')}
+        <button
+          type="button"
+          onClick={next}
+          className="flex-1 rounded-xl bg-amber-500 px-4 py-3 text-sm font-semibold text-white"
+        >
+          {stepIndex === onboardingSteps.length - 1
+            ? t(language, 'actions.start_story')
+            : t(language, 'actions.next')}
         </button>
       </div>
     </div>

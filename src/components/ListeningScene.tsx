@@ -12,25 +12,38 @@ interface ListeningSceneProps {
   palette: { primary: string; secondary: string; text: string }
 }
 
-export function ListeningScene({ language, episode, preferences, onPreferencesChange, worldTitle, palette }: ListeningSceneProps) {
+export function ListeningScene({
+  language,
+  episode,
+  preferences,
+  onPreferencesChange,
+  worldTitle,
+  palette,
+}: ListeningSceneProps) {
   const [isPlaying, setIsPlaying] = useState(false)
 
   return (
     <div className="space-y-4 rounded-2xl bg-slate-950 p-4 text-slate-100">
-      <div className="rounded-2xl p-4" style={{ background: `linear-gradient(145deg, ${palette.primary}, ${palette.secondary})`, color: palette.text }}>
+      <div
+        className="rounded-2xl p-5"
+        style={{
+          background: `linear-gradient(145deg, ${palette.primary}, ${palette.secondary})`,
+          color: palette.text,
+        }}
+      >
         <p className="text-xs opacity-90">{worldTitle}</p>
-        <h3 className="text-xl font-semibold">{episode.title}</h3>
+        <h3 className="text-xl font-semibold leading-tight">{episode.title}</h3>
       </div>
 
-      <div className="grid grid-cols-3 items-center gap-2 rounded-xl bg-slate-900 p-2 text-xs">
-        <button className="rounded-lg bg-slate-800 px-2 py-2">{t(language, 'listen.back_10')}</button>
+      <div className="grid grid-cols-3 items-center gap-2 rounded-xl bg-slate-900 p-2 text-sm">
+        <button className="rounded-lg bg-slate-800 px-2 py-3">{t(language, 'listen.back_10')}</button>
         <button
-          className="rounded-lg bg-amber-300 px-2 py-2 font-semibold text-slate-900"
+          className="rounded-lg bg-amber-300 px-2 py-3 font-semibold text-slate-900"
           onClick={() => setIsPlaying((prev) => !prev)}
         >
           {isPlaying ? t(language, 'listen.pause') : t(language, 'listen.play')}
         </button>
-        <button className="rounded-lg bg-slate-800 px-2 py-2">{t(language, 'listen.forward_10')}</button>
+        <button className="rounded-lg bg-slate-800 px-2 py-3">{t(language, 'listen.forward_10')}</button>
       </div>
 
       <div className="space-y-2 rounded-xl bg-slate-900 p-3">
@@ -50,7 +63,9 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
           {['0.8x', '1x', '1.2x'].map((speed) => (
             <button
               key={speed}
-              className={`rounded-full px-3 py-1.5 text-xs ${speed === '1x' ? 'bg-amber-200 text-amber-900' : 'bg-slate-800 text-slate-100'}`}
+              className={`rounded-full px-3 py-2 text-xs ${
+                speed === '1x' ? 'bg-amber-200 text-amber-900' : 'bg-slate-800 text-slate-100'
+              }`}
             >
               {speed}
             </button>
