@@ -7,7 +7,7 @@ import { createStoryEpisode } from './lib/storyAgent'
 import { HomeScreen } from './screens/HomeScreen'
 import { StoryScreen } from './screens/StoryScreen'
 import { WelcomeScreen } from './screens/WelcomeScreen'
-import type { Episode, EpisodeChoice, Language, OnboardingSelections, SeriesState } from './types/qissa'
+import type { Episode, EpisodeChoice, Language, OnboardingSelections, ReaderPreferences, SeriesState } from './types/qissa'
 
 function resolveHydratedState() {
   const language = localPersistence.loadLanguage() ?? 'ru'
@@ -15,26 +15,39 @@ function resolveHydratedState() {
   const seriesState = localPersistence.loadSeriesState()
   const episode = localPersistence.loadCurrentEpisode()
   const savedScreen = localPersistence.loadScreen()
+  const readerPreferences = localPersistence.loadReaderPreferences()
 
   if (!selections) {
-    return { language, selections: null, seriesState: null, episode: null, screen: 'welcome' as AppScreen }
+    return { language, selections: null, seriesState: null, episode: null, screen: 'welcome' as AppScreen, readerPreferences }
   }
 
   if (!seriesState) {
     if (episode || savedScreen === 'story') {
       localPersistence.clearEpisodeAndScreen()
     }
-    return { language, selections, seriesState: null, episode: null, screen: 'home' as AppScreen }
+    return { language, selections, seriesState: null, episode: null, screen: 'home' as AppScreen, readerPreferences }
   }
 
   if (!episode) {
-    return { language, selections, seriesState, episode: null, screen: 'home' as AppScreen }
+    return { language, selections, seriesState, episode: null, screen: 'home' as AppScreen, readerPreferences }
   }
 
   const screen: AppScreen = savedScreen === 'story' || savedScreen === 'home' ? savedScreen : 'home'
-  return { language, selections, seriesState, episode, screen }
+  return { language, selections, seriesState, episode, screen, readerPreferences }
 }
 
+
+
+const defaultReaderPreferences: ReaderPreferences = {
+  textSize: 'medium',
+  fontMode: 'standard',
+  lineSpacing: 'relaxed',
+  theme: 'warm',
+  showTextWithAudio: true,
+  audioOnlyNightMode: true,
+  voicePresetId: 'neutral_storyteller',
+  defaultPlaybackMode: 'read',
+}
 
 function App() {
   const hydrated = useMemo(resolveHydratedState, [])
@@ -43,6 +56,7 @@ function App() {
   const [selections, setSelections] = useState<OnboardingSelections | null>(hydrated.selections)
   const [episode, setEpisode] = useState<Episode | null>(hydrated.episode)
   const [seriesState, setSeriesState] = useState<SeriesState | null>(hydrated.seriesState)
+  const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(hydrated.readerPreferences ?? defaultReaderPreferences)
 
   const updateLanguage = (value: Language) => {
     setLanguage(value)
@@ -52,6 +66,15 @@ function App() {
   const updateScreen = (value: AppScreen) => {
     setScreen(value)
     localPersistence.saveScreen(value)
+  }
+
+
+  const updateReaderPreferences = (patch: Partial<ReaderPreferences>) => {
+    setReaderPreferences((prev) => {
+      const next = { ...prev, ...patch }
+      localPersistence.saveReaderPreferences(next)
+      return next
+    })
   }
 
   const handleOnboardingComplete = (value: OnboardingSelections) => {
@@ -107,6 +130,7 @@ function App() {
     setSeriesState(null)
     setEpisode(null)
     setScreen('welcome')
+    setReaderPreferences(defaultReaderPreferences)
   }
 
   return (
@@ -127,6 +151,8 @@ function App() {
             episode={episode}
             onChoiceSelected={handleChoiceSelected}
             onContinueNextEpisode={episode.episode_id.startsWith('ep-1') ? handleContinueNextEpisode : undefined}
+            readerPreferences={readerPreferences}
+            onReaderPreferencesChange={updateReaderPreferences}
             isChoiceSavedForCurrentEpisode={isChoiceSavedForCurrentEpisode}
           />}
       </div>
