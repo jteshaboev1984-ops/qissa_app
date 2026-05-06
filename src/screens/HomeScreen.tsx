@@ -1,9 +1,25 @@
 import { stylePacks } from '../data/stylePacks'
 import { t } from '../lib/i18n'
-import type { Language, OnboardingSelections } from '../types/qissa'
+import type { Episode, Language, OnboardingSelections, SeriesState } from '../types/qissa'
 
-export function HomeScreen({ language, selections, onCreateFirstSeries }: { language: Language; selections: OnboardingSelections; onCreateFirstSeries: () => void }) {
+interface HomeScreenProps {
+  language: Language
+  selections: OnboardingSelections
+  seriesState: SeriesState | null
+  episode: Episode | null
+  onCreateFirstSeries: () => void
+  onContinueStory: () => void
+}
+
+export function HomeScreen({ language, selections, seriesState, episode, onCreateFirstSeries, onContinueStory }: HomeScreenProps) {
   const world = stylePacks.find((pack) => pack.id === selections.stylePackId)
+
+  const hasContinuableStory = Boolean(
+    seriesState &&
+    seriesState.episodeCount > 0 &&
+    (seriesState.lastEpisodeSummary.trim().length > 0 || episode),
+  )
+
   return (
     <section className="space-y-4 rounded-3xl bg-white p-6 shadow-sm">
       <h2 className="text-xl font-semibold text-slate-900">{t(language, 'home.ready')}</h2>
@@ -14,9 +30,19 @@ export function HomeScreen({ language, selections, onCreateFirstSeries }: { lang
         <p>{t(language, 'onboarding.world')}: {world?.title[language]}</p>
         <p>{t(language, 'onboarding.mood')}: {t(language, `mood.${selections.storyMood}` as const)}</p>
       </div>
-      <button className="w-full rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-white" onClick={onCreateFirstSeries}>
-        {t(language, 'home.create_first_series')} · {t(language, 'home.next_create_series')}
-      </button>
+
+      {hasContinuableStory ? (
+        <div className="space-y-3 rounded-2xl bg-emerald-50 p-4 text-emerald-900">
+          <h3 className="text-lg font-semibold">{t(language, 'home.continue_story')}</h3>
+          <p>{t(language, 'home.world_remembers')}</p>
+          <p className="text-sm"><span className="font-semibold">{t(language, 'home.last_episode_summary')}:</span> {seriesState?.lastEpisodeSummary}</p>
+          <button className="w-full rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white" onClick={onContinueStory}>{t(language, 'home.continue_story')}</button>
+        </div>
+      ) : (
+        <button className="w-full rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-white" onClick={onCreateFirstSeries}>
+          {t(language, 'home.create_first_series')} · {t(language, 'home.next_create_series')}
+        </button>
+      )}
     </section>
   )
 }
