@@ -219,6 +219,7 @@ function App() {
             isChoiceSavedForCurrentEpisode={Boolean(savedChoiceEntryForCurrentEpisode)}
             savedChoiceIdForCurrentEpisode={savedChoiceEntryForCurrentEpisode?.choice_id ?? null}
             onBackHome={() => updateScreen('home')}
+            onStartNewStory={handleResetStory}
           />
         )}
       </div>
