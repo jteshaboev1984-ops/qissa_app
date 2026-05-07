@@ -37,6 +37,20 @@ QISSA is a family AI storytelling clickable prototype for children in Central As
 - Switch read/listen mode
 - Reset story
 
+
+## Prototype QA checklist
+
+- Test RU flow
+- Test UZ flow
+- Test KZ flow
+- Create first story
+- Select choice
+- Continue next episode
+- Refresh page
+- Reader settings
+- Listen mode
+- Reset story
+
 ## Constraints preserved
 
 This prototype intentionally keeps local/mock behavior only:
