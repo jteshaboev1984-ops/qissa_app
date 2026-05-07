@@ -1,3 +1,4 @@
+// NOTE: Agent contract shapes are kept stable so local mock agents and future Edge Function responses remain compatible.
 import type { Episode, OnboardingSelections, SafetyResult, SeriesState } from './storyContracts'
 
 export interface StoryGenerationInput {
