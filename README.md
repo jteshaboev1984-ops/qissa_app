@@ -25,6 +25,29 @@ QISSA is a family AI storytelling clickable prototype for children in Central As
    npm run preview
    ```
 
+## Deploy preview (GitHub Pages)
+
+This prototype can be deployed as a static Vite app through GitHub Pages without secrets.
+
+### GitHub settings
+
+1. Open repository **Settings** → **Pages**.
+2. In **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Keep workflow file `.github/workflows/deploy-pages.yml` on `main`.
+
+After deployment, the expected URL pattern is:
+
+`https://jteshaboev1984-ops.github.io/qissa_app/`
+
+### Local validation before push
+
+```bash
+npm ci
+npm run typecheck
+npm run build
+npm run preview
+```
+
 ## Manual smoke test (prototype flow)
 
 - Welcome
