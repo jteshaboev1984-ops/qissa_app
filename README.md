@@ -56,9 +56,11 @@ npm run preview
 - Welcome
 - Onboarding
 - Create first series
-- Select choice
+- Preview choice A/B switching before confirm
+- Confirm choice with separate CTA
 - Continue next episode
-- Refresh page and confirm story state persists
+- Validate Episode 2 end-state and return home
+- Refresh page and confirm story state persists and no dead-end
 - Open Aa settings
 - Switch read/listen mode
 - Reset story
@@ -71,8 +73,10 @@ npm run preview
 - Test UZ
 - Test KZ
 - Create first story
-- Select choice
+- Toggle choices before confirmation
+- Confirm choice and check memory block
 - Continue to Episode 2
+- Verify end-of-demo block with home CTA
 - Return home
 - Refresh
 - Check Aa settings

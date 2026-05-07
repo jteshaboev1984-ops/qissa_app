@@ -147,7 +147,7 @@ function App() {
         </header>
 
         {screen === 'welcome' && <WelcomeScreen language={language} onStart={() => updateScreen('onboarding')} />}
-        {screen === 'onboarding' && <OnboardingFlow language={language} onLanguageChange={updateLanguage} onComplete={handleOnboardingComplete} />}
+        {screen === 'onboarding' && <OnboardingFlow language={language} onLanguageChange={updateLanguage} onComplete={handleOnboardingComplete} onExitToWelcome={() => updateScreen('welcome')} />}
         {screen === 'home' && selections && <HomeScreen language={language} selections={selections} seriesState={seriesState} episode={episode} onCreateFirstSeries={handleCreateFirstSeries} onContinueStory={() => updateScreen('story')} onResetStory={handleResetStory} />}
         {screen === 'story' && episode && <StoryScreen
             language={language}

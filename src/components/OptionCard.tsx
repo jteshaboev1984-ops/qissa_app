@@ -13,9 +13,9 @@ export function OptionCard({ title, description, selected, onClick, preview }: O
     <button
       type="button"
       onClick={onClick}
-      className={`w-full rounded-2xl border p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${
+      className={`w-full rounded-2xl border p-4 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${
         selected
-          ? 'border-amber-400 bg-amber-50 shadow-sm'
+          ? 'scale-[1.01] border-amber-400 bg-amber-50 shadow-md'
           : 'border-slate-200 bg-white hover:border-amber-200 hover:bg-amber-50/30'
       }`}
     >

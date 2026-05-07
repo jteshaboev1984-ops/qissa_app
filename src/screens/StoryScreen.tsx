@@ -28,10 +28,8 @@ export function StoryScreen({
   savedChoiceIdForCurrentEpisode = null,
   onBackHome,
 }: StoryScreenProps) {
-  const [viewMode, setViewMode] = useState<'read' | 'listen'>(
-    readerPreferences.defaultPlaybackMode,
-  )
-  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null)
+  const [viewMode, setViewMode] = useState<'read' | 'listen'>(readerPreferences.defaultPlaybackMode)
+  const [previewChoiceId, setPreviewChoiceId] = useState<string | null>(null)
   const [showReaderSettings, setShowReaderSettings] = useState(false)
 
   const stylePack = useMemo(
@@ -40,7 +38,7 @@ export function StoryScreen({
   )
 
   useEffect(() => {
-    setSelectedChoiceId(savedChoiceIdForCurrentEpisode)
+    setPreviewChoiceId(savedChoiceIdForCurrentEpisode)
   }, [episode.episode_id, savedChoiceIdForCurrentEpisode])
   useEffect(() => setViewMode(readerPreferences.defaultPlaybackMode), [readerPreferences.defaultPlaybackMode])
 
@@ -49,47 +47,64 @@ export function StoryScreen({
     onReaderPreferencesChange({ defaultPlaybackMode: nextMode })
   }
 
-  const handleChoiceClick = (choice: EpisodeChoice) => {
-    if (selectedChoiceId) return
-    setSelectedChoiceId(choice.choice_id)
-    onChoiceSelected?.(choice)
+  const isChoiceLocked = Boolean(isChoiceSavedForCurrentEpisode && savedChoiceIdForCurrentEpisode)
+
+  const handleChoicePreview = (choiceId: string) => {
+    if (isChoiceLocked) return
+    setPreviewChoiceId(choiceId)
+  }
+
+  const handleConfirmChoice = () => {
+    if (!previewChoiceId || isChoiceLocked) return
+    const selectedChoice = episode.choices.find((choice) => choice.choice_id === previewChoiceId)
+    if (!selectedChoice) return
+    onChoiceSelected?.(selectedChoice)
   }
 
   return (
-    <section className="space-y-4 rounded-3xl bg-white p-5 shadow-sm sm:p-6">
-      <div
-        className="rounded-2xl p-5"
+    <section className="space-y-4 rounded-3xl bg-white/90 p-4 shadow-sm sm:p-5">
+      <header
+        className="space-y-4 rounded-2xl p-4"
         style={{
-          background: `linear-gradient(135deg, ${stylePack.palette.primary}, ${stylePack.palette.secondary})`,
+          background: `linear-gradient(145deg, ${stylePack.palette.primary}, ${stylePack.palette.secondary})`,
           color: stylePack.palette.text,
         }}
       >
-        <p className="text-sm opacity-90">{stylePack.title[language]}</p>
-        <h2 className="text-2xl font-semibold leading-tight">{episode.title}</h2>
-      </div>
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <p className="text-xs uppercase tracking-wide opacity-85">{stylePack.title[language]}</p>
+            <h2 className="text-2xl font-semibold leading-tight">{episode.title}</h2>
+          </div>
+          {onBackHome && (
+            <button
+              onClick={onBackHome}
+              className="rounded-xl border border-white/30 bg-white/15 px-3 py-2 text-xs font-medium backdrop-blur transition hover:bg-white/25"
+            >
+              {t(language, 'story.back_home')}
+            </button>
+          )}
+        </div>
 
-      <div className="grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
-        <button
-          onClick={() => handleViewModeChange('read')}
-          className={`rounded-xl px-4 py-3 text-sm font-medium ${
-            viewMode === 'read' ? 'bg-white shadow-sm' : ''
-          }`}
-        >
-          {t(language, 'story.read_mode')}
-        </button>
-        <button
-          onClick={() => handleViewModeChange('listen')}
-          className={`rounded-xl px-4 py-3 text-sm font-medium ${
-            viewMode === 'listen' ? 'bg-white shadow-sm' : ''
-          }`}
-        >
-          {t(language, 'story.listen_mode')}
-        </button>
-      </div>
+        <div className="grid grid-cols-2 gap-2 rounded-2xl bg-white/20 p-1">
+          <button
+            onClick={() => handleViewModeChange('read')}
+            className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${viewMode === 'read' ? 'bg-white text-slate-900 shadow-sm' : 'text-white/90'}`}
+          >
+            {t(language, 'story.read_mode')}
+          </button>
+          <button
+            onClick={() => handleViewModeChange('listen')}
+            className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${viewMode === 'listen' ? 'bg-white text-slate-900 shadow-sm' : 'text-white/90'}`}
+          >
+            {t(language, 'story.listen_mode')}
+          </button>
+        </div>
+      </header>
 
-      {viewMode === 'read' ? (
-        <>
-          <div className="flex justify-end">
+      <div className="space-y-3 rounded-2xl border border-amber-100 bg-[#fffaf1] p-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-semibold text-slate-900">{t(language, 'story.narrative_title')}</h3>
+          {viewMode === 'read' && (
             <button
               type="button"
               className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium"
@@ -97,75 +112,89 @@ export function StoryScreen({
             >
               Aa
             </button>
-          </div>
-
-          {showReaderSettings && (
-            <ReaderSettingsPanel
-              language={language}
-              preferences={readerPreferences}
-              onChange={onReaderPreferencesChange}
-              onClose={() => setShowReaderSettings(false)}
-            />
           )}
+        </div>
 
-          <article
-            className={`rounded-2xl p-5 ${getReaderThemeClass(readerPreferences.theme)}`}
-            style={getReaderTextStyle(readerPreferences)}
-          >
-            {episode.story_text}
-          </article>
-        </>
-      ) : (
-        <ListeningScene
-          language={language}
-          episode={episode}
-          preferences={readerPreferences}
-          onPreferencesChange={onReaderPreferencesChange}
-          worldTitle={stylePack.title[language]}
-          palette={stylePack.palette}
-        />
-      )}
+        {viewMode === 'read' ? (
+          <>
+            {showReaderSettings && (
+              <ReaderSettingsPanel
+                language={language}
+                preferences={readerPreferences}
+                onChange={onReaderPreferencesChange}
+                onClose={() => setShowReaderSettings(false)}
+              />
+            )}
+            <article
+              className={`rounded-2xl p-5 shadow-sm ${getReaderThemeClass(readerPreferences.theme)}`}
+              style={getReaderTextStyle(readerPreferences)}
+            >
+              {episode.story_text}
+            </article>
+          </>
+        ) : (
+          <ListeningScene
+            language={language}
+            episode={episode}
+            preferences={readerPreferences}
+            onPreferencesChange={onReaderPreferencesChange}
+            worldTitle={stylePack.title[language]}
+            palette={stylePack.palette}
+          />
+        )}
+      </div>
 
       {episode.choices.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
           <h3 className="text-lg font-semibold">{t(language, 'story.make_choice')}</h3>
-          {episode.choices.map((choice) => (
+          {episode.choices.map((choice) => {
+            const isPreviewed = previewChoiceId === choice.choice_id
+            const isDisabled = isChoiceLocked && savedChoiceIdForCurrentEpisode !== choice.choice_id
+            return (
+              <button
+                key={choice.choice_id}
+                onClick={() => handleChoicePreview(choice.choice_id)}
+                disabled={isDisabled}
+                className={`w-full rounded-2xl border px-4 py-4 text-left transition-all duration-300 ${
+                  isPreviewed
+                    ? 'scale-[1.01] border-amber-400 bg-amber-50 shadow-md'
+                    : 'border-slate-200 bg-white shadow-sm hover:border-amber-200 hover:bg-amber-50/30'
+                } ${isDisabled ? 'cursor-not-allowed opacity-50' : ''}`}
+              >
+                <p className="font-medium text-slate-800">{choice.text}</p>
+                <p className="mt-1 text-sm text-slate-600">{choice.effect_summary}</p>
+              </button>
+            )
+          })}
+
+          {previewChoiceId && !isChoiceLocked && (
             <button
-              key={choice.choice_id}
-              onClick={() => handleChoiceClick(choice)}
-              disabled={Boolean(selectedChoiceId && selectedChoiceId !== choice.choice_id)}
-              className={`w-full rounded-2xl border px-4 py-4 text-left ${
-                selectedChoiceId === choice.choice_id
-                  ? 'border-amber-400 bg-amber-50'
-                  : 'border-slate-200 bg-white'
-              } ${
-                selectedChoiceId && selectedChoiceId !== choice.choice_id ? 'opacity-60' : ''
-              }`}
+              className="w-full rounded-2xl bg-amber-500 px-5 py-3.5 font-semibold text-white transition hover:bg-amber-600"
+              onClick={handleConfirmChoice}
             >
-              <p className="font-medium text-slate-800">{choice.text}</p>
-              <p className="mt-1 text-sm text-slate-600">{choice.effect_summary}</p>
+              {t(language, 'story.confirm_choice')}
             </button>
-          ))}
+          )}
         </div>
       )}
 
-      {selectedChoiceId && isChoiceSavedForCurrentEpisode && (
-        <div className="space-y-1 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          <p>{t(language, 'story.world_remembers')}</p>
+      {isChoiceLocked && (
+        <div className="space-y-2 rounded-2xl border border-emerald-200 bg-emerald-50/80 px-4 py-4 text-sm text-emerald-950 transition-all duration-500">
+          <p className="font-semibold">{t(language, 'story.world_remembers')}</p>
           <p>{t(language, 'story.next_episode_hint')}</p>
         </div>
       )}
 
-      {selectedChoiceId && isChoiceSavedForCurrentEpisode && onContinueNextEpisode && (
+      {isChoiceLocked && onContinueNextEpisode && (
         <button
-          className="w-full rounded-2xl bg-amber-500 px-5 py-3.5 font-semibold text-white"
+          className="w-full rounded-2xl bg-emerald-600 px-5 py-3.5 font-semibold text-white"
           onClick={onContinueNextEpisode}
         >
           {t(language, 'story.continue_next_episode')}
         </button>
       )}
 
-      {selectedChoiceId && isChoiceSavedForCurrentEpisode && !onContinueNextEpisode && (
+      {isChoiceLocked && !onContinueNextEpisode && (
         <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
           <h3 className="text-base font-semibold text-slate-900">{t(language, 'story.episode_end_title')}</h3>
           <p className="text-sm text-slate-700">{t(language, 'story.episode_end_body')}</p>
