@@ -1,6 +1,6 @@
 # QISSA App
 
-QISSA is a family AI storytelling clickable prototype for children in Central Asia.
+QISSA is a family AI storytelling clickable prototype for children in Central Asia. Current state: local-only MVP prototype (no backend or real model integrations).
 
 ## Local development
 
@@ -16,11 +16,19 @@ QISSA is a family AI storytelling clickable prototype for children in Central As
    ```bash
    npm run typecheck
    ```
-4. Create production build:
+4. Run i18n completeness check:
+   ```bash
+   npm run check:i18n
+   ```
+5. Run typecheck:
+   ```bash
+   npm run typecheck
+   ```
+6. Create production build:
    ```bash
    npm run build
    ```
-5. Preview production build locally:
+7. Preview production build locally:
    ```bash
    npm run preview
    ```
@@ -46,6 +54,7 @@ https://jteshaboev1984-ops.github.io/qissa_app/
 
 ```bash
 npm ci
+npm run check:i18n
 npm run typecheck
 npm run build
 npm run preview
@@ -79,3 +88,9 @@ This prototype intentionally keeps local/mock behavior only:
 - no payments;
 - no voice cloning;
 - no AI image generation.
+
+
+## Additional QA doc
+
+Manual checklist: `docs/qissa/QA_CHECKLIST.md`.
+Run `npm run check:i18n` before release candidates and before deploy to catch missing localization keys early.

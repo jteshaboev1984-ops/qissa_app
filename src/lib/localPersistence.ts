@@ -1,3 +1,4 @@
+import { createInitialSeriesState } from './memoryAgent'
 import type { Episode, Language, OnboardingSelections, ReaderPreferences, SeriesState } from '../types/qissa'
 
 export type AppScreen = 'welcome' | 'onboarding' | 'home' | 'story'
@@ -13,8 +14,11 @@ const STORAGE_KEYS = {
   readerPreferences: `${KEY_PREFIX}:readerPreferences`,
 } as const
 
+const DEPRECATED_KEYS = ['qissa:language', 'qissa:onboardingSelections', 'qissa:seriesState', 'qissa:currentEpisode', 'qissa:screen']
+
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
 
+// Corrupted JSON is ignored by design for prototype resilience.
 const safeParseJSON = <T>(value: string | null): T | null => {
   if (!value) return null
   try {
@@ -25,6 +29,7 @@ const safeParseJSON = <T>(value: string | null): T | null => {
 }
 
 export const isLanguage = (value: unknown): value is Language => value === 'ru' || value === 'uz' || value === 'kz'
+export const getStorageVersion = () => KEY_PREFIX
 
 export const isOnboardingSelections = (value: unknown): value is OnboardingSelections => {
   if (!isRecord(value)) return false
@@ -51,7 +56,6 @@ export const isSeriesState = (value: unknown): value is SeriesState => {
     isRecord(value.canonState) &&
     typeof value.episodeCount === 'number'
 }
-
 
 export const isReaderPreferences = (value: unknown): value is ReaderPreferences => {
   if (!isRecord(value)) return false
@@ -100,6 +104,40 @@ const safeGet = <T>(key: string): T | null => {
   }
 }
 
+const clearEpisodeAndScreen = () => {
+  try {
+    window.localStorage.removeItem(STORAGE_KEYS.currentEpisode)
+    window.localStorage.removeItem(STORAGE_KEYS.screen)
+  } catch {
+    // ignore clear failures
+  }
+}
+
+const clearAllQissaStorage = () => {
+  try {
+    Object.values(STORAGE_KEYS).forEach((key) => window.localStorage.removeItem(key))
+  } catch {
+    // ignore clear failures
+  }
+}
+
+const clearStoryProgressOnly = () => {
+  try {
+    window.localStorage.removeItem(STORAGE_KEYS.seriesState)
+    clearEpisodeAndScreen()
+  } catch {
+    // ignore clear failures
+  }
+}
+
+const clearDeprecatedKeys = () => {
+  try {
+    DEPRECATED_KEYS.forEach((key) => window.localStorage.removeItem(key))
+  } catch {
+    // ignore clear failures
+  }
+}
+
 export const localPersistence = {
   keys: STORAGE_KEYS,
   saveLanguage: (language: Language) => safeSet(STORAGE_KEYS.language, language),
@@ -117,6 +155,15 @@ export const localPersistence = {
     const value = safeGet<unknown>(STORAGE_KEYS.seriesState)
     return isSeriesState(value) ? value : null
   },
+  loadSeriesStateOrRepair: (selections: OnboardingSelections | null): SeriesState | null => {
+    const loaded = localPersistence.loadSeriesState()
+    if (loaded || !selections) return loaded
+
+    // Repair missing series state when onboarding selections are present.
+    const repaired = createInitialSeriesState(selections)
+    localPersistence.saveSeriesState(repaired)
+    return repaired
+  },
   saveCurrentEpisode: (value: Episode) => safeSet(STORAGE_KEYS.currentEpisode, value),
   loadCurrentEpisode: (): Episode | null => {
     const value = safeGet<unknown>(STORAGE_KEYS.currentEpisode)
@@ -132,20 +179,10 @@ export const localPersistence = {
     const value = safeGet<unknown>(STORAGE_KEYS.readerPreferences)
     return isReaderPreferences(value) ? value : null
   },
-
-  clearEpisodeAndScreen: () => {
-    try {
-      window.localStorage.removeItem(STORAGE_KEYS.currentEpisode)
-      window.localStorage.removeItem(STORAGE_KEYS.screen)
-    } catch {
-      // ignore clear failures
-    }
-  },
-  clearQissaStorage: () => {
-    try {
-      Object.values(STORAGE_KEYS).forEach((key) => window.localStorage.removeItem(key))
-    } catch {
-      // ignore clear failures
-    }
-  },
+  getStorageVersion,
+  clearStoryProgressOnly,
+  clearAllQissaStorage,
+  clearEpisodeAndScreen,
+  clearDeprecatedKeys,
+  clearQissaStorage: clearAllQissaStorage,
 }

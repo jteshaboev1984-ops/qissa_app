@@ -21,7 +21,7 @@ type OnboardingMode = 'first_launch' | 'edit_setup'
 function resolveHydratedState() {
   const language = localPersistence.loadLanguage() ?? 'ru'
   const selections = localPersistence.loadOnboardingSelections()
-  const storedSeriesState = localPersistence.loadSeriesState()
+  const storedSeriesState = localPersistence.loadSeriesStateOrRepair(selections)
   const episode = localPersistence.loadCurrentEpisode()
   const savedScreen = localPersistence.loadScreen()
   const readerPreferences = localPersistence.loadReaderPreferences()
@@ -31,9 +31,6 @@ function resolveHydratedState() {
   }
 
   const seriesState = storedSeriesState ?? createInitialSeriesState(selections)
-  if (!storedSeriesState) {
-    localPersistence.saveSeriesState(seriesState)
-  }
 
   if (!episode) {
     return { language, selections, seriesState, episode: null, screen: 'home' as AppScreen, readerPreferences }
@@ -66,6 +63,10 @@ function App() {
   const [seriesState, setSeriesState] = useState<SeriesState | null>(hydrated.seriesState)
   const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(hydrated.readerPreferences ?? defaultReaderPreferences)
   const [onboardingMode, setOnboardingMode] = useState<OnboardingMode>('first_launch')
+
+  useEffect(() => {
+    localPersistence.clearDeprecatedKeys()
+  }, [])
 
   const updateLanguage = (value: Language) => {
     setLanguage(value)
@@ -110,7 +111,7 @@ function App() {
 
   const handleStartStory = () => {
     if (!selections || !seriesState) return
-    const firstEpisode = createStoryEpisode(selections, seriesState)
+    const firstEpisode = createStoryEpisode({ selections, seriesState })
     const nextSeries = { ...seriesState, episodeCount: 1 }
     setEpisode(firstEpisode)
     setSeriesState(nextSeries)
@@ -128,7 +129,7 @@ function App() {
 
   const handleContinueNextEpisode = () => {
     if (!selections || !seriesState || selections.storyMode !== 'series' || seriesState.choiceHistory.length === 0) return
-    const secondEpisode = createStoryEpisode(selections, seriesState)
+    const secondEpisode = createStoryEpisode({ selections, seriesState })
     const nextSeriesState = { ...seriesState, episodeCount: 2 }
     setEpisode(secondEpisode)
     setSeriesState(nextSeriesState)
