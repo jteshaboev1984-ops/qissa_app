@@ -87,6 +87,17 @@ This prototype intentionally keeps local/mock behavior only:
 Manual checklist: `docs/qissa/QA_CHECKLIST.md`.
 Run `npm run check:i18n` before release candidates and before deploy to catch missing localization keys early.
 
+
+## AI / Story Agent planning docs
+
+- `docs/qissa/ai/01_STORY_AGENT_SPEC.md`
+- `docs/qissa/ai/02_STORY_PROMPT_TEMPLATES.md`
+- `docs/qissa/ai/03_SAFETY_AGENT_SPEC.md`
+- `docs/qissa/ai/04_MEMORY_AND_CHOICE_RULES.md`
+- `docs/qissa/ai/05_VOCABULARY_RULES.md`
+- `docs/qissa/ai/06_GENERATION_QA_TEST_CASES.md`
+- `docs/qissa/ai/07_FUTURE_INTEGRATION_NOTES.md`
+
 ## Backend planning docs
 
 - `docs/qissa/backend/01_SUPABASE_SCHEMA_DRAFT.md`
