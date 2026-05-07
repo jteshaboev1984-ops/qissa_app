@@ -1,3 +1,4 @@
+// Prototype Memory Agent: local-only state mutation contract for MVP scaffolding.
 import type { ChoiceHistoryEntry, Episode, EpisodeChoice, OnboardingSelections, SeriesState } from '../types/qissa'
 
 function baseHeroName(selections: OnboardingSelections): string {
@@ -20,6 +21,7 @@ function baseHeroName(selections: OnboardingSelections): string {
 }
 
 export function createInitialSeriesState(selections: OnboardingSelections): SeriesState {
+  // Input: onboarding selections. Output: empty series state prepared for episode generation.
   return {
     id: `series-${selections.stylePackId}-${selections.language}`,
     childProfileId: `child-${selections.ageGroup}-${selections.language}`,
@@ -36,6 +38,7 @@ export function createInitialSeriesState(selections: OnboardingSelections): Seri
 }
 
 export function applyChoiceToSeriesState(seriesState: SeriesState, episode: Episode, choice: EpisodeChoice): SeriesState {
+  // Input: current state + confirmed choice. Output: updated in-memory continuity state.
   const selectedAt = new Date().toISOString()
   const entry: ChoiceHistoryEntry = {
     episode_id: episode.episode_id,

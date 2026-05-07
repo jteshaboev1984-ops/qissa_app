@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { stylePacks } from '../data/stylePacks'
 import { t } from '../lib/i18n'
+import { deriveStoryStatus, isStoryCompleted } from '../lib/storyStatus'
 import type { Episode, Language, OnboardingSelections, SeriesState } from '../types/qissa'
 
 interface HomeScreenProps {
@@ -24,11 +25,9 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
   const [showDetails, setShowDetails] = useState(false)
   const world = stylePacks.find((pack) => pack.id === selections.stylePackId)
   const isSeriesMode = selections.storyMode === 'series'
-  const hasStory = Boolean(episode && seriesState)
-  const isCompleted = Boolean(
-    (isSeriesMode && episode?.episode_id.startsWith('ep-2')) ||
-      (!isSeriesMode && seriesState && seriesState.choiceHistory.length > 0),
-  )
+  const storyStatus = deriveStoryStatus(selections, seriesState, episode)
+  const hasStory = storyStatus !== 'not_started'
+  const isCompleted = isStoryCompleted(selections, seriesState, episode)
 
   const compactSummary = useMemo(() => {
     const hero = t(language, `hero.${selections.heroType}` as const)

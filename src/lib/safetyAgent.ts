@@ -1,8 +1,10 @@
+// Prototype Safety Agent: lightweight placeholder. Production MVP must replace with stricter policy checks.
 import type { Episode, SafetyResult } from '../types/qissa'
 
 const blockedTerms = ['ужас', 'кровь', 'наказание', 'ненависть', 'война']
 
 export function runEpisodeSafetyCheck(episode: Episode): SafetyResult {
+  // Guaranteed safe fallback path is handled by storyAgent when this returns approved=false.
   const text = `${episode.title} ${episode.story_text}`.toLowerCase()
   const hasBlockedTerm = blockedTerms.some((term) => text.includes(term))
 

@@ -1,4 +1,5 @@
 import { stylePacks } from '../data/stylePacks'
+import type { StoryGenerationInput, StoryGenerationOutput } from '../contracts/agentContracts'
 import type { Episode, EpisodeChoice, Language, OnboardingSelections, SeriesState, VocabularyItem } from '../types/qissa'
 import { runEpisodeSafetyCheck } from './safetyAgent'
 
@@ -60,7 +61,17 @@ function createEpisodeOne(selections: OnboardingSelections, seriesState?: Series
     choices: episodeOneChoices(selections.language, selections.storyMood),
     state_patch: { last_event: selections.language === 'ru' ? 'герой сделал добрый выбор в первом эпизоде' : 'first gentle choice made', open_arc: selections.language === 'ru' ? 'Путь добрых дел в новом мире' : 'kind path arc' },
     vocabulary: vocabularyFor(selections.language),
-    nextEpisodePreview: selections.language === 'ru' ? `В следующей серии ${heroName} увидит, как выбор изменил историю.` : selections.language === 'uz' ? `Keyingi qismda bugungi tanlovning ta’siri ko‘rinadi.` : 'Келесі бөлімде бүгінгі таңдаудың әсері көрінеді.',
+    nextEpisodePreview: selections.storyMode === 'series'
+      ? selections.language === 'ru'
+        ? `В следующей серии ${heroName} увидит, как выбор изменил историю.`
+        : selections.language === 'uz'
+          ? `Keyingi qismda bugungi tanlovning ta’siri ko‘rinadi.`
+          : 'Келесі бөлімде бүгінгі таңдаудың әсері көрінеді.'
+      : selections.language === 'ru'
+        ? 'Это отдельная история с тёплым завершением.'
+        : selections.language === 'uz'
+          ? 'Bu alohida ertak iliq yakun bilan tugaydi.'
+          : 'Бұл жеке ертегі жылы аяқталады.',
     safety_self_check: { approved: true, risk_level: 'low', flags: { discrimination: false, humiliation: false, religious_push: false, political_push: false, gender_stereotype: false, nationality_stereotype: false, conditional_love: false, bedtime_overstimulation: false, adult_theme: false, excessive_fear: false }, required_action: 'publish' },
   }
 }
@@ -84,18 +95,21 @@ function createEpisodeTwo(selections: OnboardingSelections, seriesState: SeriesS
     choices: [],
     state_patch: { last_event: lastChoice.effect_summary, open_arc: seriesState.activeArc },
     vocabulary: vocabularyFor(selections.language),
-    nextEpisodePreview: selections.language === 'ru' ? 'История продолжается в следующей серии.' : selections.language === 'uz' ? 'Hikoya keyingi qismda davom etadi.' : 'Оқиға келесі бөлімде жалғасады.',
+    nextEpisodePreview: selections.language === 'ru' ? 'Демо второй серии завершено.' : selections.language === 'uz' ? 'Ikkinchi demo qism shu yerda yakunlanadi.' : 'Екінші демо бөлім осы жерде аяқталады.',
     safety_self_check: { approved: true, risk_level: 'low', flags: { discrimination: false, humiliation: false, religious_push: false, political_push: false, gender_stereotype: false, nationality_stereotype: false, conditional_love: false, bedtime_overstimulation: false, adult_theme: false, excessive_fear: false }, required_action: 'publish' },
   }
 }
 
-export function createStoryEpisode(selections: OnboardingSelections, seriesState?: SeriesState): Episode {
+// Prototype Story Agent contract: local-only generator with deterministic output.
+export function createStoryEpisode(input: StoryGenerationInput): Episode {
+  const { selections, seriesState } = input
   const hasHistory = Boolean(seriesState && seriesState.choiceHistory.length > 0)
   const draftEpisode = hasHistory ? createEpisodeTwo(selections, seriesState as SeriesState) : createEpisodeOne(selections, seriesState)
   const safety = runEpisodeSafetyCheck(draftEpisode)
 
   if (safety.approved) {
-    return { ...draftEpisode, safety_self_check: safety }
+    const output: StoryGenerationOutput = { episode: { ...draftEpisode, safety_self_check: safety } }
+    return output.episode
   }
 
   return {
