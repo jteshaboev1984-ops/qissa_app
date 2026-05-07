@@ -1,4 +1,4 @@
-// Local mock Story Agent implementation.
+// Local deterministic mock Story Agent implementation (no network/model calls).
 // NOTE: Return payload shape intentionally mirrors future backend/edge function contract outputs.
 import { stylePacks } from '../data/stylePacks'
 import type { StoryGenerationInput, StoryGenerationOutput } from '../contracts/agentContracts'
@@ -102,7 +102,8 @@ function createEpisodeTwo(selections: OnboardingSelections, seriesState: SeriesS
   }
 }
 
-// Prototype Story Agent contract: local-only generator with deterministic output.
+// Prototype Story Agent contract: local-only deterministic generator.
+// one_time stays self-contained; series episode 2 is a demo end-state without episode 3 promise.
 export function createStoryEpisode(input: StoryGenerationInput): Episode {
   const { selections, seriesState } = input
   const hasHistory = Boolean(seriesState && seriesState.choiceHistory.length > 0)
