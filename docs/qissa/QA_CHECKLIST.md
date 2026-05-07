@@ -6,6 +6,11 @@
 - Reset story: progress is reset, but language, onboarding selections, and reader settings stay.
 - Series mode: episode 1 choice preview → confirm → episode 2 opens.
 - One-time mode: no series continuation prompt.
+- One-time story: after choice confirm, a distinct final card appears with Home / Start new / Reopen actions.
+- Series episode 2: no choice cards and no confirm button are shown.
+- Series episode 2: final demo card is visually separate from narrative text.
+- Completed Home state: one-time and series use distinct completion tone.
+- RU/UZ/KZ: final-state buttons and labels are visible in each locale.
 
 ## Story and reader checks
 - Vocabulary list is hidden by default and opens only on click.
