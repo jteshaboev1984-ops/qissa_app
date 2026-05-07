@@ -35,7 +35,7 @@ This prototype can be deployed as a static Vite app through GitHub Pages without
 2. In **Build and deployment**, set **Source** to **GitHub Actions**.
 3. Keep workflow file `.github/workflows/deploy-pages.yml` on `main`.
 
-After deployment, the expected URL pattern is:
+Expected URL pattern:
 
 `https://jteshaboev1984-ops.github.io/qissa_app/`
 
@@ -51,37 +51,23 @@ npm run build
 npm run preview
 ```
 
-## Manual smoke test (prototype flow)
+## Release-candidate manual QA checklist
 
-- Welcome
-- Onboarding
-- Create first series
-- Preview choice A/B switching before confirm
-- Confirm choice with separate CTA
-- Continue next episode
-- Validate Episode 2 end-state and return home
-- Refresh page and confirm story state persists and no dead-end
-- Open Aa settings
-- Switch read/listen mode
-- Reset story
-
-
-## Release candidate QA flow
-
-- Open deploy link
-- Test RU
-- Test UZ
-- Test KZ
-- Create first story
-- Toggle choices before confirmation
-- Confirm choice and check memory block
-- Continue to Episode 2
-- Verify end-of-demo block with home CTA
-- Return home
-- Refresh
-- Check Aa settings
-- Check listen mode
-- Reset story
+- RU full flow.
+- UZ full flow.
+- KZ full flow.
+- First launch → onboarding → world selection shows inline continue CTA near selected card.
+- Edit setup opens with existing selections and preserves story unless setup changes.
+- Reset story progress keeps child profile/onboarding selections, language, and reader settings.
+- Series mode: Episode 1 choice preview A/B/A → confirm → automatic transition to Episode 2.
+- Episode 2 shows clean end-state with visible Home action.
+- One-time mode ends without next-episode continuation.
+- Vocabulary is hidden by default and expands only on user action.
+- Refresh on Home restores usable state.
+- Refresh on Story restores usable state with visible way home.
+- Reader settings (Aa) open and save preferences.
+- Listen mode works as local placeholder (no real audio API).
+- Back/Home actions are visible and predictable.
 
 ## Constraints preserved
 
