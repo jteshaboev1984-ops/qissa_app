@@ -1,3 +1,5 @@
+// Local mock Story Agent implementation.
+// NOTE: Return payload shape intentionally mirrors future backend/edge function contract outputs.
 import { stylePacks } from '../data/stylePacks'
 import type { StoryGenerationInput, StoryGenerationOutput } from '../contracts/agentContracts'
 import type { Episode, EpisodeChoice, Language, OnboardingSelections, SeriesState, VocabularyItem } from '../types/qissa'

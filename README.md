@@ -8,27 +8,19 @@ QISSA is a family AI storytelling clickable prototype for children in Central As
    ```bash
    npm install
    ```
-2. Start dev server:
+2. Run i18n completeness check:
    ```bash
-   npm run dev
+   npm run check:i18n
    ```
 3. Run typecheck:
    ```bash
    npm run typecheck
    ```
-4. Run i18n completeness check:
-   ```bash
-   npm run check:i18n
-   ```
-5. Run typecheck:
-   ```bash
-   npm run typecheck
-   ```
-6. Create production build:
+4. Create production build:
    ```bash
    npm run build
    ```
-7. Preview production build locally:
+5. Preview production build locally:
    ```bash
    npm run preview
    ```
@@ -94,3 +86,13 @@ This prototype intentionally keeps local/mock behavior only:
 
 Manual checklist: `docs/qissa/QA_CHECKLIST.md`.
 Run `npm run check:i18n` before release candidates and before deploy to catch missing localization keys early.
+
+## Backend planning docs
+
+- `docs/qissa/backend/01_SUPABASE_SCHEMA_DRAFT.md`
+- `docs/qissa/backend/02_API_CONTRACTS.md`
+- `docs/qissa/backend/03_EDGE_FUNCTION_CONTRACTS.md`
+- `docs/qissa/backend/04_RLS_AND_SECURITY_NOTES.md`
+- `docs/qissa/backend/05_LOCAL_TO_BACKEND_MIGRATION_PLAN.md`
+- `docs/qissa/backend/06_BACKEND_ROADMAP.md`
+- `docs/qissa/backend/schema_draft.sql`

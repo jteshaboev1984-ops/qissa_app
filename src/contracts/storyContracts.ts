@@ -1,3 +1,4 @@
+// NOTE: These contract/domain types are intentionally backend-agnostic and map to docs/qissa/backend/02_API_CONTRACTS.md and schema_draft.sql.
 export type Language = 'ru' | 'uz' | 'kz'
 export type VocabularyLanguage = 'ru' | 'en'
 
@@ -64,6 +65,16 @@ export interface ReaderPreferences {
   audioOnlyNightMode: boolean
   voicePresetId: VoicePresetId
   defaultPlaybackMode: PlaybackMode
+}
+
+export interface ChildProfile {
+  id: string
+  name?: string
+  ageGroup: AgeGroup
+  language: Language
+  defaultVoicePresetId?: VoicePresetId
+  readerPreferences?: ReaderPreferences
+  preferredHeroType?: HeroType
 }
 
 export interface OnboardingSelections {
