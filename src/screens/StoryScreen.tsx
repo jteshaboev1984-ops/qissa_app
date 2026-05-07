@@ -13,6 +13,8 @@ interface StoryScreenProps {
   onChoiceSelected?: (choice: EpisodeChoice) => void
   onContinueNextEpisode?: () => void
   isChoiceSavedForCurrentEpisode?: boolean
+  savedChoiceIdForCurrentEpisode?: string | null
+  onBackHome?: () => void
 }
 
 export function StoryScreen({
@@ -23,6 +25,8 @@ export function StoryScreen({
   onChoiceSelected,
   onContinueNextEpisode,
   isChoiceSavedForCurrentEpisode = false,
+  savedChoiceIdForCurrentEpisode = null,
+  onBackHome,
 }: StoryScreenProps) {
   const [viewMode, setViewMode] = useState<'read' | 'listen'>(
     readerPreferences.defaultPlaybackMode,
@@ -35,7 +39,9 @@ export function StoryScreen({
     [episode.stylePackId],
   )
 
-  useEffect(() => setSelectedChoiceId(null), [episode.episode_id])
+  useEffect(() => {
+    setSelectedChoiceId(savedChoiceIdForCurrentEpisode)
+  }, [episode.episode_id, savedChoiceIdForCurrentEpisode])
   useEffect(() => setViewMode(readerPreferences.defaultPlaybackMode), [readerPreferences.defaultPlaybackMode])
 
   const handleViewModeChange = (nextMode: 'read' | 'listen') => {
@@ -157,6 +163,21 @@ export function StoryScreen({
         >
           {t(language, 'story.continue_next_episode')}
         </button>
+      )}
+
+      {selectedChoiceId && isChoiceSavedForCurrentEpisode && !onContinueNextEpisode && (
+        <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+          <h3 className="text-base font-semibold text-slate-900">{t(language, 'story.episode_end_title')}</h3>
+          <p className="text-sm text-slate-700">{t(language, 'story.episode_end_body')}</p>
+          {onBackHome && (
+            <button
+              className="w-full rounded-2xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-800"
+              onClick={onBackHome}
+            >
+              {t(language, 'story.back_home')}
+            </button>
+          )}
+        </div>
       )}
 
       {episode.vocabulary.length > 0 && (
