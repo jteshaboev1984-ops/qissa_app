@@ -109,9 +109,12 @@ function App() {
     localPersistence.saveSeriesState(nextSeriesState)
   }
 
-  const isChoiceSavedForCurrentEpisode = Boolean(
-    seriesState && episode && seriesState.choiceHistory.some((entry) => entry.episode_id === episode.episode_id),
-  )
+  const savedChoiceEntryForCurrentEpisode =
+    seriesState && episode
+      ? seriesState.choiceHistory.find((entry) => entry.episode_id === episode.episode_id) ?? null
+      : null
+
+  const isChoiceSavedForCurrentEpisode = Boolean(savedChoiceEntryForCurrentEpisode)
 
   const handleContinueNextEpisode = () => {
     if (!selections || !seriesState || seriesState.choiceHistory.length === 0) return
@@ -154,6 +157,8 @@ function App() {
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={updateReaderPreferences}
             isChoiceSavedForCurrentEpisode={isChoiceSavedForCurrentEpisode}
+            savedChoiceIdForCurrentEpisode={savedChoiceEntryForCurrentEpisode?.choice_id ?? null}
+            onBackHome={() => updateScreen('home')}
           />}
       </div>
     </div>

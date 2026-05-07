@@ -39,6 +39,9 @@ After deployment, the expected URL pattern is:
 
 `https://jteshaboev1984-ops.github.io/qissa_app/`
 
+Direct deployed prototype link:
+https://jteshaboev1984-ops.github.io/qissa_app/
+
 ### Local validation before push
 
 ```bash
@@ -61,17 +64,19 @@ npm run preview
 - Reset story
 
 
-## Prototype QA checklist
+## Release candidate QA flow
 
-- Test RU flow
-- Test UZ flow
-- Test KZ flow
+- Open deploy link
+- Test RU
+- Test UZ
+- Test KZ
 - Create first story
 - Select choice
-- Continue next episode
-- Refresh page
-- Reader settings
-- Listen mode
+- Continue to Episode 2
+- Return home
+- Refresh
+- Check Aa settings
+- Check listen mode
 - Reset story
 
 ## Constraints preserved
