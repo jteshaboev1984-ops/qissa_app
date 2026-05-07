@@ -9,6 +9,7 @@ interface OnboardingFlowProps {
   language: Language
   onLanguageChange: (language: Language) => void
   onComplete: (selections: OnboardingSelections) => void
+  onExitToWelcome: () => void
 }
 
 const defaultSelections: OnboardingSelections = {
@@ -20,7 +21,7 @@ const defaultSelections: OnboardingSelections = {
   storyMood: 'bedtime',
 }
 
-export function OnboardingFlow({ language, onLanguageChange, onComplete }: OnboardingFlowProps) {
+export function OnboardingFlow({ language, onLanguageChange, onComplete, onExitToWelcome }: OnboardingFlowProps) {
   const [stepIndex, setStepIndex] = useState(0)
   const [draft, setDraft] = useState<OnboardingSelections>({ ...defaultSelections, language })
 
@@ -34,7 +35,13 @@ export function OnboardingFlow({ language, onLanguageChange, onComplete }: Onboa
     setStepIndex((prev) => prev + 1)
   }
 
-  const back = () => setStepIndex((prev) => Math.max(0, prev - 1))
+  const back = () => {
+    if (stepIndex === 0) {
+      onExitToWelcome()
+      return
+    }
+    setStepIndex((prev) => Math.max(0, prev - 1))
+  }
 
   return (
     <div className="space-y-5 rounded-3xl bg-white p-5 shadow-sm sm:p-6">
