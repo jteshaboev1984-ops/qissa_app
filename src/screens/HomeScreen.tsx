@@ -33,24 +33,39 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
     return `${hero} · ${world?.title[language]} · ${mood}`
   }, [language, selections.heroType, selections.storyMood, world])
 
-  const renderPrimaryAction = () => {
+  const topTitle = useMemo(() => {
+    if (storyStatus === 'not_started') return t(language, 'home.launch_ready_title')
+    if (storyStatus === 'completed') return t(language, isSeriesMode ? 'home.completed_series_title' : 'home.completed_one_time_title')
+    return t(language, 'home.story_in_progress_title')
+  }, [language, storyStatus, isSeriesMode])
+
+  const renderStoryStateBlock = () => {
     if (storyStatus === 'not_started') {
       return (
-        <button className="w-full rounded-2xl bg-amber-500 px-5 py-3.5 font-semibold text-white" onClick={onCreateFirstSeries}>
-          {isSeriesMode ? t(language, 'home.create_first_series') : t(language, 'home.start_one_time')}
-        </button>
+        <div className="space-y-3 rounded-2xl bg-amber-50 p-4 text-slate-900">
+          <p className="text-sm">{t(language, 'home.launch_ready_body')}</p>
+          <button className="w-full rounded-2xl bg-amber-500 px-5 py-3.5 font-semibold text-white" onClick={onCreateFirstSeries}>
+            {isSeriesMode ? t(language, 'home.create_first_series') : t(language, 'home.start_one_time')}
+          </button>
+          <button className="w-full rounded-2xl border border-slate-300 bg-white px-5 py-3 font-semibold" onClick={onEditSetup}>
+            {t(language, 'home.change_choice')}
+          </button>
+        </div>
       )
     }
 
     if (storyStatus === 'completed') {
       return (
         <div className="space-y-3 rounded-2xl bg-sky-50 p-4 text-slate-900">
-          <h3 className="text-lg font-semibold">{isSeriesMode ? t(language, 'home.series_completed_title') : t(language, 'home.one_time_completed_title')}</h3>
-          <p className="text-sm">{isSeriesMode ? t(language, 'home.story_completed_body') : t(language, 'home.one_time_completed_body')}</p>
+          <h3 className="text-lg font-semibold">{isSeriesMode ? t(language, 'home.completed_series_title') : t(language, 'home.completed_one_time_title')}</h3>
+          <p className="text-sm">{isSeriesMode ? t(language, 'home.completed_series_body') : t(language, 'home.one_time_completed_body')}</p>
+          {seriesState?.lastEpisodeSummary ? <p className="rounded-xl bg-white/80 px-3 py-2 text-xs text-slate-700">{seriesState.lastEpisodeSummary}</p> : null}
           <div className="grid grid-cols-1 gap-2">
-            <button className="w-full rounded-2xl border border-slate-300 bg-white px-5 py-3 font-semibold" onClick={onContinueStory}>{t(language, 'home.reopen_story')}</button>
+            <button className="w-full rounded-2xl border border-slate-300 bg-white px-5 py-3 font-semibold" onClick={onContinueStory}>
+              {isSeriesMode ? t(language, 'home.open_last_story') : t(language, 'home.reopen_story')}
+            </button>
             <button className="w-full rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-white" onClick={onResetStory}>{t(language, 'home.start_new_story')}</button>
-            <button className="w-full rounded-2xl border border-slate-300 bg-white px-5 py-3 font-semibold" onClick={onEditSetup}>{t(language, 'home.edit_setup')}</button>
+            <button className="w-full rounded-2xl border border-slate-300 bg-white px-5 py-3 font-semibold" onClick={onEditSetup}>{t(language, 'home.change_choice')}</button>
           </div>
         </div>
       )
@@ -58,10 +73,10 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
 
     return (
       <div className="space-y-3 rounded-2xl bg-emerald-50 p-4 text-emerald-900">
-        <h3 className="text-lg font-semibold">{t(language, 'home.continue_story')}</h3>
+        <h3 className="text-lg font-semibold">{t(language, 'home.story_in_progress_title')}</h3>
         <p className="text-sm">{isSeriesMode ? t(language, 'home.world_remembers') : t(language, 'home.one_time_in_progress')}</p>
         {seriesState?.lastEpisodeSummary ? <p className="rounded-xl bg-white/80 px-3 py-2 text-xs text-emerald-900">{seriesState.lastEpisodeSummary}</p> : null}
-        <button className="w-full rounded-2xl bg-emerald-600 px-5 py-3.5 font-semibold text-white" onClick={onContinueStory}>{t(language, 'home.continue_story')}</button>
+        <button className="w-full rounded-2xl bg-emerald-600 px-5 py-3.5 font-semibold text-white" onClick={onContinueStory}>{t(language, 'home.open_current_story')}</button>
       </div>
     )
   }
@@ -69,8 +84,10 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
   return (
     <section className="space-y-4 rounded-3xl bg-white p-6 shadow-sm sm:p-7">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-2xl font-semibold text-slate-900">{t(language, 'home.ready')}</h2>
-        <button onClick={onEditSetup} className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700">{t(language, 'home.edit_setup')}</button>
+        <h2 className="text-2xl font-semibold text-slate-900">{topTitle}</h2>
+        {storyStatus !== 'not_started' ? (
+          <button onClick={onEditSetup} className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700">{t(language, 'home.change_choice')}</button>
+        ) : null}
       </div>
 
       <div className="rounded-2xl bg-amber-50/80 p-4 text-sm text-slate-700">
@@ -88,7 +105,7 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
         )}
       </div>
 
-      {renderPrimaryAction()}
+      {renderStoryStateBlock()}
 
       {storyStatus !== 'not_started' ? (
         <div className="rounded-2xl bg-slate-50 p-4 text-center">

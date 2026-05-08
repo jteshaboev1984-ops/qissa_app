@@ -81,7 +81,8 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
 
   const renderAgeStep = () => (
     <section className="space-y-3">
-      <h2 className="text-xl font-semibold">{t(language, 'onboarding.age')}</h2>
+      <h2 className="text-xl font-semibold">{t(language, 'onboarding.age_title')}</h2>
+      <p className="text-sm text-slate-600">{t(language, 'onboarding.age_helper')}</p>
       <div className="grid gap-3">
         {([
           { value: '3-5', key: 'age.3_5' },
@@ -96,7 +97,8 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
 
   const renderLanguageStep = () => (
     <section className="space-y-3">
-      <h2 className="text-xl font-semibold">{t(language, 'onboarding.language')}</h2>
+      <h2 className="text-xl font-semibold">{t(language, 'onboarding.language_title')}</h2>
+      <p className="text-sm text-slate-600">{t(language, 'onboarding.language_helper')}</p>
       <div className="grid gap-3">
         {(['ru', 'uz', 'kz'] as Language[]).map((value) => (
           <OptionCard
@@ -115,7 +117,8 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
 
   const renderHeroStep = () => (
     <section className="space-y-3">
-      <h2 className="text-xl font-semibold">{t(language, 'onboarding.hero')}</h2>
+      <h2 className="text-xl font-semibold">{t(language, 'onboarding.hero_title')}</h2>
+      <p className="text-sm text-slate-600">{t(language, 'onboarding.hero_helper')}</p>
       <div className="grid gap-3">
         {(['girl_hero', 'boy_hero', 'animal', 'magical_hero', 'custom'] as HeroType[]).map((hero) => (
           <OptionCard key={hero} title={t(language, `hero.${hero}` as const)} selected={draft.heroType === hero} onClick={() => setDraft({ ...draft, heroType: hero })} />
@@ -134,7 +137,8 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
 
   const renderWorldStep = () => (
     <section className="space-y-3">
-      <h2 className="text-xl font-semibold">{t(language, 'onboarding.world')}</h2>
+      <h2 className="text-xl font-semibold">{t(language, 'onboarding.world_title')}</h2>
+      <p className="text-sm text-slate-600">{t(language, 'onboarding.world_helper')}</p>
       {showWorldHint && !worldInteracted && <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-800">{t(language, 'onboarding.world_hint')}</p>}
       <div className="grid gap-3 sm:grid-cols-2">
         {stylePacks.map((pack) => {
@@ -169,7 +173,8 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   const renderModeMoodStep = () => (
     <section className="space-y-5">
       <div className="space-y-3">
-        <h2 className="text-xl font-semibold">{t(language, 'onboarding.story_mode')}</h2>
+        <h2 className="text-xl font-semibold">{t(language, 'onboarding.mode_title')}</h2>
+        <p className="text-sm text-slate-600">{t(language, 'onboarding.mode_helper')}</p>
         <div className="grid gap-3">
           {(['series', 'one_time'] as StoryMode[]).map((storyMode) => (
             <OptionCard key={storyMode} title={t(language, storyMode === 'series' ? 'mode.series' : 'mode.one_time')} selected={draft.storyMode === storyMode} onClick={() => setDraft({ ...draft, storyMode })} />

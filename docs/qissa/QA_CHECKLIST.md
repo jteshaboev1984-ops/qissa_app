@@ -10,6 +10,11 @@
 - Series episode 2: no choice cards and no confirm button are shown.
 - Series episode 2: final demo card is visually separate from narrative text.
 - Completed Home state: one-time and series use distinct completion tone.
+- Launch confirmation Home (not_started): clear “ready” state, compact summary, expandable details, and no reset-progress block.
+- Home page title must match story state and should not show launch-ready wording after story starts.
+- Completed one-time Home: “Сказка завершена” tone with open-again/new-story/edit-choice actions.
+- Completed series Home: “Демо-серия завершена” tone with open-last/new-story/edit-choice actions.
+- Completed series Home must not show “continue” wording when no next episode exists.
 - RU/UZ/KZ: final-state buttons and labels are visible in each locale.
 
 ## Story and reader checks
@@ -18,6 +23,8 @@
 - Listen mode works as placeholder UI (no real TTS).
 - Refresh on Home restores usable state.
 - Refresh on Story restores episode or safely falls back to Home if episode is missing.
+- Read-again opens full current episode from the top in one vertical scroll (no fragment feel).
+- Long stories remain readable with natural page scroll; final/actions remain below narrative flow.
 
 ## Localization checks
 - Switch RU/UZ/KZ from header and confirm key UI labels update.
