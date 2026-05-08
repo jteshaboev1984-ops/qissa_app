@@ -36,10 +36,10 @@ export function StoryScreen({
   const [previewChoiceId, setPreviewChoiceId] = useState<string | null>(null)
   const [showReaderSettings, setShowReaderSettings] = useState(false)
   const [showVocabulary, setShowVocabulary] = useState(false)
-  const [isReplayingFinalStory, setIsReplayingFinalStory] = useState(false)
   const [showConfirmedChoices, setShowConfirmedChoices] = useState(false)
 
   const autoContinueTimerRef = useRef<number | null>(null)
+  const narrativeTopRef = useRef<HTMLElement | null>(null)
 
   const stylePack = useMemo(() => stylePacks.find((pack) => pack.id === episode.stylePackId) ?? stylePacks[0], [episode.stylePackId])
 
@@ -73,7 +73,6 @@ export function StoryScreen({
 
   useEffect(() => {
     setShowVocabulary(false)
-    setIsReplayingFinalStory(false)
     setShowConfirmedChoices(false)
   }, [episode.episode_id])
 
@@ -151,7 +150,7 @@ export function StoryScreen({
   }
 
   const renderNarrativeCard = () => (
-    <section className="rounded-2xl border border-amber-100 bg-[#fffaf1] p-4">
+    <section ref={narrativeTopRef} className="rounded-2xl border border-amber-100 bg-[#fffaf1] p-4">
       <div className="mb-3 flex items-center justify-between gap-2">
         <h3 className="text-base font-semibold">{t(language, 'story.narrative_title')}</h3>
         {viewMode === 'read' && (
@@ -168,11 +167,6 @@ export function StoryScreen({
       ) : (
         renderListenScene()
       )}
-      {isReplayingFinalStory ? (
-        <button className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700" onClick={() => setIsReplayingFinalStory(false)}>
-          {t(language, 'story.back_to_final')}
-        </button>
-      ) : null}
     </section>
   )
 
@@ -180,7 +174,7 @@ export function StoryScreen({
     if (!showChoicePanel) return null
     return (
       <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
-        <h3 className="text-base font-semibold">{t(language, 'story.preview_helper')}</h3>
+        <h3 className="text-base font-semibold">{t(language, isChoiceLocked ? 'story.your_choice' : 'story.preview_helper')}</h3>
         {isChoiceLocked && confirmedChoice ? (
           <section className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">{t(language, 'story.your_choice')}</p>
@@ -242,7 +236,7 @@ export function StoryScreen({
   }
 
   const renderFinalState = () => {
-    if ((!isOneTimeFinal && !isSeriesFinal) || isReplayingFinalStory) return null
+    if (!isOneTimeFinal && !isSeriesFinal) return null
 
     const title = isSeriesFinal ? t(language, 'story.series_final_title') : t(language, 'story.one_time_final_title')
     const body = isSeriesFinal ? t(language, 'story.series_final_body') : t(language, 'story.one_time_final_body')
@@ -258,7 +252,13 @@ export function StoryScreen({
           <button className="w-full rounded-2xl bg-amber-500 px-4 py-3 font-semibold text-white" onClick={onStartNewStory}>
             {t(language, 'story.start_new_story')}
           </button>
-          <button className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-800" onClick={() => setIsReplayingFinalStory(true)}>
+          <button
+            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-800"
+            onClick={() => {
+              setViewMode('read')
+              narrativeTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }}
+          >
             {t(language, 'story.read_again')}
           </button>
         </div>
