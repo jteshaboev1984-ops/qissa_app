@@ -100,6 +100,7 @@ export interface EpisodeChoice {
   choice_id: string
   text: string
   effect_summary: string
+  resolution_text?: string
   state_patch: StatePatch
   value_alignment: PositiveValue[]
 }
@@ -109,6 +110,7 @@ export interface ChoiceHistoryEntry {
   choice_id: string
   choice_text: string
   effect_summary: string
+  resolution_text?: string
   state_patch: StatePatch
   selected_at: string
 }

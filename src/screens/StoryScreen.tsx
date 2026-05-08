@@ -37,6 +37,7 @@ export function StoryScreen({
   const [showReaderSettings, setShowReaderSettings] = useState(false)
   const [showVocabulary, setShowVocabulary] = useState(false)
   const [isReplayingFinalStory, setIsReplayingFinalStory] = useState(false)
+  const [showConfirmedChoices, setShowConfirmedChoices] = useState(false)
 
   const autoContinueTimerRef = useRef<number | null>(null)
 
@@ -53,6 +54,15 @@ export function StoryScreen({
   const showChoicePanel = episode.choices.length > 0 && !isSeriesFinal
   const canConfirmChoice = Boolean(previewChoiceId && !isChoiceLocked && showChoicePanel)
 
+  const confirmedChoice = useMemo(
+    () => episode.choices.find((choice) => choice.choice_id === savedChoiceIdForCurrentEpisode) ?? null,
+    [episode.choices, savedChoiceIdForCurrentEpisode],
+  )
+
+  const choiceConsequenceText = isChoiceLocked
+    ? confirmedChoice?.resolution_text ?? confirmedChoice?.effect_summary ?? null
+    : null
+
   useEffect(() => {
     setPreviewChoiceId(savedChoiceIdForCurrentEpisode)
   }, [episode.episode_id, savedChoiceIdForCurrentEpisode])
@@ -64,6 +74,7 @@ export function StoryScreen({
   useEffect(() => {
     setShowVocabulary(false)
     setIsReplayingFinalStory(false)
+    setShowConfirmedChoices(false)
   }, [episode.episode_id])
 
   useEffect(() => {
@@ -170,7 +181,19 @@ export function StoryScreen({
     return (
       <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
         <h3 className="text-base font-semibold">{t(language, 'story.preview_helper')}</h3>
-        {episode.choices.map((choice) => {
+        {isChoiceLocked && confirmedChoice ? (
+          <section className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">{t(language, 'story.your_choice')}</p>
+            <p className="mt-1 text-sm font-medium text-slate-800">{confirmedChoice.text}</p>
+            <button
+              className="mt-2 rounded-xl border border-amber-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700"
+              onClick={() => setShowConfirmedChoices((value) => !value)}
+            >
+              {showConfirmedChoices ? t(language, 'story.hide_choices') : t(language, 'story.show_choices')}
+            </button>
+          </section>
+        ) : null}
+        {(!isChoiceLocked || showConfirmedChoices) ? episode.choices.map((choice) => {
           const isPreviewed = previewChoiceId === choice.choice_id
           const isMuted = isChoiceLocked && savedChoiceIdForCurrentEpisode !== choice.choice_id
 
@@ -186,12 +209,24 @@ export function StoryScreen({
               </p>
             </button>
           )
-        })}
+        }) : null}
         {canConfirmChoice ? (
           <button className="w-full rounded-2xl bg-amber-500 px-5 py-3.5 font-semibold text-white" onClick={handleConfirmChoice}>
             {t(language, 'story.confirm_choice')}
           </button>
         ) : null}
+      </section>
+    )
+  }
+
+
+  const renderChoiceConsequence = () => {
+    if (!choiceConsequenceText) return null
+
+    return (
+      <section className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-4">
+        <p className="text-xs font-semibold uppercase tracking-wide text-violet-800">{t(language, 'story.choice_consequence_title')}</p>
+        <p className="mt-2 text-sm text-slate-800">{choiceConsequenceText}</p>
       </section>
     )
   }
@@ -255,6 +290,7 @@ export function StoryScreen({
       {renderNarrativeCard()}
       {renderChoicePanel()}
       {renderMemoryTransition()}
+      {renderChoiceConsequence()}
       {renderFinalState()}
       {renderVocabularyToggle()}
     </section>

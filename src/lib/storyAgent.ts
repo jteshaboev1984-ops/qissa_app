@@ -29,8 +29,8 @@ function episodeOneChoices(language: Language, mood: OnboardingSelections['story
   if (language === 'ru') {
     return mood === 'bedtime'
       ? [
-          { choice_id: 'light_path', text: 'Зажечь фонарики вдоль тропинки', effect_summary: 'Путь станет уютнее для всех.', state_patch: { hero_trait: 'заботливость', last_event: 'герой осветил тропу', open_arc: 'Светлая тропа добрых дел' }, value_alignment: ['care_for_nature', 'mutual_help'] },
-          { choice_id: 'quiet_song', text: 'Спеть тихую песню лесным друзьям', effect_summary: 'Друзья успокоятся и пойдут рядом.', state_patch: { hero_trait: 'доброта', new_friend: 'сова Нура', open_arc: 'Лесная дружба и забота' }, value_alignment: ['kindness', 'friendship'] },
+          { choice_id: 'light_path', text: 'Зажечь фонарики вдоль тропинки', effect_summary: 'Путь станет уютнее для всех.', resolution_text: 'Фонарики мягко засияли вдоль тропинки. Маленьким зверятам стало спокойнее идти рядом.', state_patch: { hero_trait: 'заботливость', last_event: 'герой осветил тропу', open_arc: 'Светлая тропа добрых дел' }, value_alignment: ['care_for_nature', 'mutual_help'] },
+          { choice_id: 'quiet_song', text: 'Спеть тихую песню лесным друзьям', effect_summary: 'Друзья успокоятся и пойдут рядом.', resolution_text: 'Тихая песня прошла между деревьями, и лесные друзья успокоились. Вечер стал добрее.', state_patch: { hero_trait: 'доброта', new_friend: 'сова Нура', open_arc: 'Лесная дружба и забота' }, value_alignment: ['kindness', 'friendship'] },
         ]
       : [
           { choice_id: 'share_map', text: 'Поделиться картой с командой', effect_summary: 'Дорога станет понятной для всех.', state_patch: { hero_trait: 'честность', last_event: 'герой помог команде с маршрутом', open_arc: 'Команда смелых помощников' }, value_alignment: ['honesty', 'mutual_help'] },
@@ -39,8 +39,8 @@ function episodeOneChoices(language: Language, mood: OnboardingSelections['story
   }
 
   return [
-    { choice_id: 'help_path', text: language === 'uz' ? 'Yo‘lni hamma uchun chiroyli qilish' : 'Жолды бәріне жайлы ету', effect_summary: language === 'uz' ? 'Barchaga qulay bo‘ladi.' : 'Баршаға ыңғайлы болады.', state_patch: { hero_trait: 'kind', open_arc: 'kind path arc' }, value_alignment: ['kindness'] },
-    { choice_id: 'help_friend', text: language === 'uz' ? 'Do‘st bilan birga yurish' : 'Доспен бірге жүру', effect_summary: language === 'uz' ? 'Do‘stlik mustahkamlanadi.' : 'Достық нығаяды.', state_patch: { new_friend: 'friend', open_arc: 'friendship arc' }, value_alignment: ['friendship'] },
+    { choice_id: 'help_path', text: language === 'uz' ? 'Yo‘l bo‘ylab mayin chiroqlar yoqish' : 'Жол бойына жұмсақ шамдар жағу', effect_summary: language === 'uz' ? 'Yo‘l yanada tinch va qulay bo‘ladi.' : 'Жол тыныш әрі жайлы бола түседі.', resolution_text: language === 'uz' ? 'Mayin chiroqlar yo‘l bo‘ylab yondi. Kichik do‘stlar yonma-yon xotirjam yurishdi.' : 'Жұмсақ шамдар жол бойына жарқырай жанды. Кішкентай достар қатарласа сенімді жүрді.', state_patch: { hero_trait: 'kind', open_arc: 'kind path arc' }, value_alignment: ['kindness'] },
+    { choice_id: 'help_friend', text: language === 'uz' ? 'Do‘stlar uchun sokin qo‘shiq aytish' : 'Достарға баяу ән айтып беру', effect_summary: language === 'uz' ? 'Do‘stlar xotirjam bo‘lib, bir-biriga yaqinlashadi.' : 'Достар тынышталып, бір-біріне жақындай түседі.', resolution_text: language === 'uz' ? 'Sokin qo‘shiq daraxtlar orasidan mayin taraldi. Do‘stlar bir-biriga yaqinroq bo‘lib, kecha iliqlashdi.' : 'Баяу ән ағаш арасымен жұмсақ тарады. Достар бір-біріне жақындап, кеш мейірлене түсті.', state_patch: { new_friend: 'friend', open_arc: 'friendship arc' }, value_alignment: ['friendship'] },
   ]
 }
 
@@ -82,15 +82,31 @@ function createEpisodeTwo(selections: OnboardingSelections, seriesState: SeriesS
   const lastChoice = seriesState.choiceHistory[seriesState.choiceHistory.length - 1]
   const friend = seriesState.recurringCharacters[seriesState.recurringCharacters.length - 1]
 
-  const storyTextRu = friend
-    ? `Утром ${seriesState.mainCharacter} снова вышел на тропинку, и рядом мягко приземлилась ${friend}. Она напомнила о вчерашнем выборе: ${lastChoice.choice_text.toLowerCase()}. Благодаря этому путь стал спокойнее, и друзья вместе помогли тем, кто отстал.`
-    : `Новая серия началась там, где закончилась прошлая. ${seriesState.mainCharacter} увидел результат вчерашнего выбора: ${lastChoice.choice_text.toLowerCase()}. Тропинка действительно стала уютнее, и жители мира с благодарностью продолжили путь рядом.`
+  const storyTextRu = lastChoice.choice_id === 'light_path'
+    ? `${seriesState.mainCharacter} снова вышел на тропинку, и знакомые фонарики мягко осветили путь. Рядом шли маленькие зверята, им было спокойно и тепло, а друзья бережно поддерживали тех, кто устал.`
+    : lastChoice.choice_id === 'quiet_song'
+      ? `${seriesState.mainCharacter} шагнул в утренний лес, и в воздухе ещё звучала тихая добрая мелодия. Лесные друзья улыбнулись, пошли ближе друг к другу и вместе помогли самым маленьким не отставать.`
+      : friend
+        ? `${seriesState.mainCharacter} снова вышел на тропинку, и рядом мягко приземлилась ${friend}. Дорога была спокойной, друзья держались вместе и заботливо помогали тем, кому нужен был отдых.`
+        : `${seriesState.mainCharacter} вернулся на знакомую тропинку. В мире стало тише и уютнее: друзья шагали рядом, поддерживали друг друга и с благодарностью продолжали путь.`
 
   return {
     episode_id: `ep-2-${selections.stylePackId}-${seriesState.choiceHistory.length}`,
     series_id: seriesState.id,
     title: selections.language === 'ru' ? 'Продолжение: мир помнит выбор' : selections.language === 'uz' ? 'Davomi: dunyo tanlovni eslaydi' : 'Жалғасы: әлем таңдауды ұмытпады',
-    story_text: selections.language === 'ru' ? storyTextRu : selections.language === 'uz' ? 'Yangi qism kechagi tanlovdan boshlanadi. Qahramon tanlov natijasini ko‘rib, do‘stlari bilan yo‘lni yanada iliq qildi.' : 'Жаңа бөлім кешегі таңдаудан басталады. Кейіпкер таңдаудың нәтижесін көріп, достарымен жолды жылырақ етті.',
+    story_text: selections.language === 'ru'
+      ? storyTextRu
+      : selections.language === 'uz'
+        ? lastChoice.choice_id === 'help_path'
+          ? `${seriesState.mainCharacter} yana yo‘lga chiqdi, mayin chiroqlar esa so‘qmoqni nurga to‘ldirdi. Kichik do‘stlar xotirjam yurib, bir-birini qo‘llab borishdi.`
+          : lastChoice.choice_id === 'help_friend'
+            ? `${seriesState.mainCharacter} o‘rmonga kirganda sokin qo‘shiq kayfiyati hanuz sezilib turardi. Do‘stlar yaqinlashib, birga yurib, ortda qolganlarga mehr bilan yordam berishdi.`
+            : `${seriesState.mainCharacter} tanish yo‘ldan davom etdi. Atrof tinch va iliq edi, do‘stlar esa bir-biriga suyanib oldinga yurishdi.`
+        : lastChoice.choice_id === 'help_path'
+          ? `${seriesState.mainCharacter} жолға қайта шыққанда, жұмсақ шамдар соқпақты жарық қылды. Кішкентай достар сенімді жүріп, бір-біріне демеу болды.`
+          : lastChoice.choice_id === 'help_friend'
+            ? `${seriesState.mainCharacter} орманға кіргенде баяу әннің жылы лебі сезілді. Достар жақындай түсіп, бірге жүріп, артта қалғандарға қамқор болды.`
+            : `${seriesState.mainCharacter} таныс соқпақпен алға жүрді. Айнала тыныш, ал достар бір-біріне сүйеніп, жолды бірге жалғастырды.`,
     mode: selections.storyMode,
     mood: selections.storyMood,
     stylePackId: selections.stylePackId,

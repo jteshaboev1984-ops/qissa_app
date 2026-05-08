@@ -10,6 +10,7 @@ Its role is continuity and gentle emotional consequence across episodes.
 - No high-stakes danger.
 - No shame framing.
 - Each choice has a clear small consequence.
+- Choices may include `resolution_text` for a short narrative consequence beat shown after confirmation.
 
 ## Allowed StatePatch keys
 - `last_event`

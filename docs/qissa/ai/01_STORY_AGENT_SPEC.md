@@ -54,7 +54,8 @@ Disallowed:
 - 1–2 choices maximum.
 - Choices must be meaningful but gentle.
 - No “wrong answer” framing.
-- `effect_summary` must be child-friendly and calm.
+- `effect_summary` must be child-friendly and calm (system/helper summary).
+- `resolution_text` may be included as the narrative continuation shown to the child after confirming a choice.
 - Choice `state_patch` must stay small, safe, and continuity-focused.
 
 ## Output rules
