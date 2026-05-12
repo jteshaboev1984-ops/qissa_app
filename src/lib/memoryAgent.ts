@@ -6,18 +6,13 @@ function baseHeroName(selections: OnboardingSelections): string {
     return selections.customHeroName
   }
 
-  switch (selections.heroType) {
-    case 'girl_hero':
-      return 'Алия'
-    case 'boy_hero':
-      return 'Тимур'
-    case 'animal':
-      return 'Снежный Барсик'
-    case 'magical_hero':
-      return 'Звёздный Проводник'
-    default:
-      return 'Юный герой'
-  }
+  const byLanguage = {
+    ru: { girl_hero: 'Алия', boy_hero: 'Тимур', animal: 'Снежный Барсик', magical_hero: 'Звёздный Проводник', custom: 'Юный герой' },
+    uz: { girl_hero: 'Aliya', boy_hero: 'Timur', animal: 'kichik qor barsi', magical_hero: 'mehribon yulduz yo‘lboshchi', custom: 'kichik qahramon' },
+    kz: { girl_hero: 'Алия', boy_hero: 'Тимур', animal: 'кішкентай қар барысы', magical_hero: 'мейірімді жұлдыз жетекші', custom: 'жас кейіпкер' },
+  } as const
+
+  return byLanguage[selections.language][selections.heroType]
 }
 
 export function createInitialSeriesState(selections: OnboardingSelections): SeriesState {
@@ -45,6 +40,7 @@ export function applyChoiceToSeriesState(seriesState: SeriesState, episode: Epis
     choice_id: choice.choice_id,
     choice_text: choice.text,
     effect_summary: choice.effect_summary,
+    resolution_text: choice.resolution_text,
     state_patch: choice.state_patch,
     selected_at: selectedAt,
   }

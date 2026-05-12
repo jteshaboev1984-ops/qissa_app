@@ -38,7 +38,6 @@ export function StoryScreen({
   const [showVocabulary, setShowVocabulary] = useState(false)
   const [showConfirmedChoices, setShowConfirmedChoices] = useState(false)
 
-  const autoContinueTimerRef = useRef<number | null>(null)
   const narrativeTopRef = useRef<HTMLElement | null>(null)
 
   const stylePack = useMemo(() => stylePacks.find((pack) => pack.id === episode.stylePackId) ?? stylePacks[0], [episode.stylePackId])
@@ -47,7 +46,7 @@ export function StoryScreen({
   const isEpisodeOne = episode.episode_id.startsWith('ep-1')
   const isEpisodeTwo = episode.episode_id.startsWith('ep-2')
   const isChoiceLocked = Boolean(isChoiceSavedForCurrentEpisode && savedChoiceIdForCurrentEpisode)
-  const isSeriesAutoTransition = isChoiceLocked && isSeriesMode && isEpisodeOne
+  const showNextEpisodeCta = isChoiceLocked && isSeriesMode && isEpisodeOne
   const isOneTimeFinal = storyMode === 'one_time' && isChoiceLocked
   const isSeriesFinal = isSeriesMode && isEpisodeTwo
   const hasVocabulary = episode.vocabulary.length > 0
@@ -76,22 +75,6 @@ export function StoryScreen({
     setShowConfirmedChoices(false)
   }, [episode.episode_id])
 
-  useEffect(() => {
-    if (!isSeriesAutoTransition || !onContinueNextEpisode) return
-    if (autoContinueTimerRef.current) return
-
-    autoContinueTimerRef.current = window.setTimeout(() => {
-      onContinueNextEpisode()
-      autoContinueTimerRef.current = null
-    }, 1200)
-
-    return () => {
-      if (autoContinueTimerRef.current) {
-        window.clearTimeout(autoContinueTimerRef.current)
-        autoContinueTimerRef.current = null
-      }
-    }
-  }, [isSeriesAutoTransition, onContinueNextEpisode])
 
   const handleConfirmChoice = () => {
     if (!previewChoiceId || isChoiceLocked) return
@@ -226,11 +209,14 @@ export function StoryScreen({
   }
 
   const renderMemoryTransition = () => {
-    if (!isSeriesAutoTransition) return null
+    if (!showNextEpisodeCta) return null
     return (
       <section className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900">
         <p className="font-semibold">{t(language, 'story.choice_saved_title')}</p>
         <p className="mt-1">{t(language, 'story.opening_next_episode')}</p>
+        <button className="mt-3 w-full rounded-2xl bg-emerald-600 px-4 py-3 font-semibold text-white" onClick={onContinueNextEpisode}>
+          {t(language, 'story.open_next_episode')}
+        </button>
       </section>
     )
   }
