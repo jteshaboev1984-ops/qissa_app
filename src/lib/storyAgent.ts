@@ -33,8 +33,8 @@ function episodeOneChoices(language: Language, mood: OnboardingSelections['story
           { choice_id: 'quiet_song', text: 'Спеть тихую песню лесным друзьям', effect_summary: 'Друзья успокоятся и пойдут рядом.', resolution_text: 'Тихая песня прошла между деревьями, и лесные друзья успокоились. Вечер стал добрее.', state_patch: { hero_trait: 'доброта', new_friend: 'сова Нура', open_arc: 'Лесная дружба и забота' }, value_alignment: ['kindness', 'friendship'] },
         ]
       : [
-          { choice_id: 'share_map', text: 'Поделиться картой с командой', effect_summary: 'Дорога станет понятной для всех.', state_patch: { hero_trait: 'честность', last_event: 'герой помог команде с маршрутом', open_arc: 'Команда смелых помощников' }, value_alignment: ['honesty', 'mutual_help'] },
-          { choice_id: 'water_garden', text: 'Полить молодые деревья у тропы', effect_summary: 'Сад окрепнет и встретит гостей тенью.', state_patch: { hero_trait: 'бережность', last_event: 'герой поддержал сад', open_arc: 'Сад растёт вместе с героями' }, value_alignment: ['care_for_nature', 'gratitude'] },
+          { choice_id: 'share_map', text: 'Поделиться картой с командой', effect_summary: 'Дорога станет понятной для всех.', resolution_text: 'Герой разложил карту перед друзьями, и каждый увидел свой участок пути. Команда пошла увереннее, потому что дорога стала общей.', state_patch: { hero_trait: 'честность', last_event: 'герой помог команде с маршрутом', open_arc: 'Команда смелых помощников' }, value_alignment: ['honesty', 'mutual_help'] },
+          { choice_id: 'water_garden', text: 'Полить молодые деревья у тропы', effect_summary: 'Сад окрепнет и встретит гостей тенью.', resolution_text: 'Молодые деревья напились воды и тихо зашелестели листьями. Тропа стала прохладнее, а друзья почувствовали благодарность сада.', state_patch: { hero_trait: 'бережность', last_event: 'герой поддержал сад', open_arc: 'Сад растёт вместе с героями' }, value_alignment: ['care_for_nature', 'gratitude'] },
         ]
   }
 
@@ -72,8 +72,8 @@ function createEpisodeOne(selections: OnboardingSelections, seriesState?: Series
       : selections.language === 'ru'
         ? 'Это отдельная история с тёплым завершением.'
         : selections.language === 'uz'
-          ? 'Bu alohida ertak iliq yakun bilan tugaydi.'
-          : 'Бұл жеке ертегі жылы аяқталады.',
+          ? 'Bu alohida hikoya iliq yakun bilan tugaydi.'
+          : 'Бұл жеке оқиға жылы аяқталады.',
     safety_self_check: { approved: true, risk_level: 'low', flags: { discrimination: false, humiliation: false, religious_push: false, political_push: false, gender_stereotype: false, nationality_stereotype: false, conditional_love: false, bedtime_overstimulation: false, adult_theme: false, excessive_fear: false }, required_action: 'publish' },
   }
 }
@@ -113,7 +113,7 @@ function createEpisodeTwo(selections: OnboardingSelections, seriesState: SeriesS
     choices: [],
     state_patch: { last_event: lastChoice.effect_summary, open_arc: seriesState.activeArc },
     vocabulary: vocabularyFor(selections.language),
-    nextEpisodePreview: selections.language === 'ru' ? 'Демо второй серии завершено.' : selections.language === 'uz' ? 'Ikkinchi demo qism shu yerda yakunlanadi.' : 'Екінші демо бөлім осы жерде аяқталады.',
+    nextEpisodePreview: selections.language === 'ru' ? 'Текущая версия истории завершена.' : selections.language === 'uz' ? 'Hikoyaning joriy versiyasi shu yerda yakunlanadi.' : 'Оқиғаның қазіргі нұсқасы осы жерде аяқталады.',
     safety_self_check: { approved: true, risk_level: 'low', flags: { discrimination: false, humiliation: false, religious_push: false, political_push: false, gender_stereotype: false, nationality_stereotype: false, conditional_love: false, bedtime_overstimulation: false, adult_theme: false, excessive_fear: false }, required_action: 'publish' },
   }
 }

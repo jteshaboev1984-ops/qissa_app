@@ -4,16 +4,16 @@
 - First launch: welcome → onboarding → home.
 - Edit setup: open from Home, keep story if setup unchanged.
 - Reset story: progress is reset, but language, onboarding selections, and reader settings stay.
-- Series mode: episode 1 choice preview → confirm → episode 2 opens.
+- Series mode: episode 1 choice preview → confirm → explicit "Open next episode" CTA.
 - One-time mode: no series continuation prompt.
 - One-time story: after choice confirm, a distinct final card appears with Home / Start new / Reopen actions.
 - Series episode 2: no choice cards and no confirm button are shown.
-- Series episode 2: final demo card is visually separate from narrative text.
+- Series episode 2: final card is visually separate from narrative text.
 - Completed Home state: one-time and series use distinct completion tone.
 - Launch confirmation Home (not_started): clear “ready” state, compact summary, expandable details, and no reset-progress block.
 - Home page title must match story state and should not show launch-ready wording after story starts.
-- Completed one-time Home: “Сказка завершена” tone with open-again/new-story/edit-choice actions.
-- Completed series Home: “Демо-серия завершена” tone with open-last/new-story/edit-choice actions.
+- Completed one-time Home: “История завершена” tone with open-again/new-story/edit-choice actions.
+- Completed series Home: “Серия завершена” tone with open-last/new-story/edit-choice actions.
 - Completed series Home must not show “continue” wording when no next episode exists.
 - RU/UZ/KZ: final-state buttons and labels are visible in each locale.
 
@@ -48,3 +48,6 @@
 - No multi-device sync.
 - No parent account.
 - localStorage data may be cleared by browser/user.
+
+- After Series Episode 1 confirm, user sees explicit “Open next episode” CTA; no hidden auto-transition.
+- No user-facing “demo” wording appears in RU/UZ/KZ UI.
