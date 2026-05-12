@@ -275,8 +275,8 @@ export function StoryScreen({
       {renderStoryHeader()}
       {renderNarrativeCard()}
       {renderChoicePanel()}
-      {renderMemoryTransition()}
       {renderChoiceConsequence()}
+      {renderMemoryTransition()}
       {renderFinalState()}
       {renderVocabularyToggle()}
     </section>
