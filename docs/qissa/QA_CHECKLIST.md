@@ -24,7 +24,10 @@
 - Refresh on Home restores usable state.
 - Refresh on Story restores episode or safely falls back to Home if episode is missing.
 - Read-again opens full current episode from the top in one vertical scroll (no fragment feel).
+- Read-again from final card always switches to read mode, closes extra panels, and scrolls to narrative top.
 - Long stories remain readable with natural page scroll; final/actions remain below narrative flow.
+- Episode 1 memory transition card title/body are not duplicated; CTA stays “Open next episode”.
+- Vocabulary expanded state keeps the section title and uses separate hide action.
 
 ## Localization checks
 - Switch RU/UZ/KZ from header and confirm key UI labels update.

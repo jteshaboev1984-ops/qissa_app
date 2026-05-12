@@ -75,6 +75,16 @@ export function StoryScreen({
     setShowConfirmedChoices(false)
   }, [episode.episode_id])
 
+  const handleReadAgain = () => {
+    setViewMode('read')
+    setShowVocabulary(false)
+    setShowConfirmedChoices(false)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        narrativeTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    })
+  }
 
   const handleConfirmChoice = () => {
     if (!previewChoiceId || isChoiceLocked) return
@@ -240,10 +250,7 @@ export function StoryScreen({
           </button>
           <button
             className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-800"
-            onClick={() => {
-              setViewMode('read')
-              narrativeTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-            }}
+            onClick={handleReadAgain}
           >
             {t(language, 'story.read_again')}
           </button>
@@ -256,9 +263,18 @@ export function StoryScreen({
     if (!hasVocabulary) return null
     return (
       <section className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 text-sm">
-        <button className="font-semibold text-emerald-900" onClick={() => setShowVocabulary((v) => !v)}>
-          {showVocabulary ? t(language, 'story.hide_words') : t(language, 'story.show_words')}
-        </button>
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-semibold text-emerald-900">{t(language, 'story.show_words')}</h3>
+          {showVocabulary ? (
+            <button className="rounded-lg border border-emerald-200 bg-white px-2 py-1 text-xs font-medium text-emerald-900" onClick={() => setShowVocabulary(false)}>
+              {t(language, 'story.hide_words_short')}
+            </button>
+          ) : (
+            <button className="text-xs font-medium text-emerald-800 underline-offset-2 hover:underline" onClick={() => setShowVocabulary(true)}>
+              {t(language, 'story.show_words_short')}
+            </button>
+          )}
+        </div>
         {showVocabulary ? (
           <ul className="mt-2 space-y-1 text-emerald-900">
             {episode.vocabulary.map((item) => (
