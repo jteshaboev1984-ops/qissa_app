@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { OptionCard } from '../../components/OptionCard'
+import { StylePackCover } from '../../components/StylePackCover'
 import { stylePacks } from '../../data/stylePacks'
 import { t } from '../../lib/i18n'
 import type { AgeGroup, HeroType, Language, OnboardingSelections, StoryMode, StoryMood } from '../../types/qissa'
@@ -80,7 +81,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   )
 
   const renderAgeStep = () => (
-    <section className="space-y-3">
+    <section className="space-y-3 rounded-2xl bg-slate-50/60 p-4">
       <h2 className="text-xl font-semibold">{t(language, 'onboarding.age_title')}</h2>
       <p className="text-sm text-slate-600">{t(language, 'onboarding.age_helper')}</p>
       <div className="grid gap-3">
@@ -96,7 +97,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   )
 
   const renderLanguageStep = () => (
-    <section className="space-y-3">
+    <section className="space-y-3 rounded-2xl bg-slate-50/60 p-4">
       <h2 className="text-xl font-semibold">{t(language, 'onboarding.language_title')}</h2>
       <p className="text-sm text-slate-600">{t(language, 'onboarding.language_helper')}</p>
       <div className="grid gap-3">
@@ -116,7 +117,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   )
 
   const renderHeroStep = () => (
-    <section className="space-y-3">
+    <section className="space-y-3 rounded-2xl bg-slate-50/60 p-4">
       <h2 className="text-xl font-semibold">{t(language, 'onboarding.hero_title')}</h2>
       <p className="text-sm text-slate-600">{t(language, 'onboarding.hero_helper')}</p>
       <div className="grid gap-3">
@@ -136,7 +137,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   )
 
   const renderWorldStep = () => (
-    <section className="space-y-3">
+    <section className="space-y-3 rounded-2xl bg-slate-50/60 p-4">
       <h2 className="text-xl font-semibold">{t(language, 'onboarding.world_title')}</h2>
       <p className="text-sm text-slate-600">{t(language, 'onboarding.world_helper')}</p>
       {showWorldHint && !worldInteracted && <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-800">{t(language, 'onboarding.world_hint')}</p>}
@@ -156,7 +157,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
                   setWorldInteracted(true)
                   setShowWorldHint(false)
                 }}
-                preview={<div className="mb-3 h-12 w-full rounded-xl" style={{ background: `linear-gradient(90deg, ${pack.palette.primary}, ${pack.palette.secondary}, ${pack.palette.accent})` }} />}
+                preview={<StylePackCover stylePack={pack} variant="compact" className="mb-3" />}
               />
               {showInlineContinue && (
                 <button className="w-full rounded-xl bg-amber-500 px-3 py-2 text-sm font-semibold text-white" onClick={next}>
@@ -171,7 +172,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   )
 
   const renderModeMoodStep = () => (
-    <section className="space-y-5">
+    <section className="space-y-5 rounded-2xl bg-slate-50/60 p-4">
       <div className="space-y-3">
         <h2 className="text-xl font-semibold">{t(language, 'onboarding.mode_title')}</h2>
         <p className="text-sm text-slate-600">{t(language, 'onboarding.mode_helper')}</p>
@@ -196,12 +197,12 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   const hideFooterNext = step === 'world'
 
   const renderFooter = () => (
-    <div className="flex items-center justify-between pt-2">
-      <button onClick={back} className="rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">
+    <div className="sticky bottom-0 flex items-center justify-between gap-2 rounded-2xl bg-white/95 pt-3">
+      <button onClick={back} className="rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm">
         {t(language, 'actions.back')}
       </button>
       {!hideFooterNext && (
-        <button onClick={next} className="rounded-2xl bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white">
+        <button onClick={next} className="rounded-2xl bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm">
           {stepIndex === onboardingSteps.length - 1 ? t(language, 'actions.start_story') : t(language, 'actions.next')}
         </button>
       )}
@@ -219,6 +220,10 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
 
   return (
     <div className="space-y-5 rounded-3xl bg-white p-5 shadow-sm sm:p-6">
+      <div className="rounded-2xl bg-amber-50/60 p-4">
+        <h1 className="text-lg font-semibold text-slate-900">{t(language, 'onboarding.title')}</h1>
+        <p className="mt-1 text-sm text-slate-600">{t(language, 'onboarding.mode_helper')}</p>
+      </div>
       {renderProgress()}
       {content}
       {renderFooter()}

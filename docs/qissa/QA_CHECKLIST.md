@@ -28,6 +28,11 @@
 - Long stories remain readable with natural page scroll; final/actions remain below narrative flow.
 - Episode 1 memory transition card title/body are not duplicated; CTA stays “Open next episode”.
 - Vocabulary expanded state keeps the section title and uses separate hide action.
+- Story text card remains visually separate from choice, memory, and system/action cards.
+- Choice consequence card appears before next-episode continuation action card.
+- Listening mode is clearly a prototype-style placeholder and does not promise real audio playback.
+- Vocabulary section stays optional, collapsed by default, and visually secondary.
+- Reader settings remain easy to access from Read mode and selections stay saved.
 
 ## Localization checks
 - Switch RU/UZ/KZ from header and confirm key UI labels update.
@@ -54,3 +59,31 @@
 
 - After Series Episode 1 confirm, user sees explicit “Open next episode” CTA; no hidden auto-transition.
 - No user-facing “demo” wording appears in RU/UZ/KZ UI.
+
+
+## RC polish verification
+- Home states are clear for not_started / in_progress / completed one_time / completed series.
+- No user-facing demo wording appears in active UI.
+- Active CTA/navigation copy uses consistent story terminology across RU/UZ/KZ.
+- Story narrative card is visually separate from system and action cards.
+- Consequence card appears before next-series CTA.
+- Series Episode 2 has no choices and no next-episode CTA.
+- Listening screen is an honest placeholder and does not promise real audio.
+- Reader settings stay accessible and remain saved after reload.
+- Vocabulary section stays optional and visually secondary.
+- Reset progress keeps setup, language, and reader preferences.
+
+
+- Bottom nav is visible on Home, Library, Parent only.
+- Story screen remains immersive and has no bottom nav.
+- Library shows empty and current story states correctly.
+- Parent screen includes setup, reading comfort, narrator voice, and reset progress section.
+- Style-pack covers are local CSS motifs only (no remote AI scene URLs).
+- Parent can comfortably read aloud in Read mode.
+- Listening remains an honest placeholder.
+- Reset keeps language, setup, and reader preferences.
+
+- Parent reader settings section has no non-working close button.
+- Bottom nav does not cover Home/Library/Parent final actions.
+- Narrative card does not include world/system helper text.
+- StylePack cover title/subtitle remain readable on light and dark palettes.

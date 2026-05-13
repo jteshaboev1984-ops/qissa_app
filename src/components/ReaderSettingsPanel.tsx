@@ -7,6 +7,7 @@ interface ReaderSettingsPanelProps {
   preferences: ReaderPreferences
   onChange: (patch: Partial<ReaderPreferences>) => void
   onClose: () => void
+  showClose?: boolean
 }
 
 const textSizes: ReaderPreferences['textSize'][] = ['small', 'medium', 'large', 'extra_large']
@@ -14,18 +15,20 @@ const fontModes: ReaderPreferences['fontMode'][] = ['standard', 'soft', 'dyslexi
 const lineSpacings: ReaderPreferences['lineSpacing'][] = ['normal', 'relaxed', 'wide']
 const themes: ReaderPreferences['theme'][] = ['light', 'warm', 'night']
 
-export function ReaderSettingsPanel({ language, preferences, onChange, onClose }: ReaderSettingsPanelProps) {
+export function ReaderSettingsPanel({ language, preferences, onChange, onClose, showClose = true }: ReaderSettingsPanelProps) {
   return (
-    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-sm">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-700">{t(language, 'reader.open_settings')}</h3>
-        <button
-          type="button"
-          className="rounded-lg px-2 py-1 text-xs text-slate-500 hover:bg-slate-100"
-          onClick={onClose}
-        >
-          {t(language, 'reader.close_settings')}
-        </button>
+        <h3 className="text-sm font-semibold text-slate-800">{t(language, 'reader.open_settings')}</h3>
+        {showClose ? (
+          <button
+            type="button"
+            className="rounded-lg px-2 py-1 text-xs text-slate-500 hover:bg-slate-100"
+            onClick={onClose}
+          >
+            {t(language, 'reader.close_settings')}
+          </button>
+        ) : null}
       </div>
 
       <SettingRow label={t(language, 'reader.text_size')}>
@@ -65,8 +68,8 @@ export function ReaderSettingsPanel({ language, preferences, onChange, onClose }
 
 function SettingRow({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="space-y-2">
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
+    <div className="space-y-2.5">
+      <p className="text-xs font-semibold text-slate-500">{label}</p>
       <div className="flex flex-wrap gap-2">{children}</div>
     </div>
   )
@@ -77,7 +80,7 @@ function ChoicePill({ active, onClick, children }: { active: boolean; onClick: (
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3 py-2 text-xs font-medium ${
+      className={`rounded-full border px-3.5 py-2 text-xs font-medium transition ${
         active
           ? 'border-amber-400 bg-amber-100 text-amber-900'
           : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
