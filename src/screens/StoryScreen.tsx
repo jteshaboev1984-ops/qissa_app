@@ -1,9 +1,9 @@
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { ListeningScene } from '../components/ListeningScene'
 import { ReaderSettingsPanel } from '../components/ReaderSettingsPanel'
+import { StylePackCover } from '../components/StylePackCover'
 import { stylePacks } from '../data/stylePacks'
 import { t } from '../lib/i18n'
-import { StylePackCover } from '../components/StylePackCover'
 import type { Episode, EpisodeChoice, Language, ReaderPreferences, StoryMode } from '../types/qissa'
 
 interface StoryScreenProps {
@@ -94,34 +94,34 @@ export function StoryScreen({
     onChoiceSelected?.(selectedChoice)
   }
 
+  const renderModeToggle = () => (
+    <div className="grid grid-cols-2 items-center gap-1.5 rounded-full border border-[#e2d5be] bg-[#f4ead8] p-1.5">
+      <button
+        onClick={() => { setViewMode('read'); onReaderPreferencesChange({ defaultPlaybackMode: 'read' }) }}
+        className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${viewMode === 'read' ? 'bg-[#fffdf7] text-[#24261f] shadow-sm' : 'text-[#665d49]'}`}
+      >
+        {t(language, 'story.read_mode')}
+      </button>
+      <button
+        onClick={() => { setViewMode('listen'); onReaderPreferencesChange({ defaultPlaybackMode: 'listen' }) }}
+        className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${viewMode === 'listen' ? 'bg-[#fffdf7] text-[#24261f] shadow-sm' : 'text-[#665d49]'}`}
+      >
+        {t(language, 'story.listen_mode')}
+      </button>
+    </div>
+  )
+
   const renderStoryHeader = () => (
-    <header
-      className="space-y-5 rounded-3xl px-5 py-5 shadow-sm"
-      style={{
-        background: `linear-gradient(145deg, ${stylePack.palette.primary}, ${stylePack.palette.secondary})`,
-        color: stylePack.palette.text,
-      }}
-    >
-      <div className="flex items-center justify-between gap-3">
-        <button onClick={onBackHome} className="rounded-xl border border-white/35 bg-white/85 px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm">
+    <header className="space-y-4">
+      <div className="flex items-center justify-between gap-3 px-1">
+        <button onClick={onBackHome} className="q-secondary px-4 py-2 text-xs">
           {t(language, 'story.back_home')}
         </button>
-        <p className="rounded-full bg-white/20 px-3 py-1 text-xs uppercase tracking-wide opacity-95">{stylePack.title[language]}</p>
+        <p className="q-label rounded-full bg-[#fff8e9] px-3 py-1">{stylePack.title[language]}</p>
       </div>
       <StylePackCover stylePack={stylePack} variant="story" title={episode.title} subtitle={stylePack.title[language]} />
       {renderModeToggle()}
     </header>
-  )
-
-  const renderModeToggle = () => (
-    <div className="grid grid-cols-2 items-center gap-2 rounded-2xl bg-white/55 p-1.5">
-      <button onClick={() => { setViewMode('read'); onReaderPreferencesChange({ defaultPlaybackMode: 'read' }) }} className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${viewMode === 'read' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-700'}`}>
-        {t(language, 'story.read_mode')}
-      </button>
-      <button onClick={() => { setViewMode('listen'); onReaderPreferencesChange({ defaultPlaybackMode: 'listen' }) }} className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${viewMode === 'listen' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-700'}`}>
-        {t(language, 'story.listen_mode')}
-      </button>
-    </div>
   )
 
   const renderReaderSettings = () => {
@@ -143,16 +143,19 @@ export function StoryScreen({
   }
 
   const renderNarrativeCard = () => (
-    <section ref={narrativeTopRef} className="rounded-3xl border border-amber-100 bg-[#fffcf5] p-5 shadow-sm">
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <h3 className="text-base font-semibold text-slate-800">{t(language, 'story.narrative_title')}</h3>
+    <section ref={narrativeTopRef} className="q-card space-y-4 p-4 sm:p-5">
+      <div className="flex items-center justify-between gap-2 px-1">
+        <div>
+          <p className="q-label mb-1">{t(language, 'story.narrative_title')}</p>
+          <h3 className="q-heading text-2xl font-bold leading-tight">{episode.title}</h3>
+        </div>
         {viewMode === 'read' ? (
-          <button className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700" onClick={() => setShowReaderSettings((v) => !v)}>Aa</button>
+          <button className="q-secondary px-3 py-2 text-sm" onClick={() => setShowReaderSettings((v) => !v)}>Aa</button>
         ) : null}
       </div>
       {renderReaderSettings()}
       {viewMode === 'read' ? (
-        <article className={`mx-auto max-w-3xl rounded-2xl p-6 shadow-sm ${getReaderThemeClass(readerPreferences.theme)}`} style={getReaderTextStyle(readerPreferences)}>
+        <article className={`q-story-text rounded-[1.75rem] p-6 text-[1.22rem] leading-[2.15rem] shadow-inner ${getReaderThemeClass(readerPreferences.theme)}`} style={getReaderTextStyle(readerPreferences)}>
           {episode.story_text}
         </article>
       ) : (
@@ -164,57 +167,73 @@ export function StoryScreen({
   const renderChoicePanel = () => {
     if (!showChoicePanel) return null
     return (
-      <section className="space-y-3 rounded-2xl border border-amber-100 bg-white p-4 shadow-sm">
-        <h3 className="text-base font-semibold">{t(language, isChoiceLocked ? 'story.your_choice' : 'story.make_choice')}</h3>
+      <section className="q-card space-y-4 p-5">
+        <div className="text-center">
+          <p className="q-label mb-2">{isChoiceLocked ? t(language, 'story.your_choice') : t(language, 'story.preview_helper')}</p>
+          <h3 className="q-heading text-2xl font-bold leading-tight">{t(language, isChoiceLocked ? 'story.your_choice' : 'story.make_choice')}</h3>
+        </div>
+
         {isChoiceLocked && confirmedChoice ? (
-          <section className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">{t(language, 'story.your_choice')}</p>
-            <p className="mt-1 text-sm font-medium text-slate-800">{confirmedChoice.text}</p>
+          <section className="rounded-[1.5rem] border-2 border-[#b9ebf2] bg-[#eefbfc] px-4 py-4 shadow-sm">
+            <p className="q-label mb-1 text-[#35666b]">{t(language, 'story.your_choice')}</p>
+            <p className="text-base font-bold leading-snug text-[#24261f]">{confirmedChoice.text}</p>
             <button
-              className="mt-2 rounded-xl border border-amber-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700"
+              className="mt-3 rounded-full border border-[#a7d7dc] bg-white/80 px-3 py-1.5 text-xs font-bold text-[#35666b]"
               onClick={() => setShowConfirmedChoices((value) => !value)}
             >
               {showConfirmedChoices ? t(language, 'story.hide_choices') : t(language, 'story.show_choices')}
             </button>
           </section>
         ) : null}
-        {(!isChoiceLocked || showConfirmedChoices) ? episode.choices.map((choice) => {
-          const isPreviewed = previewChoiceId === choice.choice_id
-          const isMuted = isChoiceLocked && savedChoiceIdForCurrentEpisode !== choice.choice_id
 
-          return (
-            <button
-              key={choice.choice_id}
-              onClick={() => !isChoiceLocked && setPreviewChoiceId(choice.choice_id)}
-              className={`w-full rounded-2xl border px-4 py-4 text-left transition-all duration-300 ${isPreviewed ? 'scale-[1.01] border-amber-400 bg-amber-50 shadow-md' : 'border-slate-200 bg-white hover:border-amber-200 hover:bg-amber-50/30'} ${isMuted ? 'opacity-50' : ''}`}
-            >
-              <p className="font-medium text-slate-800">{choice.text}</p>
-              <p className={`mt-1 text-sm transition-opacity duration-300 ${isPreviewed ? 'opacity-100 text-slate-700' : 'opacity-80 text-slate-500'}`}>
-                {choice.effect_summary}
-              </p>
-            </button>
-          )
-        }) : null}
+        {(!isChoiceLocked || showConfirmedChoices) ? (
+          <div className="grid gap-3">
+            {episode.choices.map((choice) => {
+              const isPreviewed = previewChoiceId === choice.choice_id
+              const isMuted = isChoiceLocked && savedChoiceIdForCurrentEpisode !== choice.choice_id
+
+              return (
+                <button
+                  key={choice.choice_id}
+                  onClick={() => !isChoiceLocked && setPreviewChoiceId(choice.choice_id)}
+                  className={`rounded-[1.5rem] border px-4 py-4 text-left transition-all duration-300 ${
+                    isPreviewed
+                      ? 'scale-[1.01] border-[#35666b] bg-[#eaf7f8] shadow-[0_14px_34px_-26px_rgba(53,102,107,.65)]'
+                      : 'border-[#eadfc9] bg-[#fffdf7] hover:border-[#d4af37] hover:bg-[#fff8e9]'
+                  } ${isMuted ? 'opacity-45' : ''}`}
+                >
+                  <p className="font-bold text-[#24261f]">{choice.text}</p>
+                  <p className={`mt-1.5 text-sm leading-6 ${isPreviewed ? 'text-[#4d4635]' : 'text-[#746a55]'}`}>
+                    {choice.effect_summary}
+                  </p>
+                </button>
+              )
+            })}
+          </div>
+        ) : null}
+
         {canConfirmChoice ? (
-          <>
-            <p className="text-xs text-slate-500">{t(language, 'story.preview_helper')}</p>
-            <button className="w-full rounded-2xl bg-amber-500 px-5 py-3.5 font-semibold text-white" onClick={handleConfirmChoice}>
+          <div className="space-y-3">
+            <p className="text-center text-xs leading-5 text-[#746a55]">{t(language, 'story.preview_helper')}</p>
+            <button className="q-primary w-full" onClick={handleConfirmChoice}>
               {t(language, 'story.confirm_choice')}
             </button>
-          </>
+          </div>
         ) : null}
       </section>
     )
   }
 
-
   const renderChoiceConsequence = () => {
     if (!choiceConsequenceText) return null
 
     return (
-      <section className="rounded-2xl border border-violet-200 bg-violet-50/80 px-4 py-4 shadow-sm">
-        <p className="text-xs font-semibold uppercase tracking-wide text-violet-800">{t(language, 'story.choice_consequence_title')}</p>
-        <p className="mt-2 text-sm text-slate-800">{choiceConsequenceText}</p>
+      <section className="relative overflow-hidden rounded-[1.75rem] border border-[#d7ccb4] bg-[#f7f2e8] px-5 py-5 shadow-[0_16px_40px_-30px_rgba(115,92,0,.55)]">
+        <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-[#b9ebf2]/35 blur-2xl" />
+        <div className="relative">
+          <p className="q-label mb-2 text-[#735c00]">{t(language, 'story.choice_consequence_title')}</p>
+          <p className="q-story-text text-lg leading-8 text-[#2b2b22]">{choiceConsequenceText}</p>
+        </div>
       </section>
     )
   }
@@ -222,10 +241,11 @@ export function StoryScreen({
   const renderMemoryTransition = () => {
     if (!showNextEpisodeCta) return null
     return (
-      <section className="rounded-2xl border border-emerald-200 bg-emerald-50/90 px-4 py-4 text-sm text-emerald-900 shadow-sm">
-        <p className="font-semibold">{t(language, 'story.choice_saved_title')}</p>
-        <p className="mt-1 text-emerald-900/90">{t(language, 'story.opening_next_episode')}</p>
-        <button className="mt-3 w-full rounded-2xl bg-emerald-600 px-4 py-3 font-semibold text-white" onClick={onContinueNextEpisode}>
+      <section className="rounded-[1.75rem] border border-[#b9ebf2] bg-[#ecfbfc] px-5 py-5 text-[#1a4e53] shadow-[0_16px_42px_-30px_rgba(53,102,107,.6)]">
+        <p className="q-label mb-2 text-[#35666b]">QISSA</p>
+        <h3 className="q-heading text-2xl font-bold leading-tight text-[#1a4e53]">{t(language, 'story.choice_saved_title')}</h3>
+        <p className="mt-2 text-sm leading-6 text-[#315d62]">{t(language, 'story.opening_next_episode')}</p>
+        <button className="q-primary mt-4 w-full" onClick={onContinueNextEpisode}>
           {t(language, 'story.open_next_episode')}
         </button>
       </section>
@@ -239,20 +259,18 @@ export function StoryScreen({
     const body = isSeriesFinal ? t(language, 'story.series_final_body') : t(language, 'story.one_time_final_body')
 
     return (
-      <section className="space-y-3 rounded-2xl border border-sky-200 bg-sky-50/80 px-4 py-4 shadow-sm">
-        <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-        <p className="text-sm text-slate-700">{body}</p>
-        <div className="grid gap-2">
-          <button className="w-full rounded-2xl bg-amber-500 px-4 py-3 font-semibold text-white" onClick={onStartNewStory}>
+      <section className="q-card space-y-4 p-5 text-center">
+        <p className="q-label">QISSA</p>
+        <h3 className="q-heading text-3xl font-bold leading-tight">{title}</h3>
+        <p className="mx-auto max-w-xs text-sm leading-6 text-[#625846]">{body}</p>
+        <div className="grid gap-2.5 pt-1">
+          <button className="q-primary w-full" onClick={onStartNewStory}>
             {t(language, 'story.start_new_story')}
           </button>
-          <button
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-800"
-            onClick={handleReadAgain}
-          >
+          <button className="q-secondary w-full" onClick={handleReadAgain}>
             {t(language, 'story.read_again')}
           </button>
-          <button className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-800" onClick={onBackHome}>
+          <button className="q-secondary w-full" onClick={onBackHome}>
             {t(language, 'story.back_home')}
           </button>
         </div>
@@ -263,21 +281,21 @@ export function StoryScreen({
   const renderVocabularyToggle = () => {
     if (!hasVocabulary) return null
     return (
-      <section className="rounded-2xl border border-emerald-100 bg-emerald-50/35 p-4 text-sm">
+      <section className="rounded-[1.5rem] border border-[#cfe9cf] bg-[#eff9ee]/70 p-4 text-sm">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold text-emerald-900">{t(language, 'story.show_words')}</h3>
+          <h3 className="font-bold text-[#244f2c]">{t(language, 'story.show_words')}</h3>
           {showVocabulary ? (
-            <button className="rounded-lg border border-emerald-200 bg-white px-2 py-1 text-xs font-medium text-emerald-900" onClick={() => setShowVocabulary(false)}>
+            <button className="rounded-full border border-[#c6dfc2] bg-white/85 px-3 py-1 text-xs font-bold text-[#244f2c]" onClick={() => setShowVocabulary(false)}>
               {t(language, 'story.hide_words_short')}
             </button>
           ) : (
-            <button className="text-xs font-medium text-emerald-800 underline-offset-2 hover:underline" onClick={() => setShowVocabulary(true)}>
+            <button className="rounded-full border border-[#c6dfc2] bg-white/85 px-3 py-1 text-xs font-bold text-[#244f2c]" onClick={() => setShowVocabulary(true)}>
               {t(language, 'story.show_words_short')}
             </button>
           )}
         </div>
         {showVocabulary ? (
-          <ul className="mt-2 space-y-1 text-emerald-900">
+          <ul className="mt-3 space-y-1.5 leading-6 text-[#315d36]">
             {episode.vocabulary.map((item) => (
               <li key={item.word}>• {item.word} — {item.translation}</li>
             ))}
@@ -288,7 +306,7 @@ export function StoryScreen({
   }
 
   return (
-    <section className="space-y-5 rounded-3xl bg-white p-5 shadow-sm sm:p-6">
+    <section className="space-y-5">
       {renderStoryHeader()}
       {renderNarrativeCard()}
       {renderChoicePanel()}
@@ -305,24 +323,24 @@ function getReaderTextStyle(preferences: ReaderPreferences): CSSProperties {
     preferences.textSize === 'small'
       ? '1rem'
       : preferences.textSize === 'medium'
-        ? '1.125rem'
+        ? '1.16rem'
         : preferences.textSize === 'large'
-          ? '1.25rem'
-          : '1.4rem'
+          ? '1.28rem'
+          : '1.44rem'
 
   const lineHeight =
     preferences.lineSpacing === 'normal'
-      ? 1.5
+      ? 1.62
       : preferences.lineSpacing === 'relaxed'
-        ? 1.7
-        : 1.95
+        ? 1.82
+        : 2
 
   const fontFamily =
     preferences.fontMode === 'soft'
-      ? '"Comic Sans MS", "Trebuchet MS", sans-serif'
+      ? 'Georgia, "Trebuchet MS", sans-serif'
       : preferences.fontMode === 'dyslexia_friendly'
-        ? '"Verdana", "Arial", sans-serif'
-        : '"Inter", "Segoe UI", sans-serif'
+        ? 'Verdana, Arial, sans-serif'
+        : 'Georgia, "Times New Roman", serif'
 
   return {
     fontSize: textSize,
@@ -334,11 +352,11 @@ function getReaderTextStyle(preferences: ReaderPreferences): CSSProperties {
 function getReaderThemeClass(theme: ReaderPreferences['theme']): string {
   switch (theme) {
     case 'light':
-      return 'bg-white text-slate-900 border border-slate-100'
+      return 'bg-white text-[#1f241d] border border-[#eadfc9]'
     case 'night':
-      return 'bg-slate-900 text-slate-100 border border-slate-700'
+      return 'bg-[#1f241d] text-[#f8f2e7] border border-[#4e4a3d]'
     case 'warm':
     default:
-      return 'bg-[#fff7e7] text-slate-900 border border-amber-100'
+      return 'bg-[#fff8e9] text-[#1f241d] border border-[#eadfc9]'
   }
 }

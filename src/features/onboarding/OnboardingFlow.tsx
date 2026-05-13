@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { OptionCard } from '../../components/OptionCard'
 import { StylePackCover } from '../../components/StylePackCover'
 import { stylePacks } from '../../data/stylePacks'
@@ -66,24 +66,32 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   }
 
   const renderProgress = () => (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between text-sm text-slate-500">
-        <p>{t(language, 'onboarding.title')}</p>
-        <p>{stepIndex + 1} / {onboardingSteps.length}</p>
+    <div className="space-y-3">
+      <div className="flex items-center justify-between text-sm text-[#746a55]">
+        <p className="q-label normal-case tracking-normal">{t(language, 'onboarding.title')}</p>
+        <p className="font-semibold">{stepIndex + 1} / {onboardingSteps.length}</p>
       </div>
-      <div className="h-2 rounded-full bg-slate-100">
+      <div className="h-2 overflow-hidden rounded-full bg-[#ede3cf]">
         <div
-          className="h-2 rounded-full bg-amber-400 transition-all"
+          className="h-2 rounded-full bg-gradient-to-r from-[#d4af37] to-[#35666b] transition-all duration-500"
           style={{ width: `${((stepIndex + 1) / onboardingSteps.length) * 100}%` }}
         />
       </div>
     </div>
   )
 
+  const StepShell = ({ title, helper, children }: { title: string; helper: string; children: ReactNode }) => (
+    <section className="space-y-4 rounded-[1.75rem] border border-[#eadfc9] bg-[#fffdf7]/85 p-4 shadow-[0_14px_38px_-30px_rgba(115,92,0,.7)]">
+      <div className="space-y-2">
+        <h2 className="q-heading text-2xl font-bold leading-tight">{title}</h2>
+        <p className="text-sm leading-6 text-[#635b49]">{helper}</p>
+      </div>
+      {children}
+    </section>
+  )
+
   const renderAgeStep = () => (
-    <section className="space-y-3 rounded-2xl bg-slate-50/60 p-4">
-      <h2 className="text-xl font-semibold">{t(language, 'onboarding.age_title')}</h2>
-      <p className="text-sm text-slate-600">{t(language, 'onboarding.age_helper')}</p>
+    <StepShell title={t(language, 'onboarding.age_title')} helper={t(language, 'onboarding.age_helper')}>
       <div className="grid gap-3">
         {([
           { value: '3-5', key: 'age.3_5' },
@@ -93,13 +101,11 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
           <OptionCard key={value} title={t(language, key)} selected={draft.ageGroup === value} onClick={() => setDraft({ ...draft, ageGroup: value as AgeGroup })} />
         ))}
       </div>
-    </section>
+    </StepShell>
   )
 
   const renderLanguageStep = () => (
-    <section className="space-y-3 rounded-2xl bg-slate-50/60 p-4">
-      <h2 className="text-xl font-semibold">{t(language, 'onboarding.language_title')}</h2>
-      <p className="text-sm text-slate-600">{t(language, 'onboarding.language_helper')}</p>
+    <StepShell title={t(language, 'onboarding.language_title')} helper={t(language, 'onboarding.language_helper')}>
       <div className="grid gap-3">
         {(['ru', 'uz', 'kz'] as Language[]).map((value) => (
           <OptionCard
@@ -113,13 +119,11 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
           />
         ))}
       </div>
-    </section>
+    </StepShell>
   )
 
   const renderHeroStep = () => (
-    <section className="space-y-3 rounded-2xl bg-slate-50/60 p-4">
-      <h2 className="text-xl font-semibold">{t(language, 'onboarding.hero_title')}</h2>
-      <p className="text-sm text-slate-600">{t(language, 'onboarding.hero_helper')}</p>
+    <StepShell title={t(language, 'onboarding.hero_title')} helper={t(language, 'onboarding.hero_helper')}>
       <div className="grid gap-3">
         {(['girl_hero', 'boy_hero', 'animal', 'magical_hero', 'custom'] as HeroType[]).map((hero) => (
           <OptionCard key={hero} title={t(language, `hero.${hero}` as const)} selected={draft.heroType === hero} onClick={() => setDraft({ ...draft, heroType: hero })} />
@@ -127,20 +131,18 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
       </div>
       {draft.heroType === 'custom' && (
         <input
-          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3"
+          className="w-full rounded-2xl border border-[#eadfc9] bg-white px-4 py-3 text-[#24261f] shadow-sm"
           placeholder={t(language, 'hero.custom_placeholder')}
           value={draft.customHeroName ?? ''}
           onChange={(e) => setDraft({ ...draft, customHeroName: e.target.value })}
         />
       )}
-    </section>
+    </StepShell>
   )
 
   const renderWorldStep = () => (
-    <section className="space-y-3 rounded-2xl bg-slate-50/60 p-4">
-      <h2 className="text-xl font-semibold">{t(language, 'onboarding.world_title')}</h2>
-      <p className="text-sm text-slate-600">{t(language, 'onboarding.world_helper')}</p>
-      {showWorldHint && !worldInteracted && <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-800">{t(language, 'onboarding.world_hint')}</p>}
+    <StepShell title={t(language, 'onboarding.world_title')} helper={t(language, 'onboarding.world_helper')}>
+      {showWorldHint && !worldInteracted && <p className="rounded-2xl bg-[#fff3d0] px-3 py-2 text-sm font-medium text-[#735c00]">{t(language, 'onboarding.world_hint')}</p>}
       <div className="grid gap-3 sm:grid-cols-2">
         {stylePacks.map((pack) => {
           const selected = draft.stylePackId === pack.id
@@ -160,7 +162,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
                 preview={<StylePackCover stylePack={pack} variant="compact" className="mb-3" />}
               />
               {showInlineContinue && (
-                <button className="w-full rounded-xl bg-amber-500 px-3 py-2 text-sm font-semibold text-white" onClick={next}>
+                <button className="q-primary w-full py-3 text-xs" onClick={next}>
                   {t(language, 'onboarding.world_continue')}
                 </button>
               )}
@@ -168,45 +170,40 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
           )
         })}
       </div>
-    </section>
+    </StepShell>
   )
 
   const renderModeMoodStep = () => (
-    <section className="space-y-5 rounded-2xl bg-slate-50/60 p-4">
-      <div className="space-y-3">
-        <h2 className="text-xl font-semibold">{t(language, 'onboarding.mode_title')}</h2>
-        <p className="text-sm text-slate-600">{t(language, 'onboarding.mode_helper')}</p>
-        <div className="grid gap-3">
-          {(['series', 'one_time'] as StoryMode[]).map((storyMode) => (
-            <OptionCard key={storyMode} title={t(language, storyMode === 'series' ? 'mode.series' : 'mode.one_time')} selected={draft.storyMode === storyMode} onClick={() => setDraft({ ...draft, storyMode })} />
-          ))}
-        </div>
+    <StepShell title={t(language, 'onboarding.mode_title')} helper={t(language, 'onboarding.mode_helper')}>
+      <div className="grid gap-3">
+        {(['series', 'one_time'] as StoryMode[]).map((storyMode) => (
+          <OptionCard key={storyMode} title={t(language, storyMode === 'series' ? 'mode.series' : 'mode.one_time')} selected={draft.storyMode === storyMode} onClick={() => setDraft({ ...draft, storyMode })} />
+        ))}
       </div>
-
-      <div className="space-y-3">
-        <h3 className="text-lg font-semibold">{t(language, 'onboarding.mood')}</h3>
+      <div className="space-y-3 border-t border-[#eadfc9] pt-4">
+        <h3 className="text-base font-bold text-[#24261f]">{t(language, 'onboarding.mood')}</h3>
         <div className="grid gap-3">
           {(['bedtime', 'kind_adventure'] as StoryMood[]).map((storyMood) => (
             <OptionCard key={storyMood} title={t(language, `mood.${storyMood}` as const)} selected={draft.storyMood === storyMood} onClick={() => setDraft({ ...draft, storyMood })} />
           ))}
         </div>
       </div>
-    </section>
+    </StepShell>
   )
 
   const hideFooterNext = step === 'world'
 
   const renderFooter = () => (
-    <div className="sticky bottom-0 flex items-center justify-between gap-2 rounded-2xl bg-white/95 pt-3">
-      <button onClick={back} className="rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm">
+    <div className="sticky bottom-0 flex items-center justify-between gap-2 rounded-[1.5rem] bg-[#fcf9f2]/95 pt-3 backdrop-blur">
+      <button onClick={back} className="q-secondary px-4 py-2.5">
         {t(language, 'actions.back')}
       </button>
       {!hideFooterNext && (
-        <button onClick={next} className="rounded-2xl bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm">
+        <button onClick={next} className="q-primary px-6 py-2.5">
           {stepIndex === onboardingSteps.length - 1 ? t(language, 'actions.start_story') : t(language, 'actions.next')}
         </button>
       )}
-      {hideFooterNext && <span className="text-sm text-slate-500">{mode === 'edit_setup' ? t(language, 'onboarding.world_continue') : ''}</span>}
+      {hideFooterNext && <span className="text-sm text-[#746a55]">{mode === 'edit_setup' ? t(language, 'onboarding.world_continue') : ''}</span>}
     </div>
   )
 
@@ -219,10 +216,10 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   }, [step, draft, language, showWorldHint, worldInteracted])
 
   return (
-    <div className="space-y-5 rounded-3xl bg-white p-5 shadow-sm sm:p-6">
-      <div className="rounded-2xl bg-amber-50/60 p-4">
-        <h1 className="text-lg font-semibold text-slate-900">{t(language, 'onboarding.title')}</h1>
-        <p className="mt-1 text-sm text-slate-600">{t(language, 'onboarding.mode_helper')}</p>
+    <div className="q-card space-y-5 p-5 sm:p-6">
+      <div className="rounded-[1.75rem] bg-[#f6edd9] p-4">
+        <p className="q-label mb-2">QISSA</p>
+        <h1 className="q-heading text-2xl font-bold leading-tight">{t(language, 'onboarding.title')}</h1>
       </div>
       {renderProgress()}
       {content}

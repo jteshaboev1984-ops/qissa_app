@@ -17,13 +17,16 @@ const themes: ReaderPreferences['theme'][] = ['light', 'warm', 'night']
 
 export function ReaderSettingsPanel({ language, preferences, onChange, onClose, showClose = true }: ReaderSettingsPanelProps) {
   return (
-    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-sm">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-800">{t(language, 'reader.open_settings')}</h3>
+    <div className="space-y-5 rounded-[1.75rem] border border-[#eadfc9] bg-[#fffdf7]/95 p-4 shadow-[0_12px_32px_-26px_rgba(115,92,0,.55)]">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="q-label mb-1">Aa</p>
+          <h3 className="text-base font-bold text-[#24261f]">{t(language, 'reader.open_settings')}</h3>
+        </div>
         {showClose ? (
           <button
             type="button"
-            className="rounded-lg px-2 py-1 text-xs text-slate-500 hover:bg-slate-100"
+            className="rounded-full border border-[#eadfc9] bg-white/80 px-3 py-1.5 text-xs font-semibold text-[#665d49] hover:bg-white"
             onClick={onClose}
           >
             {t(language, 'reader.close_settings')}
@@ -69,7 +72,7 @@ export function ReaderSettingsPanel({ language, preferences, onChange, onClose, 
 function SettingRow({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="space-y-2.5">
-      <p className="text-xs font-semibold text-slate-500">{label}</p>
+      <p className="text-xs font-bold uppercase tracking-[0.13em] text-[#7d704e]">{label}</p>
       <div className="flex flex-wrap gap-2">{children}</div>
     </div>
   )
@@ -80,10 +83,10 @@ function ChoicePill({ active, onClick, children }: { active: boolean; onClick: (
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3.5 py-2 text-xs font-medium transition ${
+      className={`rounded-full border px-3.5 py-2 text-xs font-bold transition active:scale-[0.98] ${
         active
-          ? 'border-amber-400 bg-amber-100 text-amber-900'
-          : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+          ? 'border-[#d4af37] bg-[#fff1bd] text-[#3b2d00] shadow-sm'
+          : 'border-[#eadfc9] bg-white/80 text-[#5f5848] hover:bg-white'
       }`}
     >
       {children}

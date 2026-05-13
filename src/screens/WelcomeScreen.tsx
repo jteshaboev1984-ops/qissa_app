@@ -1,14 +1,18 @@
-import { t } from '../lib/i18n'
-import { stylePacks } from '../data/stylePacks'
 import { StylePackCover } from '../components/StylePackCover'
+import { stylePacks } from '../data/stylePacks'
+import { t } from '../lib/i18n'
 import type { Language } from '../types/qissa'
 
 export function WelcomeScreen({ language, onStart }: { language: Language; onStart: () => void }) {
   return (
-    <section className="space-y-5 rounded-3xl bg-white p-6 shadow-sm sm:p-7">
+    <section className="q-card space-y-6 p-5 sm:p-6">
       <StylePackCover stylePack={stylePacks[0]} variant="hero" title={t(language, 'welcome.tagline')} subtitle="QISSA" />
-      <p className="text-base leading-relaxed text-slate-700">{t(language, 'welcome.explanation')}</p>
-      <button className="w-full rounded-2xl bg-amber-500 px-5 py-3.5 text-base font-semibold text-white shadow-sm" onClick={onStart}>
+      <div className="space-y-3 px-1">
+        <p className="q-label">QISSA</p>
+        <h2 className="q-heading text-3xl font-bold leading-tight">{t(language, 'welcome.tagline')}</h2>
+        <p className="max-w-sm text-base leading-7 text-[#5f5848]">{t(language, 'welcome.explanation')}</p>
+      </div>
+      <button className="q-primary w-full" onClick={onStart}>
         {t(language, 'actions.start_story')}
       </button>
     </section>

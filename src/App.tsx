@@ -175,11 +175,11 @@ function App() {
   }, [screen, episode])
 
   return (
-    <div className="min-h-screen bg-[#f6f1e7] text-slate-900">
-      <div className={`mx-auto max-w-md p-4 sm:p-6 ${screen === 'home' && selections ? 'pb-28' : ''}`}>
-        <header className="mb-4 flex items-center justify-between">
-          <h1 className="text-lg font-semibold">{t(language, 'app.title')}</h1>
-          <select value={language} onChange={(e) => updateLanguage(e.target.value as Language)} className="rounded-lg border bg-white px-3 py-2 text-sm">
+    <div className="relative min-h-screen text-[#1f241d]">
+      <div className={`mx-auto max-w-[430px] px-4 py-5 sm:px-6 ${screen === 'home' && selections ? 'pb-32' : ''}`}>
+        <header className="mb-5 flex items-center justify-between">
+          <h1 className="q-heading text-xl font-bold tracking-tight">{t(language, 'app.title')}</h1>
+          <select value={language} onChange={(e) => updateLanguage(e.target.value as Language)} className="rounded-full border border-[#dfd3bc] bg-[#fffdf7]/90 px-3 py-2 text-sm font-semibold text-[#3d382c] shadow-sm">
             <option value="ru">RU</option>
             <option value="uz">UZ</option>
             <option value="kz">KZ</option>
