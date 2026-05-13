@@ -5,6 +5,9 @@ import { t } from './lib/i18n'
 import { localPersistence, type AppScreen } from './lib/localPersistence'
 import { createStoryEpisode } from './lib/storyAgent'
 import { HomeScreen } from './screens/HomeScreen'
+import { LibraryScreen } from './screens/LibraryScreen'
+import { ParentScreen } from './screens/ParentScreen'
+import { AppBottomNav, type AppTab } from './components/AppBottomNav'
 import { StoryScreen } from './screens/StoryScreen'
 import { WelcomeScreen } from './screens/WelcomeScreen'
 import type {
@@ -63,6 +66,7 @@ function App() {
   const [seriesState, setSeriesState] = useState<SeriesState | null>(hydrated.seriesState)
   const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(hydrated.readerPreferences ?? defaultReaderPreferences)
   const [onboardingMode, setOnboardingMode] = useState<OnboardingMode>('first_launch')
+  const [appTab, setAppTab] = useState<AppTab>('home')
 
   useEffect(() => {
     localPersistence.clearDeprecatedKeys()
@@ -110,6 +114,7 @@ function App() {
   }
 
   const handleStartStory = () => {
+    setAppTab('home')
     if (!selections || !seriesState) return
     const firstEpisode = createStoryEpisode({ selections, seriesState })
     const nextSeries = { ...seriesState, episodeCount: 1 }
@@ -171,7 +176,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#f6f1e7] text-slate-900">
-      <div className="mx-auto max-w-md p-4 sm:p-6">
+      <div className={`mx-auto max-w-md p-4 sm:p-6 ${screen === 'home' && selections ? 'pb-28' : ''}`}>
         <header className="mb-4 flex items-center justify-between">
           <h1 className="text-lg font-semibold">{t(language, 'app.title')}</h1>
           <select value={language} onChange={(e) => updateLanguage(e.target.value as Language)} className="rounded-lg border bg-white px-3 py-2 text-sm">
@@ -194,7 +199,7 @@ function App() {
           />
         )}
 
-        {screen === 'home' && selections && (
+        {screen === 'home' && selections && appTab === 'home' && (
           <HomeScreen
             language={language}
             selections={selections}
@@ -204,6 +209,30 @@ function App() {
             onContinueStory={() => updateScreen('story')}
             onResetStory={handleResetStory}
             onEditSetup={() => handleOpenOnboarding('edit_setup')}
+          />
+        )}
+
+
+        {screen === 'home' && selections && appTab === 'library' && (
+          <LibraryScreen
+            language={language}
+            selections={selections}
+            seriesState={seriesState}
+            episode={episode}
+            onOpenStory={() => updateScreen('story')}
+            onCreateStory={handleStartStory}
+          />
+        )}
+
+        {screen === 'home' && selections && appTab === 'parent' && (
+          <ParentScreen
+            language={language}
+            selections={selections}
+            episode={episode}
+            readerPreferences={readerPreferences}
+            onReaderPreferencesChange={updateReaderPreferences}
+            onEditSetup={() => handleOpenOnboarding('edit_setup')}
+            onResetStory={handleResetStory}
           />
         )}
 
@@ -218,10 +247,11 @@ function App() {
             onReaderPreferencesChange={updateReaderPreferences}
             isChoiceSavedForCurrentEpisode={Boolean(savedChoiceEntryForCurrentEpisode)}
             savedChoiceIdForCurrentEpisode={savedChoiceEntryForCurrentEpisode?.choice_id ?? null}
-            onBackHome={() => updateScreen('home')}
+            onBackHome={() => { setAppTab('home'); updateScreen('home') }}
             onStartNewStory={handleResetStory}
           />
         )}
+        {screen === 'home' && selections ? <AppBottomNav language={language} tab={appTab} onTab={setAppTab} /> : null}
       </div>
     </div>
   )

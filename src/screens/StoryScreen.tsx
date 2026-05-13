@@ -3,6 +3,7 @@ import { ListeningScene } from '../components/ListeningScene'
 import { ReaderSettingsPanel } from '../components/ReaderSettingsPanel'
 import { stylePacks } from '../data/stylePacks'
 import { t } from '../lib/i18n'
+import { StylePackCover } from '../components/StylePackCover'
 import type { Episode, EpisodeChoice, Language, ReaderPreferences, StoryMode } from '../types/qissa'
 
 interface StoryScreenProps {
@@ -95,25 +96,25 @@ export function StoryScreen({
 
   const renderStoryHeader = () => (
     <header
-      className="space-y-3 rounded-2xl p-4"
+      className="space-y-5 rounded-3xl px-5 py-5 shadow-sm"
       style={{
         background: `linear-gradient(145deg, ${stylePack.palette.primary}, ${stylePack.palette.secondary})`,
         color: stylePack.palette.text,
       }}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <button onClick={onBackHome} className="rounded-xl border border-white/35 bg-white/85 px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm">
           {t(language, 'story.back_home')}
         </button>
-        <p className="text-xs uppercase tracking-wide opacity-85">{stylePack.title[language]}</p>
+        <p className="rounded-full bg-white/20 px-3 py-1 text-xs uppercase tracking-wide opacity-95">{stylePack.title[language]}</p>
       </div>
-      <h2 className="text-2xl font-semibold leading-tight">{episode.title}</h2>
+      <StylePackCover stylePack={stylePack} variant="story" title={episode.title} subtitle={stylePack.title[language]} />
       {renderModeToggle()}
     </header>
   )
 
   const renderModeToggle = () => (
-    <div className="grid grid-cols-2 gap-2 rounded-2xl bg-white/50 p-1">
+    <div className="grid grid-cols-2 items-center gap-2 rounded-2xl bg-white/55 p-1.5">
       <button onClick={() => { setViewMode('read'); onReaderPreferencesChange({ defaultPlaybackMode: 'read' }) }} className={`rounded-xl px-4 py-2.5 text-sm font-medium transition ${viewMode === 'read' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-700'}`}>
         {t(language, 'story.read_mode')}
       </button>
@@ -136,25 +137,22 @@ export function StoryScreen({
         episode={episode}
         preferences={readerPreferences}
         onPreferencesChange={onReaderPreferencesChange}
-        worldTitle={stylePack.title[language]}
-        palette={stylePack.palette}
+        stylePack={stylePack}
       />
     )
   }
 
   const renderNarrativeCard = () => (
-    <section ref={narrativeTopRef} className="rounded-2xl border border-amber-100 bg-[#fffaf1] p-4">
+    <section ref={narrativeTopRef} className="rounded-3xl border border-amber-100 bg-[#fffcf5] p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between gap-2">
-        <h3 className="text-base font-semibold">{t(language, 'story.narrative_title')}</h3>
-        {viewMode === 'read' && (
-          <button className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium" onClick={() => setShowReaderSettings((v) => !v)}>
-            Aa
-          </button>
-        )}
+        <h3 className="text-base font-semibold text-slate-800">{t(language, 'story.narrative_title')}</h3>
+        {viewMode === 'read' ? (
+          <button className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700" onClick={() => setShowReaderSettings((v) => !v)}>Aa</button>
+        ) : null}
       </div>
       {renderReaderSettings()}
       {viewMode === 'read' ? (
-        <article className={`rounded-2xl p-5 shadow-sm ${getReaderThemeClass(readerPreferences.theme)}`} style={getReaderTextStyle(readerPreferences)}>
+        <article className={`mx-auto max-w-3xl rounded-2xl p-6 shadow-sm ${getReaderThemeClass(readerPreferences.theme)}`} style={getReaderTextStyle(readerPreferences)}>
           {episode.story_text}
         </article>
       ) : (
@@ -166,8 +164,8 @@ export function StoryScreen({
   const renderChoicePanel = () => {
     if (!showChoicePanel) return null
     return (
-      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4">
-        <h3 className="text-base font-semibold">{t(language, isChoiceLocked ? 'story.your_choice' : 'story.preview_helper')}</h3>
+      <section className="space-y-3 rounded-2xl border border-amber-100 bg-white p-4 shadow-sm">
+        <h3 className="text-base font-semibold">{t(language, isChoiceLocked ? 'story.your_choice' : 'story.make_choice')}</h3>
         {isChoiceLocked && confirmedChoice ? (
           <section className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">{t(language, 'story.your_choice')}</p>
@@ -198,9 +196,12 @@ export function StoryScreen({
           )
         }) : null}
         {canConfirmChoice ? (
-          <button className="w-full rounded-2xl bg-amber-500 px-5 py-3.5 font-semibold text-white" onClick={handleConfirmChoice}>
-            {t(language, 'story.confirm_choice')}
-          </button>
+          <>
+            <p className="text-xs text-slate-500">{t(language, 'story.preview_helper')}</p>
+            <button className="w-full rounded-2xl bg-amber-500 px-5 py-3.5 font-semibold text-white" onClick={handleConfirmChoice}>
+              {t(language, 'story.confirm_choice')}
+            </button>
+          </>
         ) : null}
       </section>
     )
@@ -211,7 +212,7 @@ export function StoryScreen({
     if (!choiceConsequenceText) return null
 
     return (
-      <section className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-4">
+      <section className="rounded-2xl border border-violet-200 bg-violet-50/80 px-4 py-4 shadow-sm">
         <p className="text-xs font-semibold uppercase tracking-wide text-violet-800">{t(language, 'story.choice_consequence_title')}</p>
         <p className="mt-2 text-sm text-slate-800">{choiceConsequenceText}</p>
       </section>
@@ -221,9 +222,9 @@ export function StoryScreen({
   const renderMemoryTransition = () => {
     if (!showNextEpisodeCta) return null
     return (
-      <section className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-900">
+      <section className="rounded-2xl border border-emerald-200 bg-emerald-50/90 px-4 py-4 text-sm text-emerald-900 shadow-sm">
         <p className="font-semibold">{t(language, 'story.choice_saved_title')}</p>
-        <p className="mt-1">{t(language, 'story.opening_next_episode')}</p>
+        <p className="mt-1 text-emerald-900/90">{t(language, 'story.opening_next_episode')}</p>
         <button className="mt-3 w-full rounded-2xl bg-emerald-600 px-4 py-3 font-semibold text-white" onClick={onContinueNextEpisode}>
           {t(language, 'story.open_next_episode')}
         </button>
@@ -238,13 +239,10 @@ export function StoryScreen({
     const body = isSeriesFinal ? t(language, 'story.series_final_body') : t(language, 'story.one_time_final_body')
 
     return (
-      <section className="space-y-3 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4">
+      <section className="space-y-3 rounded-2xl border border-sky-200 bg-sky-50/80 px-4 py-4 shadow-sm">
         <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
         <p className="text-sm text-slate-700">{body}</p>
         <div className="grid gap-2">
-          <button className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-800" onClick={onBackHome}>
-            {t(language, 'story.back_home')}
-          </button>
           <button className="w-full rounded-2xl bg-amber-500 px-4 py-3 font-semibold text-white" onClick={onStartNewStory}>
             {t(language, 'story.start_new_story')}
           </button>
@@ -254,6 +252,9 @@ export function StoryScreen({
           >
             {t(language, 'story.read_again')}
           </button>
+          <button className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-800" onClick={onBackHome}>
+            {t(language, 'story.back_home')}
+          </button>
         </div>
       </section>
     )
@@ -262,7 +263,7 @@ export function StoryScreen({
   const renderVocabularyToggle = () => {
     if (!hasVocabulary) return null
     return (
-      <section className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 text-sm">
+      <section className="rounded-2xl border border-emerald-100 bg-emerald-50/35 p-4 text-sm">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-emerald-900">{t(language, 'story.show_words')}</h3>
           {showVocabulary ? (
@@ -287,7 +288,7 @@ export function StoryScreen({
   }
 
   return (
-    <section className="space-y-4 rounded-3xl bg-white p-5 shadow-sm">
+    <section className="space-y-5 rounded-3xl bg-white p-5 shadow-sm sm:p-6">
       {renderStoryHeader()}
       {renderNarrativeCard()}
       {renderChoicePanel()}
