@@ -2,7 +2,7 @@
 export type Language = 'ru' | 'uz' | 'kz'
 export type VocabularyLanguage = 'ru' | 'en'
 
-export type AgeGroup = '3-5' | '6-8' | '9-10'
+export type AgeGroup = '3-4' | '5-7' | '8-9'
 export type HeroType = 'girl_hero' | 'boy_hero' | 'animal' | 'magical_hero' | 'custom'
 
 export type StoryMode = 'one_time' | 'series'
@@ -101,6 +101,7 @@ export interface EpisodeChoice {
   text: string
   effect_summary: string
   resolution_text?: string
+  tomorrow_seed?: string
   state_patch: StatePatch
   value_alignment: PositiveValue[]
 }
@@ -111,6 +112,7 @@ export interface ChoiceHistoryEntry {
   choice_text: string
   effect_summary: string
   resolution_text?: string
+  tomorrow_seed?: string
   state_patch: StatePatch
   selected_at: string
 }

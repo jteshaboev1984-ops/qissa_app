@@ -16,7 +16,7 @@ interface OnboardingFlowProps {
 }
 
 const defaultSelections: OnboardingSelections = {
-  ageGroup: '6-8',
+  ageGroup: '5-7',
   language: 'ru',
   heroType: 'girl_hero',
   stylePackId: 'cozy_forest',
@@ -94,9 +94,9 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
     <StepShell title={t(language, 'onboarding.age_title')} helper={t(language, 'onboarding.age_helper')}>
       <div className="grid gap-3">
         {([
-          { value: '3-5', key: 'age.3_5' },
-          { value: '6-8', key: 'age.6_8' },
-          { value: '9-10', key: 'age.9_10' },
+          { value: '3-4', key: 'age.3_4' },
+          { value: '5-7', key: 'age.5_7' },
+          { value: '8-9', key: 'age.8_9' },
         ] as const).map(({ value, key }) => (
           <OptionCard key={value} title={t(language, key)} selected={draft.ageGroup === value} onClick={() => setDraft({ ...draft, ageGroup: value as AgeGroup })} />
         ))}

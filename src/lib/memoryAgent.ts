@@ -41,6 +41,7 @@ export function applyChoiceToSeriesState(seriesState: SeriesState, episode: Epis
     choice_text: choice.text,
     effect_summary: choice.effect_summary,
     resolution_text: choice.resolution_text,
+    tomorrow_seed: choice.tomorrow_seed,
     state_patch: choice.state_patch,
     selected_at: selectedAt,
   }
