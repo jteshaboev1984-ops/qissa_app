@@ -17,9 +17,9 @@ interface HomeScreenProps {
 }
 
 const ageKeyByGroup = {
-  '3-5': 'age.3_5',
-  '6-8': 'age.6_8',
-  '9-10': 'age.9_10',
+  '3-4': 'age.3_4',
+  '5-7': 'age.5_7',
+  '8-9': 'age.8_9',
 } as const
 
 export function HomeScreen({ language, selections, seriesState, episode, onCreateFirstSeries, onContinueStory, onResetStory, onEditSetup }: HomeScreenProps) {
@@ -27,6 +27,7 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
   const world = stylePacks.find((pack) => pack.id === selections.stylePackId) ?? stylePacks[0]
   const isSeriesMode = selections.storyMode === 'series'
   const storyStatus = deriveStoryStatus(selections, seriesState, episode)
+  const isTomorrowMemoryState = isSeriesMode && storyStatus === 'episode_1_choice_saved'
 
   const compactSummary = useMemo(() => {
     const hero = t(language, `hero.${selections.heroType}` as const)
@@ -36,12 +37,14 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
 
   const topTitle = useMemo(() => {
     if (storyStatus === 'not_started') return t(language, 'home.launch_ready_title')
+    if (isTomorrowMemoryState) return t(language, 'home.tomorrow_memory_title')
     if (storyStatus === 'completed') return t(language, isSeriesMode ? 'home.completed_series_title' : 'home.completed_one_time_title')
     return t(language, 'home.story_in_progress_title')
-  }, [language, storyStatus, isSeriesMode])
+  }, [language, storyStatus, isSeriesMode, isTomorrowMemoryState])
 
   const primaryLabel = () => {
     if (storyStatus === 'not_started') return isSeriesMode ? t(language, 'home.create_first_series') : t(language, 'home.start_one_time')
+    if (isTomorrowMemoryState) return t(language, 'home.continue_from_memory')
     if (storyStatus === 'completed') return isSeriesMode ? t(language, 'home.open_last_story') : t(language, 'home.reopen_story')
     return t(language, 'home.open_current_story')
   }
@@ -77,9 +80,11 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
     const notStarted = storyStatus === 'not_started'
     const stateBody = notStarted
       ? t(language, 'home.launch_ready_body')
-      : completed
-        ? (isSeriesMode ? t(language, 'home.completed_series_body') : t(language, 'home.one_time_completed_body'))
-        : t(language, 'home.read_together_hint')
+      : isTomorrowMemoryState
+        ? t(language, 'home.tomorrow_memory_body')
+        : completed
+          ? (isSeriesMode ? t(language, 'home.completed_series_body') : t(language, 'home.one_time_completed_body'))
+          : t(language, 'home.read_together_hint')
 
     return (
       <section className="q-card overflow-hidden p-0">

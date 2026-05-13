@@ -40,14 +40,12 @@ export function StoryScreen({
   const [showConfirmedChoices, setShowConfirmedChoices] = useState(false)
 
   const narrativeTopRef = useRef<HTMLElement | null>(null)
-
   const stylePack = useMemo(() => stylePacks.find((pack) => pack.id === episode.stylePackId) ?? stylePacks[0], [episode.stylePackId])
 
   const isSeriesMode = storyMode === 'series'
   const isEpisodeOne = episode.episode_id.startsWith('ep-1')
   const isEpisodeTwo = episode.episode_id.startsWith('ep-2')
   const isChoiceLocked = Boolean(isChoiceSavedForCurrentEpisode && savedChoiceIdForCurrentEpisode)
-  const showNextEpisodeCta = isChoiceLocked && isSeriesMode && isEpisodeOne
   const isOneTimeFinal = storyMode === 'one_time' && isChoiceLocked
   const isSeriesFinal = isSeriesMode && isEpisodeTwo
   const hasVocabulary = episode.vocabulary.length > 0
@@ -59,9 +57,11 @@ export function StoryScreen({
     [episode.choices, savedChoiceIdForCurrentEpisode],
   )
 
-  const choiceConsequenceText = isChoiceLocked
+  const choiceResolutionText = isChoiceLocked
     ? confirmedChoice?.resolution_text ?? confirmedChoice?.effect_summary ?? null
     : null
+  const tomorrowSeedText = isChoiceLocked ? confirmedChoice?.tomorrow_seed ?? episode.nextEpisodePreview : null
+  const showTomorrowSeed = Boolean(isChoiceLocked && isSeriesMode && isEpisodeOne && tomorrowSeedText)
 
   useEffect(() => {
     setPreviewChoiceId(savedChoiceIdForCurrentEpisode)
@@ -166,14 +166,14 @@ export function StoryScreen({
 
   const renderChoicePanel = () => {
     if (!showChoicePanel) return null
-    return (
-      <section className="q-card space-y-4 p-5">
-        <div className="text-center">
-          <p className="q-label mb-2">{isChoiceLocked ? t(language, 'story.your_choice') : t(language, 'story.preview_helper')}</p>
-          <h3 className="q-heading text-2xl font-bold leading-tight">{t(language, isChoiceLocked ? 'story.your_choice' : 'story.make_choice')}</h3>
-        </div>
 
-        {isChoiceLocked && confirmedChoice ? (
+    if (isChoiceLocked && confirmedChoice) {
+      return (
+        <section className="q-card space-y-4 p-5">
+          <div className="text-center">
+            <p className="q-label mb-2">{t(language, 'story.your_choice')}</p>
+            <h3 className="q-heading text-2xl font-bold leading-tight">{t(language, 'story.your_choice')}</h3>
+          </div>
           <section className="rounded-[1.5rem] border-2 border-[#b9ebf2] bg-[#eefbfc] px-4 py-4 shadow-sm">
             <p className="q-label mb-1 text-[#35666b]">{t(language, 'story.your_choice')}</p>
             <p className="text-base font-bold leading-snug text-[#24261f]">{confirmedChoice.text}</p>
@@ -184,70 +184,101 @@ export function StoryScreen({
               {showConfirmedChoices ? t(language, 'story.hide_choices') : t(language, 'story.show_choices')}
             </button>
           </section>
-        ) : null}
+          {showConfirmedChoices ? (
+            <div className="grid gap-3">
+              {episode.choices.map((choice) => (
+                <div
+                  key={choice.choice_id}
+                  className={`rounded-[1.5rem] border px-4 py-4 text-left ${savedChoiceIdForCurrentEpisode === choice.choice_id ? 'border-[#35666b] bg-[#eaf7f8]' : 'border-[#eadfc9] bg-[#fffdf7] opacity-45'}`}
+                >
+                  <p className="font-bold text-[#24261f]">{choice.text}</p>
+                  <p className="mt-1.5 text-sm leading-6 text-[#746a55]">{choice.effect_summary}</p>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      )
+    }
 
-        {(!isChoiceLocked || showConfirmedChoices) ? (
+    return (
+      <section className="relative overflow-hidden rounded-[2rem] border border-[#eadfc9] bg-[#fffdf7]/90 p-5 shadow-[0_18px_44px_-34px_rgba(115,92,0,.65)]">
+        <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-[#f3d34a]/20 blur-2xl" />
+        <div className="relative space-y-4">
+          <div className="text-center">
+            <p className="q-label mb-2">{t(language, 'story.bedtime_choice_helper')}</p>
+            <h3 className="q-heading text-3xl font-bold leading-tight">{t(language, 'story.choose_path')}</h3>
+          </div>
           <div className="grid gap-3">
             {episode.choices.map((choice) => {
               const isPreviewed = previewChoiceId === choice.choice_id
-              const isMuted = isChoiceLocked && savedChoiceIdForCurrentEpisode !== choice.choice_id
-
               return (
                 <button
                   key={choice.choice_id}
-                  onClick={() => !isChoiceLocked && setPreviewChoiceId(choice.choice_id)}
-                  className={`rounded-[1.5rem] border px-4 py-4 text-left transition-all duration-300 ${
+                  onClick={() => setPreviewChoiceId(choice.choice_id)}
+                  className={`rounded-[1.6rem] border px-4 py-4 text-left transition-all duration-300 ${
                     isPreviewed
-                      ? 'scale-[1.01] border-[#35666b] bg-[#eaf7f8] shadow-[0_14px_34px_-26px_rgba(53,102,107,.65)]'
+                      ? 'scale-[1.01] border-[#d4af37] bg-[#fff7d8] shadow-[0_18px_40px_-28px_rgba(115,92,0,.75)]'
                       : 'border-[#eadfc9] bg-[#fffdf7] hover:border-[#d4af37] hover:bg-[#fff8e9]'
-                  } ${isMuted ? 'opacity-45' : ''}`}
+                  }`}
                 >
-                  <p className="font-bold text-[#24261f]">{choice.text}</p>
-                  <p className={`mt-1.5 text-sm leading-6 ${isPreviewed ? 'text-[#4d4635]' : 'text-[#746a55]'}`}>
-                    {choice.effect_summary}
-                  </p>
+                  <div className="flex items-start gap-3">
+                    <span className={`mt-0.5 inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border text-xs font-bold ${isPreviewed ? 'border-[#d4af37] bg-[#d4af37] text-[#24261f]' : 'border-[#eadfc9] bg-white text-[#746a55]'}`}>
+                      {isPreviewed ? '✓' : ''}
+                    </span>
+                    <span>
+                      <span className="block font-bold text-[#24261f]">{choice.text}</span>
+                      <span className="mt-1.5 block text-sm leading-6 text-[#746a55]">{choice.effect_summary}</span>
+                    </span>
+                  </div>
                 </button>
               )
             })}
           </div>
-        ) : null}
-
-        {canConfirmChoice ? (
-          <div className="space-y-3">
-            <p className="text-center text-xs leading-5 text-[#746a55]">{t(language, 'story.preview_helper')}</p>
+          {canConfirmChoice ? (
             <button className="q-primary w-full" onClick={handleConfirmChoice}>
               {t(language, 'story.confirm_choice')}
             </button>
-          </div>
-        ) : null}
-      </section>
-    )
-  }
-
-  const renderChoiceConsequence = () => {
-    if (!choiceConsequenceText) return null
-
-    return (
-      <section className="relative overflow-hidden rounded-[1.75rem] border border-[#d7ccb4] bg-[#f7f2e8] px-5 py-5 shadow-[0_16px_40px_-30px_rgba(115,92,0,.55)]">
-        <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-[#b9ebf2]/35 blur-2xl" />
-        <div className="relative">
-          <p className="q-label mb-2 text-[#735c00]">{t(language, 'story.choice_consequence_title')}</p>
-          <p className="q-story-text text-lg leading-8 text-[#2b2b22]">{choiceConsequenceText}</p>
+          ) : null}
         </div>
       </section>
     )
   }
 
-  const renderMemoryTransition = () => {
-    if (!showNextEpisodeCta) return null
+  const renderChoiceResolution = () => {
+    if (!choiceResolutionText) return null
+
+    return (
+      <section className="q-card space-y-4 p-5">
+        <div>
+          <p className="q-label mb-2 text-[#735c00]">{t(language, 'story.choice_consequence_title')}</p>
+          <h3 className="q-heading text-2xl font-bold leading-tight">{t(language, 'story.resolution_title')}</h3>
+        </div>
+        <article className="q-story-text rounded-[1.75rem] border border-[#eadfc9] bg-[#fff8e9] p-6 text-lg leading-8 text-[#2b2b22] shadow-inner">
+          {choiceResolutionText}
+        </article>
+      </section>
+    )
+  }
+
+  const renderTomorrowSeed = () => {
+    if (!showTomorrowSeed || !tomorrowSeedText) return null
     return (
       <section className="rounded-[1.75rem] border border-[#b9ebf2] bg-[#ecfbfc] px-5 py-5 text-[#1a4e53] shadow-[0_16px_42px_-30px_rgba(53,102,107,.6)]">
         <p className="q-label mb-2 text-[#35666b]">QISSA</p>
-        <h3 className="q-heading text-2xl font-bold leading-tight text-[#1a4e53]">{t(language, 'story.choice_saved_title')}</h3>
-        <p className="mt-2 text-sm leading-6 text-[#315d62]">{t(language, 'story.opening_next_episode')}</p>
-        <button className="q-primary mt-4 w-full" onClick={onContinueNextEpisode}>
-          {t(language, 'story.open_next_episode')}
-        </button>
+        <h3 className="q-heading text-2xl font-bold leading-tight text-[#1a4e53]">{t(language, 'story.tomorrow_seed_title')}</h3>
+        <p className="mt-3 q-story-text text-base leading-7 text-[#315d62]">{tomorrowSeedText}</p>
+        <div className="mt-4 grid gap-2.5">
+          <button className="q-primary w-full" onClick={onBackHome}>
+            {t(language, 'story.finish_today')}
+          </button>
+          <button className="q-secondary w-full" onClick={handleReadAgain}>
+            {t(language, 'story.read_again')}
+          </button>
+          <button className="q-secondary w-full" onClick={onContinueNextEpisode}>
+            {t(language, 'story.preview_tomorrow')}
+          </button>
+        </div>
       </section>
     )
   }
@@ -310,8 +341,8 @@ export function StoryScreen({
       {renderStoryHeader()}
       {renderNarrativeCard()}
       {renderChoicePanel()}
-      {renderChoiceConsequence()}
-      {renderMemoryTransition()}
+      {renderChoiceResolution()}
+      {renderTomorrowSeed()}
       {renderFinalState()}
       {renderVocabularyToggle()}
     </section>

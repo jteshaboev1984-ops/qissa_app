@@ -140,6 +140,22 @@ function App() {
     setSeriesState(nextSeriesState)
     localPersistence.saveCurrentEpisode(secondEpisode)
     localPersistence.saveSeriesState(nextSeriesState)
+    updateScreen('story')
+  }
+
+
+
+  const handleOpenStory = () => {
+    if (
+      selections?.storyMode === 'series' &&
+      episode?.episode_id.startsWith('ep-1') &&
+      seriesState?.choiceHistory.some((entry) => entry.episode_id === episode.episode_id)
+    ) {
+      handleContinueNextEpisode()
+      return
+    }
+
+    updateScreen('story')
   }
 
   const handleResetStory = () => {
@@ -206,7 +222,7 @@ function App() {
             seriesState={seriesState}
             episode={episode}
             onCreateFirstSeries={handleStartStory}
-            onContinueStory={() => updateScreen('story')}
+            onContinueStory={handleOpenStory}
             onResetStory={handleResetStory}
             onEditSetup={() => handleOpenOnboarding('edit_setup')}
           />
@@ -219,7 +235,7 @@ function App() {
             selections={selections}
             seriesState={seriesState}
             episode={episode}
-            onOpenStory={() => updateScreen('story')}
+            onOpenStory={handleOpenStory}
             onCreateStory={handleStartStory}
           />
         )}

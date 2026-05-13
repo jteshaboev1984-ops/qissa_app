@@ -23,7 +23,7 @@ export function ParentScreen({
   onResetStory: () => void
 }) {
   const pack = stylePacks.find((p) => p.id === selections.stylePackId) ?? stylePacks[0]
-  const ageKey = selections.ageGroup === '3-5' ? 'age.3_5' : selections.ageGroup === '6-8' ? 'age.6_8' : 'age.9_10'
+  const ageKey = selections.ageGroup === '3-4' ? 'age.3_4' : selections.ageGroup === '5-7' ? 'age.5_7' : 'age.8_9'
 
   return (
     <section className="space-y-5">

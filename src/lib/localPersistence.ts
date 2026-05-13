@@ -29,6 +29,19 @@ const safeParseJSON = <T>(value: string | null): T | null => {
 }
 
 export const isLanguage = (value: unknown): value is Language => value === 'ru' || value === 'uz' || value === 'kz'
+
+const normalizeAgeGroup = (ageGroup: string): OnboardingSelections['ageGroup'] => {
+  if (ageGroup === '3-5') return '3-4'
+  if (ageGroup === '6-8') return '5-7'
+  if (ageGroup === '9-10') return '8-9'
+  if (ageGroup === '3-4' || ageGroup === '5-7' || ageGroup === '8-9') return ageGroup
+  return '5-7'
+}
+
+const normalizeOnboardingSelections = (value: OnboardingSelections): OnboardingSelections => ({
+  ...value,
+  ageGroup: normalizeAgeGroup(value.ageGroup),
+})
 export const getStorageVersion = () => KEY_PREFIX
 
 export const isOnboardingSelections = (value: unknown): value is OnboardingSelections => {
@@ -148,7 +161,10 @@ export const localPersistence = {
   saveOnboardingSelections: (value: OnboardingSelections) => safeSet(STORAGE_KEYS.onboardingSelections, value),
   loadOnboardingSelections: (): OnboardingSelections | null => {
     const value = safeGet<unknown>(STORAGE_KEYS.onboardingSelections)
-    return isOnboardingSelections(value) ? value : null
+    if (!isOnboardingSelections(value)) return null
+    const normalized = normalizeOnboardingSelections(value)
+    if (normalized.ageGroup !== value.ageGroup) safeSet(STORAGE_KEYS.onboardingSelections, normalized)
+    return normalized
   },
   saveSeriesState: (value: SeriesState) => safeSet(STORAGE_KEYS.seriesState, value),
   loadSeriesState: (): SeriesState | null => {
