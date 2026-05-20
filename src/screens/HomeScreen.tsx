@@ -78,10 +78,15 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
   const renderStoryState = () => {
     const completed = storyStatus === 'completed'
     const notStarted = storyStatus === 'not_started'
+    const latestChoice = isTomorrowMemoryState ? seriesState?.choiceHistory.at(-1) : null
+    const savedChoiceText = latestChoice?.choice_text?.trim() ?? ''
+    const savedMemoryText = isTomorrowMemoryState
+      ? (latestChoice?.tomorrow_seed?.trim() || latestChoice?.effect_summary?.trim() || t(language, 'home.tomorrow_memory_body'))
+      : ''
     const stateBody = notStarted
       ? t(language, 'home.launch_ready_body')
       : isTomorrowMemoryState
-        ? t(language, 'home.tomorrow_memory_body')
+        ? savedMemoryText
         : completed
           ? (isSeriesMode ? t(language, 'home.completed_series_body') : t(language, 'home.one_time_completed_body'))
           : t(language, 'home.read_together_hint')
@@ -95,6 +100,12 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
             <h3 className="q-heading text-2xl font-bold leading-tight">{topTitle}</h3>
             <p className="text-sm leading-6 text-[#5f5848]">{stateBody}</p>
           </div>
+
+          {isTomorrowMemoryState && savedChoiceText ? (
+            <p className="rounded-2xl border border-[#eadfc9] bg-[#fff8e9] px-4 py-3 text-sm leading-6 text-[#4d4635]">
+              {t(language, 'story.your_choice')}: {savedChoiceText}
+            </p>
+          ) : null}
 
           {!notStarted && seriesState?.lastEpisodeSummary ? (
             <p className="rounded-2xl border border-[#eadfc9] bg-[#fff8e9] px-4 py-3 text-sm leading-6 text-[#4d4635]">

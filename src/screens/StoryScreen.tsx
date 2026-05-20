@@ -20,6 +20,8 @@ interface StoryScreenProps {
   onStartNewStory?: () => void
 }
 
+type StoryStage = 'reading' | 'choice' | 'resolution'
+
 export function StoryScreen({
   language,
   episode,
@@ -40,7 +42,11 @@ export function StoryScreen({
   const [showConfirmedChoices, setShowConfirmedChoices] = useState(false)
 
   const narrativeTopRef = useRef<HTMLElement | null>(null)
-  const stylePack = useMemo(() => stylePacks.find((pack) => pack.id === episode.stylePackId) ?? stylePacks[0], [episode.stylePackId])
+
+  const stylePack = useMemo(
+    () => stylePacks.find((pack) => pack.id === episode.stylePackId) ?? stylePacks[0],
+    [episode.stylePackId],
+  )
 
   const isSeriesMode = storyMode === 'series'
   const isEpisodeOne = episode.episode_id.startsWith('ep-1')
@@ -50,18 +56,33 @@ export function StoryScreen({
   const isSeriesFinal = isSeriesMode && isEpisodeTwo
   const hasVocabulary = episode.vocabulary.length > 0
   const showChoicePanel = episode.choices.length > 0 && !isSeriesFinal
-  const canConfirmChoice = Boolean(previewChoiceId && !isChoiceLocked && showChoicePanel)
 
-  const confirmedChoice = useMemo(
-    () => episode.choices.find((choice) => choice.choice_id === savedChoiceIdForCurrentEpisode) ?? null,
-    [episode.choices, savedChoiceIdForCurrentEpisode],
+  const hasSavedChoiceForStage = Boolean(isChoiceLocked && !isSeriesFinal)
+  const [storyStage, setStoryStage] = useState<StoryStage>(hasSavedChoiceForStage ? 'resolution' : 'reading')
+
+  const effectiveChoiceId = storyStage === 'resolution'
+    ? (savedChoiceIdForCurrentEpisode ?? previewChoiceId)
+    : savedChoiceIdForCurrentEpisode
+
+  const effectiveConfirmedChoice = useMemo(
+    () => episode.choices.find((choice) => choice.choice_id === effectiveChoiceId) ?? null,
+    [effectiveChoiceId, episode.choices],
   )
 
-  const choiceResolutionText = isChoiceLocked
-    ? confirmedChoice?.resolution_text ?? confirmedChoice?.effect_summary ?? null
-    : null
-  const tomorrowSeedText = isChoiceLocked ? confirmedChoice?.tomorrow_seed ?? episode.nextEpisodePreview : null
-  const showTomorrowSeed = Boolean(isChoiceLocked && isSeriesMode && isEpisodeOne && tomorrowSeedText)
+  const effectiveResolutionText = effectiveConfirmedChoice?.resolution_text ?? effectiveConfirmedChoice?.effect_summary ?? null
+  const effectiveTomorrowSeedText = effectiveConfirmedChoice?.tomorrow_seed ?? episode.nextEpisodePreview
+
+  const showTomorrowSeed = Boolean(
+    storyStage === 'resolution' &&
+      effectiveConfirmedChoice &&
+      isSeriesMode &&
+      isEpisodeOne &&
+      effectiveTomorrowSeedText,
+  )
+
+  const canConfirmChoice = Boolean(previewChoiceId && !isChoiceLocked && showChoicePanel)
+
+  const canShowVocabulary = hasVocabulary && (isSeriesFinal || storyStage === 'resolution')
 
   useEffect(() => {
     setPreviewChoiceId(savedChoiceIdForCurrentEpisode)
@@ -74,12 +95,15 @@ export function StoryScreen({
   useEffect(() => {
     setShowVocabulary(false)
     setShowConfirmedChoices(false)
-  }, [episode.episode_id])
+    setStoryStage(hasSavedChoiceForStage ? 'resolution' : 'reading')
+  }, [episode.episode_id, hasSavedChoiceForStage])
 
   const handleReadAgain = () => {
     setViewMode('read')
     setShowVocabulary(false)
     setShowConfirmedChoices(false)
+    setStoryStage('reading')
+
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         narrativeTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -91,19 +115,27 @@ export function StoryScreen({
     if (!previewChoiceId || isChoiceLocked) return
     const selectedChoice = episode.choices.find((choice) => choice.choice_id === previewChoiceId)
     if (!selectedChoice) return
+
     onChoiceSelected?.(selectedChoice)
+    setStoryStage('resolution')
   }
 
   const renderModeToggle = () => (
     <div className="grid grid-cols-2 items-center gap-1.5 rounded-full border border-[#e2d5be] bg-[#f4ead8] p-1.5">
       <button
-        onClick={() => { setViewMode('read'); onReaderPreferencesChange({ defaultPlaybackMode: 'read' }) }}
+        onClick={() => {
+          setViewMode('read')
+          onReaderPreferencesChange({ defaultPlaybackMode: 'read' })
+        }}
         className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${viewMode === 'read' ? 'bg-[#fffdf7] text-[#24261f] shadow-sm' : 'text-[#665d49]'}`}
       >
         {t(language, 'story.read_mode')}
       </button>
       <button
-        onClick={() => { setViewMode('listen'); onReaderPreferencesChange({ defaultPlaybackMode: 'listen' }) }}
+        onClick={() => {
+          setViewMode('listen')
+          onReaderPreferencesChange({ defaultPlaybackMode: 'listen' })
+        }}
         className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${viewMode === 'listen' ? 'bg-[#fffdf7] text-[#24261f] shadow-sm' : 'text-[#665d49]'}`}
       >
         {t(language, 'story.listen_mode')}
@@ -119,28 +151,24 @@ export function StoryScreen({
         </button>
         <p className="q-label rounded-full bg-[#fff8e9] px-3 py-1">{stylePack.title[language]}</p>
       </div>
-      <StylePackCover stylePack={stylePack} variant="story" title={episode.title} subtitle={stylePack.title[language]} />
-      {renderModeToggle()}
+      {storyStage === 'reading' || isSeriesFinal ? (
+        <>
+          <StylePackCover
+            stylePack={stylePack}
+            variant="story"
+            title={episode.title}
+            subtitle={stylePack.title[language]}
+          />
+          {storyStage === 'reading' ? renderModeToggle() : null}
+        </>
+      ) : (
+        <div className="rounded-[1.25rem] border border-[#eadfc9] bg-[#fff8e9] px-4 py-3">
+          <p className="q-label mb-1">{stylePack.title[language]}</p>
+          <p className="text-base font-bold text-[#24261f]">{episode.title}</p>
+        </div>
+      )}
     </header>
   )
-
-  const renderReaderSettings = () => {
-    if (viewMode !== 'read' || !showReaderSettings) return null
-    return <ReaderSettingsPanel language={language} preferences={readerPreferences} onChange={onReaderPreferencesChange} onClose={() => setShowReaderSettings(false)} />
-  }
-
-  const renderListenScene = () => {
-    if (viewMode !== 'listen') return null
-    return (
-      <ListeningScene
-        language={language}
-        episode={episode}
-        preferences={readerPreferences}
-        onPreferencesChange={onReaderPreferencesChange}
-        stylePack={stylePack}
-      />
-    )
-  }
 
   const renderNarrativeCard = () => (
     <section ref={narrativeTopRef} className="q-card space-y-4 p-4 sm:p-5">
@@ -149,69 +177,59 @@ export function StoryScreen({
           <p className="q-label mb-1">{t(language, 'story.narrative_title')}</p>
           <h3 className="q-heading text-2xl font-bold leading-tight">{episode.title}</h3>
         </div>
+
         {viewMode === 'read' ? (
-          <button className="q-secondary px-3 py-2 text-sm" onClick={() => setShowReaderSettings((v) => !v)}>Aa</button>
+          <button className="q-secondary px-3 py-2 text-sm" onClick={() => setShowReaderSettings((v) => !v)}>
+            Aa
+          </button>
         ) : null}
       </div>
-      {renderReaderSettings()}
+
+      {viewMode === 'read' && showReaderSettings ? (
+        <ReaderSettingsPanel
+          language={language}
+          preferences={readerPreferences}
+          onChange={onReaderPreferencesChange}
+          onClose={() => setShowReaderSettings(false)}
+        />
+      ) : null}
+
       {viewMode === 'read' ? (
-        <article className={`q-story-text rounded-[1.75rem] p-6 text-[1.22rem] leading-[2.15rem] shadow-inner ${getReaderThemeClass(readerPreferences.theme)}`} style={getReaderTextStyle(readerPreferences)}>
+        <article
+          className={`q-story-text rounded-[1.75rem] p-6 text-[1.22rem] leading-[2.15rem] shadow-inner ${getReaderThemeClass(readerPreferences.theme)}`}
+          style={getReaderTextStyle(readerPreferences)}
+        >
           {episode.story_text}
         </article>
       ) : (
-        renderListenScene()
+        <ListeningScene
+          language={language}
+          episode={episode}
+          preferences={readerPreferences}
+          onPreferencesChange={onReaderPreferencesChange}
+          stylePack={stylePack}
+        />
       )}
     </section>
   )
 
-  const renderChoicePanel = () => {
+  const renderChoiceStage = () => {
     if (!showChoicePanel) return null
-
-    if (isChoiceLocked && confirmedChoice) {
-      return (
-        <section className="q-card space-y-4 p-5">
-          <div className="text-center">
-            <p className="q-label mb-2">{t(language, 'story.your_choice')}</p>
-            <h3 className="q-heading text-2xl font-bold leading-tight">{t(language, 'story.your_choice')}</h3>
-          </div>
-          <section className="rounded-[1.5rem] border-2 border-[#b9ebf2] bg-[#eefbfc] px-4 py-4 shadow-sm">
-            <p className="q-label mb-1 text-[#35666b]">{t(language, 'story.your_choice')}</p>
-            <p className="text-base font-bold leading-snug text-[#24261f]">{confirmedChoice.text}</p>
-            <button
-              className="mt-3 rounded-full border border-[#a7d7dc] bg-white/80 px-3 py-1.5 text-xs font-bold text-[#35666b]"
-              onClick={() => setShowConfirmedChoices((value) => !value)}
-            >
-              {showConfirmedChoices ? t(language, 'story.hide_choices') : t(language, 'story.show_choices')}
-            </button>
-          </section>
-          {showConfirmedChoices ? (
-            <div className="grid gap-3">
-              {episode.choices.map((choice) => (
-                <div
-                  key={choice.choice_id}
-                  className={`rounded-[1.5rem] border px-4 py-4 text-left ${savedChoiceIdForCurrentEpisode === choice.choice_id ? 'border-[#35666b] bg-[#eaf7f8]' : 'border-[#eadfc9] bg-[#fffdf7] opacity-45'}`}
-                >
-                  <p className="font-bold text-[#24261f]">{choice.text}</p>
-                  <p className="mt-1.5 text-sm leading-6 text-[#746a55]">{choice.effect_summary}</p>
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </section>
-      )
-    }
 
     return (
       <section className="relative overflow-hidden rounded-[2rem] border border-[#eadfc9] bg-[#fffdf7]/90 p-5 shadow-[0_18px_44px_-34px_rgba(115,92,0,.65)]">
         <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-[#f3d34a]/20 blur-2xl" />
+
         <div className="relative space-y-4">
           <div className="text-center">
             <p className="q-label mb-2">{t(language, 'story.bedtime_choice_helper')}</p>
             <h3 className="q-heading text-3xl font-bold leading-tight">{t(language, 'story.choose_path')}</h3>
           </div>
+
           <div className="grid gap-3">
             {episode.choices.map((choice) => {
               const isPreviewed = previewChoiceId === choice.choice_id
+
               return (
                 <button
                   key={choice.choice_id}
@@ -223,7 +241,11 @@ export function StoryScreen({
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <span className={`mt-0.5 inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border text-xs font-bold ${isPreviewed ? 'border-[#d4af37] bg-[#d4af37] text-[#24261f]' : 'border-[#eadfc9] bg-white text-[#746a55]'}`}>
+                    <span
+                      className={`mt-0.5 inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border text-xs font-bold ${
+                        isPreviewed ? 'border-[#d4af37] bg-[#d4af37] text-[#24261f]' : 'border-[#eadfc9] bg-white text-[#746a55]'
+                      }`}
+                    >
                       {isPreviewed ? '✓' : ''}
                     </span>
                     <span>
@@ -235,96 +257,164 @@ export function StoryScreen({
               )
             })}
           </div>
-          {canConfirmChoice ? (
-            <button className="q-primary w-full" onClick={handleConfirmChoice}>
-              {t(language, 'story.confirm_choice')}
+
+          <div className="grid gap-2.5">
+            {canConfirmChoice ? (
+              <button className="q-primary w-full" onClick={handleConfirmChoice}>
+                {t(language, 'story.confirm_choice')}
+              </button>
+            ) : null}
+
+            <button className="q-secondary w-full" onClick={() => setStoryStage('reading')}>
+              {t(language, 'story.back_to_story')}
             </button>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  const renderResolutionStage = () => {
+    if (!effectiveConfirmedChoice || !effectiveResolutionText) return null
+
+    return (
+      <>
+        <section className="q-card space-y-3 p-4">
+          <p className="q-label text-[#35666b]">{t(language, 'story.your_choice')}</p>
+          <p className="text-base font-bold leading-snug text-[#24261f]">{effectiveConfirmedChoice.text}</p>
+
+          <button
+            className="w-fit rounded-full border border-[#a7d7dc] bg-white/80 px-3 py-1.5 text-xs font-bold text-[#35666b]"
+            onClick={() => setShowConfirmedChoices((value) => !value)}
+          >
+            {showConfirmedChoices ? t(language, 'story.hide_choices') : t(language, 'story.show_choices')}
+          </button>
+
+          {showConfirmedChoices ? (
+            <div className="grid gap-3 pt-1">
+              {episode.choices.map((choice) => {
+                const isSelected = effectiveConfirmedChoice.choice_id === choice.choice_id
+
+                return (
+                  <div
+                    key={choice.choice_id}
+                    className={`rounded-[1.5rem] border px-4 py-4 text-left ${
+                      isSelected ? 'border-[#35666b] bg-[#eaf7f8]' : 'border-[#eadfc9] bg-[#fffdf7] opacity-45'
+                    }`}
+                  >
+                    <p className="font-bold text-[#24261f]">{choice.text}</p>
+                    <p className="mt-1.5 text-sm leading-6 text-[#746a55]">{choice.effect_summary}</p>
+                  </div>
+                )
+              })}
+            </div>
           ) : null}
-        </div>
-      </section>
-    )
-  }
+        </section>
 
-  const renderChoiceResolution = () => {
-    if (!choiceResolutionText) return null
-
-    return (
-      <section className="q-card space-y-4 p-5">
-        <div>
-          <p className="q-label mb-2 text-[#735c00]">{t(language, 'story.choice_consequence_title')}</p>
+        <section className="q-card space-y-4 p-5">
           <h3 className="q-heading text-2xl font-bold leading-tight">{t(language, 'story.resolution_title')}</h3>
-        </div>
-        <article className="q-story-text rounded-[1.75rem] border border-[#eadfc9] bg-[#fff8e9] p-6 text-lg leading-8 text-[#2b2b22] shadow-inner">
-          {choiceResolutionText}
-        </article>
-      </section>
+          <article className="q-story-text rounded-[1.75rem] border border-[#eadfc9] bg-[#fff8e9] p-6 text-lg leading-8 text-[#2b2b22] shadow-inner">
+            <p>{effectiveResolutionText}</p>
+
+            {showTomorrowSeed ? (
+              <div className="mt-5 border-t border-[#e2d5be] pt-4">
+                <p className="q-label mb-2 text-[#735c00]">{t(language, 'story.tomorrow_seed_title')}</p>
+                <p className="text-base leading-7 text-[#4c4535]">{effectiveTomorrowSeedText}</p>
+              </div>
+            ) : null}
+          </article>
+        </section>
+
+        {isOneTimeFinal ? (
+          <section className="space-y-2">
+            <button className="q-primary w-full" onClick={onStartNewStory}>
+              {t(language, 'story.start_new_story')}
+            </button>
+            <button className="q-secondary w-full" onClick={handleReadAgain}>
+              {t(language, 'story.read_again')}
+            </button>
+            <button className="q-tertiary w-full text-sm" onClick={onBackHome}>
+              {t(language, 'story.back_home')}
+            </button>
+          </section>
+        ) : (
+          <section className="space-y-2">
+            <button className="q-primary w-full" onClick={onBackHome}>
+              {t(language, 'story.finish_today')}
+            </button>
+            <button className="q-secondary w-full" onClick={handleReadAgain}>
+              {t(language, 'story.read_again')}
+            </button>
+            {showTomorrowSeed ? (
+              <button className="q-tertiary w-full text-sm" onClick={onContinueNextEpisode}>
+                {t(language, 'story.preview_tomorrow')}
+              </button>
+            ) : null}
+          </section>
+        )}
+      </>
     )
   }
 
-  const renderTomorrowSeed = () => {
-    if (!showTomorrowSeed || !tomorrowSeedText) return null
+  const renderSeriesFinal = () => {
+    if (!isSeriesFinal) return null
+
     return (
-      <section className="rounded-[1.75rem] border border-[#b9ebf2] bg-[#ecfbfc] px-5 py-5 text-[#1a4e53] shadow-[0_16px_42px_-30px_rgba(53,102,107,.6)]">
-        <p className="q-label mb-2 text-[#35666b]">QISSA</p>
-        <h3 className="q-heading text-2xl font-bold leading-tight text-[#1a4e53]">{t(language, 'story.tomorrow_seed_title')}</h3>
-        <p className="mt-3 q-story-text text-base leading-7 text-[#315d62]">{tomorrowSeedText}</p>
-        <div className="mt-4 grid gap-2.5">
-          <button className="q-primary w-full" onClick={onBackHome}>
-            {t(language, 'story.finish_today')}
-          </button>
-          <button className="q-secondary w-full" onClick={handleReadAgain}>
-            {t(language, 'story.read_again')}
-          </button>
-          <button className="q-secondary w-full" onClick={onContinueNextEpisode}>
-            {t(language, 'story.preview_tomorrow')}
-          </button>
-        </div>
-      </section>
+      <>
+        {renderNarrativeCard()}
+        <section className="q-card space-y-4 p-5 text-center">
+          <p className="q-label">QISSA</p>
+          <h3 className="q-heading text-3xl font-bold leading-tight">{t(language, 'story.series_final_title')}</h3>
+          <p className="mx-auto max-w-xs text-sm leading-6 text-[#625846]">{t(language, 'story.series_final_body')}</p>
+          <div className="grid gap-2.5 pt-1">
+            <button className="q-primary w-full" onClick={onStartNewStory}>
+              {t(language, 'story.start_new_story')}
+            </button>
+            <button className="q-secondary w-full" onClick={handleReadAgain}>
+              {t(language, 'story.read_again')}
+            </button>
+            <button className="q-secondary w-full" onClick={onBackHome}>
+              {t(language, 'story.back_home')}
+            </button>
+          </div>
+        </section>
+      </>
     )
   }
 
-  const renderFinalState = () => {
-    if (!isOneTimeFinal && !isSeriesFinal) return null
-
-    const title = isSeriesFinal ? t(language, 'story.series_final_title') : t(language, 'story.one_time_final_title')
-    const body = isSeriesFinal ? t(language, 'story.series_final_body') : t(language, 'story.one_time_final_body')
-
+  const renderReturnToResultCta = () => {
+    if (!(isChoiceLocked && !isSeriesFinal && storyStage === 'reading')) return null
     return (
-      <section className="q-card space-y-4 p-5 text-center">
-        <p className="q-label">QISSA</p>
-        <h3 className="q-heading text-3xl font-bold leading-tight">{title}</h3>
-        <p className="mx-auto max-w-xs text-sm leading-6 text-[#625846]">{body}</p>
-        <div className="grid gap-2.5 pt-1">
-          <button className="q-primary w-full" onClick={onStartNewStory}>
-            {t(language, 'story.start_new_story')}
-          </button>
-          <button className="q-secondary w-full" onClick={handleReadAgain}>
-            {t(language, 'story.read_again')}
-          </button>
-          <button className="q-secondary w-full" onClick={onBackHome}>
-            {t(language, 'story.back_home')}
-          </button>
-        </div>
-      </section>
+      <button className="q-secondary w-full" onClick={() => setStoryStage('resolution')}>
+        {t(language, 'story.back_to_result')}
+      </button>
     )
   }
 
   const renderVocabularyToggle = () => {
-    if (!hasVocabulary) return null
+    if (!canShowVocabulary) return null
+
     return (
       <section className="rounded-[1.5rem] border border-[#cfe9cf] bg-[#eff9ee]/70 p-4 text-sm">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-bold text-[#244f2c]">{t(language, 'story.show_words')}</h3>
           {showVocabulary ? (
-            <button className="rounded-full border border-[#c6dfc2] bg-white/85 px-3 py-1 text-xs font-bold text-[#244f2c]" onClick={() => setShowVocabulary(false)}>
+            <button
+              className="rounded-full border border-[#c6dfc2] bg-white/85 px-3 py-1 text-xs font-bold text-[#244f2c]"
+              onClick={() => setShowVocabulary(false)}
+            >
               {t(language, 'story.hide_words_short')}
             </button>
           ) : (
-            <button className="rounded-full border border-[#c6dfc2] bg-white/85 px-3 py-1 text-xs font-bold text-[#244f2c]" onClick={() => setShowVocabulary(true)}>
+            <button
+              className="rounded-full border border-[#c6dfc2] bg-white/85 px-3 py-1 text-xs font-bold text-[#244f2c]"
+              onClick={() => setShowVocabulary(true)}
+            >
               {t(language, 'story.show_words_short')}
             </button>
           )}
         </div>
+
         {showVocabulary ? (
           <ul className="mt-3 space-y-1.5 leading-6 text-[#315d36]">
             {episode.vocabulary.map((item) => (
@@ -336,14 +426,30 @@ export function StoryScreen({
     )
   }
 
+  const renderMainStage = () => {
+    if (isSeriesFinal) return renderSeriesFinal()
+
+    if (storyStage === 'choice') return renderChoiceStage()
+
+    if (storyStage === 'resolution') return renderResolutionStage()
+
+    return (
+      <>
+        {renderNarrativeCard()}
+        {renderReturnToResultCta()}
+        {showChoicePanel && !isChoiceLocked ? (
+          <button className="q-primary w-full" onClick={() => setStoryStage('choice')}>
+            {t(language, 'story.go_to_choice')}
+          </button>
+        ) : null}
+      </>
+    )
+  }
+
   return (
     <section className="space-y-5">
       {renderStoryHeader()}
-      {renderNarrativeCard()}
-      {renderChoicePanel()}
-      {renderChoiceResolution()}
-      {renderTomorrowSeed()}
-      {renderFinalState()}
+      {renderMainStage()}
       {renderVocabularyToggle()}
     </section>
   )
