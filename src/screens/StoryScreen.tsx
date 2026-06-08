@@ -249,6 +249,7 @@ export function StoryScreen({
                       {isPreviewed ? '✓' : ''}
                     </span>
                     <span>
+                      <span className="mb-1 inline-flex rounded-full border border-[#eadfc9] bg-white px-2 py-0.5 text-xs">{choice.choice_icon ?? '✨'}</span>
                       <span className="block font-bold text-[#24261f]">{choice.text}</span>
                       <span className="mt-1.5 block text-sm leading-6 text-[#746a55]">{choice.effect_summary}</span>
                     </span>
@@ -302,6 +303,7 @@ export function StoryScreen({
                       isSelected ? 'border-[#35666b] bg-[#eaf7f8]' : 'border-[#eadfc9] bg-[#fffdf7] opacity-45'
                     }`}
                   >
+                    <p className="mb-1 inline-flex rounded-full border border-[#eadfc9] bg-white px-2 py-0.5 text-xs">{choice.choice_icon ?? '✨'}</p>
                     <p className="font-bold text-[#24261f]">{choice.text}</p>
                     <p className="mt-1.5 text-sm leading-6 text-[#746a55]">{choice.effect_summary}</p>
                   </div>
