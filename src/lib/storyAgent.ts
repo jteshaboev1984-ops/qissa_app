@@ -83,7 +83,7 @@ function createEpisodeOne(selections: OnboardingSelections, seriesState?: Series
     episode_id: `ep-1-${selections.stylePackId}-${selections.storyMood}`,
     series_id: seriesState?.id ?? `series-${selections.stylePackId}-${selections.language}`,
     title: selections.language === 'ru' ? `Тёплый вечер в мире «${stylePack.title.ru}»` : selections.language === 'uz' ? `${stylePack.title.uz}: iliq oqshom` : `${stylePack.title.kz}: жылы кеш`,
-    story_text: rememberedText,
+    story_text: (worldTemplates[selections.stylePackId] ?? worldTemplates.cozy_forest).intro[selections.language],
     mode: selections.storyMode,
     mood: selections.storyMood,
     stylePackId: stylePack.id,
