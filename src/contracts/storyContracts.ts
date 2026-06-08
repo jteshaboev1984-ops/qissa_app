@@ -102,6 +102,7 @@ export interface EpisodeChoice {
   effect_summary: string
   resolution_text?: string
   tomorrow_seed?: string
+  choice_icon?: string
   state_patch: StatePatch
   value_alignment: PositiveValue[]
 }
@@ -113,6 +114,7 @@ export interface ChoiceHistoryEntry {
   effect_summary: string
   resolution_text?: string
   tomorrow_seed?: string
+  choice_icon?: string
   state_patch: StatePatch
   selected_at: string
 }
