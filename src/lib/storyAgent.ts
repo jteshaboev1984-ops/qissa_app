@@ -90,7 +90,7 @@ function createEpisodeOne(selections: OnboardingSelections, seriesState?: Series
   return {
     episode_id: `ep-1-${selections.stylePackId}-${selections.storyMood}`,
     series_id: seriesState?.id ?? `series-${selections.stylePackId}-${selections.language}`,
-    title: selections.language === 'ru' ? `Тёплый вечер в мире «${stylePack.title.ru}»` : selections.language === 'uz' ? `${stylePack.title.uz}: iliq oqshom` : `${stylePack.title.kz}: жылы кеш`,
+    title: ({ cozy_forest: { ru: 'Фонарики на лесной тропинке', uz: 'O‘rmon yo‘lidagi chiroqlar', kz: 'Орман соқпағындағы шамдар' }, magic_garden: { ru: 'Лепестковая дорожка', uz: 'Gulbargli yo‘lakcha', kz: 'Жапырақты жолақ' }, silk_road: { ru: 'Фонарь у каравана', uz: 'Karvon yonidagi chiroq', kz: 'Керуен жанындағы шам' }, stars_and_space: { ru: 'Свет звёздного маяка', uz: 'Yulduz mayog‘i nuri', kz: 'Жұлдыз шамшырағының жарығы' }, animal_world: { ru: 'Тёплая поляна друзей', uz: 'Do‘stlar yaylovidagi iliq oqshom', kz: 'Достар алаңқайындағы жылы кеш' }, sea_islands: { ru: 'Огонёк у маяка', uz: 'Mayoq yonidagi mayin chiroq', kz: 'Шамшырақ жанындағы жарық' }, castle_mystery: { ru: 'Лампа в тихой галерее', uz: 'Sokin yo‘lakdagi chiroq', kz: 'Тыныш дәліздегі шам' }, brave_adventure: { ru: 'Знак у поворота', uz: 'Burilishdagi belgi', kz: 'Бұрылыстағы белгі' } } as Record<OnboardingSelections['stylePackId'], Record<Language, string>>)[selections.stylePackId][selections.language],
     story_text: polishStoryText((worldTemplates[selections.stylePackId] ?? worldTemplates.cozy_forest).intro[selections.language]),
     mode: selections.storyMode,
     mood: selections.storyMood,
@@ -98,11 +98,11 @@ function createEpisodeOne(selections: OnboardingSelections, seriesState?: Series
     choices: episodeOneChoices(selections),
     state_patch: { last_event: selections.language === 'ru' ? 'герой остановился перед добрым выбором' : 'gentle choice moment opened', open_arc: selections.language === 'ru' ? 'Путь добрых дел в новом мире' : 'kind path arc' },
     vocabulary: vocabularyFor(selections.language),
-    nextEpisodePreview: selections.language === 'ru'
-      ? `История запомнит выбор ${heroName}. В следующий раз мир начнётся с этого места.`
-      : selections.language === 'uz'
-        ? `Hikoya tanlovni eslab qoladi. Keyingi safar olam shu joydan boshlanadi.`
-        : 'Оқиға таңдауды есте сақтайды. Келесі жолы әлем осы жерден басталады.',
+      nextEpisodePreview: selections.language === 'ru'
+        ? `${heroName} оставит в мире маленький след. Следующая серия начнётся с него.`
+        : selections.language === 'uz'
+          ? `${heroName} olamda kichik iz qoldiradi. Keyingi qism shu izdan boshlanadi.`
+          : `${heroName} әлемде кішкентай із қалдырады. Келесі бөлім сол ізден басталады.`,
     safety_self_check: { approved: true, risk_level: 'low', flags: { discrimination: false, humiliation: false, religious_push: false, political_push: false, gender_stereotype: false, nationality_stereotype: false, conditional_love: false, bedtime_overstimulation: false, adult_theme: false, excessive_fear: false }, required_action: 'publish' },
   }
 }
@@ -122,7 +122,7 @@ function createEpisodeTwo(selections: OnboardingSelections, seriesState: SeriesS
   return {
     episode_id: `ep-2-${selections.stylePackId}-${seriesState.choiceHistory.length}`,
     series_id: seriesState.id,
-    title: selections.language === 'ru' ? 'Утренний след выбора' : selections.language === 'uz' ? 'Tanlovdan qolgan iz' : 'Таңдаудан қалған із',
+    title: ({ cozy_forest: { ru: 'Огонёк у старого пенька', uz: 'Eski to‘nka yonidagi chiroq', kz: 'Ескі томар жанындағы шам' }, magic_garden: { ru: 'След у лунного цветка', uz: 'Oy guli yonidagi iz', kz: 'Ай гүлі жанындағы із' }, silk_road: { ru: 'Узор на карте каравана', uz: 'Karvon xaritasidagi naqsh', kz: 'Керуен картасындағы өрнек' }, stars_and_space: { ru: 'Луч над звёздной станцией', uz: 'Yulduz bekati ustidagi nur', kz: 'Жұлдыз бекеті үстіндегі сәуле' }, animal_world: { ru: 'Утро у поилки', uz: 'Suvdon yonidagi tong', kz: 'Суат жанындағы таң' }, sea_islands: { ru: 'Ракушка у тёплой воды', uz: 'Iliq suv yonidagi chig‘anoq', kz: 'Жылы су жанындағы қабыршақ' }, castle_mystery: { ru: 'Записка у старой двери', uz: 'Eski eshik yonidagi xat', kz: 'Ескі есік жанындағы хат' }, brave_adventure: { ru: 'След на тропе приключений', uz: 'Sarguzasht yo‘lidagi iz', kz: 'Шытырман жолындағы із' } } as Record<OnboardingSelections['stylePackId'], Record<Language, string>>)[selections.stylePackId][selections.language],
     story_text: rememberedText,
     mode: selections.storyMode,
     mood: selections.storyMood,
