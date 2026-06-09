@@ -52,20 +52,25 @@ const worldTemplates: Record<OnboardingSelections['stylePackId'], WorldTemplate>
   brave_adventure: undefined as any,
 }
 
-const simpleWorlds: Array<OnboardingSelections['stylePackId']> = ['magic_garden','silk_road','stars_and_space','animal_world','sea_islands','castle_mystery','brave_adventure']
+type SimpleWorldId = Exclude<OnboardingSelections['stylePackId'], 'cozy_forest'>
+type SimpleWorldTuple = [string, string, string, string, string]
+
+const simpleWorlds: SimpleWorldId[] = ['magic_garden','silk_road','stars_and_space','animal_world','sea_islands','castle_mystery','brave_adventure']
+
+const simpleWorldRuTemplates: Record<SimpleWorldId, SimpleWorldTuple> = {
+  magic_garden: ['в саду шелестели лепестки и светились цветы','Полить лунный цветник','Поставить светлячковую чашу','🌸','🫧'],
+  silk_road: ['у караванной стоянки горели мягкие лампы','Зажечь караванный фонарь','Развернуть карту узоров','🏺','🗺️'],
+  stars_and_space: ['над станцией плыли тихие звёзды','Настроить звёздный маяк','Сложить новую созвездную линию','⭐','🌙'],
+  animal_world: ['на лугу слышались спокойные голоса животных','Наполнить поилку у поляны','Собрать мягкие листья для гнезда','🐾','🍃'],
+  sea_islands: ['на тёплом берегу шептали тихие волны у маленького маяка','Зажечь маленький береговой фонарик','Положить светящуюся ракушку у воды','🐚','🌊'],
+  castle_mystery: ['во дворе замка мягко звенели флажки и фонари','Зажечь лампу у галереи','Оставить добрую записку в зале','🏰','🕯️'],
+  brave_adventure: ['на тропе приключений ветер шевелил ленточки-указатели','Поставить дорожный фонарь у поворота','Спеть бодрую походную песенку','🧭','🎶'],
+}
+
 for (const id of simpleWorlds) {
   if (worldTemplates[id]) continue
   // lightweight safe world-specific templates
-  const ru = {
-    magic_garden: ['в саду шелестели лепестки и светились цветы','Полить лунный цветник','Поставить светлячковую чашу','🌸','🫧'],
-    silk_road: ['у караванной стоянки горели мягкие лампы','Зажечь караванный фонарь','Развернуть карту узоров','🏺','🗺️'],
-    stars_and_space: ['над станцией плыли тихие звёзды','Настроить звёздный маяк','Сложить новую созвездную линию','⭐','🌙'],
-    animal_world: ['на лугу слышались спокойные голоса животных','Наполнить поилку у поляны','Собрать мягкие листья для гнезда','🐾','🍃'],
-    sea_islands: ['на тёплом берегу шептали тихие волны у маленького маяка','Зажечь маленький береговой фонарик','Положить светящуюся ракушку у воды','🐚','🌊'],
-    castle_mystery: ['во дворе замка мягко звенели флажки и фонари','Зажечь лампу у галереи','Оставить добрую записку в зале','🏰','🕯️'],
-    brave_adventure: ['на тропе приключений ветер шевелил ленточки-указатели','Поставить дорожный фонарь у поворота','Спеть бодрую походную песенку','🧭','🎶'],
-  }[id]
-  const [intro,a,b,ia,ib]=ru
+  const [intro, a, b, ia, ib] = simpleWorldRuTemplates[id]
   worldTemplates[id]={
     intro:{ru:intro,uz:intro,kz:intro},
     choiceA:{ru:{text:a,effect:'Мир станет спокойнее и удобнее для всех.',resolution:`Герой выбрал путь «${a.toLowerCase()}». В мире стало мягче и спокойнее, а друзья сразу заметили добрую перемену.`,seed:'Небольшой знак остался до утра. В следующий раз он мягко подскажет продолжение истории.',icon:ia},uz:{text:a,effect:'Olam tinchroq va qulayroq bo‘ladi.',resolution:`Qahramon «${a}» yo‘lini tanladi. Olam iliqroq bo‘lib, do‘stlar buni darhol sezishdi.`,seed:'Tonggacha kichik belgi qoldi. Keyingi safar u hikoyani muloyim davom ettiradi.',icon:ia},kz:{text:a,effect:'Әлем жайлырақ әрі тыныш бола түседі.',resolution:`Кейіпкер «${a}» жолын таңдады. Әлем жұмсарып, достар жақсы өзгерісті бірден байқады.`,seed:'Таңға дейін кішкентай белгі қалды. Келесі жолы ол оқиғаны жаймен жалғастырады.',icon:ia}},
