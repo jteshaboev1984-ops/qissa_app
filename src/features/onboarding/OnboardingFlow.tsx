@@ -67,8 +67,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
 
   const renderProgress = () => (
     <div className="space-y-3">
-      <div className="flex items-center justify-between text-sm text-[#746a55]">
-        <p className="q-label normal-case tracking-normal">{t(language, 'onboarding.title')}</p>
+      <div className="flex items-center justify-end text-sm text-[#746a55]">
         <p className="font-semibold">{stepIndex + 1} / {onboardingSteps.length}</p>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-[#ede3cf]">
