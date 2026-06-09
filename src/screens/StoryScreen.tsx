@@ -175,7 +175,6 @@ export function StoryScreen({
       <div className="flex items-center justify-between gap-2 px-1">
         <div>
           <p className="q-label mb-1">{t(language, 'story.narrative_title')}</p>
-          <h3 className="q-heading text-2xl font-bold leading-tight">{episode.title}</h3>
         </div>
 
         {viewMode === 'read' ? (
