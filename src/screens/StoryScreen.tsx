@@ -251,7 +251,6 @@ export function StoryScreen({
                     <span>
                       <span className="mb-1 inline-flex rounded-full border border-[#eadfc9] bg-white px-2 py-0.5 text-xs">{choice.choice_icon ?? '✨'}</span>
                       <span className="block font-bold text-[#24261f]">{choice.text}</span>
-                      <span className="mt-1.5 block text-sm leading-6 text-[#746a55]">{choice.effect_summary}</span>
                     </span>
                   </div>
                 </button>
@@ -260,7 +259,11 @@ export function StoryScreen({
           </div>
 
           <div className="grid gap-2.5">
-            {canConfirmChoice ? (
+            {isChoiceLocked ? (
+              <button className="q-primary w-full" onClick={() => setStoryStage('resolution')}>
+                {t(language, 'story.back_to_result')}
+              </button>
+            ) : canConfirmChoice ? (
               <button className="q-primary w-full" onClick={handleConfirmChoice}>
                 {t(language, 'story.confirm_choice')}
               </button>
@@ -284,13 +287,6 @@ export function StoryScreen({
           <p className="q-label text-[#35666b]">{t(language, 'story.your_choice')}</p>
           <p className="text-base font-bold leading-snug text-[#24261f]">{effectiveConfirmedChoice.text}</p>
 
-          <button
-            className="w-fit rounded-full border border-[#a7d7dc] bg-white/80 px-3 py-1.5 text-xs font-bold text-[#35666b]"
-            onClick={() => setShowConfirmedChoices((value) => !value)}
-          >
-            {showConfirmedChoices ? t(language, 'story.hide_choices') : t(language, 'story.show_choices')}
-          </button>
-
           {showConfirmedChoices ? (
             <div className="grid gap-3 pt-1">
               {episode.choices.map((choice) => {
@@ -305,7 +301,6 @@ export function StoryScreen({
                   >
                     <p className="mb-1 inline-flex rounded-full border border-[#eadfc9] bg-white px-2 py-0.5 text-xs">{choice.choice_icon ?? '✨'}</p>
                     <p className="font-bold text-[#24261f]">{choice.text}</p>
-                    <p className="mt-1.5 text-sm leading-6 text-[#746a55]">{choice.effect_summary}</p>
                   </div>
                 )
               })}
@@ -449,7 +444,7 @@ export function StoryScreen({
   }
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-5 pb-28">
       {renderStoryHeader()}
       {renderMainStage()}
       {renderVocabularyToggle()}

@@ -97,7 +97,9 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
         <div className="space-y-4 p-5">
           <div className="space-y-2">
             <p className="q-label">{notStarted ? 'QISSA' : completed ? t(language, 'library.status_completed') : t(language, 'library.status_active')}</p>
-            <h3 className="q-heading text-2xl font-bold leading-tight">{topTitle}</h3>
+            {!notStarted ? (
+              <h3 className="q-heading text-2xl font-bold leading-tight">{topTitle}</h3>
+            ) : null}
             <p className="text-sm leading-6 text-[#5f5848]">{stateBody}</p>
           </div>
 
@@ -107,7 +109,7 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
             </p>
           ) : null}
 
-          {!notStarted && seriesState?.lastEpisodeSummary ? (
+          {!notStarted && !isTomorrowMemoryState && seriesState?.lastEpisodeSummary ? (
             <p className="rounded-2xl border border-[#eadfc9] bg-[#fff8e9] px-4 py-3 text-sm leading-6 text-[#4d4635]">
               {seriesState.lastEpisodeSummary}
             </p>
@@ -124,16 +126,16 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
   }
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-5 pb-28">
       <div className="px-1">
         <p className="q-label mb-2">{t(language, 'nav.home')}</p>
-        <h2 className="q-heading text-3xl font-bold leading-tight">{topTitle}</h2>
+        <h2 className="q-heading text-3xl font-bold leading-tight">{t(language, 'home.title')}</h2>
       </div>
 
       {renderSetupSummary()}
       {renderStoryState()}
 
-      {storyStatus !== 'not_started' ? (
+      {storyStatus !== 'not_started' && !isTomorrowMemoryState ? (
         <div className="rounded-[1.75rem] border border-[#e5d8bf] bg-[#f8f2e7]/75 p-4 text-center">
           <p className="mx-auto mb-3 max-w-xs text-sm leading-6 text-[#665d49]">{t(language, 'home.reset_progress_hint')}</p>
           <button className="q-secondary px-4 py-2.5" onClick={onResetStory}>
