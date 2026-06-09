@@ -53,30 +53,172 @@ const worldTemplates: Record<OnboardingSelections['stylePackId'], WorldTemplate>
 }
 
 type SimpleWorldId = Exclude<OnboardingSelections['stylePackId'], 'cozy_forest'>
-type SimpleWorldTuple = [string, string, string, string, string]
 
-const simpleWorlds: SimpleWorldId[] = ['magic_garden','silk_road','stars_and_space','animal_world','sea_islands','castle_mystery','brave_adventure']
+const simpleWorldTemplates: Record<SimpleWorldId, WorldTemplate> = {
+  magic_garden: {
+    intro: {
+      ru: 'В Волшебном саду вечер лёг на лепестковые дорожки. У фонтана тихо светились лунные цветы, а над травой кружили маленькие золотые искры.',
+      uz: 'Sehrli bog‘da oqshom gulbargli yo‘lakchalarga tushdi. Favvora yonida oy gullari mayin porladi.',
+      kz: 'Сиқырлы бақта кеш жапырақты жолақтарға жайылды. Субұрқақ жанында ай гүлдері жұмсақ жарқырады.',
+    },
+    choiceA: {
+      ru: { text: 'Полить лунный цветник', effect: 'Цветы расправят лепестки и осветят дорожку.', resolution: 'Герой бережно полил лунный цветник. Лепестки раскрылись один за другим, и вдоль дорожки появился мягкий серебристый свет. Маленькая бабочка села рядом и будто поблагодарила крыльями.', seed: 'У самого высокого цветка осталась капля света. Завтра она покажет новую садовую тропинку.', icon: '🌸', friend: 'лунная бабочка' },
+      uz: { text: 'Oy gullariga suv quyish', effect: 'Gullar ochilib, yo‘lakni mayin yoritadi.', resolution: 'Qahramon oy gullariga ehtiyotkorlik bilan suv quydi. Gulbarglar ochilib, yo‘lak bo‘ylab kumushrang nur paydo bo‘ldi.', seed: 'Eng baland gulda kichik nur tomchisi qoldi. Ertaga u yangi yo‘lni ko‘rsatadi.', icon: '🌸' },
+      kz: { text: 'Ай гүлдерін суару', effect: 'Гүлдер ашылып, жолақты жұмсақ жарықтандырады.', resolution: 'Кейіпкер ай гүлдерін абайлап суарды. Жапырақтар ашылып, жолақ бойында күміс жарық пайда болды.', seed: 'Ең биік гүлде кішкентай жарық тамшысы қалды. Ертең ол жаңа жолды көрсетеді.', icon: '🌸' },
+    },
+    choiceB: {
+      ru: { text: 'Поставить светлячковую чашу', effect: 'Искры соберутся в тёплый круг для друзей.', resolution: 'Герой поставил светлячковую чашу у края фонтана. Искры мягко собрались над ней, и сад стал похож на тихую комнату под открытым небом. Друзья подошли ближе, чтобы погреться в этом свете.', seed: 'В чаше осталась одна золотая искра. Завтра она первой проснётся и позовёт героя к новому месту сада.', icon: '🫧', friend: 'садовый светлячок' },
+      uz: { text: 'Yaltiragan chiroq kosasini qo‘yish', effect: 'Uchqunlar do‘stlar uchun iliq doira hosil qiladi.', resolution: 'Qahramon favvora chetiga chiroqli kosa qo‘ydi. Uchqunlar uning ustida muloyim yig‘ildi va bog‘ yanada sokin bo‘ldi.', seed: 'Kosada bitta oltin uchqun qoldi. Ertaga u qahramonni bog‘ning yangi joyiga chaqiradi.', icon: '🫧' },
+      kz: { text: 'Жарқыраған шам тостағанын қою', effect: 'Ұшқындар достар үшін жылы шеңбер құрады.', resolution: 'Кейіпкер субұрқақ жанына шам тостағанын қойды. Ұшқындар оның үстіне жай жиналып, бақ бұрынғыдан тыныш бола түсті.', seed: 'Тостағанда бір алтын ұшқын қалды. Ертең ол кейіпкерді бақтың жаңа орнына шақырады.', icon: '🫧' },
+    },
+    episodeTwo: {
+      ru: { a: 'Утром у лунного цветка ещё держалась светлая капля. Она дрогнула на лепестке и показала узкую тропинку между кустами жасмина.', b: 'Утром золотая искра в чаше тихо проснулась. Она поднялась над фонтаном и осветила маленькую калитку в глубине сада.', fallback: 'Утром в саду остался мягкий свет вчерашнего вечера. Он ждал героя у первой лепестковой дорожки.' },
+      uz: { a: 'Ertalab oy guli bargida nur tomchisi hali ham turardi. U jasmin butalari orasidagi tor yo‘lni ko‘rsatdi.', b: 'Ertalab kosadagi oltin uchqun uyg‘ondi. U favvora ustiga ko‘tarilib, bog‘ ichidagi kichik eshikni yoritdi.', fallback: 'Ertalab bog‘da kechagi oqshomdan mayin nur qoldi.' },
+      kz: { a: 'Таңертең ай гүлі жапырағында жарық тамшысы әлі тұрды. Ол жасмин бұталары арасындағы тар жолды көрсетті.', b: 'Таңертең тостағандағы алтын ұшқын оянды. Ол субұрқақ үстіне көтеріліп, бақ ішіндегі кішкентай қақпаны жарықтандырды.', fallback: 'Таңертең бақта кешегі жұмсақ жарық қалды.' },
+    },
+  },
 
-const simpleWorldRuTemplates: Record<SimpleWorldId, SimpleWorldTuple> = {
-  magic_garden: ['в саду шелестели лепестки и светились цветы','Полить лунный цветник','Поставить светлячковую чашу','🌸','🫧'],
-  silk_road: ['у караванной стоянки горели мягкие лампы','Зажечь караванный фонарь','Развернуть карту узоров','🏺','🗺️'],
-  stars_and_space: ['над станцией плыли тихие звёзды','Настроить звёздный маяк','Сложить новую созвездную линию','⭐','🌙'],
-  animal_world: ['на лугу слышались спокойные голоса животных','Наполнить поилку у поляны','Собрать мягкие листья для гнезда','🐾','🍃'],
-  sea_islands: ['на тёплом берегу шептали тихие волны у маленького маяка','Зажечь маленький береговой фонарик','Положить светящуюся ракушку у воды','🐚','🌊'],
-  castle_mystery: ['во дворе замка мягко звенели флажки и фонари','Зажечь лампу у галереи','Оставить добрую записку в зале','🏰','🕯️'],
-  brave_adventure: ['на тропе приключений ветер шевелил ленточки-указатели','Поставить дорожный фонарь у поворота','Спеть бодрую походную песенку','🧭','🎶'],
+  silk_road: {
+    intro: {
+      ru: 'У караванной стоянки вечер пах тёплым хлебом, пылью дороги и свежим чаем. На тканых навесах тихо мерцали узоры.',
+      uz: 'Karvon to‘xtagan joyda oqshom iliq non, yo‘l changi va yangi choy hidiga to‘ldi.',
+      kz: 'Керуен тоқтаған жерде кеш жылы нан, жол шаңы және жаңа шай иісіне толды.',
+    },
+    choiceA: {
+      ru: { text: 'Зажечь караванный фонарь', effect: 'Стоянка станет светлее для поздних путников.', resolution: 'Герой зажёг караванный фонарь у края стоянки. Мягкий свет лёг на узорные ковры, и поздние путники сразу нашли дорогу к чаю и отдыху.', seed: 'На стекле фонаря проявился маленький узор. Завтра он подскажет, куда караван повернёт дальше.', icon: '🏺', friend: 'верблюжонок Бота' },
+      uz: { text: 'Karvon chirog‘ini yoqish', effect: 'Kech kelgan yo‘lovchilar yo‘lni oson topadi.', resolution: 'Qahramon karvon chirog‘ini yoqdi. Mayin nur naqshli gilamlarga tushdi va yo‘lovchilar dam olish joyini topishdi.', seed: 'Chiroq oynasida kichik naqsh ko‘rindi. Ertaga u karvon yo‘lini ko‘rsatadi.', icon: '🏺' },
+      kz: { text: 'Керуен шамын жағу', effect: 'Кеш келген жолаушылар жолды оңай табады.', resolution: 'Кейіпкер керуен шамын жақты. Жұмсақ жарық өрнекті кілемдерге түсіп, жолаушылар демалатын орынды тапты.', seed: 'Шам әйнегінде кішкентай өрнек көрінді. Ертең ол керуен жолын көрсетеді.', icon: '🏺' },
+    },
+    choiceB: {
+      ru: { text: 'Развернуть карту узоров', effect: 'Друзья увидят спокойный путь через пески.', resolution: 'Герой развернул карту узоров на низком столике. Линии на карте мягко сложились в дорогу, а старый мастер улыбнулся: теперь путь стал понятнее и спокойнее.', seed: 'Один синий узор остался светиться на краю карты. Завтра он укажет новую остановку каравана.', icon: '🗺️', friend: 'мастер Рустам' },
+      uz: { text: 'Naqshli xaritani ochish', effect: 'Do‘stlar qumlar orasidagi tinch yo‘lni ko‘radi.', resolution: 'Qahramon naqshli xaritani past stol ustiga yoydi. Chiziqlar yo‘lga aylandi va hamma keyingi manzilni ko‘rdi.', seed: 'Xarita chetida ko‘k naqsh porlab qoldi. Ertaga u yangi bekatni ko‘rsatadi.', icon: '🗺️' },
+      kz: { text: 'Өрнекті картаны ашу', effect: 'Достар құм арасындағы тыныш жолды көреді.', resolution: 'Кейіпкер өрнекті картаны аласа үстелге жайды. Сызықтар жолға айналып, бәрі келесі бағытты көрді.', seed: 'Карта шетінде көк өрнек жарқырап қалды. Ертең ол жаңа аялдаманы көрсетеді.', icon: '🗺️' },
+    },
+    episodeTwo: {
+      ru: { a: 'Утром на стекле караванного фонаря сиял маленький узор. Он был похож на поворот дороги к тихому городу за барханами.', b: 'Утром синий узор на карте стал ярче. Он потянулся тонкой линией к новой стоянке, где уже ждали тёплый чай и добрые вести.', fallback: 'Утром караванная стоянка проснулась спокойно. На ковре оставался узор, который звал героя в дорогу.' },
+      uz: { a: 'Ertalab karvon chirog‘i oynasida kichik naqsh porladi. U sokin shaharga boradigan burilishga o‘xshardi.', b: 'Ertalab xaritadagi ko‘k naqsh yanada yorqinlashdi. U yangi bekatga tomon ingichka chiziq bo‘lib cho‘zildi.', fallback: 'Ertalab karvon joyi sokin uyg‘ondi.' },
+      kz: { a: 'Таңертең керуен шамының әйнегінде кішкентай өрнек жарқырады. Ол тыныш қалаға бұрылыс сияқты еді.', b: 'Таңертең картадағы көк өрнек анық жарқырады. Ол жаңа аялдамаға қарай жіңішке сызық болып созылды.', fallback: 'Таңертең керуен орны тыныш оянды.' },
+    },
+  },
+
+  stars_and_space: {
+    intro: {
+      ru: 'Над звёздной станцией медленно плыли тихие планеты. В иллюминаторе мягко сияла Луна, а маленький робот держал серебряную карту неба.',
+      uz: 'Yulduz bekati ustida sokin sayyoralar sekin suzdi. Deraza ortida Oy mayin yoritdi.',
+      kz: 'Жұлдыз бекеті үстінде тыныш ғаламшарлар баяу қалқып жүрді. Терезе сыртында Ай жұмсақ жарқырады.',
+    },
+    choiceA: {
+      ru: { text: 'Настроить звёздный маяк', effect: 'Маяк поможет маленьким кораблям найти станцию.', resolution: 'Герой настроил звёздный маяк. Луч поднялся над станцией спокойно и ровно, и маленькие корабли на дальних орбитах увидели дорогу домой.', seed: 'В луче маяка осталась серебряная точка. Завтра она покажет новую звезду на карте.', icon: '⭐', friend: 'робот Нури' },
+      uz: { text: 'Yulduz mayog‘ini sozlash', effect: 'Mayoq kichik kemalarga bekatni topishga yordam beradi.', resolution: 'Qahramon yulduz mayog‘ini sozladi. Nur bekat ustiga sokin ko‘tarildi va uzoqdagi kichik kemalar uy yo‘lini ko‘rdi.', seed: 'Mayoq nurida kumush nuqta qoldi. Ertaga u xaritada yangi yulduzni ko‘rsatadi.', icon: '⭐' },
+      kz: { text: 'Жұлдыз шамшырағын баптау', effect: 'Шамшырақ кішкентай кемелерге бекетті табуға көмектеседі.', resolution: 'Кейіпкер жұлдыз шамшырағын баптады. Сәуле бекет үстіне тыныш көтеріліп, алыстағы кішкентай кемелер үй жолын көрді.', seed: 'Шамшырақ сәулесінде күміс нүкте қалды. Ертең ол картадан жаңа жұлдызды көрсетеді.', icon: '⭐' },
+    },
+    choiceB: {
+      ru: { text: 'Сложить новую созвездную линию', effect: 'На карте появится спокойный знак для друзей.', resolution: 'Герой соединил три тихие звезды на карте. Они сложились в мягкую линию, похожую на улыбку, и робот Нури бережно сохранил новый знак.', seed: 'Созвездная линия осталась мерцать у края карты. Завтра она приведёт героя к маленькой синей планете.', icon: '🌙', friend: 'робот Нури' },
+      uz: { text: 'Yangi yulduz chizig‘ini tuzish', effect: 'Xaritada do‘stlar uchun sokin belgi paydo bo‘ladi.', resolution: 'Qahramon xaritada uchta sokin yulduzni bog‘ladi. Ular tabassumga o‘xshash mayin chiziqqa aylandi.', seed: 'Yulduz chizig‘i xarita chetida miltillab qoldi. Ertaga u qahramonni kichik ko‘k sayyoraga olib boradi.', icon: '🌙' },
+      kz: { text: 'Жаңа жұлдыз сызығын құрау', effect: 'Картада достарға арналған тыныш белгі пайда болады.', resolution: 'Кейіпкер картада үш тыныш жұлдызды қосты. Олар күлімсіреуге ұқсайтын жұмсақ сызыққа айналды.', seed: 'Жұлдыз сызығы карта шетінде жымыңдап қалды. Ертең ол кейіпкерді кішкентай көк ғаламшарға апарады.', icon: '🌙' },
+    },
+    episodeTwo: {
+      ru: { a: 'Утром серебряная точка в луче маяка стала ярче. Она указала на новую звезду, которая тихо ждала на краю карты.', b: 'Утром созвездная линия мягко мерцала. Её край тянулся к маленькой синей планете, где уже зажёгся приветственный огонёк.', fallback: 'Утром звёздная станция светилась спокойно. На карте остался знак, который звал героя дальше.' },
+      uz: { a: 'Ertalab mayoq nuridagi kumush nuqta yorqinlashdi. U xarita chetida kutayotgan yangi yulduzni ko‘rsatdi.', b: 'Ertalab yulduz chizig‘i mayin miltilladi. Uning cheti kichik ko‘k sayyoraga cho‘zildi.', fallback: 'Ertalab yulduz bekati sokin yoritildi.' },
+      kz: { a: 'Таңертең шамшырақ сәулесіндегі күміс нүкте жарығырақ болды. Ол карта шетінде күткен жаңа жұлдызды көрсетті.', b: 'Таңертең жұлдыз сызығы жұмсақ жымыңдады. Оның шеті кішкентай көк ғаламшарға созылды.', fallback: 'Таңертең жұлдыз бекеті тыныш жарқырады.' },
+    },
+  },
+
+  animal_world: {
+    intro: {
+      ru: 'На тёплой поляне собирались звери: снежный барс лежал у камня, черепаха дремала в траве, а маленький орёл чистил крыло на низкой ветке.',
+      uz: 'Iliq yaylovda jonivorlar yig‘ildi: qor barsi tosh yonida yotdi, toshbaqa maysada mudradi.',
+      kz: 'Жылы алаңқайда жануарлар жиналды: қар барысы тас жанында жатты, тасбақа шөпте қалғып тұрды.',
+    },
+    choiceA: {
+      ru: { text: 'Наполнить поилку у поляны', effect: 'Животные спокойно подойдут к воде.', resolution: 'Герой наполнил поилку чистой водой. Черепаха первой подошла к краю, за ней снежный барс тихо опустил голову, а орёл благодарно расправил крылья.', seed: 'У поилки остался круглый след лапы. Завтра он покажет, кто приходил ночью.', icon: '🐾', friend: 'черепаха Сума' },
+      uz: { text: 'Yaylovdagi suv idishini to‘ldirish', effect: 'Jonivorlar suvga xotirjam yaqinlashadi.', resolution: 'Qahramon suv idishini toza suv bilan to‘ldirdi. Toshbaqa birinchi bo‘lib yaqinlashdi, keyin qor barsi ham sokin boshini egdi.', seed: 'Suv yonida dumaloq panja izi qoldi. Ertaga u tunda kim kelganini ko‘rsatadi.', icon: '🐾' },
+      kz: { text: 'Алаңқайдағы суатты толтыру', effect: 'Жануарлар суға тыныш жақындайды.', resolution: 'Кейіпкер суатты таза сумен толтырды. Тасбақа бірінші болып жақындады, кейін қар барысы да басын жай түсірді.', seed: 'Суат жанында дөңгелек із қалды. Ертең ол түнде кім келгенін көрсетеді.', icon: '🐾' },
+    },
+    choiceB: {
+      ru: { text: 'Собрать мягкие листья для гнезда', effect: 'Птенцу станет теплее и спокойнее.', resolution: 'Герой собрал мягкие листья и положил их у корня дерева. Маленький орёл устроил из них тёплое гнездо, а вся поляна стала тише, будто берегла его сон.', seed: 'Один золотой лист остался у дерева. Завтра он тихо повернётся к новому следу.', icon: '🍃', friend: 'орлёнок Арча' },
+      uz: { text: 'Uya uchun yumshoq barglar yig‘ish', effect: 'Polapon issiqroq va xotirjamroq bo‘ladi.', resolution: 'Qahramon yumshoq barglarni yig‘ib, daraxt ildizi yoniga qo‘ydi. Kichik burgut ulardan iliq uya yasadi.', seed: 'Daraxt yonida bitta oltin barg qoldi. Ertaga u yangi iz tomonga buriladi.', icon: '🍃' },
+      kz: { text: 'Ұяға жұмсақ жапырақтар жинау', effect: 'Балапан жылырақ әрі тынышырақ болады.', resolution: 'Кейіпкер жұмсақ жапырақтарды жинап, ағаш түбіне қойды. Кішкентай бүркіт олардан жылы ұя жасады.', seed: 'Ағаш жанында бір алтын жапырақ қалды. Ертең ол жаңа ізге қарай бұрылады.', icon: '🍃' },
+    },
+    episodeTwo: {
+      ru: { a: 'Утром у поилки блестел круглый след лапы. Он вёл к высокой траве, где кто-то тихо оставил маленькое перо.', b: 'Утром золотой лист у дерева повернулся к узкой тропинке. В тени уже ждал орлёнок Арча с новым тихим знаком.', fallback: 'Утром тёплая поляна проснулась спокойно. В траве остался маленький знак для героя.' },
+      uz: { a: 'Ertalab suv yonida dumaloq panja izi yaltiradi. U baland maysa tomonga olib bordi.', b: 'Ertalab oltin barg tor yo‘l tomonga burildi. Soyada kichik burgut yangi belgi bilan kutdi.', fallback: 'Ertalab iliq yaylov sokin uyg‘ondi.' },
+      kz: { a: 'Таңертең суат жанында дөңгелек із жылтырады. Ол биік шөпке қарай алып барды.', b: 'Таңертең алтын жапырақ тар соқпаққа бұрылды. Көлеңкеде кішкентай бүркіт жаңа белгімен күтті.', fallback: 'Таңертең жылы алаңқай тыныш оянды.' },
+    },
+  },
+
+  sea_islands: {
+    intro: {
+      ru: 'На тёплом берегу маленький маяк дышал мягким светом. Волны шептали у песка, лодка тихо покачивалась, а рядом лежала ракушка с голубым отблеском.',
+      uz: 'Iliq sohilda kichik mayoq mayin nur sochdi. To‘lqinlar qum yonida shivirladi.',
+      kz: 'Жылы жағалауда кішкентай шамшырақ жұмсақ жарық шашты. Толқындар құм жанында сыбырлады.',
+    },
+    choiceA: {
+      ru: { text: 'Зажечь маленький береговой фонарик', effect: 'Берег станет виднее для друзей в лодке.', resolution: 'Герой зажёг маленький фонарик у берега. Свет лёг на мокрый песок, и лодка сразу нашла спокойное место у причала. Волны стали звучать тише.', seed: 'Огонёк фонарика отразился в воде. Завтра этот отблеск покажет путь к дальнему островку.', icon: '🐚', friend: 'чайка Лола' },
+      uz: { text: 'Sohil chirog‘ini yoqish', effect: 'Qayiqdagi do‘stlar qirg‘oqni oson ko‘radi.', resolution: 'Qahramon sohil yonidagi kichik chiroqni yoqdi. Nur nam qumga tushdi va qayiq sokin joyni topdi.', seed: 'Chiroq nuri suvda aks etdi. Ertaga shu aks uzoq orolga yo‘l ko‘rsatadi.', icon: '🐚' },
+      kz: { text: 'Жағалау шамын жағу', effect: 'Қайықтағы достар жағалауды оңай көреді.', resolution: 'Кейіпкер жағалаудағы кішкентай шамды жақты. Жарық дымқыл құмға түсіп, қайық тыныш орынды тапты.', seed: 'Шам жарығы суда шағылысты. Ертең сол шағылыс алыс аралға жол көрсетеді.', icon: '🐚' },
+    },
+    choiceB: {
+      ru: { text: 'Положить светящуюся ракушку у воды', effect: 'Волны понесут мягкий свет вдоль берега.', resolution: 'Герой положил светящуюся ракушку у самой воды. Волна осторожно коснулась её края, и вдоль берега побежала голубая дорожка света.', seed: 'Голубая дорожка не исчезла полностью. Завтра она приведёт героя к тихой бухте.', icon: '🌊', friend: 'маленькая черепаха Мира' },
+      uz: { text: 'Yorqin chig‘anoqni suv yoniga qo‘yish', effect: 'To‘lqinlar mayin nurni sohil bo‘ylab olib ketadi.', resolution: 'Qahramon yorqin chig‘anoqni suv yoniga qo‘ydi. To‘lqin unga sekin tegdi va sohil bo‘ylab ko‘k nurli yo‘l paydo bo‘ldi.', seed: 'Ko‘k nurli yo‘l butunlay yo‘qolmadi. Ertaga u qahramonni sokin ko‘rfazga olib boradi.', icon: '🌊' },
+      kz: { text: 'Жарқыраған қабыршақты су жанына қою', effect: 'Толқындар жұмсақ жарықты жағалау бойымен алып кетеді.', resolution: 'Кейіпкер жарқыраған қабыршақты су жанына қойды. Толқын оған жай тиіп, жағалау бойымен көк жарық жолы пайда болды.', seed: 'Көк жарық жолы толық жоғалмады. Ертең ол кейіпкерді тыныш шығанаққа алып барады.', icon: '🌊' },
+    },
+    episodeTwo: {
+      ru: { a: 'Утром в воде всё ещё дрожал отблеск фонарика. Он тянулся к дальнему островку, где на песке виднелась новая ракушка.', b: 'Утром голубая дорожка света вела к тихой бухте. Там маленькая черепаха Мира уже ждала у гладкого камня.', fallback: 'Утром море было спокойным. На мокром песке остался мягкий светлый след.' },
+      uz: { a: 'Ertalab suvda chiroq aksi hali ham titradi. U uzoq orol tomonga cho‘zildi.', b: 'Ertalab ko‘k nurli yo‘l sokin ko‘rfazga olib bordi. U yerda kichik toshbaqa kutib turardi.', fallback: 'Ertalab dengiz sokin edi.' },
+      kz: { a: 'Таңертең суда шамның шағылысы әлі дірілдеп тұрды. Ол алыс аралға қарай созылды.', b: 'Таңертең көк жарық жолы тыныш шығанаққа алып барды. Онда кішкентай тасбақа күтіп тұрды.', fallback: 'Таңертең теңіз тыныш еді.' },
+    },
+  },
+
+  castle_mystery: {
+    intro: {
+      ru: 'Во дворе мягкого замка вечер звенел маленькими флажками. В галерее стояли тёплые лампы, а у старой двери лежал ключ с голубой ленточкой.',
+      uz: 'Muloyim qasr hovlisida oqshom kichik bayroqchalar bilan jarangladi. Yo‘lakda iliq chiroqlar turdi.',
+      kz: 'Жұмсақ қамал ауласында кеш кішкентай жалаушалармен сыңғырлады. Дәлізде жылы шамдар тұрды.',
+    },
+    choiceA: {
+      ru: { text: 'Зажечь лампу у галереи', effect: 'Галерея станет светлой и не будет казаться таинственной.', resolution: 'Герой зажёг лампу у галереи. Тени на стенах стали мягкими, картины будто улыбнулись, а старая дверь перестала казаться далёкой и незнакомой.', seed: 'На полу появилась тонкая светлая полоска. Завтра она покажет, какая дверь ждёт героя.', icon: '🏰', friend: 'котёнок Люм' },
+      uz: { text: 'Yo‘lakdagi chiroqni yoqish', effect: 'Yo‘lak yorug‘ va xotirjam bo‘ladi.', resolution: 'Qahramon yo‘lakdagi chiroqni yoqdi. Devor soyasi yumshadi, rasmlar iliq ko‘rindi, eski eshik endi begona tuyulmadi.', seed: 'Polda ingichka yorug‘ chiziq paydo bo‘ldi. Ertaga u qaysi eshik kutayotganini ko‘rsatadi.', icon: '🏰' },
+      kz: { text: 'Дәліздегі шамды жағу', effect: 'Дәліз жарық әрі тыныш болады.', resolution: 'Кейіпкер дәліздегі шамды жақты. Қабырға көлеңкелері жұмсарып, суреттер жылы көрінді, ескі есік енді бөтен сезілмеді.', seed: 'Еденде жіңішке жарық сызық пайда болды. Ертең ол қай есік күтіп тұрғанын көрсетеді.', icon: '🏰' },
+    },
+    choiceB: {
+      ru: { text: 'Оставить добрую записку в зале', effect: 'Тот, кто её найдёт, почувствует поддержку.', resolution: 'Герой оставил добрую записку на маленьком столике. Сквозняк осторожно поднял её край, и в зале стало так тихо, будто замок слушал хорошие слова.', seed: 'У записки появился синий отблеск. Завтра он приведёт героя к полке со старой книгой.', icon: '🕯️', friend: 'хранительница Мина' },
+      uz: { text: 'Zalda mehrli xat qoldirish', effect: 'Uni topgan kishi qo‘llab-quvvatlashni his qiladi.', resolution: 'Qahramon kichik stol ustiga mehrli xat qoldirdi. Yengil shamol uning chetini ko‘tardi va zal yanada sokinlashdi.', seed: 'Xatda ko‘k nur paydo bo‘ldi. Ertaga u qahramonni eski kitob tokchasiga olib boradi.', icon: '🕯️' },
+      kz: { text: 'Залда мейірімді хат қалдыру', effect: 'Оны тапқан адам қолдауды сезеді.', resolution: 'Кейіпкер кішкентай үстелге мейірімді хат қалдырды. Жеңіл жел оның шетін көтеріп, зал бұрынғыдан тыныш болды.', seed: 'Хатта көк жарық пайда болды. Ертең ол кейіпкерді ескі кітап сөресіне апарады.', icon: '🕯️' },
+    },
+    episodeTwo: {
+      ru: { a: 'Утром светлая полоска на полу тянулась к старой двери. За ней тихо звякнул маленький колокольчик.', b: 'Утром синий отблеск на записке повёл героя к книжной полке. Между книгами лежала новая добрая подсказка.', fallback: 'Утром замок был тихим и светлым. В галерее оставался маленький знак для героя.' },
+      uz: { a: 'Ertalab poldagi yorug‘ chiziq eski eshik tomonga cho‘zildi. Uning ortida kichik qo‘ng‘iroq jarangladi.', b: 'Ertalab xatdagi ko‘k nur qahramonni kitob tokchasiga olib bordi. Kitoblar orasida yangi ishora yotdi.', fallback: 'Ertalab qasr sokin va yorug‘ edi.' },
+      kz: { a: 'Таңертең едендегі жарық сызық ескі есікке қарай созылды. Оның ар жағында кішкентай қоңырау сыңғырлады.', b: 'Таңертең хаттағы көк жарық кейіпкерді кітап сөресіне апарды. Кітаптар арасында жаңа белгі жатты.', fallback: 'Таңертең қамал тыныш әрі жарық еді.' },
+    },
+  },
+
+  brave_adventure: {
+    intro: {
+      ru: 'На тропе приключений вечерний ветер шевелил ленточки-указатели. У поворота лежал круглый камень, а за мостиком тихо светилась карта.',
+      uz: 'Sarguzasht yo‘lida oqshom shamoli rangli belgi lentalarini tebratdi. Burilishda dumaloq tosh yotdi.',
+      kz: 'Шытырман жолында кешкі жел түрлі белгі таспаларын тербетті. Бұрылыста дөңгелек тас жатты.',
+    },
+    choiceA: {
+      ru: { text: 'Поставить дорожный фонарь у поворота', effect: 'Следующим друзьям будет легче найти безопасный путь.', resolution: 'Герой поставил дорожный фонарь у поворота. Свет лёг на камень и мостик, и тропа сразу стала спокойнее. Даже ветер стал тише шевелить ленточки.', seed: 'На круглом камне появился светлый знак. Завтра он покажет, куда ведёт тропа после мостика.', icon: '🧭', friend: 'птичка Сафо' },
+      uz: { text: 'Burilishga yo‘l chirog‘ini qo‘yish', effect: 'Keyingi do‘stlar xavfsiz yo‘lni oson topadi.', resolution: 'Qahramon burilishga yo‘l chirog‘ini qo‘ydi. Nur tosh va ko‘prikka tushdi, yo‘l darrov sokinroq ko‘rindi.', seed: 'Dumaloq toshda yorug‘ belgi paydo bo‘ldi. Ertaga u ko‘prikdan keyingi yo‘lni ko‘rsatadi.', icon: '🧭' },
+      kz: { text: 'Бұрылыста жол шамын қою', effect: 'Келесі достар қауіпсіз жолды оңай табады.', resolution: 'Кейіпкер бұрылыста жол шамын қойды. Жарық тас пен көпірге түсіп, соқпақ бірден тынышырақ көрінді.', seed: 'Дөңгелек таста жарық белгі пайда болды. Ертең ол көпірден кейінгі жолды көрсетеді.', icon: '🧭' },
+    },
+    choiceB: {
+      ru: { text: 'Спеть бодрую походную песенку', effect: 'Друзья почувствуют смелость и пойдут вместе.', resolution: 'Герой запел бодрую походную песенку. Ленты на указателях закачались в такт, а друзья улыбнулись и пошли рядом, не торопясь и не боясь.', seed: 'У мостика осталась тихая мелодия. Завтра она подскажет, где начинается новая тропа.', icon: '🎶', friend: 'птичка Сафо' },
+      uz: { text: 'Quvnoq yo‘l qo‘shig‘ini aytish', effect: 'Do‘stlar dadilroq bo‘lib, birga yuradi.', resolution: 'Qahramon quvnoq yo‘l qo‘shig‘ini aytdi. Belgilar lentalari ohangga mos tebrandi, do‘stlar esa yonma-yon yurdi.', seed: 'Ko‘prik yonida sokin ohang qoldi. Ertaga u yangi yo‘l qayerdan boshlanishini ko‘rsatadi.', icon: '🎶' },
+      kz: { text: 'Көңілді жол әнін айту', effect: 'Достар батылырақ болып, бірге жүреді.', resolution: 'Кейіпкер көңілді жол әнін айтты. Белгі таспалары әуенге сай тербелді, достар қатар жүрді.', seed: 'Көпір жанында тыныш әуен қалды. Ертең ол жаңа жолдың қайдан басталатынын көрсетеді.', icon: '🎶' },
+    },
+    episodeTwo: {
+      ru: { a: 'Утром светлый знак на камне указывал за мостик. Там начиналась узкая тропа с новыми ленточками.', b: 'Утром тихая мелодия у мостика снова прозвучала. Она повела героя к тропе, где на ветке ждала птичка Сафо.', fallback: 'Утром тропа приключений была спокойной. У поворота остался знак, который звал героя дальше.' },
+      uz: { a: 'Ertalab toshdagi yorug‘ belgi ko‘prik ortini ko‘rsatdi. U yerda yangi lentalar bilan tor yo‘l boshlanardi.', b: 'Ertalab ko‘prik yonidagi sokin ohang yana eshitildi. U qahramonni yangi yo‘lga boshladi.', fallback: 'Ertalab sarguzasht yo‘li sokin edi.' },
+      kz: { a: 'Таңертең тастағы жарық белгі көпірдің ар жағын көрсетті. Онда жаңа таспалары бар тар жол басталды.', b: 'Таңертең көпір жанындағы тыныш әуен қайта естілді. Ол кейіпкерді жаңа жолға бастады.', fallback: 'Таңертең шытырман жолы тыныш еді.' },
+    },
+  },
 }
 
-for (const id of simpleWorlds) {
-  if (worldTemplates[id]) continue
-  // lightweight safe world-specific templates
-  const [intro, a, b, ia, ib] = simpleWorldRuTemplates[id]
-  worldTemplates[id]={
-    intro:{ru:intro,uz:intro,kz:intro},
-    choiceA:{ru:{text:a,effect:'Мир станет спокойнее и удобнее для всех.',resolution:`Герой выбрал путь «${a.toLowerCase()}». В мире стало мягче и спокойнее, а друзья сразу заметили добрую перемену.`,seed:'Небольшой знак остался до утра. В следующий раз он мягко подскажет продолжение истории.',icon:ia},uz:{text:a,effect:'Olam tinchroq va qulayroq bo‘ladi.',resolution:`Qahramon «${a}» yo‘lini tanladi. Olam iliqroq bo‘lib, do‘stlar buni darhol sezishdi.`,seed:'Tonggacha kichik belgi qoldi. Keyingi safar u hikoyani muloyim davom ettiradi.',icon:ia},kz:{text:a,effect:'Әлем жайлырақ әрі тыныш бола түседі.',resolution:`Кейіпкер «${a}» жолын таңдады. Әлем жұмсарып, достар жақсы өзгерісті бірден байқады.`,seed:'Таңға дейін кішкентай белгі қалды. Келесі жолы ол оқиғаны жаймен жалғастырады.',icon:ia}},
-    choiceB:{ru:{text:b,effect:'Друзья объединятся и поддержат друг друга.',resolution:`Герой выбрал путь «${b.toLowerCase()}». Мир ответил спокойствием: стало уютнее, а рядом появилось больше взаимной поддержки.`,seed:'К утру остался мягкий след выбора. В следующий раз герой увидит его продолжение.',icon:ib},uz:{text:b,effect:'Do‘stlar bir-birini qo‘llab-quvvatlaydi.',resolution:`Qahramon «${b}» yo‘lini tanladi. Olam tinch javob berdi va atrof yanada iliq bo‘ldi.`,seed:'Tongda tanlovdan mayin iz qoladi. Keyingi safar qahramon davomni ko‘radi.',icon:ib},kz:{text:b,effect:'Достар бір-бірін қолдай түседі.',resolution:`Кейіпкер «${b}» жолын таңдады. Әлем тыныш жауап беріп, айнала бұрынғыдан жылырақ болды.`,seed:'Таңертең таңдаудан жұмсақ із қалады. Келесі жолы кейіпкер жалғасын көреді.',icon:ib}},
-    episodeTwo:{ru:{a:`Утром ${intro}. На тропинке остался вчерашний мягкий знак.`,b:`Утром ${intro}. У выбранного пути остался мягкий утренний след.`,fallback:`Утром ${intro}. У выбора героя остался мягкий след.`},uz:{a:`Ertalab ${intro}. Kecha tanlangan yo‘ldan mayin iz qoldi.`,b:`Ertalab ${intro}. Ikkinchi yo‘ldan tonggacha mayin iz qoldi.`,fallback:`Ertalab ${intro}. Qahramon tanlovidan mayin iz qoldi.`},kz:{a:`Таңертең ${intro}. Кешегі жолдан жұмсақ із қалды.`,b:`Таңертең ${intro}. Екінші жолдан таңға дейін жұмсақ із қалды.`,fallback:`Таңертең ${intro}. Кейіпкер таңдауынан жұмсақ із қалды.`}}
-  }
+for (const id of Object.keys(simpleWorldTemplates) as SimpleWorldId[]) {
+  worldTemplates[id] = simpleWorldTemplates[id]
 }
 
 function episodeOneChoices(selections: OnboardingSelections): EpisodeChoice[] {
