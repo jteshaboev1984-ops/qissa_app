@@ -3,7 +3,7 @@ import { OnboardingFlow } from './features/onboarding/OnboardingFlow'
 import { createInitialSeriesState, applyChoiceToSeriesState } from './lib/memoryAgent'
 import { t } from './lib/i18n'
 import { localPersistence, type AppScreen } from './lib/localPersistence'
-import { createStoryEpisode } from './lib/storyAgent'
+import { storyService } from './lib/storyService'
 import { storyArchive, type StoryArchiveItem } from './lib/storyArchive'
 import { HomeScreen } from './screens/HomeScreen'
 import { LibraryScreen } from './screens/LibraryScreen'
@@ -124,10 +124,10 @@ function App() {
     updateScreen('home')
   }
 
-  const handleStartStory = () => {
+  const handleStartStory = async () => {
     setAppTab('home')
     if (!selections || !seriesState) return
-    const firstEpisode = createStoryEpisode({ selections, seriesState })
+    const { episode: firstEpisode } = await storyService.generateEpisode({ selections, seriesState })
     const nextSeries = { ...seriesState, episodeCount: 1 }
     setEpisode(firstEpisode)
     setSeriesState(nextSeries)
@@ -143,9 +143,9 @@ function App() {
     localPersistence.saveSeriesState(nextSeriesState)
   }
 
-  const handleContinueNextEpisode = () => {
+  const handleContinueNextEpisode = async () => {
     if (!selections || !seriesState || selections.storyMode !== 'series' || seriesState.choiceHistory.length === 0) return
-    const secondEpisode = createStoryEpisode({ selections, seriesState })
+    const { episode: secondEpisode } = await storyService.generateEpisode({ selections, seriesState })
     const nextSeriesState = { ...seriesState, episodeCount: 2 }
     setEpisode(secondEpisode)
     setSeriesState(nextSeriesState)
