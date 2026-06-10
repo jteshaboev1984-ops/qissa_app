@@ -180,6 +180,24 @@ function App() {
     updateScreen('home')
   }
 
+  const handleOpenArchivedStory = (item: StoryArchiveItem) => {
+    if (!item.selections || !item.seriesState || !item.episode) return
+
+    archiveCurrentStory()
+
+    setSelections(item.selections)
+    setSeriesState(item.seriesState)
+    setEpisode(item.episode)
+    updateLanguage(item.selections.language)
+
+    localPersistence.saveOnboardingSelections(item.selections)
+    localPersistence.saveSeriesState(item.seriesState)
+    localPersistence.saveCurrentEpisode(item.episode)
+
+    setAppTab('library')
+    updateScreen('story')
+  }
+
   const handleOpenOnboarding = (mode: OnboardingMode) => {
     setOnboardingMode(mode)
     updateScreen('onboarding')
@@ -256,6 +274,7 @@ function App() {
             episode={episode}
             archiveItems={archiveItems}
             onOpenStory={handleOpenStory}
+            onOpenArchivedStory={handleOpenArchivedStory}
             onCreateStory={handleStartStory}
           />
         )}
