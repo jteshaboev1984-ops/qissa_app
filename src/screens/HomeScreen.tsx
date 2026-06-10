@@ -14,6 +14,7 @@ interface HomeScreenProps {
   onContinueStory: () => void
   onResetStory: () => void
   onEditSetup: () => void
+  onCreateNewStorySetup: () => void
 }
 
 const ageKeyByGroup = {
@@ -22,7 +23,7 @@ const ageKeyByGroup = {
   '8-9': 'age.8_9',
 } as const
 
-export function HomeScreen({ language, selections, seriesState, episode, onCreateFirstSeries, onContinueStory, onResetStory, onEditSetup }: HomeScreenProps) {
+export function HomeScreen({ language, selections, seriesState, episode, onCreateFirstSeries, onContinueStory, onResetStory, onEditSetup, onCreateNewStorySetup }: HomeScreenProps) {
   const [showDetails, setShowDetails] = useState(false)
   const world = stylePacks.find((pack) => pack.id === selections.stylePackId) ?? stylePacks[0]
   const isSeriesMode = selections.storyMode === 'series'
@@ -117,8 +118,12 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
 
           <div className="grid gap-2.5">
             <button className="q-primary w-full" onClick={primaryAction}>{primaryLabel()}</button>
-            {completed ? <button className="q-secondary w-full" onClick={onResetStory}>{t(language, 'home.start_new_story')}</button> : null}
-            <button className="q-secondary w-full" onClick={onEditSetup}>{t(language, 'home.change_choice')}</button>
+            {completed ? <button className="q-secondary w-full" onClick={onCreateNewStorySetup}>{t(language, 'home.start_new_story')}</button> : null}
+            {notStarted ? (
+              <button className="q-secondary w-full" onClick={onEditSetup}>{t(language, 'home.change_choice')}</button>
+            ) : !completed ? (
+              <button className="q-secondary w-full" onClick={onCreateNewStorySetup}>{t(language, 'home.start_new_story')}</button>
+            ) : null}
           </div>
         </div>
       </section>
