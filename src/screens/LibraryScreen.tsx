@@ -1,8 +1,10 @@
+import { StoryArchiveShelf } from '../components/StoryArchiveShelf'
 import { StylePackCover } from '../components/StylePackCover'
 import { stylePacks } from '../data/stylePacks'
 import { t } from '../lib/i18n'
 import { deriveStoryStatus } from '../lib/storyStatus'
 import type { Episode, Language, OnboardingSelections, SeriesState, StoryStatus } from '../types/qissa'
+import type { StoryArchiveItem } from '../lib/storyArchive'
 
 const libraryLabels: Record<
   Language,
@@ -74,6 +76,7 @@ export function LibraryScreen({
   selections,
   seriesState,
   episode,
+  archiveItems,
   onOpenStory,
   onCreateStory,
 }: {
@@ -81,6 +84,7 @@ export function LibraryScreen({
   selections: OnboardingSelections
   seriesState: SeriesState | null
   episode: Episode | null
+  archiveItems: StoryArchiveItem[]
   onOpenStory: () => void
   onCreateStory: () => void
 }) {
@@ -99,11 +103,11 @@ export function LibraryScreen({
       <section className="space-y-5 pb-28">
         <div className="px-1">
           <p className="q-label mb-2">{t(language, 'nav.library')}</p>
-          <h2 className="q-heading text-3xl font-bold leading-tight">{t(language, 'library.empty_title')}</h2>
+          <h2 className="q-heading text-3xl font-bold leading-tight">{archiveItems.length > 0 ? t(language, 'nav.library') : t(language, 'library.empty_title')}</h2>
         </div>
 
         <div className="q-card overflow-hidden p-0">
-          <StylePackCover stylePack={pack} variant="hero" title={pack.title[language]} subtitle={t(language, 'library.empty_title')} />
+          <StylePackCover stylePack={pack} variant="hero" title={pack.title[language]} subtitle={archiveItems.length > 0 ? t(language, 'home.start_new_story') : t(language, 'library.empty_title')} />
           <div className="space-y-4 p-5">
             <p className="text-sm leading-6 text-[#625846]">{t(language, 'library.empty_body')}</p>
 
@@ -123,6 +127,8 @@ export function LibraryScreen({
             </button>
           </div>
         </div>
+
+        <StoryArchiveShelf language={language} items={archiveItems} />
       </section>
     )
   }
@@ -191,6 +197,8 @@ export function LibraryScreen({
           </p>
         </div>
       </article>
+
+      <StoryArchiveShelf language={language} items={archiveItems} />
     </section>
   )
 }

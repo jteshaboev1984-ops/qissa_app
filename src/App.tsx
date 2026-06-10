@@ -4,6 +4,7 @@ import { createInitialSeriesState, applyChoiceToSeriesState } from './lib/memory
 import { t } from './lib/i18n'
 import { localPersistence, type AppScreen } from './lib/localPersistence'
 import { createStoryEpisode } from './lib/storyAgent'
+import { storyArchive, type StoryArchiveItem } from './lib/storyArchive'
 import { HomeScreen } from './screens/HomeScreen'
 import { LibraryScreen } from './screens/LibraryScreen'
 import { ParentScreen } from './screens/ParentScreen'
@@ -67,6 +68,7 @@ function App() {
   const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(hydrated.readerPreferences ?? defaultReaderPreferences)
   const [onboardingMode, setOnboardingMode] = useState<OnboardingMode>('first_launch')
   const [appTab, setAppTab] = useState<AppTab>('home')
+  const [archiveItems, setArchiveItems] = useState<StoryArchiveItem[]>(() => storyArchive.load())
 
   useEffect(() => {
     localPersistence.clearDeprecatedKeys()
@@ -90,11 +92,20 @@ function App() {
     })
   }
 
+  const archiveCurrentStory = () => {
+    const saved = storyArchive.saveSnapshot(selections, seriesState, episode)
+    if (saved) setArchiveItems(storyArchive.load())
+  }
+
   const setupChanged = (a: OnboardingSelections, b: OnboardingSelections) => JSON.stringify(a) !== JSON.stringify(b)
 
   const handleOnboardingComplete = (value: OnboardingSelections) => {
     const isEditing = onboardingMode === 'edit_setup'
     const hasChanged = selections ? setupChanged(selections, value) : true
+
+    if ((isEditing && hasChanged) || onboardingMode === 'new_story') {
+      archiveCurrentStory()
+    }
 
     setSelections(value)
     localPersistence.saveOnboardingSelections(value)
@@ -160,6 +171,7 @@ function App() {
 
   const handleResetStory = () => {
     if (!selections) return
+    archiveCurrentStory()
     const nextSeries = createInitialSeriesState(selections)
     setSeriesState(nextSeries)
     setEpisode(null)
@@ -242,6 +254,7 @@ function App() {
             selections={selections}
             seriesState={seriesState}
             episode={episode}
+            archiveItems={archiveItems}
             onOpenStory={handleOpenStory}
             onCreateStory={handleStartStory}
           />
