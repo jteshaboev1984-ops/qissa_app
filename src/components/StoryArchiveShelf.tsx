@@ -1,6 +1,6 @@
 import { stylePacks } from '../data/stylePacks'
+import { canRestoreArchiveItem, type StoryArchiveItem } from '../lib/storyArchive'
 import type { Language } from '../types/qissa'
-import type { StoryArchiveItem } from '../lib/storyArchive'
 
 const labels: Record<
   Language,
@@ -11,6 +11,8 @@ const labels: Record<
     lastChoice: string
     tomorrowSeed: string
     updated: string
+    open: string
+    unavailable: string
   }
 > = {
   ru: {
@@ -20,6 +22,8 @@ const labels: Record<
     lastChoice: 'Выбор',
     tomorrowSeed: 'След',
     updated: 'Сохранено',
+    open: 'Открыть историю',
+    unavailable: 'Можно открыть только новые сохранённые истории.',
   },
   uz: {
     title: 'Oldingi hikoyalar',
@@ -28,6 +32,8 @@ const labels: Record<
     lastChoice: 'Tanlov',
     tomorrowSeed: 'Iz',
     updated: 'Saqlangan',
+    open: 'Hikoyani ochish',
+    unavailable: 'Faqat yangi saqlangan hikoyalarni ochish mumkin.',
   },
   kz: {
     title: 'Алдыңғы оқиғалар',
@@ -36,6 +42,8 @@ const labels: Record<
     lastChoice: 'Таңдау',
     tomorrowSeed: 'Із',
     updated: 'Сақталды',
+    open: 'Оқиғаны ашу',
+    unavailable: 'Тек жаңа сақталған оқиғаларды ашуға болады.',
   },
 }
 
@@ -48,9 +56,11 @@ function formatDate(value: string) {
 export function StoryArchiveShelf({
   language,
   items,
+  onOpenStory,
 }: {
   language: Language
   items: StoryArchiveItem[]
+  onOpenStory?: (item: StoryArchiveItem) => void
 }) {
   if (items.length === 0) return null
 
@@ -68,6 +78,7 @@ export function StoryArchiveShelf({
         {items.slice(0, 5).map((item) => {
           const pack = stylePacks.find((entry) => entry.id === item.stylePackId) ?? stylePacks[0]
           const savedDate = formatDate(item.updatedAt)
+          const canOpen = canRestoreArchiveItem(item)
 
           return (
             <article key={`${item.id}-${item.updatedAt}`} className="rounded-[1.5rem] border border-[#eadfc9] bg-[#fff8e9] p-4">
@@ -95,11 +106,23 @@ export function StoryArchiveShelf({
                 </p>
               ) : null}
 
-              {savedDate ? (
-                <p className="mt-3 text-right text-[0.68rem] font-bold uppercase tracking-[0.12em] text-[#8a7b5e]">
-                  {copy.updated}: {savedDate}
-                </p>
-              ) : null}
+              <div className="mt-4 grid gap-2">
+                {canOpen && onOpenStory ? (
+                  <button className="q-secondary w-full py-2.5 text-xs" onClick={() => onOpenStory(item)}>
+                    {copy.open}
+                  </button>
+                ) : (
+                  <p className="rounded-2xl border border-[#eadfc9] bg-white/60 px-3 py-2 text-center text-xs leading-5 text-[#7a705d]">
+                    {copy.unavailable}
+                  </p>
+                )}
+
+                {savedDate ? (
+                  <p className="text-right text-[0.68rem] font-bold uppercase tracking-[0.12em] text-[#8a7b5e]">
+                    {copy.updated}: {savedDate}
+                  </p>
+                ) : null}
+              </div>
             </article>
           )
         })}

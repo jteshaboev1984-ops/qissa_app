@@ -78,6 +78,7 @@ export function LibraryScreen({
   episode,
   archiveItems,
   onOpenStory,
+  onOpenArchivedStory,
   onCreateStory,
 }: {
   language: Language
@@ -86,6 +87,7 @@ export function LibraryScreen({
   episode: Episode | null
   archiveItems: StoryArchiveItem[]
   onOpenStory: () => void
+  onOpenArchivedStory: (item: StoryArchiveItem) => void
   onCreateStory: () => void
 }) {
   const pack = stylePacks.find((p) => p.id === selections.stylePackId) ?? stylePacks[0]
@@ -128,7 +130,7 @@ export function LibraryScreen({
           </div>
         </div>
 
-        <StoryArchiveShelf language={language} items={archiveItems} />
+        <StoryArchiveShelf language={language} items={archiveItems} onOpenStory={onOpenArchivedStory} />
       </section>
     )
   }
@@ -198,7 +200,7 @@ export function LibraryScreen({
         </div>
       </article>
 
-      <StoryArchiveShelf language={language} items={archiveItems} />
+      <StoryArchiveShelf language={language} items={archiveItems} onOpenStory={onOpenArchivedStory} />
     </section>
   )
 }

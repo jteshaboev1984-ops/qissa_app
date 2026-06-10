@@ -13,6 +13,11 @@ export interface StoryArchiveItem {
   lastChoiceText: string
   tomorrowSeed: string
   updatedAt: string
+
+  // Added after Patch 33. Older archive items may not have these fields.
+  selections?: OnboardingSelections
+  seriesState?: SeriesState
+  episode?: Episode
 }
 
 const STORY_ARCHIVE_KEY = 'qissa:v1:storyArchive'
@@ -32,7 +37,9 @@ const safeParseJSON = <T>(value: string | null): T | null => {
 
 const isArchiveItem = (value: unknown): value is StoryArchiveItem => {
   if (!isRecord(value)) return false
-  return typeof value.id === 'string' &&
+
+  const hasRequiredMetadata =
+    typeof value.id === 'string' &&
     typeof value.title === 'string' &&
     typeof value.stylePackId === 'string' &&
     typeof value.storyMode === 'string' &&
@@ -44,7 +51,19 @@ const isArchiveItem = (value: unknown): value is StoryArchiveItem => {
     typeof value.lastChoiceText === 'string' &&
     typeof value.tomorrowSeed === 'string' &&
     typeof value.updatedAt === 'string'
+
+  if (!hasRequiredMetadata) return false
+
+  const optionalSnapshotLooksValid =
+    (value.selections === undefined || isRecord(value.selections)) &&
+    (value.seriesState === undefined || isRecord(value.seriesState)) &&
+    (value.episode === undefined || isRecord(value.episode))
+
+  return optionalSnapshotLooksValid
 }
+
+export const canRestoreArchiveItem = (item: StoryArchiveItem): boolean =>
+  Boolean(item.selections && item.seriesState && item.episode)
 
 const episodeNumberFrom = (episode: Episode, seriesState: SeriesState | null): number => {
   if (seriesState?.episodeCount) return Math.max(seriesState.episodeCount, 1)
@@ -82,6 +101,10 @@ const buildArchiveItem = (
     lastChoiceText: latestChoice?.choice_text?.trim() ?? '',
     tomorrowSeed: latestChoice?.tomorrow_seed?.trim() ?? '',
     updatedAt: new Date().toISOString(),
+
+    selections,
+    seriesState: seriesState ?? undefined,
+    episode,
   }
 }
 
@@ -120,4 +143,5 @@ const saveSnapshot = (
 export const storyArchive = {
   load,
   saveSnapshot,
+  canRestore: canRestoreArchiveItem,
 }
