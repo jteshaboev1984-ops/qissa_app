@@ -145,6 +145,7 @@ export function ParentScreen({
   onReaderPreferencesChange,
   onEditSetup,
   onResetStory,
+  onCreateNewStorySetup,
 }: {
   language: Language
   selections: OnboardingSelections
@@ -153,6 +154,7 @@ export function ParentScreen({
   onReaderPreferencesChange: (patch: Partial<ReaderPreferences>) => void
   onEditSetup: () => void
   onResetStory: () => void
+  onCreateNewStorySetup: () => void
 }) {
   const labels = parentLabels[language]
   const pack = stylePacks.find((p) => p.id === selections.stylePackId) ?? stylePacks[0]
@@ -212,6 +214,10 @@ export function ParentScreen({
         </div>
 
         <InfoTile label={labels.mood} value={moodLabel(language, selections.storyMood)} />
+
+        <button className="q-secondary w-full" onClick={onCreateNewStorySetup}>
+          {t(language, 'home.start_new_story')}
+        </button>
       </section>
 
       <section className="q-card space-y-4 p-5">

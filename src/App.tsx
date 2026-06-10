@@ -19,7 +19,7 @@ import type {
   SeriesState,
 } from './types/qissa'
 
-type OnboardingMode = 'first_launch' | 'edit_setup'
+type OnboardingMode = 'first_launch' | 'edit_setup' | 'new_story'
 
 function resolveHydratedState() {
   const language = localPersistence.loadLanguage() ?? 'ru'
@@ -173,6 +173,12 @@ function App() {
     updateScreen('onboarding')
   }
 
+  const handleOpenNewStorySetup = () => {
+    if (!selections) return
+    setAppTab('home')
+    handleOpenOnboarding('new_story')
+  }
+
   const handleExitOnboarding = () => {
     if (onboardingMode === 'edit_setup' && selections) {
       updateScreen('home')
@@ -211,7 +217,7 @@ function App() {
             onComplete={handleOnboardingComplete}
             onExit={handleExitOnboarding}
             mode={onboardingMode}
-            initialSelections={onboardingMode === 'edit_setup' ? selections ?? undefined : undefined}
+            initialSelections={onboardingMode !== 'first_launch' ? selections ?? undefined : undefined}
           />
         )}
 
@@ -225,6 +231,7 @@ function App() {
             onContinueStory={handleOpenStory}
             onResetStory={handleResetStory}
             onEditSetup={() => handleOpenOnboarding('edit_setup')}
+            onCreateNewStorySetup={handleOpenNewStorySetup}
           />
         )}
 
@@ -249,6 +256,7 @@ function App() {
             onReaderPreferencesChange={updateReaderPreferences}
             onEditSetup={() => handleOpenOnboarding('edit_setup')}
             onResetStory={handleResetStory}
+            onCreateNewStorySetup={handleOpenNewStorySetup}
           />
         )}
 
@@ -264,7 +272,7 @@ function App() {
             isChoiceSavedForCurrentEpisode={Boolean(savedChoiceEntryForCurrentEpisode)}
             savedChoiceIdForCurrentEpisode={savedChoiceEntryForCurrentEpisode?.choice_id ?? null}
             onBackHome={() => { setAppTab('home'); updateScreen('home') }}
-            onStartNewStory={handleResetStory}
+            onStartNewStory={handleOpenNewStorySetup}
           />
         )}
         {screen === 'home' && selections ? <AppBottomNav language={language} tab={appTab} onTab={setAppTab} /> : null}

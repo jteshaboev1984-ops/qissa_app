@@ -8,7 +8,7 @@ import { onboardingSteps } from './onboardingSteps'
 
 interface OnboardingFlowProps {
   language: Language
-  mode: 'first_launch' | 'edit_setup'
+  mode: 'first_launch' | 'edit_setup' | 'new_story'
   initialSelections?: OnboardingSelections
   onLanguageChange: (language: Language) => void
   onComplete: (selections: OnboardingSelections) => void
@@ -30,7 +30,15 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   const [showWorldHint, setShowWorldHint] = useState(false)
   const [worldInteracted, setWorldInteracted] = useState(false)
 
-  const step = onboardingSteps[stepIndex]
+  const activeSteps = useMemo(
+    () => mode === 'new_story' ? onboardingSteps.filter((item) => item === 'world' || item === 'mode_mood') : onboardingSteps,
+    [mode],
+  )
+  const step = activeSteps[Math.min(stepIndex, activeSteps.length - 1)]
+
+  useEffect(() => {
+    setStepIndex(0)
+  }, [mode])
 
   useEffect(() => {
     if (initialSelections) {
@@ -50,7 +58,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   }, [step])
 
   const next = () => {
-    if (stepIndex === onboardingSteps.length - 1) {
+    if (stepIndex === activeSteps.length - 1) {
       onComplete(draft)
       return
     }
@@ -68,12 +76,12 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
   const renderProgress = () => (
     <div className="space-y-3">
       <div className="flex items-center justify-end text-sm text-[#746a55]">
-        <p className="font-semibold">{stepIndex + 1} / {onboardingSteps.length}</p>
+        <p className="font-semibold">{stepIndex + 1} / {activeSteps.length}</p>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-[#ede3cf]">
         <div
           className="h-2 rounded-full bg-gradient-to-r from-[#d4af37] to-[#35666b] transition-all duration-500"
-          style={{ width: `${((stepIndex + 1) / onboardingSteps.length) * 100}%` }}
+          style={{ width: `${((stepIndex + 1) / activeSteps.length) * 100}%` }}
         />
       </div>
     </div>
@@ -145,7 +153,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
       <div className="grid gap-3 sm:grid-cols-2">
         {stylePacks.map((pack) => {
           const selected = draft.stylePackId === pack.id
-          const showInlineContinue = selected && (worldInteracted || mode === 'edit_setup')
+          const showInlineContinue = selected && (worldInteracted || mode === 'edit_setup' || mode === 'new_story')
 
           return (
             <div key={pack.id} className="space-y-2">
@@ -199,7 +207,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
       </button>
       {!hideFooterNext && (
         <button onClick={next} className="q-primary px-6 py-2.5">
-          {stepIndex === onboardingSteps.length - 1 ? t(language, 'actions.start_story') : t(language, 'actions.next')}
+          {stepIndex === activeSteps.length - 1 ? t(language, 'actions.start_story') : t(language, 'actions.next')}
         </button>
       )}
       {hideFooterNext && <span className="text-sm text-[#746a55]">{mode === 'edit_setup' ? t(language, 'onboarding.world_continue') : ''}</span>}
