@@ -1,5 +1,5 @@
--- QISSA MVP backend schema draft for future Supabase setup.
--- Draft only: no live integration in current local prototype.
+-- QISSA MVP backend schema baseline aligned with src/contracts/storyContracts.ts.
+-- Runtime remains local until the Supabase/Edge Function integration stage.
 
 create extension if not exists pgcrypto;
 
@@ -17,9 +17,12 @@ create table if not exists public.child_profiles (
   id uuid primary key default gen_random_uuid(),
   parent_user_id uuid null,
   display_name text null,
-  age_group text not null check (age_group in ('3-5', '6-8', '9-10')),
-  language text not null check (language in ('ru', 'uz', 'kz')),
-  hero_type text not null check (hero_type in ('girl_hero', 'boy_hero', 'animal', 'magical_hero', 'custom')),
+  age_group text not null constraint child_profiles_age_group_check
+    check (age_group in ('3-4', '5-7', '8-9')),
+  language text not null constraint child_profiles_language_check
+    check (language in ('ru', 'uz', 'kz')),
+  hero_type text not null constraint child_profiles_hero_type_check
+    check (hero_type in ('girl_hero', 'boy_hero', 'animal', 'magical_hero', 'custom')),
   custom_hero_name text null,
   default_voice_preset_id text null,
   reader_preferences jsonb not null default '{}'::jsonb,
@@ -31,10 +34,23 @@ comment on table public.child_profiles is 'Child/family story setup profile with
 create table if not exists public.story_sessions (
   id uuid primary key default gen_random_uuid(),
   child_profile_id uuid not null references public.child_profiles(id) on delete cascade,
-  story_mode text not null check (story_mode in ('one_time', 'series')),
-  story_mood text not null check (story_mood in ('bedtime', 'kind_adventure')),
-  style_pack_id text not null,
-  status text not null check (status in ('not_started', 'episode_1_active', 'episode_1_choice_saved', 'episode_2_active', 'completed')),
+  story_mode text not null constraint story_sessions_story_mode_check
+    check (story_mode in ('one_time', 'series')),
+  story_mood text not null constraint story_sessions_story_mood_check
+    check (story_mood in ('bedtime', 'kind_adventure')),
+  style_pack_id text not null constraint story_sessions_style_pack_id_check
+    check (style_pack_id in (
+      'cozy_forest',
+      'magic_garden',
+      'brave_adventure',
+      'stars_and_space',
+      'silk_road',
+      'animal_world',
+      'castle_mystery',
+      'sea_islands'
+    )),
+  status text not null constraint story_sessions_status_check
+    check (status in ('not_started', 'episode_1_active', 'episode_1_choice_saved', 'episode_2_active', 'completed')),
   current_episode_no int not null default 1 check (current_episode_no >= 1),
   title text null,
   summary text null,
@@ -53,18 +69,32 @@ create table if not exists public.story_episodes (
   episode_no int not null check (episode_no >= 1),
   title text not null,
   story_text text not null,
-  language text not null check (language in ('ru', 'uz', 'kz')),
-  mood text not null check (mood in ('bedtime', 'kind_adventure')),
-  style_pack_id text not null,
-  generation_source text not null default 'local_mock' check (generation_source in ('local_mock', 'edge_story_agent')),
-  safety_status text not null default 'approved' check (safety_status in ('approved', 'needs_review', 'blocked')),
+  language text not null constraint story_episodes_language_check
+    check (language in ('ru', 'uz', 'kz')),
+  mood text not null constraint story_episodes_mood_check
+    check (mood in ('bedtime', 'kind_adventure')),
+  style_pack_id text not null constraint story_episodes_style_pack_id_check
+    check (style_pack_id in (
+      'cozy_forest',
+      'magic_garden',
+      'brave_adventure',
+      'stars_and_space',
+      'silk_road',
+      'animal_world',
+      'castle_mystery',
+      'sea_islands'
+    )),
+  generation_source text not null default 'local_mock' constraint story_episodes_generation_source_check
+    check (generation_source in ('local_mock', 'edge_story_agent')),
+  safety_status text not null default 'approved' constraint story_episodes_safety_status_check
+    check (safety_status in ('approved', 'needs_review', 'blocked')),
   safety_result jsonb not null default '{}'::jsonb,
   vocabulary jsonb not null default '[]'::jsonb,
   next_episode_preview text null,
   created_at timestamptz not null default now(),
   unique (session_id, episode_no)
 );
-comment on table public.story_episodes is 'Generated/mock episode content storage.';
+comment on table public.story_episodes is 'Generated episode content storage.';
 
 create table if not exists public.story_choices (
   id uuid primary key default gen_random_uuid(),
@@ -72,12 +102,15 @@ create table if not exists public.story_choices (
   choice_id text not null,
   text text not null,
   effect_summary text not null,
+  resolution_text text null,
+  tomorrow_seed text null,
+  choice_icon text null,
   state_patch jsonb not null default '{}'::jsonb,
   value_alignment text[] not null default '{}'::text[],
   display_order int not null default 0,
   unique (episode_id, choice_id)
 );
-comment on table public.story_choices is 'Choice options shown in each episode.';
+comment on table public.story_choices is 'Choice options shown in each episode, including resolution and continuation memory.';
 
 create table if not exists public.story_choice_events (
   id uuid primary key default gen_random_uuid(),
@@ -134,19 +167,9 @@ create trigger trg_story_sessions_set_updated_at
 before update on public.story_sessions
 for each row execute function public.set_updated_at();
 
--- Draft RLS notes only (not final production policies):
--- 1) Public prototype should not expose direct public writes.
--- 2) Future authenticated parent can access only own child_profiles/story_sessions.
--- 3) Episode generation should run via service role / edge functions.
--- 4) Child-facing client should not write safety_status or safety_reviews directly.
---
--- Example draft (commented):
--- alter table public.child_profiles enable row level security;
--- create policy "parent reads own profiles"
---   on public.child_profiles for select
---   using (auth.uid() = parent_user_id);
---
--- create policy "parent updates own profiles"
---   on public.child_profiles for update
---   using (auth.uid() = parent_user_id)
---   with check (auth.uid() = parent_user_id);
+-- RLS is intentionally not enabled in this baseline migration.
+-- Before a real launch:
+-- 1) parent_user_id must be bound to auth.uid() in trusted server code;
+-- 2) parent-scoped RLS policies must be enabled for profiles and sessions;
+-- 3) generation and safety writes must run through trusted Edge Functions;
+-- 4) the public client must never receive the service-role key.
