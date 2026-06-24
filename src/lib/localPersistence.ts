@@ -161,6 +161,13 @@ const prepareForStoryProvider = (mode: PersistedStoryProvider): boolean => {
   return didReset
 }
 
+const activeStoryProvider: PersistedStoryProvider =
+  import.meta.env.VITE_QISSA_STORY_PROVIDER === 'remote' ? 'remote' : 'local'
+
+// Run before App hydration so local prototype episodes cannot masquerade as
+// remote-generated stories after the backend rollout.
+prepareForStoryProvider(activeStoryProvider)
+
 const clearDeprecatedKeys = () => {
   try {
     DEPRECATED_KEYS.forEach((key) => window.localStorage.removeItem(key))
