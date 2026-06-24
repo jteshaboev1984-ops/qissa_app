@@ -1,13 +1,23 @@
 import type { StoryGenerationInput, StoryGenerationOutput } from '../contracts/agentContracts'
 import { createStoryEpisode } from './storyAgent'
+import { generateWithRemoteProvider, getStoryProviderConfig } from './storyRemoteClient'
 
-// Boundary between UI/application state and the story generation provider.
-// Today it uses the local deterministic storyAgent.
-// Later this file can call a backend/Edge Function without changing App screens.
 const generateWithLocalAgent = async (input: StoryGenerationInput): Promise<StoryGenerationOutput> => ({
   episode: createStoryEpisode(input),
 })
 
+const generateEpisode = async (input: StoryGenerationInput): Promise<StoryGenerationOutput> => {
+  const config = getStoryProviderConfig()
+  if (config.mode === 'local') return generateWithLocalAgent(input)
+
+  try {
+    return await generateWithRemoteProvider(input, config)
+  } catch (error) {
+    if (!config.fallbackToLocal) throw error
+    return generateWithLocalAgent(input)
+  }
+}
+
 export const storyService = {
-  generateEpisode: generateWithLocalAgent,
+  generateEpisode,
 }
