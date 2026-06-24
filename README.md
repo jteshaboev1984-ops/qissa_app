@@ -47,6 +47,7 @@ https://jteshaboev1984-ops.github.io/qissa_app/
 ```bash
 npm ci
 npm run check:i18n
+npm run check:backend-contracts
 npm run typecheck
 npm run build
 npm run preview
