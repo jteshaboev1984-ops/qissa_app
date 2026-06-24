@@ -6,6 +6,7 @@ export type StoryProviderMode = 'local' | 'remote'
 export interface StoryProviderConfig {
   mode: StoryProviderMode
   endpoint: string | null
+  publishableKey: string | null
   timeoutMs: number
   fallbackToLocal: boolean
 }
@@ -20,49 +21,39 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === 'string')
 
-const isSafetyResult = (value: unknown): value is SafetyResult => {
-  if (!isRecord(value) || !isRecord(value.flags)) return false
+const isSafetyResult = (value: unknown): value is SafetyResult =>
+  isRecord(value) &&
+  isRecord(value.flags) &&
+  typeof value.approved === 'boolean' &&
+  ['low', 'medium', 'high'].includes(String(value.risk_level)) &&
+  ['publish', 'regenerate', 'fallback', 'block'].includes(String(value.required_action))
 
-  return (
-    typeof value.approved === 'boolean' &&
-    ['low', 'medium', 'high'].includes(String(value.risk_level)) &&
-    ['publish', 'regenerate', 'fallback', 'block'].includes(String(value.required_action))
-  )
-}
+const isEpisodeChoice = (value: unknown): value is EpisodeChoice =>
+  isRecord(value) &&
+  isRecord(value.state_patch) &&
+  typeof value.choice_id === 'string' &&
+  typeof value.text === 'string' &&
+  typeof value.effect_summary === 'string' &&
+  (value.resolution_text === undefined || typeof value.resolution_text === 'string') &&
+  (value.tomorrow_seed === undefined || typeof value.tomorrow_seed === 'string') &&
+  (value.choice_icon === undefined || typeof value.choice_icon === 'string') &&
+  isStringArray(value.value_alignment)
 
-const isEpisodeChoice = (value: unknown): value is EpisodeChoice => {
-  if (!isRecord(value) || !isRecord(value.state_patch)) return false
-
-  return (
-    typeof value.choice_id === 'string' &&
-    typeof value.text === 'string' &&
-    typeof value.effect_summary === 'string' &&
-    (value.resolution_text === undefined || typeof value.resolution_text === 'string') &&
-    (value.tomorrow_seed === undefined || typeof value.tomorrow_seed === 'string') &&
-    (value.choice_icon === undefined || typeof value.choice_icon === 'string') &&
-    isStringArray(value.value_alignment)
-  )
-}
-
-const isEpisode = (value: unknown): value is Episode => {
-  if (!isRecord(value)) return false
-
-  return (
-    typeof value.episode_id === 'string' &&
-    typeof value.series_id === 'string' &&
-    typeof value.title === 'string' &&
-    typeof value.story_text === 'string' &&
-    ['one_time', 'series'].includes(String(value.mode)) &&
-    ['bedtime', 'kind_adventure'].includes(String(value.mood)) &&
-    typeof value.stylePackId === 'string' &&
-    Array.isArray(value.choices) &&
-    value.choices.every(isEpisodeChoice) &&
-    isRecord(value.state_patch) &&
-    Array.isArray(value.vocabulary) &&
-    typeof value.nextEpisodePreview === 'string' &&
-    isSafetyResult(value.safety_self_check)
-  )
-}
+const isEpisode = (value: unknown): value is Episode =>
+  isRecord(value) &&
+  typeof value.episode_id === 'string' &&
+  typeof value.series_id === 'string' &&
+  typeof value.title === 'string' &&
+  typeof value.story_text === 'string' &&
+  ['one_time', 'series'].includes(String(value.mode)) &&
+  ['bedtime', 'kind_adventure'].includes(String(value.mood)) &&
+  typeof value.stylePackId === 'string' &&
+  Array.isArray(value.choices) &&
+  value.choices.every(isEpisodeChoice) &&
+  isRecord(value.state_patch) &&
+  Array.isArray(value.vocabulary) &&
+  typeof value.nextEpisodePreview === 'string' &&
+  isSafetyResult(value.safety_self_check)
 
 const isStoryGenerationOutput = (value: unknown): value is StoryGenerationOutput =>
   isRecord(value) && isEpisode(value.episode)
@@ -73,17 +64,13 @@ const parseTimeout = (value: string | undefined): number => {
   return Math.min(Math.max(parsed, MIN_TIMEOUT_MS), MAX_TIMEOUT_MS)
 }
 
-export const getStoryProviderConfig = (): StoryProviderConfig => {
-  const mode = import.meta.env.VITE_QISSA_STORY_PROVIDER === 'remote' ? 'remote' : 'local'
-  const endpoint = import.meta.env.VITE_QISSA_STORY_ENDPOINT?.trim() || null
-
-  return {
-    mode,
-    endpoint,
-    timeoutMs: parseTimeout(import.meta.env.VITE_QISSA_STORY_TIMEOUT_MS),
-    fallbackToLocal: import.meta.env.VITE_QISSA_STORY_FALLBACK_TO_LOCAL !== 'false',
-  }
-}
+export const getStoryProviderConfig = (): StoryProviderConfig => ({
+  mode: import.meta.env.VITE_QISSA_STORY_PROVIDER === 'remote' ? 'remote' : 'local',
+  endpoint: import.meta.env.VITE_QISSA_STORY_ENDPOINT?.trim() || null,
+  publishableKey: import.meta.env.VITE_QISSA_SUPABASE_PUBLISHABLE_KEY?.trim() || null,
+  timeoutMs: parseTimeout(import.meta.env.VITE_QISSA_STORY_TIMEOUT_MS),
+  fallbackToLocal: import.meta.env.VITE_QISSA_STORY_FALLBACK_TO_LOCAL !== 'false',
+})
 
 const readErrorBody = async (response: Response): Promise<string> => {
   try {
@@ -93,12 +80,24 @@ const readErrorBody = async (response: Response): Promise<string> => {
   }
 }
 
+const buildHeaders = (publishableKey: string): Headers => {
+  const headers = new Headers()
+  headers.set('content-type', 'application/json')
+  headers.set('apikey', publishableKey)
+  headers.set('authorization', `Bearer ${publishableKey}`)
+  return headers
+}
+
 export const generateWithRemoteProvider = async (
   input: StoryGenerationInput,
   config: StoryProviderConfig,
 ): Promise<StoryGenerationOutput> => {
   if (!config.endpoint) {
-    throw new Error('Remote story provider is enabled, but VITE_QISSA_STORY_ENDPOINT is empty.')
+    throw new Error('Remote story provider is enabled, but its endpoint is empty.')
+  }
+
+  if (!config.publishableKey) {
+    throw new Error('Remote story provider is enabled, but its publishable key is empty.')
   }
 
   const controller = new AbortController()
@@ -107,7 +106,7 @@ export const generateWithRemoteProvider = async (
   try {
     const response = await fetch(config.endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: buildHeaders(config.publishableKey),
       body: JSON.stringify(input),
       signal: controller.signal,
       credentials: 'omit',

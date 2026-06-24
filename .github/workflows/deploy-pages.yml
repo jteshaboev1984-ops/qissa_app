@@ -35,6 +35,12 @@ jobs:
         run: npm run typecheck
 
       - name: Build
+        env:
+          VITE_QISSA_STORY_PROVIDER: remote
+          VITE_QISSA_STORY_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate
+          VITE_QISSA_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+          VITE_QISSA_STORY_TIMEOUT_MS: 12000
+          VITE_QISSA_STORY_FALLBACK_TO_LOCAL: true
         run: npm run build
 
       - name: Upload Pages artifact
