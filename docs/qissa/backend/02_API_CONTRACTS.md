@@ -1,16 +1,39 @@
-# QISSA MVP Future API Contracts (No Integration Yet)
+# QISSA MVP API Contracts
 
-Status: contract draft only for backend implementation stage.
+Status: backend contract baseline aligned with `src/contracts/storyContracts.ts`. The app runtime remains local until the remote adapter and Edge Functions are enabled.
 
-## Shared notes
-- Contracts are aligned with current `src/types/qissa.ts` domain model.
-- Inputs should be validated server-side even if client validates first.
-- Auth is future scope; request examples assume future authenticated parent context.
+## Shared rules
 
+- Validate all inputs server-side even when the client already validates them.
+- Keep AI/provider secrets and the Supabase service-role key on the server only.
+- The public client consumes domain payloads; it does not receive raw database-only fields unless explicitly documented.
+- RU, UZ and KZ payloads must preserve the selected language through profile, session and episode records.
 
-## Shared record shapes
+## Domain and database ID mapping
+
+- `story_sessions.id` maps to the frontend `SeriesState.id` and `Episode.series_id`.
+- `story_episodes.id` maps to the frontend `Episode.episode_id`.
+- `story_choices.id` is an internal database UUID.
+- `story_choices.choice_id` is the stable text key exposed as frontend `EpisodeChoice.choice_id`.
+- `story_choice_events.story_choice_id` references the internal database UUID, not the public choice key.
+
+## Shared domain types
 
 ```ts
+type Language = 'ru' | 'uz' | 'kz'
+type AgeGroup = '3-4' | '5-7' | '8-9'
+type StoryMode = 'one_time' | 'series'
+type StoryMood = 'bedtime' | 'kind_adventure'
+type StylePackId =
+  | 'cozy_forest'
+  | 'magic_garden'
+  | 'brave_adventure'
+  | 'stars_and_space'
+  | 'silk_road'
+  | 'animal_world'
+  | 'castle_mystery'
+  | 'sea_islands'
+
 interface ReaderPreferences {
   textSize: 'small' | 'medium' | 'large' | 'extra_large'
   fontMode: 'standard' | 'soft' | 'dyslexia_friendly'
@@ -30,12 +53,58 @@ interface VocabularyItem {
   targetLanguage: 'ru' | 'en'
 }
 
+interface StatePatch {
+  last_event?: string
+  new_friend?: string
+  hero_trait?: string
+  open_arc?: string
+  relationship_updates?: Record<string, string>
+  canon_updates?: Record<string, string>
+}
+
+interface SafetyResultPayload {
+  approved: boolean
+  risk_level: 'low' | 'medium' | 'high'
+  flags: Record<string, boolean>
+  required_action: 'publish' | 'regenerate' | 'fallback' | 'block'
+}
+
+interface EpisodeChoicePayload {
+  choice_id: string
+  text: string
+  effect_summary: string
+  resolution_text?: string
+  tomorrow_seed?: string
+  choice_icon?: string
+  state_patch: StatePatch
+  value_alignment: string[]
+}
+
+interface EpisodePayload {
+  episode_id: string
+  series_id: string
+  title: string
+  story_text: string
+  mode: StoryMode
+  mood: StoryMood
+  stylePackId: StylePackId
+  choices: EpisodeChoicePayload[]
+  state_patch: StatePatch
+  vocabulary: VocabularyItem[]
+  nextEpisodePreview: string
+  safety_self_check: SafetyResultPayload
+}
+```
+
+## Shared database record shapes
+
+```ts
 interface ChildProfileRecord {
   id: string
   parentUserId: string | null
   displayName: string | null
-  ageGroup: '3-5' | '6-8' | '9-10'
-  language: 'ru' | 'uz' | 'kz'
+  ageGroup: AgeGroup
+  language: Language
   heroType: 'girl_hero' | 'boy_hero' | 'animal' | 'magical_hero' | 'custom'
   customHeroName: string | null
   defaultVoicePresetId: string | null
@@ -47,9 +116,9 @@ interface ChildProfileRecord {
 interface StorySessionRecord {
   id: string
   childProfileId: string
-  storyMode: 'one_time' | 'series'
-  storyMood: 'bedtime' | 'kind_adventure'
-  stylePackId: string
+  storyMode: StoryMode
+  storyMood: StoryMood
+  stylePackId: StylePackId
   status: 'not_started' | 'episode_1_active' | 'episode_1_choice_saved' | 'episode_2_active' | 'completed'
   currentEpisodeNo: number
   title: string | null
@@ -62,37 +131,33 @@ interface StorySessionRecord {
   completedAt: string | null
 }
 
-interface SafetyResultRecord {
-  status: 'approved' | 'needs_review' | 'blocked'
-  riskLevel: 'low' | 'medium' | 'high'
-  flags: Record<string, boolean>
-  requiredAction: 'publish' | 'regenerate' | 'fallback' | 'block'
-}
-
 interface EpisodeRecord {
   id: string
   sessionId: string
   episodeNo: number
   title: string
   storyText: string
-  language: 'ru' | 'uz' | 'kz'
-  mood: 'bedtime' | 'kind_adventure'
-  stylePackId: string
+  language: Language
+  mood: StoryMood
+  stylePackId: StylePackId
   generationSource: 'local_mock' | 'edge_story_agent'
   safetyStatus: 'approved' | 'needs_review' | 'blocked'
-  safetyResult: SafetyResultRecord
+  safetyResult: SafetyResultPayload
   vocabulary: VocabularyItem[]
   nextEpisodePreview: string | null
   createdAt: string
 }
 
 interface StoryChoiceRecord {
-  id: string // DB row UUID
+  id: string
   episodeId: string
-  choiceKey: string // maps to story_choices.choice_id text
+  choiceKey: string
   text: string
   effectSummary: string
-  statePatch: Record<string, unknown>
+  resolutionText: string | null
+  tomorrowSeed: string | null
+  choiceIcon: string | null
+  statePatch: StatePatch
   valueAlignment: string[]
   displayOrder: number
 }
@@ -101,19 +166,18 @@ interface StoryChoiceEventRecord {
   id: string
   sessionId: string
   episodeId: string
-  storyChoiceId: string // DB FK -> story_choices.id
+  storyChoiceId: string
   selectedAt: string
-  statePatchApplied: Record<string, unknown>
+  statePatchApplied: StatePatch
 }
 ```
 
 ## 1) `createChildProfile`
-Purpose: create initial child story setup profile.
 
 ```ts
 interface CreateChildProfileRequest {
-  ageGroup: '3-5' | '6-8' | '9-10'
-  language: 'ru' | 'uz' | 'kz'
+  ageGroup: AgeGroup
+  language: Language
   heroType: 'girl_hero' | 'boy_hero' | 'animal' | 'magical_hero' | 'custom'
   customHeroName?: string
   readerPreferences?: Partial<ReaderPreferences>
@@ -123,48 +187,45 @@ interface CreateChildProfileResponse {
   childProfile: ChildProfileRecord
 }
 ```
-Validation notes: enum checks; `customHeroName` required only for `heroType='custom'`.
-Error cases: invalid payload, conflict, unauthorized (future), internal error.
-Future auth notes: set `parent_user_id=auth.uid()` in trusted backend path.
+
+Validation: `customHeroName` is required only when `heroType='custom'`.
 
 ## 2) `updateChildProfile`
-Purpose: update editable profile fields without resetting story progress automatically.
 
 ```ts
 interface UpdateChildProfileRequest {
   childProfileId: string
-  patch: Partial<Pick<ChildProfileRecord, 'displayName' | 'ageGroup' | 'language' | 'heroType' | 'customHeroName' | 'defaultVoicePresetId'>>
+  patch: Partial<Pick<
+    ChildProfileRecord,
+    'displayName' | 'ageGroup' | 'language' | 'heroType' | 'customHeroName' | 'defaultVoicePresetId'
+  >>
 }
 
 interface UpdateChildProfileResponse {
   childProfile: ChildProfileRecord
 }
 ```
-Validation notes: whitelist patch fields only.
-Error cases: not found, forbidden ownership, invalid transitions.
-Future auth notes: verify profile ownership before update.
+
+Validation: accept only whitelisted profile fields and verify ownership.
 
 ## 3) `createStorySession`
-Purpose: start a new story lifecycle instance (one-time or series).
 
 ```ts
 interface CreateStorySessionRequest {
   childProfileId: string
-  storyMode: 'one_time' | 'series'
-  storyMood: 'bedtime' | 'kind_adventure'
-  stylePackId: string
+  storyMode: StoryMode
+  storyMood: StoryMood
+  stylePackId: StylePackId
 }
 
 interface CreateStorySessionResponse {
   storySession: StorySessionRecord
 }
 ```
-Validation notes: verify child profile exists and is owned.
-Error cases: invalid mode/mood/style, not found, forbidden.
-Future auth notes: enforce ownership through RLS + function checks.
+
+Validation: verify profile ownership and supported world/mode/mood values.
 
 ## 4) `generateEpisode`
-Purpose: create/get next episode payload for a session.
 
 ```ts
 interface GenerateEpisodeRequest {
@@ -174,24 +235,21 @@ interface GenerateEpisodeRequest {
 }
 
 interface GenerateEpisodeResponse {
-  episode: EpisodeRecord
-  choices: StoryChoiceRecord[]
-  safetyResult: SafetyResultRecord
-  vocabulary: VocabularyItem[]
+  episode: EpisodePayload
 }
 ```
-Validation notes: `requestedEpisodeNo >= 1`; ensure continuity for series mode.
-Error cases: session missing, invalid episode number, safety blocked, generation failure.
-Future auth notes: parent can request; write path executed in trusted edge function.
+
+The response intentionally matches the current frontend `StoryGenerationOutput`. The Edge Function may persist normalized episode and choice rows internally, then assemble the domain payload before returning it.
+
+Error cases: missing session, invalid episode number, continuity conflict, safety block, generation failure, timeout.
 
 ## 5) `confirmChoice`
-Purpose: persist selected choice and update session memory state.
 
 ```ts
 interface ConfirmChoiceRequest {
   sessionId: string
   episodeId: string
-  storyChoiceId: string
+  choiceKey: string
 }
 
 interface ConfirmChoiceResponse {
@@ -199,12 +257,10 @@ interface ConfirmChoiceResponse {
   updatedSession: StorySessionRecord
 }
 ```
-Validation notes: verify choice belongs to episode/session; reject duplicates.
-Error cases: conflict on duplicate confirmation, not found, forbidden.
-Future auth notes: only owner may confirm choices for owned session.
+
+The Edge Function resolves `choiceKey` to the internal `story_choices.id`. The unique `(session_id, episode_id)` constraint enforces one confirmed choice per episode.
 
 ## 6) `getCurrentStorySession`
-Purpose: load active session and current episode context for resume flow.
 
 ```ts
 interface GetCurrentStorySessionRequest {
@@ -213,17 +269,14 @@ interface GetCurrentStorySessionRequest {
 
 interface GetCurrentStorySessionResponse {
   session: StorySessionRecord | null
-  currentEpisode: EpisodeRecord | null
-  choices: StoryChoiceRecord[]
-  selectedChoice?: StoryChoiceEventRecord | null // selected DB choice event (contains storyChoiceId)
+  currentEpisode: EpisodePayload | null
+  selectedChoice: StoryChoiceEventRecord | null
 }
 ```
-Validation notes: prefer newest non-completed session; deterministic ordering.
-Error cases: forbidden ownership, malformed childProfileId.
-Future auth notes: scoped to authenticated parent ownership.
+
+Select the newest non-completed session deterministically by `updated_at desc, id desc`.
 
 ## 7) `resetStoryProgress`
-Purpose: reset progress while preserving child profile.
 
 ```ts
 interface ResetStoryProgressRequest {
@@ -234,15 +287,12 @@ interface ResetStoryProgressRequest {
 interface ResetStoryProgressResponse {
   session: StorySessionRecord
   currentEpisode: null
-  choices: []
 }
 ```
-Validation notes: exactly one of `childProfileId` or `sessionId` required.
-Error cases: ambiguous request, not found, forbidden.
-Future auth notes: operation must be owner-restricted.
+
+Validation: exactly one of `childProfileId` or `sessionId` is required. Reader preferences and child profile data must remain unchanged.
 
 ## 8) `updateReaderPreferences`
-Purpose: save reader accessibility settings independent from story progress.
 
 ```ts
 interface UpdateReaderPreferencesRequest {
@@ -255,6 +305,5 @@ interface UpdateReaderPreferencesResponse {
   readerPreferences: ReaderPreferences
 }
 ```
-Validation notes: full shape validation for text size/font/theme/etc.
-Error cases: invalid preference values, not found, forbidden.
-Future auth notes: owner-only update.
+
+Validation: validate the complete reader preference shape and verify profile ownership.
