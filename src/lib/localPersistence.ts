@@ -2,6 +2,7 @@ import { createInitialSeriesState } from './memoryAgent'
 import type { Episode, Language, OnboardingSelections, ReaderPreferences, SeriesState } from '../types/qissa'
 
 export type AppScreen = 'welcome' | 'onboarding' | 'home' | 'story'
+export type PersistedStoryProvider = 'local' | 'remote'
 
 const KEY_PREFIX = 'qissa:v1'
 
@@ -12,6 +13,7 @@ const STORAGE_KEYS = {
   currentEpisode: `${KEY_PREFIX}:currentEpisode`,
   screen: `${KEY_PREFIX}:screen`,
   readerPreferences: `${KEY_PREFIX}:readerPreferences`,
+  storyProvider: `${KEY_PREFIX}:storyProvider`,
 } as const
 
 const DEPRECATED_KEYS = ['qissa:language', 'qissa:onboardingSelections', 'qissa:seriesState', 'qissa:currentEpisode', 'qissa:screen']
@@ -101,6 +103,9 @@ export const isEpisode = (value: unknown): value is Episode => {
 const isAppScreen = (value: unknown): value is AppScreen =>
   value === 'welcome' || value === 'onboarding' || value === 'home' || value === 'story'
 
+const isStoryProvider = (value: unknown): value is PersistedStoryProvider =>
+  value === 'local' || value === 'remote'
+
 const safeSet = (key: string, value: unknown) => {
   try {
     window.localStorage.setItem(key, JSON.stringify(value))
@@ -141,6 +146,19 @@ const clearStoryProgressOnly = () => {
   } catch {
     // ignore clear failures
   }
+}
+
+const prepareForStoryProvider = (mode: PersistedStoryProvider): boolean => {
+  const storedValue = safeGet<unknown>(STORAGE_KEYS.storyProvider)
+  const previousMode = isStoryProvider(storedValue) ? storedValue : null
+  const shouldResetLegacyProgress = previousMode === null && mode === 'remote'
+  const shouldResetChangedProvider = previousMode !== null && previousMode !== mode
+  const didReset = shouldResetLegacyProgress || shouldResetChangedProvider
+
+  if (didReset) clearStoryProgressOnly()
+  safeSet(STORAGE_KEYS.storyProvider, mode)
+
+  return didReset
 }
 
 const clearDeprecatedKeys = () => {
@@ -196,6 +214,7 @@ export const localPersistence = {
     return isReaderPreferences(value) ? value : null
   },
   getStorageVersion,
+  prepareForStoryProvider,
   clearStoryProgressOnly,
   clearAllQissaStorage,
   clearEpisodeAndScreen,
