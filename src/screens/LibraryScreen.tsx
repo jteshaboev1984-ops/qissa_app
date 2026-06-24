@@ -77,6 +77,9 @@ export function LibraryScreen({
   seriesState,
   episode,
   archiveItems,
+  isGenerating,
+  generationLabel,
+  generationErrorMessage,
   onOpenStory,
   onOpenArchivedStory,
   onCreateStory,
@@ -86,6 +89,9 @@ export function LibraryScreen({
   seriesState: SeriesState | null
   episode: Episode | null
   archiveItems: StoryArchiveItem[]
+  isGenerating: boolean
+  generationLabel: string
+  generationErrorMessage: string | null
   onOpenStory: () => void
   onOpenArchivedStory: (item: StoryArchiveItem) => void
   onCreateStory: () => void
@@ -124,9 +130,25 @@ export function LibraryScreen({
               </div>
             </div>
 
-            <button className="q-primary w-full" onClick={onCreateStory}>
-              {t(language, selections.storyMode === 'series' ? 'home.create_first_series' : 'home.start_one_time')}
+            <button
+              className="q-primary w-full disabled:cursor-wait disabled:opacity-70"
+              onClick={onCreateStory}
+              disabled={isGenerating}
+              aria-busy={isGenerating}
+            >
+              {isGenerating
+                ? generationLabel
+                : t(language, selections.storyMode === 'series' ? 'home.create_first_series' : 'home.start_one_time')}
             </button>
+
+            {generationErrorMessage ? (
+              <p
+                role="alert"
+                className="rounded-2xl border border-[#e6b9ae] bg-[#fff1ed] px-4 py-3 text-sm leading-6 text-[#7b3026]"
+              >
+                {generationErrorMessage}
+              </p>
+            ) : null}
           </div>
         </div>
 
@@ -190,9 +212,25 @@ export function LibraryScreen({
             </div>
           ) : null}
 
-          <button className="q-primary w-full" onClick={onOpenStory}>
-            {storyActionLabel(language, status, selections.storyMode)}
+          <button
+            className="q-primary w-full disabled:cursor-wait disabled:opacity-70"
+            onClick={onOpenStory}
+            disabled={isGenerating}
+            aria-busy={isGenerating}
+          >
+            {isGenerating
+              ? generationLabel
+              : storyActionLabel(language, status, selections.storyMode)}
           </button>
+
+          {generationErrorMessage ? (
+            <p
+              role="alert"
+              className="rounded-2xl border border-[#e6b9ae] bg-[#fff1ed] px-4 py-3 text-sm leading-6 text-[#7b3026]"
+            >
+              {generationErrorMessage}
+            </p>
+          ) : null}
 
           <p className="text-center text-xs leading-5 text-[#7a705d]">
             {labels.deviceOnly}

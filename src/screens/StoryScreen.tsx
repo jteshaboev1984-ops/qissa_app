@@ -10,6 +10,9 @@ interface StoryScreenProps {
   language: Language
   episode: Episode
   storyMode: StoryMode
+  isGenerating: boolean
+  generationLabel: string
+  generationErrorMessage: string | null
   readerPreferences: ReaderPreferences
   onReaderPreferencesChange: (patch: Partial<ReaderPreferences>) => void
   onChoiceSelected?: (choice: EpisodeChoice) => void
@@ -26,6 +29,9 @@ export function StoryScreen({
   language,
   episode,
   storyMode,
+  isGenerating,
+  generationLabel,
+  generationErrorMessage,
   readerPreferences,
   onReaderPreferencesChange,
   onChoiceSelected,
@@ -146,7 +152,11 @@ export function StoryScreen({
   const renderStoryHeader = () => (
     <header className="space-y-4">
       <div className="flex items-center justify-between gap-3 px-1">
-        <button onClick={onBackHome} className="q-secondary px-4 py-2 text-xs">
+        <button
+          onClick={onBackHome}
+          className="q-secondary px-4 py-2 text-xs disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={isGenerating}
+        >
           {t(language, 'story.back_home')}
         </button>
         <p className="q-label rounded-full bg-[#fff8e9] px-3 py-1">{stylePack.title[language]}</p>
@@ -335,16 +345,42 @@ export function StoryScreen({
           </section>
         ) : (
           <section className="space-y-2">
-            <button className="q-primary w-full" onClick={onBackHome}>
+            <button
+              className="q-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={onBackHome}
+              disabled={isGenerating}
+            >
               {t(language, 'story.finish_today')}
             </button>
-            <button className="q-secondary w-full" onClick={handleReadAgain}>
+
+            <button
+              className="q-secondary w-full disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={handleReadAgain}
+              disabled={isGenerating}
+            >
               {t(language, 'story.read_again')}
             </button>
+
             {showTomorrowSeed ? (
-              <button className="q-tertiary w-full text-sm" onClick={onContinueNextEpisode}>
-                {t(language, 'story.preview_tomorrow')}
-              </button>
+              <>
+                <button
+                  className="q-tertiary w-full text-sm disabled:cursor-wait disabled:opacity-70"
+                  onClick={onContinueNextEpisode}
+                  disabled={isGenerating}
+                  aria-busy={isGenerating}
+                >
+                  {isGenerating ? generationLabel : t(language, 'story.preview_tomorrow')}
+                </button>
+
+                {generationErrorMessage ? (
+                  <p
+                    role="alert"
+                    className="rounded-2xl border border-[#e6b9ae] bg-[#fff1ed] px-4 py-3 text-sm leading-6 text-[#7b3026]"
+                  >
+                    {generationErrorMessage}
+                  </p>
+                ) : null}
+              </>
             ) : null}
           </section>
         )}

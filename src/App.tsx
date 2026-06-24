@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { OnboardingFlow } from './features/onboarding/OnboardingFlow'
 import { createInitialSeriesState, applyChoiceToSeriesState } from './lib/memoryAgent'
 import { t } from './lib/i18n'
@@ -21,6 +21,32 @@ import type {
 } from './types/qissa'
 
 type OnboardingMode = 'first_launch' | 'edit_setup' | 'new_story'
+type GenerationStatus = 'idle' | 'starting' | 'continuing'
+
+const generationCopy: Record<
+  Language,
+  {
+    starting: string
+    continuing: string
+    error: string
+  }
+> = {
+  ru: {
+    starting: 'Создаём историю…',
+    continuing: 'Готовим продолжение…',
+    error: 'Не удалось создать историю. Проверьте соединение и попробуйте ещё раз.',
+  },
+  uz: {
+    starting: 'Hikoya yaratilmoqda…',
+    continuing: 'Davomi tayyorlanmoqda…',
+    error: 'Hikoyani yaratib bo‘lmadi. Internetni tekshirib, yana urinib ko‘ring.',
+  },
+  kz: {
+    starting: 'Оқиға жасалып жатыр…',
+    continuing: 'Жалғасы дайындалып жатыр…',
+    error: 'Оқиғаны жасау мүмкін болмады. Интернетті тексеріп, қайта көріңіз.',
+  },
+}
 
 function resolveHydratedState() {
   const language = localPersistence.loadLanguage() ?? 'ru'
@@ -69,6 +95,9 @@ function App() {
   const [onboardingMode, setOnboardingMode] = useState<OnboardingMode>('first_launch')
   const [appTab, setAppTab] = useState<AppTab>('home')
   const [archiveItems, setArchiveItems] = useState<StoryArchiveItem[]>(() => storyArchive.load())
+  const [generationStatus, setGenerationStatus] = useState<GenerationStatus>('idle')
+  const [generationError, setGenerationError] = useState(false)
+  const generationLockRef = useRef(false)
 
   useEffect(() => {
     localPersistence.clearDeprecatedKeys()
@@ -126,14 +155,28 @@ function App() {
 
   const handleStartStory = async () => {
     setAppTab('home')
-    if (!selections || !seriesState) return
-    const { episode: firstEpisode } = await storyService.generateEpisode({ selections, seriesState })
-    const nextSeries = { ...seriesState, episodeCount: 1 }
-    setEpisode(firstEpisode)
-    setSeriesState(nextSeries)
-    localPersistence.saveCurrentEpisode(firstEpisode)
-    localPersistence.saveSeriesState(nextSeries)
-    updateScreen('story')
+    if (!selections || !seriesState || generationLockRef.current) return
+
+    generationLockRef.current = true
+    setGenerationError(false)
+    setGenerationStatus('starting')
+
+    try {
+      const { episode: firstEpisode } = await storyService.generateEpisode({ selections, seriesState })
+      const nextSeries = { ...seriesState, episodeCount: 1 }
+
+      setEpisode(firstEpisode)
+      setSeriesState(nextSeries)
+      localPersistence.saveCurrentEpisode(firstEpisode)
+      localPersistence.saveSeriesState(nextSeries)
+      updateScreen('story')
+    } catch (error) {
+      console.error('Failed to generate first story episode', error)
+      setGenerationError(true)
+    } finally {
+      generationLockRef.current = false
+      setGenerationStatus('idle')
+    }
   }
 
   const handleChoiceSelected = (choice: EpisodeChoice) => {
@@ -144,14 +187,34 @@ function App() {
   }
 
   const handleContinueNextEpisode = async () => {
-    if (!selections || !seriesState || selections.storyMode !== 'series' || seriesState.choiceHistory.length === 0) return
-    const { episode: secondEpisode } = await storyService.generateEpisode({ selections, seriesState })
-    const nextSeriesState = { ...seriesState, episodeCount: 2 }
-    setEpisode(secondEpisode)
-    setSeriesState(nextSeriesState)
-    localPersistence.saveCurrentEpisode(secondEpisode)
-    localPersistence.saveSeriesState(nextSeriesState)
-    updateScreen('story')
+    if (
+      !selections ||
+      !seriesState ||
+      selections.storyMode !== 'series' ||
+      seriesState.choiceHistory.length === 0 ||
+      generationLockRef.current
+    ) return
+
+    generationLockRef.current = true
+    setGenerationError(false)
+    setGenerationStatus('continuing')
+
+    try {
+      const { episode: secondEpisode } = await storyService.generateEpisode({ selections, seriesState })
+      const nextSeriesState = { ...seriesState, episodeCount: 2 }
+
+      setEpisode(secondEpisode)
+      setSeriesState(nextSeriesState)
+      localPersistence.saveCurrentEpisode(secondEpisode)
+      localPersistence.saveSeriesState(nextSeriesState)
+      updateScreen('story')
+    } catch (error) {
+      console.error('Failed to generate story continuation', error)
+      setGenerationError(true)
+    } finally {
+      generationLockRef.current = false
+      setGenerationStatus('idle')
+    }
   }
 
 
@@ -170,7 +233,8 @@ function App() {
   }
 
   const handleResetStory = () => {
-    if (!selections) return
+    if (!selections || generationLockRef.current) return
+    setGenerationError(false)
     archiveCurrentStory()
     const nextSeries = createInitialSeriesState(selections)
     setSeriesState(nextSeries)
@@ -181,8 +245,14 @@ function App() {
   }
 
   const handleOpenArchivedStory = (item: StoryArchiveItem) => {
-    if (!item.selections || !item.seriesState || !item.episode) return
+    if (
+      generationLockRef.current ||
+      !item.selections ||
+      !item.seriesState ||
+      !item.episode
+    ) return
 
+    setGenerationError(false)
     archiveCurrentStory()
 
     setSelections(item.selections)
@@ -199,6 +269,8 @@ function App() {
   }
 
   const handleOpenOnboarding = (mode: OnboardingMode) => {
+    if (generationLockRef.current) return
+    setGenerationError(false)
     setOnboardingMode(mode)
     updateScreen('onboarding')
   }
@@ -225,6 +297,14 @@ function App() {
   useEffect(() => {
     if (screen === 'story' && !episode) updateScreen('home')
   }, [screen, episode])
+
+  const currentGenerationCopy = generationCopy[language]
+  const isGenerating = generationStatus !== 'idle'
+  const generationLabel =
+    generationStatus === 'continuing'
+      ? currentGenerationCopy.continuing
+      : currentGenerationCopy.starting
+  const generationErrorMessage = generationError ? currentGenerationCopy.error : null
 
   return (
     <div className="relative min-h-screen text-[#1f241d]">
@@ -257,6 +337,9 @@ function App() {
             selections={selections}
             seriesState={seriesState}
             episode={episode}
+            isGenerating={isGenerating}
+            generationLabel={generationLabel}
+            generationErrorMessage={generationErrorMessage}
             onCreateFirstSeries={handleStartStory}
             onContinueStory={handleOpenStory}
             onResetStory={handleResetStory}
@@ -273,6 +356,9 @@ function App() {
             seriesState={seriesState}
             episode={episode}
             archiveItems={archiveItems}
+            isGenerating={isGenerating}
+            generationLabel={generationLabel}
+            generationErrorMessage={generationErrorMessage}
             onOpenStory={handleOpenStory}
             onOpenArchivedStory={handleOpenArchivedStory}
             onCreateStory={handleStartStory}
@@ -297,6 +383,9 @@ function App() {
             language={language}
             episode={episode}
             storyMode={selections?.storyMode ?? 'series'}
+            isGenerating={isGenerating}
+            generationLabel={generationLabel}
+            generationErrorMessage={generationErrorMessage}
             onChoiceSelected={handleChoiceSelected}
             onContinueNextEpisode={handleContinueNextEpisode}
             readerPreferences={readerPreferences}

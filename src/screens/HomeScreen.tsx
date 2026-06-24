@@ -10,6 +10,9 @@ interface HomeScreenProps {
   selections: OnboardingSelections
   seriesState: SeriesState | null
   episode: Episode | null
+  isGenerating: boolean
+  generationLabel: string
+  generationErrorMessage: string | null
   onCreateFirstSeries: () => void
   onContinueStory: () => void
   onResetStory: () => void
@@ -23,7 +26,20 @@ const ageKeyByGroup = {
   '8-9': 'age.8_9',
 } as const
 
-export function HomeScreen({ language, selections, seriesState, episode, onCreateFirstSeries, onContinueStory, onResetStory, onEditSetup, onCreateNewStorySetup }: HomeScreenProps) {
+export function HomeScreen({
+  language,
+  selections,
+  seriesState,
+  episode,
+  isGenerating,
+  generationLabel,
+  generationErrorMessage,
+  onCreateFirstSeries,
+  onContinueStory,
+  onResetStory,
+  onEditSetup,
+  onCreateNewStorySetup,
+}: HomeScreenProps) {
   const [showDetails, setShowDetails] = useState(false)
   const world = stylePacks.find((pack) => pack.id === selections.stylePackId) ?? stylePacks[0]
   const isSeriesMode = selections.storyMode === 'series'
@@ -117,12 +133,50 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
           ) : null}
 
           <div className="grid gap-2.5">
-            <button className="q-primary w-full" onClick={primaryAction}>{primaryLabel()}</button>
-            {completed ? <button className="q-secondary w-full" onClick={onCreateNewStorySetup}>{t(language, 'home.start_new_story')}</button> : null}
+            <button
+              className="q-primary w-full disabled:cursor-wait disabled:opacity-70"
+              onClick={primaryAction}
+              disabled={isGenerating}
+              aria-busy={isGenerating}
+            >
+              {isGenerating ? generationLabel : primaryLabel()}
+            </button>
+
+            {generationErrorMessage ? (
+              <p
+                role="alert"
+                className="rounded-2xl border border-[#e6b9ae] bg-[#fff1ed] px-4 py-3 text-sm leading-6 text-[#7b3026]"
+              >
+                {generationErrorMessage}
+              </p>
+            ) : null}
+
+            {completed ? (
+              <button
+                className="q-secondary w-full disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={onCreateNewStorySetup}
+                disabled={isGenerating}
+              >
+                {t(language, 'home.start_new_story')}
+              </button>
+            ) : null}
+
             {notStarted ? (
-              <button className="q-secondary w-full" onClick={onEditSetup}>{t(language, 'home.change_choice')}</button>
+              <button
+                className="q-secondary w-full disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={onEditSetup}
+                disabled={isGenerating}
+              >
+                {t(language, 'home.change_choice')}
+              </button>
             ) : !completed ? (
-              <button className="q-secondary w-full" onClick={onCreateNewStorySetup}>{t(language, 'home.start_new_story')}</button>
+              <button
+                className="q-secondary w-full disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={onCreateNewStorySetup}
+                disabled={isGenerating}
+              >
+                {t(language, 'home.start_new_story')}
+              </button>
             ) : null}
           </div>
         </div>
@@ -143,7 +197,11 @@ export function HomeScreen({ language, selections, seriesState, episode, onCreat
       {storyStatus !== 'not_started' && !isTomorrowMemoryState ? (
         <div className="rounded-[1.75rem] border border-[#e5d8bf] bg-[#f8f2e7]/75 p-4 text-center">
           <p className="mx-auto mb-3 max-w-xs text-sm leading-6 text-[#665d49]">{t(language, 'home.reset_progress_hint')}</p>
-          <button className="q-secondary px-4 py-2.5" onClick={onResetStory}>
+          <button
+            className="q-secondary px-4 py-2.5 disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={onResetStory}
+            disabled={isGenerating}
+          >
             {t(language, 'home.reset_story_soft')}
           </button>
         </div>
