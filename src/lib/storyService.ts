@@ -20,4 +20,5 @@ const generateEpisode = async (input: StoryGenerationInput): Promise<StoryGenera
 
 export const storyService = {
   generateEpisode,
+  getProviderMode: () => getStoryProviderConfig().mode,
 }
