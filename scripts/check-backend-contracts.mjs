@@ -3,7 +3,10 @@ import { readFileSync } from 'node:fs'
 const contractSource = readFileSync('src/contracts/storyContracts.ts', 'utf8')
 const schema = readFileSync('docs/qissa/backend/schema_draft.sql', 'utf8')
 const api = readFileSync('docs/qissa/backend/02_API_CONTRACTS.md', 'utf8')
-const migration = readFileSync('supabase/migrations/20260624_000001_qissa_mvp_contract_parity.sql', 'utf8')
+const migration = readFileSync(
+  'docs/qissa/backend/migrations/20260624_000001_qissa_mvp_contract_parity.sql',
+  'utf8',
+)
 
 const failures = []
 
