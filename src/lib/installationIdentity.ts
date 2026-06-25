@@ -1,5 +1,7 @@
 const INSTALLATION_ID_KEY = 'qissa:v1:installationId'
 
+let cachedId: string | null = null
+
 const isUuid = (value: string | null): value is string =>
   Boolean(value && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value))
 
@@ -16,14 +18,22 @@ const createUuid = (): string => {
 }
 
 export const getInstallationId = (): string => {
+  if (cachedId) return cachedId
+
   try {
     const stored = window.localStorage.getItem(INSTALLATION_ID_KEY)
-    if (isUuid(stored)) return stored
+    if (isUuid(stored)) {
+      cachedId = stored
+      return stored
+    }
 
     const created = createUuid()
     window.localStorage.setItem(INSTALLATION_ID_KEY, created)
+    cachedId = created
     return created
   } catch {
-    return createUuid()
+    const created = createUuid()
+    cachedId = created
+    return created
   }
 }
