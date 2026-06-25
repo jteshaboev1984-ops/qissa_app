@@ -2,9 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { OnboardingFlow } from './features/onboarding/OnboardingFlow'
 import { createInitialSeriesState, applyChoiceToSeriesState } from './lib/memoryAgent'
 import { t } from './lib/i18n'
+import { rotateInstallationId } from './lib/installationIdentity'
 import { localPersistence, type AppScreen } from './lib/localPersistence'
+import { privacyConsent } from './lib/privacyConsent'
 import { storyService } from './lib/storyService'
 import { storyArchive, type StoryArchiveItem } from './lib/storyArchive'
+import { storyStateService } from './lib/storyStateService'
 import { HomeScreen } from './screens/HomeScreen'
 import { LibraryScreen } from './screens/LibraryScreen'
 import { ParentScreen } from './screens/ParentScreen'
@@ -48,8 +51,15 @@ const generationCopy: Record<
   },
 }
 
+const deletionErrorCopy: Record<Language, string> = {
+  ru: 'Не удалось удалить данные с сервера. Проверьте соединение и попробуйте снова.',
+  uz: 'Serverdagi ma’lumotlarni o‘chirib bo‘lmadi. Internetni tekshirib, yana urinib ko‘ring.',
+  kz: 'Сервердегі деректерді жою мүмкін болмады. Интернетті тексеріп, қайта көріңіз.',
+}
+
 function resolveHydratedState() {
   const language = localPersistence.loadLanguage() ?? 'ru'
+  const consent = privacyConsent.load()
   const selections = localPersistence.loadOnboardingSelections()
   const storedSeriesState = localPersistence.loadSeriesStateOrRepair(selections)
   const episode = localPersistence.loadCurrentEpisode()
@@ -57,20 +67,64 @@ function resolveHydratedState() {
   const readerPreferences = localPersistence.loadReaderPreferences()
 
   if (!selections) {
-    return { language, selections: null, seriesState: null, episode: null, screen: 'welcome' as AppScreen, readerPreferences }
+    return {
+      language,
+      selections: null,
+      seriesState: null,
+      episode: null,
+      screen: 'welcome' as AppScreen,
+      readerPreferences,
+      privacyConsentAccepted: Boolean(consent),
+    }
   }
 
   const seriesState = storedSeriesState ?? createInitialSeriesState(selections)
 
+  if (!consent) {
+    return {
+      language,
+      selections,
+      seriesState,
+      episode,
+      screen: 'welcome' as AppScreen,
+      readerPreferences,
+      privacyConsentAccepted: false,
+    }
+  }
+
   if (!episode) {
-    return { language, selections, seriesState, episode: null, screen: 'home' as AppScreen, readerPreferences }
+    return {
+      language,
+      selections,
+      seriesState,
+      episode: null,
+      screen: 'home' as AppScreen,
+      readerPreferences,
+      privacyConsentAccepted: true,
+    }
   }
 
   if (savedScreen === 'story') {
-    return { language, selections, seriesState, episode, screen: 'story' as AppScreen, readerPreferences }
+    return {
+      language,
+      selections,
+      seriesState,
+      episode,
+      screen: 'story' as AppScreen,
+      readerPreferences,
+      privacyConsentAccepted: true,
+    }
   }
 
-  return { language, selections, seriesState, episode, screen: 'home' as AppScreen, readerPreferences }
+  return {
+    language,
+    selections,
+    seriesState,
+    episode,
+    screen: 'home' as AppScreen,
+    readerPreferences,
+    privacyConsentAccepted: true,
+  }
 }
 
 const defaultReaderPreferences: ReaderPreferences = {
@@ -92,11 +146,14 @@ function App() {
   const [episode, setEpisode] = useState<Episode | null>(hydrated.episode)
   const [seriesState, setSeriesState] = useState<SeriesState | null>(hydrated.seriesState)
   const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(hydrated.readerPreferences ?? defaultReaderPreferences)
+  const [privacyConsentAccepted, setPrivacyConsentAccepted] = useState(hydrated.privacyConsentAccepted)
   const [onboardingMode, setOnboardingMode] = useState<OnboardingMode>('first_launch')
   const [appTab, setAppTab] = useState<AppTab>('home')
   const [archiveItems, setArchiveItems] = useState<StoryArchiveItem[]>(() => storyArchive.load())
   const [generationStatus, setGenerationStatus] = useState<GenerationStatus>('idle')
   const [generationError, setGenerationError] = useState(false)
+  const [isDeletingData, setIsDeletingData] = useState(false)
+  const [deletionError, setDeletionError] = useState<string | null>(null)
   const generationLockRef = useRef(false)
 
   useEffect(() => {
@@ -217,8 +274,6 @@ function App() {
     }
   }
 
-
-
   const handleOpenStory = () => {
     if (
       selections?.storyMode === 'series' &&
@@ -275,6 +330,57 @@ function App() {
     updateScreen('onboarding')
   }
 
+  const handleAcceptAndStart = () => {
+    privacyConsent.accept()
+    setPrivacyConsentAccepted(true)
+    setDeletionError(null)
+
+    if (selections) {
+      setAppTab('home')
+      updateScreen('home')
+      return
+    }
+
+    handleOpenOnboarding('first_launch')
+  }
+
+  const handleDeleteProfileData = async () => {
+    if (generationLockRef.current || isDeletingData) return
+
+    setIsDeletingData(true)
+    setDeletionError(null)
+
+    try {
+      await localPersistence.waitForPendingRemoteReset()
+      await localPersistence.waitForPendingChoiceSync()
+      await storyStateService.deleteProfileData()
+
+      localPersistence.clearAllLocalData()
+      storyArchive.clear()
+      privacyConsent.clear()
+      rotateInstallationId()
+
+      generationLockRef.current = false
+      setLanguage('ru')
+      setSelections(null)
+      setSeriesState(null)
+      setEpisode(null)
+      setReaderPreferences(defaultReaderPreferences)
+      setPrivacyConsentAccepted(false)
+      setOnboardingMode('first_launch')
+      setAppTab('home')
+      setArchiveItems([])
+      setGenerationStatus('idle')
+      setGenerationError(false)
+      setScreen('welcome')
+    } catch (error) {
+      console.error('Failed to delete QISSA profile data', error)
+      setDeletionError(deletionErrorCopy[language])
+    } finally {
+      setIsDeletingData(false)
+    }
+  }
+
   const handleOpenNewStorySetup = () => {
     if (!selections) return
     setAppTab('home')
@@ -318,7 +424,13 @@ function App() {
           </select>
         </header>
 
-        {screen === 'welcome' && <WelcomeScreen language={language} onStart={() => handleOpenOnboarding('first_launch')} />}
+        {screen === 'welcome' && (
+          <WelcomeScreen
+            language={language}
+            consentAlreadyAccepted={privacyConsentAccepted}
+            onAcceptAndStart={handleAcceptAndStart}
+          />
+        )}
 
         {screen === 'onboarding' && (
           <OnboardingFlow
@@ -348,7 +460,6 @@ function App() {
           />
         )}
 
-
         {screen === 'home' && selections && appTab === 'library' && (
           <LibraryScreen
             language={language}
@@ -375,6 +486,9 @@ function App() {
             onEditSetup={() => handleOpenOnboarding('edit_setup')}
             onResetStory={handleResetStory}
             onCreateNewStorySetup={handleOpenNewStorySetup}
+            onDeleteProfileData={handleDeleteProfileData}
+            isDeletingData={isDeletingData}
+            deletionError={deletionError}
           />
         )}
 
