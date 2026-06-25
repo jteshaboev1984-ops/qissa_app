@@ -18,9 +18,11 @@ const STORAGE_KEYS = {
 
 const DEPRECATED_KEYS = ['qissa:language', 'qissa:onboardingSelections', 'qissa:seriesState', 'qissa:currentEpisode', 'qissa:screen']
 
+let pendingRemoteReset: Promise<void> | null = null
+let pendingChoiceSync: Promise<void> | null = null
+
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
 
-// Corrupted JSON is ignored by design for prototype resilience.
 const safeParseJSON = <T>(value: string | null): T | null => {
   if (!value) return null
   try {
@@ -44,6 +46,7 @@ const normalizeOnboardingSelections = (value: OnboardingSelections): OnboardingS
   ...value,
   ageGroup: normalizeAgeGroup(value.ageGroup),
 })
+
 export const getStorageVersion = () => KEY_PREFIX
 
 export const isOnboardingSelections = (value: unknown): value is OnboardingSelections => {
@@ -103,8 +106,7 @@ export const isEpisode = (value: unknown): value is Episode => {
 const isAppScreen = (value: unknown): value is AppScreen =>
   value === 'welcome' || value === 'onboarding' || value === 'home' || value === 'story'
 
-const isStoryProvider = (value: unknown): value is PersistedStoryProvider =>
-  value === 'local' || value === 'remote'
+const isStoryProvider = (value: unknown): value is PersistedStoryProvider => value === 'local' || value === 'remote'
 
 const safeSet = (key: string, value: unknown) => {
   try {
@@ -122,7 +124,42 @@ const safeGet = <T>(key: string): T | null => {
   }
 }
 
+const queueRemoteReset = () => {
+  const task = import('./storyStateService')
+    .then(({ storyStateService }) => storyStateService.resetCurrent())
+    .catch((error) => console.error('Failed to reset remote story state', error))
+
+  pendingRemoteReset = task.finally(() => {
+    if (pendingRemoteReset === task) pendingRemoteReset = null
+  })
+}
+
+const queueChoiceSync = (previous: SeriesState | null, next: SeriesState) => {
+  if (!previous || next.choiceHistory.length !== previous.choiceHistory.length + 1) return
+  const latest = next.choiceHistory.at(-1)
+  if (!latest) return
+
+  const task = import('./storyStateService')
+    .then(({ storyStateService }) => storyStateService.confirmChoice({
+      seriesState: next,
+      episodeId: latest.episode_id,
+      choiceId: latest.choice_id,
+    }))
+    .catch((error) => console.error('Failed to sync story choice', error))
+
+  pendingChoiceSync = task.finally(() => {
+    if (pendingChoiceSync === task) pendingChoiceSync = null
+  })
+}
+
+const queuePreferencesSync = (value: ReaderPreferences) => {
+  void import('./storyStateService')
+    .then(({ storyStateService }) => storyStateService.savePreferences(value))
+    .catch((error) => console.error('Failed to sync reader preferences', error))
+}
+
 const clearEpisodeAndScreen = () => {
+  queueRemoteReset()
   try {
     window.localStorage.removeItem(STORAGE_KEYS.currentEpisode)
     window.localStorage.removeItem(STORAGE_KEYS.screen)
@@ -132,6 +169,7 @@ const clearEpisodeAndScreen = () => {
 }
 
 const clearAllQissaStorage = () => {
+  queueRemoteReset()
   try {
     Object.values(STORAGE_KEYS).forEach((key) => window.localStorage.removeItem(key))
   } catch {
@@ -157,15 +195,12 @@ const prepareForStoryProvider = (mode: PersistedStoryProvider): boolean => {
 
   if (didReset) clearStoryProgressOnly()
   safeSet(STORAGE_KEYS.storyProvider, mode)
-
   return didReset
 }
 
 const activeStoryProvider: PersistedStoryProvider =
   import.meta.env.VITE_QISSA_STORY_PROVIDER === 'remote' ? 'remote' : 'local'
 
-// Run before App hydration so local prototype episodes cannot masquerade as
-// remote-generated stories after the backend rollout.
 prepareForStoryProvider(activeStoryProvider)
 
 const clearDeprecatedKeys = () => {
@@ -191,7 +226,12 @@ export const localPersistence = {
     if (normalized.ageGroup !== value.ageGroup) safeSet(STORAGE_KEYS.onboardingSelections, normalized)
     return normalized
   },
-  saveSeriesState: (value: SeriesState) => safeSet(STORAGE_KEYS.seriesState, value),
+  saveSeriesState: (value: SeriesState) => {
+    const previousValue = safeGet<unknown>(STORAGE_KEYS.seriesState)
+    const previous = isSeriesState(previousValue) ? previousValue : null
+    safeSet(STORAGE_KEYS.seriesState, value)
+    queueChoiceSync(previous, value)
+  },
   loadSeriesState: (): SeriesState | null => {
     const value = safeGet<unknown>(STORAGE_KEYS.seriesState)
     return isSeriesState(value) ? value : null
@@ -200,7 +240,6 @@ export const localPersistence = {
     const loaded = localPersistence.loadSeriesState()
     if (loaded || !selections) return loaded
 
-    // Repair missing series state when onboarding selections are present.
     const repaired = createInitialSeriesState(selections)
     localPersistence.saveSeriesState(repaired)
     return repaired
@@ -211,7 +250,10 @@ export const localPersistence = {
     return isEpisode(value) ? value : null
   },
   saveScreen: (value: AppScreen) => safeSet(STORAGE_KEYS.screen, value),
-  saveReaderPreferences: (value: ReaderPreferences) => safeSet(STORAGE_KEYS.readerPreferences, value),
+  saveReaderPreferences: (value: ReaderPreferences) => {
+    safeSet(STORAGE_KEYS.readerPreferences, value)
+    queuePreferencesSync(value)
+  },
   loadScreen: (): AppScreen | null => {
     const value = safeGet<unknown>(STORAGE_KEYS.screen)
     return isAppScreen(value) ? value : null
@@ -219,6 +261,12 @@ export const localPersistence = {
   loadReaderPreferences: (): ReaderPreferences | null => {
     const value = safeGet<unknown>(STORAGE_KEYS.readerPreferences)
     return isReaderPreferences(value) ? value : null
+  },
+  waitForPendingRemoteReset: async () => {
+    if (pendingRemoteReset) await pendingRemoteReset
+  },
+  waitForPendingChoiceSync: async () => {
+    if (pendingChoiceSync) await pendingChoiceSync
   },
   getStorageVersion,
   prepareForStoryProvider,
