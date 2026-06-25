@@ -70,6 +70,7 @@ export function useDeviceNarration({
   const startedAtRef = useRef(0)
   const basePositionRef = useRef(0)
   const timerRef = useRef<number | null>(null)
+  const timeoutRef = useRef<number | null>(null)
   const tokenRef = useRef(0)
   const speakRef = useRef<(index: number) => void>(() => {})
 
@@ -84,6 +85,11 @@ export function useDeviceNarration({
   const stopTimer = useCallback(() => {
     if (timerRef.current !== null) window.clearInterval(timerRef.current)
     timerRef.current = null
+  }, [])
+
+  const clearPendingTimeout = useCallback(() => {
+    if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current)
+    timeoutRef.current = null
   }, [])
 
   const persist = useCallback((completed = false) => {
@@ -117,10 +123,11 @@ export function useDeviceNarration({
   const cancel = useCallback(() => {
     tokenRef.current += 1
     stopTimer()
+    clearPendingTimeout()
     const synthesis = synthesisApi()
     if (synthesis?.paused) synthesis.resume()
     synthesis?.cancel()
-  }, [stopTimer])
+  }, [clearPendingTimeout, stopTimer])
 
   const speak = useCallback((index: number) => {
     const synthesis = synthesisApi()
@@ -153,21 +160,31 @@ export function useDeviceNarration({
       stopTimer()
       timerRef.current = window.setInterval(updateClock, 250)
     }
+
     utterance.onend = () => {
       if (token !== tokenRef.current) return
       stopTimer()
       setPosition(index, segment.endSeconds)
       const completed = index >= timelineRef.current.length - 1
       persist(completed)
-      if (completed) setStatus('completed')
-      else window.setTimeout(() => speakRef.current(index + 1), 0)
+      if (completed) {
+        setStatus('completed')
+        return
+      }
+
+      timeoutRef.current = window.setTimeout(() => {
+        timeoutRef.current = null
+        if (token === tokenRef.current) speakRef.current(index + 1)
+      }, 0)
     }
+
     utterance.onerror = (event) => {
       if (token !== tokenRef.current || event.error === 'canceled' || event.error === 'interrupted') return
       stopTimer()
       setStatus('error')
       persist(false)
     }
+
     synthesis.speak(utterance)
   }, [cancel, language, persist, setPosition, stopTimer, updateClock, voicePresetId, voices])
 
@@ -238,12 +255,20 @@ export function useDeviceNarration({
       persist(true)
       return
     }
+
     const index = segmentIndexAtPosition(timelineRef.current, next)
     const aligned = timelineRef.current[index]?.startSeconds ?? 0
     setPosition(index, aligned)
     setStatus(aligned > 0 ? 'paused' : 'idle')
     persist(false)
-    if (wasPlaying) window.setTimeout(() => speakRef.current(index), 0)
+
+    if (wasPlaying) {
+      const token = tokenRef.current
+      timeoutRef.current = window.setTimeout(() => {
+        timeoutRef.current = null
+        if (token === tokenRef.current) speakRef.current(index)
+      }, 0)
+    }
   }, [cancel, persist, setPosition])
 
   const seekBy = useCallback((seconds: number) => seekTo(positionRef.current + seconds), [seekTo])
@@ -253,9 +278,13 @@ export function useDeviceNarration({
     const fraction = durationRef.current > 0 ? positionRef.current / durationRef.current : 0
     const wasPlaying = statusRef.current === 'playing'
     cancel()
+    const token = tokenRef.current
     speedRef.current = nextSpeed
     setSpeedState(nextSpeed)
-    window.setTimeout(() => {
+
+    timeoutRef.current = window.setTimeout(() => {
+      timeoutRef.current = null
+      if (token !== tokenRef.current) return
       const next = fraction * durationRef.current
       const index = segmentIndexAtPosition(timelineRef.current, next)
       setPosition(index, next)
