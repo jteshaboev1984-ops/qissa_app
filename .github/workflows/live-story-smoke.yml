@@ -1,16 +1,23 @@
 name: Live Story Smoke
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       expected_source:
-        description: Expected X-QISSA-Generation-Source value
-        required: true
-        default: safe-fallback
+        description: Optional expected X-QISSA-Generation-Source value
+        required: false
+        default: ""
         type: string
 
 permissions:
   contents: read
+
+concurrency:
+  group: live-story-smoke
+  cancel-in-progress: true
 
 jobs:
   smoke:
@@ -31,6 +38,6 @@ jobs:
       - name: Invoke production story-generate
         env:
           QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
-          QISSA_EXPECTED_GENERATION_SOURCE: ${{ inputs.expected_source }}
+          QISSA_EXPECTED_GENERATION_SOURCE: ${{ github.event.inputs.expected_source || '' }}
           QISSA_STORY_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate
         run: npm run smoke:story-live
