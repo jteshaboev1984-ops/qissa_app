@@ -5,8 +5,10 @@ type StoryMode = 'one_time' | 'series'
 type StoryMood = 'bedtime' | 'kind_adventure'
 type JsonRecord = Record<string, unknown>
 
+const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
+
 type StoryStateRequest = {
-  action?: 'sync_generated' | 'confirm_choice' | 'save_preferences' | 'reset_current' | 'load_current'
+  action?: 'sync_generated' | 'confirm_choice' | 'save_preferences' | 'reset_current' | 'load_current' | 'delete_profile_data'
   installationId?: string
   selections?: {
     ageGroup?: string
@@ -51,6 +53,7 @@ type StoryStateRequest = {
   episodeId?: string
   choiceId?: string
   readerPreferences?: JsonRecord
+  privacyConsent?: JsonRecord
 }
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')
@@ -62,9 +65,17 @@ const admin = createClient(supabaseUrl, serviceRoleKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 })
 
-const isRecord = (value: unknown): value is JsonRecord => typeof value === 'object' && value !== null
+const isRecord = (value: unknown): value is JsonRecord => typeof value === 'object' && value !== null && !Array.isArray(value)
 const isUuid = (value: unknown): value is string =>
   typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
+
+const isValidPrivacyConsent = (value: unknown): value is JsonRecord =>
+  isRecord(value) &&
+  value.version === PRIVACY_CONSENT_VERSION &&
+  value.parentOrGuardianConfirmed === true &&
+  value.aiProcessingAccepted === true &&
+  typeof value.acceptedAt === 'string' &&
+  Number.isFinite(Date.parse(value.acceptedAt))
 
 const corsHeaders = (origin: string | null) => {
   const allowed =
@@ -94,9 +105,10 @@ const findProfile = async (installationId: string) =>
   admin.from('child_profiles').select('id').eq('installation_id', installationId).maybeSingle()
 
 async function syncGenerated(input: StoryStateRequest, origin: string | null) {
-  const { installationId, selections, seriesState, episode, readerPreferences } = input
+  const { installationId, selections, seriesState, episode, readerPreferences, privacyConsent } = input
   if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
   if (!selections || !seriesState || !episode) return fail('missing_story_snapshot', 400, origin)
+  if (!isValidPrivacyConsent(privacyConsent)) return fail('privacy_consent_required', 403, origin)
 
   const { ageGroup, language, heroType, customHeroName, stylePackId, storyMode, storyMood } = selections
   if (
@@ -119,6 +131,10 @@ async function syncGenerated(input: StoryStateRequest, origin: string | null) {
       custom_hero_name: customHeroName ?? null,
       default_voice_preset_id: typeof validReaderPreferences.voicePresetId === 'string' ? validReaderPreferences.voicePresetId : null,
       reader_preferences: validReaderPreferences,
+      privacy_consent_version: privacyConsent.version,
+      privacy_consent_at: privacyConsent.acceptedAt,
+      parent_or_guardian_confirmed: true,
+      ai_processing_consent: true,
     }, { onConflict: 'installation_id' })
     .select('id')
     .single()
@@ -332,6 +348,37 @@ async function resetCurrent(input: StoryStateRequest, origin: string | null) {
   return json({ ok: true }, 200, origin)
 }
 
+async function deleteProfileData(input: StoryStateRequest, origin: string | null) {
+  const { installationId } = input
+  if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
+
+  const { data: profile, error: profileError } = await findProfile(installationId)
+  if (profileError) return fail('profile_load_failed', 500, origin)
+  if (!profile) return json({ ok: true, deleted: false }, 200, origin)
+
+  const { error: eventDeleteError } = await admin
+    .from('app_events')
+    .delete()
+    .eq('child_profile_id', profile.id)
+
+  if (eventDeleteError) {
+    console.error('profile event deletion failed', eventDeleteError)
+    return fail('profile_event_delete_failed', 500, origin)
+  }
+
+  const { error: profileDeleteError } = await admin
+    .from('child_profiles')
+    .delete()
+    .eq('id', profile.id)
+
+  if (profileDeleteError) {
+    console.error('profile deletion failed', profileDeleteError)
+    return fail('profile_delete_failed', 500, origin)
+  }
+
+  return json({ ok: true, deleted: true }, 200, origin)
+}
+
 async function loadCurrent(input: StoryStateRequest, origin: string | null) {
   const { installationId } = input
   if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
@@ -402,6 +449,7 @@ Deno.serve(async (request: Request) => {
   if (input.action === 'confirm_choice') return confirmChoice(input, origin)
   if (input.action === 'save_preferences') return savePreferences(input, origin)
   if (input.action === 'reset_current') return resetCurrent(input, origin)
+  if (input.action === 'delete_profile_data') return deleteProfileData(input, origin)
   if (input.action === 'load_current') return loadCurrent(input, origin)
   return fail('unsupported_action', 400, origin)
 })
