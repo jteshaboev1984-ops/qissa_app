@@ -3,7 +3,7 @@ import { isEpisode, isOnboardingSelections, isReaderPreferences, isSeriesState }
 import { getInstallationId } from './installationIdentity'
 import { getStoryProviderConfig } from './storyRemoteClient'
 
-type RemoteStorySnapshot = {
+export type RemoteStorySnapshot = {
   selections: OnboardingSelections
   seriesState: SeriesState
   episode: Episode
@@ -15,6 +15,12 @@ type SyncGeneratedInput = {
   seriesState: SeriesState
   episode: Episode
   readerPreferences: ReaderPreferences
+}
+
+type ConfirmChoiceInput = {
+  seriesState: SeriesState
+  episodeId: string
+  choiceId: string
 }
 
 const getStateEndpoint = (): string | null => {
@@ -38,9 +44,7 @@ const requestState = async (payload: Record<string, unknown>): Promise<unknown> 
   if (config.mode === 'local') return null
 
   const endpoint = getStateEndpoint()
-  if (!endpoint || !config.publishableKey) {
-    throw new Error('Remote story state service is not configured.')
-  }
+  if (!endpoint || !config.publishableKey) throw new Error('Remote story state service is not configured.')
 
   const controller = new AbortController()
   const timeoutId = window.setTimeout(() => controller.abort(), config.timeoutMs)
@@ -70,14 +74,8 @@ const requestState = async (payload: Record<string, unknown>): Promise<unknown> 
   }
 }
 
-const syncGenerated = async ({
-  selections,
-  seriesState,
-  episode,
-  readerPreferences,
-}: SyncGeneratedInput): Promise<void> => {
-  const config = getStoryProviderConfig()
-  if (config.mode === 'local') return
+const syncGenerated = async ({ selections, seriesState, episode, readerPreferences }: SyncGeneratedInput): Promise<void> => {
+  if (getStoryProviderConfig().mode === 'local') return
 
   await requestState({
     action: 'sync_generated',
@@ -88,9 +86,29 @@ const syncGenerated = async ({
   })
 }
 
+const confirmChoice = async ({ seriesState, episodeId, choiceId }: ConfirmChoiceInput): Promise<void> => {
+  if (getStoryProviderConfig().mode === 'local') return
+
+  await requestState({
+    action: 'confirm_choice',
+    seriesState,
+    episodeId,
+    choiceId,
+  })
+}
+
+const savePreferences = async (readerPreferences: ReaderPreferences): Promise<void> => {
+  if (getStoryProviderConfig().mode === 'local') return
+  await requestState({ action: 'save_preferences', readerPreferences })
+}
+
+const resetCurrent = async (): Promise<void> => {
+  if (getStoryProviderConfig().mode === 'local') return
+  await requestState({ action: 'reset_current' })
+}
+
 const loadCurrent = async (): Promise<RemoteStorySnapshot | null> => {
-  const config = getStoryProviderConfig()
-  if (config.mode === 'local') return null
+  if (getStoryProviderConfig().mode === 'local') return null
 
   const response = await requestState({ action: 'load_current' })
   if (!response || typeof response !== 'object') return null
@@ -113,5 +131,8 @@ const loadCurrent = async (): Promise<RemoteStorySnapshot | null> => {
 
 export const storyStateService = {
   syncGenerated,
+  confirmChoice,
+  savePreferences,
+  resetCurrent,
   loadCurrent,
 }
