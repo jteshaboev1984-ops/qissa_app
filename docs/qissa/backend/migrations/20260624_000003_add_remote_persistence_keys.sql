@@ -15,6 +15,14 @@ update public.child_profiles
 set installation_id = gen_random_uuid()
 where installation_id is null;
 
+update public.story_sessions
+set client_session_id = gen_random_uuid()::text
+where client_session_id is null;
+
+update public.story_episodes
+set client_episode_id = gen_random_uuid()::text
+where client_episode_id is null;
+
 alter table public.child_profiles
   alter column installation_id set not null;
 
