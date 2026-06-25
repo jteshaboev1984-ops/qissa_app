@@ -49,6 +49,9 @@ jobs:
       - name: Validate cache-first Audio Agent
         run: npm run check:audio-agent
 
+      - name: Typecheck Audio Agent Edge Functions
+        run: npm run typecheck:audio-agent
+
       - name: Validate Story AI safety contract
         run: npm run check:story-ai
 
