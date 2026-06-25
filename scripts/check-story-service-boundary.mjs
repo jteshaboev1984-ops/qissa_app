@@ -50,7 +50,9 @@ const safetyReviewUpsertHasUniqueIndex =
 const installationIdentityCachesFallback =
   /let\s+cachedId:\s*string\s*\|\s*null\s*=\s*null/.test(installationIdentity) &&
   /if\s*\(cachedId\)\s*return\s+cachedId/.test(installationIdentity) &&
-  /cachedId\s*=\s*created/.test(installationIdentity)
+  /const\s+persist\s*=\s*\(value:\s*string\)/.test(installationIdentity) &&
+  /cachedId\s*=\s*value/.test(installationIdentity) &&
+  /return\s+persist\(createUuid\(\)\)/.test(installationIdentity)
 const bootstrapUsesSideEffectFreeRestore =
   /restoreRemoteSnapshot\(snapshot\)/.test(main) &&
   !/saveSeriesState\(snapshot\.seriesState\)/.test(main) &&
