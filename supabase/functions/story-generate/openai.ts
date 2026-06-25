@@ -1,5 +1,6 @@
-import type { NormalizedStoryContext, SafetyEvaluation, StoryCandidate } from './contracts.ts'
+import type { SafetyEvaluation, StoryCandidate } from './contracts.ts'
 import { buildSafetyPrompts, buildStoryPrompts, safetyOutputSchema, storyOutputSchema } from './prompt.ts'
+import type { NormalizedStoryContext } from './contracts.ts'
 
 const RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const MODERATIONS_URL = 'https://api.openai.com/v1/moderations'
@@ -86,6 +87,17 @@ const requestStructured = async <T>(
   }, timeoutMs)
 
   const status = payload && typeof payload === 'object' ? (payload as { status?: unknown }).status : null
+  if (status === 'failed') {
+    const details = payload && typeof payload === 'object'
+      ? (payload as { error?: { message?: unknown }; status_details?: { failed?: { error?: { message?: unknown } } } })
+      : null
+    const message = typeof details?.error?.message === 'string'
+      ? details.error.message
+      : typeof details?.status_details?.failed?.error?.message === 'string'
+        ? details.status_details.failed.error.message
+        : 'unknown_failed_status'
+    throw new Error(`openai_response_failed:${message.slice(0, 240)}`)
+  }
   if (status === 'incomplete') throw new Error('openai_incomplete_response')
   return JSON.parse(extractOutputText(payload)) as T
 }
@@ -115,7 +127,8 @@ export const evaluateStorySafety = async (
   context: NormalizedStoryContext,
   candidate: StoryCandidate,
 ): Promise<SafetyEvaluation> => {
-  const prompts = buildSafetyPrompts(context, JSON.stringify(candidate))
+  const candidateJson = JSON.stringify(candidate)
+  const prompts = buildSafetyPrompts(context, candidateJson)
   return requestStructured<SafetyEvaluation>(
     apiKey,
     model,
