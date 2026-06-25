@@ -32,12 +32,55 @@ const getStateEndpoint = (): string | null => {
   return storyEndpoint?.replace(/\/story-generate\/?$/, '/story-state') ?? null
 }
 
+const getAudioCleanupEndpoint = (): string | null => {
+  const stateEndpoint = getStateEndpoint()
+  if (stateEndpoint) return stateEndpoint.replace(/\/story-state\/?$/, '/audio-cleanup')
+
+  const storyEndpoint = getStoryProviderConfig().endpoint
+  return storyEndpoint?.replace(/\/story-generate\/?$/, '/audio-cleanup') ?? null
+}
+
 const buildHeaders = (publishableKey: string): Headers => {
   const headers = new Headers()
   headers.set('content-type', 'application/json')
   headers.set('apikey', publishableKey)
   headers.set('authorization', `Bearer ${publishableKey}`)
   return headers
+}
+
+const requestRemote = async (
+  endpoint: string,
+  publishableKey: string,
+  timeoutMs: number,
+  payload: Record<string, unknown>,
+  serviceName: string,
+): Promise<unknown> => {
+  const controller = new AbortController()
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs)
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: buildHeaders(publishableKey),
+      body: JSON.stringify({ installationId: getInstallationId(), ...payload }),
+      signal: controller.signal,
+      credentials: 'omit',
+    })
+
+    if (!response.ok) {
+      const details = (await response.text()).trim().slice(0, 240)
+      throw new Error(`${serviceName} returned ${response.status}${details ? `: ${details}` : ''}`)
+    }
+
+    return response.json()
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new Error(`${serviceName} timed out after ${timeoutMs} ms.`)
+    }
+    throw error
+  } finally {
+    window.clearTimeout(timeoutId)
+  }
 }
 
 const requestState = async (payload: Record<string, unknown>): Promise<unknown> => {
@@ -47,32 +90,23 @@ const requestState = async (payload: Record<string, unknown>): Promise<unknown> 
   const endpoint = getStateEndpoint()
   if (!endpoint || !config.publishableKey) throw new Error('Remote story state service is not configured.')
 
-  const controller = new AbortController()
-  const timeoutId = window.setTimeout(() => controller.abort(), config.timeoutMs)
+  return requestRemote(endpoint, config.publishableKey, config.timeoutMs, payload, 'Remote story state service')
+}
 
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: buildHeaders(config.publishableKey),
-      body: JSON.stringify({ installationId: getInstallationId(), ...payload }),
-      signal: controller.signal,
-      credentials: 'omit',
-    })
+const requestAudioCleanup = async (): Promise<void> => {
+  const config = getStoryProviderConfig()
+  if (config.mode === 'local') return
 
-    if (!response.ok) {
-      const details = (await response.text()).trim().slice(0, 240)
-      throw new Error(`Remote story state service returned ${response.status}${details ? `: ${details}` : ''}`)
-    }
+  const endpoint = getAudioCleanupEndpoint()
+  if (!endpoint || !config.publishableKey) throw new Error('Remote audio cleanup service is not configured.')
 
-    return response.json()
-  } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new Error(`Remote story state service timed out after ${config.timeoutMs} ms.`)
-    }
-    throw error
-  } finally {
-    window.clearTimeout(timeoutId)
-  }
+  await requestRemote(
+    endpoint,
+    config.publishableKey,
+    config.timeoutMs,
+    { action: 'delete_profile_audio' },
+    'Remote audio cleanup service',
+  )
 }
 
 const syncGenerated = async ({ selections, seriesState, episode, readerPreferences, privacyConsent }: SyncGeneratedInput): Promise<void> => {
@@ -111,6 +145,7 @@ const resetCurrent = async (): Promise<void> => {
 
 const deleteProfileData = async (): Promise<void> => {
   if (getStoryProviderConfig().mode === 'local') return
+  await requestAudioCleanup()
   await requestState({ action: 'delete_profile_data' })
 }
 
