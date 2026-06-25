@@ -28,9 +28,9 @@ requireText('story entrypoint', index, [
 ])
 
 requireText('OpenAI provider', provider, [
-  "store: false",
+  'store: false',
   "type: 'json_schema'",
-  "strict: true",
+  'strict: true',
   "model: 'omni-moderation-latest'",
   'AbortController',
 ])
@@ -45,10 +45,12 @@ requireText('story prompts', prompts, [
 
 requireText('input normalization', contracts, [
   'safeName',
-  'compactChoiceHistory',
-  "value.slice(-6)",
+  'redactHeroName',
+  'compactChoiceHistory(seriesState.choiceHistory, heroName)',
+  'compactStringRecord(seriesState.relationshipState, heroName)',
+  'compactStringRecord(seriesState.canonState, heroName)',
+  'value.slice(-6)',
   "replaceAll('{{HERO}}', heroName)",
-  'compactStringRecord',
 ])
 
 for (const flag of [
