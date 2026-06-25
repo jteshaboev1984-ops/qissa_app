@@ -22,7 +22,11 @@ const persist = (value: string) => {
   try {
     window.localStorage.setItem(INSTALLATION_ID_KEY, value)
   } catch {
-    // Keep the new identity stable for the current page session.
+    try {
+      window.localStorage.removeItem(INSTALLATION_ID_KEY)
+    } catch {
+      // Keep only the new page-session identity when storage is unavailable.
+    }
   }
   return value
 }
