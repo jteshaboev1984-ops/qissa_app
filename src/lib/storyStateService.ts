@@ -1,4 +1,4 @@
-import type { Episode, OnboardingSelections, ReaderPreferences, SeriesState } from '../types/qissa'
+import type { Episode, OnboardingSelections, PrivacyConsent, ReaderPreferences, SeriesState } from '../types/qissa'
 import { isEpisode, isOnboardingSelections, isReaderPreferences, isSeriesState } from './localPersistence'
 import { getInstallationId } from './installationIdentity'
 import { getStoryProviderConfig } from './storyRemoteClient'
@@ -15,6 +15,7 @@ type SyncGeneratedInput = {
   seriesState: SeriesState
   episode: Episode
   readerPreferences: ReaderPreferences
+  privacyConsent: PrivacyConsent
 }
 
 type ConfirmChoiceInput = {
@@ -74,7 +75,7 @@ const requestState = async (payload: Record<string, unknown>): Promise<unknown> 
   }
 }
 
-const syncGenerated = async ({ selections, seriesState, episode, readerPreferences }: SyncGeneratedInput): Promise<void> => {
+const syncGenerated = async ({ selections, seriesState, episode, readerPreferences, privacyConsent }: SyncGeneratedInput): Promise<void> => {
   if (getStoryProviderConfig().mode === 'local') return
 
   await requestState({
@@ -83,6 +84,7 @@ const syncGenerated = async ({ selections, seriesState, episode, readerPreferenc
     seriesState,
     episode,
     readerPreferences,
+    privacyConsent,
   })
 }
 
@@ -105,6 +107,11 @@ const savePreferences = async (readerPreferences: ReaderPreferences): Promise<vo
 const resetCurrent = async (): Promise<void> => {
   if (getStoryProviderConfig().mode === 'local') return
   await requestState({ action: 'reset_current' })
+}
+
+const deleteProfileData = async (): Promise<void> => {
+  if (getStoryProviderConfig().mode === 'local') return
+  await requestState({ action: 'delete_profile_data' })
 }
 
 const loadCurrent = async (): Promise<RemoteStorySnapshot | null> => {
@@ -134,5 +141,6 @@ export const storyStateService = {
   confirmChoice,
   savePreferences,
   resetCurrent,
+  deleteProfileData,
   loadCurrent,
 }
