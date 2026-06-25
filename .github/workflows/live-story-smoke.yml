@@ -47,6 +47,6 @@ jobs:
       - name: Invoke production story-generate
         env:
           QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
-          QISSA_EXPECTED_GENERATION_SOURCE: ${{ github.event.inputs.expected_source || '' }}
+          QISSA_EXPECTED_GENERATION_SOURCE: ${{ github.event_name == 'pull_request' && 'safe-fallback' || github.event.inputs.expected_source || '' }}
           QISSA_STORY_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate
         run: npm run smoke:story-live
