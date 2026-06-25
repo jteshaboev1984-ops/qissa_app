@@ -140,8 +140,17 @@ const saveSnapshot = (
   return item
 }
 
+const clear = () => {
+  try {
+    window.localStorage.removeItem(STORY_ARCHIVE_KEY)
+  } catch {
+    // Ignore local storage failures during privacy deletion.
+  }
+}
+
 export const storyArchive = {
   load,
   saveSnapshot,
+  clear,
   canRestore: canRestoreArchiveItem,
 }
