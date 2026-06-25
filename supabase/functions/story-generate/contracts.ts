@@ -260,18 +260,25 @@ const defaultHeroNames: Record<Language, Record<HeroType, string>> = {
   },
 }
 
-const compactStringRecord = (value: unknown, maxEntries = 20): Record<string, string> => {
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+const redactHeroName = (value: string, heroName: string): string => {
+  if (!heroName.trim()) return value
+  return value.replace(new RegExp(escapeRegExp(heroName), 'giu'), '{{HERO}}')
+}
+
+const compactStringRecord = (value: unknown, heroName: string, maxEntries = 20): Record<string, string> => {
   if (!isRecord(value)) return {}
   const result: Record<string, string> = {}
   for (const [rawKey, rawValue] of Object.entries(value).slice(0, maxEntries)) {
-    const key = compactText(rawKey, 48)
-    const text = compactText(rawValue, 160)
+    const key = redactHeroName(compactText(rawKey, 48), heroName)
+    const text = redactHeroName(compactText(rawValue, 160), heroName)
     if (key && text) result[key] = text
   }
   return result
 }
 
-const compactChoiceHistory = (value: unknown): MemoryChoice[] => {
+const compactChoiceHistory = (value: unknown, heroName: string): MemoryChoice[] => {
   if (!Array.isArray(value)) return []
   const items = value.slice(-6)
   return items.flatMap((item): MemoryChoice[] => {
@@ -281,10 +288,10 @@ const compactChoiceHistory = (value: unknown): MemoryChoice[] => {
     return [{
       episode_id: compactText(item.episode_id, 96),
       choice_id: choiceId,
-      choice_text: compactText(item.choice_text, 180),
-      effect_summary: compactText(item.effect_summary, 240),
-      resolution_text: compactText(item.resolution_text, 240),
-      tomorrow_seed: compactText(item.tomorrow_seed, 240),
+      choice_text: redactHeroName(compactText(item.choice_text, 180), heroName),
+      effect_summary: redactHeroName(compactText(item.effect_summary, 240), heroName),
+      resolution_text: redactHeroName(compactText(item.resolution_text, 240), heroName),
+      tomorrow_seed: redactHeroName(compactText(item.tomorrow_seed, 240), heroName),
     }]
   })
 }
@@ -317,10 +324,13 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
   const customName = heroType === 'custom' ? safeName(selections.customHeroName) : null
   const stateName = safeName(seriesState.mainCharacter)
   const heroName = customName ?? stateName ?? defaultHeroNames[language][heroType]
-  const choiceHistory = compactChoiceHistory(seriesState.choiceHistory)
+  const choiceHistory = compactChoiceHistory(seriesState.choiceHistory, heroName)
   const isContinuation = choiceHistory.length > 0
   const recurringCharacters = Array.isArray(seriesState.recurringCharacters)
-    ? seriesState.recurringCharacters.map((item) => compactText(item, 48)).filter(Boolean).slice(0, 8)
+    ? seriesState.recurringCharacters
+        .map((item) => redactHeroName(compactText(item, 48), heroName))
+        .filter(Boolean)
+        .slice(0, 8)
     : []
 
   return {
@@ -335,10 +345,10 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
     episodeIndex: isContinuation ? 2 : 1,
     isContinuation,
     recurringCharacters,
-    lastEpisodeSummary: compactText(seriesState.lastEpisodeSummary, 300),
-    activeArc: compactText(seriesState.activeArc, 240),
-    relationshipState: compactStringRecord(seriesState.relationshipState),
-    canonState: compactStringRecord(seriesState.canonState),
+    lastEpisodeSummary: redactHeroName(compactText(seriesState.lastEpisodeSummary, 300), heroName),
+    activeArc: redactHeroName(compactText(seriesState.activeArc, 240), heroName),
+    relationshipState: compactStringRecord(seriesState.relationshipState, heroName),
+    canonState: compactStringRecord(seriesState.canonState, heroName),
     choiceHistory,
   }
 }
