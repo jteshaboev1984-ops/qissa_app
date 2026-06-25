@@ -16,6 +16,7 @@
     "check:story-ai": "node scripts/check-story-ai-safety.mjs",
     "check:backend-contracts": "node scripts/check-backend-contracts.mjs",
     "check:privacy": "node scripts/check-privacy-contract.mjs",
+    "check:listening": "node scripts/check-listening-contract.mjs",
     "smoke:story-live": "node scripts/smoke-story-generate-live.mjs",
     "smoke:privacy-live": "node scripts/smoke-privacy-live.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high"
