@@ -14,6 +14,7 @@ const welcome = read('src/screens/WelcomeScreen.tsx')
 const privacyPanel = read('src/components/PrivacyDataPanel.tsx')
 const storyGenerate = read('supabase/functions/story-generate/index.ts')
 const storyState = read('supabase/functions/story-state/index.ts')
+const audioCleanup = read('supabase/functions/audio-cleanup/index.ts')
 const migration = read('docs/qissa/backend/migrations/20260625_000006_add_privacy_consent.sql')
 
 const failures = []
@@ -97,6 +98,25 @@ requireCondition(
 requireCondition(
   /delete_profile_data/.test(stateService) && /deleteProfileData/.test(stateService),
   'The client state service must expose the dedicated full-deletion action.',
+)
+
+const clientDeleteStart = stateService.indexOf('const deleteProfileData')
+const audioCleanupPosition = stateService.indexOf('await requestAudioCleanup()', clientDeleteStart)
+const stateDeletePosition = stateService.indexOf("await requestState({ action: 'delete_profile_data' })", clientDeleteStart)
+requireCondition(
+  clientDeleteStart >= 0 &&
+    /getAudioCleanupEndpoint/.test(stateService) &&
+    /delete_profile_audio/.test(stateService) &&
+    audioCleanupPosition > clientDeleteStart &&
+    stateDeletePosition > audioCleanupPosition,
+  'Client deletion must remove private audio objects before deleting profile rows.',
+)
+
+requireCondition(
+  /delete_profile_audio/.test(audioCleanup) &&
+    /storage\.from\(AUDIO_BUCKET\)\.remove\(chunk\)/.test(audioCleanup) &&
+    /audio_storage_cleanup_failed/.test(audioCleanup),
+  'The audio cleanup function must fail closed when private Storage objects cannot be removed.',
 )
 
 requireCondition(
