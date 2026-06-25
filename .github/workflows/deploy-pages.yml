@@ -31,6 +31,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate backend contracts
+        run: npm run check:backend-contracts
+
+      - name: Validate story service boundary
+        run: npm run check:story-service
+
+      - name: Validate story copy
+        run: npm run check:story-copy
+
+      - name: Validate translations
+        run: npm run check:i18n
+
       - name: Typecheck
         run: npm run typecheck
 
@@ -57,6 +69,7 @@ jobs:
         env:
           VITE_QISSA_STORY_PROVIDER: remote
           VITE_QISSA_STORY_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate
+          VITE_QISSA_STATE_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-state
           VITE_QISSA_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
           VITE_QISSA_STORY_TIMEOUT_MS: 12000
           VITE_QISSA_STORY_FALLBACK_TO_LOCAL: false
