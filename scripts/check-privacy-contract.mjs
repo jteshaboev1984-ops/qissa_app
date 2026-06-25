@@ -69,9 +69,17 @@ requireCondition(
   'Installation identity must expose an explicit rotation operation after deletion.',
 )
 
+const clearAllLocalDataStart = localPersistence.indexOf('const clearAllLocalData')
+const clearAllQissaStorageStart = localPersistence.indexOf('const clearAllQissaStorage')
+const clearAllLocalDataBody =
+  clearAllLocalDataStart >= 0 && clearAllQissaStorageStart > clearAllLocalDataStart
+    ? localPersistence.slice(clearAllLocalDataStart, clearAllQissaStorageStart)
+    : ''
+
 requireCondition(
-  /const\s+clearAllLocalData/.test(localPersistence) &&
-    !/const\s+clearAllLocalData[\s\S]{0,500}queueRemoteReset\(\)/.test(localPersistence),
+  clearAllLocalDataBody.length > 0 &&
+    /Object\.values\(STORAGE_KEYS\)/.test(clearAllLocalDataBody) &&
+    !/queueRemoteReset\(\)/.test(clearAllLocalDataBody),
   'Local privacy deletion must not be implemented as the soft story reset.',
 )
 
