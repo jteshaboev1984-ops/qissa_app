@@ -1,6 +1,7 @@
 import { PRIVACY_CONSENT_VERSION, type PrivacyConsent } from '../types/qissa'
 
 const PRIVACY_CONSENT_KEY = 'qissa:v1:privacyConsent'
+let cachedConsent: PrivacyConsent | null = null
 
 const isPrivacyConsent = (value: unknown): value is PrivacyConsent => {
   if (!value || typeof value !== 'object') return false
@@ -13,11 +14,15 @@ const isPrivacyConsent = (value: unknown): value is PrivacyConsent => {
 }
 
 const load = (): PrivacyConsent | null => {
+  if (cachedConsent) return cachedConsent
+
   try {
     const raw = window.localStorage.getItem(PRIVACY_CONSENT_KEY)
     if (!raw) return null
     const parsed: unknown = JSON.parse(raw)
-    return isPrivacyConsent(parsed) ? parsed : null
+    if (!isPrivacyConsent(parsed)) return null
+    cachedConsent = parsed
+    return parsed
   } catch {
     return null
   }
@@ -31,15 +36,17 @@ const accept = (): PrivacyConsent => {
     aiProcessingAccepted: true,
   }
 
+  cachedConsent = consent
   try {
     window.localStorage.setItem(PRIVACY_CONSENT_KEY, JSON.stringify(consent))
   } catch {
-    // Consent still applies for the current session even when storage is unavailable.
+    // Consent still applies for the current session when storage is unavailable.
   }
   return consent
 }
 
 const clear = () => {
+  cachedConsent = null
   try {
     window.localStorage.removeItem(PRIVACY_CONSENT_KEY)
   } catch {
