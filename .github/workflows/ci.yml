@@ -34,6 +34,9 @@ jobs:
       - name: Validate story service boundary
         run: npm run check:story-service
 
+      - name: Validate privacy consent and deletion
+        run: npm run check:privacy
+
       - name: Validate Story AI safety contract
         run: npm run check:story-ai
 
