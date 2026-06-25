@@ -37,6 +37,9 @@ jobs:
       - name: Validate privacy consent and deletion
         run: npm run check:privacy
 
+      - name: Validate listening playback
+        run: npm run check:listening
+
       - name: Validate Story AI safety contract
         run: npm run check:story-ai
 
