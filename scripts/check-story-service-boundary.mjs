@@ -9,6 +9,7 @@ const localPersistence = readFileSync('src/lib/localPersistence.ts', 'utf8')
 const installationIdentity = readFileSync('src/lib/installationIdentity.ts', 'utf8')
 const stateFunction = readFileSync('supabase/functions/story-state/index.ts', 'utf8')
 const persistenceMigration = readFileSync('docs/qissa/backend/migrations/20260624_000003_add_remote_persistence_keys.sql', 'utf8')
+const safetyReviewMigration = readFileSync('docs/qissa/backend/migrations/20260625_000005_make_safety_reviews_idempotent.sql', 'utf8')
 
 const failures = []
 
@@ -43,6 +44,9 @@ const stateFunctionValidatesReaderPreferences =
 const stateFunctionUpsertsSafetyReview =
   /from\(['"]safety_reviews['"]\)\.upsert\(/.test(stateFunction) &&
   /onConflict:\s*['"]episode_id['"]/.test(stateFunction)
+const safetyReviewUpsertHasUniqueIndex =
+  /row_number\(\)\s+over\s*\(/i.test(safetyReviewMigration) &&
+  /create\s+unique\s+index[\s\S]*safety_reviews\s*\(episode_id\)/i.test(safetyReviewMigration)
 const installationIdentityCachesFallback =
   /let\s+cachedId:\s*string\s*\|\s*null\s*=\s*null/.test(installationIdentity) &&
   /if\s*\(cachedId\)\s*return\s+cachedId/.test(installationIdentity) &&
@@ -104,8 +108,8 @@ if (!stateFunctionValidatesReaderPreferences) {
   failures.push('story-state Edge Function must validate reader preferences before profile upsert.')
 }
 
-if (!stateFunctionUpsertsSafetyReview) {
-  failures.push('story-state Edge Function must upsert safety reviews by episode_id.')
+if (!stateFunctionUpsertsSafetyReview || !safetyReviewUpsertHasUniqueIndex) {
+  failures.push('Safety reviews must upsert by episode_id with a matching unique database index.')
 }
 
 if (!installationIdentityCachesFallback) {
