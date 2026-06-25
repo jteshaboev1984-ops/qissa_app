@@ -129,14 +129,15 @@ const queueRemoteReset = () => {
     .then(({ storyStateService }) => storyStateService.resetCurrent())
     .catch((error) => console.error('Failed to reset remote story state', error))
 
-  pendingRemoteReset = task.finally(() => {
+  pendingRemoteReset = task
+  void task.finally(() => {
     if (pendingRemoteReset === task) pendingRemoteReset = null
   })
 }
 
 const queueChoiceSync = (previous: SeriesState | null, next: SeriesState) => {
   if (!previous || next.choiceHistory.length !== previous.choiceHistory.length + 1) return
-  const latest = next.choiceHistory.at(-1)
+  const latest = next.choiceHistory[next.choiceHistory.length - 1]
   if (!latest) return
 
   const task = import('./storyStateService')
@@ -147,7 +148,8 @@ const queueChoiceSync = (previous: SeriesState | null, next: SeriesState) => {
     }))
     .catch((error) => console.error('Failed to sync story choice', error))
 
-  pendingChoiceSync = task.finally(() => {
+  pendingChoiceSync = task
+  void task.finally(() => {
     if (pendingChoiceSync === task) pendingChoiceSync = null
   })
 }
