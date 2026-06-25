@@ -1,0 +1,50 @@
+name: QISSA CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate backend contracts
+        run: npm run check:backend-contracts
+
+      - name: Validate story service boundary
+        run: npm run check:story-service
+
+      - name: Validate Story AI safety contract
+        run: npm run check:story-ai
+
+      - name: Typecheck Story AI Edge Function
+        run: npm run typecheck:story-ai
+
+      - name: Validate story copy
+        run: npm run check:story-copy
+
+      - name: Validate translations
+        run: npm run check:i18n
+
+      - name: Typecheck app
+        run: npm run typecheck
+
+      - name: Build app
+        run: npm run build
