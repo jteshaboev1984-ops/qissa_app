@@ -1,10 +1,11 @@
 // NOTE: Agent contract shapes are kept stable so local mock agents and future Edge Function responses remain compatible.
-import type { Episode, EpisodeChoice, OnboardingSelections, SafetyResult, SeriesState, StoryMood, StoryMode } from './storyContracts'
+import type { Episode, EpisodeChoice, OnboardingSelections, PrivacyConsent, SafetyResult, SeriesState, StoryMood, StoryMode } from './storyContracts'
 
 // Core generation input used by local mock today and by future edge function adapter.
 export interface StoryGenerationInput {
   selections: OnboardingSelections
   seriesState?: SeriesState
+  privacyConsent?: PrivacyConsent
 }
 
 export interface StoryGenerationOutput {
