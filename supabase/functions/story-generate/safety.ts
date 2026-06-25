@@ -2,7 +2,6 @@ import {
   emptySafetyFlags,
   isRecord,
   positiveValues,
-  type CandidatePatch,
   type NormalizedStoryContext,
   type SafetyEvaluation,
   type SafetyFlags,
@@ -25,7 +24,11 @@ const includesAny = (text: string, phrases: string[]) => phrases.some((phrase) =
 
 export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: StoryCandidate): SafetyFlags => {
   const flags = emptySafetyFlags()
-  const text = `${candidate.title} ${candidate.story_text} ${candidate.choices.map((choice) => `${choice.text} ${choice.effect_summary} ${choice.resolution_text} ${choice.tomorrow_seed}`).join(' ')}`.toLocaleLowerCase()
+  const normalizeApostrophes = (value: string) => value.replace(/[\u2018\u2019\u02BB`]/g, "'")
+  const choices = Array.isArray(candidate.choices) ? candidate.choices : []
+  const text = normalizeApostrophes(
+    `${candidate.title ?? ''} ${candidate.story_text ?? ''} ${choices.map((choice) => `${choice.text ?? ''} ${choice.effect_summary ?? ''} ${choice.resolution_text ?? ''} ${choice.tomorrow_seed ?? ''}`).join(' ')}`,
+  ).toLocaleLowerCase()
 
   flags.political_push = includesAny(text, [
     'голосуй за', 'политическая партия', 'наш лидер всегда прав',
@@ -34,7 +37,7 @@ export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: 
   ])
   flags.religious_push = includesAny(text, [
     'единственная правильная религия', 'ты обязан верить',
-    'yagona to‘g‘ri din', 'ishonishing shart',
+    "yagona to'g'ri din", 'ishonishing shart',
     'жалғыз дұрыс дін', 'сенуің міндетті',
   ])
   flags.conditional_love = includesAny(text, [
@@ -49,7 +52,7 @@ export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: 
   ])
   flags.gender_stereotype = includesAny(text, [
     'девочки не могут', 'мальчики не плачут',
-    'qizlar qila olmaydi', 'o‘g‘il bolalar yig‘lamaydi',
+    'qizlar qila olmaydi', "o'g'il bolalar yig'lamaydi",
     'қыздар істей алмайды', 'ұлдар жыламайды',
   ])
   flags.nationality_stereotype = includesAny(text, [
@@ -64,20 +67,21 @@ export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: 
   ])
   flags.excessive_fear = includesAny(text, [
     'ужас охватил', 'кровь', 'убить', 'погиб',
-    'dahshat', 'qon', 'o‘ldirish',
+    'dahshat', 'qon', "o'ldirish",
     'қорқыныш биледі', 'қан', 'өлтіру',
   ])
   flags.adult_theme = includesAny(text, ['сексуаль', 'алкогол', 'наркотик', 'sexual', 'alcohol', 'drug'])
   flags.discrimination = includesAny(text, [
     'хуже из-за своего языка', 'хуже из-за внешности',
-    'tili sababli yomonroq', 'ko‘rinishi sababli yomonroq',
+    'tili sababli yomonroq', "ko'rinishi sababli yomonroq",
     'тілі үшін төмен', 'сырт келбеті үшін төмен',
   ])
 
   return flags
 }
 
-const validatePatch = (patch: CandidatePatch): boolean =>
+const validatePatch = (patch: unknown): boolean =>
+  isRecord(patch) &&
   typeof patch.last_event === 'string' &&
   (patch.new_friend === null || typeof patch.new_friend === 'string') &&
   (patch.hero_trait === null || typeof patch.hero_trait === 'string') &&
@@ -117,7 +121,7 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
       if (typeof choice.resolution_text !== 'string' || choice.resolution_text.length < 12) errors.push('invalid_resolution_text')
       if (typeof choice.tomorrow_seed !== 'string' || choice.tomorrow_seed.length < 8) errors.push('invalid_tomorrow_seed')
       if (typeof choice.choice_icon !== 'string' || !choice.choice_icon.trim()) errors.push('invalid_choice_icon')
-      if (!validatePatch(choice.state_patch as CandidatePatch)) errors.push('invalid_choice_state_patch')
+      if (!validatePatch(choice.state_patch)) errors.push('invalid_choice_state_patch')
       if (!Array.isArray(choice.value_alignment) || choice.value_alignment.length === 0 || choice.value_alignment.some((item) => !positiveValues.has(item))) {
         errors.push('invalid_value_alignment')
       }
