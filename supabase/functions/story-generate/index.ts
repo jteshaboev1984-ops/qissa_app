@@ -1,5 +1,6 @@
 import {
   buildFinalEpisode,
+  isRecord,
   normalizeStoryRequest,
   type SafetyResult,
   type StoryCandidate,
@@ -8,11 +9,22 @@ import { buildSafeFallback } from './fallback.ts'
 import { evaluateStorySafety, generateStoryCandidate, moderateStoryText } from './openai.ts'
 import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 
+const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
 const aiEnabled = Deno.env.get('QISSA_AI_ENABLED') === 'true'
 const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.5'
 const safetyModel = Deno.env.get('OPENAI_SAFETY_MODEL')?.trim() || storyModel
 const maxAttempts = 2
+
+const hasValidPrivacyConsent = (input: unknown): boolean => {
+  if (!isRecord(input) || !isRecord(input.privacyConsent)) return false
+  const consent = input.privacyConsent
+  return consent.version === PRIVACY_CONSENT_VERSION &&
+    consent.parentOrGuardianConfirmed === true &&
+    consent.aiProcessingAccepted === true &&
+    typeof consent.acceptedAt === 'string' &&
+    Number.isFinite(Date.parse(consent.acceptedAt))
+}
 
 const corsHeaders = (origin: string | null) => {
   const allowed =
@@ -77,6 +89,10 @@ Deno.serve(async (request: Request) => {
 
   const context = normalizeStoryRequest(input)
   if (!context) return json({ error: 'invalid_story_context' }, 422, origin)
+
+  if (aiEnabled && openAiApiKey && !hasValidPrivacyConsent(input)) {
+    return json({ error: 'privacy_consent_required' }, 403, origin)
+  }
 
   if (!aiEnabled || !openAiApiKey) {
     return json(
