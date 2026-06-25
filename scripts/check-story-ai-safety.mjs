@@ -33,6 +33,8 @@ requireText('OpenAI provider', provider, [
   'strict: true',
   "model: 'omni-moderation-latest'",
   'AbortController',
+  "status === 'failed'",
+  'openai_response_failed',
 ])
 
 requireText('story prompts', prompts, [
@@ -43,6 +45,12 @@ requireText('story prompts', prompts, [
   'For episode 2, return no choices',
 ])
 
+for (const unsupportedKeyword of ['minLength', 'maxLength', 'minItems', 'maxItems']) {
+  if (prompts.includes(unsupportedKeyword)) {
+    failures.push(`strict Story AI schemas must not contain provider-sensitive keyword: ${unsupportedKeyword}`)
+  }
+}
+
 requireText('input normalization', contracts, [
   'safeName',
   'redactHeroName',
@@ -51,6 +59,17 @@ requireText('input normalization', contracts, [
   'compactStringRecord(seriesState.canonState, heroName)',
   'value.slice(-6)',
   "replaceAll('{{HERO}}', heroName)",
+  'if (!isRecord(selections) || !isRecord(seriesState)) return null',
+  'const entriesToRecord = (entries: unknown)',
+  'export const finalPatchFromCandidate = (patch: unknown)',
+  'Array.isArray(candidate.choices)',
+  'Array.isArray(candidate.vocabulary)',
+])
+
+requireText('runtime safety', safety, [
+  "replace(/[\\u2018\\u2019\\u02BB`]/g, \"'\")",
+  'const validatePatch = (patch: unknown)',
+  'isRecord(patch)',
 ])
 
 for (const flag of [
