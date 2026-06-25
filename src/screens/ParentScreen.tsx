@@ -1,3 +1,4 @@
+import { PrivacyDataPanel } from '../components/PrivacyDataPanel'
 import { ReaderSettingsPanel } from '../components/ReaderSettingsPanel'
 import { StylePackCover } from '../components/StylePackCover'
 import { VoiceSelector } from '../components/VoiceSelector'
@@ -146,6 +147,9 @@ export function ParentScreen({
   onEditSetup,
   onResetStory,
   onCreateNewStorySetup,
+  onDeleteProfileData,
+  isDeletingData,
+  deletionError,
 }: {
   language: Language
   selections: OnboardingSelections
@@ -155,6 +159,9 @@ export function ParentScreen({
   onEditSetup: () => void
   onResetStory: () => void
   onCreateNewStorySetup: () => void
+  onDeleteProfileData: () => Promise<void>
+  isDeletingData: boolean
+  deletionError: string | null
 }) {
   const labels = parentLabels[language]
   const pack = stylePacks.find((p) => p.id === selections.stylePackId) ?? stylePacks[0]
@@ -235,6 +242,13 @@ export function ParentScreen({
         </div>
         <VoiceSelector language={language} selectedVoiceId={readerPreferences.voicePresetId} onSelect={(voicePresetId) => onReaderPreferencesChange({ voicePresetId })} tone="light" />
       </section>
+
+      <PrivacyDataPanel
+        language={language}
+        onDeleteProfileData={onDeleteProfileData}
+        isDeleting={isDeletingData}
+        deletionError={deletionError}
+      />
 
       <section className="rounded-[1.75rem] border border-[#e5d8bf] bg-[#f8f2e7]/80 p-5 text-center">
         <p className="q-label mb-2">{labels.resetTitle}</p>

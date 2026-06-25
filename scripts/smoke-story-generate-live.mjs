@@ -3,6 +3,7 @@ const endpoint = process.env.QISSA_STORY_ENDPOINT?.trim()
 const publishableKey = process.env.QISSA_SUPABASE_ANON_KEY?.trim()
 const expectedSource = process.env.QISSA_EXPECTED_GENERATION_SOURCE?.trim() || null
 const allowedSources = new Set(['safe-fallback', 'openai-structured'])
+const consentVersion = '2026-06-25-v1'
 
 if (!publishableKey) {
   console.error('QISSA_SUPABASE_ANON_KEY is required for the live smoke test.')
@@ -80,6 +81,12 @@ const basePayload = (language, heroName) => ({
     choiceHistory: [],
     canonState: {},
     episodeCount: 0,
+  },
+  privacyConsent: {
+    version: consentVersion,
+    acceptedAt: new Date().toISOString(),
+    parentOrGuardianConfirmed: true,
+    aiProcessingAccepted: true,
   },
 })
 

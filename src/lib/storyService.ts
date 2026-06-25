@@ -2,6 +2,7 @@ import type { StoryGenerationInput, StoryGenerationOutput } from '../contracts/a
 import type { ReaderPreferences } from '../types/qissa'
 import { createStoryEpisode } from './storyAgent'
 import { localPersistence } from './localPersistence'
+import { privacyConsent } from './privacyConsent'
 import { generateWithRemoteProvider, getStoryProviderConfig } from './storyRemoteClient'
 import { storyStateService } from './storyStateService'
 
@@ -25,7 +26,7 @@ const persistRemoteEpisode = async (
   output: StoryGenerationOutput,
 ): Promise<void> => {
   const seriesState = input.seriesState ?? localPersistence.loadSeriesStateOrRepair(input.selections)
-  if (!seriesState) return
+  if (!seriesState || !input.privacyConsent) return
 
   const episodeCount = output.episode.episode_id.startsWith('ep-2') ? 2 : 1
   const nextSeriesState = { ...seriesState, episodeCount }
@@ -35,6 +36,7 @@ const persistRemoteEpisode = async (
     seriesState: nextSeriesState,
     episode: output.episode,
     readerPreferences: localPersistence.loadReaderPreferences() ?? defaultReaderPreferences,
+    privacyConsent: input.privacyConsent,
   })
 }
 
@@ -42,12 +44,16 @@ const generateEpisode = async (input: StoryGenerationInput): Promise<StoryGenera
   const config = getStoryProviderConfig()
   if (config.mode === 'local') return generateWithLocalAgent(input)
 
+  const consent = input.privacyConsent ?? privacyConsent.load()
+  if (!consent) throw new Error('Parent privacy consent is required before remote story generation.')
+  const remoteInput: StoryGenerationInput = { ...input, privacyConsent: consent }
+
   try {
     await localPersistence.waitForPendingRemoteReset()
     await localPersistence.waitForPendingChoiceSync()
 
-    const output = await generateWithRemoteProvider(input, config)
-    await persistRemoteEpisode(input, output)
+    const output = await generateWithRemoteProvider(remoteInput, config)
+    await persistRemoteEpisode(remoteInput, output)
     return output
   } catch (error) {
     if (!config.fallbackToLocal) throw error

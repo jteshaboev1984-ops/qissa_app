@@ -17,6 +17,20 @@ const createUuid = (): string => {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
 }
 
+const persist = (value: string) => {
+  cachedId = value
+  try {
+    window.localStorage.setItem(INSTALLATION_ID_KEY, value)
+  } catch {
+    try {
+      window.localStorage.removeItem(INSTALLATION_ID_KEY)
+    } catch {
+      // Keep only the new page-session identity when storage is unavailable.
+    }
+  }
+  return value
+}
+
 export const getInstallationId = (): string => {
   if (cachedId) return cachedId
 
@@ -26,14 +40,11 @@ export const getInstallationId = (): string => {
       cachedId = stored
       return stored
     }
-
-    const created = createUuid()
-    window.localStorage.setItem(INSTALLATION_ID_KEY, created)
-    cachedId = created
-    return created
   } catch {
-    const created = createUuid()
-    cachedId = created
-    return created
+    // Fall through to a page-session identity.
   }
+
+  return persist(createUuid())
 }
+
+export const rotateInstallationId = (): string => persist(createUuid())

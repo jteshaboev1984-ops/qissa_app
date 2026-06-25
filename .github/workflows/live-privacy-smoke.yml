@@ -1,0 +1,44 @@
+name: Live Privacy Smoke
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - scripts/smoke-privacy-live.mjs
+      - supabase/functions/story-generate/**
+      - supabase/functions/story-state/**
+      - docs/qissa/backend/migrations/20260625_000006_add_privacy_consent.sql
+      - .github/workflows/live-privacy-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-privacy-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify create, load, delete, and absence
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+          QISSA_STORY_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate
+          QISSA_STATE_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-state
+        run: npm run smoke:privacy-live

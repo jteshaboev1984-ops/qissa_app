@@ -177,13 +177,18 @@ const clearEpisodeAndScreen = () => {
   }
 }
 
-const clearAllQissaStorage = () => {
-  queueRemoteReset()
+const clearAllLocalData = () => {
   try {
     Object.values(STORAGE_KEYS).forEach((key) => window.localStorage.removeItem(key))
+    DEPRECATED_KEYS.forEach((key) => window.localStorage.removeItem(key))
   } catch {
-    // ignore clear failures
+    // Ignore local storage failures during privacy deletion.
   }
+}
+
+const clearAllQissaStorage = () => {
+  queueRemoteReset()
+  clearAllLocalData()
 }
 
 const clearStoryProgressOnly = () => {
@@ -288,6 +293,7 @@ export const localPersistence = {
   getStorageVersion,
   prepareForStoryProvider,
   clearStoryProgressOnly,
+  clearAllLocalData,
   clearAllQissaStorage,
   clearEpisodeAndScreen,
   clearDeprecatedKeys,
