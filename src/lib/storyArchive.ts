@@ -1,4 +1,5 @@
 import type { Episode, OnboardingSelections, SeriesState, StoryMode, StoryMood, StylePackId, Language } from '../types/qissa'
+import { playbackProgress } from './playbackProgress'
 
 export interface StoryArchiveItem {
   id: string
@@ -146,6 +147,7 @@ const clear = () => {
   } catch {
     // Ignore local storage failures during privacy deletion.
   }
+  playbackProgress.clearAll()
 }
 
 export const storyArchive = {
