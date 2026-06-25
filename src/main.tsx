@@ -19,12 +19,7 @@ const bootstrap = async () => {
     const snapshot = await storyStateService.loadCurrent()
 
     if (snapshot) {
-      localPersistence.saveLanguage(snapshot.selections.language)
-      localPersistence.saveOnboardingSelections(snapshot.selections)
-      localPersistence.saveSeriesState(snapshot.seriesState)
-      localPersistence.saveCurrentEpisode(snapshot.episode)
-      localPersistence.saveReaderPreferences(snapshot.readerPreferences)
-      localPersistence.saveScreen('home')
+      localPersistence.restoreRemoteSnapshot(snapshot)
     }
   } catch (error) {
     console.error('Failed to restore remote story state', error)
