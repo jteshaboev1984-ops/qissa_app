@@ -42,6 +42,9 @@ const generateEpisode = async (input: StoryGenerationInput): Promise<StoryGenera
   if (config.mode === 'local') return generateWithLocalAgent(input)
 
   try {
+    await localPersistence.waitForPendingRemoteReset()
+    await localPersistence.waitForPendingChoiceSync()
+
     const output = await generateWithRemoteProvider(input, config)
     await persistRemoteEpisode(input, output)
     return output
