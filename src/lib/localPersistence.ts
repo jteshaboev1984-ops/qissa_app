@@ -4,6 +4,13 @@ import type { Episode, Language, OnboardingSelections, ReaderPreferences, Series
 export type AppScreen = 'welcome' | 'onboarding' | 'home' | 'story'
 export type PersistedStoryProvider = 'local' | 'remote'
 
+export type RemotePersistenceSnapshot = {
+  selections: OnboardingSelections
+  seriesState: SeriesState
+  episode: Episode
+  readerPreferences: ReaderPreferences
+}
+
 const KEY_PREFIX = 'qissa:v1'
 
 const STORAGE_KEYS = {
@@ -263,6 +270,14 @@ export const localPersistence = {
   loadReaderPreferences: (): ReaderPreferences | null => {
     const value = safeGet<unknown>(STORAGE_KEYS.readerPreferences)
     return isReaderPreferences(value) ? value : null
+  },
+  restoreRemoteSnapshot: (snapshot: RemotePersistenceSnapshot) => {
+    safeSet(STORAGE_KEYS.language, snapshot.selections.language)
+    safeSet(STORAGE_KEYS.onboardingSelections, normalizeOnboardingSelections(snapshot.selections))
+    safeSet(STORAGE_KEYS.seriesState, snapshot.seriesState)
+    safeSet(STORAGE_KEYS.currentEpisode, snapshot.episode)
+    safeSet(STORAGE_KEYS.readerPreferences, snapshot.readerPreferences)
+    safeSet(STORAGE_KEYS.screen, 'home')
   },
   waitForPendingRemoteReset: async () => {
     if (pendingRemoteReset) await pendingRemoteReset
