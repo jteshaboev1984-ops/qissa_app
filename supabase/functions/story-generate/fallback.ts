@@ -151,9 +151,11 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
   const language = context.language
 
   if (context.isContinuation) {
+    const latestChoice = context.choiceHistory[context.choiceHistory.length - 1]
+    const remembered = latestChoice?.tomorrow_seed || latestChoice?.effect_summary || latestChoice?.choice_text || ''
     const candidate: StoryCandidate = {
       title: world.titleTwo[language],
-      story_text: common.continuation[language],
+      story_text: `${remembered ? `${remembered} ` : ''}${common.continuation[language]}`.trim(),
       choices: [],
       state_patch: patch('continued_saved_choice', ''),
       vocabulary: [],
