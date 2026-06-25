@@ -70,9 +70,23 @@ const clear = (playbackId: string) => {
   }
 }
 
+const clearAll = () => {
+  try {
+    const matchingKeys: string[] = []
+    for (let index = 0; index < window.localStorage.length; index += 1) {
+      const key = window.localStorage.key(index)
+      if (key?.startsWith(`${KEY_PREFIX}:`)) matchingKeys.push(key)
+    }
+    matchingKeys.forEach((key) => window.localStorage.removeItem(key))
+  } catch {
+    // Ignore local storage failures during privacy deletion.
+  }
+}
+
 export const playbackProgress = {
   keyPrefix: KEY_PREFIX,
   load,
   save,
   clear,
+  clearAll,
 }
