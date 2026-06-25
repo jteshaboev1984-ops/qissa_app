@@ -301,7 +301,7 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
   const request = input as StoryRequest
   const selections = request.selections
   const seriesState = request.seriesState
-  if (!selections || !seriesState) return null
+  if (!isRecord(selections) || !isRecord(seriesState)) return null
 
   const ageGroup = selections.ageGroup as AgeGroup
   const language = selections.language as Language
@@ -353,9 +353,11 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
   }
 }
 
-const entriesToRecord = (entries: CandidateRecordEntry[]): Record<string, string> => {
+const entriesToRecord = (entries: unknown): Record<string, string> => {
+  if (!Array.isArray(entries)) return {}
   const result: Record<string, string> = {}
   for (const item of entries.slice(0, 12)) {
+    if (!isRecord(item)) continue
     const key = compactText(item.key, 48)
     const value = compactText(item.value, 120)
     if (key && value) result[key] = value
@@ -363,7 +365,8 @@ const entriesToRecord = (entries: CandidateRecordEntry[]): Record<string, string
   return result
 }
 
-export const finalPatchFromCandidate = (patch: CandidatePatch): FinalStatePatch => {
+export const finalPatchFromCandidate = (patch: unknown): FinalStatePatch => {
+  if (!isRecord(patch)) return {}
   const result: FinalStatePatch = {}
   const lastEvent = compactText(patch.last_event, 96)
   const newFriend = compactText(patch.new_friend, 64)
@@ -396,7 +399,7 @@ export const buildFinalEpisode = (
   mode: context.storyMode,
   mood: context.storyMood,
   stylePackId: context.stylePackId,
-  choices: candidate.choices.map((choice) => ({
+  choices: (Array.isArray(candidate.choices) ? candidate.choices : []).map((choice) => ({
     choice_id: compactText(choice.choice_id, 64),
     text: replaceHeroToken(compactText(choice.text, 220), context.heroName),
     effect_summary: replaceHeroToken(compactText(choice.effect_summary, 300), context.heroName),
@@ -404,11 +407,13 @@ export const buildFinalEpisode = (
     tomorrow_seed: replaceHeroToken(compactText(choice.tomorrow_seed, 400), context.heroName),
     choice_icon: compactText(choice.choice_icon, 8) || '✨',
     state_patch: finalPatchFromCandidate(choice.state_patch),
-    value_alignment: choice.value_alignment.filter((value) => positiveValues.has(value)).slice(0, 3),
+    value_alignment: (Array.isArray(choice.value_alignment) ? choice.value_alignment : [])
+      .filter((value): value is PositiveValue => positiveValues.has(value as PositiveValue))
+      .slice(0, 3),
   })),
   state_patch: finalPatchFromCandidate(candidate.state_patch),
   vocabulary: context.language === 'ru'
-    ? candidate.vocabulary.slice(0, 3).map((item) => ({
+    ? (Array.isArray(candidate.vocabulary) ? candidate.vocabulary : []).slice(0, 3).map((item) => ({
         word: compactText(item.word, 48),
         translation: compactText(item.translation, 80),
         example: replaceHeroToken(compactText(item.example, 180), context.heroName),
