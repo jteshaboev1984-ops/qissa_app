@@ -9,6 +9,14 @@ export type StoryMode = 'one_time' | 'series'
 export type PlaybackMode = 'read' | 'listen'
 export type StoryMood = 'bedtime' | 'kind_adventure'
 
+export const PRIVACY_CONSENT_VERSION = '2026-06-25-v1' as const
+export interface PrivacyConsent {
+  version: typeof PRIVACY_CONSENT_VERSION
+  acceptedAt: string
+  parentOrGuardianConfirmed: true
+  aiProcessingAccepted: true
+}
+
 export type PositiveValue =
   | 'respect_for_elders'
   | 'kindness'
