@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - supabase/functions/story-generate/**
+      - scripts/smoke-story-generate-live.mjs
+      - .github/workflows/live-story-smoke.yml
+      - src/lib/storyRemoteClient.ts
   workflow_dispatch:
     inputs:
       expected_source:
@@ -16,11 +24,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: live-story-smoke
+  group: live-story-smoke-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   smoke:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
