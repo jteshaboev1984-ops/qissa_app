@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto'
+
 const storyEndpoint = process.env.QISSA_STORY_ENDPOINT?.trim()
   || 'https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate'
 const stateEndpoint = process.env.QISSA_STATE_ENDPOINT?.trim()
@@ -46,8 +48,8 @@ const invokeJson = async (endpoint, payload) => {
   }
 }
 
-const installationId = crypto.randomUUID()
-const seriesId = crypto.randomUUID()
+const installationId = randomUUID()
+const seriesId = randomUUID()
 const heroName = 'Privacy Smoke Hero'
 const privacyConsent = {
   version: consentVersion,
