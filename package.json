@@ -14,7 +14,9 @@
     "preview:stories": "node scripts/preview-stories.mjs",
     "check:story-service": "node scripts/check-story-service-boundary.mjs",
     "check:story-ai": "node scripts/check-story-ai-safety.mjs",
-    "check:backend-contracts": "node scripts/check-backend-contracts.mjs"
+    "check:backend-contracts": "node scripts/check-backend-contracts.mjs",
+    "smoke:story-live": "node scripts/smoke-story-generate-live.mjs",
+    "audit:prod": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {
     "react": "^18.3.1",
