@@ -83,12 +83,10 @@ export const storyOutputSchema = {
   additionalProperties: false,
   required: ['title', 'story_text', 'choices', 'state_patch', 'vocabulary', 'nextEpisodePreview'],
   properties: {
-    title: { type: 'string', minLength: 2, maxLength: 120 },
-    story_text: { type: 'string', minLength: 80, maxLength: 6000 },
+    title: { type: 'string' },
+    story_text: { type: 'string' },
     choices: {
       type: 'array',
-      minItems: 0,
-      maxItems: 2,
       items: {
         type: 'object',
         additionalProperties: false,
@@ -103,17 +101,15 @@ export const storyOutputSchema = {
           'value_alignment',
         ],
         properties: {
-          choice_id: { type: 'string', minLength: 2, maxLength: 64 },
-          text: { type: 'string', minLength: 3, maxLength: 220 },
-          effect_summary: { type: 'string', minLength: 8, maxLength: 300 },
-          resolution_text: { type: 'string', minLength: 12, maxLength: 400 },
-          tomorrow_seed: { type: 'string', minLength: 8, maxLength: 400 },
-          choice_icon: { type: 'string', minLength: 1, maxLength: 8 },
+          choice_id: { type: 'string' },
+          text: { type: 'string' },
+          effect_summary: { type: 'string' },
+          resolution_text: { type: 'string' },
+          tomorrow_seed: { type: 'string' },
+          choice_icon: { type: 'string' },
           state_patch: { $ref: '#/$defs/state_patch' },
           value_alignment: {
             type: 'array',
-            minItems: 1,
-            maxItems: 3,
             items: {
               type: 'string',
               enum: [
@@ -137,20 +133,18 @@ export const storyOutputSchema = {
     state_patch: { $ref: '#/$defs/state_patch' },
     vocabulary: {
       type: 'array',
-      minItems: 0,
-      maxItems: 3,
       items: {
         type: 'object',
         additionalProperties: false,
         required: ['word', 'translation', 'example'],
         properties: {
-          word: { type: 'string', minLength: 1, maxLength: 48 },
-          translation: { type: 'string', minLength: 1, maxLength: 80 },
-          example: { type: 'string', minLength: 4, maxLength: 180 },
+          word: { type: 'string' },
+          translation: { type: 'string' },
+          example: { type: 'string' },
         },
       },
     },
-    nextEpisodePreview: { type: 'string', maxLength: 300 },
+    nextEpisodePreview: { type: 'string' },
   },
   $defs: {
     state_patch: {
@@ -158,33 +152,31 @@ export const storyOutputSchema = {
       additionalProperties: false,
       required: ['last_event', 'new_friend', 'hero_trait', 'open_arc', 'relationship_updates', 'canon_updates'],
       properties: {
-        last_event: { type: 'string', maxLength: 96 },
-        new_friend: { type: ['string', 'null'], maxLength: 64 },
-        hero_trait: { type: ['string', 'null'], maxLength: 64 },
-        open_arc: { type: ['string', 'null'], maxLength: 120 },
+        last_event: { type: 'string' },
+        new_friend: { type: ['string', 'null'] },
+        hero_trait: { type: ['string', 'null'] },
+        open_arc: { type: ['string', 'null'] },
         relationship_updates: {
           type: 'array',
-          maxItems: 12,
           items: {
             type: 'object',
             additionalProperties: false,
             required: ['key', 'value'],
             properties: {
-              key: { type: 'string', maxLength: 48 },
-              value: { type: 'string', maxLength: 120 },
+              key: { type: 'string' },
+              value: { type: 'string' },
             },
           },
         },
         canon_updates: {
           type: 'array',
-          maxItems: 12,
           items: {
             type: 'object',
             additionalProperties: false,
             required: ['key', 'value'],
             properties: {
-              key: { type: 'string', maxLength: 48 },
-              value: { type: 'string', maxLength: 120 },
+              key: { type: 'string' },
+              value: { type: 'string' },
             },
           },
         },
@@ -229,7 +221,7 @@ export const safetyOutputSchema = {
       },
     },
     required_action: { type: 'string', enum: ['publish', 'regenerate', 'fallback', 'block'] },
-    notes: { type: 'array', maxItems: 8, items: { type: 'string', maxLength: 240 } },
+    notes: { type: 'array', items: { type: 'string' } },
   },
 } as const
 
