@@ -1,7 +1,7 @@
 import type { NarrationSpeed } from './narrationPlan'
 
 export type PlaybackProgressSnapshot = {
-  episodeId: string
+  playbackId: string
   positionSeconds: number
   durationSeconds: number
   speed: NarrationSpeed
@@ -12,7 +12,7 @@ export type PlaybackProgressSnapshot = {
 const KEY_PREFIX = 'qissa:v1:playbackProgress'
 const MAX_POSITION_DRIFT_SECONDS = 2
 
-const storageKey = (episodeId: string) => `${KEY_PREFIX}:${episodeId}`
+const storageKey = (playbackId: string) => `${KEY_PREFIX}:${playbackId}`
 
 const isNarrationSpeed = (value: unknown): value is NarrationSpeed =>
   value === 0.8 || value === 1 || value === 1.2
@@ -20,7 +20,7 @@ const isNarrationSpeed = (value: unknown): value is NarrationSpeed =>
 const isSnapshot = (value: unknown): value is PlaybackProgressSnapshot => {
   if (!value || typeof value !== 'object') return false
   const candidate = value as Partial<PlaybackProgressSnapshot>
-  return typeof candidate.episodeId === 'string' &&
+  return typeof candidate.playbackId === 'string' &&
     typeof candidate.positionSeconds === 'number' &&
     Number.isFinite(candidate.positionSeconds) &&
     candidate.positionSeconds >= 0 &&
@@ -32,12 +32,12 @@ const isSnapshot = (value: unknown): value is PlaybackProgressSnapshot => {
     typeof candidate.updatedAt === 'string'
 }
 
-const load = (episodeId: string): PlaybackProgressSnapshot | null => {
+const load = (playbackId: string): PlaybackProgressSnapshot | null => {
   try {
-    const raw = window.localStorage.getItem(storageKey(episodeId))
+    const raw = window.localStorage.getItem(storageKey(playbackId))
     if (!raw) return null
     const parsed: unknown = JSON.parse(raw)
-    if (!isSnapshot(parsed) || parsed.episodeId !== episodeId) return null
+    if (!isSnapshot(parsed) || parsed.playbackId !== playbackId) return null
     return parsed
   } catch {
     return null
@@ -56,15 +56,15 @@ const save = (snapshot: PlaybackProgressSnapshot) => {
   }
 
   try {
-    window.localStorage.setItem(storageKey(snapshot.episodeId), JSON.stringify(normalized))
+    window.localStorage.setItem(storageKey(snapshot.playbackId), JSON.stringify(normalized))
   } catch {
     // Playback can continue for the current page even when storage is unavailable.
   }
 }
 
-const clear = (episodeId: string) => {
+const clear = (playbackId: string) => {
   try {
-    window.localStorage.removeItem(storageKey(episodeId))
+    window.localStorage.removeItem(storageKey(playbackId))
   } catch {
     // Ignore cleanup failures.
   }
