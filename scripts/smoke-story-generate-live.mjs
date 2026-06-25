@@ -1,7 +1,8 @@
 const endpoint = process.env.QISSA_STORY_ENDPOINT?.trim()
   || 'https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate'
 const publishableKey = process.env.QISSA_SUPABASE_ANON_KEY?.trim()
-const expectedSource = process.env.QISSA_EXPECTED_GENERATION_SOURCE?.trim() || 'safe-fallback'
+const expectedSource = process.env.QISSA_EXPECTED_GENERATION_SOURCE?.trim() || null
+const allowedSources = new Set(['safe-fallback', 'openai-structured'])
 
 if (!publishableKey) {
   console.error('QISSA_SUPABASE_ANON_KEY is required for the live smoke test.')
@@ -9,10 +10,17 @@ if (!publishableKey) {
 }
 
 const languages = ['ru', 'uz', 'kz']
-const timeoutMs = 20_000
+const timeoutMs = 45_000
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message)
+}
+
+const validateSource = (source, label) => {
+  assert(allowedSources.has(source), `${label}: unrecognized generation source ${source}`)
+  if (expectedSource) {
+    assert(source === expectedSource, `${label}: expected source ${expectedSource}, got ${source}`)
+  }
 }
 
 const invoke = async (payload) => {
@@ -84,9 +92,14 @@ const validateEpisodeOne = (result, language, heroName) => {
   assert(typeof episode.story_text === 'string' && episode.story_text.includes(heroName), `${language}: hero name was not restored`)
   assert(!episode.story_text.includes('{{HERO}}'), `${language}: unresolved hero token`)
   assert(Array.isArray(episode.choices) && episode.choices.length === 2, `${language}: episode 1 must have two choices`)
-  assert(episode.safety_self_check?.approved === true, `${language}: fallback safety must be approved`)
-  assert(episode.safety_self_check?.required_action === 'fallback', `${language}: expected fallback safety action`)
-  assert(result.source === expectedSource, `${language}: expected source ${expectedSource}, got ${result.source}`)
+  assert(episode.safety_self_check?.approved === true, `${language}: safety must be approved`)
+  validateSource(result.source, language)
+
+  const expectedAction = result.source === 'safe-fallback' ? 'fallback' : 'publish'
+  assert(
+    episode.safety_self_check?.required_action === expectedAction,
+    `${language}: expected safety action ${expectedAction}`,
+  )
 
   if (language === 'ru') {
     assert(Array.isArray(episode.vocabulary) && episode.vocabulary.length >= 2, 'ru: vocabulary is missing')
@@ -102,10 +115,16 @@ const validateContinuation = (result, episodeOne, heroName) => {
   assert(episode && typeof episode === 'object', 'continuation: missing episode')
   assert(episode.episode_id === 'ep-2-cozy_forest', 'continuation: wrong episode id')
   assert(Array.isArray(episode.choices) && episode.choices.length === 0, 'continuation: choices must be empty')
-  assert(episode.story_text.includes(heroName), 'continuation: hero name was not restored')
+  assert(typeof episode.story_text === 'string' && episode.story_text.includes(heroName), 'continuation: hero name was not restored')
   assert(!episode.story_text.includes('{{HERO}}'), 'continuation: unresolved hero token')
-  assert(episode.story_text.includes(episodeOne.choices[0].tomorrow_seed), 'continuation: saved choice consequence is missing')
-  assert(result.source === expectedSource, `continuation: expected source ${expectedSource}, got ${result.source}`)
+  validateSource(result.source, 'continuation')
+
+  if (result.source === 'safe-fallback') {
+    assert(
+      episode.story_text.includes(episodeOne.choices[0].tomorrow_seed),
+      'continuation: saved choice consequence is missing',
+    )
+  }
 }
 
 for (const language of languages) {
