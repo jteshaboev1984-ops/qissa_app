@@ -20,6 +20,7 @@ const serviceWrapsRemoteClient = /from\s+['"]\.\/storyRemoteClient['"]/.test(ser
 const serviceWrapsStateService = /from\s+['"]\.\/storyStateService['"]/.test(service)
 const serviceExposesGenerateEpisode = /\bgenerateEpisode\b/.test(service)
 const servicePersistsRemoteEpisode = /syncGenerated/.test(service)
+const serviceRepairsMissingSeriesState = /input\.seriesState\s*\?\?\s*localPersistence\.loadSeriesStateOrRepair\(input\.selections\)/.test(service)
 const remoteClientUsesEndpoint = /VITE_QISSA_STORY_ENDPOINT/.test(remoteClient)
 const remoteClientUsesPublishableKey = /VITE_QISSA_SUPABASE_PUBLISHABLE_KEY/.test(remoteClient)
 const remoteClientAddsSupabaseHeaders = /headers\.set\(['"]apikey['"]/.test(remoteClient) && /headers\.set\(['"]authorization['"]/.test(remoteClient)
@@ -36,6 +37,12 @@ const stateFunctionPersistsCoreTables = [
   'story_choices',
   'safety_reviews',
 ].every((table) => stateFunction.includes(`'${table}'`))
+const stateFunctionValidatesReaderPreferences =
+  /validReaderPreferences\s*=\s*isRecord\(readerPreferences\)\s*\?\s*readerPreferences\s*:\s*\{\}/.test(stateFunction) &&
+  /reader_preferences:\s*validReaderPreferences/.test(stateFunction)
+const stateFunctionUpsertsSafetyReview =
+  /from\(['"]safety_reviews['"]\)\.upsert\(/.test(stateFunction) &&
+  /onConflict:\s*['"]episode_id['"]/.test(stateFunction)
 const installationIdentityCachesFallback =
   /let\s+cachedId:\s*string\s*\|\s*null\s*=\s*null/.test(installationIdentity) &&
   /if\s*\(cachedId\)\s*return\s+cachedId/.test(installationIdentity) &&
@@ -71,6 +78,10 @@ if (!servicePersistsRemoteEpisode) {
   failures.push('storyService.ts must persist remote episodes after generation.')
 }
 
+if (!serviceRepairsMissingSeriesState) {
+  failures.push('storyService.ts must repair missing series state before persisting the first remote episode.')
+}
+
 if (
   !remoteClientUsesEndpoint ||
   !remoteClientUsesPublishableKey ||
@@ -87,6 +98,14 @@ if (!stateClientUsesEndpoint || !stateClientUsesInstallationIdentity || !stateCl
 
 if (!stateFunctionUsesServiceRole || !stateFunctionPersistsCoreTables) {
   failures.push('story-state Edge Function must use trusted server access and persist core story tables.')
+}
+
+if (!stateFunctionValidatesReaderPreferences) {
+  failures.push('story-state Edge Function must validate reader preferences before profile upsert.')
+}
+
+if (!stateFunctionUpsertsSafetyReview) {
+  failures.push('story-state Edge Function must upsert safety reviews by episode_id.')
 }
 
 if (!installationIdentityCachesFallback) {
