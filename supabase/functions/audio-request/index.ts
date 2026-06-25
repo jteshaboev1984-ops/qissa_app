@@ -58,6 +58,9 @@ const isRecord = (value: unknown): value is JsonRecord =>
 const isUuid = (value: unknown): value is string =>
   typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
 
+const isClientStoryId = (value: unknown): value is string =>
+  typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(value)
+
 const isVoicePreset = (value: unknown): value is VoicePresetId =>
   value === 'soft_female' ||
   value === 'calm_male' ||
@@ -293,6 +296,8 @@ const generateAudio = async (
     return deviceFallback('audio_reservation_failed', origin)
   }
 
+  let uploadedStoragePath: string | null = null
+
   try {
     const providerResponse = await fetch(OPENAI_SPEECH_URL, {
       method: 'POST',
@@ -324,6 +329,7 @@ const generateAudio = async (
       })
 
     if (uploadError) throw new Error('audio_upload_failed')
+    uploadedStoragePath = storagePath
 
     const { data: readyAsset, error: readyError } = await admin
       .from('audio_assets')
@@ -364,9 +370,17 @@ const generateAudio = async (
   } catch (error) {
     const errorCode = error instanceof Error ? error.message.slice(0, 80) : 'audio_generation_failed'
     console.error('audio generation failed', { errorCode })
+
+    if (uploadedStoragePath) {
+      const { error: cleanupError } = await admin.storage
+        .from(AUDIO_BUCKET)
+        .remove([uploadedStoragePath])
+      if (cleanupError) console.error('failed audio upload rollback failed', cleanupError)
+    }
+
     await admin
       .from('audio_assets')
-      .update({ status: 'failed', error_code: errorCode })
+      .update({ status: 'failed', storage_path: null, error_code: errorCode })
       .eq('id', createdAsset.id)
     await logEvent(owned.profile.id, 'audio_failed', {
       episode_id: owned.episode.id,
@@ -380,7 +394,7 @@ const generateAudio = async (
 const requestAudio = async (input: AudioRequestInput, origin: string | null) => {
   const { installationId, seriesId, episodeId, voicePresetId, speed = 1 } = input
   if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
-  if (!isUuid(seriesId) || typeof episodeId !== 'string' || !episodeId.trim()) {
+  if (!isClientStoryId(seriesId) || !isClientStoryId(episodeId)) {
     return fail('invalid_episode_identity', 422, origin)
   }
   if (!isVoicePreset(voicePresetId) || !isAudioSpeed(speed)) return fail('invalid_audio_preferences', 422, origin)
@@ -439,7 +453,7 @@ const requestAudio = async (input: AudioRequestInput, origin: string | null) => 
 const saveProgress = async (input: AudioRequestInput, origin: string | null) => {
   const { installationId, seriesId, episodeId, speed = 1, positionSeconds, completed, audioAssetId } = input
   if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
-  if (!isUuid(seriesId) || typeof episodeId !== 'string' || !episodeId.trim()) return fail('invalid_episode_identity', 422, origin)
+  if (!isClientStoryId(seriesId) || !isClientStoryId(episodeId)) return fail('invalid_episode_identity', 422, origin)
   if (!isAudioSpeed(speed) || typeof positionSeconds !== 'number' || !Number.isFinite(positionSeconds) || positionSeconds < 0) {
     return fail('invalid_playback_progress', 422, origin)
   }
