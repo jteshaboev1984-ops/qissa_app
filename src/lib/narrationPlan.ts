@@ -10,8 +10,32 @@ export type NarrationSegment = {
 const WORDS_PER_MINUTE = 155
 const MAX_WORDS_PER_SEGMENT = 22
 const MIN_SEGMENT_SECONDS = 1.2
+const RUSSIAN_ABBREVIATIONS = ['т.д.', 'т.п.', 'т.е.', 'т.к.', 'и др.', 'им.', 'г.', 'ул.']
 
 const normalizeText = (value: string) => value.replace(/\s+/g, ' ').trim()
+
+const protectAbbreviations = (value: string) => {
+  const replacements = new Map<string, string>()
+  let protectedText = value
+
+  RUSSIAN_ABBREVIATIONS.forEach((abbreviation, index) => {
+    const token = `QISSAABBR${index}`
+    if (!protectedText.includes(abbreviation)) return
+    protectedText = protectedText.replaceAll(abbreviation, token)
+    replacements.set(token, abbreviation)
+  })
+
+  return {
+    protectedText,
+    restore: (text: string) => {
+      let restored = text
+      replacements.forEach((abbreviation, token) => {
+        restored = restored.replaceAll(token, abbreviation)
+      })
+      return restored
+    },
+  }
+}
 
 const splitLongSentence = (sentence: string): string[] => {
   const words = normalizeText(sentence).split(' ').filter(Boolean)
@@ -28,8 +52,9 @@ export const splitNarrationText = (text: string): string[] => {
   const normalized = normalizeText(text)
   if (!normalized) return []
 
-  const sentences = normalized.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/gu) ?? [normalized]
-  return sentences.flatMap(splitLongSentence).filter(Boolean)
+  const { protectedText, restore } = protectAbbreviations(normalized)
+  const sentences = protectedText.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/gu) ?? [protectedText]
+  return sentences.flatMap(splitLongSentence).map(restore).filter(Boolean)
 }
 
 export const estimateNarrationSeconds = (text: string, speed: NarrationSpeed): number => {
