@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 const read = (path) => readFileSync(path, 'utf8')
 
 const listeningScene = read('src/components/ListeningScene.tsx')
+const listeningTranslations = read('src/i18n/listening.ts')
 const narrationHook = read('src/lib/useDeviceNarration.ts')
 const narrationPlan = read('src/lib/narrationPlan.ts')
 const playbackProgress = read('src/lib/playbackProgress.ts')
@@ -30,15 +31,24 @@ requireCondition(
 
 requireCondition(
   /qissa:v1:playbackProgress/.test(playbackProgress) &&
-    /localStorage\.getItem/.test(playbackProgress) &&
-    /localStorage\.setItem/.test(playbackProgress),
-  'Playback position, speed, and completion must be persisted for resume.',
+    /const\s+getStorage\s*=/.test(playbackProgress) &&
+    /typeof window === 'undefined'/.test(playbackProgress) &&
+    /storage\.getItem/.test(playbackProgress) &&
+    /storage\.setItem/.test(playbackProgress),
+  'Playback storage must support resume and remain safe outside browser environments.',
 )
 
 requireCondition(
   /const\s+clearAll\s*=/.test(playbackProgress) &&
     /playbackProgress\.clearAll\(\)/.test(storyArchive),
   'Irreversible profile deletion must remove every stored playback position.',
+)
+
+requireCondition(
+  /timeoutRef/.test(narrationHook) &&
+    /clearPendingTimeout/.test(narrationHook) &&
+    /window\.clearTimeout\(timeoutRef\.current\)/.test(narrationHook),
+  'Pending narration transitions must be tracked and cancelled during episode or playback changes.',
 )
 
 requireCondition(
@@ -81,17 +91,20 @@ requireCondition(
 )
 
 requireCondition(
-  /ru:\s*\{/.test(listeningScene) &&
-    /uz:\s*\{/.test(listeningScene) &&
-    /kz:\s*\{/.test(listeningScene),
-  'New listening states must be localized for Russian, Uzbek, and Kazakh.',
+  /from '..\/i18n\/listening'/.test(listeningScene) &&
+    /ru:\s*\{/.test(listeningTranslations) &&
+    /uz:\s*\{/.test(listeningTranslations) &&
+    /kz:\s*\{/.test(listeningTranslations),
+  'New listening states must use the centralized RU, UZ, and KZ translation module.',
 )
 
 requireCondition(
-  /splitNarrationText/.test(narrationPlan) &&
+  /RUSSIAN_ABBREVIATIONS/.test(narrationPlan) &&
+    /protectAbbreviations/.test(narrationPlan) &&
+    /splitNarrationText/.test(narrationPlan) &&
     /buildNarrationTimeline/.test(narrationPlan) &&
     /segmentIndexAtPosition/.test(narrationPlan),
-  'Narration must use a deterministic segment timeline for progress and resume.',
+  'Narration must preserve common abbreviations and use a deterministic segment timeline.',
 )
 
 requireCondition(
