@@ -87,6 +87,9 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
   const copy = listeningCopy[language]
   const isNightMode = preferences.audioOnlyNightMode
   const showText = preferences.showTextWithAudio && !isNightMode
+  const speechSupported = typeof window !== 'undefined' &&
+    'speechSynthesis' in window &&
+    typeof SpeechSynthesisUtterance !== 'undefined'
   const playbackId = `${episode.series_id}:${episode.episode_id}`
   const narration = useDeviceNarration({
     playbackId,
@@ -99,7 +102,8 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
     setShowVoiceSelector(false)
   }, [episode.episode_id, episode.series_id])
 
-  const statusMessage = narration.status === 'unavailable'
+  const unavailable = !speechSupported || narration.status === 'unavailable'
+  const statusMessage = unavailable
     ? copy.unavailable
     : narration.status === 'error'
       ? copy.error
@@ -116,9 +120,9 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
         : 'border-[#2f3a35] bg-gradient-to-b from-[#26332f] to-[#121916] shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_18px_45px_-30px_rgba(0,0,0,.65)]'
     }`}>
       <p
-        role={narration.status === 'error' || narration.status === 'unavailable' ? 'alert' : 'status'}
+        role={narration.status === 'error' || unavailable ? 'alert' : 'status'}
         className={`rounded-[1.25rem] border px-3 py-2 text-xs leading-5 ${
-          narration.status === 'error' || narration.status === 'unavailable'
+          narration.status === 'error' || unavailable
             ? 'border-[#815b52] bg-[#3a211d] text-[#ffd8ce]'
             : 'border-[#4e5d54] bg-white/6 text-[#d8d0be]'
         }`}
@@ -152,7 +156,7 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
             step={1}
             value={Math.min(narration.positionSeconds, Math.max(1, narration.durationSeconds))}
             onChange={(event) => narration.seekTo(Number(event.target.value))}
-            disabled={narration.durationSeconds <= 0 || narration.status === 'unavailable'}
+            disabled={narration.durationSeconds <= 0 || unavailable}
             aria-label={t(language, 'listen.progress')}
             className="mt-3 h-2 w-full cursor-pointer accent-[#b9ebf2] disabled:cursor-not-allowed disabled:opacity-50"
           />
@@ -162,14 +166,14 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
           <button
             className="min-h-12 rounded-full border border-white/10 bg-white/8 px-4 py-3 text-sm font-bold text-[#f8f2e7] disabled:opacity-40"
             onClick={() => narration.seekBy(-10)}
-            disabled={narration.durationSeconds <= 0}
+            disabled={narration.durationSeconds <= 0 || unavailable}
           >
             {t(language, 'listen.back_10')}
           </button>
           <button
             className="h-16 w-16 rounded-full bg-gradient-to-b from-[#f0cd58] to-[#d4af37] text-sm font-black text-[#2b2100] shadow-[0_18px_35px_-22px_rgba(212,175,55,.9)] disabled:cursor-not-allowed disabled:opacity-45"
             onClick={narration.isPlaying ? narration.pause : narration.play}
-            disabled={narration.status === 'unavailable'}
+            disabled={unavailable}
             aria-label={narration.isPlaying ? t(language, 'listen.pause') : t(language, 'listen.play')}
           >
             {narration.isPlaying ? '⏸' : '▶'}
@@ -177,7 +181,7 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
           <button
             className="min-h-12 rounded-full border border-white/10 bg-white/8 px-4 py-3 text-sm font-bold text-[#f8f2e7] disabled:opacity-40"
             onClick={() => narration.seekBy(10)}
-            disabled={narration.durationSeconds <= 0}
+            disabled={narration.durationSeconds <= 0 || unavailable}
           >
             {t(language, 'listen.forward_10')}
           </button>
@@ -190,7 +194,8 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
               <button
                 key={speed}
                 onClick={() => narration.changeSpeed(speed)}
-                className={`rounded-full px-3 py-1.5 text-xs font-bold ${
+                disabled={unavailable}
+                className={`rounded-full px-3 py-1.5 text-xs font-bold disabled:opacity-40 ${
                   narration.speed === speed ? 'bg-[#b9ebf2] text-[#12373b]' : 'border border-white/10 text-[#f8f2e7]'
                 }`}
               >
@@ -203,7 +208,7 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
 
       <div className="grid grid-cols-2 gap-2">
         <button
-          className="rounded-2xl border border-white/10 bg-white/7 px-3 py-3 text-sm font-bold"
+          className="rounded-2xl border border-white/10 bg-white/7 px-3 py-3 text-sm font-bold disabled:opacity-40"
           onClick={() => onPreferencesChange({ showTextWithAudio: !preferences.showTextWithAudio })}
           disabled={isNightMode}
         >
