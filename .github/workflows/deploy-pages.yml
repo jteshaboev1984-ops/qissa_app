@@ -37,13 +37,19 @@ jobs:
       - name: Validate story service boundary
         run: npm run check:story-service
 
+      - name: Validate Story AI safety contract
+        run: npm run check:story-ai
+
+      - name: Typecheck Story AI Edge Function
+        run: npm run typecheck:story-ai
+
       - name: Validate story copy
         run: npm run check:story-copy
 
       - name: Validate translations
         run: npm run check:i18n
 
-      - name: Typecheck
+      - name: Typecheck app
         run: npm run typecheck
 
       - name: Validate remote story configuration
@@ -71,7 +77,7 @@ jobs:
           VITE_QISSA_STORY_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate
           VITE_QISSA_STATE_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-state
           VITE_QISSA_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
-          VITE_QISSA_STORY_TIMEOUT_MS: 12000
+          VITE_QISSA_STORY_TIMEOUT_MS: 45000
           VITE_QISSA_STORY_FALLBACK_TO_LOCAL: false
         run: npm run build
 
