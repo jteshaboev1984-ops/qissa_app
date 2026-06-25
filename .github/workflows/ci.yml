@@ -40,6 +40,9 @@ jobs:
       - name: Validate listening playback
         run: npm run check:listening
 
+      - name: Validate cache-first Audio Agent
+        run: npm run check:audio-agent
+
       - name: Validate Story AI safety contract
         run: npm run check:story-ai
 
