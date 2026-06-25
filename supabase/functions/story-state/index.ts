@@ -106,6 +106,8 @@ async function syncGenerated(input: StoryStateRequest, origin: string | null) {
     typeof episode.title !== 'string' || typeof episode.story_text !== 'string'
   ) return fail('invalid_story_snapshot', 422, origin)
 
+  const validReaderPreferences = isRecord(readerPreferences) ? readerPreferences : {}
+
   const { data: profile, error: profileError } = await admin
     .from('child_profiles')
     .upsert({
@@ -115,8 +117,8 @@ async function syncGenerated(input: StoryStateRequest, origin: string | null) {
       language,
       hero_type: heroType,
       custom_hero_name: customHeroName ?? null,
-      default_voice_preset_id: typeof readerPreferences?.voicePresetId === 'string' ? readerPreferences.voicePresetId : null,
-      reader_preferences: readerPreferences ?? {},
+      default_voice_preset_id: typeof validReaderPreferences.voicePresetId === 'string' ? validReaderPreferences.voicePresetId : null,
+      reader_preferences: validReaderPreferences,
     }, { onConflict: 'installation_id' })
     .select('id')
     .single()
@@ -210,15 +212,15 @@ async function syncGenerated(input: StoryStateRequest, origin: string | null) {
     }
   }
 
-  const { error: reviewError } = await admin.from('safety_reviews').insert({
+  const { error: reviewError } = await admin.from('safety_reviews').upsert({
     episode_id: episodeRow.id,
     status: approved ? 'approved' : 'blocked',
     risk_level: typeof safety.risk_level === 'string' ? safety.risk_level : 'low',
     flags: isRecord(safety.flags) ? safety.flags : {},
     required_action: typeof safety.required_action === 'string' ? safety.required_action : approved ? 'publish' : 'block',
-  })
+  }, { onConflict: 'episode_id' })
 
-  if (reviewError) console.error('safety review insert failed', reviewError)
+  if (reviewError) console.error('safety review upsert failed', reviewError)
   return json({ ok: true }, 200, origin)
 }
 
