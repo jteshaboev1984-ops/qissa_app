@@ -24,10 +24,11 @@ const persistRemoteEpisode = async (
   input: StoryGenerationInput,
   output: StoryGenerationOutput,
 ): Promise<void> => {
-  if (!input.seriesState) return
+  const seriesState = input.seriesState ?? localPersistence.loadSeriesStateOrRepair(input.selections)
+  if (!seriesState) return
 
   const episodeCount = output.episode.episode_id.startsWith('ep-2') ? 2 : 1
-  const nextSeriesState = { ...input.seriesState, episodeCount }
+  const nextSeriesState = { ...seriesState, episodeCount }
 
   await storyStateService.syncGenerated({
     selections: input.selections,
