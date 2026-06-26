@@ -82,7 +82,10 @@ try {
   assert(choiceA.effect_summary !== choiceB.effect_summary, 'Choice effects must be meaningfully different.')
   assert(choiceA.resolution_text !== choiceB.resolution_text, 'Choice resolutions must be meaningfully different.')
   assert(choiceA.tomorrow_seed !== choiceB.tomorrow_seed, 'Tomorrow seeds must be meaningfully different.')
-  assert(choiceA.state_patch.remembered_artifact !== choiceB.state_patch.remembered_artifact, 'Each branch must store a different remembered artifact.')
+  assert(
+    choiceA.state_patch.canon_updates?.remembered_artifact !== choiceB.state_patch.canon_updates?.remembered_artifact,
+    'Each branch must store a different remembered artifact.',
+  )
 
   const continuationFor = (choice) => buildSafeFallback({
     ...baseContext,
