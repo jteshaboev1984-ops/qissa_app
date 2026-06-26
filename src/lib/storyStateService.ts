@@ -32,14 +32,6 @@ const getStateEndpoint = (): string | null => {
   return storyEndpoint?.replace(/\/story-generate\/?$/, '/story-state') ?? null
 }
 
-const getAudioCleanupEndpoint = (): string | null => {
-  const stateEndpoint = getStateEndpoint()
-  if (stateEndpoint) return stateEndpoint.replace(/\/story-state\/?$/, '/audio-cleanup')
-
-  const storyEndpoint = getStoryProviderConfig().endpoint
-  return storyEndpoint?.replace(/\/story-generate\/?$/, '/audio-cleanup') ?? null
-}
-
 const buildHeaders = (publishableKey: string): Headers => {
   const headers = new Headers()
   headers.set('content-type', 'application/json')
@@ -93,22 +85,6 @@ const requestState = async (payload: Record<string, unknown>): Promise<unknown> 
   return requestRemote(endpoint, config.publishableKey, config.timeoutMs, payload, 'Remote story state service')
 }
 
-const requestAudioCleanup = async (): Promise<void> => {
-  const config = getStoryProviderConfig()
-  if (config.mode === 'local') return
-
-  const endpoint = getAudioCleanupEndpoint()
-  if (!endpoint || !config.publishableKey) throw new Error('Remote audio cleanup service is not configured.')
-
-  await requestRemote(
-    endpoint,
-    config.publishableKey,
-    config.timeoutMs,
-    { action: 'delete_profile_audio' },
-    'Remote audio cleanup service',
-  )
-}
-
 const syncGenerated = async ({ selections, seriesState, episode, readerPreferences, privacyConsent }: SyncGeneratedInput): Promise<void> => {
   if (getStoryProviderConfig().mode === 'local') return
 
@@ -145,7 +121,6 @@ const resetCurrent = async (): Promise<void> => {
 
 const deleteProfileData = async (): Promise<void> => {
   if (getStoryProviderConfig().mode === 'local') return
-  await requestAudioCleanup()
   await requestState({ action: 'delete_profile_data' })
 }
 
