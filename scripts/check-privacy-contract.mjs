@@ -14,7 +14,6 @@ const welcome = read('src/screens/WelcomeScreen.tsx')
 const privacyPanel = read('src/components/PrivacyDataPanel.tsx')
 const storyGenerate = read('supabase/functions/story-generate/index.ts')
 const storyState = read('supabase/functions/story-state/index.ts')
-const audioCleanup = read('supabase/functions/audio-cleanup/index.ts')
 const migration = read('docs/qissa/backend/migrations/20260625_000006_add_privacy_consent.sql')
 
 const failures = []
@@ -101,22 +100,12 @@ requireCondition(
 )
 
 const clientDeleteStart = stateService.indexOf('const deleteProfileData')
-const audioCleanupPosition = stateService.indexOf('await requestAudioCleanup()', clientDeleteStart)
 const stateDeletePosition = stateService.indexOf("await requestState({ action: 'delete_profile_data' })", clientDeleteStart)
 requireCondition(
   clientDeleteStart >= 0 &&
-    /getAudioCleanupEndpoint/.test(stateService) &&
-    /delete_profile_audio/.test(stateService) &&
-    audioCleanupPosition > clientDeleteStart &&
-    stateDeletePosition > audioCleanupPosition,
-  'Client deletion must remove private audio objects before deleting profile rows.',
-)
-
-requireCondition(
-  /delete_profile_audio/.test(audioCleanup) &&
-    /storage\.from\(AUDIO_BUCKET\)\.remove\(chunk\)/.test(audioCleanup) &&
-    /audio_storage_cleanup_failed/.test(audioCleanup),
-  'The audio cleanup function must fail closed when private Storage objects cannot be removed.',
+    stateDeletePosition > clientDeleteStart &&
+    !/audio-cleanup|requestAudioCleanup|delete_profile_audio/.test(stateService),
+  'Client deletion must use one fail-closed backend action.',
 )
 
 requireCondition(
@@ -134,11 +123,17 @@ requireCondition(
 )
 
 const deleteFunctionStart = storyState.indexOf('async function deleteProfileData')
+const audioDeletePosition = storyState.indexOf('await deleteProfileAudioObjects(profile.id)', deleteFunctionStart)
 const eventDeletePosition = storyState.indexOf("from('app_events')", deleteFunctionStart)
 const profileDeletePosition = storyState.indexOf("from('child_profiles')", deleteFunctionStart)
 requireCondition(
-  deleteFunctionStart >= 0 && eventDeletePosition > deleteFunctionStart && profileDeletePosition > eventDeletePosition,
-  'Full deletion must remove profile-linked telemetry before deleting the child profile.',
+  deleteFunctionStart >= 0 &&
+    /storage\s*\.from\(AUDIO_BUCKET\)\s*\.remove\(/.test(storyState) &&
+    /audio_storage_cleanup_failed/.test(storyState) &&
+    audioDeletePosition > deleteFunctionStart &&
+    eventDeletePosition > audioDeletePosition &&
+    profileDeletePosition > eventDeletePosition,
+  'Full deletion must remove private audio, telemetry, and then the child profile.',
 )
 
 requireCondition(
