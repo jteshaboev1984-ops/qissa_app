@@ -99,6 +99,15 @@ requireCondition(
   'The client state service must expose the dedicated full-deletion action.',
 )
 
+const clientDeleteStart = stateService.indexOf('const deleteProfileData')
+const stateDeletePosition = stateService.indexOf("await requestState({ action: 'delete_profile_data' })", clientDeleteStart)
+requireCondition(
+  clientDeleteStart >= 0 &&
+    stateDeletePosition > clientDeleteStart &&
+    !/audio-cleanup|requestAudioCleanup|delete_profile_audio/.test(stateService),
+  'Client deletion must use one fail-closed backend action.',
+)
+
 requireCondition(
   /privacy_consent_required/.test(storyGenerate) &&
     /aiEnabled\s*&&\s*openAiApiKey\s*&&\s*!hasValidPrivacyConsent/.test(storyGenerate),
@@ -114,11 +123,17 @@ requireCondition(
 )
 
 const deleteFunctionStart = storyState.indexOf('async function deleteProfileData')
+const audioDeletePosition = storyState.indexOf('await deleteProfileAudioObjects(profile.id)', deleteFunctionStart)
 const eventDeletePosition = storyState.indexOf("from('app_events')", deleteFunctionStart)
 const profileDeletePosition = storyState.indexOf("from('child_profiles')", deleteFunctionStart)
 requireCondition(
-  deleteFunctionStart >= 0 && eventDeletePosition > deleteFunctionStart && profileDeletePosition > eventDeletePosition,
-  'Full deletion must remove profile-linked telemetry before deleting the child profile.',
+  deleteFunctionStart >= 0 &&
+    /storage\s*\.from\(AUDIO_BUCKET\)\s*\.remove\(/.test(storyState) &&
+    /audio_storage_cleanup_failed/.test(storyState) &&
+    audioDeletePosition > deleteFunctionStart &&
+    eventDeletePosition > audioDeletePosition &&
+    profileDeletePosition > eventDeletePosition,
+  'Full deletion must remove private audio, telemetry, and then the child profile.',
 )
 
 requireCondition(

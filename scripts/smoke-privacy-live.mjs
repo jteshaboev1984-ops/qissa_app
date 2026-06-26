@@ -125,6 +125,10 @@ try {
     installationId,
   })
   assert(deleted.body?.ok === true && deleted.body?.deleted === true, 'profile deletion was not confirmed')
+  assert(
+    deleted.body?.deletedAudioObjectCount === 0,
+    'story-state does not expose integrated private audio cleanup status',
+  )
   profileCreated = false
 
   const afterDeletion = await invokeJson(stateEndpoint, {
@@ -141,8 +145,12 @@ try {
     repeatedDeletion.body?.ok === true && repeatedDeletion.body?.deleted === false,
     'repeated deletion must be safely idempotent',
   )
+  assert(
+    repeatedDeletion.body?.deletedAudioObjectCount === 0,
+    'repeated deletion must preserve integrated audio cleanup status',
+  )
 
-  console.log('Live privacy smoke passed: create, load, delete, verify absence, repeat delete.')
+  console.log('Live privacy smoke passed: integrated audio cleanup, create, load, delete, absence, repeat delete.')
 } finally {
   if (profileCreated) {
     try {

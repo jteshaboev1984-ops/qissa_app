@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "typecheck:story-ai": "tsc --project tsconfig.story-ai.json",
+    "typecheck:audio-agent": "tsc --project tsconfig.audio-agent.json",
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:story-copy": "node scripts/check-story-copy.mjs",
     "preview:stories": "node scripts/preview-stories.mjs",
@@ -17,8 +18,10 @@
     "check:backend-contracts": "node scripts/check-backend-contracts.mjs",
     "check:privacy": "node scripts/check-privacy-contract.mjs",
     "check:listening": "node scripts/check-listening-contract.mjs",
+    "check:audio-agent": "node scripts/check-audio-agent-contract.mjs",
     "smoke:story-live": "node scripts/smoke-story-generate-live.mjs",
     "smoke:privacy-live": "node scripts/smoke-privacy-live.mjs",
+    "smoke:audio-live": "node scripts/smoke-audio-live.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {

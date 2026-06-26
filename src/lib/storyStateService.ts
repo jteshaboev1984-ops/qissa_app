@@ -40,20 +40,20 @@ const buildHeaders = (publishableKey: string): Headers => {
   return headers
 }
 
-const requestState = async (payload: Record<string, unknown>): Promise<unknown> => {
-  const config = getStoryProviderConfig()
-  if (config.mode === 'local') return null
-
-  const endpoint = getStateEndpoint()
-  if (!endpoint || !config.publishableKey) throw new Error('Remote story state service is not configured.')
-
+const requestRemote = async (
+  endpoint: string,
+  publishableKey: string,
+  timeoutMs: number,
+  payload: Record<string, unknown>,
+  serviceName: string,
+): Promise<unknown> => {
   const controller = new AbortController()
-  const timeoutId = window.setTimeout(() => controller.abort(), config.timeoutMs)
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs)
 
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: buildHeaders(config.publishableKey),
+      headers: buildHeaders(publishableKey),
       body: JSON.stringify({ installationId: getInstallationId(), ...payload }),
       signal: controller.signal,
       credentials: 'omit',
@@ -61,18 +61,28 @@ const requestState = async (payload: Record<string, unknown>): Promise<unknown> 
 
     if (!response.ok) {
       const details = (await response.text()).trim().slice(0, 240)
-      throw new Error(`Remote story state service returned ${response.status}${details ? `: ${details}` : ''}`)
+      throw new Error(`${serviceName} returned ${response.status}${details ? `: ${details}` : ''}`)
     }
 
     return response.json()
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new Error(`Remote story state service timed out after ${config.timeoutMs} ms.`)
+      throw new Error(`${serviceName} timed out after ${timeoutMs} ms.`)
     }
     throw error
   } finally {
     window.clearTimeout(timeoutId)
   }
+}
+
+const requestState = async (payload: Record<string, unknown>): Promise<unknown> => {
+  const config = getStoryProviderConfig()
+  if (config.mode === 'local') return null
+
+  const endpoint = getStateEndpoint()
+  if (!endpoint || !config.publishableKey) throw new Error('Remote story state service is not configured.')
+
+  return requestRemote(endpoint, config.publishableKey, config.timeoutMs, payload, 'Remote story state service')
 }
 
 const syncGenerated = async ({ selections, seriesState, episode, readerPreferences, privacyConsent }: SyncGeneratedInput): Promise<void> => {
