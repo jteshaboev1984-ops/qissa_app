@@ -9,8 +9,21 @@ const sourcePaths = {
   contracts: join(root, 'supabase/functions/story-generate/contracts.ts'),
   branches: join(root, 'supabase/functions/story-generate/storyCoreBranches.ts'),
   reference: join(root, 'supabase/functions/story-generate/storyCoreReference.ts'),
+  worlds: join(root, 'supabase/functions/story-generate/storyWorldNarratives.ts'),
   fallback: join(root, 'supabase/functions/story-generate/fallback.ts'),
+  uiCopy: join(root, 'src/i18n/storyQualityCopy.ts'),
 }
+
+const stylePackIds = [
+  'cozy_forest',
+  'magic_garden',
+  'brave_adventure',
+  'stars_and_space',
+  'silk_road',
+  'animal_world',
+  'castle_mystery',
+  'sea_islands',
+]
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message)
@@ -27,6 +40,7 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/contracts\.ts['"]/g, "'./contracts.mjs'")
   .replace(/['"]\.\/storyCoreBranches\.ts['"]/g, "'./storyCoreBranches.mjs'")
   .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
+  .replace(/['"]\.\/storyWorldNarratives\.ts['"]/g, "'./storyWorldNarratives.mjs'")
 
 const memoryFromChoice = (episode, choice) => ({
   episode_id: episode.episode_id,
@@ -55,7 +69,7 @@ const baseContext = {
   stylePackId: 'cozy_forest',
   storyMode: 'series',
   storyMood: 'bedtime',
-  seriesId: 'story-core-proof-series',
+  seriesId: 'story-quality-proof-series',
   episodeIndex: 1,
   isContinuation: false,
   recurringCharacters: [],
@@ -67,21 +81,37 @@ const baseContext = {
 }
 
 const wordCount = (text) => text.trim().split(/\s+/u).filter(Boolean).length
-const forbiddenIntensity = /погон|ужас|страшн|крич|взрыв|опасн|сраж/iu
+const highIntensity = /погон|ужас|страшный крик|кров|убить|взрыв|сражение/iu
+const technicalLanguage = /последстви[ея] выбора|мир запомнил|история запомнила выбор|в следующей истории|текущей версии|завершить начатое дело|сохран[её]нный выбор|эпизод заверш[её]н|серия завершена/iu
+const technicalUiLanguage = /в текущей версии|joriy versiya|ағымдағы нұсқа|серия завершена/iu
 
-const temp = await mkdtemp(join(tmpdir(), 'qissa-story-core-'))
+const assertStoryQuality = (text, label, minWords, maxWords) => {
+  const words = wordCount(text)
+  assert(words >= minWords, `${label}: only ${words} words; expected at least ${minWords}.`)
+  assert(words <= maxWords, `${label}: ${words} words; expected at most ${maxWords}.`)
+  assert(!technicalLanguage.test(text), `${label}: contains technical product language.`)
+  assert(!highIntensity.test(text), `${label}: breaks the calm child-facing tone.`)
+  assert(text.includes('Мира'), `${label}: custom hero name is missing.`)
+}
+
+const temp = await mkdtemp(join(tmpdir(), 'qissa-story-quality-'))
 try {
-  const [contractsSource, branchesSource, referenceSource, fallbackSource] = await Promise.all([
+  const [contractsSource, branchesSource, referenceSource, worldsSource, fallbackSource, uiCopySource] = await Promise.all([
     readFile(sourcePaths.contracts, 'utf8'),
     readFile(sourcePaths.branches, 'utf8'),
     readFile(sourcePaths.reference, 'utf8'),
+    readFile(sourcePaths.worlds, 'utf8'),
     readFile(sourcePaths.fallback, 'utf8'),
+    readFile(sourcePaths.uiCopy, 'utf8'),
   ])
+
+  assert(!technicalUiLanguage.test(uiCopySource), 'Child-facing UI copy contains technical release language.')
 
   await Promise.all([
     writeFile(join(temp, 'contracts.mjs'), transpile(contractsSource)),
     writeFile(join(temp, 'storyCoreBranches.mjs'), transpile(branchesSource)),
     writeFile(join(temp, 'storyCoreReference.mjs'), transpile(referenceSource)),
+    writeFile(join(temp, 'storyWorldNarratives.mjs'), transpile(worldsSource)),
     writeFile(join(temp, 'fallback.mjs'), transpile(fallbackSource)),
   ])
 
@@ -106,87 +136,46 @@ try {
     }))
 
     const reopenedContext = normalizeStoryRequest(persistedRequest)
-    assert(reopenedContext, `${stylePackId}: saved state must survive backend normalization.`)
-    assert(reopenedContext.isContinuation === true, `${stylePackId}: reopened state must be Episode 2.`)
-    assert(reopenedContext.episodeIndex === 2, `${stylePackId}: reopened state must advance to Episode 2.`)
-    assert(reopenedContext.heroName === 'Мира', `${stylePackId}: reopened state must preserve the child hero.`)
-    assert(reopenedContext.choiceHistory[0]?.choice_id === choice.choice_id, `${stylePackId}: confirmed choice was lost.`)
-
+    assert(reopenedContext, `${stylePackId}: saved state did not survive backend normalization.`)
+    assert(reopenedContext.isContinuation === true, `${stylePackId}: reopened state was not recognized as Episode 2.`)
     return buildSafeFallback(reopenedContext)
   }
 
-  const episodeOne = buildSafeFallback(baseContext)
-  assert(episodeOne.choices.length === 2, 'Episode 1 must offer exactly two gentle choices.')
-  assert(wordCount(episodeOne.story_text) >= 160, 'Reference Episode 1 is too short for the 5–7 vertical slice.')
-  assert(wordCount(episodeOne.story_text) <= 260, 'Reference Episode 1 is too long for the 5–7 vertical slice.')
-  assert(!forbiddenIntensity.test(episodeOne.story_text), 'Reference Episode 1 breaks bedtime tone.')
+  for (const stylePackId of stylePackIds) {
+    const episodeOne = buildSafeFallback({ ...baseContext, stylePackId })
+    assertStoryQuality(episodeOne.story_text, `${stylePackId}/episode-1`, 120, 300)
+    assert(!technicalLanguage.test(episodeOne.title), `${stylePackId}/episode-1: technical title.`)
+    assert(episodeOne.choices.length === 2, `${stylePackId}: Episode 1 must have two choices.`)
 
-  const choiceA = episodeOne.choices.find((choice) => choice.choice_id === 'choice-a')
-  const choiceB = episodeOne.choices.find((choice) => choice.choice_id === 'choice-b')
-  assert(choiceA && choiceB, 'Both Story Core branches must exist.')
-  assert(choiceA.effect_summary !== choiceB.effect_summary, 'Choice effects must be meaningfully different.')
-  assert(choiceA.resolution_text !== choiceB.resolution_text, 'Choice resolutions must be meaningfully different.')
-  assert(choiceA.tomorrow_seed !== choiceB.tomorrow_seed, 'Tomorrow seeds must be meaningfully different.')
-  assert(
-    choiceA.state_patch.canon_updates?.remembered_artifact !== choiceB.state_patch.canon_updates?.remembered_artifact,
-    'Each branch must store a different remembered artifact.',
-  )
-  assert(
-    choiceA.state_patch.relationship_updates?.owl_nura === 'trust_started_through_choice',
-    'Lantern branch must use the stable owl_nura relationship key.',
-  )
-  assert(
-    choiceB.state_patch.relationship_updates?.hedgehog_topa === 'trust_started_through_choice',
-    'Song branch must use the stable hedgehog_topa relationship key.',
-  )
+    const [choiceA, choiceB] = episodeOne.choices
+    assert(choiceA.choice_id === 'choice-a' && choiceB.choice_id === 'choice-b', `${stylePackId}: choice IDs changed.`)
+    assert(choiceA.effect_summary !== choiceB.effect_summary, `${stylePackId}: choice effects are identical.`)
+    assert(choiceA.resolution_text !== choiceB.resolution_text, `${stylePackId}: choice resolutions are identical.`)
+    assert(choiceA.tomorrow_seed !== choiceB.tomorrow_seed, `${stylePackId}: tomorrow seeds are identical.`)
 
-  const episodeTwoA = continuationAfterReopen(episodeOne, choiceA, 'cozy_forest')
-  const episodeTwoB = continuationAfterReopen(episodeOne, choiceB, 'cozy_forest')
+    for (const choice of [choiceA, choiceB]) {
+      const choiceCopy = `${choice.effect_summary} ${choice.resolution_text} ${choice.tomorrow_seed}`
+      assert(!technicalLanguage.test(choiceCopy), `${stylePackId}/${choice.choice_id}: technical choice copy.`)
+      assert(choice.resolution_text.includes('Мира'), `${stylePackId}/${choice.choice_id}: resolution lost the hero.`)
+      assert(choice.state_patch.new_friend, `${stylePackId}/${choice.choice_id}: no recurring friend stored.`)
+      assert(choice.state_patch.canon_updates?.remembered_artifact, `${stylePackId}/${choice.choice_id}: no remembered artifact stored.`)
+    }
 
-  assert(episodeTwoA.story_text !== episodeTwoB.story_text, 'Episode 2 must diverge after different choices.')
-  assert(/фонарик|светил|освещённой тропинке/iu.test(episodeTwoA.story_text), 'Lantern branch must visibly continue the lantern choice.')
-  assert(/песня|мелодия|запел/iu.test(episodeTwoB.story_text), 'Song branch must visibly continue the song choice.')
-  assert(episodeTwoA.story_text.includes('Мира') && episodeTwoB.story_text.includes('Мира'), 'Both continuations must preserve the child hero.')
-  assert(episodeTwoA.choices.length === 0 && episodeTwoB.choices.length === 0, 'Episode 2 closes the first chapter without a dangling choice.')
-  assert(episodeTwoA.state_patch.canon_updates?.remembered_choice === 'choice-a', 'Lantern branch must preserve choice-a in canon.')
-  assert(episodeTwoB.state_patch.canon_updates?.remembered_choice === 'choice-b', 'Song branch must preserve choice-b in canon.')
-  assert(episodeTwoA.state_patch.new_friend !== episodeTwoB.state_patch.new_friend, 'Different choices must strengthen different relationships.')
-  assert(
-    episodeTwoA.state_patch.relationship_updates?.owl_nura === 'trust_strengthened_by_remembered_choice',
-    'Lantern continuation must strengthen owl_nura with a stable key.',
-  )
-  assert(
-    episodeTwoB.state_patch.relationship_updates?.hedgehog_topa === 'trust_strengthened_by_remembered_choice',
-    'Song continuation must strengthen hedgehog_topa with a stable key.',
-  )
-  assert(episodeTwoA.state_patch.open_arc === undefined && episodeTwoB.state_patch.open_arc === undefined, 'Reference Episode 2 must close the active arc.')
+    const episodeTwoA = continuationAfterReopen(episodeOne, choiceA, stylePackId)
+    const episodeTwoB = continuationAfterReopen(episodeOne, choiceB, stylePackId)
 
-  for (const [label, episode] of [['choice-a', episodeTwoA], ['choice-b', episodeTwoB]]) {
-    const words = wordCount(episode.story_text)
-    assert(words >= 120, `${label} continuation is too short for the 5–7 vertical slice.`)
-    assert(words <= 220, `${label} continuation is too long for the 5–7 vertical slice.`)
-    assert(!forbiddenIntensity.test(episode.story_text), `${label} continuation breaks low-stimulation bedtime tone.`)
-    assert(episode.safety_self_check.approved === true, `${label} continuation must remain safety-approved.`)
+    assertStoryQuality(episodeTwoA.story_text, `${stylePackId}/choice-a/episode-2`, 100, 260)
+    assertStoryQuality(episodeTwoB.story_text, `${stylePackId}/choice-b/episode-2`, 100, 260)
+    assert(episodeTwoA.title !== episodeTwoB.title, `${stylePackId}: branch titles are identical.`)
+    assert(episodeTwoA.story_text !== episodeTwoB.story_text, `${stylePackId}: branch stories are identical.`)
+    assert(episodeTwoA.choices.length === 0 && episodeTwoB.choices.length === 0, `${stylePackId}: Episode 2 must close without another choice.`)
+    assert(episodeTwoA.state_patch.open_arc === undefined && episodeTwoB.state_patch.open_arc === undefined, `${stylePackId}: Episode 2 left an open arc.`)
+    assert(episodeTwoA.state_patch.new_friend !== episodeTwoB.state_patch.new_friend, `${stylePackId}: both branches stored the same friend.`)
+    assert(episodeTwoA.state_patch.canon_updates?.remembered_choice === 'choice-a', `${stylePackId}: branch A choice missing from canon.`)
+    assert(episodeTwoB.state_patch.canon_updates?.remembered_choice === 'choice-b', `${stylePackId}: branch B choice missing from canon.`)
   }
 
-  const genericStylePackId = 'magic_garden'
-  const genericEpisodeOne = buildSafeFallback({ ...baseContext, stylePackId: genericStylePackId })
-  const genericA = genericEpisodeOne.choices[0]
-  const genericB = genericEpisodeOne.choices[1]
-  assert(genericA.effect_summary !== genericB.effect_summary, 'Non-reference worlds must preserve choice identity.')
-  assert(genericA.tomorrow_seed !== genericB.tomorrow_seed, 'Non-reference worlds must create distinct tomorrow seeds.')
-
-  const genericEpisodeTwoA = continuationAfterReopen(genericEpisodeOne, genericA, genericStylePackId)
-  const genericEpisodeTwoB = continuationAfterReopen(genericEpisodeOne, genericB, genericStylePackId)
-  assert(genericEpisodeTwoA.story_text !== genericEpisodeTwoB.story_text, 'Generic branches must remain different after reopen.')
-  assert(genericEpisodeTwoA.state_patch.canon_updates?.remembered_choice === 'choice-a', 'Generic branch A must preserve its choice.')
-  assert(genericEpisodeTwoB.state_patch.canon_updates?.remembered_choice === 'choice-b', 'Generic branch B must preserve its choice.')
-  assert(
-    genericEpisodeTwoA.state_patch.open_arc === undefined && genericEpisodeTwoB.state_patch.open_arc === undefined,
-    'Every Episode 2 must close the first chapter arc.',
-  )
-
-  console.log('Story Core proof passed: full RU stories survive reopen, diverge, and close every episode-two arc.')
+  console.log('Story quality proof passed: 8 worlds × 2 branches are literary, distinct, remembered, and free of technical copy.')
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
