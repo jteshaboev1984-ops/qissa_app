@@ -6,6 +6,7 @@ type StoryMood = 'bedtime' | 'kind_adventure'
 type JsonRecord = Record<string, unknown>
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
+const AUDIO_BUCKET = 'story-audio'
 
 type StoryStateRequest = {
   action?: 'sync_generated' | 'confirm_choice' | 'save_preferences' | 'reset_current' | 'load_current' | 'delete_profile_data'
@@ -348,13 +349,69 @@ async function resetCurrent(input: StoryStateRequest, origin: string | null) {
   return json({ ok: true }, 200, origin)
 }
 
+type IdRow = { id?: unknown }
+type AudioPathRow = { storage_path?: unknown }
+
+const stringIds = (rows: IdRow[] | null | undefined): string[] =>
+  (rows ?? []).flatMap((row) => typeof row.id === 'string' ? [row.id] : [])
+
+const stringPaths = (rows: AudioPathRow[] | null | undefined): string[] =>
+  [...new Set((rows ?? []).flatMap((row) =>
+    typeof row.storage_path === 'string' ? [row.storage_path] : [],
+  ))]
+
+async function deleteProfileAudioObjects(profileId: string): Promise<number> {
+  const { data: sessions, error: sessionError } = await admin
+    .from('story_sessions')
+    .select('id')
+    .eq('child_profile_id', profileId)
+  if (sessionError) throw new Error('audio_session_lookup_failed')
+
+  const sessionIds = stringIds(sessions as IdRow[] | null)
+  if (sessionIds.length === 0) return 0
+
+  const { data: episodes, error: episodeError } = await admin
+    .from('story_episodes')
+    .select('id')
+    .in('session_id', sessionIds)
+  if (episodeError) throw new Error('audio_episode_lookup_failed')
+
+  const episodeIds = stringIds(episodes as IdRow[] | null)
+  if (episodeIds.length === 0) return 0
+
+  const { data: assets, error: assetError } = await admin
+    .from('audio_assets')
+    .select('storage_path')
+    .in('episode_id', episodeIds)
+    .not('storage_path', 'is', null)
+  if (assetError) throw new Error('audio_asset_lookup_failed')
+
+  const paths = stringPaths(assets as AudioPathRow[] | null)
+  for (let index = 0; index < paths.length; index += 100) {
+    const { error } = await admin.storage
+      .from(AUDIO_BUCKET)
+      .remove(paths.slice(index, index + 100))
+    if (error) throw new Error('audio_storage_cleanup_failed')
+  }
+
+  return paths.length
+}
+
 async function deleteProfileData(input: StoryStateRequest, origin: string | null) {
   const { installationId } = input
   if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
 
   const { data: profile, error: profileError } = await findProfile(installationId)
   if (profileError) return fail('profile_load_failed', 500, origin)
-  if (!profile) return json({ ok: true, deleted: false }, 200, origin)
+  if (!profile) return json({ ok: true, deleted: false, deletedAudioObjectCount: 0 }, 200, origin)
+
+  let deletedAudioObjectCount = 0
+  try {
+    deletedAudioObjectCount = await deleteProfileAudioObjects(profile.id)
+  } catch (error) {
+    console.error('profile audio cleanup failed', error)
+    return fail(error instanceof Error ? error.message : 'audio_storage_cleanup_failed', 500, origin)
+  }
 
   const { error: eventDeleteError } = await admin
     .from('app_events')
@@ -376,7 +433,7 @@ async function deleteProfileData(input: StoryStateRequest, origin: string | null
     return fail('profile_delete_failed', 500, origin)
   }
 
-  return json({ ok: true, deleted: true }, 200, origin)
+  return json({ ok: true, deleted: true, deletedAudioObjectCount }, 200, origin)
 }
 
 async function loadCurrent(input: StoryStateRequest, origin: string | null) {
