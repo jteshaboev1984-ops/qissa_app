@@ -30,4 +30,14 @@ jobs:
         run: npm ci --silent
 
       - name: Prove saved choices create different continuations
-        run: npm run check:story-core
+        run: |
+          set -o pipefail
+          npm run check:story-core 2>&1 | tee story-core-proof.log
+
+      - name: Upload proof diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-core-proof-diagnostics
+          path: story-core-proof.log
+          retention-days: 3
