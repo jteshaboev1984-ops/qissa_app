@@ -35,6 +35,16 @@ const memoryFromChoice = (episode, choice) => ({
   tomorrow_seed: choice.tomorrow_seed,
 })
 
+const selections = {
+  ageGroup: '5-7',
+  language: 'ru',
+  heroType: 'custom',
+  customHeroName: 'Мира',
+  stylePackId: 'cozy_forest',
+  storyMode: 'series',
+  storyMood: 'bedtime',
+}
+
 const baseContext = {
   ageGroup: '5-7',
   language: 'ru',
@@ -71,7 +81,9 @@ try {
     writeFile(join(temp, 'fallback.mjs'), transpile(fallbackSource)),
   ])
 
-  const { buildSafeFallback } = await import(`${pathToFileURL(join(temp, 'fallback.mjs')).href}?v=${Date.now()}`)
+  const moduleNonce = Date.now()
+  const { normalizeStoryRequest } = await import(`${pathToFileURL(join(temp, 'contracts.mjs')).href}?v=${moduleNonce}`)
+  const { buildSafeFallback } = await import(`${pathToFileURL(join(temp, 'fallback.mjs')).href}?v=${moduleNonce}`)
 
   const episodeOne = buildSafeFallback(baseContext)
   assert(episodeOne.choices.length === 2, 'Episode 1 must offer exactly two gentle choices.')
@@ -87,17 +99,31 @@ try {
     'Each branch must store a different remembered artifact.',
   )
 
-  const continuationFor = (choice) => buildSafeFallback({
-    ...baseContext,
-    episodeIndex: 2,
-    isContinuation: true,
-    recurringCharacters: choice.state_patch.new_friend ? [choice.state_patch.new_friend] : [],
-    lastEpisodeSummary: choice.effect_summary,
-    activeArc: choice.state_patch.open_arc ?? '',
-    relationshipState: choice.state_patch.relationship_updates ?? {},
-    canonState: choice.state_patch.canon_updates ?? {},
-    choiceHistory: [memoryFromChoice(episodeOne, choice)],
-  })
+  const continuationFor = (choice) => {
+    const persistedRequest = JSON.parse(JSON.stringify({
+      selections,
+      seriesState: {
+        id: baseContext.seriesId,
+        mainCharacter: baseContext.heroName,
+        recurringCharacters: choice.state_patch.new_friend ? [choice.state_patch.new_friend] : [],
+        lastEpisodeSummary: choice.effect_summary,
+        activeArc: choice.state_patch.open_arc ?? '',
+        relationshipState: choice.state_patch.relationship_updates ?? {},
+        canonState: choice.state_patch.canon_updates ?? {},
+        choiceHistory: [memoryFromChoice(episodeOne, choice)],
+        episodeCount: 1,
+      },
+    }))
+
+    const reopenedContext = normalizeStoryRequest(persistedRequest)
+    assert(reopenedContext, 'Saved series state must survive backend normalization after reopen.')
+    assert(reopenedContext.isContinuation === true, 'Reopened state must be recognized as Episode 2.')
+    assert(reopenedContext.episodeIndex === 2, 'Reopened state must advance to Episode 2.')
+    assert(reopenedContext.heroName === 'Мира', 'Reopened state must preserve the child hero.')
+    assert(reopenedContext.choiceHistory[0]?.choice_id === choice.choice_id, 'Reopened state must preserve the confirmed choice.')
+
+    return buildSafeFallback(reopenedContext)
+  }
 
   const episodeTwoA = continuationFor(choiceA)
   const episodeTwoB = continuationFor(choiceB)
@@ -125,7 +151,7 @@ try {
   assert(genericA.effect_summary !== genericB.effect_summary, 'Non-reference worlds must still preserve choice identity.')
   assert(genericA.tomorrow_seed !== genericB.tomorrow_seed, 'Non-reference worlds must still create distinct tomorrow seeds.')
 
-  console.log('Story Core proof passed: choice A and B create distinct, remembered, bedtime-safe continuations.')
+  console.log('Story Core proof passed: saved choice survives reopen and creates a distinct bedtime-safe continuation.')
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
