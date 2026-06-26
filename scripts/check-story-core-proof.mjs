@@ -35,7 +35,7 @@ const memoryFromChoice = (episode, choice) => ({
   tomorrow_seed: choice.tomorrow_seed,
 })
 
-const selections = {
+const baseSelections = {
   ageGroup: '5-7',
   language: 'ru',
   heroType: 'custom',
@@ -85,6 +85,32 @@ try {
   const { normalizeStoryRequest } = await import(`${pathToFileURL(join(temp, 'contracts.mjs')).href}?v=${moduleNonce}`)
   const { buildSafeFallback } = await import(`${pathToFileURL(join(temp, 'fallback.mjs')).href}?v=${moduleNonce}`)
 
+  const continuationAfterReopen = (episodeOne, choice, stylePackId) => {
+    const persistedRequest = JSON.parse(JSON.stringify({
+      selections: { ...baseSelections, stylePackId },
+      seriesState: {
+        id: `${baseContext.seriesId}-${stylePackId}`,
+        mainCharacter: baseContext.heroName,
+        recurringCharacters: choice.state_patch.new_friend ? [choice.state_patch.new_friend] : [],
+        lastEpisodeSummary: choice.effect_summary,
+        activeArc: choice.state_patch.open_arc ?? '',
+        relationshipState: choice.state_patch.relationship_updates ?? {},
+        canonState: choice.state_patch.canon_updates ?? {},
+        choiceHistory: [memoryFromChoice(episodeOne, choice)],
+        episodeCount: 1,
+      },
+    }))
+
+    const reopenedContext = normalizeStoryRequest(persistedRequest)
+    assert(reopenedContext, `${stylePackId}: saved state must survive backend normalization.`)
+    assert(reopenedContext.isContinuation === true, `${stylePackId}: reopened state must be Episode 2.`)
+    assert(reopenedContext.episodeIndex === 2, `${stylePackId}: reopened state must advance to Episode 2.`)
+    assert(reopenedContext.heroName === 'Мира', `${stylePackId}: reopened state must preserve the child hero.`)
+    assert(reopenedContext.choiceHistory[0]?.choice_id === choice.choice_id, `${stylePackId}: confirmed choice was lost.`)
+
+    return buildSafeFallback(reopenedContext)
+  }
+
   const episodeOne = buildSafeFallback(baseContext)
   assert(episodeOne.choices.length === 2, 'Episode 1 must offer exactly two gentle choices.')
 
@@ -99,34 +125,8 @@ try {
     'Each branch must store a different remembered artifact.',
   )
 
-  const continuationFor = (choice) => {
-    const persistedRequest = JSON.parse(JSON.stringify({
-      selections,
-      seriesState: {
-        id: baseContext.seriesId,
-        mainCharacter: baseContext.heroName,
-        recurringCharacters: choice.state_patch.new_friend ? [choice.state_patch.new_friend] : [],
-        lastEpisodeSummary: choice.effect_summary,
-        activeArc: choice.state_patch.open_arc ?? '',
-        relationshipState: choice.state_patch.relationship_updates ?? {},
-        canonState: choice.state_patch.canon_updates ?? {},
-        choiceHistory: [memoryFromChoice(episodeOne, choice)],
-        episodeCount: 1,
-      },
-    }))
-
-    const reopenedContext = normalizeStoryRequest(persistedRequest)
-    assert(reopenedContext, 'Saved series state must survive backend normalization after reopen.')
-    assert(reopenedContext.isContinuation === true, 'Reopened state must be recognized as Episode 2.')
-    assert(reopenedContext.episodeIndex === 2, 'Reopened state must advance to Episode 2.')
-    assert(reopenedContext.heroName === 'Мира', 'Reopened state must preserve the child hero.')
-    assert(reopenedContext.choiceHistory[0]?.choice_id === choice.choice_id, 'Reopened state must preserve the confirmed choice.')
-
-    return buildSafeFallback(reopenedContext)
-  }
-
-  const episodeTwoA = continuationFor(choiceA)
-  const episodeTwoB = continuationFor(choiceB)
+  const episodeTwoA = continuationAfterReopen(episodeOne, choiceA, 'cozy_forest')
+  const episodeTwoB = continuationAfterReopen(episodeOne, choiceB, 'cozy_forest')
 
   assert(episodeTwoA.story_text !== episodeTwoB.story_text, 'Episode 2 must diverge after different choices.')
   assert(/фонарик|светил|освещённой тропинке/iu.test(episodeTwoA.story_text), 'Lantern branch must visibly continue the lantern choice.')
@@ -136,6 +136,7 @@ try {
   assert(episodeTwoA.state_patch.canon_updates?.remembered_choice === 'choice-a', 'Lantern branch must preserve choice-a in canon.')
   assert(episodeTwoB.state_patch.canon_updates?.remembered_choice === 'choice-b', 'Song branch must preserve choice-b in canon.')
   assert(episodeTwoA.state_patch.new_friend !== episodeTwoB.state_patch.new_friend, 'Different choices must strengthen different relationships.')
+  assert(episodeTwoA.state_patch.open_arc === undefined && episodeTwoB.state_patch.open_arc === undefined, 'Reference Episode 2 must close the active arc.')
 
   for (const [label, episode] of [['choice-a', episodeTwoA], ['choice-b', episodeTwoB]]) {
     const words = wordCount(episode.story_text)
@@ -145,13 +146,24 @@ try {
     assert(episode.safety_self_check.approved === true, `${label} continuation must remain safety-approved.`)
   }
 
-  const genericEpisodeOne = buildSafeFallback({ ...baseContext, stylePackId: 'magic_garden' })
+  const genericStylePackId = 'magic_garden'
+  const genericEpisodeOne = buildSafeFallback({ ...baseContext, stylePackId: genericStylePackId })
   const genericA = genericEpisodeOne.choices[0]
   const genericB = genericEpisodeOne.choices[1]
-  assert(genericA.effect_summary !== genericB.effect_summary, 'Non-reference worlds must still preserve choice identity.')
-  assert(genericA.tomorrow_seed !== genericB.tomorrow_seed, 'Non-reference worlds must still create distinct tomorrow seeds.')
+  assert(genericA.effect_summary !== genericB.effect_summary, 'Non-reference worlds must preserve choice identity.')
+  assert(genericA.tomorrow_seed !== genericB.tomorrow_seed, 'Non-reference worlds must create distinct tomorrow seeds.')
 
-  console.log('Story Core proof passed: saved choice survives reopen and creates a distinct bedtime-safe continuation.')
+  const genericEpisodeTwoA = continuationAfterReopen(genericEpisodeOne, genericA, genericStylePackId)
+  const genericEpisodeTwoB = continuationAfterReopen(genericEpisodeOne, genericB, genericStylePackId)
+  assert(genericEpisodeTwoA.story_text !== genericEpisodeTwoB.story_text, 'Generic branches must remain different after reopen.')
+  assert(genericEpisodeTwoA.state_patch.canon_updates?.remembered_choice === 'choice-a', 'Generic branch A must preserve its choice.')
+  assert(genericEpisodeTwoB.state_patch.canon_updates?.remembered_choice === 'choice-b', 'Generic branch B must preserve its choice.')
+  assert(
+    genericEpisodeTwoA.state_patch.open_arc === undefined && genericEpisodeTwoB.state_patch.open_arc === undefined,
+    'Every Episode 2 must close the first chapter arc.',
+  )
+
+  console.log('Story Core proof passed: saved choices survive reopen, diverge, and close every episode-two arc.')
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
