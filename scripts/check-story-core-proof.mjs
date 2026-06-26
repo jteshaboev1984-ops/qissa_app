@@ -24,9 +24,9 @@ const transpile = (source) => ts.transpileModule(source, {
     strict: true,
   },
 }).outputText
-  .replaceAll("'./contracts.ts'", "'./contracts.mjs'")
-  .replaceAll("'./storyCoreBranches.ts'", "'./storyCoreBranches.mjs'")
-  .replaceAll("'./storyCoreReference.ts'", "'./storyCoreReference.mjs'")
+  .replace(/['"]\.\/contracts\.ts['"]/g, "'./contracts.mjs'")
+  .replace(/['"]\.\/storyCoreBranches\.ts['"]/g, "'./storyCoreBranches.mjs'")
+  .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
 
 const memoryFromChoice = (episode, choice) => ({
   episode_id: episode.episode_id,
@@ -131,6 +131,14 @@ try {
     choiceA.state_patch.canon_updates?.remembered_artifact !== choiceB.state_patch.canon_updates?.remembered_artifact,
     'Each branch must store a different remembered artifact.',
   )
+  assert(
+    choiceA.state_patch.relationship_updates?.owl_nura === 'trust_started_through_choice',
+    'Lantern branch must use the stable owl_nura relationship key.',
+  )
+  assert(
+    choiceB.state_patch.relationship_updates?.hedgehog_topa === 'trust_started_through_choice',
+    'Song branch must use the stable hedgehog_topa relationship key.',
+  )
 
   const episodeTwoA = continuationAfterReopen(episodeOne, choiceA, 'cozy_forest')
   const episodeTwoB = continuationAfterReopen(episodeOne, choiceB, 'cozy_forest')
@@ -143,6 +151,14 @@ try {
   assert(episodeTwoA.state_patch.canon_updates?.remembered_choice === 'choice-a', 'Lantern branch must preserve choice-a in canon.')
   assert(episodeTwoB.state_patch.canon_updates?.remembered_choice === 'choice-b', 'Song branch must preserve choice-b in canon.')
   assert(episodeTwoA.state_patch.new_friend !== episodeTwoB.state_patch.new_friend, 'Different choices must strengthen different relationships.')
+  assert(
+    episodeTwoA.state_patch.relationship_updates?.owl_nura === 'trust_strengthened_by_remembered_choice',
+    'Lantern continuation must strengthen owl_nura with a stable key.',
+  )
+  assert(
+    episodeTwoB.state_patch.relationship_updates?.hedgehog_topa === 'trust_strengthened_by_remembered_choice',
+    'Song continuation must strengthen hedgehog_topa with a stable key.',
+  )
   assert(episodeTwoA.state_patch.open_arc === undefined && episodeTwoB.state_patch.open_arc === undefined, 'Reference Episode 2 must close the active arc.')
 
   for (const [label, episode] of [['choice-a', episodeTwoA], ['choice-b', episodeTwoB]]) {
