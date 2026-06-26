@@ -5,15 +5,15 @@ import { pathToFileURL } from 'node:url'
 import ts from 'typescript'
 
 const root = process.cwd()
-const files = {
-  contracts: 'contracts',
-  branches: 'storyCoreBranches',
-  generic: 'storyGenericEditorial',
-  reference: 'storyCoreReference',
-  spaceReference: 'storySpaceReference',
-  spaceMemory: 'storySpaceMemory',
-  fallback: 'fallback',
-}
+const sourceNames = [
+  'contracts',
+  'storyCoreBranches',
+  'storyGenericEditorial',
+  'storyCoreReference',
+  'storySpaceReference',
+  'storySpaceMemory',
+  'fallback',
+]
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message)
@@ -65,9 +65,9 @@ const baseContext = {
 
 const temp = await mkdtemp(join(tmpdir(), 'qissa-story-editorial-'))
 try {
-  for (const [target, sourceName] of Object.entries(files)) {
+  for (const sourceName of sourceNames) {
     const source = await readFile(join(root, `supabase/functions/story-generate/${sourceName}.ts`), 'utf8')
-    await writeFile(join(temp, `${target}.mjs`), transpile(source))
+    await writeFile(join(temp, `${sourceName}.mjs`), transpile(source))
   }
 
   const nonce = Date.now()
