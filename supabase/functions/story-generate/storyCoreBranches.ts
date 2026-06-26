@@ -10,6 +10,7 @@ type BranchCopy = {
   seed: Localized
   continuation: Localized
   friend: Localized
+  friendId: string
   artifact: Localized
 }
 
@@ -50,6 +51,7 @@ const cozyForest: Record<BranchId, BranchCopy> = {
       'Таңертең ескі томар жанында сол шам әлі жанып тұрды. Нұра үкі {{HERO}}ті жарық соқпақпен жүруге шақырды. Жарық үйіне жол таба алмай қалған кішкентай тиінге алып келді. Достар оны таныс ағашқа дейін шығарып салып, томарға қайтты. Шам міндеті аяқталғанын түсінгендей бәсеңдей түсті. Орман қайтадан тыныш демалды.',
     ),
     friend: localized('сова Нура', 'boyqush Nura', 'Нұра үкі'),
+    friendId: 'owl_nura',
     artifact: localized('тёплый фонарик', 'iliq chiroq', 'жылы шам'),
   },
   b: {
@@ -74,6 +76,7 @@ const cozyForest: Record<BranchId, BranchCopy> = {
       'Таңертең төменгі бұтақтан кешегі әуен естілді. Топа кірпі жұмсақ жапырақ салынған себетін таба алмай қалды, бірақ таныс ән достарды жинап, кешкі жолды еске түсіруге көмектесті. {{HERO}} бірінші шумақты айтты, Нұра үкі екінші шумақпен жауап берді, көп ұзамай себет бұрылыс маңынан табылды. Достар жапырақтарды інге апарып, әнді өте жай аяқтады. Орман тағы біраз тыңдап, кейін тынышталды.',
     ),
     friend: localized('ёжик Топа', 'tipratikan Topa', 'Топа кірпі'),
+    friendId: 'hedgehog_topa',
     artifact: localized('тихая мелодия', 'sokin kuy', 'баяу әуен'),
   },
 }
@@ -113,14 +116,15 @@ const choicePatch = (
   context: NormalizedStoryContext,
   choiceId: string,
   friend: string | null,
+  relationshipKey: string | null,
   artifact: string | null,
 ): CandidatePatch => ({
   last_event: choiceId,
   new_friend: friend,
   hero_trait: 'kind_and_attentive',
   open_arc: `continue-${context.stylePackId}-${choiceId}`,
-  relationship_updates: friend
-    ? [{ key: friend, value: 'trust_started_through_choice' }]
+  relationship_updates: relationshipKey
+    ? [{ key: relationshipKey, value: 'trust_started_through_choice' }]
     : [{ key: 'friends', value: 'trust_increased' }],
   canon_updates: [
     { key: 'last_choice', value: choiceId },
@@ -131,14 +135,15 @@ const choicePatch = (
 const closedContinuationPatch = (
   choiceId: string,
   friend: string | null,
+  relationshipKey: string | null,
   artifact: string | null,
 ): CandidatePatch => ({
   last_event: `continued_${choiceId}`,
   new_friend: friend,
   hero_trait: 'kind_and_attentive',
   open_arc: null,
-  relationship_updates: friend
-    ? [{ key: friend, value: 'trust_strengthened_by_remembered_choice' }]
+  relationship_updates: relationshipKey
+    ? [{ key: relationshipKey, value: 'trust_strengthened_by_remembered_choice' }]
     : [{ key: 'friends', value: 'trust_strengthened_by_remembered_choice' }],
   canon_updates: [
     { key: 'remembered_choice', value: choiceId },
@@ -165,6 +170,7 @@ export const fallbackChoiceMemory = (
         context,
         choiceId,
         branch.friend[context.language],
+        branch.friendId,
         branch.artifact[context.language],
       ),
     }
@@ -173,7 +179,7 @@ export const fallbackChoiceMemory = (
   const generic = genericChoiceCopy(context.language, choiceText)
   return {
     ...generic,
-    statePatch: choicePatch(context, choiceId, null, choiceText),
+    statePatch: choicePatch(context, choiceId, null, null, choiceText),
   }
 }
 
@@ -192,19 +198,20 @@ export const fallbackContinuationMemory = (
     const artifact = branch.artifact[context.language]
     return {
       storyText: referenceContinuationStory(context, choiceId, branch.continuation[context.language]),
-      statePatch: closedContinuationPatch(choiceId, friend, artifact),
+      statePatch: closedContinuationPatch(choiceId, friend, branch.friendId, artifact),
     }
   }
 
   const remembered = latestChoice?.tomorrow_seed || latestChoice?.effect_summary || latestChoice?.choice_text || ''
+  const rememberedPrefix = remembered ? `${remembered} ` : ''
   const continuation = context.language === 'ru'
-    ? `Утром последствие выбора стало заметно сразу. ${remembered} {{HERO}} узнал знакомый след, помог друзьям завершить начатое дело и спокойно вернулся в уютное место.`
+    ? `Утром последствие выбора стало заметно сразу. ${rememberedPrefix}{{HERO}} узнал знакомый след, помог друзьям завершить начатое дело и спокойно вернулся в уютное место.`
     : context.language === 'uz'
-      ? `Ertalab tanlov natijasi darhol ko‘rindi. ${remembered} {{HERO}} tanish izni ko‘rib, do‘stlariga ishni tugatishda yordam berdi va shinam joyga qaytdi.`
-      : `Таңертең таңдаудың салдары бірден көрінді. ${remembered} {{HERO}} таныс ізді көріп, достарына істі аяқтауға көмектесті де, жайлы жерге оралды.`
+      ? `Ertalab tanlov natijasi darhol ko‘rindi. ${rememberedPrefix}{{HERO}} tanish izni ko‘rib, do‘stlariga ishni tugatishda yordam berdi va shinam joyga qaytdi.`
+      : `Таңертең таңдаудың салдары бірден көрінді. ${rememberedPrefix}{{HERO}} таныс ізді көріп, достарына істі аяқтауға көмектесті де, жайлы жерге оралды.`
 
   return {
     storyText: continuation.trim(),
-    statePatch: closedContinuationPatch(choiceId, null, latestChoice?.choice_text || null),
+    statePatch: closedContinuationPatch(choiceId, null, null, latestChoice?.choice_text || null),
   }
 }
