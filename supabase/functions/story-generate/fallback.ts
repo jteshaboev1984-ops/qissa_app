@@ -9,6 +9,10 @@ import {
 } from './contracts.ts'
 import { fallbackChoiceMemory, fallbackContinuationMemory } from './storyCoreBranches.ts'
 import {
+  genericEditorialChoiceMemory,
+  genericEditorialContinuationMemory,
+} from './storyGenericEditorial.ts'
+import {
   referenceContinuationStory,
   referenceEpisodeOneStory,
   referenceEpisodeTitle,
@@ -138,10 +142,12 @@ const patch = (event: string, arc: string): CandidatePatch => ({
 export const buildSafeFallback = (context: NormalizedStoryContext) => {
   const world = worlds[context.stylePackId]
   const language = context.language
+  const isForest = context.stylePackId === 'cozy_forest'
 
   if (context.isContinuation) {
     const choiceId = context.choiceHistory[context.choiceHistory.length - 1]?.choice_id ?? ''
-    const continuation = spaceContinuationMemory(context) ?? fallbackContinuationMemory(context)
+    const continuation = spaceContinuationMemory(context)
+      ?? (isForest ? fallbackContinuationMemory(context) : genericEditorialContinuationMemory(context))
     const candidate: StoryCandidate = {
       title: referenceEpisodeTitle(context, world.titleTwo[language]),
       story_text: referenceContinuationStory(context, choiceId, continuation.storyText),
@@ -159,7 +165,8 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
   }
 
   const makeChoice = (id: 'choice-a' | 'choice-b', text: string, icon: string): CandidateChoice => {
-    const memory = spaceChoiceMemory(context, id) ?? fallbackChoiceMemory(context, id, text)
+    const memory = spaceChoiceMemory(context, id)
+      ?? (isForest ? fallbackChoiceMemory(context, id, text) : genericEditorialChoiceMemory(context, id, text))
     return {
       choice_id: id,
       text,
