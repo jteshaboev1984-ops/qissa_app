@@ -127,6 +127,24 @@ const choicePatch = (
   ],
 })
 
+const closedContinuationPatch = (
+  choiceId: string,
+  friend: string | null,
+  artifact: string | null,
+): CandidatePatch => ({
+  last_event: `continued_${choiceId}`,
+  new_friend: friend,
+  hero_trait: 'kind_and_attentive',
+  open_arc: null,
+  relationship_updates: friend
+    ? [{ key: friend, value: 'trust_strengthened_by_remembered_choice' }]
+    : [{ key: 'friends', value: 'trust_strengthened_by_remembered_choice' }],
+  canon_updates: [
+    { key: 'remembered_choice', value: choiceId },
+    ...(artifact ? [{ key: 'remembered_artifact', value: artifact }] : []),
+  ],
+})
+
 export const fallbackChoiceMemory = (
   context: NormalizedStoryContext,
   choiceId: string,
@@ -162,7 +180,8 @@ export const fallbackContinuationMemory = (
   context: NormalizedStoryContext,
 ): FallbackContinuationMemory => {
   const latestChoice = context.choiceHistory[context.choiceHistory.length - 1]
-  const branchId = branchIdFromChoice(latestChoice?.choice_id ?? '')
+  const choiceId = latestChoice?.choice_id || 'continued_saved_choice'
+  const branchId = branchIdFromChoice(choiceId)
   const branch = context.stylePackId === 'cozy_forest' && branchId
     ? cozyForest[branchId]
     : null
@@ -172,17 +191,7 @@ export const fallbackContinuationMemory = (
     const artifact = branch.artifact[context.language]
     return {
       storyText: branch.continuation[context.language],
-      statePatch: {
-        last_event: `continued_${latestChoice.choice_id}`,
-        new_friend: friend,
-        hero_trait: 'kind_and_attentive',
-        open_arc: null,
-        relationship_updates: [{ key: friend, value: 'trust_strengthened_by_remembered_choice' }],
-        canon_updates: [
-          { key: 'remembered_choice', value: latestChoice.choice_id },
-          { key: 'remembered_artifact', value: artifact },
-        ],
-      },
+      statePatch: closedContinuationPatch(choiceId, friend, artifact),
     }
   }
 
@@ -195,6 +204,6 @@ export const fallbackContinuationMemory = (
 
   return {
     storyText: continuation.trim(),
-    statePatch: choicePatch(context, latestChoice?.choice_id || 'continued_saved_choice', null, latestChoice?.choice_text || null),
+    statePatch: closedContinuationPatch(choiceId, null, latestChoice?.choice_text || null),
   }
 }
