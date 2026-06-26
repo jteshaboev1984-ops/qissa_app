@@ -1,4 +1,5 @@
 import type { CandidatePatch, Language, NormalizedStoryContext } from './contracts.ts'
+import { referenceContinuationStory } from './storyCoreReference.ts'
 
 type Localized = Record<Language, string>
 type BranchId = 'a' | 'b'
@@ -190,7 +191,7 @@ export const fallbackContinuationMemory = (
     const friend = branch.friend[context.language]
     const artifact = branch.artifact[context.language]
     return {
-      storyText: branch.continuation[context.language],
+      storyText: referenceContinuationStory(context, choiceId, branch.continuation[context.language]),
       statePatch: closedContinuationPatch(choiceId, friend, artifact),
     }
   }
