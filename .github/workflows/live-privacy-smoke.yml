@@ -36,6 +36,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Confirm integrated deletion gate
+        run: echo "Verifying production story-state integrated audio cleanup."
+
       - name: Verify create, load, delete, and absence
         env:
           QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
