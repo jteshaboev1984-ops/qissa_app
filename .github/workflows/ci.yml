@@ -46,6 +46,12 @@ jobs:
       - name: Typecheck Audio Agent Edge Functions
         run: npm run typecheck:audio-agent
 
+      - name: Smoke production Audio Agent
+        if: github.head_ref == 'audio-assets-foundation'
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: npm run smoke:audio-live
+
       - name: Validate Story AI safety contract
         run: npm run check:story-ai
 
