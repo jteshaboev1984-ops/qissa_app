@@ -10,6 +10,7 @@ import {
 import { fallbackChoiceMemory, fallbackContinuationMemory } from './storyCoreBranches.ts'
 import { referenceEpisodeOneStory } from './storyCoreReference.ts'
 import { getWorldNarrative, type WorldBranchNarrative } from './storyWorldNarratives.ts'
+import { addWorldClosing } from './storyWorldClosings.ts'
 
 type Localized = Record<Language, string>
 type WorldFallback = {
@@ -183,7 +184,7 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
     const continuation = qualityBranch && latestChoice
       ? {
           title: qualityBranch.title,
-          storyText: qualityBranch.continuation,
+          storyText: addWorldClosing(context, latestChoice.choice_id, qualityBranch.continuation),
           statePatch: qualityContinuationPatch(latestChoice.choice_id, qualityBranch),
         }
       : {
