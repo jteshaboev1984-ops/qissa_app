@@ -9,6 +9,7 @@ import {
 } from './contracts.ts'
 import { fallbackChoiceMemory, fallbackContinuationMemory } from './storyCoreBranches.ts'
 import { referenceEpisodeOneStory } from './storyCoreReference.ts'
+import { getWorldNarrative, type WorldBranchNarrative } from './storyWorldNarratives.ts'
 
 type Localized = Record<Language, string>
 type WorldFallback = {
@@ -63,9 +64,9 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
     titleOne: localized('Свет звёздного маяка', 'Yulduz mayog‘ining nuri', 'Жұлдыз шамшырағының жарығы'),
     titleTwo: localized('Звёздная карта помнит выбор', 'Yulduz xaritasi tanlovni eslaydi', 'Жұлдыз картасы таңдауды есте сақтайды'),
     opening: localized(
-      'Над звёздной станцией тихо плыли планеты. Маленький добрый робот держал карту и предлагал два безопасных пути исследования.',
-      'Yulduzli bekat ustida sayyoralar sokin suzdi. Kichik mehribon robot xaritani ushlab, tadqiqotning ikki xavfsiz yo‘lini ko‘rsatdi.',
-      'Жұлдыз станциясының үстінде ғаламшарлар тыныш жүзіп жүрді. Кішкентай мейірімді робот картаны ұстап, зерттеудің екі қауіпсіз жолын көрсетті.',
+      'Над звёздной станцией тихо плыли планеты. Маленький добрый робот держал карту и предлагал два спокойных пути исследования.',
+      'Yulduzli bekat ustida sayyoralar sokin suzdi. Kichik mehribon robot xaritani ushlab, tadqiqotning ikki sokin yo‘lini ko‘rsatdi.',
+      'Жұлдыз станциясының үстінде ғаламшарлар тыныш жүзіп жүрді. Кішкентай мейірімді робот картаны ұстап, зерттеудің екі тыныш жолын көрсетті.',
     ),
     choiceA: localized('Настроить звёздный маяк', 'Yulduz mayog‘ini sozlash', 'Жұлдыз шамшырағын баптау'),
     choiceB: localized('Сложить новую созвездную линию', 'Yangi yulduz turkumini chizish', 'Жаңа шоқжұлдыз сызығын құру'),
@@ -99,9 +100,9 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
     titleOne: localized('Лампа в тихой галерее', 'Sokin galereyadagi chiroq', 'Тыныш галереядағы шам'),
     titleTwo: localized('Галерея помнит добрый выбор', 'Galereya mehribon tanlovni eslaydi', 'Галерея мейірімді таңдауды есте сақтайды'),
     opening: localized(
-      'В светлом замке тихо звенели флажки. У старой двери лежали голубой ключ и добрая записка без страшных загадок.',
-      'Yorug‘ qal’ada bayroqchalar mayin jarangladi. Eski eshik yonida ko‘k kalit va qo‘rqinchli bo‘lmagan mehribon xat yotardi.',
-      'Жарық қамалда жалаушалар баяу сыңғырлады. Ескі есіктің жанында көк кілт пен қорқынышсыз жылы хат жатты.',
+      'В светлом замке тихо звенели флажки. У старой двери лежали голубой ключ и добрая записка без пугающих загадок.',
+      'Yorug‘ qal’ada bayroqchalar mayin jarangladi. Eski eshik yonida ko‘k kalit va mehribon xat yotardi.',
+      'Жарық қамалда жалаушалар баяу сыңғырлады. Ескі есіктің жанында көк кілт пен жылы хат жатты.',
     ),
     choiceA: localized('Зажечь лампу у галереи', 'Galereya yonidagi chiroqni yoqish', 'Галерея жанындағы шамды жағу'),
     choiceB: localized('Прочитать добрую записку вместе', 'Mehribon xatni birga o‘qish', 'Жылы хатты бірге оқу'),
@@ -130,14 +131,68 @@ const patch = (event: string, arc: string): CandidatePatch => ({
   canon_updates: [{ key: 'last_choice', value: event }],
 })
 
+const qualityChoicePatch = (
+  context: NormalizedStoryContext,
+  choiceId: string,
+  branch: WorldBranchNarrative,
+): CandidatePatch => ({
+  last_event: choiceId,
+  new_friend: branch.friend,
+  hero_trait: 'kind_and_attentive',
+  open_arc: `continue-${context.stylePackId}-${choiceId}`,
+  relationship_updates: [{ key: branch.friendId, value: 'trust_started_through_choice' }],
+  canon_updates: [
+    { key: 'last_choice', value: choiceId },
+    { key: 'remembered_artifact', value: branch.artifact },
+  ],
+})
+
+const qualityContinuationPatch = (
+  choiceId: string,
+  branch: WorldBranchNarrative,
+): CandidatePatch => ({
+  last_event: `continued_${choiceId}`,
+  new_friend: branch.friend,
+  hero_trait: 'kind_and_attentive',
+  open_arc: null,
+  relationship_updates: [{ key: branch.friendId, value: 'trust_strengthened_by_remembered_choice' }],
+  canon_updates: [
+    { key: 'remembered_choice', value: choiceId },
+    { key: 'remembered_artifact', value: branch.artifact },
+  ],
+})
+
+const branchForChoice = (
+  narrative: ReturnType<typeof getWorldNarrative>,
+  choiceId: string,
+): WorldBranchNarrative | null => {
+  if (!narrative) return null
+  if (choiceId === 'choice-a' || choiceId === 'path_a') return narrative.branches.a
+  if (choiceId === 'choice-b' || choiceId === 'path_b') return narrative.branches.b
+  return null
+}
+
 export const buildSafeFallback = (context: NormalizedStoryContext) => {
   const world = worlds[context.stylePackId]
   const language = context.language
+  const qualityNarrative = getWorldNarrative(context)
 
   if (context.isContinuation) {
-    const continuation = fallbackContinuationMemory(context)
+    const latestChoice = context.choiceHistory[context.choiceHistory.length - 1]
+    const qualityBranch = branchForChoice(qualityNarrative, latestChoice?.choice_id ?? '')
+    const continuation = qualityBranch && latestChoice
+      ? {
+          title: qualityBranch.title,
+          storyText: qualityBranch.continuation,
+          statePatch: qualityContinuationPatch(latestChoice.choice_id, qualityBranch),
+        }
+      : {
+          title: world.titleTwo[language],
+          ...fallbackContinuationMemory(context),
+        }
+
     const candidate: StoryCandidate = {
-      title: world.titleTwo[language],
+      title: continuation.title,
       story_text: continuation.storyText,
       choices: [],
       state_patch: continuation.statePatch,
@@ -153,6 +208,20 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
   }
 
   const makeChoice = (id: 'choice-a' | 'choice-b', text: string, icon: string): CandidateChoice => {
+    const qualityBranch = id === 'choice-a' ? qualityNarrative?.branches.a : qualityNarrative?.branches.b
+    if (qualityBranch) {
+      return {
+        choice_id: id,
+        text,
+        effect_summary: qualityBranch.effectSummary,
+        resolution_text: qualityBranch.resolutionText,
+        tomorrow_seed: qualityBranch.tomorrowSeed,
+        choice_icon: icon,
+        state_patch: qualityChoicePatch(context, id, qualityBranch),
+        value_alignment: id === 'choice-a' ? ['kindness', 'mutual_help'] : ['friendship', 'curiosity'],
+      }
+    }
+
     const memory = fallbackChoiceMemory(context, id, text)
     return {
       choice_id: id,
@@ -175,8 +244,8 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
 
   const genericOpening = `${world.opening[language]} {{HERO}} остановился, внимательно посмотрел вокруг и понял, что можно помочь спокойно и без спешки.`
   const candidate: StoryCandidate = {
-    title: world.titleOne[language],
-    story_text: referenceEpisodeOneStory(context, genericOpening),
+    title: qualityNarrative?.episodeOneTitle ?? world.titleOne[language],
+    story_text: qualityNarrative?.episodeOneStory ?? referenceEpisodeOneStory(context, genericOpening),
     choices: [
       makeChoice('choice-a', world.choiceA[language], world.icons[0]),
       makeChoice('choice-b', world.choiceB[language], world.icons[1]),
@@ -184,11 +253,13 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
     state_patch: patch('episode_started', `continue-${context.stylePackId}`),
     vocabulary,
     nextEpisodePreview: context.storyMode === 'series'
-      ? (language === 'ru'
-          ? 'В следующей истории мир мягко напомнит о выбранном пути.'
-          : language === 'uz'
-            ? 'Keyingi hikoyada dunyo tanlangan yo‘lni mayin eslatadi.'
-            : 'Келесі оқиғада әлем таңдалған жолды жұмсақ еске салады.')
+      ? (qualityNarrative
+          ? 'Наутро выбранный путь приведёт героя к новой встрече.'
+          : language === 'ru'
+            ? 'Завтра история вернётся к выбранному пути.'
+            : language === 'uz'
+              ? 'Ertaga hikoya tanlangan yo‘lga qaytadi.'
+              : 'Ертең оқиға таңдалған жолға қайта оралады.')
       : '',
   }
 
