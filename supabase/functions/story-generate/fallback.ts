@@ -8,6 +8,7 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { fallbackChoiceMemory, fallbackContinuationMemory } from './storyCoreBranches.ts'
+import { referenceEpisodeOneStory } from './storyCoreReference.ts'
 
 type Localized = Record<Language, string>
 type WorldFallback = {
@@ -172,9 +173,10 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
       ]
     : []
 
+  const genericOpening = `${world.opening[language]} {{HERO}} остановился, внимательно посмотрел вокруг и понял, что можно помочь спокойно и без спешки.`
   const candidate: StoryCandidate = {
     title: world.titleOne[language],
-    story_text: `${world.opening[language]} {{HERO}} остановился, внимательно посмотрел вокруг и понял, что можно помочь спокойно и без спешки.`,
+    story_text: referenceEpisodeOneStory(context, genericOpening),
     choices: [
       makeChoice('choice-a', world.choiceA[language], world.icons[0]),
       makeChoice('choice-b', world.choiceB[language], world.icons[1]),
