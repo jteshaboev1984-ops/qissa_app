@@ -1,0 +1,33 @@
+name: Story Core Proof
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - supabase/functions/story-generate/**
+      - scripts/check-story-core-proof.mjs
+      - .github/workflows/story-core-proof.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies quietly
+        run: npm ci --silent
+
+      - name: Prove saved choices create different continuations
+        run: npm run check:story-core
