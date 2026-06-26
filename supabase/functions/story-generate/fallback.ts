@@ -8,7 +8,12 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { fallbackChoiceMemory, fallbackContinuationMemory } from './storyCoreBranches.ts'
-import { referenceEpisodeOneStory } from './storyCoreReference.ts'
+import {
+  referenceContinuationStory,
+  referenceEpisodeOneStory,
+  referenceEpisodeTitle,
+} from './storyCoreReference.ts'
+import { spaceChoiceMemory, spaceContinuationMemory } from './storySpaceMemory.ts'
 
 type Localized = Record<Language, string>
 type WorldFallback = {
@@ -25,11 +30,11 @@ const localized = (ru: string, uz: string, kz: string): Localized => ({ ru, uz, 
 const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
   cozy_forest: {
     titleOne: localized('Фонарики на лесной тропинке', 'O‘rmon yo‘lidagi chiroqlar', 'Орман соқпағындағы шамдар'),
-    titleTwo: localized('Лес помнит добрый выбор', 'O‘rmon mehribon tanlovni eslaydi', 'Орман мейірімді таңдауды есте сақтайды'),
+    titleTwo: localized('Утро у старого пенька', 'Eski to‘nka yonidagi tong', 'Ескі томар жанындағы таң'),
     opening: localized(
-      'Вечером в уютном лесу мерцали светлячки. У тропинки друзья нашли два спокойных способа помочь лесным жителям.',
-      'Kechqurun shinam o‘rmonda yaltirab turgan qo‘ng‘izlar miltilladi. Yo‘l bo‘yida do‘stlar o‘rmon ahliga yordam berishning ikki sokin yo‘lini topdi.',
-      'Кешке жайлы орманда жарқырауықтар жылтырады. Соқпақ жанында достар орман тұрғындарына көмектесудің екі тыныш жолын тапты.',
+      'Вечером в уютном лесу мерцали светлячки. У тропинки друзья искали способ помочь лесным жителям добраться домой.',
+      'Kechqurun shinam o‘rmonda yaltirab turgan qo‘ng‘izlar miltilladi. Do‘stlar o‘rmon ahliga uyga yetib olishda yordam bermoqchi edi.',
+      'Кешке жайлы орманда жарқырауықтар жылтырады. Достар орман тұрғындарына үйге жетуге көмектескісі келді.',
     ),
     choiceA: localized('Зажечь фонарики вдоль тропинки', 'Yo‘l bo‘ylab chiroqlar yoqish', 'Соқпақ бойына шам жағу'),
     choiceB: localized('Спеть тихую песню лесным друзьям', 'O‘rmon do‘stlariga sokin qo‘shiq aytish', 'Орман достарына баяу ән айту'),
@@ -37,11 +42,11 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
   },
   magic_garden: {
     titleOne: localized('Лепестковая дорожка', 'Gulbargli yo‘lak', 'Гүл жапырақты жол'),
-    titleTwo: localized('Сад помнит добрый выбор', 'Bog‘ mehribon tanlovni eslaydi', 'Бақ мейірімді таңдауды есте сақтайды'),
+    titleTwo: localized('Свет над лунным садом', 'Oy bog‘i ustidagi nur', 'Ай бағының үстіндегі жарық'),
     opening: localized(
-      'В Волшебном саду вечер лёг на лепестковые дорожки. У фонтана лунные цветы ждали спокойной и бережной помощи.',
-      'Sehrli bog‘da oqshom gulbargli yo‘laklarga tushdi. Favvora yonidagi oy gullari sokin va ehtiyotkor yordamni kutardi.',
-      'Сиқырлы бақта кеш гүл жапырақты жолдарға жайылды. Субұрқақ жанындағы ай гүлдері тыныш әрі ұқыпты көмекті күтті.',
+      'В Волшебном саду вечер лёг на лепестковые дорожки. У фонтана лунные цветы ждали бережной помощи.',
+      'Sehrli bog‘da oqshom gulbargli yo‘laklarga tushdi. Favvora yonidagi oy gullari ehtiyotkor yordamni kutardi.',
+      'Сиқырлы бақта кеш гүл жапырақты жолдарға жайылды. Субұрқақ жанындағы ай гүлдері ұқыпты көмекті күтті.',
     ),
     choiceA: localized('Полить лунный цветник', 'Oy gullariga suv quyish', 'Ай гүлдерін суару'),
     choiceB: localized('Поставить светлячковую чашу', 'Yorug‘lik kosasini qo‘yish', 'Жарық тостағанын қою'),
@@ -49,7 +54,7 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
   },
   brave_adventure: {
     titleOne: localized('Знак у поворота', 'Burilishdagi belgi', 'Бұрылыстағы белгі'),
-    titleTwo: localized('Карта помнит выбранный путь', 'Xarita tanlangan yo‘lni eslaydi', 'Карта таңдалған жолды есте сақтайды'),
+    titleTwo: localized('Дорога за мостом', 'Ko‘prik ortidagi yo‘l', 'Көпірдің ар жағындағы жол'),
     opening: localized(
       'На доброй тропе приключений ветер шевелил цветные указатели. За мостиком лежала карта, которая помогала идти без спешки.',
       'Mehribon sarguzasht yo‘lida shamol rangli belgilarni tebratdi. Ko‘prik ortida shoshilmasdan yurishga yordam beradigan xarita yotardi.',
@@ -60,24 +65,24 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
     icons: ['🧭', '🤝'],
   },
   stars_and_space: {
-    titleOne: localized('Свет звёздного маяка', 'Yulduz mayog‘ining nuri', 'Жұлдыз шамшырағының жарығы'),
-    titleTwo: localized('Звёздная карта помнит выбор', 'Yulduz xaritasi tanlovni eslaydi', 'Жұлдыз картасы таңдауды есте сақтайды'),
+    titleOne: localized('Маяк над станцией «Люмен»', '«Lyumen» bekati ustidagi mayoq', '«Люмен» стансасының үстіндегі шамшырақ'),
+    titleTwo: localized('Тихий сигнал среди звёзд', 'Yulduzlar orasidagi sokin signal', 'Жұлдыздар арасындағы тыныш белгі'),
     opening: localized(
-      'Над звёздной станцией тихо плыли планеты. Маленький добрый робот держал карту и предлагал два безопасных пути исследования.',
-      'Yulduzli bekat ustida sayyoralar sokin suzdi. Kichik mehribon robot xaritani ushlab, tadqiqotning ikki xavfsiz yo‘lini ko‘rsatdi.',
-      'Жұлдыз станциясының үстінде ғаламшарлар тыныш жүзіп жүрді. Кішкентай мейірімді робот картаны ұстап, зерттеудің екі қауіпсіз жолын көрсетті.',
+      'Над звёздной станцией тихо плыли планеты. Робот Пико раскрыл карту и показал два способа помочь лунной почте найти причал.',
+      'Yulduzli bekat ustida sayyoralar sokin suzdi. Robot Piko xaritani ochib, oy pochtasiga bekatni topishning ikki yo‘lini ko‘rsatdi.',
+      'Жұлдыз станциясының үстінде ғаламшарлар тыныш жүзіп жүрді. Пико робот картаны ашып, ай поштасына айлақты табудың екі жолын көрсетті.',
     ),
     choiceA: localized('Настроить звёздный маяк', 'Yulduz mayog‘ini sozlash', 'Жұлдыз шамшырағын баптау'),
-    choiceB: localized('Сложить новую созвездную линию', 'Yangi yulduz turkumini chizish', 'Жаңа шоқжұлдыз сызығын құру'),
+    choiceB: localized('Сложить новую линию созвездия', 'Yangi yulduz turkumini chizish', 'Жаңа шоқжұлдыз сызығын құру'),
     icons: ['🔭', '⭐'],
   },
   silk_road: {
     titleOne: localized('Фонарь у каравана', 'Karvon yonidagi chiroq', 'Керуен жанындағы шам'),
-    titleTwo: localized('Узор помнит добрый выбор', 'Naqsh mehribon tanlovni eslaydi', 'Өрнек мейірімді таңдауды есте сақтайды'),
+    titleTwo: localized('Узор на дороге каравана', 'Karvon yo‘lidagi naqsh', 'Керуен жолындағы өрнек'),
     opening: localized(
-      'У караванной стоянки пахло тёплым хлебом и свежим чаем. Мастера готовили добрый дорожный знак и просили помочь.',
-      'Karvon bekatida issiq non va yangi choy hidi taraldi. Hunarmandlar mehribon yo‘l belgisini tayyorlab, yordam so‘radi.',
-      'Керуен аялдамасында жылы нан мен жаңа шайдың иісі тарады. Шеберлер мейірімді жол белгісін дайындап, көмек сұрады.',
+      'У караванной стоянки пахло тёплым хлебом и свежим чаем. Мастера готовили дорожный знак и просили помочь.',
+      'Karvon bekatida issiq non va yangi choy hidi taraldi. Hunarmandlar yo‘l belgisini tayyorlab, yordam so‘radi.',
+      'Керуен аялдамасында жылы нан мен жаңа шайдың иісі тарады. Шеберлер жол белгісін дайындап, көмек сұрады.',
     ),
     choiceA: localized('Зажечь караванный фонарь', 'Karvon chirog‘ini yoqish', 'Керуен шамын жағу'),
     choiceB: localized('Развернуть карту узоров', 'Naqshli xaritani ochish', 'Өрнекті картаны ашу'),
@@ -85,7 +90,7 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
   },
   animal_world: {
     titleOne: localized('Тёплая поляна друзей', 'Do‘stlarning iliq maydoni', 'Достардың жылы алаңы'),
-    titleTwo: localized('Поляна помнит заботу', 'Maydon g‘amxo‘rlikni eslaydi', 'Алаң қамқорлықты есте сақтайды'),
+    titleTwo: localized('Утро на тёплой поляне', 'Iliq maydondagi tong', 'Жылы алаңдағы таң'),
     opening: localized(
       'На тёплой поляне собрались снежный барс, маленький орёл и черепаха. Они хотели вместе сделать свой дом ещё уютнее.',
       'Iliq maydonda qor barsi, kichik burgut va toshbaqa yig‘ildi. Ular uylarini yanada shinam qilishni istardi.',
@@ -97,23 +102,23 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
   },
   castle_mystery: {
     titleOne: localized('Лампа в тихой галерее', 'Sokin galereyadagi chiroq', 'Тыныш галереядағы шам'),
-    titleTwo: localized('Галерея помнит добрый выбор', 'Galereya mehribon tanlovni eslaydi', 'Галерея мейірімді таңдауды есте сақтайды'),
+    titleTwo: localized('Свет за старой дверью', 'Eski eshik ortidagi nur', 'Ескі есіктің ар жағындағы жарық'),
     opening: localized(
-      'В светлом замке тихо звенели флажки. У старой двери лежали голубой ключ и добрая записка без страшных загадок.',
-      'Yorug‘ qal’ada bayroqchalar mayin jarangladi. Eski eshik yonida ko‘k kalit va qo‘rqinchli bo‘lmagan mehribon xat yotardi.',
-      'Жарық қамалда жалаушалар баяу сыңғырлады. Ескі есіктің жанында көк кілт пен қорқынышсыз жылы хат жатты.',
+      'В светлом замке тихо звенели флажки. У старой двери лежали голубой ключ и тёплая записка.',
+      'Yorug‘ qal’ada bayroqchalar mayin jarangladi. Eski eshik yonida ko‘k kalit va iliq xat yotardi.',
+      'Жарық қамалда жалаушалар баяу сыңғырлады. Ескі есіктің жанында көк кілт пен жылы хат жатты.',
     ),
     choiceA: localized('Зажечь лампу у галереи', 'Galereya yonidagi chiroqni yoqish', 'Галерея жанындағы шамды жағу'),
-    choiceB: localized('Прочитать добрую записку вместе', 'Mehribon xatni birga o‘qish', 'Жылы хатты бірге оқу'),
+    choiceB: localized('Прочитать записку вместе', 'Xatni birga o‘qish', 'Хатты бірге оқу'),
     icons: ['🕯️', '💌'],
   },
   sea_islands: {
     titleOne: localized('Огонёк у маяка', 'Mayak yonidagi chiroq', 'Шамшырақ жанындағы жарық'),
-    titleTwo: localized('Ракушка помнит добрый выбор', 'Chig‘anoq mehribon tanlovni eslaydi', 'Қабыршақ мейірімді таңдауды есте сақтайды'),
+    titleTwo: localized('Ракушка у тихого маяка', 'Sokin mayak yonidagi chig‘anoq', 'Тыныш шамшырақ жанындағы қабыршақ'),
     opening: localized(
-      'На тёплом берегу маленький маяк дышал мягким светом. Волны принесли ракушку с двумя добрыми подсказками.',
-      'Iliq qirg‘oqda kichik mayak mayin nur sochdi. To‘lqinlar ikki mehribon ishorali chig‘anoqni olib keldi.',
-      'Жылы жағалауда кішкентай шамшырақ жұмсақ жарық шашты. Толқындар екі мейірімді ишарасы бар қабыршақты әкелді.',
+      'На тёплом берегу маленький маяк дышал мягким светом. Волны принесли ракушку с двумя подсказками.',
+      'Iliq qirg‘oqda kichik mayak mayin nur sochdi. To‘lqinlar ikki ishorali chig‘anoqni olib keldi.',
+      'Жылы жағалауда кішкентай шамшырақ жұмсақ жарық шашты. Толқындар екі ишарасы бар қабыршақты әкелді.',
     ),
     choiceA: localized('Зажечь береговой фонарик', 'Qirg‘oq chirog‘ini yoqish', 'Жағалау шамын жағу'),
     choiceB: localized('Собрать ракушки для друзей', 'Do‘stlar uchun chig‘anoqlar yig‘ish', 'Достарға қабыршақ жинау'),
@@ -135,10 +140,11 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
   const language = context.language
 
   if (context.isContinuation) {
-    const continuation = fallbackContinuationMemory(context)
+    const choiceId = context.choiceHistory[context.choiceHistory.length - 1]?.choice_id ?? ''
+    const continuation = spaceContinuationMemory(context) ?? fallbackContinuationMemory(context)
     const candidate: StoryCandidate = {
-      title: world.titleTwo[language],
-      story_text: continuation.storyText,
+      title: referenceEpisodeTitle(context, world.titleTwo[language]),
+      story_text: referenceContinuationStory(context, choiceId, continuation.storyText),
       choices: [],
       state_patch: continuation.statePatch,
       vocabulary: [],
@@ -153,7 +159,7 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
   }
 
   const makeChoice = (id: 'choice-a' | 'choice-b', text: string, icon: string): CandidateChoice => {
-    const memory = fallbackChoiceMemory(context, id, text)
+    const memory = spaceChoiceMemory(context, id) ?? fallbackChoiceMemory(context, id, text)
     return {
       choice_id: id,
       text,
@@ -173,9 +179,9 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
       ]
     : []
 
-  const genericOpening = `${world.opening[language]} {{HERO}} остановился, внимательно посмотрел вокруг и понял, что можно помочь спокойно и без спешки.`
+  const genericOpening = `${world.opening[language]} {{HERO}} остановился и внимательно огляделся. Рядом ждали друзья, а вокруг оставалось достаточно времени, чтобы подумать и выбрать один из двух путей.`
   const candidate: StoryCandidate = {
-    title: world.titleOne[language],
+    title: referenceEpisodeTitle(context, world.titleOne[language]),
     story_text: referenceEpisodeOneStory(context, genericOpening),
     choices: [
       makeChoice('choice-a', world.choiceA[language], world.icons[0]),
@@ -185,10 +191,10 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
     vocabulary,
     nextEpisodePreview: context.storyMode === 'series'
       ? (language === 'ru'
-          ? 'В следующей истории мир мягко напомнит о выбранном пути.'
+          ? 'Завтра знакомый знак снова появится в сказке.'
           : language === 'uz'
-            ? 'Keyingi hikoyada dunyo tanlangan yo‘lni mayin eslatadi.'
-            : 'Келесі оқиғада әлем таңдалған жолды жұмсақ еске салады.')
+            ? 'Ertaga tanish belgi hikoyada yana paydo bo‘ladi.'
+            : 'Ертең таныс белгі оқиғада қайта пайда болады.')
       : '',
   }
 
