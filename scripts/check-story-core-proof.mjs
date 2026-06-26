@@ -8,6 +8,7 @@ const root = process.cwd()
 const sourcePaths = {
   contracts: join(root, 'supabase/functions/story-generate/contracts.ts'),
   branches: join(root, 'supabase/functions/story-generate/storyCoreBranches.ts'),
+  reference: join(root, 'supabase/functions/story-generate/storyCoreReference.ts'),
   fallback: join(root, 'supabase/functions/story-generate/fallback.ts'),
 }
 
@@ -25,6 +26,7 @@ const transpile = (source) => ts.transpileModule(source, {
 }).outputText
   .replaceAll("'./contracts.ts'", "'./contracts.mjs'")
   .replaceAll("'./storyCoreBranches.ts'", "'./storyCoreBranches.mjs'")
+  .replaceAll("'./storyCoreReference.ts'", "'./storyCoreReference.mjs'")
 
 const memoryFromChoice = (episode, choice) => ({
   episode_id: episode.episode_id,
@@ -69,15 +71,17 @@ const forbiddenIntensity = /погон|ужас|страшн|крич|взрыв
 
 const temp = await mkdtemp(join(tmpdir(), 'qissa-story-core-'))
 try {
-  const [contractsSource, branchesSource, fallbackSource] = await Promise.all([
+  const [contractsSource, branchesSource, referenceSource, fallbackSource] = await Promise.all([
     readFile(sourcePaths.contracts, 'utf8'),
     readFile(sourcePaths.branches, 'utf8'),
+    readFile(sourcePaths.reference, 'utf8'),
     readFile(sourcePaths.fallback, 'utf8'),
   ])
 
   await Promise.all([
     writeFile(join(temp, 'contracts.mjs'), transpile(contractsSource)),
     writeFile(join(temp, 'storyCoreBranches.mjs'), transpile(branchesSource)),
+    writeFile(join(temp, 'storyCoreReference.mjs'), transpile(referenceSource)),
     writeFile(join(temp, 'fallback.mjs'), transpile(fallbackSource)),
   ])
 
@@ -113,6 +117,9 @@ try {
 
   const episodeOne = buildSafeFallback(baseContext)
   assert(episodeOne.choices.length === 2, 'Episode 1 must offer exactly two gentle choices.')
+  assert(wordCount(episodeOne.story_text) >= 160, 'Reference Episode 1 is too short for the 5–7 vertical slice.')
+  assert(wordCount(episodeOne.story_text) <= 260, 'Reference Episode 1 is too long for the 5–7 vertical slice.')
+  assert(!forbiddenIntensity.test(episodeOne.story_text), 'Reference Episode 1 breaks bedtime tone.')
 
   const choiceA = episodeOne.choices.find((choice) => choice.choice_id === 'choice-a')
   const choiceB = episodeOne.choices.find((choice) => choice.choice_id === 'choice-b')
@@ -140,8 +147,8 @@ try {
 
   for (const [label, episode] of [['choice-a', episodeTwoA], ['choice-b', episodeTwoB]]) {
     const words = wordCount(episode.story_text)
-    assert(words >= 50, `${label} continuation is too short to feel like an episode.`)
-    assert(words <= 120, `${label} continuation is too long for the bedtime vertical slice.`)
+    assert(words >= 120, `${label} continuation is too short for the 5–7 vertical slice.`)
+    assert(words <= 220, `${label} continuation is too long for the 5–7 vertical slice.`)
     assert(!forbiddenIntensity.test(episode.story_text), `${label} continuation breaks low-stimulation bedtime tone.`)
     assert(episode.safety_self_check.approved === true, `${label} continuation must remain safety-approved.`)
   }
@@ -163,7 +170,7 @@ try {
     'Every Episode 2 must close the first chapter arc.',
   )
 
-  console.log('Story Core proof passed: saved choices survive reopen, diverge, and close every episode-two arc.')
+  console.log('Story Core proof passed: full RU stories survive reopen, diverge, and close every episode-two arc.')
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
