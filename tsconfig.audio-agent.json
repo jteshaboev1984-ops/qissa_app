@@ -12,6 +12,6 @@
   "include": [
     "supabase/functions/audio-request/*.ts",
     "supabase/functions/audio-request/*.d.ts",
-    "supabase/functions/audio-cleanup/*.ts"
+    "supabase/functions/story-state/*.ts"
   ]
 }
