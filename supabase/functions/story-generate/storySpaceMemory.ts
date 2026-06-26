@@ -1,9 +1,9 @@
-import type { Language } from './contracts.ts'
+import type { CandidatePatch, Language, NormalizedStoryContext } from './contracts.ts'
 
 type Localized = Record<Language, string>
-export type SpaceBranchId = 'a' | 'b'
+type SpaceBranchId = 'a' | 'b'
 
-export type SpaceBranchMemory = {
+type SpaceBranchMemory = {
   effect: Localized
   resolution: Localized
   seed: Localized
@@ -13,9 +13,21 @@ export type SpaceBranchMemory = {
   fallbackContinuation: Localized
 }
 
+export type SpaceChoiceMemory = {
+  effectSummary: string
+  resolutionText: string
+  tomorrowSeed: string
+  statePatch: CandidatePatch
+}
+
+export type SpaceContinuationMemory = {
+  storyText: string
+  statePatch: CandidatePatch
+}
+
 const localized = (ru: string, uz: string, kz: string): Localized => ({ ru, uz, kz })
 
-export const spaceBranches: Record<SpaceBranchId, SpaceBranchMemory> = {
+const branches: Record<SpaceBranchId, SpaceBranchMemory> = {
   a: {
     effect: localized(
       'Золотой маяк снова засиял над станцией и показал лунной почте дорогу к причалу.',
@@ -66,4 +78,60 @@ export const spaceBranches: Record<SpaceBranchId, SpaceBranchMemory> = {
       'Келесі айналымда таныс шоқжұлдыз пошта капсуласына айналма жол көрсетті. {{HERO}} пен Пико робот жұлдыз құсына тағы бір жарық қанат қосты.',
     ),
   },
+}
+
+const branchFromChoice = (choiceId: string): SpaceBranchId | null => {
+  if (choiceId === 'choice-a' || choiceId === 'path_a') return 'a'
+  if (choiceId === 'choice-b' || choiceId === 'path_b') return 'b'
+  return null
+}
+
+const patch = (
+  choiceId: string,
+  branch: SpaceBranchMemory,
+  language: Language,
+  continuation: boolean,
+): CandidatePatch => ({
+  last_event: continuation ? `continued_${choiceId}` : choiceId,
+  new_friend: branch.friend[language],
+  hero_trait: 'patient_and_curious',
+  open_arc: continuation ? null : `continue-stars_and_space-${choiceId}`,
+  relationship_updates: [{
+    key: branch.friendId,
+    value: continuation ? 'trust_strengthened_by_shared_navigation' : 'trust_started_through_shared_task',
+  }],
+  canon_updates: [
+    { key: continuation ? 'remembered_choice' : 'last_choice', value: choiceId },
+    { key: 'remembered_artifact', value: branch.artifact[language] },
+  ],
+})
+
+export const spaceChoiceMemory = (
+  context: NormalizedStoryContext,
+  choiceId: string,
+): SpaceChoiceMemory | null => {
+  if (context.stylePackId !== 'stars_and_space') return null
+  const branchId = branchFromChoice(choiceId)
+  if (!branchId) return null
+  const branch = branches[branchId]
+  return {
+    effectSummary: branch.effect[context.language],
+    resolutionText: branch.resolution[context.language],
+    tomorrowSeed: branch.seed[context.language],
+    statePatch: patch(choiceId, branch, context.language, false),
+  }
+}
+
+export const spaceContinuationMemory = (
+  context: NormalizedStoryContext,
+): SpaceContinuationMemory | null => {
+  if (context.stylePackId !== 'stars_and_space') return null
+  const choiceId = context.choiceHistory[context.choiceHistory.length - 1]?.choice_id ?? ''
+  const branchId = branchFromChoice(choiceId)
+  if (!branchId) return null
+  const branch = branches[branchId]
+  return {
+    storyText: branch.fallbackContinuation[context.language],
+    statePatch: patch(choiceId, branch, context.language, true),
+  }
 }
