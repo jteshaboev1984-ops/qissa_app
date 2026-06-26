@@ -1,0 +1,36 @@
+name: Apply story-state audio cleanup
+
+on:
+  push:
+    branches:
+      - audio-assets-foundation
+    paths:
+      - scripts/patch-story-state-audio-cleanup.mjs
+      - .github/workflows/apply-story-state-audio-cleanup.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: audio-assets-foundation
+
+      - name: Apply guarded patch
+        run: node scripts/patch-story-state-audio-cleanup.mjs
+
+      - name: Commit patched story-state
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add supabase/functions/story-state/index.ts
+          git commit -m "Integrate private audio cleanup into story state"
+          git push origin HEAD:audio-assets-foundation
