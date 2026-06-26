@@ -40,6 +40,9 @@ jobs:
       - name: Validate story service boundary
         run: npm run check:story-service
 
+      - name: Validate Story Core choice continuity
+        run: npm run check:story-core
+
       - name: Validate privacy consent and deletion
         run: npm run check:privacy
 

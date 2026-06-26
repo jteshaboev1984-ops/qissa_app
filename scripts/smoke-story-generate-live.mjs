@@ -117,21 +117,57 @@ const validateEpisodeOne = (result, language, heroName) => {
   return episode
 }
 
-const validateContinuation = (result, episodeOne, heroName) => {
+const continuationPayload = (payload, episodeOne, chosen) => ({
+  ...payload,
+  seriesState: {
+    ...payload.seriesState,
+    recurringCharacters: chosen.state_patch?.new_friend ? [chosen.state_patch.new_friend] : [],
+    lastEpisodeSummary: chosen.effect_summary,
+    activeArc: chosen.state_patch?.open_arc || '',
+    canonState: chosen.state_patch?.canon_updates || {},
+    relationshipState: chosen.state_patch?.relationship_updates || {},
+    choiceHistory: [{
+      episode_id: episodeOne.episode_id,
+      choice_id: chosen.choice_id,
+      choice_text: chosen.text,
+      effect_summary: chosen.effect_summary,
+      resolution_text: chosen.resolution_text,
+      tomorrow_seed: chosen.tomorrow_seed,
+      state_patch: chosen.state_patch,
+      selected_at: new Date().toISOString(),
+    }],
+    episodeCount: 1,
+  },
+})
+
+const validateContinuation = (result, chosen, heroName) => {
   const episode = result.body?.episode
-  assert(episode && typeof episode === 'object', 'continuation: missing episode')
-  assert(episode.episode_id === 'ep-2-cozy_forest', 'continuation: wrong episode id')
-  assert(Array.isArray(episode.choices) && episode.choices.length === 0, 'continuation: choices must be empty')
-  assert(typeof episode.story_text === 'string' && episode.story_text.includes(heroName), 'continuation: hero name was not restored')
-  assert(!episode.story_text.includes('{{HERO}}'), 'continuation: unresolved hero token')
-  validateSource(result.source, 'continuation')
+  assert(episode && typeof episode === 'object', `${chosen.choice_id}: missing continuation episode`)
+  assert(episode.episode_id === 'ep-2-cozy_forest', `${chosen.choice_id}: wrong episode id`)
+  assert(Array.isArray(episode.choices) && episode.choices.length === 0, `${chosen.choice_id}: choices must be empty`)
+  assert(typeof episode.story_text === 'string' && episode.story_text.includes(heroName), `${chosen.choice_id}: hero name was not restored`)
+  assert(!episode.story_text.includes('{{HERO}}'), `${chosen.choice_id}: unresolved hero token`)
+  validateSource(result.source, chosen.choice_id)
 
   if (result.source === 'safe-fallback') {
     assert(
-      episode.story_text.includes(episodeOne.choices[0].tomorrow_seed),
-      'continuation: saved choice consequence is missing',
+      episode.state_patch?.canon_updates?.remembered_choice === chosen.choice_id,
+      `${chosen.choice_id}: confirmed choice is missing from continuation canon`,
     )
+    assert(
+      episode.state_patch?.canon_updates?.remembered_artifact,
+      `${chosen.choice_id}: remembered artifact is missing`,
+    )
+
+    if (chosen.choice_id === 'choice-a') {
+      assert(/фонарик|светил|освещённой тропинке/iu.test(episode.story_text), 'choice-a: lantern consequence is not visible')
+    }
+    if (chosen.choice_id === 'choice-b') {
+      assert(/песня|мелодия|запел/iu.test(episode.story_text), 'choice-b: song consequence is not visible')
+    }
   }
+
+  return episode
 }
 
 for (const language of languages) {
@@ -141,33 +177,23 @@ for (const language of languages) {
   const episodeOne = validateEpisodeOne(firstResult, language, heroName)
 
   if (language === 'ru') {
-    const chosen = episodeOne.choices[0]
-    const continuationPayload = {
-      ...payload,
-      seriesState: {
-        ...payload.seriesState,
-        lastEpisodeSummary: chosen.effect_summary,
-        activeArc: chosen.state_patch?.open_arc || '',
-        canonState: chosen.state_patch?.canon_updates || {},
-        relationshipState: chosen.state_patch?.relationship_updates || {},
-        choiceHistory: [{
-          episode_id: episodeOne.episode_id,
-          choice_id: chosen.choice_id,
-          choice_text: chosen.text,
-          effect_summary: chosen.effect_summary,
-          resolution_text: chosen.resolution_text,
-          tomorrow_seed: chosen.tomorrow_seed,
-          state_patch: chosen.state_patch,
-          selected_at: new Date().toISOString(),
-        }],
-        episodeCount: 1,
-      },
+    const continuations = []
+    for (const chosen of episodeOne.choices) {
+      const result = await invoke(continuationPayload(payload, episodeOne, chosen))
+      continuations.push(validateContinuation(result, chosen, heroName))
     }
-    const continuationResult = await invoke(continuationPayload)
-    validateContinuation(continuationResult, episodeOne, heroName)
+
+    assert(
+      continuations[0].story_text !== continuations[1].story_text,
+      'ru: different choices produced the same continuation text',
+    )
+    assert(
+      continuations[0].state_patch?.new_friend !== continuations[1].state_patch?.new_friend,
+      'ru: different choices produced the same relationship outcome',
+    )
   }
 
   console.log(`${language}: live story smoke passed (${firstResult.source}; ${firstResult.fallbackReason || 'no fallback reason'})`)
 }
 
-console.log('Live story-generate smoke test passed for ru/uz/kz and continuation.')
+console.log('Live story-generate smoke passed for ru/uz/kz and both RU continuation branches.')

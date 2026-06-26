@@ -7,6 +7,8 @@ import {
   type NormalizedStoryContext,
   type StoryCandidate,
 } from './contracts.ts'
+import { fallbackChoiceMemory, fallbackContinuationMemory } from './storyCoreBranches.ts'
+import { referenceEpisodeOneStory } from './storyCoreReference.ts'
 
 type Localized = Record<Language, string>
 type WorldFallback = {
@@ -119,24 +121,6 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
   },
 }
 
-const common = {
-  resolution: localized(
-    '{{HERO}} сделал выбор бережно. Мир ответил мягким светом, а друзья почувствовали себя спокойнее.',
-    '{{HERO}} tanlovni ehtiyotkorlik bilan amalga oshirdi. Dunyo mayin nur bilan javob berdi, do‘stlar esa xotirjam bo‘ldi.',
-    '{{HERO}} таңдауын ұқыппен жасады. Әлем жұмсақ жарықпен жауап беріп, достар тыныштала түсті.',
-  ),
-  seed: localized(
-    'На этом месте остался маленький добрый знак. В следующей истории он поможет узнать выбранный путь.',
-    'Bu yerda kichik mehribon belgi qoldi. Keyingi hikoyada u tanlangan yo‘lni eslatadi.',
-    'Бұл жерде кішкентай мейірімді белгі қалды. Келесі оқиғада ол таңдалған жолды еске салады.',
-  ),
-  continuation: localized(
-    'Утром вчерашний выбор уже изменил мир. {{HERO}} увидел знакомый знак, помог друзьям завершить начатое дело и вернулся в уютное место. Всё вокруг стало тихим и спокойным.',
-    'Ertalab kechagi tanlov dunyoni o‘zgartirgan edi. {{HERO}} tanish belgini ko‘rdi, do‘stlariga boshlangan ishni tugatishda yordam berdi va shinam joyga qaytdi. Atrof yana sokinlashdi.',
-    'Таңертең кешегі таңдау әлемді өзгертіп қойған еді. {{HERO}} таныс белгіні көріп, достарына басталған істі аяқтауға көмектесті де, жайлы жерге оралды. Айнала қайтадан тынышталды.',
-  ),
-}
-
 const patch = (event: string, arc: string): CandidatePatch => ({
   last_event: event,
   new_friend: null,
@@ -151,13 +135,12 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
   const language = context.language
 
   if (context.isContinuation) {
-    const latestChoice = context.choiceHistory[context.choiceHistory.length - 1]
-    const remembered = latestChoice?.tomorrow_seed || latestChoice?.effect_summary || latestChoice?.choice_text || ''
+    const continuation = fallbackContinuationMemory(context)
     const candidate: StoryCandidate = {
       title: world.titleTwo[language],
-      story_text: `${remembered ? `${remembered} ` : ''}${common.continuation[language]}`.trim(),
+      story_text: continuation.storyText,
       choices: [],
-      state_patch: patch('continued_saved_choice', ''),
+      state_patch: continuation.statePatch,
       vocabulary: [],
       nextEpisodePreview: '',
     }
@@ -169,20 +152,19 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
     })
   }
 
-  const makeChoice = (id: 'choice-a' | 'choice-b', text: string, icon: string): CandidateChoice => ({
-    choice_id: id,
-    text,
-    effect_summary: language === 'ru'
-      ? 'Этот выбор помогает друзьям и оставляет в мире добрый след.'
-      : language === 'uz'
-        ? 'Bu tanlov do‘stlarga yordam beradi va dunyoda mehribon iz qoldiradi.'
-        : 'Бұл таңдау достарға көмектесіп, әлемде мейірімді із қалдырады.',
-    resolution_text: common.resolution[language],
-    tomorrow_seed: common.seed[language],
-    choice_icon: icon,
-    state_patch: patch(id, `continue-${context.stylePackId}-${id}`),
-    value_alignment: id === 'choice-a' ? ['kindness', 'mutual_help'] : ['friendship', 'curiosity'],
-  })
+  const makeChoice = (id: 'choice-a' | 'choice-b', text: string, icon: string): CandidateChoice => {
+    const memory = fallbackChoiceMemory(context, id, text)
+    return {
+      choice_id: id,
+      text,
+      effect_summary: memory.effectSummary,
+      resolution_text: memory.resolutionText,
+      tomorrow_seed: memory.tomorrowSeed,
+      choice_icon: icon,
+      state_patch: memory.statePatch,
+      value_alignment: id === 'choice-a' ? ['kindness', 'mutual_help'] : ['friendship', 'curiosity'],
+    }
+  }
 
   const vocabulary = language === 'ru'
     ? [
@@ -191,9 +173,10 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
       ]
     : []
 
+  const genericOpening = `${world.opening[language]} {{HERO}} остановился, внимательно посмотрел вокруг и понял, что можно помочь спокойно и без спешки.`
   const candidate: StoryCandidate = {
     title: world.titleOne[language],
-    story_text: `${world.opening[language]} {{HERO}} остановился, внимательно посмотрел вокруг и понял, что можно помочь спокойно и без спешки.`,
+    story_text: referenceEpisodeOneStory(context, genericOpening),
     choices: [
       makeChoice('choice-a', world.choiceA[language], world.icons[0]),
       makeChoice('choice-b', world.choiceB[language], world.icons[1]),
