@@ -21,6 +21,7 @@
     "check:audio-agent": "node scripts/check-audio-agent-contract.mjs",
     "smoke:story-live": "node scripts/smoke-story-generate-live.mjs",
     "smoke:privacy-live": "node scripts/smoke-privacy-live.mjs",
+    "smoke:audio-live": "node scripts/smoke-audio-live.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {
