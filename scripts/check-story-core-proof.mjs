@@ -10,6 +10,7 @@ const sourcePaths = {
   branches: join(root, 'supabase/functions/story-generate/storyCoreBranches.ts'),
   reference: join(root, 'supabase/functions/story-generate/storyCoreReference.ts'),
   worlds: join(root, 'supabase/functions/story-generate/storyWorldNarratives.ts'),
+  closings: join(root, 'supabase/functions/story-generate/storyWorldClosings.ts'),
   fallback: join(root, 'supabase/functions/story-generate/fallback.ts'),
   uiCopy: join(root, 'src/i18n/storyQualityCopy.ts'),
 }
@@ -41,6 +42,7 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storyCoreBranches\.ts['"]/g, "'./storyCoreBranches.mjs'")
   .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
   .replace(/['"]\.\/storyWorldNarratives\.ts['"]/g, "'./storyWorldNarratives.mjs'")
+  .replace(/['"]\.\/storyWorldClosings\.ts['"]/g, "'./storyWorldClosings.mjs'")
 
 const memoryFromChoice = (episode, choice) => ({
   episode_id: episode.episode_id,
@@ -96,11 +98,12 @@ const assertStoryQuality = (text, label, minWords, maxWords) => {
 
 const temp = await mkdtemp(join(tmpdir(), 'qissa-story-quality-'))
 try {
-  const [contractsSource, branchesSource, referenceSource, worldsSource, fallbackSource, uiCopySource] = await Promise.all([
+  const [contractsSource, branchesSource, referenceSource, worldsSource, closingsSource, fallbackSource, uiCopySource] = await Promise.all([
     readFile(sourcePaths.contracts, 'utf8'),
     readFile(sourcePaths.branches, 'utf8'),
     readFile(sourcePaths.reference, 'utf8'),
     readFile(sourcePaths.worlds, 'utf8'),
+    readFile(sourcePaths.closings, 'utf8'),
     readFile(sourcePaths.fallback, 'utf8'),
     readFile(sourcePaths.uiCopy, 'utf8'),
   ])
@@ -112,6 +115,7 @@ try {
     writeFile(join(temp, 'storyCoreBranches.mjs'), transpile(branchesSource)),
     writeFile(join(temp, 'storyCoreReference.mjs'), transpile(referenceSource)),
     writeFile(join(temp, 'storyWorldNarratives.mjs'), transpile(worldsSource)),
+    writeFile(join(temp, 'storyWorldClosings.mjs'), transpile(closingsSource)),
     writeFile(join(temp, 'fallback.mjs'), transpile(fallbackSource)),
   ])
 
