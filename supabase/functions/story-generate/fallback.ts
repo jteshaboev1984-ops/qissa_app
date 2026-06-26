@@ -11,6 +11,7 @@ import { fallbackChoiceMemory, fallbackContinuationMemory } from './storyCoreBra
 import { referenceEpisodeOneStory } from './storyCoreReference.ts'
 import { getWorldNarrative, type WorldBranchNarrative } from './storyWorldNarratives.ts'
 import { addWorldClosing } from './storyWorldClosings.ts'
+import { addOpeningClosing } from './storyWorldOpeningClosings.ts'
 
 type Localized = Record<Language, string>
 type WorldFallback = {
@@ -246,7 +247,9 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
   const genericOpening = `${world.opening[language]} {{HERO}} остановился, внимательно посмотрел вокруг и понял, что можно помочь спокойно и без спешки.`
   const candidate: StoryCandidate = {
     title: qualityNarrative?.episodeOneTitle ?? world.titleOne[language],
-    story_text: qualityNarrative?.episodeOneStory ?? referenceEpisodeOneStory(context, genericOpening),
+    story_text: qualityNarrative
+      ? addOpeningClosing(context, qualityNarrative.episodeOneStory)
+      : referenceEpisodeOneStory(context, genericOpening),
     choices: [
       makeChoice('choice-a', world.choiceA[language], world.icons[0]),
       makeChoice('choice-b', world.choiceB[language], world.icons[1]),
