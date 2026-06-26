@@ -7,7 +7,7 @@ const audio = [
   'supabase/functions/audio-request/context.ts',
   'supabase/functions/audio-request/generation.ts',
 ].map(read).join('\n')
-const cleanup = read('supabase/functions/audio-cleanup/index.ts')
+const storyState = read('supabase/functions/story-state/index.ts')
 const memory = read('src/lib/memoryAgent.ts')
 const state = read('src/lib/storyStateService.ts')
 const migration = read('docs/qissa/backend/migrations/20260625_000008_add_audio_cache_foundation.sql')
@@ -148,10 +148,10 @@ requireCondition(
 )
 
 requireCondition(
-  /delete_profile_audio/.test(cleanup) &&
-    /storage\.from\(AUDIO_BUCKET\)\.remove\(chunk\)/.test(cleanup) &&
-    /await requestAudioCleanup\(\)/.test(state),
-  'Profile deletion must remove private audio objects first.',
+  /storage\s*\.from\(AUDIO_BUCKET\)\s*\.remove\(/.test(storyState) &&
+    /await deleteProfileAudioObjects\(profile\.id\)/.test(storyState) &&
+    !/audio-cleanup|requestAudioCleanup|delete_profile_audio/.test(state),
+  'Profile deletion must remove private audio in the single backend deletion action.',
 )
 
 requireCondition(
