@@ -17,20 +17,20 @@ const choiceCopy = (language: Language, choiceText: string) => {
     return {
       effectSummary: `После решения «${choiceText}» в сказочном мире появился новый добрый знак.`,
       resolutionText: `{{HERO}} выбрал путь «${choiceText}». Друзья вместе довели дело до конца, а рядом остался маленький знак этого вечера.`,
-      tomorrowSeed: `К утру этот знак всё ещё будет на месте и подскажет героям, куда отправиться дальше.`,
+      tomorrowSeed: `К утру знак от выбора «${choiceText}» всё ещё будет на месте и подскажет героям, куда отправиться дальше.`,
     }
   }
   if (language === 'uz') {
     return {
       effectSummary: `«${choiceText}» yo‘lidan so‘ng ertak olamida yangi mehribon belgi paydo bo‘ldi.`,
       resolutionText: `{{HERO}} «${choiceText}» yo‘lini tanladi. Do‘stlar ishni birga tugatdi, oqshomdan esa kichik bir belgi qoldi.`,
-      tomorrowSeed: `Tongda bu belgi hali ham o‘z joyida bo‘ladi va qahramonlarga keyingi yo‘lni ko‘rsatadi.`,
+      tomorrowSeed: `Tongda «${choiceText}» yo‘lidan qolgan belgi hali ham joyida bo‘ladi va qahramonlarga keyingi yo‘lni ko‘rsatadi.`,
     }
   }
   return {
     effectSummary: `«${choiceText}» жолынан кейін ертегі әлемінде жаңа мейірімді белгі пайда болды.`,
     resolutionText: `{{HERO}} «${choiceText}» жолын таңдады. Достар істі бірге аяқтап, кештен кішкентай белгі қалды.`,
-    tomorrowSeed: `Таңертең бұл белгі орнында қалып, кейіпкерлерге келесі жолды көрсетеді.`,
+    tomorrowSeed: `Таңертең «${choiceText}» жолынан қалған белгі орнында болып, кейіпкерлерге келесі жолды көрсетеді.`,
   }
 }
 
