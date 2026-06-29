@@ -37,6 +37,9 @@ jobs:
       - name: Validate Story Core choice continuity
         run: npm run check:story-core
 
+      - name: Validate localized fallback copy
+        run: npm run check:localized-fallback
+
       - name: Validate space story copy
         run: npm run check:space-copy
 
