@@ -347,13 +347,34 @@ export function StoryScreen({
           </section>
         ) : (
           <section className="space-y-2">
-            <button
-              className="q-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
-              onClick={onBackHome}
-              disabled={isGenerating}
-            >
-              {t(language, 'story.finish_today')}
-            </button>
+            {showTomorrowSeed ? (
+              <>
+                <button
+                  className="q-primary w-full disabled:cursor-wait disabled:opacity-70"
+                  onClick={onContinueNextEpisode}
+                  disabled={isGenerating}
+                  aria-busy={isGenerating}
+                >
+                  {isGenerating ? generationLabel : t(language, 'story.preview_tomorrow')}
+                </button>
+
+                <button
+                  className="q-secondary w-full disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={onBackHome}
+                  disabled={isGenerating}
+                >
+                  {t(language, 'story.finish_today')}
+                </button>
+              </>
+            ) : (
+              <button
+                className="q-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={onBackHome}
+                disabled={isGenerating}
+              >
+                {t(language, 'story.finish_today')}
+              </button>
+            )}
 
             <button
               className="q-secondary w-full disabled:cursor-not-allowed disabled:opacity-50"
@@ -363,26 +384,13 @@ export function StoryScreen({
               {t(language, 'story.read_again')}
             </button>
 
-            {showTomorrowSeed ? (
-              <>
-                <button
-                  className="q-tertiary w-full text-sm disabled:cursor-wait disabled:opacity-70"
-                  onClick={onContinueNextEpisode}
-                  disabled={isGenerating}
-                  aria-busy={isGenerating}
-                >
-                  {isGenerating ? generationLabel : t(language, 'story.preview_tomorrow')}
-                </button>
-
-                {generationErrorMessage ? (
-                  <p
-                    role="alert"
-                    className="rounded-2xl border border-[#e6b9ae] bg-[#fff1ed] px-4 py-3 text-sm leading-6 text-[#7b3026]"
-                  >
-                    {generationErrorMessage}
-                  </p>
-                ) : null}
-              </>
+            {generationErrorMessage ? (
+              <p
+                role="alert"
+                className="rounded-2xl border border-[#e6b9ae] bg-[#fff1ed] px-4 py-3 text-sm leading-6 text-[#7b3026]"
+              >
+                {generationErrorMessage}
+              </p>
             ) : null}
           </section>
         )}
@@ -518,4 +526,10 @@ function getReaderTextStyle(preferences: ReaderPreferences): CSSProperties {
     lineHeight,
     fontFamily,
   }
+}
+
+function getReaderThemeClass(theme: ReaderPreferences['theme']) {
+  if (theme === 'night') return 'bg-[#151d25] text-[#f4ead8]'
+  if (theme === 'light') return 'bg-white text-[#20221c]'
+  return 'bg-[#fff8e9] text-[#2b2b22]'
 }
