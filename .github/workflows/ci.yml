@@ -37,6 +37,9 @@ jobs:
       - name: Validate Story Core choice continuity
         run: npm run check:story-core
 
+      - name: Validate space story copy
+        run: npm run check:space-copy
+
       - name: Validate privacy consent and deletion
         run: npm run check:privacy
 
