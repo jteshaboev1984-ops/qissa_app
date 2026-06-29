@@ -1,4 +1,5 @@
 import type { NormalizedStoryContext } from './contracts.ts'
+import { spaceContinuationRu, spaceEpisodeOneRu } from './storySpaceReference.ts'
 
 const cozyForestEpisodeOneRu = `Вечером в уютном лесу светлячки зажигались один за другим, а между деревьями пахло мокрой травой и тёплой корой. {{HERO}} шёл к старому пеньку, где лесные жители собирались пожелать друг другу доброй ночи. После короткого дождя на тропинке потускнели маленькие указатели, поэтому несколько зверят остановились у развилки и не знали, куда повернуть. Никто не испугался: рядом были друзья, а до сна оставалось достаточно времени.
 
@@ -21,24 +22,50 @@ const cozyForestContinuationRu = {
 Когда друзья дошли до поворота, Топа вспомнил последнюю ноту и заметил корзинку под широким листом. Он обрадовался, но говорил тихо, чтобы не тревожить утренний лес. Вместе они отнесли листья к норке и закончили песню совсем спокойно. Топа поблагодарил {{HERO}}: вчерашний выбор превратился в общую память, которая помогла найти дорогу. Лес ещё немного слушал знакомую мелодию, а потом мягко затих.`,
 } as const
 
-const isReferenceSlice = (context: NormalizedStoryContext) =>
-  context.language === 'ru' &&
-  context.ageGroup === '5-7' &&
-  context.stylePackId === 'cozy_forest' &&
-  context.storyMood === 'bedtime'
+const isRuBedtime57 = (context: NormalizedStoryContext) =>
+  context.language === 'ru' && context.ageGroup === '5-7' && context.storyMood === 'bedtime'
+
+const isCozyForestReference = (context: NormalizedStoryContext) =>
+  isRuBedtime57(context) && context.stylePackId === 'cozy_forest'
+
+const isSpaceReference = (context: NormalizedStoryContext) =>
+  isRuBedtime57(context) && context.stylePackId === 'stars_and_space'
 
 export const referenceEpisodeOneStory = (
   context: NormalizedStoryContext,
   fallbackText: string,
-): string => isReferenceSlice(context) ? cozyForestEpisodeOneRu : fallbackText
+): string => {
+  if (isCozyForestReference(context)) return cozyForestEpisodeOneRu
+  if (isSpaceReference(context)) return spaceEpisodeOneRu
+  return fallbackText
+}
 
 export const referenceContinuationStory = (
   context: NormalizedStoryContext,
   choiceId: string,
   fallbackText: string,
 ): string => {
-  if (!isReferenceSlice(context)) return fallbackText
-  if (choiceId === 'choice-a' || choiceId === 'path_a') return cozyForestContinuationRu['choice-a']
-  if (choiceId === 'choice-b' || choiceId === 'path_b') return cozyForestContinuationRu['choice-b']
+  const branch = choiceId === 'choice-a' || choiceId === 'path_a'
+    ? 'choice-a'
+    : choiceId === 'choice-b' || choiceId === 'path_b'
+      ? 'choice-b'
+      : null
+
+  if (!branch) return fallbackText
+  if (isCozyForestReference(context)) return cozyForestContinuationRu[branch]
+  if (isSpaceReference(context)) return spaceContinuationRu[branch]
   return fallbackText
+}
+
+export const referenceEpisodeTitle = (
+  context: NormalizedStoryContext,
+  fallbackTitle: string,
+): string => {
+  if (!isSpaceReference(context)) return fallbackTitle
+  if (!context.isContinuation) return 'Маяк над станцией «Люмен»'
+
+  const choiceId = context.choiceHistory[context.choiceHistory.length - 1]?.choice_id
+  return choiceId === 'choice-b' || choiceId === 'path_b'
+    ? 'Созвездие «Дорога домой»'
+    : 'Золотой сигнал для лунной почты'
 }
