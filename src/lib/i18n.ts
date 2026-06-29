@@ -2,6 +2,11 @@ import { dictionaries, type I18nKey } from '../i18n/dictionaries'
 import type { Language } from '../types/qissa'
 
 const editorialOverrides: Partial<Record<I18nKey, Record<Language, string>>> = {
+  'story.preview_tomorrow': {
+    ru: 'Продолжить сказку',
+    uz: 'Hikoyani davom ettirish',
+    kz: 'Ертегіні жалғастыру',
+  },
   'story.series_final_title': {
     ru: 'Эта глава завершилась',
     uz: 'Bu bob yakunlandi',
