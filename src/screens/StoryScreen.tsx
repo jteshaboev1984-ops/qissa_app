@@ -205,8 +205,10 @@ export function StoryScreen({
 
       {viewMode === 'read' ? (
         <article
-          className={`q-story-text rounded-[1.75rem] p-6 text-[1.22rem] leading-[2.15rem] shadow-inner ${getReaderThemeClass(readerPreferences.theme)}`}
+          className={`q-story-text max-h-[min(52vh,34rem)] overflow-y-auto overscroll-contain rounded-[1.75rem] p-6 pr-4 text-[1.22rem] leading-[2.15rem] shadow-inner ${getReaderThemeClass(readerPreferences.theme)}`}
           style={getReaderTextStyle(readerPreferences)}
+          tabIndex={0}
+          aria-label={t(language, 'story.narrative_title')}
         >
           {episode.story_text}
         </article>
@@ -515,17 +517,5 @@ function getReaderTextStyle(preferences: ReaderPreferences): CSSProperties {
     fontSize: textSize,
     lineHeight,
     fontFamily,
-  }
-}
-
-function getReaderThemeClass(theme: ReaderPreferences['theme']): string {
-  switch (theme) {
-    case 'light':
-      return 'bg-white text-[#1f241d] border border-[#eadfc9]'
-    case 'night':
-      return 'bg-[#1f241d] text-[#f8f2e7] border border-[#4e4a3d]'
-    case 'warm':
-    default:
-      return 'bg-[#fff8e9] text-[#1f241d] border border-[#eadfc9]'
   }
 }
