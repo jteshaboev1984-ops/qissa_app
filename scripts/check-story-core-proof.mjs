@@ -37,6 +37,7 @@ const transpile = (source) => ts.transpileModule(source, {
 const wordCount = (text) => text.trim().split(/\s+/u).filter(Boolean).length
 const forbiddenIntensity = /погон|ужас|страшн|крич|взрыв|опасн|сраж/iu
 const technicalStoryLanguage = /последстви[ея] выбора|мир запомнил|текущей версии|сохран[её]н(?:ный|о) выбор|episode|state[_ -]?patch/iu
+const nauticalSpaceCopy = /\bпричал(?:а|е|у|ом)?\b/iu
 const memoryFromChoice = (episode, choice) => ({
   episode_id: episode.episode_id,
   choice_id: choice.choice_id,
@@ -125,6 +126,7 @@ try {
   assert(spaceOne.title === 'Маяк над станцией «Люмен»', 'Space Episode 1 title is not editorial.')
   assert(wordCount(spaceOne.story_text) >= 160 && wordCount(spaceOne.story_text) <= 260, 'Space Episode 1 is not a full scene.')
   assert(!technicalStoryLanguage.test(`${spaceOne.title} ${spaceOne.story_text}`), 'Space Episode 1 exposes technical wording.')
+  assert(!nauticalSpaceCopy.test(`${spaceOne.title} ${spaceOne.story_text}`), 'Space Episode 1 uses nautical copy.')
   const [spaceA, spaceB] = verifyTwoBranches(spaceOne, 'stars_and_space')
   assert(spaceA.title === 'Золотой сигнал для лунной почты', 'Space A title is wrong.')
   assert(spaceB.title === 'Созвездие «Дорога домой»', 'Space B title is wrong.')
@@ -133,6 +135,7 @@ try {
   for (const [label, episode] of [['space-a', spaceA], ['space-b', spaceB]]) {
     assert(wordCount(episode.story_text) >= 120 && wordCount(episode.story_text) <= 220, `${label} editorial length failed.`)
     assert(!forbiddenIntensity.test(episode.story_text), `${label} breaks bedtime tone.`)
+    assert(!nauticalSpaceCopy.test(`${episode.title} ${episode.story_text}`), `${label} uses nautical copy.`)
   }
 
   for (const stylePackId of ['magic_garden', 'brave_adventure', 'silk_road', 'animal_world', 'castle_mystery', 'sea_islands']) {
