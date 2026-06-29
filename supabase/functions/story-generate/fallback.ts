@@ -72,9 +72,9 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
     titleOne: localized('Маяк над станцией «Люмен»', '«Lyumen» bekati ustidagi mayoq', '«Люмен» стансасының үстіндегі шамшырақ'),
     titleTwo: localized('Тихий сигнал среди звёзд', 'Yulduzlar orasidagi sokin signal', 'Жұлдыздар арасындағы тыныш белгі'),
     opening: localized(
-      'Над звёздной станцией тихо плыли планеты. Робот Пико раскрыл карту и показал два способа помочь лунной почте найти причал.',
+      'Над звёздной станцией тихо плыли планеты. Робот Пико раскрыл карту и показал два способа помочь лунной почте найти стыковочное окно станции.',
       'Yulduzli bekat ustida sayyoralar sokin suzdi. Robot Piko xaritani ochib, oy pochtasiga bekatni topishning ikki yo‘lini ko‘rsatdi.',
-      'Жұлдыз станциясының үстінде ғаламшарлар тыныш жүзіп жүрді. Пико робот картаны ашып, ай поштасына айлақты табудың екі жолын көрсетті.',
+      'Жұлдыз станциясының үстінде ғаламшарлар тыныш жүзіп жүрді. Пико робот картаны ашып, ай поштасына станса терезесін табудың екі жолын көрсетті.',
     ),
     choiceA: localized('Настроить звёздный маяк', 'Yulduz mayog‘ini sozlash', 'Жұлдыз шамшырағын баптау'),
     choiceB: localized('Сложить новую линию созвездия', 'Yangi yulduz turkumini chizish', 'Жаңа шоқжұлдыз сызығын құру'),
@@ -129,6 +129,12 @@ const worlds: Record<NormalizedStoryContext['stylePackId'], WorldFallback> = {
     icons: ['🏝️', '🐚'],
   },
 }
+
+const genericOpeningTail = localized(
+  'Перед {{HERO}} было два спокойных пути. Рядом ждали друзья, а вокруг оставалось достаточно времени, чтобы подумать и выбрать один из них.',
+  '{{HERO}} oldida ikki sokin yo‘l bor edi. Yonida do‘stlari kutib turardi, o‘ylab, ulardan birini tanlash uchun yetarli vaqt bor edi.',
+  '{{HERO}} алдында екі тыныш жол тұрды. Қасында достары күтіп тұрды, ойланып, соның бірін таңдауға уақыт жеткілікті еді.',
+)
 
 const patch = (event: string, arc: string): CandidatePatch => ({
   last_event: event,
@@ -186,7 +192,7 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
       ]
     : []
 
-  const genericOpening = `${world.opening[language]} {{HERO}} остановился и внимательно огляделся. Рядом ждали друзья, а вокруг оставалось достаточно времени, чтобы подумать и выбрать один из двух путей.`
+  const genericOpening = `${world.opening[language]} ${genericOpeningTail[language]}`
   const candidate: StoryCandidate = {
     title: referenceEpisodeTitle(context, world.titleOne[language]),
     story_text: referenceEpisodeOneStory(context, genericOpening),
