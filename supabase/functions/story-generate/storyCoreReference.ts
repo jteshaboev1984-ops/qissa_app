@@ -1,4 +1,5 @@
-import type { NormalizedStoryContext } from './contracts.ts'
+import type { Language, NormalizedStoryContext } from './contracts.ts'
+import { magicGardenContinuation, magicGardenEpisodeOne, magicGardenTitle } from './storyMagicGardenBedtime.ts'
 import { spaceContinuationRu, spaceEpisodeOneRu } from './storySpaceReference.ts'
 
 const cozyForestEpisodeOneRu = `Вечером в уютном лесу светлячки зажигались один за другим, а между деревьями пахло мокрой травой и тёплой корой. {{HERO}} шёл к старому пеньку, где лесные жители собирались пожелать друг другу доброй ночи. После короткого дождя на тропинке потускнели маленькие указатели, поэтому несколько зверят остановились у развилки и не знали, куда повернуть. Никто не испугался: рядом были друзья, а до сна оставалось достаточно времени.
@@ -25,11 +26,26 @@ const cozyForestContinuationRu = {
 const isRuBedtime57 = (context: NormalizedStoryContext) =>
   context.language === 'ru' && context.ageGroup === '5-7' && context.storyMood === 'bedtime'
 
+const isMagicGardenLanguage = (language: Language): language is 'ru' | 'uz' =>
+  language === 'ru' || language === 'uz'
+
+const isMagicGardenReference = (context: NormalizedStoryContext) =>
+  isMagicGardenLanguage(context.language) &&
+  context.ageGroup === '5-7' &&
+  context.storyMood === 'bedtime' &&
+  context.stylePackId === 'magic_garden'
+
 const isCozyForestReference = (context: NormalizedStoryContext) =>
   isRuBedtime57(context) && context.stylePackId === 'cozy_forest'
 
 const isSpaceReference = (context: NormalizedStoryContext) =>
   isRuBedtime57(context) && context.stylePackId === 'stars_and_space'
+
+const branchFromChoice = (choiceId: string) => choiceId === 'choice-a' || choiceId === 'path_a'
+  ? 'choice-a'
+  : choiceId === 'choice-b' || choiceId === 'path_b'
+    ? 'choice-b'
+    : null
 
 export const referenceEpisodeOneStory = (
   context: NormalizedStoryContext,
@@ -37,6 +53,7 @@ export const referenceEpisodeOneStory = (
 ): string => {
   if (isCozyForestReference(context)) return cozyForestEpisodeOneRu
   if (isSpaceReference(context)) return spaceEpisodeOneRu
+  if (isMagicGardenReference(context)) return magicGardenEpisodeOne[context.language]
   return fallbackText
 }
 
@@ -45,15 +62,12 @@ export const referenceContinuationStory = (
   choiceId: string,
   fallbackText: string,
 ): string => {
-  const branch = choiceId === 'choice-a' || choiceId === 'path_a'
-    ? 'choice-a'
-    : choiceId === 'choice-b' || choiceId === 'path_b'
-      ? 'choice-b'
-      : null
+  const branch = branchFromChoice(choiceId)
 
   if (!branch) return fallbackText
   if (isCozyForestReference(context)) return cozyForestContinuationRu[branch]
   if (isSpaceReference(context)) return spaceContinuationRu[branch]
+  if (isMagicGardenReference(context)) return magicGardenContinuation[context.language][branch]
   return fallbackText
 }
 
@@ -61,6 +75,12 @@ export const referenceEpisodeTitle = (
   context: NormalizedStoryContext,
   fallbackTitle: string,
 ): string => {
+  if (isMagicGardenReference(context)) {
+    if (!context.isContinuation) return magicGardenTitle[context.language].one
+    const branch = branchFromChoice(context.choiceHistory[context.choiceHistory.length - 1]?.choice_id ?? '')
+    return branch === 'choice-b' ? magicGardenTitle[context.language].b : magicGardenTitle[context.language].a
+  }
+
   if (!isSpaceReference(context)) return fallbackTitle
   if (!context.isContinuation) return 'Маяк над станцией «Люмен»'
 
