@@ -13,6 +13,7 @@ if (!publishableKey) {
 const languages = ['ru', 'uz', 'kz']
 const timeoutMs = 45_000
 const technicalStoryLanguage = /последстви[ея] выбора|мир запомнил|текущей версии|сохран[её]н(?:ный|о) выбор|episode|state[_ -]?patch/iu
+const nauticalSpaceCopy = /\bпричал(?:а|е|у|ом)?\b/iu
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message)
@@ -161,9 +162,11 @@ const validateContinuation = (result, chosen, heroName, stylePackId) => {
     }
     if (stylePackId === 'stars_and_space' && chosen.choice_id === 'choice-a') {
       assert(/маяк|золотой луч|сигнал/iu.test(episode.story_text), 'space choice-a: beacon consequence is not visible')
+      assert(!nauticalSpaceCopy.test(`${episode.title} ${episode.story_text}`), 'space choice-a: nautical docking copy is still deployed')
     }
     if (stylePackId === 'stars_and_space' && chosen.choice_id === 'choice-b') {
       assert(/созвезди|звёздн|Дорога домой/iu.test(episode.story_text), 'space choice-b: constellation consequence is not visible')
+      assert(!nauticalSpaceCopy.test(`${episode.title} ${episode.story_text}`), 'space choice-b: nautical docking copy is still deployed')
     }
   }
 
@@ -197,6 +200,7 @@ if (spaceFirstResult.source === 'safe-fallback') {
   assert(spaceEpisodeOne.title === 'Маяк над станцией «Люмен»', 'space: editorial Episode 1 title is not deployed')
   assert(wordCount(spaceEpisodeOne.story_text) >= 160, 'space: Episode 1 is still the short generic fallback')
   assert(!technicalStoryLanguage.test(`${spaceEpisodeOne.title} ${spaceEpisodeOne.story_text}`), 'space: Episode 1 exposes technical copy')
+  assert(!nauticalSpaceCopy.test(`${spaceEpisodeOne.title} ${spaceEpisodeOne.story_text}`), 'space: nautical docking copy is still deployed')
 }
 
 const spaceContinuations = []
@@ -208,6 +212,7 @@ for (const chosen of spaceEpisodeOne.choices) {
   if (result.source === 'safe-fallback') {
     assert(wordCount(continuation.story_text) >= 120, `space/${chosen.choice_id}: continuation is still too short`)
     assert(!technicalStoryLanguage.test(`${continuation.title} ${continuation.story_text}`), `space/${chosen.choice_id}: technical copy is visible`)
+    assert(!nauticalSpaceCopy.test(`${continuation.title} ${continuation.story_text}`), `space/${chosen.choice_id}: nautical docking copy is visible`)
   }
 }
 

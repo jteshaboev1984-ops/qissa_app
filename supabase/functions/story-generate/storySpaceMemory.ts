@@ -30,7 +30,7 @@ const localized = (ru: string, uz: string, kz: string): Localized => ({ ru, uz, 
 const branches: Record<SpaceBranchId, SpaceBranchMemory> = {
   a: {
     effect: localized(
-      'Золотой маяк снова засиял над станцией и показал лунной почте дорогу к причалу.',
+      'Золотой маяк снова засиял над станцией и показал лунной почте дорогу к стыковочному окну.',
       'Oltin mayoq yana porlab, oy pochtasiga bekat yo‘lini ko‘rsatdi.',
       'Алтын шамшырақ қайта жанып, ай поштасына станса жолын көрсетті.',
     ),
@@ -48,7 +48,7 @@ const branches: Record<SpaceBranchId, SpaceBranchMemory> = {
     friendId: 'robot_piko',
     artifact: localized('золотой сигнал маяка', 'mayoqning oltin signali', 'шамшырақтың алтын белгісі'),
     fallbackContinuation: localized(
-      'На следующем витке знакомый золотой луч помог почтовой капсуле найти станцию. {{HERO}} и робот Пико встретили её у причала и бережно разобрали письма.',
+      'На следующем витке знакомый золотой луч помог почтовой капсуле найти станцию. {{HERO}} и робот Пико встретили её у окна станции и бережно разобрали письма.',
       'Keyingi aylanishda tanish oltin nur pochta kapsulasiga bekatni topishga yordam berdi. {{HERO}} va robot Piko uni kutib olib, xatlarni ehtiyotkorlik bilan joyladi.',
       'Келесі айналымда таныс алтын сәуле пошта капсуласына стансаны табуға көмектесті. {{HERO}} пен Пико робот оны қарсы алып, хаттарды ұқыпты орналастырды.',
     ),

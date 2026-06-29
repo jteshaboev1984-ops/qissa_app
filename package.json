@@ -13,6 +13,7 @@
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:story-copy": "node scripts/check-story-copy.mjs",
     "check:story-core": "node scripts/check-story-core-proof.mjs",
+    "check:space-copy": "node scripts/check-space-copy.mjs",
     "preview:stories": "node scripts/preview-stories.mjs",
     "check:story-service": "node scripts/check-story-service-boundary.mjs",
     "check:story-ai": "node scripts/check-story-ai-safety.mjs",
