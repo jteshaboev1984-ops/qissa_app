@@ -30,12 +30,12 @@
     "check:cosmos-bedtime": "node scripts/check-cosmos-bedtime.mjs"
   },
   "dependencies": {
-    "react": "^18.3.1",
+    "react": "^19.2.7",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/node": "^22.19.17",
-    "@types/react": "^18.3.7",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.5.2",
