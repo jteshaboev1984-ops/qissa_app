@@ -7,6 +7,11 @@ const editorialOverrides: Partial<Record<I18nKey, Record<Language, string>>> = {
     uz: 'Hikoyani davom ettirish',
     kz: 'Ертегіні жалғастыру',
   },
+  'story.tomorrow_seed_title': {
+    ru: 'Сказка продолжится отсюда',
+    uz: 'Hikoya shu joydan davom etadi',
+    kz: 'Ертегі осы жерден жалғасады',
+  },
   'story.series_final_title': {
     ru: 'Эта глава завершилась',
     uz: 'Bu bob yakunlandi',

@@ -18,6 +18,7 @@ import {
   referenceEpisodeTitle,
 } from './storyCoreReference.ts'
 import { spaceChoiceMemory, spaceContinuationMemory } from './storySpaceMemory.ts'
+import { magicGardenChoiceMemory } from './storyMagicGardenMemory.ts'
 
 type Localized = Record<Language, string>
 type WorldFallback = {
@@ -171,7 +172,8 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
   }
 
   const makeChoice = (id: 'choice-a' | 'choice-b', text: string, icon: string): CandidateChoice => {
-    const memory = spaceChoiceMemory(context, id)
+    const memory = magicGardenChoiceMemory(context, id)
+      ?? spaceChoiceMemory(context, id)
       ?? (isForest ? fallbackChoiceMemory(context, id, text) : genericEditorialChoiceMemory(context, id, text))
     return {
       choice_id: id,
@@ -204,10 +206,10 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
     vocabulary,
     nextEpisodePreview: context.storyMode === 'series'
       ? (language === 'ru'
-          ? 'Завтра знакомый знак снова появится в сказке.'
+          ? 'Сказка продолжится отсюда.'
           : language === 'uz'
-            ? 'Ertaga tanish belgi hikoyada yana paydo bo‘ladi.'
-            : 'Ертең таныс белгі оқиғада қайта пайда болады.')
+            ? 'Hikoya shu joydan davom etadi.'
+            : 'Ертегі осы жерден жалғасады.')
       : '',
   }
 

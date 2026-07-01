@@ -40,6 +40,9 @@ jobs:
       - name: Validate localized fallback copy
         run: npm run check:localized-fallback
 
+      - name: Validate Bedtime Session polish
+        run: npm run check:bedtime-session
+
       - name: Validate space story copy
         run: npm run check:space-copy
 
