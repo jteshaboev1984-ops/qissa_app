@@ -26,7 +26,8 @@
     "smoke:privacy-live": "node scripts/smoke-privacy-live.mjs",
     "smoke:audio-live": "node scripts/smoke-audio-live.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
-    "check:bedtime-session": "node scripts/check-bedtime-session-polish.mjs"
+    "check:bedtime-session": "node scripts/check-bedtime-session-polish.mjs",
+    "check:cosmos-bedtime": "node scripts/check-cosmos-bedtime.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

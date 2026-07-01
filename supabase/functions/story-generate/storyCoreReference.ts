@@ -1,6 +1,7 @@
 import type { Language, NormalizedStoryContext } from './contracts.ts'
 import { magicGardenContinuation, magicGardenEpisodeOne, magicGardenTitle } from './storyMagicGardenBedtime.ts'
 import { spaceContinuationRu, spaceEpisodeOneRu } from './storySpaceReference.ts'
+import { spaceBedtimeContinuation, spaceBedtimeEpisodeOne, spaceBedtimeTitle } from './storySpaceBedtime.ts'
 
 const cozyForestEpisodeOneRu = `Вечером в уютном лесу светлячки зажигались один за другим, а между деревьями пахло мокрой травой и тёплой корой. {{HERO}} шёл к старому пеньку, где лесные жители собирались пожелать друг другу доброй ночи. После короткого дождя на тропинке потускнели маленькие указатели, поэтому несколько зверят остановились у развилки и не знали, куда повернуть. Никто не испугался: рядом были друзья, а до сна оставалось достаточно времени.
 
@@ -34,6 +35,14 @@ const getMagicGardenLanguage = (context: NormalizedStoryContext): MagicGardenLan
   return context.language === 'ru' || context.language === 'uz' ? context.language : null
 }
 
+type SpaceBedtimeLanguage = 'ru' | 'uz'
+
+const getSpaceBedtimeLanguage = (context: NormalizedStoryContext): SpaceBedtimeLanguage | null => {
+  if (context.stylePackId !== 'stars_and_space') return null
+  if (context.ageGroup !== '5-7' || context.storyMood !== 'bedtime') return null
+  return context.language === 'ru' || context.language === 'uz' ? context.language : null
+}
+
 const isCozyForestReference = (context: NormalizedStoryContext) =>
   isRuBedtime57(context) && context.stylePackId === 'cozy_forest'
 
@@ -50,9 +59,12 @@ export const referenceEpisodeOneStory = (
   context: NormalizedStoryContext,
   fallbackText: string,
 ): string => {
-  if (isCozyForestReference(context)) return cozyForestEpisodeOneRu
-  if (isSpaceReference(context)) return spaceEpisodeOneRu
   const magicLanguage = getMagicGardenLanguage(context)
+  const spaceLanguage = getSpaceBedtimeLanguage(context)
+
+  if (isCozyForestReference(context)) return cozyForestEpisodeOneRu
+  if (spaceLanguage) return spaceBedtimeEpisodeOne[spaceLanguage]
+  if (isSpaceReference(context)) return spaceEpisodeOneRu
   if (magicLanguage) return magicGardenEpisodeOne[magicLanguage]
   return fallbackText
 }
@@ -63,11 +75,13 @@ export const referenceContinuationStory = (
   fallbackText: string,
 ): string => {
   const branch = branchFromChoice(choiceId)
+  const magicLanguage = getMagicGardenLanguage(context)
+  const spaceLanguage = getSpaceBedtimeLanguage(context)
 
   if (!branch) return fallbackText
   if (isCozyForestReference(context)) return cozyForestContinuationRu[branch]
+  if (spaceLanguage) return spaceBedtimeContinuation[spaceLanguage][branch]
   if (isSpaceReference(context)) return spaceContinuationRu[branch]
-  const magicLanguage = getMagicGardenLanguage(context)
   if (magicLanguage) return magicGardenContinuation[magicLanguage][branch]
   return fallbackText
 }
@@ -77,6 +91,14 @@ export const referenceEpisodeTitle = (
   fallbackTitle: string,
 ): string => {
   const magicLanguage = getMagicGardenLanguage(context)
+  const spaceLanguage = getSpaceBedtimeLanguage(context)
+
+  if (spaceLanguage) {
+    if (!context.isContinuation) return spaceBedtimeTitle[spaceLanguage].one
+    const branch = branchFromChoice(context.choiceHistory[context.choiceHistory.length - 1]?.choice_id ?? '')
+    return branch === 'choice-b' ? spaceBedtimeTitle[spaceLanguage].b : spaceBedtimeTitle[spaceLanguage].a
+  }
+
   if (magicLanguage) {
     if (!context.isContinuation) return magicGardenTitle[magicLanguage].one
     const branch = branchFromChoice(context.choiceHistory[context.choiceHistory.length - 1]?.choice_id ?? '')
