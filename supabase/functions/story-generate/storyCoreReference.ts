@@ -26,14 +26,13 @@ const cozyForestContinuationRu = {
 const isRuBedtime57 = (context: NormalizedStoryContext) =>
   context.language === 'ru' && context.ageGroup === '5-7' && context.storyMood === 'bedtime'
 
-const isMagicGardenLanguage = (language: Language): language is 'ru' | 'uz' =>
-  language === 'ru' || language === 'uz'
+type MagicGardenLanguage = 'ru' | 'uz'
 
-const isMagicGardenReference = (context: NormalizedStoryContext) =>
-  isMagicGardenLanguage(context.language) &&
-  context.ageGroup === '5-7' &&
-  context.storyMood === 'bedtime' &&
-  context.stylePackId === 'magic_garden'
+const getMagicGardenLanguage = (context: NormalizedStoryContext): MagicGardenLanguage | null => {
+  if (context.stylePackId !== 'magic_garden') return null
+  if (context.ageGroup !== '5-7' || context.storyMood !== 'bedtime') return null
+  return context.language === 'ru' || context.language === 'uz' ? context.language : null
+}
 
 const isCozyForestReference = (context: NormalizedStoryContext) =>
   isRuBedtime57(context) && context.stylePackId === 'cozy_forest'
@@ -53,7 +52,8 @@ export const referenceEpisodeOneStory = (
 ): string => {
   if (isCozyForestReference(context)) return cozyForestEpisodeOneRu
   if (isSpaceReference(context)) return spaceEpisodeOneRu
-  if (isMagicGardenReference(context)) return magicGardenEpisodeOne[context.language]
+  const magicLanguage = getMagicGardenLanguage(context)
+  if (magicLanguage) return magicGardenEpisodeOne[magicLanguage]
   return fallbackText
 }
 
@@ -67,7 +67,8 @@ export const referenceContinuationStory = (
   if (!branch) return fallbackText
   if (isCozyForestReference(context)) return cozyForestContinuationRu[branch]
   if (isSpaceReference(context)) return spaceContinuationRu[branch]
-  if (isMagicGardenReference(context)) return magicGardenContinuation[context.language][branch]
+  const magicLanguage = getMagicGardenLanguage(context)
+  if (magicLanguage) return magicGardenContinuation[magicLanguage][branch]
   return fallbackText
 }
 
@@ -75,10 +76,11 @@ export const referenceEpisodeTitle = (
   context: NormalizedStoryContext,
   fallbackTitle: string,
 ): string => {
-  if (isMagicGardenReference(context)) {
-    if (!context.isContinuation) return magicGardenTitle[context.language].one
+  const magicLanguage = getMagicGardenLanguage(context)
+  if (magicLanguage) {
+    if (!context.isContinuation) return magicGardenTitle[magicLanguage].one
     const branch = branchFromChoice(context.choiceHistory[context.choiceHistory.length - 1]?.choice_id ?? '')
-    return branch === 'choice-b' ? magicGardenTitle[context.language].b : magicGardenTitle[context.language].a
+    return branch === 'choice-b' ? magicGardenTitle[magicLanguage].b : magicGardenTitle[magicLanguage].a
   }
 
   if (!isSpaceReference(context)) return fallbackTitle

@@ -10,6 +10,7 @@ const sourceNames = [
   'storyCoreBranches',
   'storyGenericEditorial',
   'storyCoreReference',
+  'storyMagicGardenBedtime',
   'storySpaceReference',
   'storySpaceMemory',
   'fallback',
@@ -31,6 +32,7 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storyCoreBranches\.ts['"]/g, "'./storyCoreBranches.mjs'")
   .replace(/['"]\.\/storyGenericEditorial\.ts['"]/g, "'./storyGenericEditorial.mjs'")
   .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
+  .replace(/['"]\.\/storyMagicGardenBedtime\.ts['"]/g, "'./storyMagicGardenBedtime.mjs'")
   .replace(/['"]\.\/storySpaceReference\.ts['"]/g, "'./storySpaceReference.mjs'")
   .replace(/['"]\.\/storySpaceMemory\.ts['"]/g, "'./storySpaceMemory.mjs'")
 
