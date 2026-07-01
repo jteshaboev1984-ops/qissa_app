@@ -18,6 +18,7 @@ import {
   referenceEpisodeTitle,
 } from './storyCoreReference.ts'
 import { spaceChoiceMemory, spaceContinuationMemory } from './storySpaceMemory.ts'
+import { spaceBedtimeChoiceMemory } from './storySpaceBedtimeMemory.ts'
 import { magicGardenChoiceMemory } from './storyMagicGardenMemory.ts'
 
 type Localized = Record<Language, string>
@@ -173,6 +174,7 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
 
   const makeChoice = (id: 'choice-a' | 'choice-b', text: string, icon: string): CandidateChoice => {
     const memory = magicGardenChoiceMemory(context, id)
+      ?? spaceBedtimeChoiceMemory(context, id)
       ?? spaceChoiceMemory(context, id)
       ?? (isForest ? fallbackChoiceMemory(context, id, text) : genericEditorialChoiceMemory(context, id, text))
     return {

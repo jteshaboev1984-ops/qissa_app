@@ -13,6 +13,8 @@ const sourceNames = [
   'storyMagicGardenBedtime',
   'storyMagicGardenMemory',
   'storySpaceReference',
+  'storySpaceBedtimeMemory',
+  'storySpaceBedtime',
   'storySpaceMemory',
   'fallback',
 ]
@@ -37,6 +39,8 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storyMagicGardenMemory\.ts['"]/g, "'./storyMagicGardenMemory.mjs'")
   .replace(/['"]\.\/storySpaceReference\.ts['"]/g, "'./storySpaceReference.mjs'")
   .replace(/['"]\.\/storySpaceMemory\.ts['"]/g, "'./storySpaceMemory.mjs'")
+  .replace(/['"]\.\/storySpaceBedtimeMemory\.ts['"]/g, "'./storySpaceBedtimeMemory.mjs'")
+  .replace(/['"]\.\/storySpaceBedtime\.ts['"]/g, "'./storySpaceBedtime.mjs'")
 
 const wordCount = (text) => text.trim().split(/\s+/u).filter(Boolean).length
 const forbiddenIntensity = /погон|ужас|страшн|крич|взрыв|опасн|сраж/iu
@@ -127,17 +131,17 @@ try {
   assert(/песня|мелодия|запел/iu.test(forestB.story_text), 'Forest B lost song consequence.')
 
   const spaceOne = buildSafeFallback({ ...baseContext, stylePackId: 'stars_and_space' })
-  assert(spaceOne.title === 'Маяк над станцией «Люмен»', 'Space Episode 1 title is not editorial.')
+  assert(spaceOne.title === 'Тихий сигнал станции «Люмен»', 'Space Episode 1 title is not editorial.')
   assert(wordCount(spaceOne.story_text) >= 160 && wordCount(spaceOne.story_text) <= 260, 'Space Episode 1 is not a full scene.')
   assert(!technicalStoryLanguage.test(`${spaceOne.title} ${spaceOne.story_text}`), 'Space Episode 1 exposes technical wording.')
   assert(!nauticalSpaceCopy.test(`${spaceOne.title} ${spaceOne.story_text}`), 'Space Episode 1 uses nautical copy.')
   const [spaceA, spaceB] = verifyTwoBranches(spaceOne, 'stars_and_space')
-  assert(spaceA.title === 'Золотой сигнал для лунной почты', 'Space A title is wrong.')
+  assert(spaceA.title === 'Золотой маяк для лунной почты', 'Space A title is wrong.')
   assert(spaceB.title === 'Созвездие «Дорога домой»', 'Space B title is wrong.')
   assert(/маяк|золотой луч|сигнал/iu.test(spaceA.story_text), 'Space A lost beacon consequence.')
   assert(/созвезди|звёздн|Дорога домой/iu.test(spaceB.story_text), 'Space B lost constellation consequence.')
   for (const [label, episode] of [['space-a', spaceA], ['space-b', spaceB]]) {
-    assert(wordCount(episode.story_text) >= 120 && wordCount(episode.story_text) <= 220, `${label} editorial length failed.`)
+    assert(wordCount(episode.story_text) >= 260 && wordCount(episode.story_text) <= 900, `${label} bedtime length failed.`)
     assert(!forbiddenIntensity.test(episode.story_text), `${label} breaks bedtime tone.`)
     assert(!nauticalSpaceCopy.test(`${episode.title} ${episode.story_text}`), `${label} uses nautical copy.`)
   }

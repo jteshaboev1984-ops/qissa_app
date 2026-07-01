@@ -43,6 +43,9 @@ jobs:
       - name: Validate Bedtime Session polish
         run: npm run check:bedtime-session
 
+      - name: Validate Cosmos Bedtime Session
+        run: npm run check:cosmos-bedtime
+
       - name: Validate space story copy
         run: npm run check:space-copy
 
