@@ -8,7 +8,7 @@ export const spaceBedtimeEpisodeOne = {
 {{HERO}} посмотрел в окно. Вдалеке уже появилась серебряная точка. Она двигалась медленно, будто тоже не хотела будить ночь. На станции было достаточно времени, чтобы выбрать спокойно. Пико держал инструменты, карта мягко светилась на столе, а звёзды ждали, какой знак появится в небе: золотой маяк или новая дорожка созвездия.`,
   uz: `«Lyumen» bekati Yerning to‘q ko‘k tomoni ustida sekin suzib borardi. Dumaloq oynalar ortida uzoq yulduzlar yonar, ichkarida esa sokinlik hukm surardi: faqat pol bo‘ylab tushgan mayin chiroqlar tungi yo‘lni ko‘rsatardi. {{HERO}} robot Pikoga yulduz xaritalarini shaffof qutilarga joylashda yordam berardi. Har bir xarita ozgina yaltirar, go‘yo ichida kichkina uchqun uxlayotgandek edi.
 
-Shu oqshom Piko oy pochtasining alohida xaritasini oldi. Unda kumush kapsula bekatni topishi, xatlarni olishi va ularni qo‘shni orbitadagi bolalarga yetkazishi kerak edi. Ammo xaritadagi bitta oltin chiroq o‘chib qoldi. Bu yulduz mayog‘i edi — kapsulaga bekatning stykovka oynasi qayerdaligini ko‘rsatadigan sokin signal.
+Shu oqshom Piko oy pochtasining alohida xaritasini oldi. Unda kumush kapsula bekatni topishi, xatlarni olishi va ularni qo‘shni orbitadagi bolalarga yetkazishi kerak edi. Ammo xaritadagi bitta oltin chiroq o‘chib qoldi. Bu yulduz mayog‘i edi — kapsulaga bekatning ulanish oynasi qayerdaligini ko‘rsatadigan sokin signal.
 
 Piko cho‘chimadi. U yoniga ikki asbob qo‘ydi: yorug‘lik halqalari uchun kichik kalit va ingichka yulduz ipi. Agar mayoq sozlansa, uning oltin nuri kapsulaga yo‘lni yana ko‘rsatadi. Agar yangi yulduz turkumi chizilsa, kapsula tanish rasmni ko‘rib, yulduz changining qorong‘i bulutini aylanib o‘tadi.
 
@@ -53,7 +53,7 @@ Kapsula signalni ko‘rdi. Uning yonidagi kichkina chiroq javob berdi: bir marta
 
 Oxirgi burilish yonida kapsulani yulduz changining buluti kutib oldi. U sokin va quyuq edi, xuddi uyquli tuman kabi. Mayoq nuri undan darrov o‘ta olmadi. {{HERO}} nurni kuchaytirmay, uni iliqroq qilishni taklif qildi. Piko sovuq filtrni sarg‘ish filtrga almashtirdi. Nur yotoq yonidagi kechki chiroqqa o‘xshab qoldi.
 
-Tuman sekin tarqaldi. Kapsula tekislandi va bekatning stykovka oynasiga ohista yaqinlashdi. Piko kichik qabul bo‘limini ochdi. Kapsula ichida xatlar, kulib turgan oy rasmi va bekat bog‘i uchun urug‘lar paketi bor edi. {{HERO}} xatlarni yumshoq katakchalarga joyladi, ertalab hech kim o‘z xabarini yo‘qotmasin deb.
+Tuman sekin tarqaldi. Kapsula tekislandi va bekatning ulanish oynasiga ohista yaqinlashdi. Piko kichik qabul bo‘limini ochdi. Kapsula ichida xatlar, kulib turgan oy rasmi va bekat bog‘i uchun urug‘lar paketi bor edi. {{HERO}} xatlarni yumshoq katakchalarga joyladi, ertalab hech kim o‘z xabarini yo‘qotmasin deb.
 
 Ish tugagach, mayoq tungi rejimga o‘tdi. U endi baland chaqirmas, faqat oynada uchta oltin shu’la qoldirdi. Piko endi bekatning o‘z mehribon belgisi borligini aytdi. Agar oy pochtasi yana yo‘ldan adashsa, shu nurni taniydi.
 

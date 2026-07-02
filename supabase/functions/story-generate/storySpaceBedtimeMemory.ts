@@ -27,7 +27,7 @@ const text = {
     },
     uz: {
       effect: 'Oltin mayoq oy pochtasini yana topdi va oynada uchta iliq shu’la qoldirdi.',
-      resolution: '{{HERO}} yorug‘lik halqalarini burdi, bekat ustida mayin oltin nur ko‘tarildi. Kapsula uni ko‘rib, uchta kichik chiroq bilan javob berdi va stykovka oynasi tomon sekin burildi.',
+      resolution: '{{HERO}} yorug‘lik halqalarini burdi, bekat ustida mayin oltin nur ko‘tarildi. Kapsula uni ko‘rib, uchta kichik chiroq bilan javob berdi va ulanish oynasi tomon sekin burildi.',
       seed: 'Uchta oltin shu’la oynada qoladi va oy pochtasining yo‘lini davom ettirishga yordam beradi.',
       artifact: 'mayoqning uchta oltin shu’lasi',
       friend: 'robot Piko',
