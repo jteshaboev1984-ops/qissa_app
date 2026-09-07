@@ -93,6 +93,18 @@ const validatePatch = (patch: unknown): boolean =>
 
 const wordCount = (text: string) => text.trim().split(/\s+/u).filter(Boolean).length
 
+const isFiveToSevenBedtimeSeries = (context: NormalizedStoryContext) =>
+  context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
+
+const storyWordRange = (context: NormalizedStoryContext): [number, number] => {
+  if (isFiveToSevenBedtimeSeries(context)) {
+    return context.episodeIndex === 1 ? [400, 600] : [280, 500]
+  }
+  if (context.ageGroup === '3-4') return [80, 260]
+  if (context.ageGroup === '5-7') return [120, 390]
+  return [170, 540]
+}
+
 export const validateCandidate = (context: NormalizedStoryContext, candidate: unknown): string[] => {
   const errors: string[] = []
   if (!isRecord(candidate)) return ['candidate_not_object']
@@ -102,7 +114,7 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   if (typeof value.story_text !== 'string') errors.push('invalid_story_text')
   else {
     const words = wordCount(value.story_text)
-    const [minWords, maxWords] = context.ageGroup === '3-4' ? [80, 260] : context.ageGroup === '5-7' ? [120, 390] : [170, 540]
+    const [minWords, maxWords] = storyWordRange(context)
     if (words < minWords) errors.push('story_too_short')
     if (words > maxWords) errors.push('story_too_long')
     if (!value.story_text.includes('{{HERO}}') && !value.story_text.includes('QISSA_HERO')) errors.push('missing_hero_token')
@@ -118,7 +130,13 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
       else ids.add(choice.choice_id)
       if (typeof choice.text !== 'string' || choice.text.length < 3) errors.push('invalid_choice_text')
       if (typeof choice.effect_summary !== 'string' || choice.effect_summary.length < 8) errors.push('invalid_effect_summary')
-      if (typeof choice.resolution_text !== 'string' || choice.resolution_text.length < 12) errors.push('invalid_resolution_text')
+      if (typeof choice.resolution_text !== 'string' || choice.resolution_text.length < 12) {
+        errors.push('invalid_resolution_text')
+      } else if (isFiveToSevenBedtimeSeries(context) && context.episodeIndex === 1) {
+        const resolutionWords = wordCount(choice.resolution_text)
+        if (resolutionWords < 20) errors.push('choice_resolution_too_short')
+        if (resolutionWords > 80) errors.push('choice_resolution_too_long')
+      }
       if (typeof choice.tomorrow_seed !== 'string' || choice.tomorrow_seed.length < 8) errors.push('invalid_tomorrow_seed')
       if (typeof choice.choice_icon !== 'string' || !choice.choice_icon.trim()) errors.push('invalid_choice_icon')
       if (!validatePatch(choice.state_patch)) errors.push('invalid_choice_state_patch')
