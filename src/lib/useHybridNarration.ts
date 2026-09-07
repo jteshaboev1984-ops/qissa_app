@@ -38,11 +38,14 @@ export function useHybridNarration({
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const requestTokenRef = useRef(0)
   const resumeRef = useRef<RemotePlaybackProgress | null>(null)
+  const pendingResumeFractionRef = useRef<number | null>(null)
   const pendingPlayRef = useRef(false)
   const modeRef = useRef<DeliveryMode>('pending')
   const remotePositionRef = useRef(0)
   const remoteDurationRef = useRef(0)
   const audioAssetIdRef = useRef<string | null>(null)
+  const devicePositionRef = useRef(device.positionSeconds)
+  const deviceDurationRef = useRef(device.durationSeconds)
   const speedRef = useRef<NarrationSpeed>(device.speed)
   const completedSavedRef = useRef(false)
 
@@ -50,18 +53,20 @@ export function useHybridNarration({
   useEffect(() => { remotePositionRef.current = remotePosition }, [remotePosition])
   useEffect(() => { remoteDurationRef.current = remoteDuration }, [remoteDuration])
   useEffect(() => { audioAssetIdRef.current = audioAssetId }, [audioAssetId])
+  useEffect(() => { devicePositionRef.current = device.positionSeconds }, [device.positionSeconds])
+  useEffect(() => { deviceDurationRef.current = device.durationSeconds }, [device.durationSeconds])
   useEffect(() => { speedRef.current = device.speed }, [device.speed])
 
   const disposeRemoteAudio = useCallback(() => {
     const audio = audioRef.current
     if (!audio) return
-    audio.pause()
     audio.onloadedmetadata = null
     audio.ontimeupdate = null
     audio.onplay = null
     audio.onpause = null
     audio.onended = null
     audio.onerror = null
+    audio.pause()
     audio.removeAttribute('src')
     audio.load()
     audioRef.current = null
@@ -69,7 +74,7 @@ export function useHybridNarration({
 
   const persistRemote = useCallback((completed: boolean, positionOverride?: number) => {
     const mode = modeRef.current
-    const position = positionOverride ?? (mode === 'remote' ? remotePositionRef.current : device.positionSeconds)
+    const position = positionOverride ?? (mode === 'remote' ? remotePositionRef.current : devicePositionRef.current)
     void audioRemoteClient.savePlaybackProgress({
       seriesId,
       episodeId,
@@ -80,7 +85,7 @@ export function useHybridNarration({
     }).catch(() => {
       // Local device progress remains the offline safety net; remote sync retries on later interaction.
     })
-  }, [device.positionSeconds, episodeId, seriesId])
+  }, [episodeId, seriesId])
 
   const startRemoteAudio = useCallback((audio: HTMLAudioElement) => {
     const playPromise = audio.play()
@@ -104,9 +109,15 @@ export function useHybridNarration({
       setRemoteDuration(duration)
 
       const resume = resumeRef.current
-      const desired = resume?.completed
-        ? duration
-        : resume?.positionSeconds ?? device.positionSeconds
+      const pendingFraction = pendingResumeFractionRef.current
+      let desired: number
+      if (pendingFraction !== null && duration > 0) {
+        desired = duration * clamp(pendingFraction, 0, 1)
+        pendingResumeFractionRef.current = null
+      } else {
+        desired = resume?.completed ? duration : resume?.positionSeconds ?? devicePositionRef.current
+      }
+
       const position = duration > 0 ? clamp(desired, 0, Math.max(0, duration - 0.05)) : Math.max(0, desired)
       try { audio.currentTime = position } catch { /* metadata can race on some browsers */ }
       remotePositionRef.current = position
@@ -125,7 +136,7 @@ export function useHybridNarration({
     }
     audio.onplay = () => setRemoteStatus('playing')
     audio.onpause = () => {
-      if (!audio.ended && remoteStatus !== 'completed') setRemoteStatus(audio.currentTime > 0 ? 'paused' : 'idle')
+      if (!audio.ended) setRemoteStatus(audio.currentTime > 0 ? 'paused' : 'idle')
     }
     audio.onended = () => {
       const duration = Number.isFinite(audio.duration) ? audio.duration : remoteDurationRef.current
@@ -136,20 +147,25 @@ export function useHybridNarration({
       persistRemote(true, duration)
     }
     audio.onerror = () => {
-      const position = audio.currentTime
+      const duration = remoteDurationRef.current
+      const fraction = duration > 0 ? remotePositionRef.current / duration : 0
+      const shouldResume = !audio.paused
       disposeRemoteAudio()
       setDeliveryMode('device')
       setRemoteStatus('error')
+      setAudioSource('device-fallback')
       setFallbackReason('remote_playback_failed')
-      if (position > 0) device.seekTo(position)
+      const mapped = fraction * deviceDurationRef.current
+      if (mapped > 0) device.seekTo(mapped)
+      if (shouldResume) window.setTimeout(() => device.play(), 0)
     }
 
     audio.load()
-  }, [device, disposeRemoteAudio, persistRemote, remoteStatus, startRemoteAudio])
+  }, [device.play, device.seekTo, disposeRemoteAudio, persistRemote, startRemoteAudio])
 
   const requestRemoteAudio = useCallback(async (shouldPlay: boolean, speedOverride?: NarrationSpeed) => {
     const token = ++requestTokenRef.current
-    const requestedSpeed = speedOverride ?? device.speed
+    const requestedSpeed = speedOverride ?? speedRef.current
     pendingPlayRef.current = shouldPlay
     setIsLoading(true)
 
@@ -168,6 +184,7 @@ export function useHybridNarration({
 
       if (result.audioStatus === 'ready' && result.audioUrl && result.audioAssetId) {
         setDeliveryMode('remote')
+        modeRef.current = 'remote'
         setAudioAssetId(result.audioAssetId)
         audioAssetIdRef.current = result.audioAssetId
         attachRemoteAudio(result.audioUrl, shouldPlay)
@@ -175,6 +192,7 @@ export function useHybridNarration({
       }
 
       setDeliveryMode('device')
+      modeRef.current = 'device'
       setAudioAssetId(null)
       audioAssetIdRef.current = null
       setRequiresAiVoiceDisclosure(false)
@@ -182,6 +200,7 @@ export function useHybridNarration({
     } catch {
       if (token !== requestTokenRef.current) return
       setDeliveryMode('device')
+      modeRef.current = 'device'
       setAudioSource('device-fallback')
       setFallbackReason('audio_service_unavailable')
       setRequiresAiVoiceDisclosure(false)
@@ -189,12 +208,13 @@ export function useHybridNarration({
     } finally {
       if (token === requestTokenRef.current) setIsLoading(false)
     }
-  }, [attachRemoteAudio, device, episodeId, seriesId, voicePresetId])
+  }, [attachRemoteAudio, device.play, episodeId, seriesId, voicePresetId])
 
   useEffect(() => {
     requestTokenRef.current += 1
     disposeRemoteAudio()
     setDeliveryMode('pending')
+    modeRef.current = 'pending'
     setRemoteStatus('idle')
     setRemotePosition(0)
     setRemoteDuration(0)
@@ -205,12 +225,13 @@ export function useHybridNarration({
     setIsLoading(false)
     completedSavedRef.current = false
     resumeRef.current = null
+    pendingResumeFractionRef.current = null
 
     let cancelled = false
     void audioRemoteClient.loadPlaybackProgress({ seriesId, episodeId }).then((progress) => {
       if (cancelled || !progress) return
       resumeRef.current = progress
-      if (progress.speed !== device.speed) device.changeSpeed(progress.speed)
+      if (progress.speed !== speedRef.current) device.changeSpeed(progress.speed)
       window.setTimeout(() => {
         if (!cancelled && progress.positionSeconds > 0) device.seekTo(progress.positionSeconds)
       }, 0)
@@ -223,17 +244,21 @@ export function useHybridNarration({
       requestTokenRef.current += 1
       disposeRemoteAudio()
     }
-  }, [device.changeSpeed, device.seekTo, device.speed, disposeRemoteAudio, episodeId, playbackId, seriesId, text])
+  }, [device.changeSpeed, device.seekTo, disposeRemoteAudio, episodeId, playbackId, seriesId, text])
 
   useEffect(() => {
     requestTokenRef.current += 1
-    if (deliveryMode === 'remote') {
-      const position = remotePositionRef.current
+    if (modeRef.current === 'remote') {
+      const duration = remoteDurationRef.current
+      const fraction = duration > 0 ? remotePositionRef.current / duration : 0
+      pendingResumeFractionRef.current = fraction
       disposeRemoteAudio()
-      if (position > 0) device.seekTo(position)
+      if (fraction > 0) device.seekTo(fraction * deviceDurationRef.current)
     }
     setDeliveryMode('pending')
+    modeRef.current = 'pending'
     setAudioAssetId(null)
+    audioAssetIdRef.current = null
     setAudioSource(null)
     setFallbackReason(null)
     setRequiresAiVoiceDisclosure(false)
@@ -277,7 +302,7 @@ export function useHybridNarration({
       return
     }
     void requestRemoteAudio(true)
-  }, [deliveryMode, device, isLoading, remoteStatus, requestRemoteAudio, startRemoteAudio])
+  }, [deliveryMode, device.play, isLoading, remoteStatus, requestRemoteAudio, startRemoteAudio])
 
   const pause = useCallback(() => {
     if (deliveryMode === 'remote' && audioRef.current) {
@@ -287,7 +312,7 @@ export function useHybridNarration({
     }
     device.pause()
     window.setTimeout(() => persistRemote(false), 0)
-  }, [deliveryMode, device, persistRemote])
+  }, [deliveryMode, device.pause, persistRemote])
 
   const seekTo = useCallback((nextPosition: number) => {
     const safeDuration = Math.max(0, durationSeconds)
@@ -303,33 +328,34 @@ export function useHybridNarration({
     }
     device.seekTo(next)
     persistRemote(false, next)
-  }, [deliveryMode, device, durationSeconds, persistRemote])
+  }, [deliveryMode, device.seekTo, durationSeconds, persistRemote])
 
   const seekBy = useCallback((seconds: number) => seekTo(positionSeconds + seconds), [positionSeconds, seekTo])
 
   const changeSpeed = useCallback((nextSpeed: NarrationSpeed) => {
-    if (nextSpeed === device.speed) return
+    if (nextSpeed === speedRef.current) return
     const wasPlaying = isPlaying
     const fraction = durationSeconds > 0 ? positionSeconds / durationSeconds : 0
 
     if (deliveryMode === 'remote') {
       persistRemote(false)
+      pendingResumeFractionRef.current = fraction
       disposeRemoteAudio()
+      if (fraction > 0) device.seekTo(fraction * deviceDurationRef.current)
     }
 
+    speedRef.current = nextSpeed
     device.changeSpeed(nextSpeed)
     setDeliveryMode('pending')
+    modeRef.current = 'pending'
     setAudioAssetId(null)
+    audioAssetIdRef.current = null
     setAudioSource(null)
     setFallbackReason(null)
     setRequiresAiVoiceDisclosure(false)
 
-    window.setTimeout(() => {
-      const next = fraction * Math.max(0, device.durationSeconds)
-      if (next > 0) device.seekTo(next)
-      if (wasPlaying) void requestRemoteAudio(true, nextSpeed)
-    }, 0)
-  }, [deliveryMode, device, disposeRemoteAudio, durationSeconds, isPlaying, persistRemote, positionSeconds, requestRemoteAudio])
+    if (wasPlaying) window.setTimeout(() => void requestRemoteAudio(true, nextSpeed), 0)
+  }, [deliveryMode, device.changeSpeed, device.seekTo, disposeRemoteAudio, durationSeconds, isPlaying, persistRemote, positionSeconds, requestRemoteAudio])
 
   useEffect(() => {
     if (!isPlaying) return
@@ -352,6 +378,7 @@ export function useHybridNarration({
     isPlaying,
     isPaused: status === 'paused',
     isCompleted,
+    isUnavailable: deliveryMode === 'device' && device.status === 'unavailable',
     positionSeconds,
     durationSeconds,
     progress: durationSeconds > 0 ? clamp(positionSeconds / durationSeconds, 0, 1) : 0,
