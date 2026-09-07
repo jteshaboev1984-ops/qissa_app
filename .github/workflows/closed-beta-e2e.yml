@@ -1,16 +1,11 @@
 name: Manual Closed Beta E2E
 
 # Full deployed Story Core + persistence acceptance matrix.
-# Manual-only in the steady state. The temporary push trigger below is used
-# for one post-deploy production acceptance run and will be removed after it
-# completes. The smoke stops before provider work if Story AI has been enabled.
+# This workflow is manual-only and provider-free by design. The smoke script
+# stops before provider work if Story AI has been enabled, so running this gate
+# cannot silently create paid Story AI usage.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/closed-beta-e2e.yml
 
 permissions:
   contents: read
