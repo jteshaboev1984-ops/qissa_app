@@ -1,61 +1,92 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { OptionCard } from '../../components/OptionCard'
 import { StylePackCover } from '../../components/StylePackCover'
+import { betaScope, isPublicBetaLanguage, isPublicBetaStylePack } from '../../config/betaScope'
 import { stylePacks } from '../../data/stylePacks'
 import { t } from '../../lib/i18n'
-import type { AgeGroup, HeroType, Language, OnboardingSelections, StoryMode, StoryMood } from '../../types/qissa'
+import type { HeroType, Language, OnboardingSelections } from '../../types/qissa'
 import { onboardingSteps } from './onboardingSteps'
 
 interface OnboardingFlowProps {
   language: Language
   mode: 'first_launch' | 'edit_setup' | 'new_story'
   initialSelections?: OnboardingSelections
-  onLanguageChange: (language: Language) => void
   onComplete: (selections: OnboardingSelections) => void
   onExit: () => void
 }
 
-const defaultSelections: OnboardingSelections = {
-  ageGroup: '5-7',
-  language: 'ru',
-  heroType: 'girl_hero',
-  stylePackId: 'cozy_forest',
-  storyMode: 'series',
-  storyMood: 'bedtime',
+const scopeCopy: Record<Language, { label: string; body: string; uzBeta: string }> = {
+  ru: {
+    label: 'Закрытая beta',
+    body: '5–7 лет · серия перед сном · 3 готовых мира',
+    uzBeta: 'O‘zbekcha доступен в beta-режиме.',
+  },
+  uz: {
+    label: 'Yopiq beta',
+    body: '5–7 yosh · uyqu oldidan serial · 3 ta tayyor olam',
+    uzBeta: 'O‘zbekcha beta rejimida ishlaydi.',
+  },
+  kz: {
+    label: 'Жабық beta',
+    body: '5–7 жас · ұйқы алдындағы серия · 3 дайын әлем',
+    uzBeta: 'O‘zbekcha beta режимінде қолжетімді.',
+  },
 }
 
-export function OnboardingFlow({ language, mode, initialSelections, onLanguageChange, onComplete, onExit }: OnboardingFlowProps) {
+const defaultSelections = (language: Language): OnboardingSelections => ({
+  ageGroup: betaScope.ageGroup,
+  language: isPublicBetaLanguage(language) ? language : betaScope.primaryLanguage,
+  heroType: 'girl_hero',
+  stylePackId: 'cozy_forest',
+  storyMode: betaScope.defaultStoryMode,
+  storyMood: betaScope.defaultStoryMood,
+})
+
+const normalizeForBeta = (
+  selections: OnboardingSelections | undefined,
+  language: Language,
+): OnboardingSelections => {
+  const base = selections ?? defaultSelections(language)
+  return {
+    ...base,
+    ageGroup: betaScope.ageGroup,
+    language: isPublicBetaLanguage(language) ? language : betaScope.primaryLanguage,
+    stylePackId: isPublicBetaStylePack(base.stylePackId) ? base.stylePackId : 'cozy_forest',
+    storyMode: betaScope.defaultStoryMode,
+    storyMood: betaScope.defaultStoryMood,
+  }
+}
+
+export function OnboardingFlow({ language, mode, initialSelections, onComplete, onExit }: OnboardingFlowProps) {
   const [stepIndex, setStepIndex] = useState(0)
-  const [draft, setDraft] = useState<OnboardingSelections>(initialSelections ?? { ...defaultSelections, language })
-  const [showWorldHint, setShowWorldHint] = useState(false)
-  const [worldInteracted, setWorldInteracted] = useState(false)
+  const [draft, setDraft] = useState<OnboardingSelections>(() => normalizeForBeta(initialSelections, language))
+
+  const publicStylePacks = useMemo(
+    () => stylePacks.filter((pack) => isPublicBetaStylePack(pack.id)),
+    [],
+  )
 
   const activeSteps = useMemo(
-    () => mode === 'new_story' ? onboardingSteps.filter((item) => item === 'world' || item === 'mode_mood') : onboardingSteps,
+    () => mode === 'new_story' ? onboardingSteps.filter((item) => item === 'world') : onboardingSteps,
     [mode],
   )
   const step = activeSteps[Math.min(stepIndex, activeSteps.length - 1)]
 
   useEffect(() => {
     setStepIndex(0)
-  }, [mode])
+    setDraft(normalizeForBeta(initialSelections, language))
+  }, [mode, initialSelections])
 
   useEffect(() => {
-    if (initialSelections) {
-      setDraft(initialSelections)
-      return
-    }
-
-    setDraft((prev) => ({ ...prev, language }))
-  }, [initialSelections])
-
-  useEffect(() => {
-    if (step !== 'world') return
-    setWorldInteracted(false)
-    setShowWorldHint(false)
-    const timer = setTimeout(() => setShowWorldHint(true), 6000)
-    return () => clearTimeout(timer)
-  }, [step])
+    const betaLanguage = isPublicBetaLanguage(language) ? language : betaScope.primaryLanguage
+    setDraft((prev) => ({
+      ...prev,
+      ageGroup: betaScope.ageGroup,
+      language: betaLanguage,
+      storyMode: betaScope.defaultStoryMode,
+      storyMood: betaScope.defaultStoryMood,
+    }))
+  }, [language])
 
   const next = () => {
     if (stepIndex === activeSteps.length - 1) {
@@ -75,7 +106,10 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
 
   const renderProgress = () => (
     <div className="space-y-3">
-      <div className="flex items-center justify-end text-sm text-[#746a55]">
+      <div className="flex items-center justify-between gap-3 text-sm text-[#746a55]">
+        <p className="rounded-full border border-[#e5d8bf] bg-[#fff8e9] px-3 py-1 text-xs font-bold text-[#735c00]">
+          {scopeCopy[language].label}
+        </p>
         <p className="font-semibold">{stepIndex + 1} / {activeSteps.length}</p>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-[#ede3cf]">
@@ -97,43 +131,16 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
     </section>
   )
 
-  const renderAgeStep = () => (
-    <StepShell title={t(language, 'onboarding.age_title')} helper={t(language, 'onboarding.age_helper')}>
-      <div className="grid gap-3">
-        {([
-          { value: '3-4', key: 'age.3_4' },
-          { value: '5-7', key: 'age.5_7' },
-          { value: '8-9', key: 'age.8_9' },
-        ] as const).map(({ value, key }) => (
-          <OptionCard key={value} title={t(language, key)} selected={draft.ageGroup === value} onClick={() => setDraft({ ...draft, ageGroup: value as AgeGroup })} />
-        ))}
-      </div>
-    </StepShell>
-  )
-
-  const renderLanguageStep = () => (
-    <StepShell title={t(language, 'onboarding.language_title')} helper={t(language, 'onboarding.language_helper')}>
-      <div className="grid gap-3">
-        {(['ru', 'uz', 'kz'] as Language[]).map((value) => (
-          <OptionCard
-            key={value}
-            title={t(language, `language.${value}` as const)}
-            selected={draft.language === value}
-            onClick={() => {
-              setDraft({ ...draft, language: value })
-              onLanguageChange(value)
-            }}
-          />
-        ))}
-      </div>
-    </StepShell>
-  )
-
   const renderHeroStep = () => (
     <StepShell title={t(language, 'onboarding.hero_title')} helper={t(language, 'onboarding.hero_helper')}>
       <div className="grid gap-3">
         {(['girl_hero', 'boy_hero', 'animal', 'magical_hero', 'custom'] as HeroType[]).map((hero) => (
-          <OptionCard key={hero} title={t(language, `hero.${hero}` as const)} selected={draft.heroType === hero} onClick={() => setDraft({ ...draft, heroType: hero })} />
+          <OptionCard
+            key={hero}
+            title={t(language, `hero.${hero}` as const)}
+            selected={draft.heroType === hero}
+            onClick={() => setDraft({ ...draft, heroType: hero })}
+          />
         ))}
       </div>
       {draft.heroType === 'custom' && (
@@ -141,7 +148,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
           className="w-full rounded-2xl border border-[#eadfc9] bg-white px-4 py-3 text-[#24261f] shadow-sm"
           placeholder={t(language, 'hero.custom_placeholder')}
           value={draft.customHeroName ?? ''}
-          onChange={(e) => setDraft({ ...draft, customHeroName: e.target.value })}
+          onChange={(event) => setDraft({ ...draft, customHeroName: event.target.value })}
         />
       )}
     </StepShell>
@@ -149,30 +156,28 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
 
   const renderWorldStep = () => (
     <StepShell title={t(language, 'onboarding.world_title')} helper={t(language, 'onboarding.world_helper')}>
-      {showWorldHint && !worldInteracted && <p className="rounded-2xl bg-[#fff3d0] px-3 py-2 text-sm font-medium text-[#735c00]">{t(language, 'onboarding.world_hint')}</p>}
-      <div className="grid gap-3 sm:grid-cols-2">
-        {stylePacks.map((pack) => {
-          const selected = draft.stylePackId === pack.id
-          const showInlineContinue = selected && (worldInteracted || mode === 'edit_setup' || mode === 'new_story')
+      <div className="rounded-2xl border border-[#d8e5dd] bg-[#f0f8f3] px-4 py-3 text-sm leading-6 text-[#31564a]">
+        <p className="font-bold">{scopeCopy[language].body}</p>
+        {draft.language === 'uz' ? <p className="mt-1 text-xs">{scopeCopy[language].uzBeta}</p> : null}
+      </div>
 
+      <div className="grid gap-3 sm:grid-cols-2">
+        {publicStylePacks.map((pack) => {
+          const selected = draft.stylePackId === pack.id
           return (
             <div key={pack.id} className="space-y-2">
               <OptionCard
                 title={pack.title[language]}
                 description={pack.description[language]}
                 selected={selected}
-                onClick={() => {
-                  setDraft({ ...draft, stylePackId: pack.id })
-                  setWorldInteracted(true)
-                  setShowWorldHint(false)
-                }}
+                onClick={() => setDraft({ ...draft, stylePackId: pack.id })}
                 preview={<StylePackCover stylePack={pack} variant="compact" className="mb-3" />}
               />
-              {showInlineContinue && (
-                <button className="q-primary w-full py-3 text-xs" onClick={next}>
-                  {t(language, 'onboarding.world_continue')}
+              {selected ? (
+                <button className="q-primary w-full py-3 text-sm" onClick={next}>
+                  {t(language, 'actions.start_story')}
                 </button>
-              )}
+              ) : null}
             </div>
           )
         })}
@@ -180,56 +185,30 @@ export function OnboardingFlow({ language, mode, initialSelections, onLanguageCh
     </StepShell>
   )
 
-  const renderModeMoodStep = () => (
-    <StepShell title={t(language, 'onboarding.mode_title')} helper={t(language, 'onboarding.mode_helper')}>
-      <div className="grid gap-3">
-        {(['series', 'one_time'] as StoryMode[]).map((storyMode) => (
-          <OptionCard key={storyMode} title={t(language, storyMode === 'series' ? 'mode.series' : 'mode.one_time')} selected={draft.storyMode === storyMode} onClick={() => setDraft({ ...draft, storyMode })} />
-        ))}
-      </div>
-      <div className="space-y-3 border-t border-[#eadfc9] pt-4">
-        <h3 className="text-base font-bold text-[#24261f]">{t(language, 'onboarding.mood')}</h3>
-        <div className="grid gap-3">
-          {(['bedtime', 'kind_adventure'] as StoryMood[]).map((storyMood) => (
-            <OptionCard key={storyMood} title={t(language, `mood.${storyMood}` as const)} selected={draft.storyMood === storyMood} onClick={() => setDraft({ ...draft, storyMood })} />
-          ))}
-        </div>
-      </div>
-    </StepShell>
-  )
-
-  const hideFooterNext = step === 'world'
-
   const renderFooter = () => (
     <div className="sticky bottom-0 flex items-center justify-between gap-2 rounded-[1.5rem] bg-[#fcf9f2]/95 pt-3 backdrop-blur">
       <button onClick={back} className="q-secondary px-4 py-2.5">
         {t(language, 'actions.back')}
       </button>
-      {!hideFooterNext && (
+      {step !== 'world' ? (
         <button onClick={next} className="q-primary px-6 py-2.5">
-          {stepIndex === activeSteps.length - 1 ? t(language, 'actions.start_story') : t(language, 'actions.next')}
+          {t(language, 'actions.next')}
         </button>
+      ) : (
+        <span className="text-xs font-semibold text-[#746a55]">5–7 · bedtime</span>
       )}
-      {hideFooterNext && <span className="text-sm text-[#746a55]">{mode === 'edit_setup' ? t(language, 'onboarding.world_continue') : ''}</span>}
     </div>
   )
-
-  const content = useMemo(() => {
-    if (step === 'age') return renderAgeStep()
-    if (step === 'language') return renderLanguageStep()
-    if (step === 'hero') return renderHeroStep()
-    if (step === 'world') return renderWorldStep()
-    return renderModeMoodStep()
-  }, [step, draft, language, showWorldHint, worldInteracted])
 
   return (
     <div className="q-card space-y-5 p-5 sm:p-6">
       <div className="rounded-[1.75rem] bg-[#f6edd9] p-4">
         <p className="q-label mb-2">QISSA</p>
         <h1 className="q-heading text-2xl font-bold leading-tight">{t(language, 'onboarding.title')}</h1>
+        <p className="mt-2 text-sm leading-6 text-[#625846]">{scopeCopy[language].body}</p>
       </div>
       {renderProgress()}
-      {content}
+      {step === 'hero' ? renderHeroStep() : renderWorldStep()}
       {renderFooter()}
     </div>
   )
