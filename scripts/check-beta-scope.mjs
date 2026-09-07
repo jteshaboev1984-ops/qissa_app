@@ -31,6 +31,10 @@ assert(
     app.includes('Story language: ${languageBadge}'),
   'Language changes must stay inside welcome/setup so an active story cannot drift away from its persisted language.',
 )
+assert(
+  /const handleExitOnboarding = \(\) => \{[\s\S]*?onboardingMode !== 'first_launch'[\s\S]*?updateLanguage\(selections\.language\)[\s\S]*?updateScreen\('home'\)/.test(app),
+  'Cancelling edit/new-story setup must restore the active story language and return to Home.',
+)
 
 assert(story.includes("type StoryStage = 'reading' | 'resolution'"), 'Story flow must not add a separate choice screen.')
 assert(!story.includes("t(language, 'story.go_to_choice')"), 'Choice cards must remain inline after the story.')
