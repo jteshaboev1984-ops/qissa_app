@@ -21,6 +21,7 @@
     "check:story-service": "node scripts/check-story-service-boundary.mjs",
     "check:story-ai": "node scripts/check-story-ai-safety.mjs",
     "check:backend-contracts": "node scripts/check-backend-contracts.mjs",
+    "check:backend-access": "node scripts/check-backend-access-boundary.mjs",
     "check:privacy": "node scripts/check-privacy-contract.mjs",
     "check:listening": "node scripts/check-listening-contract.mjs",
     "check:audio-agent": "node scripts/check-audio-agent-contract.mjs",
