@@ -20,7 +20,7 @@ Production functions confirmed active:
 - `story-state` — v5, `verify_jwt=true`
 - `audio-request` — v1, `verify_jwt=true`
 
-`story-generate` v15 remains the accepted closed-beta Story Core deployment. Story AI is still intentionally disabled for normal launch hardening.
+`story-generate` v15 remains the accepted closed-beta Story Core deployment at the time of this baseline entry. Story AI is still intentionally disabled for normal launch hardening. The new 5–10 minute content expansion must be deployed and re-accepted in production before the duration gate can be marked fully production-proven.
 
 ## Closed-beta production acceptance
 
@@ -52,7 +52,7 @@ After the run, database verification found zero recent smoke profiles and zero r
 
 ## Deterministic release gates
 
-The release build now includes a deterministic closed-beta content matrix check covering the same public matrix:
+The release build includes a deterministic closed-beta content matrix check covering the same public matrix:
 
 - RU + UZ
 - Cozy Forest + Magic Garden + Stars & Space
@@ -67,7 +67,24 @@ The release build now includes a deterministic closed-beta content matrix check 
 
 The gate is wired into both CI and GitHub Pages release deployment and currently passes.
 
-The current deterministic matrix reports a minimum of **176 words for Episode 1** and **219 words for Episode 2** across the public RU/UZ fallback matrix. The automated floor remains 160 words per episode. These measurements protect against accidental shortening, but they do **not by themselves prove a 5–10 minute bedtime session** because actual session time also depends on the selected choice-resolution passage and reading/narration pace. Final beta QA must therefore include timed end-to-end bedtime sessions rather than treating word count alone as acceptance evidence.
+### 5–10 minute bedtime duration contract
+
+The full child-facing bedtime session is now an explicit release requirement: **5–10 minutes at a normal expressive bedtime-reading pace**.
+
+For deterministic release engineering QISSA uses **140 words per minute** as the acceptance pace. This is an internal product acceptance assumption for expressive read-aloud, not a claim that every adult reads at exactly that speed. The resulting hard content band is:
+
+- minimum: **700 words** = 5 minutes at 140 WPM;
+- maximum: **1,400 words** = 10 minutes at 140 WPM.
+
+The measured session includes the text the family actually experiences in the core flow:
+
+`Episode 1 + confirmed choice resolution + Episode 2`.
+
+After the September duration expansion, the complete 12-branch RU/UZ closed-beta matrix measures **708–784 words**. At the 140 WPM acceptance pace this equals approximately **5.06–5.60 minutes** of spoken story text. At a calmer 125 WPM pace the same sessions measure approximately **5.66–6.27 minutes**.
+
+Current minimum Episode 1 length is **396 words** and minimum Episode 2 length remains **219 words**. The duration gate is blocking in both pull-request CI and the GitHub Pages release workflow, so a future change cannot shorten or lengthen any public beta branch outside the 700–1,400 word band without failing release validation.
+
+A manual real-device timed read remains part of final UX regression because human pauses, interaction time and individual delivery vary; however, word count is no longer merely informational — the 5–10 minute requirement is now enforced as a deterministic release contract.
 
 The release build also includes dedicated guards for:
 
@@ -75,11 +92,12 @@ The release build also includes dedicated guards for:
 - backend access boundary / RLS architecture;
 - Story Core continuity;
 - closed-beta public scope;
+- 5–10 minute bedtime duration;
 - Story AI cost guard;
 - privacy consent and irreversible deletion ordering;
 - listening playback contract;
 - Story AI safety contract;
-- story copy and localization;
+- story copy and localization, including the duration expansion copy;
 - TypeScript/build health.
 
 ## Current data baseline
@@ -105,7 +123,7 @@ The current architecture intentionally keeps the public story tables behind RLS 
 
 The latest production security advisor still reports only `RLS Enabled No Policy` INFO notices for the protected public tables. For the current closed-beta architecture this is an **accepted intentional state**, not a missing client-access policy. Adding permissive policies merely to remove the INFO notices would weaken the current security boundary.
 
-The repository now has an automated backend-access gate that prevents routine changes from silently adding direct browser table access, permissive public RLS policies, or removing the service-role boundary.
+The repository has an automated backend-access gate that prevents routine changes from silently adding direct browser table access, permissive public RLS policies, or removing the service-role boundary.
 
 ## Storage
 
@@ -158,12 +176,13 @@ Kazakh and non-beta worlds remain in internal contracts/content infrastructure b
 
 ## Remaining launch-hardening gates
 
-The Story Core backend/persistence slice and deterministic content matrix are technically proven. Remaining work should now focus on release readiness rather than feature expansion:
+The Story Core backend/persistence slice and deterministic content matrix are technically proven. Remaining work should focus on release readiness rather than feature expansion:
 
-1. final browser/mobile UX regression of the deployed Pages build, including timed complete bedtime sessions;
-2. consent/privacy copy and real parent-flow review;
-3. manual deletion/recovery UX verification from the actual UI;
-4. first deliberate paid Story AI acceptance decision and run when approved;
-5. local legal/privacy review before public launch.
+1. deploy the accepted 5–10 minute Story Core expansion to the production `story-generate` Edge Function and repeat provider-free 12/12 production E2E acceptance;
+2. final browser/mobile UX regression of the deployed Pages build, including a real-device timed complete bedtime session;
+3. consent/privacy copy and real parent-flow review;
+4. manual deletion/recovery UX verification from the actual UI;
+5. first deliberate paid Story AI acceptance decision and run when approved;
+6. local legal/privacy review before public launch.
 
 Do not enable additional worlds, age groups, public languages, provider TTS, family voice, payments, or runtime AI images as part of this baseline hardening step.
