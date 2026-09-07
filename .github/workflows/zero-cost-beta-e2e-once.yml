@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
 
+# One-shot release-hardening run against Story Edge v14. Delete after verification.
 jobs:
   smoke:
     runs-on: ubuntu-latest
