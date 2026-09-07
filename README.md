@@ -1,110 +1,95 @@
 # QISSA App
 
-QISSA is a family AI storytelling clickable prototype for children in Central Asia. Current state: local-only MVP prototype (no backend or real model integrations).
+QISSA is a family storytelling product for children in Central Asia, built around safe bedtime series, one meaningful child choice, and remembered consequences across chapters.
+
+## Current status
+
+The repository is in launch-hardening for a narrow closed beta. The approved beta scope is recorded in `docs/qissa/14_QISSA_Closed_Beta_Scope_2026_09.md`.
+
+Closed-beta product slice:
+
+- age **5–7**;
+- **Russian** as the primary language and **Uzbek** visible as Beta;
+- **Cozy Forest**, **Magic Garden**, and **Stars & Space** as the launch worlds;
+- bedtime series by default;
+- Episode 1 → one meaningful choice → visible remembered consequence → Episode 2 → calm ending;
+- browser/device narration as the initial listening baseline.
+
+The wider codebase retains additional languages, worlds, modes, Story AI, safety, persistence, and audio foundations for later rollout.
+
+## Cost-safe development policy
+
+Normal development and CI are intentionally zero-cost with respect to Story AI and provider TTS:
+
+- deterministic Story Core/fallback flows are used for routine tests;
+- the production Story AI live smoke is **manual-only**;
+- provider TTS is not required for routine development;
+- real provider acceptance runs are separate release checks;
+- do not enable paid provider usage merely to validate layout, navigation, persistence contracts, Story Core continuity, localization, or listening UI.
+
+This is intentional development policy, not a missing integration.
 
 ## Local development
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Run i18n completeness check:
-   ```bash
-   npm run check:i18n
-   ```
-3. Run typecheck:
-   ```bash
-   npm run typecheck
-   ```
-4. Create production build:
-   ```bash
-   npm run build
-   ```
-5. Preview production build locally:
-   ```bash
-   npm run preview
-   ```
-
-## Deploy preview (GitHub Pages)
-
-This prototype can be deployed as a static Vite app through GitHub Pages without secrets.
-
-### GitHub settings
-
-1. Open repository **Settings** → **Pages**.
-2. In **Build and deployment**, set **Source** to **GitHub Actions**.
-3. Keep workflow file `.github/workflows/deploy-pages.yml` on `main`.
-
-Expected URL pattern:
-
-`https://jteshaboev1984-ops.github.io/qissa_app/`
-
-Direct deployed prototype link:
-https://jteshaboev1984-ops.github.io/qissa_app/
-
-### Local validation before push
-
 ```bash
 npm ci
-npm run check:i18n
-npm run check:backend-contracts
-npm run typecheck
-npm run build
-npm run preview
+npm run dev
 ```
 
-## Release-candidate manual QA checklist
+Useful deterministic validation commands:
 
-- RU full flow.
-- UZ full flow.
-- KZ full flow.
-- First launch → onboarding → world selection shows inline continue CTA near selected card.
-- Edit setup opens with existing selections and preserves story unless setup changes.
-- Reset story progress keeps child profile/onboarding selections, language, and reader settings.
-- Series mode: Episode 1 choice preview A/B/A → confirm → automatic transition to Episode 2.
-- Episode 2 shows clean end-state with visible Home action.
-- One-time mode ends without next-episode continuation.
-- Vocabulary is hidden by default and expands only on user action.
-- Refresh on Home restores usable state.
-- Refresh on Story restores usable state with visible way home.
-- Reader settings (Aa) open and save preferences.
-- Listen mode works as local placeholder (no real audio API).
-- Back/Home actions are visible and predictable.
+```bash
+npm run audit:prod
+npm run check:backend-contracts
+npm run check:story-service
+npm run check:story-core
+npm run check:localized-fallback
+npm run check:bedtime-session
+npm run check:cosmos-bedtime
+npm run check:beta-scope
+npm run check:privacy
+npm run check:listening
+npm run check:audio-agent
+npm run check:story-ai
+npm run check:story-copy
+npm run check:i18n
+npm run typecheck
+npm run build
+```
 
-## Constraints preserved
+## Backend
 
-This prototype intentionally keeps local/mock behavior only:
-- no real AI API calls;
-- no real TTS;
-- no backend;
-- no auth;
-- no payments;
-- no voice cloning;
-- no AI image generation.
+The deployed architecture uses Supabase Edge Functions for:
 
+- story generation (`story-generate`);
+- story/profile/state persistence (`story-state`);
+- provider-audio foundation (`audio-request`).
 
-## Additional QA doc
+The frontend can use the deterministic local provider during development and the remote provider for controlled deployment and acceptance testing. Story generation includes a safe fallback path so provider availability does not need to become a child-facing failure.
 
-Manual checklist: `docs/qissa/QA_CHECKLIST.md`.
-Run `npm run check:i18n` before release candidates and before deploy to catch missing localization keys early.
+## Listening
 
+The current closed-beta baseline uses browser/device speech synthesis with persisted playback position and reading/listening controls. Provider TTS exists as a backend foundation but remains disabled by default for this stage; it can be introduced later on-demand and cache-first after family feedback justifies the cost.
 
-## AI / Story Agent planning docs
+No family voice, voice cloning, microphone capture, payments, or runtime AI image generation are in the closed-beta scope.
 
-- `docs/qissa/ai/01_STORY_AGENT_SPEC.md`
-- `docs/qissa/ai/02_STORY_PROMPT_TEMPLATES.md`
-- `docs/qissa/ai/03_SAFETY_AGENT_SPEC.md`
-- `docs/qissa/ai/04_MEMORY_AND_CHOICE_RULES.md`
-- `docs/qissa/ai/05_VOCABULARY_RULES.md`
-- `docs/qissa/ai/06_GENERATION_QA_TEST_CASES.md`
-- `docs/qissa/ai/07_FUTURE_INTEGRATION_NOTES.md`
+## Deployment
 
-## Backend planning docs
+GitHub Pages deployment is defined in `.github/workflows/deploy-pages.yml`. The deployed build uses the configured Supabase story/state endpoints, while paid Story AI acceptance is kept outside ordinary CI.
 
-- `docs/qissa/backend/01_SUPABASE_SCHEMA_DRAFT.md`
-- `docs/qissa/backend/02_API_CONTRACTS.md`
-- `docs/qissa/backend/03_EDGE_FUNCTION_CONTRACTS.md`
-- `docs/qissa/backend/04_RLS_AND_SECURITY_NOTES.md`
-- `docs/qissa/backend/05_LOCAL_TO_BACKEND_MIGRATION_PLAN.md`
-- `docs/qissa/backend/06_BACKEND_ROADMAP.md`
-- `docs/qissa/backend/schema_draft.sql`
+## Release discipline
+
+Do not expand age groups, public languages, worlds, AI usage, or provider TTS merely to increase feature count before the core family loop is proven in closed beta.
+
+Manual QA should prioritize:
+
+- consent → hero/world setup → first story;
+- RU and UZ Beta;
+- all three public worlds;
+- Episode 1 → choice → remembered consequence → Episode 2;
+- close/reopen persistence;
+- reading/listening behavior;
+- profile deletion and data cleanup;
+- safe fallback behavior.
+
+Additional project specifications and QA material live under `docs/qissa/`.
