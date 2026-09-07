@@ -46,6 +46,9 @@ jobs:
       - name: Validate Cosmos Bedtime Session
         run: npm run check:cosmos-bedtime
 
+      - name: Validate closed beta scope
+        run: npm run check:beta-scope
+
       - name: Validate space story copy
         run: npm run check:space-copy
 
