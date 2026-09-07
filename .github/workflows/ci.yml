@@ -40,6 +40,9 @@ jobs:
       - name: Validate Story Core choice continuity
         run: npm run check:story-core
 
+      - name: Validate closed beta content matrix
+        run: npm run check:beta-content
+
       - name: Validate localized fallback copy
         run: npm run check:localized-fallback
 
