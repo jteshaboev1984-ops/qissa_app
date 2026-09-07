@@ -43,6 +43,12 @@ requireText('story prompts', prompts, [
   'For bedtime mode, finish the episode calmly',
   'For episode 1, return exactly two choices.',
   'For episode 2, return no choices',
+  'length_guidance',
+  "target_story_words: '400-520'",
+  "target_story_words: '280-450'",
+  '700-1400 words',
+  '140 words per minute',
+  'Treat length_guidance as a hard product requirement.',
 ])
 
 for (const unsupportedKeyword of ['minLength', 'maxLength', 'minItems', 'maxItems']) {
@@ -70,6 +76,10 @@ requireText('runtime safety', safety, [
   "replace(/[\\u2018\\u2019\\u02BB`]/g, \"'\")",
   'const validatePatch = (patch: unknown)',
   'isRecord(patch)',
+  "context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'",
+  'context.episodeIndex === 1 ? [400, 600] : [280, 500]',
+  "errors.push('choice_resolution_too_short')",
+  "errors.push('choice_resolution_too_long')",
 ])
 
 for (const flag of [
