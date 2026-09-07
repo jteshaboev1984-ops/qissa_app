@@ -388,7 +388,8 @@ function App() {
   }
 
   const handleExitOnboarding = () => {
-    if (onboardingMode === 'edit_setup' && selections) {
+    if (onboardingMode !== 'first_launch' && selections) {
+      updateLanguage(selections.language)
       updateScreen('home')
       return
     }
