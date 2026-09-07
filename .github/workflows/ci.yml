@@ -31,6 +31,9 @@ jobs:
       - name: Validate backend contracts
         run: npm run check:backend-contracts
 
+      - name: Validate backend access boundary
+        run: npm run check:backend-access
+
       - name: Validate story service boundary
         run: npm run check:story-service
 
