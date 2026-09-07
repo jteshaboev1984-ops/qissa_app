@@ -46,6 +46,9 @@ jobs:
       - name: Validate Story Core choice continuity
         run: npm run check:story-core
 
+      - name: Validate closed beta content matrix
+        run: npm run check:beta-content
+
       - name: Validate closed beta scope
         run: npm run check:beta-scope
 
