@@ -11,7 +11,8 @@ const migrations = migrationFiles
   .join('\n\n')
 
 const storyState = read('supabase/functions/story-state/index.ts')
-const storyGenerate = read('supabase/functions/story-generate/index.ts')
+const storyGenerateIndex = read('supabase/functions/story-generate/index.ts')
+const storyGenerateUsage = read('supabase/functions/story-generate/usage.ts')
 const audioShared = read('supabase/functions/audio-request/shared.ts')
 const appSources = [
   'src/App.tsx',
@@ -54,16 +55,18 @@ requireCondition(
   'Closed-beta migrations must not grant direct table/routine access to anon or authenticated roles without an explicit access-model change.',
 )
 
-for (const [label, source] of [
-  ['story-state', storyState],
-  ['story-generate', storyGenerate],
-  ['audio-request', audioShared],
-]) {
-  requireCondition(
-    source.includes('SUPABASE_SERVICE_ROLE_KEY'),
-    `${label} must keep trusted database access on the server-side service role.`,
-  )
-}
+requireCondition(
+  storyState.includes('SUPABASE_SERVICE_ROLE_KEY'),
+  'story-state must keep trusted database access on the server-side service role.',
+)
+requireCondition(
+  storyGenerateIndex.includes("from './usage.ts'") && storyGenerateUsage.includes('SUPABASE_SERVICE_ROLE_KEY'),
+  'story-generate must route database-backed usage claims through the server-side service role.',
+)
+requireCondition(
+  audioShared.includes('SUPABASE_SERVICE_ROLE_KEY'),
+  'audio-request must keep trusted database/storage access on the server-side service role.',
+)
 
 requireCondition(
   !appSources.includes('@supabase/supabase-js'),
