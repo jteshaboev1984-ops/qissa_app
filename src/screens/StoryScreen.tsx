@@ -237,7 +237,10 @@ export function StoryScreen({
     if (!showChoicePanel || isChoiceLocked) return null
 
     return (
-      <section className="relative overflow-hidden rounded-[2rem] border border-[#eadfc9] bg-[#fffdf7]/90 p-5 shadow-[0_18px_44px_-34px_rgba(115,92,0,.65)]">
+      <section
+        onPointerDownCapture={() => setViewMode('read')}
+        className="relative overflow-hidden rounded-[2rem] border border-[#eadfc9] bg-[#fffdf7]/90 p-5 shadow-[0_18px_44px_-34px_rgba(115,92,0,.65)]"
+      >
         <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-[#f3d34a]/20 blur-2xl" />
 
         <div className="relative space-y-4">
