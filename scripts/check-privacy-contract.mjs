@@ -56,6 +56,20 @@ requireCondition(
   'App must accept consent explicitly and call the dedicated remote deletion action.',
 )
 
+const appDeleteStart = app.indexOf('const handleDeleteProfileData')
+const appWaitResetPosition = app.indexOf('await localPersistence.waitForPendingRemoteReset()', appDeleteStart)
+const appWaitChoicePosition = app.indexOf('await localPersistence.waitForPendingChoiceSync()', appDeleteStart)
+const appRemoteDeletePosition = app.indexOf('await storyStateService.deleteProfileData()', appDeleteStart)
+const appLocalClearPosition = app.indexOf('localPersistence.clearAllLocalData()', appDeleteStart)
+requireCondition(
+  appDeleteStart >= 0 &&
+    appWaitResetPosition > appDeleteStart &&
+    appWaitChoicePosition > appWaitResetPosition &&
+    appRemoteDeletePosition > appWaitChoicePosition &&
+    appLocalClearPosition > appRemoteDeletePosition,
+  'Profile deletion must wait for pending state writes, complete remote deletion first, and only then clear local data.',
+)
+
 requireCondition(
   /localPersistence\.clearAllLocalData\(\)/.test(app) &&
     /storyArchive\.clear\(\)/.test(app) &&
