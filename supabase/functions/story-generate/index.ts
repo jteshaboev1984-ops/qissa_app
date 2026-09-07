@@ -8,6 +8,7 @@ import {
 import { buildSafeFallback } from './fallback.ts'
 import { evaluateStorySafety, generateStoryCandidate, moderateStoryText } from './openai.ts'
 import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
+import { claimStoryGeneration, isInstallationId } from './usage.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
@@ -24,6 +25,11 @@ const hasValidPrivacyConsent = (input: unknown): boolean => {
     consent.aiProcessingAccepted === true &&
     typeof consent.acceptedAt === 'string' &&
     Number.isFinite(Date.parse(consent.acceptedAt))
+}
+
+const installationIdFromInput = (input: unknown): string | null => {
+  if (!isRecord(input)) return null
+  return isInstallationId(input.installationId) ? input.installationId : null
 }
 
 const corsHeaders = (origin: string | null) => {
@@ -54,6 +60,22 @@ const json = (
     ...metadata,
   },
 })
+
+const safeFallback = (
+  context: NonNullable<ReturnType<typeof normalizeStoryRequest>>,
+  origin: string | null,
+  reason: string,
+  metadata: Record<string, string> = {},
+) => json(
+  { episode: buildSafeFallback(context) },
+  200,
+  origin,
+  {
+    'X-QISSA-Generation-Source': 'safe-fallback',
+    'X-QISSA-Fallback-Reason': reason,
+    ...metadata,
+  },
+)
 
 const failureReason = (errors: string[], safety: SafetyResult | null) => {
   const parts = [...errors]
@@ -90,20 +112,27 @@ Deno.serve(async (request: Request) => {
   const context = normalizeStoryRequest(input)
   if (!context) return json({ error: 'invalid_story_context' }, 422, origin)
 
-  if (aiEnabled && openAiApiKey && !hasValidPrivacyConsent(input)) {
+  // Development and normal CI intentionally stop here. No usage claim and no
+  // provider request is made while AI is disabled or no provider key exists.
+  if (!aiEnabled || !openAiApiKey) {
+    return safeFallback(context, origin, !aiEnabled ? 'ai-disabled' : 'api-key-missing')
+  }
+
+  if (!hasValidPrivacyConsent(input)) {
     return json({ error: 'privacy_consent_required' }, 403, origin)
   }
 
-  if (!aiEnabled || !openAiApiKey) {
-    return json(
-      { episode: buildSafeFallback(context) },
-      200,
-      origin,
-      {
-        'X-QISSA-Generation-Source': 'safe-fallback',
-        'X-QISSA-Fallback-Reason': !aiEnabled ? 'ai-disabled' : 'api-key-missing',
-      },
-    )
+  const installationId = installationIdFromInput(input)
+  if (!installationId) {
+    return safeFallback(context, origin, 'rate-limit-identity-missing')
+  }
+
+  const claim = await claimStoryGeneration(installationId)
+  if (!claim.allowed) {
+    return safeFallback(context, origin, claim.reason, {
+      'X-QISSA-Daily-Limit': String(claim.limit),
+      'X-QISSA-Daily-Used': String(claim.used),
+    })
   }
 
   let retryReason = ''
@@ -136,6 +165,8 @@ Deno.serve(async (request: Request) => {
         {
           'X-QISSA-Generation-Source': 'openai-structured',
           'X-QISSA-Generation-Attempts': String(attempt),
+          'X-QISSA-Daily-Limit': String(claim.limit),
+          'X-QISSA-Daily-Used': String(claim.used),
         },
       )
     } catch (error) {
@@ -147,13 +178,8 @@ Deno.serve(async (request: Request) => {
     }
   }
 
-  return json(
-    { episode: buildSafeFallback(context) },
-    200,
-    origin,
-    {
-      'X-QISSA-Generation-Source': 'safe-fallback',
-      'X-QISSA-Fallback-Reason': 'generation-or-safety-failed',
-    },
-  )
+  return safeFallback(context, origin, 'generation-or-safety-failed', {
+    'X-QISSA-Daily-Limit': String(claim.limit),
+    'X-QISSA-Daily-Used': String(claim.used),
+  })
 })

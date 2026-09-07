@@ -26,6 +26,21 @@ const ageKeyByGroup = {
   '8-9': 'age.8_9',
 } as const
 
+const memoryCopy: Record<Language, { label: string; intro: string }> = {
+  ru: {
+    label: 'QISSA помнит ✨',
+    intro: 'В прошлой главе был сделан выбор. Продолжение начнётся с его последствия.',
+  },
+  uz: {
+    label: 'QISSA eslab qoldi ✨',
+    intro: 'Oldingi bobda tanlov qilindi. Davomi aynan shu tanlov natijasidan boshlanadi.',
+  },
+  kz: {
+    label: 'QISSA есте сақтады ✨',
+    intro: 'Алдыңғы тарауда таңдау жасалды. Жалғасы сол таңдаудың салдарынан басталады.',
+  },
+}
+
 export function HomeScreen({
   language,
   selections,
@@ -75,11 +90,11 @@ export function HomeScreen({
           <p className="q-label mb-2">{t(language, 'onboarding.world')}</p>
           <p className="text-sm font-bold text-[#24261f]">{compactSummary}</p>
         </div>
-        <button className="q-tertiary px-2 py-1 text-xs" onClick={() => setShowDetails((v) => !v)}>
+        <button className="q-tertiary px-2 py-1 text-xs" onClick={() => setShowDetails((value) => !value)}>
           {showDetails ? t(language, 'home.hide_details') : t(language, 'home.show_details')}
         </button>
       </div>
-      {showDetails && (
+      {showDetails ? (
         <div className="mt-4 grid gap-2 border-t border-[#eadfc9] pt-4 text-sm text-[#625846]">
           <p>{t(language, 'onboarding.age')}: {t(language, ageKeyByGroup[selections.ageGroup])}</p>
           <p>{t(language, 'onboarding.language')}: {t(language, `language.${selections.language}` as const)}</p>
@@ -88,7 +103,7 @@ export function HomeScreen({
           <p>{t(language, 'onboarding.story_mode')}: {t(language, selections.storyMode === 'series' ? 'mode.series' : 'mode.one_time')}</p>
           <p>{t(language, 'onboarding.mood')}: {t(language, `mood.${selections.storyMood}` as const)}</p>
         </div>
-      )}
+      ) : null}
     </div>
   )
 
@@ -103,27 +118,32 @@ export function HomeScreen({
     const stateBody = notStarted
       ? t(language, 'home.launch_ready_body')
       : isTomorrowMemoryState
-        ? savedMemoryText
+        ? memoryCopy[language].intro
         : completed
           ? (isSeriesMode ? t(language, 'home.completed_series_body') : t(language, 'home.one_time_completed_body'))
           : t(language, 'home.read_together_hint')
 
     return (
       <section className="q-card overflow-hidden p-0">
-        <StylePackCover stylePack={world} variant={notStarted ? 'hero' : 'card'} title={episode?.title ?? topTitle} subtitle={world.title[language]} />
+        <StylePackCover
+          stylePack={world}
+          variant={notStarted ? 'hero' : 'card'}
+          title={episode?.title ?? topTitle}
+          subtitle={world.title[language]}
+        />
         <div className="space-y-4 p-5">
           <div className="space-y-2">
             <p className="q-label">{notStarted ? 'QISSA' : completed ? t(language, 'library.status_completed') : t(language, 'library.status_active')}</p>
-            {!notStarted ? (
-              <h3 className="q-heading text-2xl font-bold leading-tight">{topTitle}</h3>
-            ) : null}
+            {!notStarted ? <h3 className="q-heading text-2xl font-bold leading-tight">{topTitle}</h3> : null}
             <p className="text-sm leading-6 text-[#5f5848]">{stateBody}</p>
           </div>
 
           {isTomorrowMemoryState && savedChoiceText ? (
-            <p className="rounded-2xl border border-[#eadfc9] bg-[#fff8e9] px-4 py-3 text-sm leading-6 text-[#4d4635]">
-              {t(language, 'story.your_choice')}: {savedChoiceText}
-            </p>
+            <div className="rounded-[1.5rem] border border-[#b9d9d4] bg-[#edf8f6] px-4 py-4 shadow-[0_14px_34px_-30px_rgba(53,102,107,.9)]">
+              <p className="q-label mb-2 text-[#35666b]">{memoryCopy[language].label}</p>
+              <p className="text-base font-bold leading-6 text-[#243c3b]">{savedChoiceText}</p>
+              {savedMemoryText ? <p className="mt-2 text-sm leading-6 text-[#41615f]">{savedMemoryText}</p> : null}
+            </div>
           ) : null}
 
           {!notStarted && !isTomorrowMemoryState && seriesState?.lastEpisodeSummary ? (
@@ -191,8 +211,9 @@ export function HomeScreen({
         <h2 className="q-heading text-3xl font-bold leading-tight">{t(language, 'home.title')}</h2>
       </div>
 
-      {renderSetupSummary()}
+      {storyStatus === 'not_started' ? renderSetupSummary() : null}
       {renderStoryState()}
+      {storyStatus !== 'not_started' ? renderSetupSummary() : null}
 
       {storyStatus !== 'not_started' && !isTomorrowMemoryState ? (
         <div className="rounded-[1.75rem] border border-[#e5d8bf] bg-[#f8f2e7]/75 p-4 text-center">

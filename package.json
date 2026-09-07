@@ -15,6 +15,8 @@
     "check:story-core": "node scripts/check-story-core-proof.mjs",
     "check:space-copy": "node scripts/check-space-copy.mjs",
     "check:localized-fallback": "node scripts/check-localized-fallback.mjs",
+    "check:beta-scope": "node scripts/check-beta-scope.mjs",
+    "check:story-cost-guard": "node scripts/check-story-cost-guard.mjs",
     "preview:stories": "node scripts/preview-stories.mjs",
     "check:story-service": "node scripts/check-story-service-boundary.mjs",
     "check:story-ai": "node scripts/check-story-ai-safety.mjs",

@@ -1,5 +1,6 @@
 import type { StoryGenerationInput, StoryGenerationOutput } from '../contracts/agentContracts'
 import type { Episode, EpisodeChoice, SafetyResult } from '../types/qissa'
+import { getInstallationId } from './installationIdentity'
 
 export type StoryProviderMode = 'local' | 'remote'
 
@@ -107,7 +108,10 @@ export const generateWithRemoteProvider = async (
     const response = await fetch(config.endpoint, {
       method: 'POST',
       headers: buildHeaders(config.publishableKey),
-      body: JSON.stringify(input),
+      body: JSON.stringify({
+        ...input,
+        installationId: getInstallationId(),
+      }),
       signal: controller.signal,
       credentials: 'omit',
     })

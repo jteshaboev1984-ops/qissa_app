@@ -108,10 +108,15 @@ requireCondition(
   'Client deletion must use one fail-closed backend action.',
 )
 
+const aiDisabledGuardPosition = storyGenerate.indexOf('if (!aiEnabled || !openAiApiKey)')
+const aiConsentGuardPosition = storyGenerate.indexOf('if (!hasValidPrivacyConsent(input))')
+const usageClaimPosition = storyGenerate.indexOf('claimStoryGeneration(installationId)')
 requireCondition(
   /privacy_consent_required/.test(storyGenerate) &&
-    /aiEnabled\s*&&\s*openAiApiKey\s*&&\s*!hasValidPrivacyConsent/.test(storyGenerate),
-  'Real AI processing must be blocked server-side without valid consent.',
+    aiDisabledGuardPosition >= 0 &&
+    aiConsentGuardPosition > aiDisabledGuardPosition &&
+    usageClaimPosition > aiConsentGuardPosition,
+  'Real AI processing must require valid consent before usage is claimed or any provider work can begin.',
 )
 
 requireCondition(

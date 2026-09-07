@@ -77,10 +77,10 @@ requireCondition(
 )
 
 requireCondition(
-  /if \(storyStage === 'choice'\) return renderChoiceStage\(\)/.test(storyScreen) &&
+  /onPointerDownCapture=\{\(\) => setViewMode\('read'\)\}/.test(storyScreen) &&
     /<ListeningScene/.test(storyScreen) &&
-    /cancel\(\)/.test(narrationHook),
-  'Entering the choice stage must unmount and stop active narration without countdown pressure.',
+    /useEffect\(\(\) => \(\) => \{\s*cancel\(\)/s.test(narrationHook),
+  'Engaging the inline choice must unmount and stop active narration without adding a separate choice screen.',
 )
 
 requireCondition(

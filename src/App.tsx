@@ -419,8 +419,8 @@ function App() {
           <h1 className="q-heading text-xl font-bold tracking-tight">{t(language, 'app.title')}</h1>
           <select value={language} onChange={(e) => updateLanguage(e.target.value as Language)} className="rounded-full border border-[#dfd3bc] bg-[#fffdf7]/90 px-3 py-2 text-sm font-semibold text-[#3d382c] shadow-sm">
             <option value="ru">RU</option>
-            <option value="uz">UZ</option>
-            <option value="kz">KZ</option>
+            <option value="uz">UZ · Beta</option>
+            {language === 'kz' ? <option value="kz">KZ · internal</option> : null}
           </select>
         </header>
 
@@ -435,7 +435,6 @@ function App() {
         {screen === 'onboarding' && (
           <OnboardingFlow
             language={language}
-            onLanguageChange={updateLanguage}
             onComplete={handleOnboardingComplete}
             onExit={handleExitOnboarding}
             mode={onboardingMode}
