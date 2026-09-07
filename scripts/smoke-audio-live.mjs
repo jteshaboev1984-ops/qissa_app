@@ -72,6 +72,15 @@ const saved = await invoke({
 })
 assert(saved?.ok === true, 'playback progress was not saved')
 
+const loaded = await invoke({
+  action: 'load_progress',
+  ...identity,
+})
+assert(loaded?.progress && typeof loaded.progress === 'object', 'playback progress was not returned')
+assert(Math.abs(Number(loaded.progress.positionSeconds) - 12.5) < 0.01, 'loaded position does not match saved position')
+assert(loaded.progress.speed === 1, 'loaded speed does not match saved speed')
+assert(loaded.progress.completed === false, 'loaded completion state is wrong')
+
 const repeated = await invoke({
   action: 'request_audio',
   ...identity,
@@ -81,4 +90,4 @@ const repeated = await invoke({
 assert(repeated?.errorCode === 'provider_voice_not_approved', 'repeated request changed fallback behavior')
 assert(repeated?.audioAssetId === null, 'repeated fallback unexpectedly created an asset')
 
-console.log('Live Audio Agent smoke passed: safe fallback, no provider asset, progress saved.')
+console.log('Live Audio Agent smoke passed: safe fallback, no provider asset, progress save/load round-trip passed.')
