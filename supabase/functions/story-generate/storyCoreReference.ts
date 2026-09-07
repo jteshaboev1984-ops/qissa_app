@@ -1,4 +1,5 @@
 import type { NormalizedStoryContext } from './contracts.ts'
+import { bedtimeEpisodeOneExpansion } from './storyBedtimeExpansion.ts'
 import { cozyForestBedtimeContinuation, cozyForestBedtimeEpisodeOne } from './storyCozyForestBedtime.ts'
 import { magicGardenContinuation, magicGardenEpisodeOne, magicGardenTitle } from './storyMagicGardenBedtime.ts'
 import { spaceBedtimeContinuation, spaceBedtimeEpisodeOne, spaceBedtimeTitle } from './storySpaceBedtime.ts'
@@ -20,6 +21,12 @@ const branchFromChoice = (choiceId: string) => choiceId === 'choice-a' || choice
     ? 'choice-b'
     : null
 
+const withBedtimeExpansion = (
+  baseStory: string,
+  world: 'cozy_forest' | 'magic_garden' | 'stars_and_space',
+  language: ClosedBetaLanguage,
+) => `${baseStory}\n\n${bedtimeEpisodeOneExpansion[world][language]}`
+
 export const referenceEpisodeOneStory = (
   context: NormalizedStoryContext,
   fallbackText: string,
@@ -28,9 +35,9 @@ export const referenceEpisodeOneStory = (
   const magicLanguage = getClosedBetaLanguage(context, 'magic_garden')
   const spaceLanguage = getClosedBetaLanguage(context, 'stars_and_space')
 
-  if (cozyLanguage) return cozyForestBedtimeEpisodeOne[cozyLanguage]
-  if (magicLanguage) return magicGardenEpisodeOne[magicLanguage]
-  if (spaceLanguage) return spaceBedtimeEpisodeOne[spaceLanguage]
+  if (cozyLanguage) return withBedtimeExpansion(cozyForestBedtimeEpisodeOne[cozyLanguage], 'cozy_forest', cozyLanguage)
+  if (magicLanguage) return withBedtimeExpansion(magicGardenEpisodeOne[magicLanguage], 'magic_garden', magicLanguage)
+  if (spaceLanguage) return withBedtimeExpansion(spaceBedtimeEpisodeOne[spaceLanguage], 'stars_and_space', spaceLanguage)
   return fallbackText
 }
 
