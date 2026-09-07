@@ -6,6 +6,7 @@ const stateEndpoint = process.env.QISSA_STATE_ENDPOINT?.trim()
   || 'https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-state'
 const publishableKey = process.env.QISSA_SUPABASE_ANON_KEY?.trim()
 const consentVersion = '2026-06-25-v1'
+const minBedtimeWords = 160
 
 if (!publishableKey) {
   console.error('QISSA_SUPABASE_ANON_KEY is required for the closed-beta live smoke test.')
@@ -15,6 +16,10 @@ if (!publishableKey) {
 const assert = (condition, message) => {
   if (!condition) throw new Error(message)
 }
+
+const wordCount = (text) => typeof text === 'string'
+  ? text.trim().split(/\s+/u).filter(Boolean).length
+  : 0
 
 const headers = {
   'content-type': 'application/json',
@@ -177,7 +182,7 @@ const runScenario = async ({ language, stylePackId, branchIndex }) => {
     const episodeOne = assertFallbackGeneration(first, `${label}/episode-1`)
     assert(episodeOne.series_id === seriesId, `${label}: episode 1 series id mismatch`)
     assert(Array.isArray(episodeOne.choices) && episodeOne.choices.length === 2, `${label}: episode 1 must have two choices`)
-    assert(typeof episodeOne.story_text === 'string' && episodeOne.story_text.length > 400, `${label}: episode 1 is too short`)
+    assert(wordCount(episodeOne.story_text) >= minBedtimeWords, `${label}: episode 1 is below ${minBedtimeWords} words`)
 
     const syncOne = await invokeJson(stateEndpoint, {
       action: 'sync_generated',
@@ -214,7 +219,7 @@ const runScenario = async ({ language, stylePackId, branchIndex }) => {
     assert(episodeTwo.series_id === seriesId, `${label}: episode 2 series id mismatch`)
     assert(String(episodeTwo.episode_id).startsWith('ep-2-'), `${label}: continuation did not become episode 2`)
     assert(Array.isArray(episodeTwo.choices) && episodeTwo.choices.length === 0, `${label}: episode 2 must not offer another choice`)
-    assert(typeof episodeTwo.story_text === 'string' && episodeTwo.story_text.length > 400, `${label}: episode 2 is too short`)
+    assert(wordCount(episodeTwo.story_text) >= minBedtimeWords, `${label}: episode 2 is below ${minBedtimeWords} words`)
 
     const finalState = { ...afterChoice, episodeCount: 2 }
     const syncTwo = await invokeJson(stateEndpoint, {
