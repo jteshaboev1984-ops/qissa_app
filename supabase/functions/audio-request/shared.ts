@@ -6,7 +6,7 @@ export type AudioSpeed = 0.8 | 1 | 1.2
 export type JsonRecord = Record<string, unknown>
 
 export type AudioRequestInput = {
-  action?: 'request_audio' | 'save_progress'
+  action?: 'request_audio' | 'load_progress' | 'save_progress'
   installationId?: string
   seriesId?: string
   episodeId?: string
