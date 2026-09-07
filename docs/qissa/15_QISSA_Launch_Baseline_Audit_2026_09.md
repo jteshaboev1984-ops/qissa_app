@@ -14,17 +14,17 @@ This record captures the deployed production baseline before any paid Story AI r
 
 ## Edge Functions
 
-Production functions confirmed active:
+Production functions confirmed active after the bedtime-duration hardening deployment:
 
-- `story-generate` — v15, `verify_jwt=true`
+- `story-generate` — **v16**, `verify_jwt=true`
 - `story-state` — v5, `verify_jwt=true`
 - `audio-request` — v1, `verify_jwt=true`
 
-`story-generate` v15 remains the accepted closed-beta Story Core deployment at the time of this baseline entry. Story AI is still intentionally disabled for normal launch hardening. The new 5–10 minute content expansion must be deployed and re-accepted in production before the duration gate can be marked fully production-proven.
+`story-generate` v16 contains the accepted 5–10 minute closed-beta Story Core expansion. Story AI remains intentionally disabled for normal launch hardening.
 
 ## Closed-beta production acceptance
 
-A provider-free production E2E run completed successfully on 2026-09-07.
+A fresh provider-free production E2E run completed successfully on 2026-09-07 after deployment of `story-generate` v16.
 
 Matrix:
 
@@ -42,13 +42,29 @@ Each scenario verified:
 5. choice-specific memory/consequence
 6. Episode 2 continuation
 7. zero additional choice in Episode 2
-8. persisted reload of Episode 2 state
-9. profile deletion
-10. absence of profile data after deletion
+8. complete-session 5–10 minute duration contract
+9. persisted reload of Episode 2 state
+10. profile deletion
+11. absence of profile data after deletion
 
 The preflight and all scenarios confirmed `safe-fallback` with Story AI disabled, so the acceptance run did not invoke a paid story provider.
 
-After the run, database verification found zero recent smoke profiles and zero recent smoke sessions. The temporary one-shot workflow was removed from the repository; a permanent manual provider-free E2E workflow now exists for repeatable release checks.
+Production E2E measurements at the 140 WPM release-acceptance pace:
+
+- RU Cozy Forest A: 731 words · 5.22 min
+- RU Cozy Forest B: 709 words · 5.06 min
+- RU Magic Garden A: 784 words · 5.60 min
+- RU Magic Garden B: 783 words · 5.59 min
+- RU Stars & Space A: 730 words · 5.21 min
+- RU Stars & Space B: 726 words · 5.19 min
+- UZ Cozy Forest A: 708 words · 5.06 min
+- UZ Cozy Forest B: 721 words · 5.15 min
+- UZ Magic Garden A: 756 words · 5.40 min
+- UZ Magic Garden B: 768 words · 5.49 min
+- UZ Stars & Space A: 709 words · 5.06 min
+- UZ Stars & Space B: 708 words · 5.06 min
+
+After the run, database row counts returned exactly to the pre-smoke baseline, confirming that temporary E2E profiles/sessions were deleted successfully. The temporary push trigger used for the one-shot acceptance run was removed immediately afterwards; the persistent E2E workflow is manual-only again.
 
 ## Deterministic release gates
 
@@ -69,7 +85,7 @@ The gate is wired into both CI and GitHub Pages release deployment and currently
 
 ### 5–10 minute bedtime duration contract
 
-The full child-facing bedtime session is now an explicit release requirement: **5–10 minutes at a normal expressive bedtime-reading pace**.
+The full child-facing bedtime session is an explicit release requirement: **5–10 minutes at a normal expressive bedtime-reading pace**.
 
 For deterministic release engineering QISSA uses **140 words per minute** as the acceptance pace. This is an internal product acceptance assumption for expressive read-aloud, not a claim that every adult reads at exactly that speed. The resulting hard content band is:
 
@@ -80,11 +96,13 @@ The measured session includes the text the family actually experiences in the co
 
 `Episode 1 + confirmed choice resolution + Episode 2`.
 
-After the September duration expansion, the complete 12-branch RU/UZ closed-beta matrix measures **708–784 words**. At the 140 WPM acceptance pace this equals approximately **5.06–5.60 minutes** of spoken story text. At a calmer 125 WPM pace the same sessions measure approximately **5.66–6.27 minutes**.
+The complete 12-branch RU/UZ closed-beta matrix now measures **708–784 words**. At the 140 WPM acceptance pace this equals approximately **5.06–5.60 minutes** of spoken story text. At a calmer 125 WPM pace the same sessions measure approximately **5.66–6.27 minutes**.
 
 Current minimum Episode 1 length is **396 words** and minimum Episode 2 length remains **219 words**. The duration gate is blocking in both pull-request CI and the GitHub Pages release workflow, so a future change cannot shorten or lengthen any public beta branch outside the 700–1,400 word band without failing release validation.
 
-A manual real-device timed read remains part of final UX regression because human pauses, interaction time and individual delivery vary; however, word count is no longer merely informational — the 5–10 minute requirement is now enforced as a deterministic release contract.
+The live production E2E smoke now independently checks the same 700–1,400 word contract against the deployed Edge Function, so duration is protected at both deterministic source-test and deployed-production levels.
+
+A manual real-device timed read remains part of final UX regression because human pauses, interaction time and individual delivery vary; however, word count is no longer merely informational — the 5–10 minute requirement is both release-gated and production-proven.
 
 The release build also includes dedicated guards for:
 
@@ -102,7 +120,7 @@ The release build also includes dedicated guards for:
 
 ## Current data baseline
 
-Exact row counts rechecked after the latest hardening work:
+Exact row counts rechecked after the post-v16 production E2E cleanup:
 
 - `child_profiles`: 5
 - `story_sessions`: 7
@@ -115,13 +133,13 @@ Exact row counts rechecked after the latest hardening work:
 - `playback_progress`: 0
 - `app_events`: 0
 
-These counts are recorded only as a baseline. Existing rows were not modified or deleted by this audit.
+These counts match the pre-smoke baseline. Existing rows were not modified or deleted by this acceptance run.
 
 ## Database access model
 
 The current architecture intentionally keeps the public story tables behind RLS with no `anon`/`authenticated` policies. This matches the persistence design: browser clients call Edge Functions, while trusted persistence operations use the server-side service role.
 
-The latest production security advisor still reports only `RLS Enabled No Policy` INFO notices for the protected public tables. For the current closed-beta architecture this is an **accepted intentional state**, not a missing client-access policy. Adding permissive policies merely to remove the INFO notices would weaken the current security boundary.
+The latest production security advisor reports only `RLS Enabled No Policy` INFO notices for the protected public tables. For the current closed-beta architecture this is an **accepted intentional state**, not a missing client-access policy. Adding permissive policies merely to remove the INFO notices would weaken the current security boundary.
 
 The repository has an automated backend-access gate that prevents routine changes from silently adding direct browser table access, permissive public RLS policies, or removing the service-role boundary.
 
@@ -176,13 +194,12 @@ Kazakh and non-beta worlds remain in internal contracts/content infrastructure b
 
 ## Remaining launch-hardening gates
 
-The Story Core backend/persistence slice and deterministic content matrix are technically proven. Remaining work should focus on release readiness rather than feature expansion:
+The Story Core backend/persistence slice, content matrix and 5–10 minute duration requirement are now technically proven in both source validation and production E2E. Remaining work should focus on release readiness rather than feature expansion:
 
-1. deploy the accepted 5–10 minute Story Core expansion to the production `story-generate` Edge Function and repeat provider-free 12/12 production E2E acceptance;
-2. final browser/mobile UX regression of the deployed Pages build, including a real-device timed complete bedtime session;
-3. consent/privacy copy and real parent-flow review;
-4. manual deletion/recovery UX verification from the actual UI;
-5. first deliberate paid Story AI acceptance decision and run when approved;
-6. local legal/privacy review before public launch.
+1. final browser/mobile UX regression of the deployed Pages build, including a real-device timed complete bedtime session;
+2. consent/privacy copy and real parent-flow review;
+3. manual deletion/recovery UX verification from the actual UI;
+4. first deliberate paid Story AI acceptance decision and run when approved;
+5. local legal/privacy review before public launch.
 
 Do not enable additional worlds, age groups, public languages, provider TTS, family voice, payments, or runtime AI images as part of this baseline hardening step.
