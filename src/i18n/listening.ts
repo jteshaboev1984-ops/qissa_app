@@ -2,6 +2,9 @@ import type { Language } from '../types/qissa'
 
 export type ListeningCopy = {
   ready: string
+  preparing: string
+  deviceFallback: string
+  aiVoiceDisclosure: string
   showText: string
   hideText: string
   nightMode: string
@@ -16,6 +19,9 @@ export type ListeningCopy = {
 export const listeningCopy: Record<Language, ListeningCopy> = {
   ru: {
     ready: 'Озвучка готова. Позиция сохраняется автоматически.',
+    preparing: 'Подготавливаем озвучку… Если серверный голос недоступен, QISSA продолжит голосом устройства.',
+    deviceFallback: 'Используется голос устройства. Позиция всё равно сохраняется.',
+    aiVoiceDisclosure: 'Эта озвучка создана стандартным ИИ-голосом QISSA.',
     showText: 'Показать текст',
     hideText: 'Скрыть текст',
     nightMode: 'Ночной экран',
@@ -28,6 +34,9 @@ export const listeningCopy: Record<Language, ListeningCopy> = {
   },
   uz: {
     ready: 'Ovoz tayyor. Tinglash joyi avtomatik saqlanadi.',
+    preparing: 'Ovozni tayyorlayapmiz… Server ovozi mavjud bo‘lmasa, QISSA qurilma ovozidan foydalanadi.',
+    deviceFallback: 'Qurilma ovozi ishlatilmoqda. Tinglash joyi baribir saqlanadi.',
+    aiVoiceDisclosure: 'Bu ovoz QISSA’ning standart AI ovozi yordamida yaratilgan.',
     showText: 'Matnni ko‘rsatish',
     hideText: 'Matnni yashirish',
     nightMode: 'Tungi ekran',
@@ -40,6 +49,9 @@ export const listeningCopy: Record<Language, ListeningCopy> = {
   },
   kz: {
     ready: 'Дауыс дайын. Тыңдау орны автоматты түрде сақталады.',
+    preparing: 'Дыбыстауды дайындап жатырмыз… Сервер дауысы қолжетімсіз болса, QISSA құрылғы дауысын қолданады.',
+    deviceFallback: 'Құрылғы дауысы қолданылып тұр. Тыңдау орны бәрібір сақталады.',
+    aiVoiceDisclosure: 'Бұл дыбыстау QISSA-ның стандартты AI дауысы арқылы жасалған.',
     showText: 'Мәтінді көрсету',
     hideText: 'Мәтінді жасыру',
     nightMode: 'Түнгі экран',
