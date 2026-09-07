@@ -31,7 +31,7 @@ const libraryLabels: Record<
     tomorrowSeed: 'След для продолжения',
     nextPreview: 'Что дальше',
     noChoiceYet: 'Выбор ещё не сделан.',
-    deviceOnly: 'Пока история хранится только на этом устройстве.',
+    deviceOnly: 'История привязана к этому устройству: QISSA сохраняет её состояние, чтобы продолжение восстановилось после повторного открытия.',
   },
   uz: {
     world: 'Dunyo',
@@ -43,7 +43,7 @@ const libraryLabels: Record<
     tomorrowSeed: 'Davom uchun iz',
     nextPreview: 'Keyin nima bo‘ladi',
     noChoiceYet: 'Tanlov hali qilinmagan.',
-    deviceOnly: 'Hozircha hikoya faqat shu qurilmada saqlanadi.',
+    deviceOnly: 'Hikoya shu qurilmaga bog‘langan: QISSA davomni qayta ochganda tiklash uchun uning holatini saqlaydi.',
   },
   kz: {
     world: 'Әлем',
@@ -55,7 +55,7 @@ const libraryLabels: Record<
     tomorrowSeed: 'Жалғастыру ізі',
     nextPreview: 'Әрі қарай не болады',
     noChoiceYet: 'Таңдау әлі жасалған жоқ.',
-    deviceOnly: 'Әзірге оқиға тек осы құрылғыда сақталады.',
+    deviceOnly: 'Оқиға осы құрылғыға байланыстырылған: QISSA қайта ашқанда жалғастыру үшін оның күйін сақтайды.',
   },
 }
 
