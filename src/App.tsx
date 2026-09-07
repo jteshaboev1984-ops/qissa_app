@@ -411,17 +411,25 @@ function App() {
       ? currentGenerationCopy.continuing
       : currentGenerationCopy.starting
   const generationErrorMessage = generationError ? currentGenerationCopy.error : null
+  const canChangeLanguage = screen === 'welcome' || screen === 'onboarding'
+  const languageBadge = language === 'uz' ? 'UZ · Beta' : language === 'kz' ? 'KZ · internal' : 'RU'
 
   return (
     <div className="relative min-h-screen text-[#1f241d]">
       <div className={`mx-auto max-w-[430px] px-4 py-5 sm:px-6 ${screen === 'home' && selections ? 'pb-32' : ''}`}>
         <header className="mb-5 flex items-center justify-between">
           <h1 className="q-heading text-xl font-bold tracking-tight">{t(language, 'app.title')}</h1>
-          <select value={language} onChange={(e) => updateLanguage(e.target.value as Language)} className="rounded-full border border-[#dfd3bc] bg-[#fffdf7]/90 px-3 py-2 text-sm font-semibold text-[#3d382c] shadow-sm">
-            <option value="ru">RU</option>
-            <option value="uz">UZ · Beta</option>
-            {language === 'kz' ? <option value="kz">KZ · internal</option> : null}
-          </select>
+          {canChangeLanguage ? (
+            <select value={language} onChange={(e) => updateLanguage(e.target.value as Language)} className="rounded-full border border-[#dfd3bc] bg-[#fffdf7]/90 px-3 py-2 text-sm font-semibold text-[#3d382c] shadow-sm">
+              <option value="ru">RU</option>
+              <option value="uz">UZ · Beta</option>
+              {language === 'kz' ? <option value="kz">KZ · internal</option> : null}
+            </select>
+          ) : (
+            <span className="rounded-full border border-[#dfd3bc] bg-[#fffdf7]/90 px-3 py-2 text-sm font-semibold text-[#3d382c] shadow-sm" aria-label={`Story language: ${languageBadge}`}>
+              {languageBadge}
+            </span>
+          )}
         </header>
 
         {screen === 'welcome' && (
