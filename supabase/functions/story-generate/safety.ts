@@ -92,6 +92,7 @@ const validatePatch = (patch: unknown): boolean =>
   patch.canon_updates.every((item) => isRecord(item) && typeof item.key === 'string' && typeof item.value === 'string')
 
 const wordCount = (text: string) => text.trim().split(/\s+/u).filter(Boolean).length
+const paragraphs = (text: string) => text.trim().split(/\n\s*\n/u).map((item) => item.trim()).filter(Boolean)
 
 const isFiveToSevenBedtimeSeries = (context: NormalizedStoryContext) =>
   context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
@@ -105,6 +106,12 @@ const storyWordRange = (context: NormalizedStoryContext): [number, number] => {
   return [170, 540]
 }
 
+const startsWithNextDayReset = (context: NormalizedStoryContext, text: string) => {
+  if (!isFiveToSevenBedtimeSeries(context) || context.episodeIndex !== 2) return false
+  const first = text.trim().slice(0, 80).toLocaleLowerCase()
+  return /^утром\b/u.test(first) || /^на следующее утро\b/u.test(first) || /^tongda\b/u.test(first) || /^ertasi tongda\b/u.test(first) || /^таңертең\b/u.test(first)
+}
+
 export const validateCandidate = (context: NormalizedStoryContext, candidate: unknown): string[] => {
   const errors: string[] = []
   if (!isRecord(candidate)) return ['candidate_not_object']
@@ -114,10 +121,22 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   if (typeof value.story_text !== 'string') errors.push('invalid_story_text')
   else {
     const words = wordCount(value.story_text)
+    const storyParagraphs = paragraphs(value.story_text)
     const [minWords, maxWords] = storyWordRange(context)
     if (words < minWords) errors.push('story_too_short')
     if (words > maxWords) errors.push('story_too_long')
     if (!value.story_text.includes('{{HERO}}') && !value.story_text.includes('QISSA_HERO')) errors.push('missing_hero_token')
+
+    if (isFiveToSevenBedtimeSeries(context)) {
+      const minimumParagraphs = context.episodeIndex === 1 ? 5 : 4
+      if (storyParagraphs.length < minimumParagraphs) errors.push('insufficient_narrative_beats')
+      if (startsWithNextDayReset(context, value.story_text)) errors.push('continuation_resets_before_resolution')
+      if (context.episodeIndex === 2) {
+        const finalParagraphWords = wordCount(storyParagraphs[storyParagraphs.length - 1] ?? '')
+        if (finalParagraphWords < 40) errors.push('bedtime_coda_too_short')
+        if (finalParagraphWords > 150) errors.push('bedtime_coda_too_long')
+      }
+    }
   }
 
   const expectedChoices = context.episodeIndex === 1 ? 2 : 0
