@@ -67,6 +67,8 @@ The release build now includes a deterministic closed-beta content matrix check 
 
 The gate is wired into both CI and GitHub Pages release deployment and currently passes.
 
+The current deterministic matrix reports a minimum of **176 words for Episode 1** and **219 words for Episode 2** across the public RU/UZ fallback matrix. The automated floor remains 160 words per episode. These measurements protect against accidental shortening, but they do **not by themselves prove a 5–10 minute bedtime session** because actual session time also depends on the selected choice-resolution passage and reading/narration pace. Final beta QA must therefore include timed end-to-end bedtime sessions rather than treating word count alone as acceptance evidence.
+
 The release build also includes dedicated guards for:
 
 - backend contract parity;
@@ -125,6 +127,15 @@ A launch-hardening review found one stale user-facing Library statement that sai
 
 The RU/UZ/KZ Library copy now states that the story is **bound to the current device** and that QISSA saves its state so continuation can be restored after reopening. A story-copy regression guard now blocks the old local-only wording from returning.
 
+## Parent and language-flow hardening
+
+Two additional user-flow inconsistencies were corrected during launch hardening:
+
+1. The Parent Center previously implied that families could change world, format and mood for a new closed-beta story. In the actual beta contract only the world is selectable; series format and bedtime mode are fixed. RU/UZ/KZ copy now reflects the real product behavior, and the beta-scope gate blocks the old claim from returning.
+2. The global language selector could previously change UI language while an already configured story still retained a different persisted story language. Language selection is now interactive only on Welcome/setup screens. Home, Library, Parent and Story show the active story language as a non-editable badge. Cancelling edit/new-story setup restores the existing story language and returns Home, preventing a cancelled language experiment from changing the active story session.
+
+Both changes passed the full release build and GitHub Pages deployment gates.
+
 ## Cost and provider state
 
 - Story AI remains intentionally disabled during launch hardening.
@@ -149,7 +160,7 @@ Kazakh and non-beta worlds remain in internal contracts/content infrastructure b
 
 The Story Core backend/persistence slice and deterministic content matrix are technically proven. Remaining work should now focus on release readiness rather than feature expansion:
 
-1. final browser/mobile UX regression of the deployed Pages build;
+1. final browser/mobile UX regression of the deployed Pages build, including timed complete bedtime sessions;
 2. consent/privacy copy and real parent-flow review;
 3. manual deletion/recovery UX verification from the actual UI;
 4. first deliberate paid Story AI acceptance decision and run when approved;
