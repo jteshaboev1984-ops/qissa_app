@@ -102,16 +102,20 @@ try {
   const nonce = Date.now()
   const { buildSafeFallback } = await import(`${pathToFileURL(join(temp, 'fallback.mjs')).href}?v=${nonce}`)
   let passed = 0
+  let minimumEpisodeOneWords = Number.POSITIVE_INFINITY
+  let minimumEpisodeTwoWords = Number.POSITIVE_INFINITY
 
   for (const language of languages) {
     for (const stylePackId of worlds) {
       const context = baseContext(language, stylePackId)
       const episodeOne = buildSafeFallback(context)
       const label = `${language}/${stylePackId}`
+      const episodeOneWords = wordCount(episodeOne.story_text)
+      minimumEpisodeOneWords = Math.min(minimumEpisodeOneWords, episodeOneWords)
 
       assert(episodeOne.episode_id === `ep-1-${stylePackId}`, `${label}: wrong Episode 1 id.`)
       assert(episodeOne.series_id === context.seriesId, `${label}: Episode 1 lost series id.`)
-      assert(wordCount(episodeOne.story_text) >= minBedtimeWords, `${label}: Episode 1 is below ${minBedtimeWords} words.`)
+      assert(episodeOneWords >= minBedtimeWords, `${label}: Episode 1 is below ${minBedtimeWords} words.`)
       assert(Array.isArray(episodeOne.choices) && episodeOne.choices.length === 2, `${label}: Episode 1 must contain exactly two choices.`)
       assert(new Set(episodeOne.choices.map((choice) => choice.choice_id)).size === 2, `${label}: choice ids must be distinct.`)
       assert(Boolean(episodeOne.nextEpisodePreview?.trim()), `${label}: Episode 1 must expose a calm continuation preview.`)
@@ -135,9 +139,11 @@ try {
       const episodeTwoB = buildSafeFallback(continuationContext(context, episodeOne, choiceB))
 
       for (const [branch, episodeTwo] of [['a', episodeTwoA], ['b', episodeTwoB]]) {
+        const episodeTwoWords = wordCount(episodeTwo.story_text)
+        minimumEpisodeTwoWords = Math.min(minimumEpisodeTwoWords, episodeTwoWords)
         assert(episodeTwo.episode_id === `ep-2-${stylePackId}`, `${label}/${branch}: wrong Episode 2 id.`)
         assert(episodeTwo.series_id === context.seriesId, `${label}/${branch}: Episode 2 lost series id.`)
-        assert(wordCount(episodeTwo.story_text) >= minBedtimeWords, `${label}/${branch}: Episode 2 is below ${minBedtimeWords} words.`)
+        assert(episodeTwoWords >= minBedtimeWords, `${label}/${branch}: Episode 2 is below ${minBedtimeWords} words.`)
         assert(Array.isArray(episodeTwo.choices) && episodeTwo.choices.length === 0, `${label}/${branch}: Episode 2 must contain zero choices.`)
         assert(episodeTwo.nextEpisodePreview === '', `${label}/${branch}: Episode 2 must not promise another episode.`)
         assert(episodeTwo.state_patch?.canon_updates?.remembered_choice === `choice-${branch}`, `${label}/${branch}: remembered branch is missing from canon patch.`)
@@ -152,7 +158,7 @@ try {
   }
 
   assert(passed === 12, `Closed-beta matrix expected 12 branches, got ${passed}.`)
-  console.log('closed beta deterministic content matrix passed: 12/12 RU/UZ bedtime branches.')
+  console.log(`closed beta deterministic content matrix passed: 12/12 RU/UZ bedtime branches; minimum Episode 1=${minimumEpisodeOneWords} words, Episode 2=${minimumEpisodeTwoWords} words.`)
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
