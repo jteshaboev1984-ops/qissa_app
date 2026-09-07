@@ -7,6 +7,10 @@ const audio = [
   'supabase/functions/audio-request/context.ts',
   'supabase/functions/audio-request/generation.ts',
 ].map(read).join('\n')
+const audioClient = read('src/lib/audioRemoteClient.ts')
+const hybridNarration = read('src/lib/useHybridNarration.ts')
+const listeningScene = read('src/components/ListeningScene.tsx')
+const deployPages = read('.github/workflows/deploy-pages.yml')
 const storyState = read('supabase/functions/story-state/index.ts')
 const memory = read('src/lib/memoryAgent.ts')
 const state = read('src/lib/storyStateService.ts')
@@ -83,7 +87,7 @@ requireCondition(
 )
 
 const requestStart = audio.indexOf('const requestAudio')
-const requestEnd = audio.indexOf('const saveProgress', requestStart)
+const requestEnd = audio.indexOf('const loadProgress', requestStart)
 const requestBody = audio.slice(requestStart, requestEnd)
 requireCondition(
   requestStart >= 0 &&
@@ -141,10 +145,40 @@ requireCondition(
 )
 
 requireCondition(
+  /load_progress/.test(audio) &&
+    /playback_progress_load_failed/.test(audio) &&
+    /select\('audio_asset_id,position_seconds,speed,completed,updated_at'\)/.test(audio),
+  'Playback progress must be loadable through the owner-scoped Audio Agent.',
+)
+
+requireCondition(
   /save_progress/.test(audio) &&
     /child_profile_id,episode_id/.test(audio) &&
     /audio_asset_not_found/.test(audio),
-  'Playback progress must be owner-scoped.',
+  'Playback progress saves must be owner-scoped.',
+)
+
+requireCondition(
+  /VITE_QISSA_AUDIO_ENDPOINT/.test(audioClient) &&
+    /request_audio/.test(audioClient) &&
+    /load_progress/.test(audioClient) &&
+    /save_progress/.test(audioClient) &&
+    /getInstallationId/.test(audioClient),
+  'The browser Audio Agent client must use the configured endpoint and installation ownership identity.',
+)
+
+requireCondition(
+  /useHybridNarration/.test(listeningScene) &&
+    /audioRemoteClient\.requestAudio/.test(hybridNarration) &&
+    /audioRemoteClient\.loadPlaybackProgress/.test(hybridNarration) &&
+    /audioRemoteClient\.savePlaybackProgress/.test(hybridNarration) &&
+    /device-fallback/.test(hybridNarration),
+  'Listening UI must prefer Audio Agent delivery and retain device fallback plus remote resume.',
+)
+
+requireCondition(
+  /VITE_QISSA_AUDIO_ENDPOINT:\s*https:\/\/phwakdpxxyncyslvnqht\.supabase\.co\/functions\/v1\/audio-request/.test(deployPages),
+  'Production Pages build must explicitly wire the Audio Agent endpoint.',
 )
 
 requireCondition(
@@ -155,7 +189,8 @@ requireCondition(
 )
 
 requireCondition(
-  !/getUserMedia|MediaRecorder|custom voice|voice sample/i.test(audio),
+  !/getUserMedia|MediaRecorder|custom voice|voice sample/i.test(audio) &&
+    !/getUserMedia|MediaRecorder|voice.?clone/i.test(`${audioClient}\n${hybridNarration}\n${listeningScene}`),
   'The MVP Audio Agent must not capture voice samples or clone voices.',
 )
 
@@ -165,4 +200,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('cache-first Audio Agent contract check passed.')
+console.log('cache-first Audio Agent and browser integration contract check passed.')
