@@ -99,7 +99,7 @@ const isFiveToSevenBedtimeSeries = (context: NormalizedStoryContext) =>
 
 const storyWordRange = (context: NormalizedStoryContext): [number, number] => {
   if (isFiveToSevenBedtimeSeries(context)) {
-    return context.episodeIndex === 1 ? [400, 600] : [280, 500]
+    return context.episodeIndex === 1 ? [430, 560] : [340, 520]
   }
   if (context.ageGroup === '3-4') return [80, 260]
   if (context.ageGroup === '5-7') return [120, 390]
@@ -133,8 +133,8 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
       if (startsWithNextDayReset(context, value.story_text)) errors.push('continuation_resets_before_resolution')
       if (context.episodeIndex === 2) {
         const finalParagraphWords = wordCount(storyParagraphs[storyParagraphs.length - 1] ?? '')
-        if (finalParagraphWords < 40) errors.push('bedtime_coda_too_short')
-        if (finalParagraphWords > 150) errors.push('bedtime_coda_too_long')
+        if (finalParagraphWords < 50) errors.push('bedtime_coda_too_short')
+        if (finalParagraphWords > 170) errors.push('bedtime_coda_too_long')
       }
     }
   }
