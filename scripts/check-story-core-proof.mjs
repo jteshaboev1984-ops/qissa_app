@@ -12,6 +12,7 @@ const sourceNames = [
   'storyCoreReference',
   'storyBedtimeExpansion',
   'storyCozyForestBedtime',
+  'storyCozyForestBedtimeArc',
   'storyMagicGardenBedtime',
   'storyMagicGardenMemory',
   'storySpaceReference',
@@ -39,6 +40,7 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
   .replace(/['"]\.\/storyBedtimeExpansion\.ts['"]/g, "'./storyBedtimeExpansion.mjs'")
   .replace(/['"]\.\/storyCozyForestBedtime\.ts['"]/g, "'./storyCozyForestBedtime.mjs'")
+  .replace(/['"]\.\/storyCozyForestBedtimeArc\.ts['"]/g, "'./storyCozyForestBedtimeArc.mjs'")
   .replace(/['"]\.\/storyMagicGardenBedtime\.ts['"]/g, "'./storyMagicGardenBedtime.mjs'")
   .replace(/['"]\.\/storyMagicGardenMemory\.ts['"]/g, "'./storyMagicGardenMemory.mjs'")
   .replace(/['"]\.\/storySpaceReference\.ts['"]/g, "'./storySpaceReference.mjs'")
@@ -131,8 +133,9 @@ try {
   assert(wordCount(forestOne.story_text) >= 300 && wordCount(forestOne.story_text) <= 650, 'Forest Episode 1 editorial length failed.')
   assert(!forbiddenIntensity.test(forestOne.story_text), 'Forest Episode 1 breaks bedtime tone.')
   const [forestA, forestB] = verifyTwoBranches(forestOne, 'cozy_forest')
-  assert(/фонарик|светил|освещённой тропинке/iu.test(forestA.story_text), 'Forest A lost lantern consequence.')
-  assert(/песня|мелодия|запел/iu.test(forestB.story_text), 'Forest B lost song consequence.')
+  assert(/фонарик|светил|золотая дорожка/iu.test(forestA.story_text), 'Forest A lost lantern consequence.')
+  assert(/песня|мелодия|куй|напела/iu.test(forestB.story_text), 'Forest B lost song consequence.')
+  assert(!/^утром\b/iu.test(forestA.story_text.trim()) && !/^утром\b/iu.test(forestB.story_text.trim()), 'Forest continuation incorrectly restarts the story next morning.')
 
   const spaceOne = buildSafeFallback({ ...baseContext, stylePackId: 'stars_and_space' })
   assert(spaceOne.title === 'Тихий сигнал станции «Люмен»', 'Space Episode 1 title is not editorial.')
@@ -156,7 +159,7 @@ try {
     verifyTwoBranches(episodeOne, stylePackId)
   }
 
-  console.log('Story editorial proof passed for every world; closed-beta flagship openings remain distinct, expanded, and bedtime-safe.')
+  console.log('Story editorial proof passed for every world; closed-beta flagship stories now use one continuous beginning-middle-choice-resolution-coda arc.')
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
