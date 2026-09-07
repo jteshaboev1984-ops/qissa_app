@@ -25,6 +25,12 @@ assert(onboarding.includes('storyMode: betaScope.defaultStoryMode'), 'Onboarding
 assert(onboarding.includes('storyMood: betaScope.defaultStoryMood'), 'Onboarding must force the beta bedtime mood default.')
 assert(app.includes('UZ · Beta'), 'The public language selector must label Uzbek as Beta.')
 assert(!app.includes('<option value="kz">KZ</option>'), 'Kazakh must not be exposed as a public beta option.')
+assert(
+  app.includes("const canChangeLanguage = screen === 'welcome' || screen === 'onboarding'") &&
+    app.includes('{canChangeLanguage ? (') &&
+    app.includes('Story language: ${languageBadge}'),
+  'Language changes must stay inside welcome/setup so an active story cannot drift away from its persisted language.',
+)
 
 assert(story.includes("type StoryStage = 'reading' | 'resolution'"), 'Story flow must not add a separate choice screen.')
 assert(!story.includes("t(language, 'story.go_to_choice')"), 'Choice cards must remain inline after the story.')
