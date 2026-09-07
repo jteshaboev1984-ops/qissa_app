@@ -49,8 +49,8 @@ jobs:
       - name: Validate closed beta content matrix
         run: npm run check:beta-content
 
-      - name: Report bedtime session duration
-        run: npm run report:bedtime-duration
+      - name: Validate 5–10 minute bedtime session duration
+        run: npm run check:bedtime-duration
 
       - name: Validate closed beta scope
         run: npm run check:beta-scope
