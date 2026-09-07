@@ -73,6 +73,9 @@ requireText('input normalization', contracts, [
   'if (!isRecord(selections) || !isRecord(seriesState)) return null',
   'const entriesToRecord = (entries: unknown)',
   'export const finalPatchFromCandidate = (patch: unknown)',
+  'export const compactStoryText',
+  ".join('\\n\\n')",
+  'compactStoryText(candidate.story_text, 6000)',
   'Array.isArray(candidate.choices)',
   'Array.isArray(candidate.vocabulary)',
 ])
@@ -133,4 +136,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI safety and narrative arc contract check passed.')
+console.log('Story AI safety, narrative arc, and paragraph-layout contract check passed.')
