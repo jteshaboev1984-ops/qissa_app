@@ -10,6 +10,7 @@ const sourceNames = [
   'storyCoreBranches',
   'storyGenericEditorial',
   'storyCoreReference',
+  'storyBedtimeExpansion',
   'storyCozyForestBedtime',
   'storyMagicGardenBedtime',
   'storyMagicGardenMemory',
@@ -36,6 +37,7 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storyCoreBranches\.ts['"]/g, "'./storyCoreBranches.mjs'")
   .replace(/['"]\.\/storyGenericEditorial\.ts['"]/g, "'./storyGenericEditorial.mjs'")
   .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
+  .replace(/['"]\.\/storyBedtimeExpansion\.ts['"]/g, "'./storyBedtimeExpansion.mjs'")
   .replace(/['"]\.\/storyCozyForestBedtime\.ts['"]/g, "'./storyCozyForestBedtime.mjs'")
   .replace(/['"]\.\/storyMagicGardenBedtime\.ts['"]/g, "'./storyMagicGardenBedtime.mjs'")
   .replace(/['"]\.\/storyMagicGardenMemory\.ts['"]/g, "'./storyMagicGardenMemory.mjs'")
@@ -126,7 +128,7 @@ try {
   }
 
   const forestOne = buildSafeFallback(baseContext)
-  assert(wordCount(forestOne.story_text) >= 160 && wordCount(forestOne.story_text) <= 260, 'Forest Episode 1 editorial length failed.')
+  assert(wordCount(forestOne.story_text) >= 300 && wordCount(forestOne.story_text) <= 650, 'Forest Episode 1 editorial length failed.')
   assert(!forbiddenIntensity.test(forestOne.story_text), 'Forest Episode 1 breaks bedtime tone.')
   const [forestA, forestB] = verifyTwoBranches(forestOne, 'cozy_forest')
   assert(/фонарик|светил|освещённой тропинке/iu.test(forestA.story_text), 'Forest A lost lantern consequence.')
@@ -134,7 +136,7 @@ try {
 
   const spaceOne = buildSafeFallback({ ...baseContext, stylePackId: 'stars_and_space' })
   assert(spaceOne.title === 'Тихий сигнал станции «Люмен»', 'Space Episode 1 title is not editorial.')
-  assert(wordCount(spaceOne.story_text) >= 160 && wordCount(spaceOne.story_text) <= 260, 'Space Episode 1 is not a full scene.')
+  assert(wordCount(spaceOne.story_text) >= 300 && wordCount(spaceOne.story_text) <= 650, 'Space Episode 1 is not a full bedtime scene.')
   assert(!technicalStoryLanguage.test(`${spaceOne.title} ${spaceOne.story_text}`), 'Space Episode 1 exposes technical wording.')
   assert(!nauticalSpaceCopy.test(`${spaceOne.title} ${spaceOne.story_text}`), 'Space Episode 1 uses nautical copy.')
   const [spaceA, spaceB] = verifyTwoBranches(spaceOne, 'stars_and_space')
@@ -154,7 +156,7 @@ try {
     verifyTwoBranches(episodeOne, stylePackId)
   }
 
-  console.log('Story editorial proof passed for every world; forest and space full references remain distinct and bedtime-safe.')
+  console.log('Story editorial proof passed for every world; closed-beta flagship openings remain distinct, expanded, and bedtime-safe.')
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
