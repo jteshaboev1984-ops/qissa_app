@@ -26,6 +26,7 @@
     "check:audio-agent": "node scripts/check-audio-agent-contract.mjs",
     "smoke:story-live": "node scripts/smoke-story-generate-live.mjs",
     "smoke:privacy-live": "node scripts/smoke-privacy-live.mjs",
+    "smoke:beta-e2e-live": "node scripts/smoke-closed-beta-e2e-live.mjs",
     "smoke:audio-live": "node scripts/smoke-audio-live.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "check:bedtime-session": "node scripts/check-bedtime-session-polish.mjs",
