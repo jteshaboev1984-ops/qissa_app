@@ -1,24 +1,20 @@
-name: Live Story Smoke
+name: Manual Live Story Smoke
 
+# This workflow intentionally never runs on push or pull_request.
+# Normal development and CI use deterministic local Story Core checks so
+# development does not create AI-provider usage or cost. Run this workflow
+# manually only when validating the deployed Edge Function.
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-    paths:
-      - supabase/functions/story-generate/**
-      - scripts/smoke-story-generate-live.mjs
-      - .github/workflows/live-story-smoke.yml
-      - src/lib/storyRemoteClient.ts
   workflow_dispatch:
     inputs:
       expected_source:
-        description: Optional expected X-QISSA-Generation-Source value
-        required: false
-        default: ""
-        type: string
+        description: Expected X-QISSA-Generation-Source from the deployed function
+        required: true
+        default: "safe-fallback"
+        type: choice
+        options:
+          - safe-fallback
+          - openai-structured
 
 permissions:
   contents: read
@@ -29,7 +25,6 @@ concurrency:
 
 jobs:
   smoke:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -44,9 +39,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Invoke production story-generate
+      - name: Invoke deployed story-generate
         env:
           QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
-          QISSA_EXPECTED_GENERATION_SOURCE: ${{ github.event_name == 'pull_request' && 'safe-fallback' || github.event.inputs.expected_source || '' }}
+          QISSA_EXPECTED_GENERATION_SOURCE: ${{ github.event.inputs.expected_source }}
           QISSA_STORY_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate
         run: npm run smoke:story-live
