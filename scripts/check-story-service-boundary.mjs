@@ -68,6 +68,16 @@ const migrationBackfillsBeforeConstraints =
   episodesBackfillPosition >= 0 &&
   episodesConstraintPosition > episodesBackfillPosition
 
+const remoteGenerationStart = service.indexOf('const generateEpisode')
+const pendingResetPosition = service.indexOf('await localPersistence.waitForPendingRemoteReset()', remoteGenerationStart)
+const pendingChoicePosition = service.indexOf('await localPersistence.waitForPendingChoiceSync()', remoteGenerationStart)
+const remoteGeneratePosition = service.indexOf('await generateWithRemoteProvider', remoteGenerationStart)
+const remoteGenerationWaitsForState =
+  remoteGenerationStart >= 0 &&
+  pendingResetPosition > remoteGenerationStart &&
+  pendingChoicePosition > pendingResetPosition &&
+  remoteGeneratePosition > pendingChoicePosition
+
 if (appImportsStoryAgent || appCallsCreateStoryEpisode || appImportsRemoteClient) {
   failures.push('App.tsx must use storyService only and must not import providers directly.')
 }
@@ -86,6 +96,10 @@ if (!servicePersistsRemoteEpisode) {
 
 if (!serviceRepairsMissingSeriesState) {
   failures.push('storyService.ts must repair missing series state before persisting the first remote episode.')
+}
+
+if (!remoteGenerationWaitsForState) {
+  failures.push('Remote generation must wait for pending reset and confirmed-choice persistence before requesting the next episode.')
 }
 
 if (
