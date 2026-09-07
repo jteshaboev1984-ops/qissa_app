@@ -412,7 +412,7 @@ function App() {
       ? currentGenerationCopy.continuing
       : currentGenerationCopy.starting
   const generationErrorMessage = generationError ? currentGenerationCopy.error : null
-  const canChangeLanguage = screen === 'welcome' || screen === 'onboarding'
+  const canChangeLanguage = screen === 'onboarding' || (screen === 'welcome' && !selections)
   const languageBadge = language === 'uz' ? 'UZ · Beta' : language === 'kz' ? 'KZ · internal' : 'RU'
 
   return (
@@ -427,7 +427,7 @@ function App() {
               {language === 'kz' ? <option value="kz">KZ · internal</option> : null}
             </select>
           ) : (
-            <span className="rounded-full border border-[#dfd3bc] bg-[#fffdf7]/90 px-3 py-2 text-sm font-semibold text-[#3d382c] shadow-sm" aria-label={`Story language: ${languageBadge}`}>
+            <span className="rounded-full border border-[#dfd3bc] bg-[#fffdf7]/90 px-3 py-2 text-sm font-semibold text-[#3d382c] shadow-sm">
               {languageBadge}
             </span>
           )}
