@@ -73,16 +73,18 @@ const lengthGuidance = (context: NormalizedStoryContext): JsonRecord => {
   if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
     return context.episodeIndex === 1
       ? {
-          target_story_words: '400-520',
+          target_story_words: '450-520',
           choice_resolution_words: '20-60 for each of the two choices',
-          full_session_contract: 'Episode 1 + the selected choice resolution + Episode 2 must total 700-1400 words.',
-          acceptance_pace: '140 words per minute for a 5-10 minute expressive bedtime read-aloud',
+          preferred_full_session_words: '840-1080 words, approximately 6-8 minutes at the release acceptance pace',
+          hard_full_session_contract: 'Episode 1 + the selected choice resolution + Episode 2 must stay inside 700-1400 words.',
+          acceptance_pace: '140 words per minute; 6-8 minutes is the editorial target and 5-10 minutes is the hard release envelope',
         }
       : {
-          target_story_words: '280-450',
+          target_story_words: '370-480',
           choice_resolution_words: 'not applicable; episode 2 has no new choice',
-          full_session_contract: 'Episode 1 + the previously selected choice resolution + Episode 2 must total 700-1400 words.',
-          acceptance_pace: '140 words per minute for a 5-10 minute expressive bedtime read-aloud',
+          preferred_full_session_words: '840-1080 words, approximately 6-8 minutes at the release acceptance pace',
+          hard_full_session_contract: 'Episode 1 + the previously selected choice resolution + Episode 2 must stay inside 700-1400 words.',
+          acceptance_pace: '140 words per minute; 6-8 minutes is the editorial target and 5-10 minutes is the hard release envelope',
         }
   }
 
@@ -100,12 +102,13 @@ const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord |
       classical_shape: 'Use a clear beginning, middle, turning decision, consequence, resolution, and calm coda. Every event must follow causally from the same original goal.',
       part_role: 'Episode 1 is the pre-choice half of the same story. It must establish one setting, one understandable goal/problem, develop it, then arrive naturally at one meaningful decision.',
       beat_budget: [
-        'opening / orientation: about 70-100 words — who, where, bedtime atmosphere, and what normal evening looks like',
-        'gentle need / problem: about 80-110 words — introduce exactly one concrete goal that can be solved tonight',
-        'exploration / build-up: about 140-190 words — discover relevant details and possible approaches; do not add a second unrelated problem',
-        'choice setup: about 90-120 words — make both options understandable as two safe ways to solve the SAME established goal',
+        'opening / orientation: about 80-110 words — who, where, bedtime atmosphere, and what normal evening looks like',
+        'gentle need / problem: about 90-120 words — introduce exactly one concrete goal that can be solved tonight',
+        'exploration / build-up: about 160-210 words — discover relevant details and possible approaches; do not add a second unrelated problem',
+        'choice setup: about 100-130 words — make both options understandable as two safe ways to solve the SAME established goal',
       ],
       choice_position: 'The child choice should occur around 50-60% of the full read-aloud, after enough context to care but before the original problem is solved.',
+      duration_role: 'The primary bedtime experience should feel substantial rather than rushed: aim for a 6-8 minute complete read while preserving calm pacing and one causal plot.',
       anti_pattern: 'Do not resolve the main problem and then ask a decorative choice. Do not make a chain of unrelated episodes. Do not repeat the same choice setup twice.',
     }
   }
@@ -115,8 +118,8 @@ const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord |
     classical_shape: 'Continue from the confirmed choice, show its consequence, solve the original goal, then lower energy into a calm closed ending.',
     part_role: 'Start immediately from the selected action or its visible consequence. Keep the same core situation and causal thread.',
     beat_budget: [
-      'choice consequence / working solution: about 180-260 words — the chosen method changes what happens and carries the original goal toward resolution',
-      'resolution and bedtime coda: about 90-130 words — original problem clearly solved, loose ends closed, sensory energy reduced, final image feels complete and sleepy',
+      'choice consequence / working solution: about 230-320 words — the chosen method changes what happens and carries the original goal toward resolution',
+      'resolution and bedtime coda: about 120-160 words — original problem clearly solved, loose ends closed, sensory energy reduced, final image feels complete and sleepy',
     ],
     continuity_rule: 'Do not reset to the next morning before resolving the choice. Do not introduce a new unrelated mission, missing object, new danger, or fresh problem merely to fill length.',
     ending_rule: 'By roughly the final 10-15%, the main problem is already solved. The last paragraph is denouement/coda, not another plot beat. No cliffhanger and no promise that the child must continue tonight.',
@@ -292,7 +295,7 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
     'For closed-beta bedtime series, Episode 1 and Episode 2 are technical delivery parts of one continuous story. Never write them as two unrelated stories.',
     'For episode 1, return exactly two choices. For episode 2, return no choices and visibly reflect the previous confirmed choice.',
     'For Russian only, return 2 or 3 gentle Russian-to-English vocabulary items. For Uzbek or Kazakh, return an empty vocabulary array.',
-    'Treat length_guidance and narrative_guidance as hard product requirements. Do not pad length with unrelated events, repeated exposition, or a second problem.',
+    'Treat length_guidance and narrative_guidance as hard product requirements. Prefer the 6-8 minute editorial target, but never pad length with unrelated events, repeated exposition, or a second problem.',
   ].join(' ')
 
   const payload = {
