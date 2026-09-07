@@ -109,6 +109,7 @@ jobs:
           VITE_QISSA_STORY_PROVIDER: remote
           VITE_QISSA_STORY_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate
           VITE_QISSA_STATE_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-state
+          VITE_QISSA_AUDIO_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/audio-request
           VITE_QISSA_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
           VITE_QISSA_STORY_TIMEOUT_MS: 45000
           VITE_QISSA_STORY_FALLBACK_TO_LOCAL: false
