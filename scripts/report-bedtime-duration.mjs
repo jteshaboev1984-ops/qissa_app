@@ -12,6 +12,10 @@ const MIN_SESSION_MINUTES = 5
 const MAX_SESSION_MINUTES = 10
 const MIN_SESSION_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * MIN_SESSION_MINUTES
 const MAX_SESSION_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * MAX_SESSION_MINUTES
+const MIN_CHOICE_RATIO = 0.45
+const MAX_CHOICE_RATIO = 0.62
+const MIN_CODA_RATIO = 0.05
+const MAX_CODA_RATIO = 0.20
 const sourceNames = [
   'contracts',
   'storyCoreBranches',
@@ -19,6 +23,7 @@ const sourceNames = [
   'storyCoreReference',
   'storyBedtimeExpansion',
   'storyCozyForestBedtime',
+  'storyCozyForestBedtimeArc',
   'storyMagicGardenBedtime',
   'storyMagicGardenMemory',
   'storySpaceReference',
@@ -46,6 +51,7 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
   .replace(/['"]\.\/storyBedtimeExpansion\.ts['"]/g, "'./storyBedtimeExpansion.mjs'")
   .replace(/['"]\.\/storyCozyForestBedtime\.ts['"]/g, "'./storyCozyForestBedtime.mjs'")
+  .replace(/['"]\.\/storyCozyForestBedtimeArc\.ts['"]/g, "'./storyCozyForestBedtimeArc.mjs'")
   .replace(/['"]\.\/storyMagicGardenBedtime\.ts['"]/g, "'./storyMagicGardenBedtime.mjs'")
   .replace(/['"]\.\/storyMagicGardenMemory\.ts['"]/g, "'./storyMagicGardenMemory.mjs'")
   .replace(/['"]\.\/storySpaceReference\.ts['"]/g, "'./storySpaceReference.mjs'")
@@ -56,6 +62,8 @@ const transpile = (source) => ts.transpileModule(source, {
 const wordCount = (text) => typeof text === 'string'
   ? text.trim().split(/\s+/u).filter(Boolean).length
   : 0
+
+const lastParagraph = (text) => text.trim().split(/\n\s*\n/u).filter(Boolean).at(-1) ?? ''
 
 const baseContext = (language, stylePackId) => ({
   ageGroup: '5-7',
@@ -118,6 +126,9 @@ try {
         const resolutionWords = wordCount(choice.resolution_text ?? choice.effect_summary ?? '')
         const episodeTwoWords = wordCount(episodeTwo.story_text)
         const totalWords = episodeOneWords + resolutionWords + episodeTwoWords
+        const choiceRatio = episodeOneWords / totalWords
+        const codaWords = wordCount(lastParagraph(episodeTwo.story_text))
+        const codaRatio = codaWords / totalWords
         const scenario = `${language}/${stylePackId}/${branch}`
 
         assert(
@@ -128,6 +139,14 @@ try {
           totalWords <= MAX_SESSION_WORDS,
           `${scenario}: ${totalWords} words exceeds the ${MAX_SESSION_WORDS}-word ceiling for ${MAX_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`,
         )
+        assert(
+          choiceRatio >= MIN_CHOICE_RATIO && choiceRatio <= MAX_CHOICE_RATIO,
+          `${scenario}: choice arrives at ${(choiceRatio * 100).toFixed(1)}% of the spoken story; hard acceptance window is ${(MIN_CHOICE_RATIO * 100).toFixed(0)}-${(MAX_CHOICE_RATIO * 100).toFixed(0)}% (editorial target remains about 50-60%).`,
+        )
+        assert(
+          codaRatio >= MIN_CODA_RATIO && codaRatio <= MAX_CODA_RATIO,
+          `${scenario}: final calm coda is ${(codaRatio * 100).toFixed(1)}% of the story; hard acceptance window is ${(MIN_CODA_RATIO * 100).toFixed(0)}-${(MAX_CODA_RATIO * 100).toFixed(0)}% (editorial target remains about 10-15%).`,
+        )
 
         rows.push({
           scenario,
@@ -135,6 +154,9 @@ try {
           resolution: resolutionWords,
           ep2: episodeTwoWords,
           total: totalWords,
+          choicePct: `${(choiceRatio * 100).toFixed(1)}%`,
+          coda: codaWords,
+          codaPct: `${(codaRatio * 100).toFixed(1)}%`,
           min125: minutesAt(totalWords, 125),
           min140: minutesAt(totalWords, EXPRESSIVE_ACCEPTANCE_WPM),
           min155: minutesAt(totalWords, 155),
@@ -147,8 +169,9 @@ try {
   const totals = rows.map((row) => row.total)
   console.log(`Bedtime session range: ${Math.min(...totals)}-${Math.max(...totals)} words.`)
   console.log(`Acceptance band: ${MIN_SESSION_WORDS}-${MAX_SESSION_WORDS} words = ${MIN_SESSION_MINUTES}-${MAX_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`)
+  console.log(`Narrative pacing hard gate: child choice at ${(MIN_CHOICE_RATIO * 100).toFixed(0)}-${(MAX_CHOICE_RATIO * 100).toFixed(0)}% of total spoken story (editorial target about 50-60%); calm final coda at ${(MIN_CODA_RATIO * 100).toFixed(0)}-${(MAX_CODA_RATIO * 100).toFixed(0)}% (editorial target about 10-15%).`)
   console.log('Duration model: Episode 1 + confirmed choice resolution + Episode 2. 125/140/155 WPM are reported for visibility; 140 WPM is the release acceptance pace for normal expressive bedtime reading.')
-  console.log('bedtime duration check passed for all 12 closed-beta RU/UZ branches.')
+  console.log('bedtime duration and narrative pacing check passed for all 12 closed-beta RU/UZ branches.')
 } finally {
   await rm(temp, { recursive: true, force: true })
 }

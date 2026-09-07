@@ -91,6 +91,38 @@ const lengthGuidance = (context: NormalizedStoryContext): JsonRecord => {
   return { target_story_words: '260-420' }
 }
 
+const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord | null => {
+  if (context.ageGroup !== '5-7' || context.storyMode !== 'series' || context.storyMood !== 'bedtime') return null
+
+  if (context.episodeIndex === 1) {
+    return {
+      whole_story_rule: 'Episode 1, the selected choice resolution, and Episode 2 are three parts of ONE complete bedtime story, not separate stories.',
+      classical_shape: 'Use a clear beginning, middle, turning decision, consequence, resolution, and calm coda. Every event must follow causally from the same original goal.',
+      part_role: 'Episode 1 is the pre-choice half of the same story. It must establish one setting, one understandable goal/problem, develop it, then arrive naturally at one meaningful decision.',
+      beat_budget: [
+        'opening / orientation: about 70-100 words — who, where, bedtime atmosphere, and what normal evening looks like',
+        'gentle need / problem: about 80-110 words — introduce exactly one concrete goal that can be solved tonight',
+        'exploration / build-up: about 140-190 words — discover relevant details and possible approaches; do not add a second unrelated problem',
+        'choice setup: about 90-120 words — make both options understandable as two safe ways to solve the SAME established goal',
+      ],
+      choice_position: 'The child choice should occur around 50-60% of the full read-aloud, after enough context to care but before the original problem is solved.',
+      anti_pattern: 'Do not resolve the main problem and then ask a decorative choice. Do not make a chain of unrelated episodes. Do not repeat the same choice setup twice.',
+    }
+  }
+
+  return {
+    whole_story_rule: 'Episode 2 is the post-choice half of the SAME bedtime story that began in Episode 1. It is not a new episode in the literary sense.',
+    classical_shape: 'Continue from the confirmed choice, show its consequence, solve the original goal, then lower energy into a calm closed ending.',
+    part_role: 'Start immediately from the selected action or its visible consequence. Keep the same core situation and causal thread.',
+    beat_budget: [
+      'choice consequence / working solution: about 180-260 words — the chosen method changes what happens and carries the original goal toward resolution',
+      'resolution and bedtime coda: about 90-130 words — original problem clearly solved, loose ends closed, sensory energy reduced, final image feels complete and sleepy',
+    ],
+    continuity_rule: 'Do not reset to the next morning before resolving the choice. Do not introduce a new unrelated mission, missing object, new danger, or fresh problem merely to fill length.',
+    ending_rule: 'By roughly the final 10-15%, the main problem is already solved. The last paragraph is denouement/coda, not another plot beat. No cliffhanger and no promise that the child must continue tonight.',
+  }
+}
+
 const languageNames: Record<NormalizedStoryContext['language'], string> = {
   ru: 'Russian',
   uz: 'Uzbek (Latin script)',
@@ -256,10 +288,11 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
     'Never promote politics, religion, ideology, stereotypes, humiliation, shame, conditional parental love, bullying, adult themes, violence, or frightening unresolved danger.',
     'Do not contradict canon_state, prior choice consequences, relationships, or active arc.',
     'Choices must both be safe, understandable, genuinely different, and never punish the child for selecting one.',
-    'For bedtime mode, finish the episode calmly and without a cliffhanger, countdown, sudden threat, or unresolved fear.',
+    'For bedtime mode, finish the complete story calmly and without a cliffhanger, countdown, sudden threat, or unresolved fear.',
+    'For closed-beta bedtime series, Episode 1 and Episode 2 are technical delivery parts of one continuous story. Never write them as two unrelated stories.',
     'For episode 1, return exactly two choices. For episode 2, return no choices and visibly reflect the previous confirmed choice.',
     'For Russian only, return 2 or 3 gentle Russian-to-English vocabulary items. For Uzbek or Kazakh, return an empty vocabulary array.',
-    'Treat length_guidance as a hard product requirement. Do not compress a closed-beta bedtime episode below its target range.',
+    'Treat length_guidance and narrative_guidance as hard product requirements. Do not pad length with unrelated events, repeated exposition, or a second problem.',
   ].join(' ')
 
   const payload = {
@@ -267,6 +300,7 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
     language: languageNames[context.language],
     age_guidance: ageGuidance[context.ageGroup],
     length_guidance: lengthGuidance(context),
+    narrative_guidance: bedtimeNarrativeGuidance(context),
     mode: context.storyMood,
     story_type: context.storyMode,
     style: styleGuidance[context.stylePackId],
@@ -287,7 +321,7 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
       choices: context.episodeIndex === 1 ? 2 : 0,
       vocabulary_items: context.language === 'ru' ? '2-3' : 0,
       next_episode_preview: context.storyMode === 'series' && context.episodeIndex === 1
-        ? 'one calm sentence, no danger or cliffhanger'
+        ? 'one calm sentence about continuing the SAME unresolved story after the child chooses; no new problem or cliffhanger'
         : 'empty string',
       state_patch: 'small, structured, and limited to facts introduced in this episode',
     },

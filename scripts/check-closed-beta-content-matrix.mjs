@@ -15,6 +15,7 @@ const sourceNames = [
   'storyCoreReference',
   'storyBedtimeExpansion',
   'storyCozyForestBedtime',
+  'storyCozyForestBedtimeArc',
   'storyMagicGardenBedtime',
   'storyMagicGardenMemory',
   'storySpaceReference',
@@ -42,6 +43,7 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
   .replace(/['"]\.\/storyBedtimeExpansion\.ts['"]/g, "'./storyBedtimeExpansion.mjs'")
   .replace(/['"]\.\/storyCozyForestBedtime\.ts['"]/g, "'./storyCozyForestBedtime.mjs'")
+  .replace(/['"]\.\/storyCozyForestBedtimeArc\.ts['"]/g, "'./storyCozyForestBedtimeArc.mjs'")
   .replace(/['"]\.\/storyMagicGardenBedtime\.ts['"]/g, "'./storyMagicGardenBedtime.mjs'")
   .replace(/['"]\.\/storyMagicGardenMemory\.ts['"]/g, "'./storyMagicGardenMemory.mjs'")
   .replace(/['"]\.\/storySpaceReference\.ts['"]/g, "'./storySpaceReference.mjs'")
@@ -53,8 +55,13 @@ const wordCount = (text) => typeof text === 'string'
   ? text.trim().split(/\s+/u).filter(Boolean).length
   : 0
 
+const paragraphs = (text) => typeof text === 'string'
+  ? text.trim().split(/\n\s*\n/u).map((item) => item.trim()).filter(Boolean)
+  : []
+
 const technicalCopy = /state[_ -]?patch|episode[_ -]?id|series[_ -]?id|choice[_ -]?id|состояни[ея]\s+истории|техническ(?:ий|ая)\s+маркер/iu
 const unresolvedBedtime = /продолжение следует|davomi bor|страшн(?:ый|ая|ое)|dahshatli|погоня|quv(?:di|ish)|взрыв|portlash/iu
+const nextDayReset = /^(?:утром\b|на следующее утро\b|tongda\b|ertasi tongda\b)/iu
 
 const baseContext = (language, stylePackId) => ({
   ageGroup: '5-7',
@@ -113,11 +120,13 @@ try {
       const episodeOne = buildSafeFallback(context)
       const label = `${language}/${stylePackId}`
       const episodeOneWords = wordCount(episodeOne.story_text)
+      const episodeOneParagraphs = paragraphs(episodeOne.story_text)
       minimumEpisodeOneWords = Math.min(minimumEpisodeOneWords, episodeOneWords)
 
       assert(episodeOne.episode_id === `ep-1-${stylePackId}`, `${label}: wrong Episode 1 id.`)
       assert(episodeOne.series_id === context.seriesId, `${label}: Episode 1 lost series id.`)
       assert(episodeOneWords >= minBedtimeWords, `${label}: Episode 1 is below ${minBedtimeWords} words.`)
+      assert(episodeOneParagraphs.length >= 5, `${label}: Episode 1 does not have enough narrative beats.`)
       assert(Array.isArray(episodeOne.choices) && episodeOne.choices.length === 2, `${label}: Episode 1 must contain exactly two choices.`)
       assert(new Set(episodeOne.choices.map((choice) => choice.choice_id)).size === 2, `${label}: choice ids must be distinct.`)
       assert(Boolean(episodeOne.nextEpisodePreview?.trim()), `${label}: Episode 1 must expose a calm continuation preview.`)
@@ -142,10 +151,14 @@ try {
 
       for (const [branch, episodeTwo] of [['a', episodeTwoA], ['b', episodeTwoB]]) {
         const episodeTwoWords = wordCount(episodeTwo.story_text)
+        const episodeTwoParagraphs = paragraphs(episodeTwo.story_text)
         minimumEpisodeTwoWords = Math.min(minimumEpisodeTwoWords, episodeTwoWords)
         assert(episodeTwo.episode_id === `ep-2-${stylePackId}`, `${label}/${branch}: wrong Episode 2 id.`)
         assert(episodeTwo.series_id === context.seriesId, `${label}/${branch}: Episode 2 lost series id.`)
         assert(episodeTwoWords >= minBedtimeWords, `${label}/${branch}: Episode 2 is below ${minBedtimeWords} words.`)
+        assert(episodeTwoParagraphs.length >= 4, `${label}/${branch}: Episode 2 does not have enough consequence/resolution beats.`)
+        assert(!nextDayReset.test(episodeTwo.story_text.trim()), `${label}/${branch}: Episode 2 resets to a new day before resolving the child choice.`)
+        assert(wordCount(episodeTwoParagraphs.at(-1) ?? '') >= 40, `${label}/${branch}: calm ending/coda is too short.`)
         assert(Array.isArray(episodeTwo.choices) && episodeTwo.choices.length === 0, `${label}/${branch}: Episode 2 must contain zero choices.`)
         assert(episodeTwo.nextEpisodePreview === '', `${label}/${branch}: Episode 2 must not promise another episode.`)
         assert(episodeTwo.state_patch?.canon_updates?.remembered_choice === `choice-${branch}`, `${label}/${branch}: remembered branch is missing from canon patch.`)
@@ -160,7 +173,7 @@ try {
   }
 
   assert(passed === 12, `Closed-beta matrix expected 12 branches, got ${passed}.`)
-  console.log(`closed beta deterministic content matrix passed: 12/12 RU/UZ bedtime branches; minimum Episode 1=${minimumEpisodeOneWords} words, Episode 2=${minimumEpisodeTwoWords} words.`)
+  console.log(`closed beta deterministic content matrix passed: 12/12 RU/UZ bedtime branches; minimum Episode 1=${minimumEpisodeOneWords} words, Episode 2=${minimumEpisodeTwoWords} words; all continuations resolve in the same story arc.`)
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
