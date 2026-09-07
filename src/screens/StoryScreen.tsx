@@ -23,7 +23,22 @@ interface StoryScreenProps {
   onStartNewStory?: () => void
 }
 
-type StoryStage = 'reading' | 'choice' | 'resolution'
+type StoryStage = 'reading' | 'resolution'
+
+const memoryCopy: Record<Language, { label: string; helper: string }> = {
+  ru: {
+    label: 'QISSA запомнила выбор ✨',
+    helper: 'Этот выбор станет частью следующей главы.',
+  },
+  uz: {
+    label: 'QISSA tanlovni eslab qoldi ✨',
+    helper: 'Bu tanlov keyingi bobning bir qismiga aylanadi.',
+  },
+  kz: {
+    label: 'QISSA таңдауды есте сақтады ✨',
+    helper: 'Бұл таңдау келесі тараудың бір бөлігі болады.',
+  },
+}
 
 export function StoryScreen({
   language,
@@ -45,7 +60,6 @@ export function StoryScreen({
   const [previewChoiceId, setPreviewChoiceId] = useState<string | null>(null)
   const [showReaderSettings, setShowReaderSettings] = useState(false)
   const [showVocabulary, setShowVocabulary] = useState(false)
-  const [showConfirmedChoices, setShowConfirmedChoices] = useState(false)
 
   const narrativeTopRef = useRef<HTMLElement | null>(null)
 
@@ -87,7 +101,6 @@ export function StoryScreen({
   )
 
   const canConfirmChoice = Boolean(previewChoiceId && !isChoiceLocked && showChoicePanel)
-
   const canShowVocabulary = hasVocabulary && (isSeriesFinal || storyStage === 'resolution')
 
   useEffect(() => {
@@ -100,14 +113,12 @@ export function StoryScreen({
 
   useEffect(() => {
     setShowVocabulary(false)
-    setShowConfirmedChoices(false)
     setStoryStage(hasSavedChoiceForStage ? 'resolution' : 'reading')
   }, [episode.episode_id, hasSavedChoiceForStage])
 
   const handleReadAgain = () => {
     setViewMode('read')
     setShowVocabulary(false)
-    setShowConfirmedChoices(false)
     setStoryStage('reading')
 
     requestAnimationFrame(() => {
@@ -183,12 +194,10 @@ export function StoryScreen({
   const renderNarrativeCard = () => (
     <section ref={narrativeTopRef} className="q-card space-y-4 p-4 sm:p-5">
       <div className="flex items-center justify-between gap-2 px-1">
-        <div>
-          <p className="q-label mb-1">{t(language, 'story.narrative_title')}</p>
-        </div>
+        <p className="q-label mb-1">{t(language, 'story.narrative_title')}</p>
 
         {viewMode === 'read' ? (
-          <button className="q-secondary px-3 py-2 text-sm" onClick={() => setShowReaderSettings((v) => !v)}>
+          <button className="q-secondary px-3 py-2 text-sm" onClick={() => setShowReaderSettings((value) => !value)}>
             Aa
           </button>
         ) : null}
@@ -225,7 +234,7 @@ export function StoryScreen({
   )
 
   const renderChoiceStage = () => {
-    if (!showChoicePanel) return null
+    if (!showChoicePanel || isChoiceLocked) return null
 
     return (
       <section className="relative overflow-hidden rounded-[2rem] border border-[#eadfc9] bg-[#fffdf7]/90 p-5 shadow-[0_18px_44px_-34px_rgba(115,92,0,.65)]">
@@ -269,21 +278,11 @@ export function StoryScreen({
             })}
           </div>
 
-          <div className="grid gap-2.5">
-            {isChoiceLocked ? (
-              <button className="q-primary w-full" onClick={() => setStoryStage('resolution')}>
-                {t(language, 'story.back_to_result')}
-              </button>
-            ) : canConfirmChoice ? (
-              <button className="q-primary w-full" onClick={handleConfirmChoice}>
-                {t(language, 'story.confirm_choice')}
-              </button>
-            ) : null}
-
-            <button className="q-secondary w-full" onClick={() => setStoryStage('reading')}>
-              {t(language, 'story.back_to_story')}
+          {canConfirmChoice ? (
+            <button className="q-primary w-full" onClick={handleConfirmChoice}>
+              {t(language, 'story.confirm_choice')}
             </button>
-          </div>
+          ) : null}
         </div>
       </section>
     )
@@ -294,28 +293,21 @@ export function StoryScreen({
 
     return (
       <>
-        <section className="q-card space-y-3 p-4">
-          <p className="q-label text-[#35666b]">{t(language, 'story.your_choice')}</p>
-          <p className="text-base font-bold leading-snug text-[#24261f]">{effectiveConfirmedChoice.text}</p>
-
-          {showConfirmedChoices ? (
-            <div className="grid gap-3 pt-1">
-              {episode.choices.map((choice) => {
-                const isSelected = effectiveConfirmedChoice.choice_id === choice.choice_id
-
-                return (
-                  <div
-                    key={choice.choice_id}
-                    className={`rounded-[1.5rem] border px-4 py-4 text-left ${
-                      isSelected ? 'border-[#35666b] bg-[#eaf7f8]' : 'border-[#eadfc9] bg-[#fffdf7] opacity-45'
-                    }`}
-                  >
-                    <p className="mb-1 inline-flex rounded-full border border-[#eadfc9] bg-white px-2 py-0.5 text-xs">{choice.choice_icon ?? '✨'}</p>
-                    <p className="font-bold text-[#24261f]">{choice.text}</p>
-                  </div>
-                )
-              })}
+        <section className="rounded-[1.75rem] border border-[#b9d9d4] bg-[#edf8f6] p-5 shadow-[0_16px_40px_-32px_rgba(53,102,107,.95)]">
+          <p className="q-label mb-2 text-[#35666b]">{memoryCopy[language].label}</p>
+          <div className="flex items-start gap-3">
+            <span className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-full border border-[#b9d9d4] bg-white text-lg">
+              {effectiveConfirmedChoice.choice_icon ?? '✨'}
+            </span>
+            <div>
+              <p className="text-base font-bold leading-6 text-[#243c3b]">{effectiveConfirmedChoice.text}</p>
+              <p className="mt-1 text-sm leading-6 text-[#41615f]">{memoryCopy[language].helper}</p>
             </div>
+          </div>
+          {showTomorrowSeed ? (
+            <p className="mt-3 rounded-2xl border border-[#cce3df] bg-white/75 px-4 py-3 text-sm leading-6 text-[#41615f]">
+              {effectiveTomorrowSeedText}
+            </p>
           ) : null}
         </section>
 
@@ -323,13 +315,6 @@ export function StoryScreen({
           <h3 className="q-heading text-2xl font-bold leading-tight">{t(language, 'story.resolution_title')}</h3>
           <article className="q-story-text rounded-[1.75rem] border border-[#eadfc9] bg-[#fff8e9] p-6 text-lg leading-8 text-[#2b2b22] shadow-inner">
             <p>{effectiveResolutionText}</p>
-
-            {showTomorrowSeed ? (
-              <div className="mt-5 border-t border-[#e2d5be] pt-4">
-                <p className="q-label mb-2 text-[#735c00]">{t(language, 'story.tomorrow_seed_title')}</p>
-                <p className="text-base leading-7 text-[#4c4535]">{effectiveTomorrowSeedText}</p>
-              </div>
-            ) : null}
           </article>
         </section>
 
@@ -470,20 +455,13 @@ export function StoryScreen({
 
   const renderMainStage = () => {
     if (isSeriesFinal) return renderSeriesFinal()
-
-    if (storyStage === 'choice') return renderChoiceStage()
-
     if (storyStage === 'resolution') return renderResolutionStage()
 
     return (
       <>
         {renderNarrativeCard()}
         {renderReturnToResultCta()}
-        {showChoicePanel && !isChoiceLocked ? (
-          <button className="q-primary w-full" onClick={() => setStoryStage('choice')}>
-            {t(language, 'story.go_to_choice')}
-          </button>
-        ) : null}
+        {renderChoiceStage()}
       </>
     )
   }
