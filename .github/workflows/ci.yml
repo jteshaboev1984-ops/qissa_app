@@ -43,6 +43,9 @@ jobs:
       - name: Validate closed beta content matrix
         run: npm run check:beta-content
 
+      - name: Validate 5–10 minute bedtime session duration
+        run: npm run check:bedtime-duration
+
       - name: Validate localized fallback copy
         run: npm run check:localized-fallback
 
