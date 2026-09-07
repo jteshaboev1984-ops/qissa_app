@@ -47,7 +47,16 @@ Development must be zero-cost by default with respect to Story AI:
 - live Story AI smoke: **manual only**;
 - before a paid AI test, the operator must explicitly choose the expected generation source;
 - closed-beta guardrail: **5 story-generation requests per profile/installation per day** once real AI is enabled;
+- there is **no project-wide/global daily cap in the current approved beta scope**; do not add one without a separate product decision;
 - fallback content remains the graceful failure mode rather than exposing provider errors to the child.
+
+Production hardening status as of 2026-09-07:
+
+- the Supabase database migration for the installation-scoped, atomic **5/day** claim has been applied and verified;
+- `anon` and `authenticated` cannot execute the claim function; `service_role` can;
+- a transactional production test confirmed claims 1–5 are allowed and claim 6 is denied, with the test rolled back and no test usage left behind;
+- the updated `story-generate` cost-guard source is merged to `main`, but the currently deployed Edge Function still predates that change;
+- therefore **do not enable real Story AI in production until the updated Edge Function is deployed and a zero-cost/fail-closed smoke check is completed**.
 
 The Story Agent is a launch capability, not a requirement for every development or CI run.
 
