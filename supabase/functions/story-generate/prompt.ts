@@ -53,23 +53,42 @@ const styleGuidance: Record<NormalizedStoryContext['stylePackId'], JsonRecord> =
 
 const ageGuidance: Record<NormalizedStoryContext['ageGroup'], JsonRecord> = {
   '3-4': {
-    target_words: '120-190',
     sentences: 'short, concrete, mostly 5-10 words',
     plot: 'one simple event, repetition is welcome',
     abstract_language: 'minimal',
   },
   '5-7': {
-    target_words: '180-300',
     sentences: 'clear, varied, mostly 7-14 words',
     plot: 'one goal and one gentle obstacle',
     abstract_language: 'light and explained through action',
   },
   '8-9': {
-    target_words: '260-420',
     sentences: 'clear but richer, mostly 9-18 words',
     plot: 'one goal, one discovery, one meaningful consequence',
     abstract_language: 'moderate but child-friendly',
   },
+}
+
+const lengthGuidance = (context: NormalizedStoryContext): JsonRecord => {
+  if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
+    return context.episodeIndex === 1
+      ? {
+          target_story_words: '400-520',
+          choice_resolution_words: '20-60 for each of the two choices',
+          full_session_contract: 'Episode 1 + the selected choice resolution + Episode 2 must total 700-1400 words.',
+          acceptance_pace: '140 words per minute for a 5-10 minute expressive bedtime read-aloud',
+        }
+      : {
+          target_story_words: '280-450',
+          choice_resolution_words: 'not applicable; episode 2 has no new choice',
+          full_session_contract: 'Episode 1 + the previously selected choice resolution + Episode 2 must total 700-1400 words.',
+          acceptance_pace: '140 words per minute for a 5-10 minute expressive bedtime read-aloud',
+        }
+  }
+
+  if (context.ageGroup === '3-4') return { target_story_words: '120-190' }
+  if (context.ageGroup === '5-7') return { target_story_words: '180-300' }
+  return { target_story_words: '260-420' }
 }
 
 const languageNames: Record<NormalizedStoryContext['language'], string> = {
@@ -240,12 +259,14 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
     'For bedtime mode, finish the episode calmly and without a cliffhanger, countdown, sudden threat, or unresolved fear.',
     'For episode 1, return exactly two choices. For episode 2, return no choices and visibly reflect the previous confirmed choice.',
     'For Russian only, return 2 or 3 gentle Russian-to-English vocabulary items. For Uzbek or Kazakh, return an empty vocabulary array.',
+    'Treat length_guidance as a hard product requirement. Do not compress a closed-beta bedtime episode below its target range.',
   ].join(' ')
 
   const payload = {
     task: context.isContinuation ? 'Generate episode 2 continuation' : 'Generate episode 1',
     language: languageNames[context.language],
     age_guidance: ageGuidance[context.ageGroup],
+    length_guidance: lengthGuidance(context),
     mode: context.storyMood,
     story_type: context.storyMode,
     style: styleGuidance[context.stylePackId],
