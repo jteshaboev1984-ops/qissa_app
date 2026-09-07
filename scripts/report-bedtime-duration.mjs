@@ -7,6 +7,11 @@ import ts from 'typescript'
 const root = process.cwd()
 const worlds = ['cozy_forest', 'magic_garden', 'stars_and_space']
 const languages = ['ru', 'uz']
+const EXPRESSIVE_ACCEPTANCE_WPM = 140
+const MIN_SESSION_MINUTES = 5
+const MAX_SESSION_MINUTES = 10
+const MIN_SESSION_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * MIN_SESSION_MINUTES
+const MAX_SESSION_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * MAX_SESSION_MINUTES
 const sourceNames = [
   'contracts',
   'storyCoreBranches',
@@ -22,6 +27,10 @@ const sourceNames = [
   'storySpaceMemory',
   'fallback',
 ]
+
+const assert = (condition, message) => {
+  if (!condition) throw new Error(message)
+}
 
 const transpile = (source) => ts.transpileModule(source, {
   compilerOptions: {
@@ -109,15 +118,25 @@ try {
         const resolutionWords = wordCount(choice.resolution_text ?? choice.effect_summary ?? '')
         const episodeTwoWords = wordCount(episodeTwo.story_text)
         const totalWords = episodeOneWords + resolutionWords + episodeTwoWords
+        const scenario = `${language}/${stylePackId}/${branch}`
+
+        assert(
+          totalWords >= MIN_SESSION_WORDS,
+          `${scenario}: ${totalWords} words is below the ${MIN_SESSION_WORDS}-word floor required for ${MIN_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`,
+        )
+        assert(
+          totalWords <= MAX_SESSION_WORDS,
+          `${scenario}: ${totalWords} words exceeds the ${MAX_SESSION_WORDS}-word ceiling for ${MAX_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`,
+        )
 
         rows.push({
-          scenario: `${language}/${stylePackId}/${branch}`,
+          scenario,
           ep1: episodeOneWords,
           resolution: resolutionWords,
           ep2: episodeTwoWords,
           total: totalWords,
           min125: minutesAt(totalWords, 125),
-          min140: minutesAt(totalWords, 140),
+          min140: minutesAt(totalWords, EXPRESSIVE_ACCEPTANCE_WPM),
           min155: minutesAt(totalWords, 155),
         })
       }
@@ -127,7 +146,9 @@ try {
   console.table(rows)
   const totals = rows.map((row) => row.total)
   console.log(`Bedtime session range: ${Math.min(...totals)}-${Math.max(...totals)} words.`)
-  console.log('Duration model: total story text = Episode 1 + confirmed choice resolution + Episode 2. Rates shown at 125/140/155 words per minute.')
+  console.log(`Acceptance band: ${MIN_SESSION_WORDS}-${MAX_SESSION_WORDS} words = ${MIN_SESSION_MINUTES}-${MAX_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`)
+  console.log('Duration model: Episode 1 + confirmed choice resolution + Episode 2. 125/140/155 WPM are reported for visibility; 140 WPM is the release acceptance pace for normal expressive bedtime reading.')
+  console.log('bedtime duration check passed for all 12 closed-beta RU/UZ branches.')
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
