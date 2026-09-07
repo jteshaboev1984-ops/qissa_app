@@ -7,6 +7,9 @@ const stateEndpoint = process.env.QISSA_STATE_ENDPOINT?.trim()
 const publishableKey = process.env.QISSA_SUPABASE_ANON_KEY?.trim()
 const consentVersion = '2026-06-25-v1'
 const minBedtimeWords = 160
+const expressiveAcceptanceWpm = 140
+const minSessionWords = expressiveAcceptanceWpm * 5
+const maxSessionWords = expressiveAcceptanceWpm * 10
 
 if (!publishableKey) {
   console.error('QISSA_SUPABASE_ANON_KEY is required for the closed-beta live smoke test.')
@@ -221,6 +224,12 @@ const runScenario = async ({ language, stylePackId, branchIndex }) => {
     assert(Array.isArray(episodeTwo.choices) && episodeTwo.choices.length === 0, `${label}: episode 2 must not offer another choice`)
     assert(wordCount(episodeTwo.story_text) >= minBedtimeWords, `${label}: episode 2 is below ${minBedtimeWords} words`)
 
+    const totalWords = wordCount(episodeOne.story_text)
+      + wordCount(choice.resolution_text ?? choice.effect_summary ?? '')
+      + wordCount(episodeTwo.story_text)
+    assert(totalWords >= minSessionWords, `${label}: ${totalWords} words is below the 5-minute production floor (${minSessionWords} words at ${expressiveAcceptanceWpm} WPM)`)
+    assert(totalWords <= maxSessionWords, `${label}: ${totalWords} words exceeds the 10-minute production ceiling (${maxSessionWords} words at ${expressiveAcceptanceWpm} WPM)`)
+
     const finalState = { ...afterChoice, episodeCount: 2 }
     const syncTwo = await invokeJson(stateEndpoint, {
       action: 'sync_generated',
@@ -254,7 +263,7 @@ const runScenario = async ({ language, stylePackId, branchIndex }) => {
     })
     assert(afterDeletion.body?.snapshot === null, `${label}: data still loads after deletion`)
 
-    console.log(`PASS ${label}`)
+    console.log(`PASS ${label} · ${totalWords} words · ${(totalWords / expressiveAcceptanceWpm).toFixed(2)} min @ ${expressiveAcceptanceWpm} WPM`)
   } finally {
     if (profileCreated) {
       try {
@@ -281,4 +290,4 @@ for (const language of languages) {
   }
 }
 
-console.log(`Closed-beta production E2E passed: ${passed}/12 scenarios, all provider-free and deleted after verification.`)
+console.log(`Closed-beta production E2E passed: ${passed}/12 scenarios, all provider-free, within the 5–10 minute bedtime duration contract, and deleted after verification.`)
