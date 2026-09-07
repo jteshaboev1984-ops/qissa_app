@@ -85,6 +85,43 @@ const requestAudio = async (input: AudioRequestInput, origin: string | null) => 
   return generateAudio(owned, voice, speed, cacheKey, textVersion, origin)
 }
 
+const loadProgress = async (input: AudioRequestInput, origin: string | null) => {
+  const { installationId, seriesId, episodeId } = input
+  if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
+  if (!isClientStoryId(seriesId) || !isClientStoryId(episodeId)) {
+    return fail('invalid_episode_identity', 422, origin)
+  }
+
+  let owned: OwnedEpisode | null
+  try {
+    owned = await findOwnedEpisode(installationId, seriesId, episodeId)
+  } catch (error) {
+    console.error('progress context load failed', error)
+    return fail('audio_context_load_failed', 500, origin)
+  }
+  if (!owned) return fail('episode_not_found', 404, origin)
+
+  const { data, error } = await admin
+    .from('playback_progress')
+    .select('audio_asset_id,position_seconds,speed,completed,updated_at')
+    .eq('child_profile_id', owned.profile.id)
+    .eq('episode_id', owned.episode.id)
+    .maybeSingle()
+
+  if (error) return fail('playback_progress_load_failed', 500, origin)
+  if (!data) return json({ progress: null }, 200, origin)
+
+  return json({
+    progress: {
+      audioAssetId: typeof data.audio_asset_id === 'string' ? data.audio_asset_id : null,
+      positionSeconds: typeof data.position_seconds === 'number' ? data.position_seconds : 0,
+      speed: isAudioSpeed(data.speed) ? data.speed : 1,
+      completed: data.completed === true,
+      updatedAt: typeof data.updated_at === 'string' ? data.updated_at : null,
+    },
+  }, 200, origin)
+}
+
 const saveProgress = async (input: AudioRequestInput, origin: string | null) => {
   const { installationId, seriesId, episodeId, speed = 1, positionSeconds, completed, audioAssetId } = input
   if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
@@ -149,6 +186,7 @@ Deno.serve(async (request: Request) => {
   }
 
   if (input.action === 'request_audio') return requestAudio(input, origin)
+  if (input.action === 'load_progress') return loadProgress(input, origin)
   if (input.action === 'save_progress') return saveProgress(input, origin)
   return fail('unsupported_action', 400, origin)
 })

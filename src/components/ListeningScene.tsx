@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { listeningCopy } from '../i18n/listening'
 import { t } from '../lib/i18n'
-import { useDeviceNarration } from '../lib/useDeviceNarration'
+import { useHybridNarration } from '../lib/useHybridNarration'
 import type { Episode, Language, ReaderPreferences, StylePack } from '../types/qissa'
 import { StylePackCover } from './StylePackCover'
 import { VoiceSelector } from './VoiceSelector'
@@ -38,12 +38,11 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
   const copy = listeningCopy[language]
   const isNightMode = preferences.audioOnlyNightMode
   const showText = preferences.showTextWithAudio && !isNightMode
-  const speechSupported = typeof window !== 'undefined' &&
-    'speechSynthesis' in window &&
-    typeof SpeechSynthesisUtterance !== 'undefined'
   const playbackId = `${episode.series_id}:${episode.episode_id}`
-  const narration = useDeviceNarration({
+  const narration = useHybridNarration({
     playbackId,
+    seriesId: episode.series_id,
+    episodeId: episode.episode_id,
     text: episode.story_text,
     language,
     voicePresetId: preferences.voicePresetId,
@@ -53,16 +52,20 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
     setShowVoiceSelector(false)
   }, [episode.episode_id, episode.series_id])
 
-  const unavailable = !speechSupported || narration.status === 'unavailable'
-  const statusMessage = unavailable
-    ? copy.unavailable
-    : narration.status === 'error'
-      ? copy.error
-      : narration.isCompleted
-        ? copy.completed
-        : narration.positionSeconds > 0
-          ? copy.resumeHint
-          : copy.ready
+  const unavailable = narration.isUnavailable
+  const statusMessage = narration.isLoading
+    ? copy.preparing
+    : narration.usingDeviceFallback
+      ? copy.deviceFallback
+      : unavailable
+        ? copy.unavailable
+        : narration.status === 'error'
+          ? copy.error
+          : narration.isCompleted
+            ? copy.completed
+            : narration.positionSeconds > 0
+              ? copy.resumeHint
+              : copy.ready
 
   return (
     <div className={`space-y-4 rounded-[2rem] border p-4 text-[#f8f2e7] transition-colors duration-300 ${
@@ -80,6 +83,12 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
       >
         {statusMessage}
       </p>
+
+      {narration.requiresAiVoiceDisclosure ? (
+        <p className="rounded-xl border border-[#5b665f] bg-white/[0.04] px-3 py-2 text-[11px] leading-5 text-[#cfc7b5]">
+          {copy.aiVoiceDisclosure}
+        </p>
+      ) : null}
 
       {isNightMode ? (
         <div className="rounded-[1.75rem] border border-white/8 bg-white/[0.03] px-5 py-8 text-center">
@@ -107,7 +116,7 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
             step={1}
             value={Math.min(narration.positionSeconds, Math.max(1, narration.durationSeconds))}
             onChange={(event) => narration.seekTo(Number(event.target.value))}
-            disabled={narration.durationSeconds <= 0 || unavailable}
+            disabled={narration.durationSeconds <= 0 || unavailable || narration.isLoading}
             aria-label={t(language, 'listen.progress')}
             className="mt-3 h-2 w-full cursor-pointer accent-[#b9ebf2] disabled:cursor-not-allowed disabled:opacity-50"
           />
@@ -117,22 +126,22 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
           <button
             className="min-h-12 rounded-full border border-white/10 bg-white/8 px-4 py-3 text-sm font-bold text-[#f8f2e7] disabled:opacity-40"
             onClick={() => narration.seekBy(-10)}
-            disabled={narration.durationSeconds <= 0 || unavailable}
+            disabled={narration.durationSeconds <= 0 || unavailable || narration.isLoading}
           >
             {t(language, 'listen.back_10')}
           </button>
           <button
             className="h-16 w-16 rounded-full bg-gradient-to-b from-[#f0cd58] to-[#d4af37] text-sm font-black text-[#2b2100] shadow-[0_18px_35px_-22px_rgba(212,175,55,.9)] disabled:cursor-not-allowed disabled:opacity-45"
             onClick={narration.isPlaying ? narration.pause : narration.play}
-            disabled={unavailable}
+            disabled={unavailable || narration.isLoading}
             aria-label={narration.isPlaying ? t(language, 'listen.pause') : t(language, 'listen.play')}
           >
-            {narration.isPlaying ? '⏸' : '▶'}
+            {narration.isLoading ? '…' : narration.isPlaying ? '⏸' : '▶'}
           </button>
           <button
             className="min-h-12 rounded-full border border-white/10 bg-white/8 px-4 py-3 text-sm font-bold text-[#f8f2e7] disabled:opacity-40"
             onClick={() => narration.seekBy(10)}
-            disabled={narration.durationSeconds <= 0 || unavailable}
+            disabled={narration.durationSeconds <= 0 || unavailable || narration.isLoading}
           >
             {t(language, 'listen.forward_10')}
           </button>
@@ -145,7 +154,7 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
               <button
                 key={speed}
                 onClick={() => narration.changeSpeed(speed)}
-                disabled={unavailable}
+                disabled={unavailable || narration.isLoading}
                 className={`rounded-full px-3 py-1.5 text-xs font-bold disabled:opacity-40 ${
                   narration.speed === speed ? 'bg-[#b9ebf2] text-[#12373b]' : 'border border-white/10 text-[#f8f2e7]'
                 }`}
@@ -179,7 +188,7 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
             <span
               key={segment.id}
               className={`rounded-md px-0.5 transition-colors duration-300 ${
-                index === narration.currentSegmentIndex && narration.status !== 'idle'
+                index === narration.currentSegmentIndex && narration.status !== 'idle' && narration.status !== 'loading'
                   ? 'bg-[#f4d86a]/55'
                   : ''
               }`}
