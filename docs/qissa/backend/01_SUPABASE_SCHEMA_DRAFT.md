@@ -1,9 +1,9 @@
 # QISSA MVP Supabase Schema Draft
 
-Status: draft for future MVP backend implementation. No live integration in current prototype.
+Status: historical/core schema design aligned to the current contract values. Production has since been implemented and extended by the ordered SQL migrations in `docs/qissa/backend/migrations/`; use those migrations plus the live launch-baseline audit for deployed details.
 
 ## Scope
-This schema supports only the current MVP flow:
+This core schema supports:
 - child profile setup;
 - story session state;
 - generated episode storage;
@@ -11,12 +11,14 @@ This schema supports only the current MVP flow:
 - safety review records;
 - minimal app events.
 
+Later migrations add remote persistence keys, archive state, privacy-consent evidence, deletion indexes, audio-cache foundations and Story AI cost controls.
+
 ## Core Tables
 
 ### 1) `child_profiles`
 Purpose: persist onboarding/setup profile for one child story context with minimal data.
 
-Suggested columns:
+Suggested/core columns:
 - `id uuid primary key default gen_random_uuid()`
 - `parent_user_id uuid null` (future auth ownership)
 - `display_name text null`
@@ -31,12 +33,13 @@ Suggested columns:
 
 Notes:
 - keep personal data minimal; no birthdate, school, address, exact identity data;
-- `parent_user_id` is future scope and nullable in MVP backend phase.
+- `parent_user_id` remains future account-ownership scope and nullable in the current architecture;
+- privacy-consent evidence is added by a later migration.
 
 ### 2) `story_sessions`
 Purpose: one one-time or series session lifecycle.
 
-Suggested columns:
+Suggested/core columns:
 - `id uuid primary key default gen_random_uuid()`
 - `child_profile_id uuid not null references child_profiles(id) on delete cascade`
 - `story_mode text not null`
@@ -53,10 +56,12 @@ Suggested columns:
 - `updated_at timestamptz not null default now()`
 - `completed_at timestamptz null`
 
-### 3) `story_episodes`
-Purpose: persist generated/mock episode payload.
+Remote client-session identity and archive fields are added by later migrations.
 
-Suggested columns:
+### 3) `story_episodes`
+Purpose: persist generated episode payloads.
+
+Suggested/core columns:
 - `id uuid primary key default gen_random_uuid()`
 - `session_id uuid not null references story_sessions(id) on delete cascade`
 - `episode_no int not null`
@@ -72,15 +77,20 @@ Suggested columns:
 - `next_episode_preview text null`
 - `created_at timestamptz not null default now()`
 
+Remote client-episode identity and full domain payload fields are added by later migrations.
+
 ### 4) `story_choices`
 Purpose: store displayed choice options per episode.
 
-Suggested columns:
+Suggested/core columns:
 - `id uuid primary key default gen_random_uuid()`
 - `episode_id uuid not null references story_episodes(id) on delete cascade`
 - `choice_id text not null`
 - `text text not null`
 - `effect_summary text not null`
+- `resolution_text text null`
+- `tomorrow_seed text null`
+- `choice_icon text null`
 - `state_patch jsonb not null default '{}'::jsonb`
 - `value_alignment text[] not null default '{}'::text[]`
 - `display_order int not null default 0`
@@ -88,7 +98,7 @@ Suggested columns:
 ### 5) `story_choice_events`
 Purpose: persisted confirmed selection event.
 
-Suggested columns:
+Suggested/core columns:
 - `id uuid primary key default gen_random_uuid()`
 - `session_id uuid not null references story_sessions(id) on delete cascade`
 - `episode_id uuid not null references story_episodes(id) on delete cascade`
@@ -99,7 +109,7 @@ Suggested columns:
 ### 6) `safety_reviews`
 Purpose: record explicit safety checks/actions for episodes.
 
-Suggested columns:
+Suggested/core columns:
 - `id uuid primary key default gen_random_uuid()`
 - `episode_id uuid not null references story_episodes(id) on delete cascade`
 - `status text not null`
@@ -111,7 +121,7 @@ Suggested columns:
 ### 7) `app_events`
 Purpose: minimal diagnostics/audit events for backend stages.
 
-Suggested columns:
+Suggested/core columns:
 - `id uuid primary key default gen_random_uuid()`
 - `child_profile_id uuid null references child_profiles(id) on delete set null`
 - `session_id uuid null references story_sessions(id) on delete set null`
@@ -120,10 +130,10 @@ Suggested columns:
 - `created_at timestamptz not null default now()`
 
 ## Enum-like Check Constraint Recommendations
-Use `text + check` in MVP for flexibility, then promote to PostgreSQL enums after schema stabilizes.
+The implemented MVP uses `text + check` for flexibility.
 
-Recommended checks:
-- `child_profiles.age_group in ('3-5','6-8','9-10')`
+Current canonical contract values:
+- `child_profiles.age_group in ('3-4','5-7','8-9')`
 - `child_profiles.language in ('ru','uz','kz')`
 - `child_profiles.hero_type in ('girl_hero','boy_hero','animal','magical_hero','custom')`
 - `story_sessions.story_mode in ('one_time','series')`
@@ -135,10 +145,13 @@ Recommended checks:
 - `safety_reviews.risk_level in ('low','medium','high')`
 - `safety_reviews.required_action in ('publish','regenerate','fallback','block')`
 
+Legacy client values `3-5`, `6-8`, `9-10` are migration inputs only and are normalized client-side to `3-4`, `5-7`, `8-9`; they are not current backend contract values.
+
 ## Unique Constraints
-- `story_episodes`: unique `(session_id, episode_no)`.
+- `story_episodes`: unique episode identity within a session (see current migrations for deployed client/server ID constraints).
 - `story_choices`: unique `(episode_id, choice_id)`.
 - `story_choice_events`: unique `(session_id, episode_id)` to enforce one confirmed choice per episode path.
+- `safety_reviews`: later migration makes `episode_id` idempotent/unique for upsert behavior.
 
 ## Index Recommendations
 - `story_sessions(child_profile_id, updated_at desc)`
@@ -148,24 +161,25 @@ Recommended checks:
 - `safety_reviews(episode_id, checked_at desc)`
 - `app_events(event_name, created_at desc)`
 
+Later migrations contain the deployed privacy/audio indexes. Do not remove production indexes solely because they are currently reported as unused before beta traffic exists.
+
 ## `updated_at` Trigger Recommendation
 Use a shared `set_updated_at()` trigger function and add it to:
 - `child_profiles`
 - `story_sessions`
 
-(Optionally also to mutable future tables if update-heavy.)
+The production hardening migration fixes the function `search_path`; RLS remains enabled on exposed public tables.
 
-## Intentionally Excluded from MVP Schema
-- parent auth/account tables;
+## Intentionally Excluded from Core Story Schema
+- parent auth/account implementation;
 - billing/subscriptions/payments;
 - social features;
 - voice cloning assets;
 - AI image generation assets;
 - full analytics warehouse.
 
-These are future scope and intentionally out-of-scope for current MVP backend foundation.
+The audio-cache foundation is implemented separately and is not part of this original core-story table list.
 
-
-Note on choice identifiers:
+## Choice identifier note
 - `story_choices.choice_id` is the visible/story choice key (`choice_id text`) in episode payloads.
 - `story_choice_events.story_choice_id` is the database UUID foreign key to `story_choices.id`.
