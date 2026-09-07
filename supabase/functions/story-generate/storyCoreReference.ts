@@ -2,7 +2,8 @@ import type { NormalizedStoryContext } from './contracts.ts'
 import { bedtimeEpisodeOneExpansion } from './storyBedtimeExpansion.ts'
 import { cozyForestBedtimeContinuation, cozyForestBedtimeEpisodeOne } from './storyCozyForestBedtime.ts'
 import { cozyForestBedtimeArcContinuation } from './storyCozyForestBedtimeArc.ts'
-import { magicGardenContinuation, magicGardenEpisodeOne, magicGardenTitle } from './storyMagicGardenBedtime.ts'
+import { magicGardenEpisodeOne, magicGardenTitle } from './storyMagicGardenBedtime.ts'
+import { magicGardenBedtimeArcContinuation } from './storyMagicGardenBedtimeArc.ts'
 import { spaceBedtimeContinuation, spaceBedtimeEpisodeOne, spaceBedtimeTitle } from './storySpaceBedtime.ts'
 
 type ClosedBetaLanguage = 'ru' | 'uz'
@@ -91,7 +92,7 @@ export const referenceContinuationStory = (
   const spaceLanguage = getClosedBetaLanguage(context, 'stars_and_space')
 
   if (cozyLanguage) return cozyForestBedtimeArcContinuation[cozyLanguage][branch]
-  if (magicLanguage) return magicGardenContinuation[magicLanguage][branch]
+  if (magicLanguage) return magicGardenBedtimeArcContinuation[magicLanguage][branch]
   if (spaceLanguage) return spaceBedtimeContinuation[spaceLanguage][branch]
   return fallbackText
 }
