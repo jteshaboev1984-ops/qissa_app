@@ -230,6 +230,18 @@ const normalizeSpace = (value: string) => value.replace(/[\u0000-\u001f\u007f]/g
 export const compactText = (value: unknown, maxLength: number): string =>
   typeof value === 'string' ? normalizeSpace(value).slice(0, maxLength) : ''
 
+const normalizeStoryLayout = (value: string): string => value
+  .replace(/\r\n?/g, '\n')
+  .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, ' ')
+  .split(/\n{2,}/u)
+  .map((paragraph) => paragraph.replace(/\s+/gu, ' ').trim())
+  .filter(Boolean)
+  .join('\n\n')
+  .trim()
+
+export const compactStoryText = (value: unknown, maxLength: number): string =>
+  typeof value === 'string' ? normalizeStoryLayout(value).slice(0, maxLength).trim() : ''
+
 const safeName = (value: unknown): string | null => {
   const normalized = compactText(value, 32)
   if (!normalized) return null
@@ -395,7 +407,7 @@ export const buildFinalEpisode = (
   episode_id: `ep-${context.episodeIndex}-${context.stylePackId}`,
   series_id: context.seriesId,
   title: replaceHeroToken(compactText(candidate.title, 120), context.heroName),
-  story_text: replaceHeroToken(compactText(candidate.story_text, 6000), context.heroName),
+  story_text: replaceHeroToken(compactStoryText(candidate.story_text, 6000), context.heroName),
   mode: context.storyMode,
   mood: context.storyMood,
   stylePackId: context.stylePackId,
