@@ -5,6 +5,7 @@ const onboardingSteps = readFileSync('src/features/onboarding/onboardingSteps.ts
 const onboarding = readFileSync('src/features/onboarding/OnboardingFlow.tsx', 'utf8')
 const app = readFileSync('src/App.tsx', 'utf8')
 const story = readFileSync('src/screens/StoryScreen.tsx', 'utf8')
+const parent = readFileSync('src/screens/ParentScreen.tsx', 'utf8')
 const welcome = readFileSync('src/screens/WelcomeScreen.tsx', 'utf8')
 
 const assert = (condition, message) => {
@@ -29,5 +30,17 @@ assert(story.includes("type StoryStage = 'reading' | 'resolution'"), 'Story flow
 assert(!story.includes("t(language, 'story.go_to_choice')"), 'Choice cards must remain inline after the story.')
 assert(story.includes('QISSA запомнила выбор ✨'), 'The remembered-choice moment must remain visually explicit.')
 assert(welcome.includes('<details'), 'Consent details must stay available without dominating first launch.')
+
+assert(
+  parent.includes('Формат серии и режим «Перед сном» остаются фиксированными.') &&
+    parent.includes('Serial formati va «Uyqu oldidan» rejimi o‘zgarmaydi.'),
+  'Parent Center must tell RU/UZ families that story format and bedtime mode are fixed in the closed beta.',
+)
+assert(
+  !parent.includes('другими мирами и настроением') &&
+    !parent.includes('boshqa dunyo va kayfiyat') &&
+    !parent.includes('басқа әлем және көңіл күй'),
+  'Parent Center must not imply that closed-beta families can change mood or format when only world changes are exposed.',
+)
 
 console.log('closed beta scope check passed.')
