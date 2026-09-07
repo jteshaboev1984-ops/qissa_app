@@ -197,7 +197,7 @@ const spaceFirstResult = await invoke(spacePayload)
 const spaceEpisodeOne = validateEpisodeOne(spaceFirstResult, 'ru', spaceHero, 'stars_and_space')
 
 if (spaceFirstResult.source === 'safe-fallback') {
-  assert(spaceEpisodeOne.title === 'Маяк над станцией «Люмен»', 'space: editorial Episode 1 title is not deployed')
+  assert(spaceEpisodeOne.title === 'Тихий сигнал станции «Люмен»', 'space: current bedtime Episode 1 title is not deployed')
   assert(wordCount(spaceEpisodeOne.story_text) >= 160, 'space: Episode 1 is still the short generic fallback')
   assert(!technicalStoryLanguage.test(`${spaceEpisodeOne.title} ${spaceEpisodeOne.story_text}`), 'space: Episode 1 exposes technical copy')
   assert(!nauticalSpaceCopy.test(`${spaceEpisodeOne.title} ${spaceEpisodeOne.story_text}`), 'space: nautical docking copy is still deployed')
