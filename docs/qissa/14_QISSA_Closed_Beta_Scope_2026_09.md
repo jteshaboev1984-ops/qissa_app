@@ -55,8 +55,14 @@ Production hardening status as of 2026-09-07:
 - the Supabase database migration for the installation-scoped, atomic **5/day** claim has been applied and verified;
 - `anon` and `authenticated` cannot execute the claim function; `service_role` can;
 - a transactional production test confirmed claims 1–5 are allowed and claim 6 is denied, with the test rolled back and no test usage left behind;
-- the updated `story-generate` cost-guard source is merged to `main`, but the currently deployed Edge Function still predates that change;
-- therefore **do not enable real Story AI in production until the updated Edge Function is deployed and a zero-cost/fail-closed smoke check is completed**.
+- `story-generate` has been deployed as production Edge Function **v15** with `verify_jwt=true` from the accepted closed-beta Story Core source;
+- a zero-cost production preflight confirmed Story AI remains disabled and the endpoint returns `safe-fallback` rather than invoking a paid provider;
+- the full provider-free production E2E matrix passed **12/12** scenarios: RU/UZ × Cozy Forest/Magic Garden/Stars & Space × both choice branches;
+- every scenario verified Episode 1 generation, persistence, confirmed choice, remembered consequence, Episode 2 generation, reload from persisted state and profile deletion;
+- post-run database verification found **0** recent smoke profiles and **0** recent smoke sessions, so the acceptance run left no test story data behind;
+- the temporary one-shot GitHub Actions workflow used for this acceptance run was deleted after verification.
+
+Real Story AI remains intentionally disabled for the closed-beta hardening stage. Enabling it is a separate release decision and should be followed by a deliberately paid, manual acceptance run.
 
 The Story Agent is a launch capability, not a requirement for every development or CI run.
 
