@@ -9,14 +9,18 @@ export const bedtimeEpisodeOneExpansion: Record<ClosedBetaWorld, Record<ClosedBe
 
 {{HERO}} предложил всем сделать короткую остановку. Зверята сели полукругом, послушали ручей и несколько раз спокойно вдохнули прохладный вечерний воздух. Светлячки опустились ближе и зажглись мягче. Никто уже не смотрел на развилку как на трудность: она стала просто местом, где друзья решают, как удобнее идти дальше.
 
-Нура напомнила, что фонарики дадут понятные световые отметки, а тихая песня поможет всем держаться рядом и слышать друг друга. Оба способа были хорошими, только по-разному. {{HERO}} ещё раз посмотрел на сонных друзей, на луну между ветками и на две спокойные возможности перед собой. Теперь можно было выбрать без спешки: зажечь тёплые фонарики вдоль тропинки или позвать всех негромкой песней.`,
+Нура напомнила, что фонарики дадут понятные световые отметки, а тихая песня поможет всем держаться рядом и слышать друг друга. Оба способа были хорошими, только по-разному. {{HERO}} ещё раз посмотрел на сонных друзей, на луну между ветками и на две спокойные возможности перед собой. Теперь можно было выбрать без спешки: зажечь тёплые фонарики вдоль тропинки или позвать всех негромкой песней.
+
+На несколько секунд все замолчали. Где-то капнула вода с листа, кролик снова тихо зевнул, а Нура прикрыла глаза. В лесу было так спокойно, что даже решение казалось частью вечернего отдыха, а не задачей, которую нужно решить поскорее.`,
     uz: `Ammo {{HERO}} darrov tanlamadi. Avval chorrahada kutib turgan do‘stlarining yoniga birma-bir bordi. Kichik olmaxonning savat tasmasi buralib qolgan ekan, {{HERO}} uni to‘g‘rilab berdi. Kichkina quyoncha qattiq esnadi, akasi esa kulib, sharfini uning yelkasiga yopdi. Toshbaqa shoshmaslik yaxshi ekanini aytdi: hamma birga yursa, yo‘l baribir uyga olib boradi.
 
 Boyqush Nura pastroq shoxga uchib tushdi va yomg‘irdan keyin yo‘l faqat ozgina o‘zgarganini ko‘rsatdi. Qayin yonida dumaloq ko‘lmak yaltirar, ariq bo‘yida uzun maysa egilib turar, katta tosh ustidagi moxda esa oy aks etgan tomchi ko‘rinardi. Eski belgilar xiralashgan bo‘lsa ham, ana shu kichik alomatlar qayerda turganlarini tushunishga yordam berardi.
 
 {{HERO}} hammaga bir oz dam olishni taklif qildi. Hayvonchalar yarim doira bo‘lib o‘tirdi, ariq shovqinini tingladi va salqin oqshom havosidan bir necha marta sekin nafas oldi. Yorug‘qo‘ng‘izlar ham pastroqqa tushib, mayinroq miltilladi. Endi chorraha hech kimga qiyin joydek ko‘rinmasdi. U shunchaki do‘stlar birgalikda keyingi qadamni tanlaydigan sokin joyga aylangandi.
 
-Nura chiroqlar yo‘lning burilishlarini ravshan ko‘rsatishini, sokin qo‘shiq esa barchaga bir-birini eshitib, yaqin yurishga yordam berishini eslatdi. Har ikki usul yaxshi edi, faqat har xil yordam berardi. {{HERO}} uyqusi kelayotgan do‘stlarga, shoxlar orasidagi oyga va oldidagi ikki mehribon imkoniyatga yana bir qaradi. Endi shoshmasdan tanlash mumkin edi: yo‘l bo‘ylab iliq chiroqlarni yoqishmi yoki barchani past ovozdagi qo‘shiq bilan birga chaqirishmi.`,
+Nura chiroqlar yo‘lning burilishlarini ravshan ko‘rsatishini, sokin qo‘shiq esa barchaga bir-birini eshitib, yaqin yurishga yordam berishini eslatdi. Har ikki usul yaxshi edi, faqat har xil yordam berardi. {{HERO}} uyqusi kelayotgan do‘stlarga, shoxlar orasidagi oyga va oldidagi ikki mehribon imkoniyatga yana bir qaradi. Endi shoshmasdan tanlash mumkin edi: yo‘l bo‘ylab iliq chiroqlarni yoqishmi yoki barchani past ovozdagi qo‘shiq bilan birga chaqirishmi.
+
+Bir necha soniya hamma jim qoldi. Barg uchidan suv tomchisi tushdi, kichkina quyoncha yana esnadi, Nura esa ko‘zlarini yarim yumdi. O‘rmon shu qadar sokin ediki, tanlov ham shoshiladigan vazifa emas, oqshomning mayin bir qismidek tuyulardi.`,
   },
   magic_garden: {
     ru: `{{HERO}} не потянулся ни к лейке, ни к чаше сразу. Сначала он прошёл вдоль клумбы и посмотрел, как чувствует себя каждый лунный цветок. Один бутон был совсем маленьким и прятался за листом. Другой уже почти раскрылся, но его край касался сухой земли. Третий медленно поворачивался вслед за отражением луны в воде фонтана.
@@ -48,6 +52,8 @@ Piko xaritaning tungi rejimini yoqdi. Yorqin chiziqlar xiralashib, uchta asosiy 
 
 Oyna ortida atmosferaning ingichka moviy chizig‘i sekin ko‘rindi. Pastda tun boshlanar, Yer yuzidagi shaharlar uzoq yulduzlardek miltillardi. Piko qo‘shni orbitadagi bolalar ham allaqachon uxlashga tayyorlanayotganini va ertalab xatlarni kutishini aytdi. Bir konvertda yulduz turkumi rasmi, boshqasida qisqa xayrli tun tilagi, yana birida esa maktab bog‘idan quritilgan yaproq bor edi.
 
-{{HERO}} ikki asbobga yana bir qaradi. Sozlangan mayoq kapsulaga tanish oltin signal berardi. Yangi yulduz chizig‘i esa chang bulutini aylanib o‘tishga yordam beradigan aniq rasm yaratardi. Har ikki yechim ham sokin, ishonchli va xavfsiz edi. Hamma narsa tekshirilgach, endi shoshmasdan tanlash mumkin edi: mayoq nurini qaytarishmi yoki osmonda yangi yulduz yo‘lagini yaratishmi.`,
+{{HERO}} ikki asbobga yana bir qaradi. Sozlangan mayoq kapsulaga tanish oltin signal berardi. Yangi yulduz chizig‘i esa chang bulutini aylanib o‘tishga yordam beradigan aniq rasm yaratardi. Har ikki yechim ham sokin, ishonchli va xavfsiz edi. Hamma narsa tekshirilgach, endi shoshmasdan tanlash mumkin edi: mayoq nurini qaytarishmi yoki osmonda yangi yulduz yo‘lagini yaratishmi.
+
+Piko ovozini yanada pasaytirdi. Kapsulaning chirog‘i uzoqda yana bir marta miltilladi. {{HERO}} shoshilmadi: bekat bir maromda suzar, tun esa ularga to‘g‘ri belgi tanlash uchun yetarli vaqt berardi.`,
   },
 }
