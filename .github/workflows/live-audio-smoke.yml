@@ -1,0 +1,30 @@
+name: Manual Live Audio Smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify provider-free Audio Agent fallback and remote resume
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+          QISSA_AUDIO_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/audio-request
+          QISSA_STATE_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-state
+        run: npm run smoke:audio-live
