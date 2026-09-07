@@ -8,6 +8,7 @@ const filesToCheck = [
   'src/screens/StoryScreen.tsx',
   'src/screens/WelcomeScreen.tsx',
   'src/features/onboarding/OnboardingFlow.tsx',
+  'supabase/functions/story-generate/storyBedtimeExpansion.ts',
 ]
 
 const bannedStrings = [
