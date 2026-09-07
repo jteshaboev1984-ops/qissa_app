@@ -66,6 +66,7 @@ const invoke = async (payload) => {
 }
 
 const basePayload = (language, heroName, stylePackId = 'cozy_forest') => ({
+  installationId: crypto.randomUUID(),
   selections: {
     ageGroup: '5-7',
     language,
