@@ -13,6 +13,7 @@ export const betaScope = {
   defaultStoryMode: 'series' as StoryMode,
   defaultStoryMood: 'bedtime' as StoryMood,
   storyGenerationDailyLimit: 5,
+  storyGenerationGlobalDailyLimit: 30,
   providerAudioEnabledByDefault: false,
 } as const
 
