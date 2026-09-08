@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { authorizeInstallation, deleteInstallationCredential } from './installationAuth.ts'
 
 type Language = 'ru' | 'uz' | 'kz'
 type StoryMode = 'one_time' | 'series'
@@ -11,6 +12,7 @@ const AUDIO_BUCKET = 'story-audio'
 type StoryStateRequest = {
   action?: 'sync_generated' | 'confirm_choice' | 'save_preferences' | 'reset_current' | 'load_current' | 'delete_profile_data'
   installationId?: string
+  installationAuth?: string
   selections?: {
     ageGroup?: string
     language?: Language
@@ -502,11 +504,41 @@ Deno.serve(async (request: Request) => {
     return fail('invalid_json', 400, origin)
   }
 
+  const supportedActions = new Set<StoryStateRequest['action']>([
+    'sync_generated',
+    'confirm_choice',
+    'save_preferences',
+    'reset_current',
+    'delete_profile_data',
+    'load_current',
+  ])
+  if (!input.action || !supportedActions.has(input.action)) return fail('unsupported_action', 400, origin)
+
+  const allowCredentialCreate =
+    input.action === 'load_current' ||
+    input.action === 'sync_generated' ||
+    input.action === 'delete_profile_data'
+
+  const installationAuth = await authorizeInstallation(
+    input.installationId,
+    input.installationAuth,
+    allowCredentialCreate,
+  )
+  if (!installationAuth.ok) return fail(installationAuth.error, installationAuth.status, origin)
+
   if (input.action === 'sync_generated') return syncGenerated(input, origin)
   if (input.action === 'confirm_choice') return confirmChoice(input, origin)
   if (input.action === 'save_preferences') return savePreferences(input, origin)
   if (input.action === 'reset_current') return resetCurrent(input, origin)
-  if (input.action === 'delete_profile_data') return deleteProfileData(input, origin)
   if (input.action === 'load_current') return loadCurrent(input, origin)
+  if (input.action === 'delete_profile_data') {
+    const response = await deleteProfileData(input, origin)
+    if (response.ok) {
+      const deleted = await deleteInstallationCredential(input.installationId)
+      if (!deleted) return fail('installation_auth_delete_failed', 500, origin)
+    }
+    return response
+  }
+
   return fail('unsupported_action', 400, origin)
 })
