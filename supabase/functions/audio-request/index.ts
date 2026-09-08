@@ -1,4 +1,4 @@
-import { findOwnedEpisode, hasValidAiConsent, loadApprovedVoice, logEvent } from './context.ts'
+import { authorizeInstallation, findOwnedEpisode, hasValidAiConsent, loadApprovedVoice, logEvent } from './context.ts'
 import { cachedAudioResponse, generateAudio } from './generation.ts'
 import {
   admin,
@@ -6,6 +6,7 @@ import {
   fail,
   isAudioSpeed,
   isClientStoryId,
+  isInstallationAuth,
   isRecord,
   isUuid,
   isVoicePreset,
@@ -187,6 +188,20 @@ Deno.serve(async (request: Request) => {
   } catch {
     return fail('invalid_json', 400, origin)
   }
+
+  if (!isUuid(input.installationId)) return fail('invalid_installation_id', 422, origin)
+  if (!isInstallationAuth(input.installationAuth)) return fail('installation_auth_required', 401, origin)
+
+  let authStatus: 'ok' | 'missing' | 'invalid'
+  try {
+    authStatus = await authorizeInstallation(input.installationId, input.installationAuth)
+  } catch (error) {
+    console.error('installation auth lookup failed', error)
+    return fail('installation_auth_lookup_failed', 500, origin)
+  }
+
+  if (authStatus === 'missing') return fail('installation_auth_required', 401, origin)
+  if (authStatus === 'invalid') return fail('installation_auth_invalid', 403, origin)
 
   if (input.action === 'request_audio') return requestAudio(input, origin)
   if (input.action === 'load_progress') return loadProgress(input, origin)
