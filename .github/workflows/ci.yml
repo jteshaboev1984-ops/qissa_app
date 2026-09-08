@@ -61,6 +61,9 @@ jobs:
       - name: Validate Story AI cost guard
         run: npm run check:story-cost-guard
 
+      - name: Validate first-party story observability
+        run: npm run check:observability
+
       - name: Validate space story copy
         run: npm run check:space-copy
 
