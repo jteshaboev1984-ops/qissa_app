@@ -13,6 +13,11 @@ export const betaScope = {
   defaultStoryMode: 'series' as StoryMode,
   defaultStoryMood: 'bedtime' as StoryMood,
   storyGenerationDailyLimit: 5,
+  // TEMPORARY CLOSED-BETA CIRCUIT BREAKER ONLY.
+  // The value 30 is not a commercial entitlement and must not ship as a
+  // universal paid-production cap. Before public/paid launch, replace it with
+  // plan-aware quotas plus a separately configurable emergency project ceiling.
+  // Tracked in GitHub issue #98.
   storyGenerationGlobalDailyLimit: 30,
   providerAudioEnabledByDefault: false,
 } as const
