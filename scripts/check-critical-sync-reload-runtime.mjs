@@ -232,6 +232,52 @@ const runResetReloadScenario = async (bundlePath) => {
   )
 }
 
+const runFreshInstallScenario = async (bundlePath) => {
+  const storage = new Map()
+  const requests = []
+  installBrowserGlobals(storage, requests, () => true)
+
+  await importFresh(bundlePath, 'fresh-install')
+  await delay(20)
+
+  assert.deepEqual(
+    requests,
+    [],
+    'A brand-new remote installation must not enqueue reset_current merely because no provider marker exists yet.',
+  )
+  assert.equal(
+    storage.has(RESET_REQUIRED_KEY),
+    false,
+    'A brand-new installation must not persist a phantom remote reset outbox entry.',
+  )
+  assert.equal(JSON.parse(storage.get(STORY_PROVIDER_KEY)), 'remote')
+}
+
+const runLocalToRemoteMigrationScenario = async (bundlePath) => {
+  const storage = new Map()
+  storage.set(STORY_PROVIDER_KEY, JSON.stringify('local'))
+  storage.set('qissa:v1:seriesState', JSON.stringify(makeSeriesState()))
+  storage.set('qissa:v1:currentEpisode', JSON.stringify({ episode_id: 'legacy-local-episode' }))
+  storage.set('qissa:v1:screen', JSON.stringify('story'))
+
+  const requests = []
+  installBrowserGlobals(storage, requests, () => true)
+
+  await importFresh(bundlePath, 'local-to-remote')
+  await delay(20)
+
+  assert.deepEqual(
+    requests,
+    [],
+    'Moving from a known local provider to remote must clear incompatible local progress without mutating remote state.',
+  )
+  assert.equal(storage.has(RESET_REQUIRED_KEY), false)
+  assert.equal(storage.has('qissa:v1:seriesState'), false)
+  assert.equal(storage.has('qissa:v1:currentEpisode'), false)
+  assert.equal(storage.has('qissa:v1:screen'), false)
+  assert.equal(JSON.parse(storage.get(STORY_PROVIDER_KEY)), 'remote')
+}
+
 const main = async () => {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), 'qissa-critical-sync-'))
   const originalConsoleError = console.error
@@ -245,6 +291,8 @@ const main = async () => {
     }
 
     const bundlePath = await buildRuntimeBundle(tempDir)
+    await runFreshInstallScenario(bundlePath)
+    await runLocalToRemoteMigrationScenario(bundlePath)
     await runChoiceReloadScenario(bundlePath)
     await runResetReloadScenario(bundlePath)
   } finally {
@@ -252,7 +300,7 @@ const main = async () => {
     await rm(tempDir, { recursive: true, force: true })
   }
 
-  console.log('critical story sync reload runtime regression passed: offline choice/reset survive reload and replay before server restore.')
+  console.log('critical story sync reload runtime regression passed: fresh/provider-migration startup stays mutation-free; real offline choice/reset outbox survives reload and replays before server restore.')
 }
 
 await main()

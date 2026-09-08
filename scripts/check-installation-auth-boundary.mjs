@@ -50,11 +50,14 @@ requireCondition(
   'Full profile deletion must also delete the installation credential.',
 )
 requireCondition(
-  stateAuth.includes("type InstallationAuthMode = 'required' | 'create' | 'allow-empty'") &&
+  stateAuth.includes("type InstallationAuthMode = 'required' | 'create' | 'allow-empty' | 'allow-missing-profile'") &&
+    stateAuth.includes("mode === 'allow-missing-profile'") &&
     stateAuth.includes("'installation_auth_invalid'") &&
     stateAuth.includes("'installation_auth_required'") &&
-    stateAuth.includes(".from('installation_credentials')"),
-  'story-state must distinguish first bind, empty installation, missing credential, and invalid credential cases.',
+    stateAuth.includes(".from('installation_credentials')") &&
+    stateIndex.includes("input.action === 'reset_current'") &&
+    stateIndex.includes("? 'allow-missing-profile'"),
+  'story-state must distinguish first bind, empty installation, missing-profile reset, missing credential, and invalid credential cases.',
 )
 
 const audioAuthPosition = audioIndex.indexOf('await authorizeInstallation(')
