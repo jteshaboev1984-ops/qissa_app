@@ -100,6 +100,7 @@ export function useHybridNarration({
     disposeRemoteAudio()
     const audio = new Audio(url)
     audio.preload = 'auto'
+    audio.playbackRate = speedRef.current
     audioRef.current = audio
     pendingPlayRef.current = shouldPlay
 
@@ -231,7 +232,10 @@ export function useHybridNarration({
     void audioRemoteClient.loadPlaybackProgress({ seriesId, episodeId }).then((progress) => {
       if (cancelled || !progress) return
       resumeRef.current = progress
-      if (progress.speed !== speedRef.current) device.changeSpeed(progress.speed)
+      if (progress.speed !== speedRef.current) {
+        speedRef.current = progress.speed
+        device.changeSpeed(progress.speed)
+      }
       window.setTimeout(() => {
         if (!cancelled && progress.positionSeconds > 0) device.seekTo(progress.positionSeconds)
       }, 0)
@@ -294,6 +298,7 @@ export function useHybridNarration({
         setRemotePosition(0)
         setRemoteStatus('idle')
       }
+      audio.playbackRate = speedRef.current
       startRemoteAudio(audio)
       return
     }
@@ -334,28 +339,20 @@ export function useHybridNarration({
 
   const changeSpeed = useCallback((nextSpeed: NarrationSpeed) => {
     if (nextSpeed === speedRef.current) return
-    const wasPlaying = isPlaying
-    const fraction = durationSeconds > 0 ? positionSeconds / durationSeconds : 0
-
-    if (deliveryMode === 'remote') {
-      persistRemote(false)
-      pendingResumeFractionRef.current = fraction
-      disposeRemoteAudio()
-      if (fraction > 0) device.seekTo(fraction * deviceDurationRef.current)
-    }
-
     speedRef.current = nextSpeed
     device.changeSpeed(nextSpeed)
-    setDeliveryMode('pending')
-    modeRef.current = 'pending'
-    setAudioAssetId(null)
-    audioAssetIdRef.current = null
-    setAudioSource(null)
-    setFallbackReason(null)
-    setRequiresAiVoiceDisclosure(false)
 
-    if (wasPlaying) window.setTimeout(() => void requestRemoteAudio(true, nextSpeed), 0)
-  }, [deliveryMode, device.changeSpeed, device.seekTo, disposeRemoteAudio, durationSeconds, isPlaying, persistRemote, positionSeconds, requestRemoteAudio])
+    if (deliveryMode === 'remote' && audioRef.current) {
+      audioRef.current.playbackRate = nextSpeed
+      persistRemote(false)
+      return
+    }
+
+    // Device narration owns its own restart/resume logic. Pending remote audio
+    // will read speedRef when attached, so changing speed never needs another
+    // provider request or another cached TTS asset.
+    window.setTimeout(() => persistRemote(false), 0)
+  }, [deliveryMode, device.changeSpeed, persistRemote])
 
   useEffect(() => {
     if (!isPlaying) return

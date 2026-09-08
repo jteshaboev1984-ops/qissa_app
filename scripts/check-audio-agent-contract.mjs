@@ -1,12 +1,11 @@
 import { readFileSync } from 'node:fs'
 
 const read = (path) => readFileSync(path, 'utf8')
-const audio = [
-  'supabase/functions/audio-request/index.ts',
-  'supabase/functions/audio-request/shared.ts',
-  'supabase/functions/audio-request/context.ts',
-  'supabase/functions/audio-request/generation.ts',
-].map(read).join('\n')
+const audioIndex = read('supabase/functions/audio-request/index.ts')
+const audioGeneration = read('supabase/functions/audio-request/generation.ts')
+const audioShared = read('supabase/functions/audio-request/shared.ts')
+const audioContext = read('supabase/functions/audio-request/context.ts')
+const audio = [audioIndex, audioShared, audioContext, audioGeneration].join('\n')
 const audioClient = read('src/lib/audioRemoteClient.ts')
 const hybridNarration = read('src/lib/useHybridNarration.ts')
 const listeningScene = read('src/components/ListeningScene.tsx')
@@ -86,9 +85,9 @@ requireCondition(
   'Audio identity must accept app client story IDs.',
 )
 
-const requestStart = audio.indexOf('const requestAudio')
-const requestEnd = audio.indexOf('const loadProgress', requestStart)
-const requestBody = audio.slice(requestStart, requestEnd)
+const requestStart = audioIndex.indexOf('const requestAudio')
+const requestEnd = audioIndex.indexOf('const loadProgress', requestStart)
+const requestBody = audioIndex.slice(requestStart, requestEnd)
 requireCondition(
   requestStart >= 0 &&
     requestBody.indexOf(".from('audio_assets')") >= 0 &&
@@ -100,6 +99,39 @@ requireCondition(
   /existing\.status === 'failed'/.test(requestBody) &&
     /audio_failed_cache_reset_failed/.test(requestBody),
   'Failed cache rows must be removable so temporary failures can retry.',
+)
+
+const cacheKeyStart = requestBody.indexOf('const cacheKey')
+const cacheLookupStart = requestBody.indexOf(".from('audio_assets')", cacheKeyStart)
+const cacheKeyBody = cacheKeyStart >= 0 && cacheLookupStart > cacheKeyStart
+  ? requestBody.slice(cacheKeyStart, cacheLookupStart)
+  : ''
+requireCondition(
+  cacheKeyBody.length > 0 &&
+    /owned\.episode\.id/.test(cacheKeyBody) &&
+    /owned\.episode\.language/.test(cacheKeyBody) &&
+    /voice\.id/.test(cacheKeyBody) &&
+    /textVersion/.test(cacheKeyBody) &&
+    /ttsModel/.test(cacheKeyBody) &&
+    !/\bspeed\b/.test(cacheKeyBody),
+  'Provider TTS cache identity must be independent of 0.8x/1.0x/1.2x playback speed.',
+)
+
+requireCondition(
+  /const CANONICAL_RENDER_SPEED:\s*AudioSpeed\s*=\s*1/.test(audioGeneration) &&
+    /speed:\s*CANONICAL_RENDER_SPEED/.test(audioGeneration) &&
+    /render_speed:\s*CANONICAL_RENDER_SPEED/.test(audioGeneration),
+  'Provider TTS must render and store one canonical 1.0x asset per story/voice/text version.',
+)
+
+const providerBodyStart = audioGeneration.indexOf('body: JSON.stringify({')
+const providerBodyEnd = audioGeneration.indexOf('}),', providerBodyStart)
+const providerBody = providerBodyStart >= 0 && providerBodyEnd > providerBodyStart
+  ? audioGeneration.slice(providerBodyStart, providerBodyEnd)
+  : ''
+requireCondition(
+  /speed:\s*CANONICAL_RENDER_SPEED/.test(providerBody) && !/speed:\s*requestedSpeed/.test(providerBody),
+  'Provider request must not re-render audio at each user playback speed.',
 )
 
 requireCondition(
@@ -174,6 +206,24 @@ requireCondition(
     /audioRemoteClient\.savePlaybackProgress/.test(hybridNarration) &&
     /device-fallback/.test(hybridNarration),
   'Listening UI must prefer Audio Agent delivery and retain device fallback plus remote resume.',
+)
+
+requireCondition(
+  /audio\.playbackRate\s*=\s*speedRef\.current/.test(hybridNarration) &&
+    /audioRef\.current\.playbackRate\s*=\s*nextSpeed/.test(hybridNarration),
+  'Remote narration speed must be applied client-side with HTMLAudioElement.playbackRate.',
+)
+
+const changeSpeedStart = hybridNarration.indexOf('const changeSpeed')
+const changeSpeedEnd = hybridNarration.indexOf('\n\n  useEffect', changeSpeedStart)
+const changeSpeedBody = changeSpeedStart >= 0 && changeSpeedEnd > changeSpeedStart
+  ? hybridNarration.slice(changeSpeedStart, changeSpeedEnd)
+  : ''
+requireCondition(
+  changeSpeedBody.length > 0 &&
+    !/requestRemoteAudio/.test(changeSpeedBody) &&
+    !/disposeRemoteAudio/.test(changeSpeedBody),
+  'Changing playback speed must not dispose remote audio or trigger another provider/cache request.',
 )
 
 requireCondition(
