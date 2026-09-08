@@ -37,6 +37,9 @@ jobs:
       - name: Validate backend access boundary
         run: npm run check:backend-access
 
+      - name: Validate device-bound installation auth
+        run: npm run check:installation-auth
+
       - name: Validate story service boundary
         run: npm run check:story-service
 

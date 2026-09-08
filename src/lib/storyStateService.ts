@@ -1,6 +1,6 @@
 import type { Episode, OnboardingSelections, PrivacyConsent, ReaderPreferences, SeriesState } from '../types/qissa'
 import { isEpisode, isOnboardingSelections, isReaderPreferences, isSeriesState } from './localPersistence'
-import { getInstallationId } from './installationIdentity'
+import { getInstallationAuth, getInstallationId } from './installationIdentity'
 import { getStoryProviderConfig } from './storyRemoteClient'
 
 export type RemoteStorySnapshot = {
@@ -54,7 +54,11 @@ const requestRemote = async (
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: buildHeaders(publishableKey),
-      body: JSON.stringify({ installationId: getInstallationId(), ...payload }),
+      body: JSON.stringify({
+        installationId: getInstallationId(),
+        installationAuth: getInstallationAuth(),
+        ...payload,
+      }),
       signal: controller.signal,
       credentials: 'omit',
     })
