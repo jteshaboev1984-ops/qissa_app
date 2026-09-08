@@ -13,6 +13,9 @@ Production project:
 - normal Story AI state: **disabled**
 - normal provider TTS state: **disabled**
 - public beta scope: age **5–7**, RU + UZ Beta, Cozy Forest + Magic Garden + Stars & Space, bedtime series
+- current temporary Story AI guards if AI is deliberately enabled: **5 claims/day per installation + 30 claims/day project-wide**
+
+The 30/day aggregate value is a **temporary closed-beta circuit breaker only**. It is not a future paid-plan entitlement and must be replaced before paid/public scale-up as tracked in issue #98.
 
 ## 2. Non-negotiable operating rules
 
@@ -23,14 +26,16 @@ Production project:
 5. Never copy story text, child/custom hero names, free-form input, or audio content into tickets, analytics, or operational logs.
 6. Do not promise restoration from backup until the actual backup/PITR entitlement and a restore procedure have been verified for the production Supabase plan.
 7. Full profile deletion is irreversible from the QISSA application boundary. Treat deletion requests as higher priority than story synchronization.
+8. Do not raise or remove the temporary 30/day project ceiling merely to make a closed-beta test pass.
+9. Do not advertise the engineering 5/day or 30/day guards as future commercial plan limits.
 
 ## 3. Known-good production baseline
 
-Current expected functions after the device-bound authorization rollout:
+Current expected functions after aggregate cost protection and device-bound authorization:
 
-- `story-generate` — v19, JWT verification enabled
-- `story-state` — v6, JWT verification enabled
-- `audio-request` — v4, JWT verification enabled
+- `story-generate` — **v20**, JWT verification enabled
+- `story-state` — **v6**, JWT verification enabled
+- `audio-request` — **v4**, JWT verification enabled
 
 Expected database access boundary:
 
@@ -39,11 +44,23 @@ Expected database access boundary:
 - `installationId` is not sufficient to access persisted family state;
 - browser also holds a separate 256-bit `installationAuth` credential;
 - only the SHA-256 credential hash is stored in `installation_credentials`;
-- direct `anon`/`authenticated` access to `installation_credentials` is revoked.
+- direct `anon`/`authenticated` access to `installation_credentials` is revoked;
+- aggregate Story AI daily accounting is stored in `qissa_provider_daily_usage` without family/story/audio identity or content;
+- direct browser access to `qissa_provider_daily_usage` is revoked.
 
 Expected provider-free family path:
 
-`consent → setup → Episode 1 → one confirmed choice → remembered consequence → Episode 2 → calm ending → reload/continue → optional device narration → parent delete`
+`consent → setup → Episode 1 → one confirmed choice → remembered consequence → Episode 2 → calm ending → reload/continue → listen through Audio Agent/device fallback → parent delete`
+
+Latest post-cap provider-free Story smoke:
+
+- run ID **34219676831**;
+- source `safe-fallback`;
+- fallback reason `ai-disabled`;
+- RU/UZ/KZ Cozy Forest and RU Stars & Space checks passed;
+- no paid Story AI/TTS call was made.
+
+Latest documented `main` baseline before this runbook refresh: `292096dacaddc4c2356cfb13d33a15f116b4ee44`. Its Pages deployment run **34228700213** completed successfully.
 
 ## 4. Daily beta health check
 
@@ -68,16 +85,20 @@ Check:
 - versions match the intended release baseline;
 - no unexpected growth in `audio_assets` while provider TTS is supposed to be disabled;
 - no unexpected `openai-structured` story source during provider-free operation;
-- no abnormal accumulation of temporary smoke profiles/sessions/credentials.
+- no abnormal accumulation of temporary smoke profiles/sessions/credentials/events;
+- aggregate Story AI counter does not grow while Story AI is supposed to be disabled.
 
 ### Privacy boundary
 
 Confirm:
 
 - `installation_credentials` remains RLS-enabled;
-- `anon` and `authenticated` still have no direct table access;
-- provider-free smoke deletion removes the temporary credential with the profile;
+- `qissa_provider_daily_usage` remains RLS-enabled;
+- `anon` and `authenticated` still have no direct table access to either control table;
+- provider-free smoke deletion removes temporary family/profile-linked state;
 - app event payloads contain structural metadata only.
+
+Current Supabase security-advisor `RLS Enabled No Policy` notices are informational and expected for the Edge-Function-only browser access model. Do not add permissive client policies to silence them.
 
 ## 5. Required release gates after a normal code change
 
@@ -91,10 +112,13 @@ Before a change reaches production:
 6. Story Core continuity;
 7. 12-branch closed-beta content matrix;
 8. 5–10 minute duration gate and 6–8 minute editorial target;
-9. privacy/deletion checks;
-10. Audio Agent/device-fallback checks;
-11. Story AI safety checks;
-12. typecheck and production build.
+9. Story AI per-installation + aggregate cost guard;
+10. first-party observability contract;
+11. mobile safe-area/touch ergonomics contract;
+12. privacy/deletion checks;
+13. Audio Agent/device-fallback checks;
+14. Story AI safety checks;
+15. typecheck and production build.
 
 After a material backend/security change, run a fresh **provider-free production smoke** before declaring the release accepted.
 
@@ -108,7 +132,8 @@ Required checks:
 - Audio live smoke expects device fallback and **no provider asset**;
 - Closed Beta E2E must pass RU/UZ × 3 worlds × A/B = **12/12**;
 - Privacy smoke must pass create → load → delete → confirmed absence → repeat delete;
-- temporary installation credentials and test data must be gone afterward.
+- temporary installation credentials and test data must be gone afterward;
+- aggregate provider-budget state must not be consumed by provider-free smoke.
 
 If a smoke fails, do not weaken the assertion merely to make CI green. Determine whether the product contract, deployment, or the test is stale.
 
@@ -172,16 +197,16 @@ Recommended support sequence when a parent reports “QISSA forgot the choice”
 
 ## 9. Audio recovery
 
-Current beta-safe behavior is device narration.
+Current beta-safe behavior is hybrid Audio Agent + device/browser narration fallback.
 
 If server audio fails while provider TTS is disabled:
 
 - device/browser narration should remain available;
 - `audio_assets` should normally remain empty;
 - playback progress may be stored remotely and locally;
-- changing 0.8×/1.0×/1.2× must not create separate provider assets.
+- changing 0.8×/1.0×/1.2× must not create separate provider assets while provider audio remains disabled.
 
-If provider TTS is later enabled deliberately, a separate operational extension is required for provider outage, cache invalidation, cost monitoring and voice QA.
+If provider TTS is later enabled deliberately, a separate operational extension is required for provider outage, cache invalidation, cost monitoring, text-length/chunking acceptance and voice QA.
 
 ## 10. Parent deletion support
 
@@ -193,8 +218,10 @@ Expected deletion boundary:
 - story sessions/episodes/choices through cascade/owned deletion path;
 - playback progress;
 - private provider audio objects/assets if any;
-- related technical events;
+- related profile/installation-scoped technical events;
 - installation credential.
+
+The aggregate project-wide provider claim count is intentionally not family data and is not rewound by profile deletion, because deletion must not refund already-budgeted provider spend.
 
 After deletion, the application should rotate local installation identity and the deleted snapshot must not load.
 
@@ -213,7 +240,7 @@ QISSA has application-level deletion, deterministic code/migrations in GitHub, v
 
 ### What is not yet proven
 
-The currently available project tooling does **not** expose enough information to confirm the production Supabase backup/PITR entitlement, retention period, or a tested point-in-time restore procedure.
+The currently connected project tooling does **not** expose enough information to confirm the production Supabase backup/PITR entitlement, retention period, or a tested point-in-time restore procedure.
 
 Therefore closed-beta operations must not state “we can always restore your story” or quote a recovery window until this has been manually verified in Supabase.
 
@@ -228,7 +255,7 @@ Before inviting external families, an administrator must open Supabase Dashboard
 - who is authorized to initiate a restore;
 - expected restore impact on writes made after the restore point.
 
-Do not put database dumps or service-role credentials in the public GitHub repository.
+Tracked in GitHub issue #95. Do not put database dumps or service-role credentials in the public GitHub repository.
 
 ### Recovery principle
 
@@ -236,24 +263,46 @@ A database restore affects multiple families and should be a last-resort inciden
 
 ## 12. Edge Function rollback map
 
-Current known-good baseline:
+Current known-good production functions:
 
-- story-generate v19;
+- story-generate v20;
 - story-state v6;
-- audio-request v4;
-- application baseline main `7ac5ad8e1a1b65c1c1f7fc8464ba5daac3e041c1` at the device-auth production acceptance.
+- audio-request v4.
+
+Current documented application baseline after cost/mobile documentation hardening: `292096dacaddc4c2356cfb13d33a15f116b4ee44`.
 
 For rollback:
 
-1. identify the exact last known-good GitHub commit;
+1. identify the exact last known-good GitHub commit for the affected component;
 2. redeploy only the affected Edge Function from immutable, reviewed source;
 3. keep JWT verification enabled;
 4. do not change provider switches as part of rollback unless the incident is provider-specific;
 5. run provider-free smoke again.
 
-Database schema rollback should not be improvised. Additive security migrations such as `installation_credentials` should normally remain in place even if an application release is rolled back, unless a separately reviewed migration is prepared.
+Database schema rollback should not be improvised. Additive security/cost migrations such as `installation_credentials` and `qissa_provider_daily_usage` should normally remain in place even if an application release is rolled back, unless a separately reviewed migration is prepared.
 
-## 13. Paid Story AI acceptance — separate procedure
+## 13. Story AI cost controls and future paid launch
+
+Current closed-beta protections:
+
+- 5 provider-eligible story claims/day per installation;
+- 30 provider-eligible story claims/day project-wide.
+
+A claim is not equivalent to one provider HTTP call: one story can involve generation, safety/moderation and bounded retry work.
+
+### Temporary 30/day rule
+
+The project-wide **30/day value must never be treated as the paid-product capacity model**. It is deliberately low because the current purpose is to prevent uncontrolled spend during a small closed beta.
+
+Before any paid/subscription launch or meaningful public scale-up, issue #98 must be resolved by separating:
+
+1. parent/account/subscription entitlement;
+2. abuse/rate protection;
+3. a configurable emergency project spend/capacity circuit breaker.
+
+A legitimate paid family must not be blocked merely because an old closed-beta global counter reached 30.
+
+## 14. Paid Story AI acceptance — separate procedure
 
 Do not combine routine beta operations with paid Story AI acceptance.
 
@@ -263,26 +312,28 @@ When the owner explicitly approves the paid test:
 - verify RU and UZ;
 - cover representative worlds and continuation state;
 - record generation source, latency, validation/safety outcome, retries and cost/token metadata where available;
-- inspect literary structure and 5–10 minute duration;
+- inspect literary structure and 5–10 minute duration, targeting 6–8 minutes editorially;
 - stop if unexpected provider behavior or spend appears.
 
 Until that approval, `openai-structured` is **not** part of routine release acceptance.
 
-## 14. Before admitting the first external family
+## 15. Before admitting the first external family
 
 All of the following must be true:
 
-- GitHub `main` protection is enabled with mandatory PR/CI and no normal force-push/delete path;
+- GitHub `main` protection is enabled with mandatory PR/CI and no normal force-push/delete path (issue #91);
 - latest provider-free production Story/Audio/E2E/Privacy smokes are green;
 - installation credential isolation is green;
 - production database is free of new smoke residue;
-- backup/PITR status has been manually verified and documented privately;
+- backup/PITR status has been manually verified and documented privately (issue #95);
 - real phone/browser UX pass is complete;
 - one full story has been timed aloud with natural expressive reading and the child-choice pause;
 - parent consent/delete flow has been manually verified from UI;
 - local legal/privacy review requirements are understood before any broader public launch.
 
-## 15. Scope freeze during closed-beta hardening
+Before any paid/public scale-up, the temporary 30/day project cap must additionally be replaced with the plan-aware production model tracked in issue #98.
+
+## 16. Scope freeze during closed-beta hardening
 
 Do not add as launch-hardening work:
 
