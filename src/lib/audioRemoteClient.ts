@@ -1,5 +1,5 @@
 import type { VoicePresetId } from '../types/qissa'
-import { getInstallationId } from './installationIdentity'
+import { getInstallationAuth, getInstallationId } from './installationIdentity'
 import type { NarrationSpeed } from './narrationPlan'
 import { getStoryProviderConfig } from './storyRemoteClient'
 
@@ -78,7 +78,11 @@ const requestRemote = async (payload: Record<string, unknown>): Promise<{ body: 
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: buildHeaders(config.publishableKey),
-      body: JSON.stringify({ installationId: getInstallationId(), ...payload }),
+      body: JSON.stringify({
+        installationId: getInstallationId(),
+        installationAuth: getInstallationAuth(),
+        ...payload,
+      }),
       signal: controller.signal,
       credentials: 'omit',
     })
