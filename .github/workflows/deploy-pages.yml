@@ -43,6 +43,9 @@ jobs:
       - name: Validate story service boundary
         run: npm run check:story-service
 
+      - name: Validate critical sync across reloads
+        run: npm run check:critical-sync-reload
+
       - name: Validate Story Core choice continuity
         run: npm run check:story-core
 
@@ -52,6 +55,15 @@ jobs:
       - name: Validate 5–10 minute bedtime session duration
         run: npm run check:bedtime-duration
 
+      - name: Validate localized fallback copy
+        run: npm run check:localized-fallback
+
+      - name: Validate Bedtime Session polish
+        run: npm run check:bedtime-session
+
+      - name: Validate Cosmos Bedtime Session
+        run: npm run check:cosmos-bedtime
+
       - name: Validate closed beta scope
         run: npm run check:beta-scope
 
@@ -60,6 +72,9 @@ jobs:
 
       - name: Validate first-party story observability
         run: npm run check:observability
+
+      - name: Validate space story copy
+        run: npm run check:space-copy
 
       - name: Validate privacy consent and deletion
         run: npm run check:privacy
