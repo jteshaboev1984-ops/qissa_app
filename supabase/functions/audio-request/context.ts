@@ -2,10 +2,27 @@ import {
   GENERATIONS_PER_HOUR,
   PRIVACY_CONSENT_VERSION,
   admin,
+  sha256,
   type JsonRecord,
   type OwnedEpisode,
   type VoicePresetId,
 } from './shared.ts'
+
+export const authorizeInstallation = async (
+  installationId: string,
+  installationAuth: string,
+): Promise<'ok' | 'missing' | 'invalid'> => {
+  const authHash = await sha256(installationAuth.toLowerCase())
+  const { data, error } = await admin
+    .from('installation_credentials')
+    .select('auth_hash')
+    .eq('installation_id', installationId)
+    .maybeSingle()
+
+  if (error) throw new Error('installation_auth_lookup_failed')
+  if (!data) return 'missing'
+  return data.auth_hash === authHash ? 'ok' : 'invalid'
+}
 
 export const findOwnedEpisode = async (
   installationId: string,
