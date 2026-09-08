@@ -16,6 +16,8 @@ import {
   type OwnedEpisode,
 } from './shared.ts'
 
+const CANONICAL_RENDER_SPEED: AudioSpeed = 1
+
 const createSignedAudioUrl = async (storagePath: string): Promise<string | null> => {
   const { data, error } = await admin.storage
     .from(AUDIO_BUCKET)
@@ -63,7 +65,7 @@ const speechInstructions = (owned: OwnedEpisode) => {
 export const generateAudio = async (
   owned: OwnedEpisode,
   voice: JsonRecord,
-  speed: AudioSpeed,
+  requestedSpeed: AudioSpeed,
   cacheKey: string,
   textVersion: string,
   origin: string | null,
@@ -82,7 +84,7 @@ export const generateAudio = async (
       status: 'queued',
       cache_key: cacheKey,
       text_version: textVersion,
-      speed,
+      speed: CANONICAL_RENDER_SPEED,
       requested_mode: owned.episode.mood,
       provider: 'openai',
       provider_model: ttsModel,
@@ -118,7 +120,7 @@ export const generateAudio = async (
         voice: providerVoiceId,
         instructions: speechInstructions(owned),
         response_format: 'mp3',
-        speed,
+        speed: CANONICAL_RENDER_SPEED,
       }),
     })
 
@@ -150,7 +152,8 @@ export const generateAudio = async (
     await logEvent(owned.profile.id, 'audio_generated', {
       episode_id: owned.episode.id,
       voice_preset_id: voice.id,
-      speed,
+      requested_speed: requestedSpeed,
+      render_speed: CANONICAL_RENDER_SPEED,
       provider: 'openai',
       model: ttsModel,
     })
