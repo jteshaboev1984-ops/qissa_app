@@ -1,10 +1,17 @@
 node_modules
 dist
 .env
-.env.local
+.env.*
+!.env.example
 npm-debug.log*
 .DS_Store
 *.tsbuildinfo
+*.dump
+*.backup
+/qissa-backup-*/
+/roles.sql
+/schema.sql
+/data.sql
 
 vite.config.js
 vite.config.d.ts
