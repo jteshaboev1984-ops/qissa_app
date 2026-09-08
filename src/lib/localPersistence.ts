@@ -27,6 +27,8 @@ const STORAGE_KEYS = {
   screen: `${KEY_PREFIX}:screen`,
   readerPreferences: `${KEY_PREFIX}:readerPreferences`,
   storyProvider: `${KEY_PREFIX}:storyProvider`,
+  remoteResetRequired: `${KEY_PREFIX}:remoteResetRequired`,
+  pendingChoiceSync: `${KEY_PREFIX}:pendingChoiceSync`,
 } as const
 
 const DEPRECATED_KEYS = ['qissa:language', 'qissa:onboardingSelections', 'qissa:seriesState', 'qissa:currentEpisode', 'qissa:screen']
@@ -36,6 +38,7 @@ let requestedRemoteResetGeneration = 0
 let completedRemoteResetGeneration = 0
 let pendingChoiceSync: Promise<void> | null = null
 let pendingChoiceSyncRequest: PendingChoiceSyncRequest | null = null
+let criticalSyncDeletionBarrier = false
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
 
@@ -119,6 +122,12 @@ export const isEpisode = (value: unknown): value is Episode => {
     isRecord(value.safety_self_check)
 }
 
+const isPendingChoiceSyncRequest = (value: unknown): value is PendingChoiceSyncRequest =>
+  isRecord(value) &&
+  isSeriesState(value.seriesState) &&
+  typeof value.episodeId === 'string' &&
+  typeof value.choiceId === 'string'
+
 const isAppScreen = (value: unknown): value is AppScreen =>
   value === 'welcome' || value === 'onboarding' || value === 'home' || value === 'story'
 
@@ -140,20 +149,37 @@ const safeGet = <T>(key: string): T | null => {
   }
 }
 
+const safeRemove = (key: string) => {
+  try {
+    window.localStorage.removeItem(key)
+  } catch {
+    // ignore remove failures in prototype mode
+  }
+}
+
 const startRemoteReset = () => {
-  if (pendingRemoteReset || completedRemoteResetGeneration >= requestedRemoteResetGeneration) return
+  if (
+    criticalSyncDeletionBarrier ||
+    pendingRemoteReset ||
+    pendingChoiceSync ||
+    completedRemoteResetGeneration >= requestedRemoteResetGeneration
+  ) return
 
   const targetGeneration = requestedRemoteResetGeneration
   const task = import('./storyStateService')
     .then(({ storyStateService }) => storyStateService.resetCurrent())
     .then(() => {
       completedRemoteResetGeneration = Math.max(completedRemoteResetGeneration, targetGeneration)
+      if (completedRemoteResetGeneration >= requestedRemoteResetGeneration) {
+        safeRemove(STORAGE_KEYS.remoteResetRequired)
+      }
     })
 
   pendingRemoteReset = task
   void task.then(
     () => {
       if (pendingRemoteReset === task) pendingRemoteReset = null
+      startRemoteReset()
     },
     (error) => {
       console.error('Failed to reset remote story state', error)
@@ -164,27 +190,45 @@ const startRemoteReset = () => {
 
 const queueRemoteReset = () => {
   requestedRemoteResetGeneration += 1
+  safeSet(STORAGE_KEYS.remoteResetRequired, true)
+
+  // Reset supersedes any not-yet-persisted choice from the story being discarded.
+  if (pendingChoiceSyncRequest) {
+    pendingChoiceSyncRequest = null
+    safeRemove(STORAGE_KEYS.pendingChoiceSync)
+  }
+
   startRemoteReset()
 }
 
 const startChoiceSync = () => {
-  if (pendingChoiceSync || !pendingChoiceSyncRequest) return
+  if (
+    criticalSyncDeletionBarrier ||
+    pendingChoiceSync ||
+    !pendingChoiceSyncRequest ||
+    completedRemoteResetGeneration < requestedRemoteResetGeneration
+  ) return
 
   const request = pendingChoiceSyncRequest
   const task = import('./storyStateService')
     .then(({ storyStateService }) => storyStateService.confirmChoice(request))
     .then(() => {
-      if (pendingChoiceSyncRequest === request) pendingChoiceSyncRequest = null
+      if (pendingChoiceSyncRequest === request) {
+        pendingChoiceSyncRequest = null
+        safeRemove(STORAGE_KEYS.pendingChoiceSync)
+      }
     })
 
   pendingChoiceSync = task
   void task.then(
     () => {
       if (pendingChoiceSync === task) pendingChoiceSync = null
+      startRemoteReset()
     },
     (error) => {
       console.error('Failed to sync story choice', error)
       if (pendingChoiceSync === task) pendingChoiceSync = null
+      startRemoteReset()
     },
   )
 }
@@ -199,6 +243,7 @@ const queueChoiceSync = (previous: SeriesState | null, next: SeriesState) => {
     episodeId: latest.episode_id,
     choiceId: latest.choice_id,
   }
+  safeSet(STORAGE_KEYS.pendingChoiceSync, pendingChoiceSyncRequest)
   startChoiceSync()
 }
 
@@ -210,12 +255,8 @@ const queuePreferencesSync = (value: ReaderPreferences) => {
 
 const clearEpisodeAndScreen = () => {
   queueRemoteReset()
-  try {
-    window.localStorage.removeItem(STORAGE_KEYS.currentEpisode)
-    window.localStorage.removeItem(STORAGE_KEYS.screen)
-  } catch {
-    // ignore clear failures
-  }
+  safeRemove(STORAGE_KEYS.currentEpisode)
+  safeRemove(STORAGE_KEYS.screen)
 }
 
 const clearAllLocalData = () => {
@@ -228,17 +269,13 @@ const clearAllLocalData = () => {
 }
 
 const clearAllQissaStorage = () => {
-  queueRemoteReset()
   clearAllLocalData()
+  queueRemoteReset()
 }
 
 const clearStoryProgressOnly = () => {
-  try {
-    window.localStorage.removeItem(STORAGE_KEYS.seriesState)
-    clearEpisodeAndScreen()
-  } catch {
-    // ignore clear failures
-  }
+  safeRemove(STORAGE_KEYS.seriesState)
+  clearEpisodeAndScreen()
 }
 
 const prepareForStoryProvider = (mode: PersistedStoryProvider): boolean => {
@@ -252,6 +289,29 @@ const prepareForStoryProvider = (mode: PersistedStoryProvider): boolean => {
   safeSet(STORAGE_KEYS.storyProvider, mode)
   return didReset
 }
+
+const hydrateCriticalSyncOutbox = () => {
+  if (safeGet<unknown>(STORAGE_KEYS.remoteResetRequired) === true) {
+    requestedRemoteResetGeneration = 1
+    completedRemoteResetGeneration = 0
+  }
+
+  const storedChoice = safeGet<unknown>(STORAGE_KEYS.pendingChoiceSync)
+  if (isPendingChoiceSyncRequest(storedChoice)) {
+    pendingChoiceSyncRequest = storedChoice
+  } else if (storedChoice !== null) {
+    safeRemove(STORAGE_KEYS.pendingChoiceSync)
+  }
+
+  // A durable reset means the previous story was discarded, so a stale unsynced
+  // choice from that story must not be replayed after reload.
+  if (requestedRemoteResetGeneration > completedRemoteResetGeneration && pendingChoiceSyncRequest) {
+    pendingChoiceSyncRequest = null
+    safeRemove(STORAGE_KEYS.pendingChoiceSync)
+  }
+}
+
+hydrateCriticalSyncOutbox()
 
 const activeStoryProvider: PersistedStoryProvider =
   import.meta.env.VITE_QISSA_STORY_PROVIDER === 'remote' ? 'remote' : 'local'
@@ -268,6 +328,13 @@ const clearDeprecatedKeys = () => {
 
 const waitForPendingRemoteReset = async () => {
   while (completedRemoteResetGeneration < requestedRemoteResetGeneration) {
+    // A reset supersedes the choice. If a choice request was already in flight,
+    // let it settle first so the reset is the final remote mutation.
+    if (pendingChoiceSync) {
+      await Promise.allSettled([pendingChoiceSync])
+      continue
+    }
+
     if (!pendingRemoteReset) startRemoteReset()
     const task = pendingRemoteReset
     if (!task) throw new Error('Remote story reset could not be started.')
@@ -282,6 +349,29 @@ const waitForPendingChoiceSync = async () => {
     if (!task) throw new Error('Remote story choice sync could not be started.')
     await task
   }
+}
+
+const settleActiveCriticalSyncForDeletion = async () => {
+  criticalSyncDeletionBarrier = true
+  try {
+    const activeTasks = [pendingChoiceSync, pendingRemoteReset].filter(
+      (task): task is Promise<void> => task !== null,
+    )
+    if (activeTasks.length > 0) await Promise.allSettled(activeTasks)
+  } finally {
+    criticalSyncDeletionBarrier = false
+  }
+}
+
+const clearCriticalSyncAfterProfileDeletion = () => {
+  pendingRemoteReset = null
+  requestedRemoteResetGeneration = 0
+  completedRemoteResetGeneration = 0
+  pendingChoiceSync = null
+  pendingChoiceSyncRequest = null
+  criticalSyncDeletionBarrier = false
+  safeRemove(STORAGE_KEYS.remoteResetRequired)
+  safeRemove(STORAGE_KEYS.pendingChoiceSync)
 }
 
 export const localPersistence = {
@@ -345,6 +435,8 @@ export const localPersistence = {
   },
   waitForPendingRemoteReset,
   waitForPendingChoiceSync,
+  settleActiveCriticalSyncForDeletion,
+  clearCriticalSyncAfterProfileDeletion,
   getStorageVersion,
   prepareForStoryProvider,
   clearStoryProgressOnly,
