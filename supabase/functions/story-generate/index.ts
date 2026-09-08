@@ -2,6 +2,7 @@ import {
   buildFinalEpisode,
   isRecord,
   normalizeStoryRequest,
+  type SafetyFlags,
   type SafetyResult,
   type StoryCandidate,
 } from './contracts.ts'
@@ -86,6 +87,19 @@ const failureReason = (errors: string[], safety: SafetyResult | null) => {
   return parts.join(';').slice(0, 600)
 }
 
+const hasRuleViolation = (flags: SafetyFlags): boolean => Object.values(flags).some(Boolean)
+
+const ruleFailure = (flags: SafetyFlags): SafetyResult => ({
+  approved: false,
+  risk_level: flags.adult_theme || flags.discrimination || flags.excessive_fear || flags.religious_push || flags.political_push
+    ? 'high'
+    : 'medium',
+  flags,
+  required_action: flags.adult_theme || flags.discrimination || flags.excessive_fear || flags.religious_push || flags.political_push
+    ? 'block'
+    : 'regenerate',
+})
+
 const candidateTextForModeration = (candidate: StoryCandidate) => [
   candidate.title,
   candidate.story_text,
@@ -146,6 +160,15 @@ Deno.serve(async (request: Request) => {
       }
 
       const ruleFlags = scanRuleBasedSafety(context, candidate)
+      // Deterministic policy violations are already sufficient to reject this
+      // candidate. Do not spend two more provider calls evaluating/moderating
+      // text that QISSA will never publish. Safe candidates still go through
+      // both semantic safety evaluation and provider moderation below.
+      if (hasRuleViolation(ruleFlags)) {
+        retryReason = failureReason([], ruleFailure(ruleFlags))
+        continue
+      }
+
       const [evaluation, moderation] = await Promise.all([
         evaluateStorySafety(openAiApiKey, safetyModel, context, candidate),
         moderateStoryText(openAiApiKey, candidateTextForModeration(candidate)),

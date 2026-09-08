@@ -21,11 +21,26 @@ requireText('story entrypoint', index, [
   'maxAttempts = 2',
   'validateCandidate',
   'scanRuleBasedSafety',
+  'hasRuleViolation',
+  'ruleFailure',
   'evaluateStorySafety',
   'moderateStoryText',
   'buildSafeFallback',
   "'X-QISSA-Generation-Source': 'safe-fallback'",
 ])
+
+const ruleScanPosition = index.indexOf('const ruleFlags = scanRuleBasedSafety')
+const ruleRejectPosition = index.indexOf('if (hasRuleViolation(ruleFlags))', ruleScanPosition)
+const semanticSafetyPosition = index.indexOf('evaluateStorySafety(', ruleScanPosition)
+const moderationPosition = index.indexOf('moderateStoryText(', ruleScanPosition)
+if (!(
+  ruleScanPosition >= 0 &&
+  ruleRejectPosition > ruleScanPosition &&
+  semanticSafetyPosition > ruleRejectPosition &&
+  moderationPosition > ruleRejectPosition
+)) {
+  failures.push('deterministic rule violations must short-circuit before semantic safety and moderation provider calls')
+}
 
 requireText('OpenAI provider', provider, [
   'store: false',
@@ -138,4 +153,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI safety, narrative arc, paragraph-layout, and 6-8 minute target contract check passed.')
+console.log('Story AI safety, deterministic short-circuit, narrative arc, paragraph-layout, and 6-8 minute target contract check passed.')
