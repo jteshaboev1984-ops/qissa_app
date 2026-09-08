@@ -75,7 +75,7 @@ requireCondition(
 const globalLockPosition = globalMigration.indexOf("qissa:story-generation:global:")
 const installationLockPosition = globalMigration.indexOf("hashtextextended(p_installation_id::text")
 const aggregateIncrementPosition = globalMigration.indexOf('story_generation_claims = story_generation_claims + 1')
-const eventInsertPosition = globalMigration.indexOf("'story_generation_started'")
+const eventInsertPosition = globalMigration.indexOf('insert into public.app_events')
 requireCondition(
   /qissa_claim_story_generation_budget/.test(globalMigration) &&
     globalLockPosition >= 0 &&
