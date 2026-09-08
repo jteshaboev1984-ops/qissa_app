@@ -9,7 +9,7 @@ import {
 import { buildSafeFallback } from './fallback.ts'
 import { evaluateStorySafety, generateStoryCandidate, moderateStoryText } from './openai.ts'
 import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
-import { claimStoryGeneration, isInstallationId } from './usage.ts'
+import { claimStoryGeneration, isInstallationId, type GenerationClaim } from './usage.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
@@ -78,6 +78,13 @@ const safeFallback = (
   },
 )
 
+const claimMetadata = (claim: GenerationClaim): Record<string, string> => ({
+  'X-QISSA-Daily-Limit': String(claim.limit),
+  'X-QISSA-Daily-Used': String(claim.used),
+  'X-QISSA-Global-Daily-Limit': String(claim.globalLimit),
+  'X-QISSA-Global-Daily-Used': String(claim.globalUsed),
+})
+
 const failureReason = (errors: string[], safety: SafetyResult | null) => {
   const parts = [...errors]
   if (safety && !safety.approved) {
@@ -143,10 +150,7 @@ Deno.serve(async (request: Request) => {
 
   const claim = await claimStoryGeneration(installationId)
   if (!claim.allowed) {
-    return safeFallback(context, origin, claim.reason, {
-      'X-QISSA-Daily-Limit': String(claim.limit),
-      'X-QISSA-Daily-Used': String(claim.used),
-    })
+    return safeFallback(context, origin, claim.reason, claimMetadata(claim))
   }
 
   let retryReason = ''
@@ -188,8 +192,7 @@ Deno.serve(async (request: Request) => {
         {
           'X-QISSA-Generation-Source': 'openai-structured',
           'X-QISSA-Generation-Attempts': String(attempt),
-          'X-QISSA-Daily-Limit': String(claim.limit),
-          'X-QISSA-Daily-Used': String(claim.used),
+          ...claimMetadata(claim),
         },
       )
     } catch (error) {
@@ -201,8 +204,5 @@ Deno.serve(async (request: Request) => {
     }
   }
 
-  return safeFallback(context, origin, 'generation-or-safety-failed', {
-    'X-QISSA-Daily-Limit': String(claim.limit),
-    'X-QISSA-Daily-Used': String(claim.used),
-  })
+  return safeFallback(context, origin, 'generation-or-safety-failed', claimMetadata(claim))
 })
