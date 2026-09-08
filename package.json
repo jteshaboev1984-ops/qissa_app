@@ -24,6 +24,7 @@
     "preview:stories": "node scripts/preview-stories.mjs",
     "check:story-service": "node scripts/check-story-service-boundary.mjs",
     "check:critical-sync-reload": "node scripts/check-critical-sync-reload-runtime.mjs",
+    "check:secret-hygiene": "node scripts/check-repository-secret-hygiene.mjs",
     "check:story-ai": "node scripts/check-story-ai-safety.mjs",
     "check:backend-contracts": "node scripts/check-backend-contracts.mjs",
     "check:backend-access": "node scripts/check-backend-access-boundary.mjs",
