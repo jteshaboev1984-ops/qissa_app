@@ -1,9 +1,14 @@
 const INSTALLATION_ID_KEY = 'qissa:v1:installationId'
+const INSTALLATION_AUTH_KEY = 'qissa:v1:installationAuth'
 
 let cachedId: string | null = null
+let cachedAuth: string | null = null
 
 const isUuid = (value: string | null): value is string =>
   Boolean(value && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value))
+
+const isInstallationAuth = (value: string | null): value is string =>
+  Boolean(value && /^[0-9a-f]{64}$/i.test(value))
 
 const createUuid = (): string => {
   if (typeof crypto.randomUUID === 'function') return crypto.randomUUID()
@@ -17,6 +22,12 @@ const createUuid = (): string => {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
 }
 
+const createInstallationAuth = (): string => {
+  const bytes = new Uint8Array(32)
+  crypto.getRandomValues(bytes)
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')
+}
+
 const persist = (value: string) => {
   cachedId = value
   try {
@@ -26,6 +37,20 @@ const persist = (value: string) => {
       window.localStorage.removeItem(INSTALLATION_ID_KEY)
     } catch {
       // Keep only the new page-session identity when storage is unavailable.
+    }
+  }
+  return value
+}
+
+const persistAuth = (value: string) => {
+  cachedAuth = value
+  try {
+    window.localStorage.setItem(INSTALLATION_AUTH_KEY, value)
+  } catch {
+    try {
+      window.localStorage.removeItem(INSTALLATION_AUTH_KEY)
+    } catch {
+      // Keep only the page-session credential when storage is unavailable.
     }
   }
   return value
@@ -47,4 +72,23 @@ export const getInstallationId = (): string => {
   return persist(createUuid())
 }
 
-export const rotateInstallationId = (): string => persist(createUuid())
+export const getInstallationAuth = (): string => {
+  if (cachedAuth) return cachedAuth
+
+  try {
+    const stored = window.localStorage.getItem(INSTALLATION_AUTH_KEY)
+    if (isInstallationAuth(stored)) {
+      cachedAuth = stored
+      return stored
+    }
+  } catch {
+    // Fall through to a page-session credential.
+  }
+
+  return persistAuth(createInstallationAuth())
+}
+
+export const rotateInstallationId = (): string => {
+  persistAuth(createInstallationAuth())
+  return persist(createUuid())
+}
