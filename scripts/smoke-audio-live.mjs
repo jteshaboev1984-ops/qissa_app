@@ -1,3 +1,5 @@
+import { randomBytes, randomUUID } from 'node:crypto'
+
 const audioEndpoint = process.env.QISSA_AUDIO_ENDPOINT?.trim()
   || 'https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/audio-request'
 const stateEndpoint = process.env.QISSA_STATE_ENDPOINT?.trim()
@@ -46,11 +48,12 @@ const invoke = async (endpoint, payload, { allowFailure = false } = {}) => {
   }
 }
 
-const installationId = crypto.randomUUID()
+const installationId = randomUUID()
+const installationAuth = randomBytes(32).toString('hex')
 const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 const seriesId = `audio-smoke-${suffix}`
 const episodeId = 'ep-1-cozy_forest'
-const identity = { installationId, seriesId, episodeId }
+const identity = { installationId, installationAuth, seriesId, episodeId }
 
 const privacyConsent = {
   version: consentVersion,
@@ -121,6 +124,7 @@ try {
   const synced = await invoke(stateEndpoint, {
     action: 'sync_generated',
     installationId,
+    installationAuth,
     selections,
     seriesState,
     episode,
@@ -138,6 +142,15 @@ try {
   })
   assert(synced.body?.ok === true, 'audio smoke fixture was not persisted')
   fixtureCreated = true
+
+  const blocked = await invoke(audioEndpoint, {
+    action: 'load_progress',
+    installationId,
+    installationAuth: randomBytes(32).toString('hex'),
+    seriesId,
+    episodeId,
+  }, { allowFailure: true })
+  assert(blocked.status === 403, 'wrong installation credential must be rejected by Audio Agent')
 
   const first = await invoke(audioEndpoint, {
     action: 'request_audio',
@@ -178,12 +191,13 @@ try {
   assert(repeated.body?.fallbackUsed === true, 'repeated provider-free request changed fallback behavior')
   assert(repeated.body?.audioAssetId === null, 'repeated fallback unexpectedly created an asset')
 
-  console.log('Live Audio Agent smoke passed: self-contained fixture, safe device fallback, no provider asset, remote progress save/load passed.')
+  console.log('Live Audio Agent smoke passed: installation auth isolation, self-contained fixture, safe device fallback, no provider asset, remote progress save/load passed.')
 } finally {
   if (fixtureCreated) {
     const deleted = await invoke(stateEndpoint, {
       action: 'delete_profile_data',
       installationId,
+      installationAuth,
     }, { allowFailure: true })
     if (!deleted.ok || deleted.body?.deleted !== true) {
       console.error('Audio smoke cleanup failed; inspect the temporary installation id:', installationId)
