@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto'
+import { randomBytes, randomUUID } from 'node:crypto'
 
 const storyEndpoint = process.env.QISSA_STORY_ENDPOINT?.trim()
   || 'https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate'
@@ -49,6 +49,8 @@ const invokeJson = async (endpoint, payload) => {
 }
 
 const installationId = randomUUID()
+const installationAuth = randomBytes(32).toString('hex')
+const installationIdentity = { installationId, installationAuth }
 const seriesId = randomUUID()
 const heroName = 'Privacy Smoke Hero'
 const privacyConsent = {
@@ -103,7 +105,7 @@ try {
 
   const sync = await invokeJson(stateEndpoint, {
     action: 'sync_generated',
-    installationId,
+    ...installationIdentity,
     selections,
     seriesState,
     episode,
@@ -115,14 +117,24 @@ try {
 
   const loaded = await invokeJson(stateEndpoint, {
     action: 'load_current',
-    installationId,
+    ...installationIdentity,
   })
   assert(loaded.body?.snapshot, 'persisted profile snapshot could not be loaded')
   assert(loaded.body.snapshot.seriesState?.id === seriesId, 'loaded snapshot belongs to the wrong series')
 
+  const wrongAuth = await invokeJson(stateEndpoint, {
+    action: 'load_current',
+    installationId,
+    installationAuth: randomBytes(32).toString('hex'),
+  }).then(
+    () => ({ unexpectedlyAllowed: true }),
+    () => ({ unexpectedlyAllowed: false }),
+  )
+  assert(wrongAuth.unexpectedlyAllowed === false, 'wrong installation credential unexpectedly loaded family state')
+
   const deleted = await invokeJson(stateEndpoint, {
     action: 'delete_profile_data',
-    installationId,
+    ...installationIdentity,
   })
   assert(deleted.body?.ok === true && deleted.body?.deleted === true, 'profile deletion was not confirmed')
   assert(
@@ -133,13 +145,13 @@ try {
 
   const afterDeletion = await invokeJson(stateEndpoint, {
     action: 'load_current',
-    installationId,
+    ...installationIdentity,
   })
   assert(afterDeletion.body?.snapshot === null, 'profile data still loads after deletion')
 
   const repeatedDeletion = await invokeJson(stateEndpoint, {
     action: 'delete_profile_data',
-    installationId,
+    ...installationIdentity,
   })
   assert(
     repeatedDeletion.body?.ok === true && repeatedDeletion.body?.deleted === false,
@@ -150,13 +162,13 @@ try {
     'repeated deletion must preserve integrated audio cleanup status',
   )
 
-  console.log('Live privacy smoke passed: integrated audio cleanup, create, load, delete, absence, repeat delete.')
+  console.log('Live privacy smoke passed: installation auth isolation, integrated audio cleanup, create, load, delete, absence, repeat delete.')
 } finally {
   if (profileCreated) {
     try {
       await invokeJson(stateEndpoint, {
         action: 'delete_profile_data',
-        installationId,
+        ...installationIdentity,
       })
     } catch (cleanupError) {
       console.error('Privacy smoke cleanup failed', cleanupError)
