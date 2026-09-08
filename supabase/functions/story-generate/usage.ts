@@ -1,12 +1,15 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
 const DAILY_STORY_GENERATION_LIMIT = 5
+const GLOBAL_DAILY_STORY_GENERATION_LIMIT = 30
 
 export type GenerationClaim = {
   allowed: boolean
   reason: string
   used: number
   limit: number
+  globalUsed: number
+  globalLimit: number
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -25,30 +28,28 @@ const adminClient = () => {
   })
 }
 
+const deniedClaim = (reason: string): GenerationClaim => ({
+  allowed: false,
+  reason,
+  used: 0,
+  limit: DAILY_STORY_GENERATION_LIMIT,
+  globalUsed: 0,
+  globalLimit: GLOBAL_DAILY_STORY_GENERATION_LIMIT,
+})
+
 export const claimStoryGeneration = async (installationId: string): Promise<GenerationClaim> => {
   const admin = adminClient()
-  if (!admin) {
-    return {
-      allowed: false,
-      reason: 'rate_limit_service_unavailable',
-      used: 0,
-      limit: DAILY_STORY_GENERATION_LIMIT,
-    }
-  }
+  if (!admin) return deniedClaim('rate_limit_service_unavailable')
 
-  const { data, error } = await admin.rpc('qissa_claim_story_generation', {
+  const { data, error } = await admin.rpc('qissa_claim_story_generation_budget', {
     p_installation_id: installationId,
     p_daily_limit: DAILY_STORY_GENERATION_LIMIT,
+    p_global_daily_limit: GLOBAL_DAILY_STORY_GENERATION_LIMIT,
   })
 
   if (error || !isRecord(data)) {
     console.error('QISSA story generation cost guard failed', error)
-    return {
-      allowed: false,
-      reason: 'rate_limit_check_failed',
-      used: 0,
-      limit: DAILY_STORY_GENERATION_LIMIT,
-    }
+    return deniedClaim('rate_limit_check_failed')
   }
 
   return {
@@ -58,7 +59,12 @@ export const claimStoryGeneration = async (installationId: string): Promise<Gene
     limit: typeof data.limit === 'number' && Number.isFinite(data.limit)
       ? data.limit
       : DAILY_STORY_GENERATION_LIMIT,
+    globalUsed: typeof data.global_used === 'number' && Number.isFinite(data.global_used) ? data.global_used : 0,
+    globalLimit: typeof data.global_limit === 'number' && Number.isFinite(data.global_limit)
+      ? data.global_limit
+      : GLOBAL_DAILY_STORY_GENERATION_LIMIT,
   }
 }
 
 export const storyGenerationDailyLimit = DAILY_STORY_GENERATION_LIMIT
+export const storyGenerationGlobalDailyLimit = GLOBAL_DAILY_STORY_GENERATION_LIMIT
