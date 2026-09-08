@@ -1,8 +1,8 @@
 # QISSA Launch Baseline Audit — September 2026
 
-Status: launch-hardening baseline after closed-beta Story Core production acceptance.
+Status: launch hardening after closed-beta Story Core acceptance, Audio Agent client integration, and first-party story-flow observability.
 
-This record captures the deployed production baseline before any paid Story AI rollout or broader beta expansion.
+This record captures the deployed production baseline before any deliberate paid Story AI acceptance run or broader beta expansion.
 
 ## Production project
 
@@ -10,196 +10,180 @@ This record captures the deployed production baseline before any paid Story AI r
 - Region: `ap-south-1`
 - Project status during latest audit: `ACTIVE_HEALTHY`
 - Postgres: 17
-- Supabase development branches: none
 
-## Edge Functions
+## Active Edge Functions
 
-Production functions confirmed active after the bedtime-duration hardening deployment:
+Production functions currently deployed:
 
-- `story-generate` — **v16**, `verify_jwt=true`
-- `story-state` — v5, `verify_jwt=true`
-- `audio-request` — v1, `verify_jwt=true`
+- `story-generate` — **v18**, `verify_jwt=true`
+- `story-state` — **v5**, `verify_jwt=true`
+- `audio-request` — **v2**, `verify_jwt=true`
 
-`story-generate` v16 contains the accepted 5–10 minute closed-beta Story Core expansion. Story AI remains intentionally disabled for normal launch hardening.
+Story AI remains intentionally disabled for routine launch hardening. Provider TTS also remains disabled. Normal CI and deterministic release validation therefore remain provider-free.
 
-## Closed-beta production acceptance
+## Closed-beta Story Core acceptance
 
-A fresh provider-free production E2E run completed successfully on 2026-09-07 after deployment of `story-generate` v16.
+A provider-free production E2E acceptance run completed successfully on 2026-09-07.
 
 Matrix:
 
-- Languages: RU, UZ
-- Worlds: Cozy Forest, Magic Garden, Stars & Space
-- Branches: choice A and choice B
-- Total scenarios: **12/12 passed**
+- languages: RU, UZ
+- worlds: Cozy Forest, Magic Garden, Stars & Space
+- branches: choice A and choice B
+- total scenarios: **12/12 passed**
 
 Each scenario verified:
 
 1. Episode 1 generation
-2. exactly two child-facing options for one meaningful child choice
+2. exactly two safe options representing one meaningful child decision
 3. state persistence
 4. confirmed choice persistence
 5. choice-specific memory/consequence
 6. Episode 2 continuation
 7. zero additional choice in Episode 2
-8. complete-session 5–10 minute duration contract
+8. complete-session 5–10 minute hard duration contract
 9. persisted reload of Episode 2 state
 10. profile deletion
-11. absence of profile data after deletion
+11. absence of profile story data after deletion
 
-The preflight and all scenarios confirmed `safe-fallback` with Story AI disabled, so the acceptance run did not invoke a paid story provider.
+The run used `safe-fallback`, so it did not invoke a paid Story AI provider.
 
-Production E2E measurements at the 140 WPM release-acceptance pace:
+Measured deterministic fallback sessions at the internal 140 WPM acceptance pace remain approximately **5.06–5.60 minutes** across the 12 accepted RU/UZ branches. These fall inside the hard release envelope but sit near its lower edge.
 
-- RU Cozy Forest A: 731 words · 5.22 min
-- RU Cozy Forest B: 709 words · 5.06 min
-- RU Magic Garden A: 784 words · 5.60 min
-- RU Magic Garden B: 783 words · 5.59 min
-- RU Stars & Space A: 730 words · 5.21 min
-- RU Stars & Space B: 726 words · 5.19 min
-- UZ Cozy Forest A: 708 words · 5.06 min
-- UZ Cozy Forest B: 721 words · 5.15 min
-- UZ Magic Garden A: 756 words · 5.40 min
-- UZ Magic Garden B: 768 words · 5.49 min
-- UZ Stars & Space A: 709 words · 5.06 min
-- UZ Stars & Space B: 708 words · 5.06 min
+## Bedtime duration policy
 
-After the run, database row counts returned exactly to the pre-smoke baseline, confirming that temporary E2E profiles/sessions were deleted successfully. The temporary push trigger used for the one-shot acceptance run was removed immediately afterwards; the persistent E2E workflow is manual-only again.
+The hard product acceptance band remains:
 
-## Deterministic release gates
+- **minimum: 5 minutes**
+- **maximum: 10 minutes**
 
-The release build includes a deterministic closed-beta content matrix check covering the same public matrix:
-
-- RU + UZ
-- Cozy Forest + Magic Garden + Stars & Space
-- both Episode 1 choice branches
-- Episode 1 bedtime length floor
-- distinct A/B consequences
-- choice-specific Episode 2 continuation
-- no Episode 3 promise
-- closed bedtime ending
-- vocabulary contract
-- no technical-copy leakage
-
-The gate is wired into both CI and GitHub Pages release deployment and currently passes.
-
-### 5–10 minute bedtime duration contract
-
-The full child-facing bedtime session is an explicit release requirement: **5–10 minutes at a normal expressive bedtime-reading pace**.
-
-For deterministic release engineering QISSA uses **140 words per minute** as the acceptance pace. This is an internal product acceptance assumption for expressive read-aloud, not a claim that every adult reads at exactly that speed. The resulting hard content band is:
-
-- minimum: **700 words** = 5 minutes at 140 WPM;
-- maximum: **1,400 words** = 10 minutes at 140 WPM.
-
-The measured session includes the text the family actually experiences in the core flow:
+For deterministic release engineering, QISSA uses **140 words per minute** as the acceptance assumption, producing a hard full-session band of **700–1,400 words** for:
 
 `Episode 1 + confirmed choice resolution + Episode 2`.
 
-The complete 12-branch RU/UZ closed-beta matrix now measures **708–784 words**. At the 140 WPM acceptance pace this equals approximately **5.06–5.60 minutes** of spoken story text. At a calmer 125 WPM pace the same sessions measure approximately **5.66–6.27 minutes**.
+For Story AI generation, the primary editorial target has now been raised to **6–8 minutes**, approximately **840–1,080 words** at the same internal acceptance pace.
 
-Current minimum Episode 1 length is **396 words** and minimum Episode 2 length remains **219 words**. The duration gate is blocking in both pull-request CI and the GitHub Pages release workflow, so a future change cannot shorten or lengthen any public beta branch outside the 700–1,400 word band without failing release validation.
+This is intentionally a target rather than a new hard boundary. Story quality and causal structure take priority over padding. Generated bedtime stories must follow one coherent arc:
 
-The live production E2E smoke now independently checks the same 700–1,400 word contract against the deployed Edge Function, so duration is protected at both deterministic source-test and deployed-production levels.
+`beginning → one understandable problem/goal → build-up → meaningful choice → visible consequence → resolution → calm coda`.
 
-A manual real-device timed read remains part of final UX regression because human pauses, interaction time and individual delivery vary; however, word count is no longer merely informational — the 5–10 minute requirement is both release-gated and production-proven.
+The model is explicitly instructed not to reach the target by adding unrelated problems, repeating exposition, or inventing a second adventure after the choice.
 
-The release build also includes dedicated guards for:
+## Listening / Audio Agent baseline
 
-- backend contract parity;
-- backend access boundary / RLS architecture;
-- Story Core continuity;
-- closed-beta public scope;
-- 5–10 minute bedtime duration;
-- Story AI cost guard;
-- privacy consent and irreversible deletion ordering;
-- listening playback contract;
-- Story AI safety contract;
-- story copy and localization, including the duration expansion copy;
-- TypeScript/build health.
+The production Listening UI now prefers the backend Audio Agent instead of treating browser `speechSynthesis` as the primary path.
 
-## Current data baseline
+Current flow:
 
-Exact row counts rechecked after the post-v16 production E2E cleanup:
+1. family presses Play;
+2. client requests audio from `audio-request`;
+3. backend validates ownership, safety approval, privacy consent and approved voice preset;
+4. an existing cached provider asset is returned when available;
+5. if provider TTS is unavailable/disabled, the client falls back safely to device/browser narration;
+6. playback progress is saved server-side and can be restored;
+7. local progress remains an offline safety net;
+8. any provider-generated voice must expose the AI-voice disclosure state.
 
-- `child_profiles`: 5
-- `story_sessions`: 7
-- `story_episodes`: 13
-- `story_choices`: 14
-- `story_choice_events`: 6
-- `safety_reviews`: 13
-- `voice_presets`: 12
-- `audio_assets`: 0
-- `playback_progress`: 0
-- `app_events`: 0
+Production Pages is explicitly built with `VITE_QISSA_AUDIO_ENDPOINT` pointing to the deployed Audio Agent.
 
-These counts match the pre-smoke baseline. Existing rows were not modified or deleted by this acceptance run.
+Provider TTS remains **disabled** at this baseline. Therefore the current production contract proves cache-first integration and safe device fallback, not paid provider voice quality.
+
+## First-party story-flow observability
+
+A minimal privacy-scoped event layer was added on 2026-09-08. It is emitted from trusted persistence writes in Postgres rather than from a third-party child analytics SDK.
+
+The database now records these operational events for new flows:
+
+- `story_session_started`
+- `story_episode_persisted`
+- `story_choice_confirmed`
+- `story_session_completed`
+
+Payloads are intentionally limited to structural metadata such as language, style pack, episode number, story mode/mood, safety status and selected internal choice id.
+
+The telemetry contract explicitly excludes:
+
+- story text
+- child names
+- custom hero names
+- choice text
+- resolution text
+- free-form user input
+- audio content
+
+The event layer is protected by a deterministic CI/deploy guard and does not change the existing RLS/browser-access boundary.
+
+Immediately after migration, `app_events` remains empty until a new story flow occurs; existing historical rows were not backfilled.
+
+## Deterministic release gates
+
+The release pipeline currently blocks regressions across:
+
+- backend contract parity
+- backend access boundary / RLS architecture
+- Story Core choice continuity
+- closed-beta public scope
+- closed-beta content matrix
+- 5–10 minute hard bedtime duration
+- 6–8 minute Story AI editorial target contract
+- Story AI cost guard
+- first-party story observability
+- privacy consent and irreversible deletion ordering
+- Listening / Audio Agent client integration
+- Story AI safety contract
+- story copy and localization
+- TypeScript/build health
 
 ## Database access model
 
-The current architecture intentionally keeps the public story tables behind RLS with no `anon`/`authenticated` policies. This matches the persistence design: browser clients call Edge Functions, while trusted persistence operations use the server-side service role.
+The current architecture intentionally keeps public story tables behind RLS with no direct `anon`/`authenticated` table policies.
 
-The latest production security advisor reports only `RLS Enabled No Policy` INFO notices for the protected public tables. For the current closed-beta architecture this is an **accepted intentional state**, not a missing client-access policy. Adding permissive policies merely to remove the INFO notices would weaken the current security boundary.
-
-The repository has an automated backend-access gate that prevents routine changes from silently adding direct browser table access, permissive public RLS policies, or removing the service-role boundary.
+Browser clients call Edge Functions. Trusted persistence and audio operations use server-side service-role access. The existing `RLS Enabled No Policy` advisor notices are therefore accepted for this closed-beta architecture and should not be “fixed” by adding permissive browser policies.
 
 ## Storage
 
-- Bucket: `story-audio`
-- Public: `false`
-- File size limit: 25 MiB
-- Allowed MIME types: `audio/mpeg`, `audio/ogg`, `audio/wav`
-- No client storage policies are present in the current baseline.
+- bucket: `story-audio`
+- public: `false`
+- maximum file size: 25 MiB
+- allowed MIME types: `audio/mpeg`, `audio/ogg`, `audio/wav`
 
-This matches the current provider-audio architecture: audio storage access is server-side through the Audio Agent foundation. The closed beta itself still uses browser/device narration by default.
+No client storage policy is required for the current server-side signed-URL audio design.
 
-## Performance advisor
+## Cost and provider controls
 
-The latest performance advisor reports only unused-index INFO notices. No index is removed at this stage. The project has very low production traffic and some indexes support later audio/operations paths, so an unused-index signal before beta traffic is not evidence that an index is unnecessary.
+- Story AI: intentionally disabled during routine hardening
+- provider TTS: intentionally disabled
+- Story AI claim limit once enabled: **5 generations/day per installation**
+- normal CI: provider-free
+- paid-capable Story smoke: manual-only
+- provider audio smoke: manual-only
 
-## Persistence copy correction
+No project-wide global daily Story AI cap is part of the current closed-beta baseline.
 
-A launch-hardening review found one stale user-facing Library statement that said the story was stored only on the device. That was no longer accurate after remote state persistence was introduced.
+## Public closed-beta scope
 
-The RU/UZ/KZ Library copy now states that the story is **bound to the current device** and that QISSA saves its state so continuation can be restored after reopening. A story-copy regression guard now blocks the old local-only wording from returning.
+Automated scope checks continue to constrain the public beta to:
 
-## Parent and language-flow hardening
+- age 5–7
+- RU and UZ Beta
+- Cozy Forest, Magic Garden and Stars & Space
+- bedtime series
+- one confirmed child decision in Episode 1 followed by Episode 2
 
-Two additional user-flow inconsistencies were corrected during launch hardening:
+Kazakh and non-beta worlds remain in internal contracts/content infrastructure but are not ordinary public beta selections.
 
-1. The Parent Center previously implied that families could change world, format and mood for a new closed-beta story. In the actual beta contract only the world is selectable; series format and bedtime mode are fixed. RU/UZ/KZ copy now reflects the real product behavior, and the beta-scope gate blocks the old claim from returning.
-2. The global language selector could previously change UI language while an already configured story still retained a different persisted story language. Language selection is now interactive only on Welcome/setup screens. Home, Library, Parent and Story show the active story language as a non-editable badge. Cancelling edit/new-story setup restores the existing story language and returns Home, preventing a cancelled language experiment from changing the active story session.
+## Current unresolved launch gates
 
-Both changes passed the full release build and GitHub Pages deployment gates.
+The following items are still not considered proven until fresh manual production validation is returned:
 
-## Cost and provider state
+1. current deployed Story live smoke against the latest production function;
+2. current deployed Audio Agent live smoke, including fallback and server progress restoration;
+3. deliberate paid Story AI acceptance run with `openai-structured` when explicitly approved;
+4. provider TTS quality acceptance if/when TTS is deliberately enabled;
+5. final browser/mobile UX regression of the deployed Pages build;
+6. real-device timed complete bedtime session;
+7. consent/privacy copy and parent-flow review;
+8. manual deletion/recovery UX verification from the actual UI;
+9. local legal/privacy review before public launch.
 
-- Story AI remains intentionally disabled during launch hardening.
-- Normal CI and product validation remain provider-free.
-- Installation-scoped Story AI claim limit is **5 generations/day** once real AI is enabled.
-- No project-wide/global daily cap is part of the approved closed-beta scope.
-- Provider TTS remains disabled by default for the beta baseline.
-
-## Public scope verification
-
-Automated scope checks confirm the closed-beta setup remains constrained to:
-
-- age 5–7;
-- RU and UZ Beta as public languages;
-- Cozy Forest, Magic Garden and Stars & Space as public worlds;
-- bedtime series;
-- one confirmed child choice in Episode 1 followed by Episode 2.
-
-Kazakh and non-beta worlds remain in internal contracts/content infrastructure but are not exposed as ordinary public beta choices.
-
-## Remaining launch-hardening gates
-
-The Story Core backend/persistence slice, content matrix and 5–10 minute duration requirement are now technically proven in both source validation and production E2E. Remaining work should focus on release readiness rather than feature expansion:
-
-1. final browser/mobile UX regression of the deployed Pages build, including a real-device timed complete bedtime session;
-2. consent/privacy copy and real parent-flow review;
-3. manual deletion/recovery UX verification from the actual UI;
-4. first deliberate paid Story AI acceptance decision and run when approved;
-5. local legal/privacy review before public launch.
-
-Do not enable additional worlds, age groups, public languages, provider TTS, family voice, payments, or runtime AI images as part of this baseline hardening step.
+Do not enable additional worlds, age groups, public languages, provider TTS, family voice, payments, or runtime AI images as part of baseline launch hardening.
