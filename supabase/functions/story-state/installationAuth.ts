@@ -20,7 +20,7 @@ const sha256 = async (value: string): Promise<string> => {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
-export type InstallationAuthMode = 'required' | 'create' | 'allow-empty'
+export type InstallationAuthMode = 'required' | 'create' | 'allow-empty' | 'allow-missing-profile'
 
 export type InstallationAuthResult =
   | { ok: true }
@@ -84,6 +84,16 @@ export const authorizeInstallation = async (
   if (existing) return existing
 
   if (mode === 'required') return { ok: false, status: 401, error: 'installation_auth_required' }
+
+  if (mode === 'allow-missing-profile') {
+    const hasProfile = await profileExists(installationId)
+    if (hasProfile === null) return { ok: false, status: 500, error: 'installation_auth_lookup_failed' }
+    if (!hasProfile) return { ok: true }
+
+    // Never let an unbound credential claim an existing profile merely because
+    // the caller knows its installation UUID. Existing profiles stay fail-closed.
+    return { ok: false, status: 401, error: 'installation_auth_required' }
+  }
 
   if (mode === 'allow-empty') {
     const hasProfile = await profileExists(installationId)

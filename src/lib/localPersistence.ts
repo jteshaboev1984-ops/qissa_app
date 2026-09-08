@@ -274,8 +274,12 @@ const clearAllQissaStorage = () => {
 }
 
 const clearStoryProgressOnly = () => {
+  // Provider migration is a local compatibility boundary, not a user-requested
+  // server reset. Queuing reset_current here can create a stale durable reset on
+  // a brand-new installation before its credential has ever been bound.
   safeRemove(STORAGE_KEYS.seriesState)
-  clearEpisodeAndScreen()
+  safeRemove(STORAGE_KEYS.currentEpisode)
+  safeRemove(STORAGE_KEYS.screen)
 }
 
 const prepareForStoryProvider = (mode: PersistedStoryProvider): boolean => {

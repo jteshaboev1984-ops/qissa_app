@@ -516,9 +516,11 @@ Deno.serve(async (request: Request) => {
 
   const credentialMode = input.action === 'sync_generated'
     ? 'create'
-    : input.action === 'load_current' || input.action === 'delete_profile_data'
-      ? 'allow-empty'
-      : 'required'
+    : input.action === 'reset_current'
+      ? 'allow-missing-profile'
+      : input.action === 'load_current' || input.action === 'delete_profile_data'
+        ? 'allow-empty'
+        : 'required'
 
   const installationAuth = await authorizeInstallation(
     input.installationId,
