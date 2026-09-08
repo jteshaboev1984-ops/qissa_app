@@ -38,6 +38,7 @@
     "smoke:beta-e2e-live": "node scripts/smoke-closed-beta-e2e-live-auth.mjs",
     "smoke:audio-live": "node scripts/smoke-audio-live.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
+    "audit:all": "npm audit --audit-level=high",
     "check:bedtime-session": "node scripts/check-bedtime-session-polish.mjs",
     "check:cosmos-bedtime": "node scripts/check-cosmos-bedtime.mjs"
   },
@@ -49,11 +50,11 @@
     "@types/node": "^22.19.17",
     "@types/react": "^18.3.7",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^6.1.1",
     "autoprefixer": "^10.5.5",
     "postcss": "^8.5.28",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
-    "vite": "^5.4.8"
+    "vite": "^8.2.2"
   }
 }
