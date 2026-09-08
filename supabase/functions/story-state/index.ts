@@ -514,15 +514,16 @@ Deno.serve(async (request: Request) => {
   ])
   if (!input.action || !supportedActions.has(input.action)) return fail('unsupported_action', 400, origin)
 
-  const allowCredentialCreate =
-    input.action === 'load_current' ||
-    input.action === 'sync_generated' ||
-    input.action === 'delete_profile_data'
+  const credentialMode = input.action === 'sync_generated'
+    ? 'create'
+    : input.action === 'load_current' || input.action === 'delete_profile_data'
+      ? 'allow-empty'
+      : 'required'
 
   const installationAuth = await authorizeInstallation(
     input.installationId,
     input.installationAuth,
-    allowCredentialCreate,
+    credentialMode,
   )
   if (!installationAuth.ok) return fail(installationAuth.error, installationAuth.status, origin)
 
