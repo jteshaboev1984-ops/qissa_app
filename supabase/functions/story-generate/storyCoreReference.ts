@@ -3,6 +3,7 @@ import { bedtimeEpisodeOneExpansion } from './storyBedtimeExpansion.ts'
 import { cozyForestBedtimeContinuation, cozyForestBedtimeEpisodeOne } from './storyCozyForestBedtime.ts'
 import { cozyForestBedtimeArcContinuation } from './storyCozyForestBedtimeArc.ts'
 import { magicGardenContinuation, magicGardenEpisodeOne, magicGardenTitle } from './storyMagicGardenBedtime.ts'
+import { sixMinuteSettlingBeat } from './storySixMinuteEditorial.ts'
 import { spaceBedtimeContinuation, spaceBedtimeEpisodeOne, spaceBedtimeTitle } from './storySpaceBedtime.ts'
 
 type ClosedBetaLanguage = 'ru' | 'uz'
@@ -118,6 +119,7 @@ const withBedtimeExpansion = (
     ...expansionParagraphs,
     preChoiceReflection[world][language],
     sixMinutePreChoiceBeat[world][language],
+    sixMinuteSettlingBeat[world][language],
     withoutChoiceMeta(finalChoiceParagraph, language),
   ].filter(Boolean).join('\n\n')
 }
