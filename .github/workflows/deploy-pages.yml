@@ -58,6 +58,9 @@ jobs:
       - name: Validate Story AI cost guard
         run: npm run check:story-cost-guard
 
+      - name: Validate first-party story observability
+        run: npm run check:observability
+
       - name: Validate privacy consent and deletion
         run: npm run check:privacy
 
