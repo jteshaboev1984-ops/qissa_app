@@ -28,6 +28,9 @@ jobs:
       - name: Audit production dependencies
         run: npm run audit:prod
 
+      - name: Audit full dependency graph for high severity
+        run: npm run audit:all
+
       - name: Validate repository secret hygiene
         run: npm run check:secret-hygiene
 
