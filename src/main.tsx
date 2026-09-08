@@ -16,6 +16,7 @@ const renderApp = () => {
 const bootstrap = async () => {
   try {
     await localPersistence.waitForPendingRemoteReset()
+    await localPersistence.waitForPendingChoiceSync()
     const snapshot = await storyStateService.loadCurrent()
 
     if (snapshot) {

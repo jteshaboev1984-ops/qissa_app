@@ -78,6 +78,14 @@ const remoteGenerationWaitsForState =
   pendingChoicePosition > pendingResetPosition &&
   remoteGeneratePosition > pendingChoicePosition
 
+const bootstrapResetPosition = main.indexOf('await localPersistence.waitForPendingRemoteReset()')
+const bootstrapChoicePosition = main.indexOf('await localPersistence.waitForPendingChoiceSync()')
+const bootstrapLoadPosition = main.indexOf('await storyStateService.loadCurrent()')
+const bootstrapDrainsCriticalOutboxBeforeRestore =
+  bootstrapResetPosition >= 0 &&
+  bootstrapChoicePosition > bootstrapResetPosition &&
+  bootstrapLoadPosition > bootstrapChoicePosition
+
 const remoteResetQueueStart = localPersistence.indexOf('const queueRemoteReset')
 const choiceSyncQueueStart = localPersistence.indexOf('const queueChoiceSync')
 const preferenceSyncQueueStart = localPersistence.indexOf('const queuePreferencesSync')
@@ -94,6 +102,13 @@ const criticalSyncFailuresRemainBlocking =
   /while\s*\(pendingChoiceSyncRequest\)/.test(localPersistence) &&
   !remoteResetQueue.includes('.catch(') &&
   !choiceSyncQueue.includes('.catch(')
+const criticalSyncOutboxIsDurable =
+  /remoteResetRequired:\s*`\$\{KEY_PREFIX\}:remoteResetRequired`/.test(localPersistence) &&
+  /pendingChoiceSync:\s*`\$\{KEY_PREFIX\}:pendingChoiceSync`/.test(localPersistence) &&
+  /safeSet\(STORAGE_KEYS\.remoteResetRequired,\s*true\)/.test(localPersistence) &&
+  /safeSet\(STORAGE_KEYS\.pendingChoiceSync,\s*pendingChoiceSyncRequest\)/.test(localPersistence) &&
+  /hydrateCriticalSyncOutbox\(\)/.test(localPersistence) &&
+  /safeRemove\(STORAGE_KEYS\.pendingChoiceSync\)/.test(remoteResetQueue)
 
 if (appImportsStoryAgent || appCallsCreateStoryEpisode || appImportsRemoteClient) {
   failures.push('App.tsx must use storyService only and must not import providers directly.')
@@ -119,8 +134,16 @@ if (!remoteGenerationWaitsForState) {
   failures.push('Remote generation must wait for pending reset and confirmed-choice persistence before requesting the next episode.')
 }
 
+if (!bootstrapDrainsCriticalOutboxBeforeRestore) {
+  failures.push('Remote bootstrap must drain durable reset and choice sync work before loading a server snapshot.')
+}
+
 if (!criticalSyncFailuresRemainBlocking) {
   failures.push('Critical remote reset and confirmed-choice sync failures must remain retryable and block later remote generation instead of being swallowed.')
+}
+
+if (!criticalSyncOutboxIsDurable) {
+  failures.push('Critical reset and confirmed-choice sync intent must survive reloads, with reset superseding a stale pending choice.')
 }
 
 if (

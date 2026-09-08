@@ -69,17 +69,19 @@ requireCondition(
 )
 
 const appDeleteStart = app.indexOf('const handleDeleteProfileData')
-const appWaitResetPosition = app.indexOf('await localPersistence.waitForPendingRemoteReset()', appDeleteStart)
-const appWaitChoicePosition = app.indexOf('await localPersistence.waitForPendingChoiceSync()', appDeleteStart)
+const appGenerationLockPosition = app.indexOf('generationLockRef.current = true', appDeleteStart)
+const appSettleCriticalPosition = app.indexOf('await localPersistence.settleActiveCriticalSyncForDeletion()', appDeleteStart)
 const appRemoteDeletePosition = app.indexOf('await storyStateService.deleteProfileData()', appDeleteStart)
+const appClearCriticalPosition = app.indexOf('localPersistence.clearCriticalSyncAfterProfileDeletion()', appDeleteStart)
 const appLocalClearPosition = app.indexOf('localPersistence.clearAllLocalData()', appDeleteStart)
 requireCondition(
   appDeleteStart >= 0 &&
-    appWaitResetPosition > appDeleteStart &&
-    appWaitChoicePosition > appWaitResetPosition &&
-    appRemoteDeletePosition > appWaitChoicePosition &&
-    appLocalClearPosition > appRemoteDeletePosition,
-  'Profile deletion must wait for pending state writes, complete remote deletion first, and only then clear local data.',
+    appGenerationLockPosition > appDeleteStart &&
+    appSettleCriticalPosition > appGenerationLockPosition &&
+    appRemoteDeletePosition > appSettleCriticalPosition &&
+    appClearCriticalPosition > appRemoteDeletePosition &&
+    appLocalClearPosition > appClearCriticalPosition,
+  'Profile deletion must block new story mutations, settle already-running critical work without requiring failed queued writes, complete remote deletion, clear the durable outbox, and only then clear local data.',
 )
 
 requireCondition(
@@ -105,8 +107,10 @@ const clearAllLocalDataBody =
 requireCondition(
   clearAllLocalDataBody.length > 0 &&
     /Object\.values\(STORAGE_KEYS\)/.test(clearAllLocalDataBody) &&
-    !/queueRemoteReset\(\)/.test(clearAllLocalDataBody),
-  'Local privacy deletion must not be implemented as the soft story reset.',
+    !/queueRemoteReset\(\)/.test(clearAllLocalDataBody) &&
+    /remoteResetRequired/.test(localPersistence) &&
+    /pendingChoiceSync/.test(localPersistence),
+  'Local privacy deletion must remove normal storage and the durable critical-sync outbox without being implemented as the soft story reset.',
 )
 
 requireCondition(
