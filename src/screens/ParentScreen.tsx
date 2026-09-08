@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { PrivacyDataPanel } from '../components/PrivacyDataPanel'
 import { ReaderSettingsPanel } from '../components/ReaderSettingsPanel'
 import { StylePackCover } from '../components/StylePackCover'
@@ -30,6 +31,10 @@ const parentLabels: Record<
     voiceForStoryBody: string
     resetTitle: string
     resetBody: string
+    resetConfirmTitle: string
+    resetConfirmBody: string
+    resetConfirmButton: string
+    resetCancelButton: string
   }
 > = {
   ru: {
@@ -52,8 +57,12 @@ const parentLabels: Record<
     readingComfortBody: 'Эти настройки можно менять в любой момент. Они не сбрасывают историю ребёнка.',
     voiceForStory: 'Голос для истории',
     voiceForStoryBody: 'Выберите голос рассказчика для режима прослушивания.',
-    resetTitle: 'Сбросить только историю',
-    resetBody: 'Это начнёт историю заново, но профиль ребёнка, язык и настройки чтения останутся.',
+    resetTitle: 'Начать текущую историю заново',
+    resetBody: 'Текущая история останется в библиотеке как архив. Активная история начнётся заново, а профиль ребёнка, язык и настройки чтения сохранятся.',
+    resetConfirmTitle: 'Начать историю заново?',
+    resetConfirmBody: 'Текущая история перестанет быть активной и останется в библиотеке. Это не удаляет профиль и не является полным удалением данных.',
+    resetConfirmButton: 'Да, начать заново',
+    resetCancelButton: 'Оставить как есть',
   },
   uz: {
     title: 'Ota-ona markazi',
@@ -75,8 +84,12 @@ const parentLabels: Record<
     readingComfortBody: 'Bu sozlamalarni istalgan payt o‘zgartirish mumkin. Ular hikoyani o‘chirmaydi.',
     voiceForStory: 'Hikoya ovozi',
     voiceForStoryBody: 'Tinglash rejimi uchun hikoyachi ovozini tanlang.',
-    resetTitle: 'Faqat hikoyani tiklash',
-    resetBody: 'Bu hikoyani boshidan boshlaydi, lekin bola profili, til va o‘qish sozlamalari saqlanadi.',
+    resetTitle: 'Joriy hikoyani boshidan boshlash',
+    resetBody: 'Joriy hikoya kutubxonada arxiv sifatida qoladi. Faol hikoya boshidan boshlanadi, bola profili, til va o‘qish sozlamalari esa saqlanadi.',
+    resetConfirmTitle: 'Hikoyani boshidan boshlaysizmi?',
+    resetConfirmBody: 'Joriy hikoya faol bo‘lmay qoladi va kutubxonada saqlanadi. Bu profilni o‘chirmaydi va ma’lumotlarni to‘liq o‘chirish emas.',
+    resetConfirmButton: 'Ha, boshidan boshlash',
+    resetCancelButton: 'O‘z holicha qoldirish',
   },
   kz: {
     title: 'Ата-ана орталығы',
@@ -98,8 +111,12 @@ const parentLabels: Record<
     readingComfortBody: 'Бұл баптауларды кез келген уақытта өзгертуге болады. Олар оқиғаны өшірмейді.',
     voiceForStory: 'Оқиға дауысы',
     voiceForStoryBody: 'Тыңдау режимі үшін баяндаушы дауысын таңдаңыз.',
-    resetTitle: 'Тек оқиғаны қайта бастау',
-    resetBody: 'Бұл оқиғаны басынан бастайды, бірақ бала профилі, тіл және оқу баптаулары сақталады.',
+    resetTitle: 'Қазіргі оқиғаны басынан бастау',
+    resetBody: 'Қазіргі оқиға кітапханада мұрағат ретінде қалады. Белсенді оқиға басынан басталады, ал бала профилі, тіл және оқу баптаулары сақталады.',
+    resetConfirmTitle: 'Оқиғаны басынан бастайсыз ба?',
+    resetConfirmBody: 'Қазіргі оқиға белсенді болудан қалады және кітапханада сақталады. Бұл профильді жоймайды және деректерді толық жою емес.',
+    resetConfirmButton: 'Иә, басынан бастау',
+    resetCancelButton: 'Өзгеріссіз қалдыру',
   },
 }
 
@@ -165,6 +182,12 @@ export function ParentScreen({
 }) {
   const labels = parentLabels[language]
   const pack = stylePacks.find((p) => p.id === selections.stylePackId) ?? stylePacks[0]
+  const [confirmingReset, setConfirmingReset] = useState(false)
+
+  const confirmReset = () => {
+    setConfirmingReset(false)
+    onResetStory()
+  }
 
   return (
     <section className="space-y-5 pb-28">
@@ -251,11 +274,36 @@ export function ParentScreen({
       />
 
       <section className="rounded-[1.75rem] border border-[#e5d8bf] bg-[#f8f2e7]/80 p-5 text-center">
-        <p className="q-label mb-2">{labels.resetTitle}</p>
-        <p className="mx-auto max-w-xs text-sm leading-6 text-[#665d49]">{labels.resetBody}</p>
-        <button className="q-secondary mt-4 px-5 py-2.5" onClick={onResetStory}>
-          {t(language, 'home.reset_story_soft')}
-        </button>
+        <p className="q-label mb-2">{confirmingReset ? labels.resetConfirmTitle : labels.resetTitle}</p>
+        <p className="mx-auto max-w-xs text-sm leading-6 text-[#665d49]">
+          {confirmingReset ? labels.resetConfirmBody : labels.resetBody}
+        </p>
+        {confirmingReset ? (
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <button
+              type="button"
+              className="rounded-full border border-[#b27a3d] bg-[#b27a3d] px-4 py-2.5 text-sm font-bold text-white"
+              onClick={confirmReset}
+            >
+              {labels.resetConfirmButton}
+            </button>
+            <button
+              type="button"
+              className="q-secondary px-4 py-2.5"
+              onClick={() => setConfirmingReset(false)}
+            >
+              {labels.resetCancelButton}
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="q-secondary mt-4 px-5 py-2.5"
+            onClick={() => setConfirmingReset(true)}
+          >
+            {t(language, 'home.reset_story_soft')}
+          </button>
+        )}
       </section>
     </section>
   )

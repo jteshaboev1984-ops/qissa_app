@@ -11,10 +11,12 @@ const storyArchive = read('src/lib/storyArchive.ts')
 const storyService = read('src/lib/storyService.ts')
 const stateService = read('src/lib/storyStateService.ts')
 const welcome = read('src/screens/WelcomeScreen.tsx')
+const parentScreen = read('src/screens/ParentScreen.tsx')
 const privacyPanel = read('src/components/PrivacyDataPanel.tsx')
 const storyGenerate = read('supabase/functions/story-generate/index.ts')
 const storyState = read('supabase/functions/story-state/index.ts')
 const migration = read('docs/qissa/backend/migrations/20260625_000006_add_privacy_consent.sql')
+const deletionTelemetryMigration = read('docs/qissa/backend/migrations/20260908_000012_delete_installation_events_with_profile.sql')
 
 const failures = []
 const consentVersion = '2026-06-25-v1'
@@ -47,6 +49,16 @@ requireCondition(
     /parent|ota-ona|ата-ана/i.test(welcome) &&
     /type="checkbox"/.test(welcome),
   'Welcome must show an explicit parent consent checkbox before onboarding.',
+)
+
+requireCondition(
+  /позицию прослушивания/.test(welcome) &&
+    /tinglash joyini/.test(welcome) &&
+    /тыңдау орнын/.test(welcome) &&
+    /технические события/.test(welcome) &&
+    /texnik hodisalar/.test(welcome) &&
+    /техникалық оқиғалар/.test(welcome),
+  'Consent details must disclose playback progress and minimal first-party technical events in RU, UZ, and KZ.',
 )
 
 requireCondition(
@@ -156,9 +168,36 @@ requireCondition(
 )
 
 requireCondition(
+  /qissa_delete_profile_app_events/.test(deletionTelemetryMigration) &&
+    /before delete on public\.child_profiles/.test(deletionTelemetryMigration) &&
+    /child_profile_id = old\.id/.test(deletionTelemetryMigration) &&
+    /installation_id = old\.installation_id/.test(deletionTelemetryMigration) &&
+    /security definer/.test(deletionTelemetryMigration) &&
+    /revoke all on function[\s\S]*from anon/.test(deletionTelemetryMigration) &&
+    /grant execute on function[\s\S]*to service_role/.test(deletionTelemetryMigration),
+  'Deleting a child profile must also remove pseudonymous installation-scoped telemetry that predates profile persistence.',
+)
+
+requireCondition(
   /async function resetCurrent[\s\S]*?update\(\{ is_archived: true \}\)/.test(storyState) &&
     /async function deleteProfileData/.test(storyState),
   'Soft reset and irreversible profile deletion must remain separate backend operations.',
+)
+
+requireCondition(
+  /confirmingReset/.test(parentScreen) &&
+    /Начать историю заново\?/.test(parentScreen) &&
+    /Hikoyani boshidan boshlaysizmi\?/.test(parentScreen) &&
+    /Оқиғаны басынан бастайсыз ба\?/.test(parentScreen) &&
+    /onClick=\{confirmReset\}/.test(parentScreen),
+  'Soft reset must require a separate localized confirmation instead of firing on the first tap.',
+)
+
+requireCondition(
+  /останется в библиотеке как архив/.test(parentScreen) &&
+    /kutubxonada arxiv sifatida qoladi/.test(parentScreen) &&
+    /кітапханада мұрағат ретінде қалады/.test(parentScreen),
+  'Soft-reset copy must explain that the current story is archived rather than deleted.',
 )
 
 requireCondition(
