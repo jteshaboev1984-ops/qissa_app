@@ -347,20 +347,23 @@ function App() {
   const handleDeleteProfileData = async () => {
     if (generationLockRef.current || isDeletingData) return
 
+    generationLockRef.current = true
     setIsDeletingData(true)
     setDeletionError(null)
 
     try {
-      await localPersistence.waitForPendingRemoteReset()
-      await localPersistence.waitForPendingChoiceSync()
+      // Deletion must not be blocked by a failed write that the parent is asking us
+      // to erase. Let already-running critical mutations settle, then delete the
+      // server profile as the final remote operation.
+      await localPersistence.settleActiveCriticalSyncForDeletion()
       await storyStateService.deleteProfileData()
+      localPersistence.clearCriticalSyncAfterProfileDeletion()
 
       localPersistence.clearAllLocalData()
       storyArchive.clear()
       privacyConsent.clear()
       rotateInstallationId()
 
-      generationLockRef.current = false
       setLanguage('ru')
       setSelections(null)
       setSeriesState(null)
@@ -377,6 +380,7 @@ function App() {
       console.error('Failed to delete QISSA profile data', error)
       setDeletionError(deletionErrorCopy[language])
     } finally {
+      generationLockRef.current = false
       setIsDeletingData(false)
     }
   }
