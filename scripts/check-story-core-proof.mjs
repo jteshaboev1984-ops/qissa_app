@@ -11,6 +11,7 @@ const sourceNames = [
   'storyGenericEditorial',
   'storyCoreReference',
   'storyBedtimeExpansion',
+  'storySixMinuteEditorial',
   'storyCozyForestBedtime',
   'storyCozyForestBedtimeArc',
   'storyMagicGardenBedtime',
@@ -39,6 +40,7 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storyGenericEditorial\.ts['"]/g, "'./storyGenericEditorial.mjs'")
   .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
   .replace(/['"]\.\/storyBedtimeExpansion\.ts['"]/g, "'./storyBedtimeExpansion.mjs'")
+  .replace(/['"]\.\/storySixMinuteEditorial\.ts['"]/g, "'./storySixMinuteEditorial.mjs'")
   .replace(/['"]\.\/storyCozyForestBedtime\.ts['"]/g, "'./storyCozyForestBedtime.mjs'")
   .replace(/['"]\.\/storyCozyForestBedtimeArc\.ts['"]/g, "'./storyCozyForestBedtimeArc.mjs'")
   .replace(/['"]\.\/storyMagicGardenBedtime\.ts['"]/g, "'./storyMagicGardenBedtime.mjs'")
