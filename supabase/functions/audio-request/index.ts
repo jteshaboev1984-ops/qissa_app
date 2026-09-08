@@ -49,11 +49,13 @@ const requestAudio = async (input: AudioRequestInput, origin: string | null) => 
   if (!voice) return cachedAudioResponse({ status: 'failed', error_code: 'provider_voice_not_approved' }, origin)
 
   const textVersion = await sha256(owned.episode.story_text)
+  // Provider audio is rendered once at canonical 1.0x. Playback speed is a
+  // client preference applied with HTMLAudioElement.playbackRate, so 0.8/1/1.2
+  // must reuse the same provider asset instead of multiplying TTS cost.
   const cacheKey = await sha256([
     owned.episode.id,
     owned.episode.language,
     voice.id,
-    speed,
     textVersion,
     ttsModel,
   ].join(':'))
@@ -77,6 +79,7 @@ const requestAudio = async (input: AudioRequestInput, origin: string | null) => 
         episode_id: owned.episode.id,
         audio_asset_id: existing.id,
         status: existing.status,
+        requested_speed: speed,
       })
       return cachedAudioResponse(existing, origin)
     }
