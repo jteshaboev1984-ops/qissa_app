@@ -11,6 +11,12 @@ export type RemotePersistenceSnapshot = {
   readerPreferences: ReaderPreferences
 }
 
+type PendingChoiceSyncRequest = {
+  seriesState: SeriesState
+  episodeId: string
+  choiceId: string
+}
+
 const KEY_PREFIX = 'qissa:v1'
 
 const STORAGE_KEYS = {
@@ -26,7 +32,10 @@ const STORAGE_KEYS = {
 const DEPRECATED_KEYS = ['qissa:language', 'qissa:onboardingSelections', 'qissa:seriesState', 'qissa:currentEpisode', 'qissa:screen']
 
 let pendingRemoteReset: Promise<void> | null = null
+let requestedRemoteResetGeneration = 0
+let completedRemoteResetGeneration = 0
 let pendingChoiceSync: Promise<void> | null = null
+let pendingChoiceSyncRequest: PendingChoiceSyncRequest | null = null
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
 
@@ -131,15 +140,53 @@ const safeGet = <T>(key: string): T | null => {
   }
 }
 
-const queueRemoteReset = () => {
+const startRemoteReset = () => {
+  if (pendingRemoteReset || completedRemoteResetGeneration >= requestedRemoteResetGeneration) return
+
+  const targetGeneration = requestedRemoteResetGeneration
   const task = import('./storyStateService')
     .then(({ storyStateService }) => storyStateService.resetCurrent())
-    .catch((error) => console.error('Failed to reset remote story state', error))
+    .then(() => {
+      completedRemoteResetGeneration = Math.max(completedRemoteResetGeneration, targetGeneration)
+    })
 
   pendingRemoteReset = task
-  void task.finally(() => {
-    if (pendingRemoteReset === task) pendingRemoteReset = null
-  })
+  void task.then(
+    () => {
+      if (pendingRemoteReset === task) pendingRemoteReset = null
+    },
+    (error) => {
+      console.error('Failed to reset remote story state', error)
+      if (pendingRemoteReset === task) pendingRemoteReset = null
+    },
+  )
+}
+
+const queueRemoteReset = () => {
+  requestedRemoteResetGeneration += 1
+  startRemoteReset()
+}
+
+const startChoiceSync = () => {
+  if (pendingChoiceSync || !pendingChoiceSyncRequest) return
+
+  const request = pendingChoiceSyncRequest
+  const task = import('./storyStateService')
+    .then(({ storyStateService }) => storyStateService.confirmChoice(request))
+    .then(() => {
+      if (pendingChoiceSyncRequest === request) pendingChoiceSyncRequest = null
+    })
+
+  pendingChoiceSync = task
+  void task.then(
+    () => {
+      if (pendingChoiceSync === task) pendingChoiceSync = null
+    },
+    (error) => {
+      console.error('Failed to sync story choice', error)
+      if (pendingChoiceSync === task) pendingChoiceSync = null
+    },
+  )
 }
 
 const queueChoiceSync = (previous: SeriesState | null, next: SeriesState) => {
@@ -147,18 +194,12 @@ const queueChoiceSync = (previous: SeriesState | null, next: SeriesState) => {
   const latest = next.choiceHistory[next.choiceHistory.length - 1]
   if (!latest) return
 
-  const task = import('./storyStateService')
-    .then(({ storyStateService }) => storyStateService.confirmChoice({
-      seriesState: next,
-      episodeId: latest.episode_id,
-      choiceId: latest.choice_id,
-    }))
-    .catch((error) => console.error('Failed to sync story choice', error))
-
-  pendingChoiceSync = task
-  void task.finally(() => {
-    if (pendingChoiceSync === task) pendingChoiceSync = null
-  })
+  pendingChoiceSyncRequest = {
+    seriesState: next,
+    episodeId: latest.episode_id,
+    choiceId: latest.choice_id,
+  }
+  startChoiceSync()
 }
 
 const queuePreferencesSync = (value: ReaderPreferences) => {
@@ -225,6 +266,24 @@ const clearDeprecatedKeys = () => {
   }
 }
 
+const waitForPendingRemoteReset = async () => {
+  while (completedRemoteResetGeneration < requestedRemoteResetGeneration) {
+    if (!pendingRemoteReset) startRemoteReset()
+    const task = pendingRemoteReset
+    if (!task) throw new Error('Remote story reset could not be started.')
+    await task
+  }
+}
+
+const waitForPendingChoiceSync = async () => {
+  while (pendingChoiceSyncRequest) {
+    if (!pendingChoiceSync) startChoiceSync()
+    const task = pendingChoiceSync
+    if (!task) throw new Error('Remote story choice sync could not be started.')
+    await task
+  }
+}
+
 export const localPersistence = {
   keys: STORAGE_KEYS,
   saveLanguage: (language: Language) => safeSet(STORAGE_KEYS.language, language),
@@ -284,12 +343,8 @@ export const localPersistence = {
     safeSet(STORAGE_KEYS.readerPreferences, snapshot.readerPreferences)
     safeSet(STORAGE_KEYS.screen, 'home')
   },
-  waitForPendingRemoteReset: async () => {
-    if (pendingRemoteReset) await pendingRemoteReset
-  },
-  waitForPendingChoiceSync: async () => {
-    if (pendingChoiceSync) await pendingChoiceSync
-  },
+  waitForPendingRemoteReset,
+  waitForPendingChoiceSync,
   getStorageVersion,
   prepareForStoryProvider,
   clearStoryProgressOnly,
