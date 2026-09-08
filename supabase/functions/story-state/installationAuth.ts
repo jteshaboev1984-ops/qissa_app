@@ -20,19 +20,13 @@ const sha256 = async (value: string): Promise<string> => {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
+export type InstallationAuthMode = 'required' | 'create' | 'allow-empty'
+
 export type InstallationAuthResult =
   | { ok: true }
   | { ok: false; status: number; error: string }
 
-export const authorizeInstallation = async (
-  installationId: unknown,
-  installationAuth: unknown,
-  allowCreate: boolean,
-): Promise<InstallationAuthResult> => {
-  if (!isUuid(installationId)) return { ok: false, status: 422, error: 'invalid_installation_id' }
-  if (!isInstallationAuth(installationAuth)) return { ok: false, status: 401, error: 'installation_auth_required' }
-
-  const authHash = await sha256(installationAuth.toLowerCase())
+const credentialMatches = async (installationId: string, authHash: string): Promise<InstallationAuthResult | null> => {
   const { data, error } = await admin
     .from('installation_credentials')
     .select('auth_hash')
@@ -43,15 +37,27 @@ export const authorizeInstallation = async (
     console.error('installation credential lookup failed', error)
     return { ok: false, status: 500, error: 'installation_auth_lookup_failed' }
   }
+  if (!data) return null
+  return data.auth_hash === authHash
+    ? { ok: true }
+    : { ok: false, status: 403, error: 'installation_auth_invalid' }
+}
 
-  if (data) {
-    return data.auth_hash === authHash
-      ? { ok: true }
-      : { ok: false, status: 403, error: 'installation_auth_invalid' }
+const profileExists = async (installationId: string): Promise<boolean | null> => {
+  const { data, error } = await admin
+    .from('child_profiles')
+    .select('id')
+    .eq('installation_id', installationId)
+    .maybeSingle()
+
+  if (error) {
+    console.error('installation profile lookup failed', error)
+    return null
   }
+  return Boolean(data)
+}
 
-  if (!allowCreate) return { ok: false, status: 401, error: 'installation_auth_required' }
-
+const createCredential = async (installationId: string, authHash: string): Promise<InstallationAuthResult> => {
   const { error: insertError } = await admin.from('installation_credentials').insert({
     installation_id: installationId,
     auth_hash: authHash,
@@ -61,20 +67,31 @@ export const authorizeInstallation = async (
 
   // A concurrent first request may have claimed the same installation UUID.
   // Re-read once and only accept the credential that actually won the race.
-  const { data: afterRace, error: raceError } = await admin
-    .from('installation_credentials')
-    .select('auth_hash')
-    .eq('installation_id', installationId)
-    .maybeSingle()
+  const afterRace = await credentialMatches(installationId, authHash)
+  return afterRace ?? { ok: false, status: 500, error: 'installation_auth_create_failed' }
+}
 
-  if (raceError) {
-    console.error('installation credential race lookup failed', raceError)
-    return { ok: false, status: 500, error: 'installation_auth_lookup_failed' }
+export const authorizeInstallation = async (
+  installationId: unknown,
+  installationAuth: unknown,
+  mode: InstallationAuthMode,
+): Promise<InstallationAuthResult> => {
+  if (!isUuid(installationId)) return { ok: false, status: 422, error: 'invalid_installation_id' }
+  if (!isInstallationAuth(installationAuth)) return { ok: false, status: 401, error: 'installation_auth_required' }
+
+  const authHash = await sha256(installationAuth.toLowerCase())
+  const existing = await credentialMatches(installationId, authHash)
+  if (existing) return existing
+
+  if (mode === 'required') return { ok: false, status: 401, error: 'installation_auth_required' }
+
+  if (mode === 'allow-empty') {
+    const hasProfile = await profileExists(installationId)
+    if (hasProfile === null) return { ok: false, status: 500, error: 'installation_auth_lookup_failed' }
+    if (!hasProfile) return { ok: true }
   }
 
-  return afterRace?.auth_hash === authHash
-    ? { ok: true }
-    : { ok: false, status: 403, error: 'installation_auth_invalid' }
+  return createCredential(installationId, authHash)
 }
 
 export const deleteInstallationCredential = async (installationId: unknown): Promise<boolean> => {
