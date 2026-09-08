@@ -73,6 +73,9 @@ jobs:
       - name: Validate first-party story observability
         run: npm run check:observability
 
+      - name: Validate mobile ergonomics contract
+        run: npm run check:mobile-ux
+
       - name: Validate space story copy
         run: npm run check:space-copy
 
