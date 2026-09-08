@@ -78,6 +78,23 @@ const remoteGenerationWaitsForState =
   pendingChoicePosition > pendingResetPosition &&
   remoteGeneratePosition > pendingChoicePosition
 
+const remoteResetQueueStart = localPersistence.indexOf('const queueRemoteReset')
+const choiceSyncQueueStart = localPersistence.indexOf('const queueChoiceSync')
+const preferenceSyncQueueStart = localPersistence.indexOf('const queuePreferencesSync')
+const remoteResetQueue = localPersistence.slice(remoteResetQueueStart, choiceSyncQueueStart)
+const choiceSyncQueue = localPersistence.slice(choiceSyncQueueStart, preferenceSyncQueueStart)
+const criticalSyncFailuresRemainBlocking =
+  remoteResetQueueStart >= 0 &&
+  choiceSyncQueueStart > remoteResetQueueStart &&
+  preferenceSyncQueueStart > choiceSyncQueueStart &&
+  /requestedRemoteResetGeneration/.test(localPersistence) &&
+  /completedRemoteResetGeneration/.test(localPersistence) &&
+  /while\s*\(completedRemoteResetGeneration\s*<\s*requestedRemoteResetGeneration\)/.test(localPersistence) &&
+  /pendingChoiceSyncRequest/.test(localPersistence) &&
+  /while\s*\(pendingChoiceSyncRequest\)/.test(localPersistence) &&
+  !remoteResetQueue.includes('.catch(') &&
+  !choiceSyncQueue.includes('.catch(')
+
 if (appImportsStoryAgent || appCallsCreateStoryEpisode || appImportsRemoteClient) {
   failures.push('App.tsx must use storyService only and must not import providers directly.')
 }
@@ -100,6 +117,10 @@ if (!serviceRepairsMissingSeriesState) {
 
 if (!remoteGenerationWaitsForState) {
   failures.push('Remote generation must wait for pending reset and confirmed-choice persistence before requesting the next episode.')
+}
+
+if (!criticalSyncFailuresRemainBlocking) {
+  failures.push('Critical remote reset and confirmed-choice sync failures must remain retryable and block later remote generation instead of being swallowed.')
 }
 
 if (
