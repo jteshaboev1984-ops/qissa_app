@@ -12,6 +12,10 @@ const MIN_SESSION_MINUTES = 5
 const MAX_SESSION_MINUTES = 10
 const MIN_SESSION_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * MIN_SESSION_MINUTES
 const MAX_SESSION_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * MAX_SESSION_MINUTES
+const EDITORIAL_TARGET_MINUTES = 6
+const EDITORIAL_TARGET_MAX_MINUTES = 8
+const EDITORIAL_TARGET_MIN_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * EDITORIAL_TARGET_MINUTES
+const EDITORIAL_TARGET_MAX_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * EDITORIAL_TARGET_MAX_MINUTES
 const MIN_CHOICE_RATIO = 0.45
 const MAX_CHOICE_RATIO = 0.62
 const MIN_CODA_RATIO = 0.05
@@ -22,6 +26,7 @@ const sourceNames = [
   'storyGenericEditorial',
   'storyCoreReference',
   'storyBedtimeExpansion',
+  'storySixMinuteEditorial',
   'storyCozyForestBedtime',
   'storyCozyForestBedtimeArc',
   'storyMagicGardenBedtime',
@@ -50,6 +55,7 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storyGenericEditorial\.ts['"]/g, "'./storyGenericEditorial.mjs'")
   .replace(/['"]\.\/storyCoreReference\.ts['"]/g, "'./storyCoreReference.mjs'")
   .replace(/['"]\.\/storyBedtimeExpansion\.ts['"]/g, "'./storyBedtimeExpansion.mjs'")
+  .replace(/['"]\.\/storySixMinuteEditorial\.ts['"]/g, "'./storySixMinuteEditorial.mjs'")
   .replace(/['"]\.\/storyCozyForestBedtime\.ts['"]/g, "'./storyCozyForestBedtime.mjs'")
   .replace(/['"]\.\/storyCozyForestBedtimeArc\.ts['"]/g, "'./storyCozyForestBedtimeArc.mjs'")
   .replace(/['"]\.\/storyMagicGardenBedtime\.ts['"]/g, "'./storyMagicGardenBedtime.mjs'")
@@ -140,6 +146,10 @@ try {
           `${scenario}: ${totalWords} words exceeds the ${MAX_SESSION_WORDS}-word ceiling for ${MAX_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`,
         )
         assert(
+          totalWords >= EDITORIAL_TARGET_MIN_WORDS && totalWords <= EDITORIAL_TARGET_MAX_WORDS,
+          `${scenario}: ${totalWords} words is outside the deterministic closed-beta editorial target of ${EDITORIAL_TARGET_MIN_WORDS}-${EDITORIAL_TARGET_MAX_WORDS} words (${EDITORIAL_TARGET_MINUTES}-${EDITORIAL_TARGET_MAX_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM).`,
+        )
+        assert(
           choiceRatio >= MIN_CHOICE_RATIO && choiceRatio <= MAX_CHOICE_RATIO,
           `${scenario}: choice arrives at ${(choiceRatio * 100).toFixed(1)}% of the spoken story; hard acceptance window is ${(MIN_CHOICE_RATIO * 100).toFixed(0)}-${(MAX_CHOICE_RATIO * 100).toFixed(0)}% (editorial target remains about 50-60%).`,
         )
@@ -168,10 +178,11 @@ try {
   console.table(rows)
   const totals = rows.map((row) => row.total)
   console.log(`Bedtime session range: ${Math.min(...totals)}-${Math.max(...totals)} words.`)
-  console.log(`Acceptance band: ${MIN_SESSION_WORDS}-${MAX_SESSION_WORDS} words = ${MIN_SESSION_MINUTES}-${MAX_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`)
+  console.log(`Hard acceptance band: ${MIN_SESSION_WORDS}-${MAX_SESSION_WORDS} words = ${MIN_SESSION_MINUTES}-${MAX_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`)
+  console.log(`Deterministic closed-beta editorial target: ${EDITORIAL_TARGET_MIN_WORDS}-${EDITORIAL_TARGET_MAX_WORDS} words = ${EDITORIAL_TARGET_MINUTES}-${EDITORIAL_TARGET_MAX_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`)
   console.log(`Narrative pacing hard gate: child choice at ${(MIN_CHOICE_RATIO * 100).toFixed(0)}-${(MAX_CHOICE_RATIO * 100).toFixed(0)}% of total spoken story (editorial target about 50-60%); calm final coda at ${(MIN_CODA_RATIO * 100).toFixed(0)}-${(MAX_CODA_RATIO * 100).toFixed(0)}% (editorial target about 10-15%).`)
   console.log('Duration model: Episode 1 + confirmed choice resolution + Episode 2. 125/140/155 WPM are reported for visibility; 140 WPM is the release acceptance pace for normal expressive bedtime reading.')
-  console.log('bedtime duration and narrative pacing check passed for all 12 closed-beta RU/UZ branches.')
+  console.log('bedtime duration, six-to-eight-minute editorial target, and narrative pacing check passed for all 12 closed-beta RU/UZ branches.')
 } finally {
   await rm(temp, { recursive: true, force: true })
 }
