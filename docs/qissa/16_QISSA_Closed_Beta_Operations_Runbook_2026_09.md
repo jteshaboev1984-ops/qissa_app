@@ -34,7 +34,7 @@ The 30/day aggregate value is a **temporary closed-beta circuit breaker only**. 
 Current expected functions after aggregate cost protection and device-bound authorization:
 
 - `story-generate` — **v20**, JWT verification enabled
-- `story-state` — **v6**, JWT verification enabled
+- `story-state` — **v7**, JWT verification enabled
 - `audio-request` — **v4**, JWT verification enabled
 
 Expected database access boundary:
@@ -60,7 +60,16 @@ Latest post-cap provider-free Story smoke:
 - RU/UZ/KZ Cozy Forest and RU Stars & Space checks passed;
 - no paid Story AI/TTS call was made.
 
-Latest documented `main` baseline before this runbook refresh: `292096dacaddc4c2356cfb13d33a15f116b4ee44`. Its Pages deployment run **34228700213** completed successfully.
+Latest fresh-install/state acceptance after `story-state` v7:
+
+- missing-profile `reset_current` smoke run **34310528214** returned HTTP 200 with `{"ok":true,"skipped":true}`;
+- the synthetic installation remained absent from both `child_profiles` and `installation_credentials` after the probe;
+- clean-start headless mobile preflight run **34310797187** passed iPhone 13 and Pixel 7 device profiles;
+- both fresh contexts issued `load_current` only and did **not** issue `reset_current`;
+- no page/console/request/HTTP errors, clipped visible controls, or horizontal overflow were detected;
+- the headless pass reduces browser/runtime risk but does not replace the physical-phone acceptance required by issue #101.
+
+Current audited `main` baseline: `cd2614bef3b829a75ad7ac6f636c5c4640ad0d4f`. Its Pages deployment run **34239812021** completed successfully. Production `story-state` v7 was deployed from the exact merged source for this SHA.
 
 ## 4. Daily beta health check
 
@@ -238,24 +247,20 @@ If deletion returns an error:
 
 QISSA has application-level deletion, deterministic code/migrations in GitHub, versioned Edge Functions, and a known-good production smoke baseline.
 
-### What is not yet proven
+### What is proven about the current plan
 
-The currently connected project tooling does **not** expose enough information to confirm the production Supabase backup/PITR entitlement, retention period, or a tested point-in-time restore procedure.
+The production Supabase project is healthy and the owning organization is currently on the **Free** plan. QISSA must therefore **not** claim that a Supabase-managed daily backup or PITR restore path is available for this production project. No paid backup/PITR capability was enabled during launch-hardening.
 
-Therefore closed-beta operations must not state “we can always restore your story” or quote a recovery window until this has been manually verified in Supabase.
+### Remaining pre-beta recovery gate
 
-### Manual pre-beta backup checklist
+Before inviting external families, establish and verify one real private recovery path:
 
-Before inviting external families, an administrator must open Supabase Dashboard and record in a private operations note:
+- **Stay on Free:** take a fresh logical database dump from a trusted operator environment, store it off-site/private, record its timestamp/owner, verify that it can be read/listed, document the restore command/process, and define RPO as time since the last successful dump; or
+- **Move deliberately to paid Supabase:** verify the resulting managed backup retention in Dashboard and enable PITR only if separately approved after reviewing recurring cost/compute requirements.
 
-- whether automated backups are enabled;
-- backup frequency and retention;
-- whether Point-in-Time Recovery is available/enabled;
-- the documented restore procedure for the current plan;
-- who is authorized to initiate a restore;
-- expected restore impact on writes made after the restore point.
+In either case, document privately who can initiate restore and the expected data-loss/downtime behavior. Do not upload database dumps, connection strings, service-role credentials, account tokens, or private recovery notes to the public repository.
 
-Tracked in GitHub issue #95. Do not put database dumps or service-role credentials in the public GitHub repository.
+Tracked in GitHub issue #95. The gate is complete only when a private tested recovery artifact/path exists with known timestamp/retention/RPO and assigned restore responsibility.
 
 ### Recovery principle
 
@@ -266,10 +271,10 @@ A database restore affects multiple families and should be a last-resort inciden
 Current known-good production functions:
 
 - story-generate v20;
-- story-state v6;
+- story-state v7;
 - audio-request v4.
 
-Current documented application baseline after cost/mobile documentation hardening: `292096dacaddc4c2356cfb13d33a15f116b4ee44`.
+Current audited application baseline: `cd2614bef3b829a75ad7ac6f636c5c4640ad0d4f` (Pages run **34239812021** — success).
 
 For rollback:
 
@@ -325,7 +330,7 @@ All of the following must be true:
 - latest provider-free production Story/Audio/E2E/Privacy smokes are green;
 - installation credential isolation is green;
 - production database is free of new smoke residue;
-- backup/PITR status has been manually verified and documented privately (issue #95);
+- a private tested recovery artifact/path exists with known timestamp/retention/RPO and assigned restore responsibility (issue #95);
 - real phone/browser UX pass is complete;
 - one full story has been timed aloud with natural expressive reading and the child-choice pause;
 - parent consent/delete flow has been manually verified from UI;
