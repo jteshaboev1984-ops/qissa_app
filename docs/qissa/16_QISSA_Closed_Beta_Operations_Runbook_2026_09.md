@@ -69,7 +69,7 @@ Latest fresh-install/state acceptance after `story-state` v7:
 - no page/console/request/HTTP errors, clipped visible controls, or horizontal overflow were detected;
 - the headless pass reduces browser/runtime risk but does not replace the physical-phone acceptance required by issue #101.
 
-Current audited `main` baseline: `cd2614bef3b829a75ad7ac6f636c5c4640ad0d4f`. Its Pages deployment run **34239812021** completed successfully. Production `story-state` v7 was deployed from the exact merged source for this SHA.
+Audited runtime baseline (2026-09-09): `cd2614bef3b829a75ad7ac6f636c5c4640ad0d4f`. Its Pages deployment run **34239812021** completed successfully, and production `story-state` v7 was deployed from the exact merged source for this runtime baseline. Later documentation-only commits do not change this application/function baseline.
 
 ## 4. Daily beta health check
 
