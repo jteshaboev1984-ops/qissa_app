@@ -1,0 +1,49 @@
+name: One-shot Stabilize Runtime Baseline Wording
+
+on:
+  push:
+    branches:
+      - docs/make-runtime-baseline-stable
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout documentation branch
+        uses: actions/checkout@v7
+        with:
+          ref: docs/make-runtime-baseline-stable
+
+      - name: Replace self-invalidating main wording
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('docs/qissa/16_QISSA_Closed_Beta_Operations_Runbook_2026_09.md')
+          text = p.read_text(encoding='utf-8')
+          old = "Current audited `main` baseline: `cd2614bef3b829a75ad7ac6f636c5c4640ad0d4f`. Its Pages deployment run **34239812021** completed successfully. Production `story-state` v7 was deployed from the exact merged source for this SHA."
+          new = "Audited runtime baseline (2026-09-09): `cd2614bef3b829a75ad7ac6f636c5c4640ad0d4f`. Its Pages deployment run **34239812021** completed successfully, and production `story-state` v7 was deployed from the exact merged source for this runtime baseline. Later documentation-only commits do not change this application/function baseline."
+          if text.count(old) != 1:
+              raise SystemExit(f'expected one target, found {text.count(old)}')
+          p.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+          git diff --check
+          grep -Fq 'Audited runtime baseline (2026-09-09)' docs/qissa/16_QISSA_Closed_Beta_Operations_Runbook_2026_09.md
+          ! grep -Fq 'Current audited `main` baseline' docs/qissa/16_QISSA_Closed_Beta_Operations_Runbook_2026_09.md
+
+      - name: Remove one-shot workflow from proposed tree
+        run: rm .github/workflows/one-shot-stabilize-runtime-baseline-wording.yml
+
+      - name: Commit runbook-only diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "qissa-release-bot"
+          git config user.email "qissa-release-bot@users.noreply.github.com"
+          git add docs/qissa/16_QISSA_Closed_Beta_Operations_Runbook_2026_09.md .github/workflows/one-shot-stabilize-runtime-baseline-wording.yml
+          git commit -m "Clarify stable runtime baseline wording"
+          git push origin HEAD:docs/make-runtime-baseline-stable
