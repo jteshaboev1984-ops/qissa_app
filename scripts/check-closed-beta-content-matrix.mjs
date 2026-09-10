@@ -64,6 +64,7 @@ const paragraphs = (text) => typeof text === 'string'
 const technicalCopy = /state[_ -]?patch|episode[_ -]?id|series[_ -]?id|choice[_ -]?id|состояни[ея]\s+истории|техническ(?:ий|ая)\s+маркер/iu
 const unresolvedBedtime = /продолжение следует|davomi bor|страшн(?:ый|ая|ое)|dahshatli|погоня|quv(?:di|ish)|взрыв|portlash/iu
 const nextDayReset = /^(?:утром\b|на следующее утро\b|tongda\b|ertasi tongda\b)/iu
+const malformedRussianSecondPerson = /(?:\b(?:до|у|к|ко|с|со|от|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между)\s+ты\b|(?:^|[.!?…]\s+)ты\b)/u
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const assertRussianHeroFinalization = (label, heroName, fields) => {
@@ -79,6 +80,7 @@ const assertRussianHeroFinalization = (label, heroName, fields) => {
   for (const field of fields.filter((item) => typeof item === 'string')) {
     assert(!afterPreposition.test(field), `${label}: finalized Russian hero name appears after a preposition and would require declension.`)
     assert(!genderedAgreement.test(field), `${label}: finalized Russian hero name is followed by gendered agreement.`)
+    assert(!malformedRussianSecondPerson.test(field), `${label}: malformed Russian second-person grammar detected after finalization.`)
   }
 }
 

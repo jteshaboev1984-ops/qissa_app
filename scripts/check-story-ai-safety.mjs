@@ -80,6 +80,7 @@ requireText('story prompts', prompts, [
   'Episode 2 must continue after its visible change and must not replay the selected action.',
   'Use {{HERO}} only in direct address or another position where the unchanged name needs no case ending',
   'Never place {{HERO}} after a Russian preposition or where declension is required',
+  'Keep the child consistently in second-person narration when the child participates',
   'For Russian, use {{HERO}} only in direct address or another grammatically invariant position.',
   'write native-sounding Uzbek rather than a sentence-by-sentence translation from Russian.',
   'child_first_editorial: childFirstEditorialGuidance(context)',

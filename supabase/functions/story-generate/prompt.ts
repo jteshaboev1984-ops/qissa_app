@@ -143,7 +143,7 @@ const childFirstEditorialGuidance = (context: NormalizedStoryContext): JsonRecor
   language_quality: context.language === 'uz'
     ? 'Write natural Uzbek storytelling in Latin script. Do not translate Russian sentence by sentence; natural phrasing, jokes and concrete details may differ while preserving the same story contract.'
     : context.language === 'ru'
-      ? 'Write idiomatic Russian. Use {{HERO}} only in direct address or another position where the unchanged name needs no case ending and no gender agreement. Never place {{HERO}} after a Russian preposition or where declension is required; rephrase with second-person wording instead.'
+      ? 'Write idiomatic Russian. Keep the child consistently in second-person narration when the child participates; do not switch the child into a third-person group pronoun. Use {{HERO}} only in direct address or another position where the unchanged name needs no case ending and no gender agreement. Never place {{HERO}} after a Russian preposition or where declension is required; rephrase with second-person wording instead.'
       : 'Write natively in the requested language rather than as a calque from another language.',
 })
 
