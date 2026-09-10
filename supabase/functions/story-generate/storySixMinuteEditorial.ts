@@ -11,11 +11,11 @@ export const sixMinuteSettlingBeat: Record<ClosedBetaWorld, Record<ClosedBetaLan
     uz: `Hayvonchalar navbat bilan kimning uyi avval, kimniki esa oxirida uchrashini aytdi. Shunda hamma yanada xotirjam bo‘ldi: yo‘l tanish, do‘stlar birga, oldinda esa yangi jumboq yo‘q edi. Eng kichik quyoncha ham ortiga qarashni to‘xtatib, akasining panjasidan ushladi.`,
   },
   magic_garden: {
-    ru: `Мирай напомнила, что после помощи цветам друзья не будут искать новое дело. Они только проверят дорожку, попрощаются с садом и отправятся домой. От этих слов вечер словно стал ещё тише. {{HERO}} услышал ровный плеск фонтана и понял: вся сегодняшняя история уже помещается в одну простую заботу.`,
+    ru: `Мирай напомнила, что после помощи цветам друзья только проверят дорожку, попрощаются с садом и отправятся домой. В фонтане ровно плеснула вода, серебряные лепестки качнулись, и стало понятно, чем закончится сегодняшняя забота о цветах.`,
     uz: `Miroy gullarga yordam bergach, do‘stlar yangi ish izlamasligini eslatdi. Ular faqat yo‘lakni tekshiradi, bog‘ bilan xayrlashadi va uyga qaytadi. Bu gaplardan keyin oqshom yanada tinchgandek bo‘ldi. {{HERO}} favvoraning bir maromdagi shovqinini eshitib, bugungi voqea bitta oddiy g‘amxo‘rlikdan iboratligini tushundi.`,
   },
   stars_and_space: {
-    ru: `Пико поставил рядом с картой маленький таймер без тревожного звука. Времени было достаточно. Если действовать спокойно, капсула успеет получить знак и войти в стыковочный коридор точно по расписанию. {{HERO}} увидел это на экране и окончательно успокоился: впереди была не опасность, а аккуратная работа, которую можно закончить сегодня.`,
+    ru: `Пико поставил рядом с картой маленький таймер без тревожного звука. Времени хватало: капсула успевала заметить знак и подлететь к нужному окну. На экране мигала серебряная точка, а рядом уже лежали фонарь и светящиеся звёздочки.`,
     uz: `Piko xarita yoniga ovozsiz kichik taymer qo‘ydi. Vaqt yetarli edi. Shoshmasdan ishlansa, kapsula belgini olib, ulanish yo‘lagiga aynan jadval bo‘yicha kirishga ulgurardi. {{HERO}} buni ekranda ko‘rib, butunlay xotirjam bo‘ldi: oldinda xavf emas, bugun tugatish mumkin bo‘lgan aniq va ehtiyotkor ish bor edi.`,
   },
 }
@@ -102,8 +102,8 @@ Puf endi xafa ko‘rinmasdi. U bir chiroqlarga, bir yorug‘qo‘ng‘izlarga qa
 Nura chiroqlar solingan xaltani to‘nka ustiga qo‘ydi. Puf esa kuylashga tayyorlandi, lekin oldindan uchta notadan boshqasini bilmasligini aytdi. Olmaxon yong‘oqlari yana qochib ketmasin deb savatini qorniga bosdi. Toshbaqa ham boshini ko‘tardi. Endi tanlov {{HERO}}da edi.`,
     },
     vocabulary: [
-      { word: `развилка`, translation: `fork in the road`, example: `У развилки рядом с {{HERO}} собрались друзья.` },
-      { word: `шелест`, translation: `rustle`, example: `Рядом с {{HERO}} был слышен шелест мокрых листьев.` },
+      { word: `развилка`, translation: `fork in the road`, example: `У развилки собрались друзья.` },
+      { word: `шелест`, translation: `rustle`, example: `В лесу был слышен шелест мокрых листьев.` },
     ],
     choices: {
       'choice-a': {
@@ -382,7 +382,7 @@ Miroy sug‘orgichni yaqinroq surdi. Lilo kosani qo‘ydi. Suv quruq ildizlarga 
 Lilo sanashni to‘xtatdi. Miroy mo‘ylovlarini ko‘tardi. Yorug‘qo‘ng‘izlar ham bir lahza dumaloq shaklga tizildi. Tanlov {{HERO}}da edi.`,
     },
     vocabulary: [
-      { word: `лепесток`, translation: `petal`, example: `Перед {{HERO}} у фонтана блеснул серебряный лепесток.` },
+      { word: `лепесток`, translation: `petal`, example: `У фонтана блеснул серебряный лепесток.` },
       { word: `роса`, translation: `dew`, example: `На цветке блестела капля росы.` },
     ],
     choices: {
@@ -392,7 +392,7 @@ Lilo sanashni to‘xtatdi. Miroy mo‘ylovlarini ko‘tardi. Yorug‘qo‘ng‘i
           uz: `Quruq ildizlarga suv quyish`,
         },
         effect: {
-          ru: `После выбора ты сухие корни получили воду, и первый лунный цветок раскрыл серебряный лепесток.`,
+          ru: `После твоего выбора сухие корни получили воду, и первый лунный цветок раскрыл серебряный лепесток.`,
           uz: `{{HERO}} quruq ildizlarga suv quydi va birinchi oy guli kumushrang gulbargini ochdi.`,
         },
         resolution: {
@@ -498,7 +498,7 @@ Lilo boshini qanoti ostiga oldi. Miroy katta esnadi. Favvora yana bir marta «pl
           uz: `Yorug‘qo‘ng‘izlarni raqsga chorlash`,
         },
         effect: {
-          ru: `После выбора ты светлячки вылетели из чаши, и их танец помог лунным цветам повернуться к свету.`,
+          ru: `После твоего выбора светлячки вылетели из чаши, и их танец помог лунным цветам повернуться к свету.`,
           uz: `{{HERO}} yorug‘qo‘ng‘izlarni uchirdi va ularning raqsi oy gullariga nur tomonga burilishga yordam berdi.`,
         },
         resolution: {
@@ -692,7 +692,7 @@ Uzoqdagi kumush nuqta yana miltilladi. Bu safar xuddi ularga javob bergandek.
 {{HERO}} bir oltin chiroqqa, bir yulduzchalarga qaradi. Tanlov unda edi.`,
     },
     vocabulary: [
-      { word: `созвездие`, translation: `constellation`, example: `Перед {{HERO}} на окне сложилось простое созвездие.` },
+      { word: `созвездие`, translation: `constellation`, example: `На окне сложилось простое созвездие.` },
       { word: `мерцать`, translation: `to twinkle`, example: `За окном продолжали мерцать звёзды.` },
     ],
     choices: {
@@ -702,7 +702,7 @@ Uzoqdagi kumush nuqta yana miltilladi. Bu safar xuddi ularga javob bergandek.
           uz: `Oyna yonida oltin chiroqni yoqish`,
         },
         effect: {
-          ru: `После выбора ты у окна зажёгся золотой маяк, и ночная почта увидела окно «Люмена».`,
+          ru: `После твоего выбора у окна зажёгся золотой маяк, и ночная почта увидела окно «Люмена».`,
           uz: `{{HERO}} oltin chiroqni yoqdi va tun pochtasi «Lyumen» oynasini ko‘rdi.`,
         },
         resolution: {

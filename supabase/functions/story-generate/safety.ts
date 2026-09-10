@@ -112,10 +112,42 @@ const startsWithNextDayReset = (context: NormalizedStoryContext, text: string) =
   return /^утром\b/u.test(first) || /^на следующее утро\b/u.test(first) || /^tongda\b/u.test(first) || /^ertasi tongda\b/u.test(first) || /^таңертең\b/u.test(first)
 }
 
+const russianHeroTokenNeedsRewrite = (text: string) => {
+  const token = '(?:\\{\\{HERO\\}\\}|QISSA_HERO)'
+  const preposition = new RegExp(
+    `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${token}(?=[\\s,.:;!?»”")—-]|$)`,
+    'iu',
+  )
+  const genderedAgreement = new RegExp(
+    `${token}\\s+(?:сказал|сказала|подошёл|подошла|увидел|увидела|услышал|услышала|понял|поняла|решил|решила|оказался|оказалась|остановился|остановилась|улыбнулся|улыбнулась|засмеялся|засмеялась|пожелал|пожелала)\\b`,
+    'iu',
+  )
+  return preposition.test(text) || genderedAgreement.test(text)
+}
+
 export const validateCandidate = (context: NormalizedStoryContext, candidate: unknown): string[] => {
   const errors: string[] = []
   if (!isRecord(candidate)) return ['candidate_not_object']
   const value = candidate as StoryCandidate
+
+  if (context.language === 'ru') {
+    const choiceText = Array.isArray(value.choices)
+      ? value.choices.flatMap((choice) => isRecord(choice)
+          ? [choice.text, choice.effect_summary, choice.resolution_text, choice.tomorrow_seed]
+              .filter((item): item is string => typeof item === 'string')
+          : []).join(' ')
+      : ''
+    const vocabularyText = Array.isArray(value.vocabulary)
+      ? value.vocabulary.flatMap((item) => isRecord(item)
+          ? [item.word, item.translation, item.example]
+              .filter((entry): entry is string => typeof entry === 'string')
+          : []).join(' ')
+      : ''
+    const heroGrammarText = [value.title, value.story_text, value.nextEpisodePreview, choiceText, vocabularyText]
+      .filter((item): item is string => typeof item === 'string')
+      .join(' ')
+    if (russianHeroTokenNeedsRewrite(heroGrammarText)) errors.push('russian_hero_requires_rewrite')
+  }
 
   if (typeof value.title !== 'string' || value.title.trim().length < 2) errors.push('invalid_title')
   if (typeof value.story_text !== 'string') errors.push('invalid_story_text')

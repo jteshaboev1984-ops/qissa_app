@@ -124,6 +124,8 @@ requireText('runtime safety', safety, [
   "errors.push('continuation_resets_before_resolution')",
   "errors.push('bedtime_coda_too_short')",
   "errors.push('bedtime_coda_too_long')",
+  'russianHeroTokenNeedsRewrite',
+  "errors.push('russian_hero_requires_rewrite')",
 ])
 
 for (const flag of [

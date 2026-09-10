@@ -65,11 +65,48 @@ const technicalCopy = /state[_ -]?patch|episode[_ -]?id|series[_ -]?id|choice[_ 
 const unresolvedBedtime = /продолжение следует|davomi bor|страшн(?:ый|ая|ое)|dahshatli|погоня|quv(?:di|ish)|взрыв|portlash/iu
 const nextDayReset = /^(?:утром\b|на следующее утро\b|tongda\b|ertasi tongda\b)/iu
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const assertRussianHeroFinalization = (label, heroName, fields) => {
+  const name = escapeRegExp(heroName)
+  const afterPreposition = new RegExp(
+    `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${name}(?=[\\s,.:;!?»”")—-]|$)`,
+    'iu',
+  )
+  const genderedAgreement = new RegExp(
+    `${name}\\s+(?:сказал|сказала|подошёл|подошла|увидел|увидела|услышал|услышала|понял|поняла|решил|решила|оказался|оказалась|остановился|остановилась|улыбнулся|улыбнулась|засмеялся|засмеялась|пожелал|пожелала)\\b`,
+    'iu',
+  )
+  for (const field of fields.filter((item) => typeof item === 'string')) {
+    assert(!afterPreposition.test(field), `${label}: finalized Russian hero name appears after a preposition and would require declension.`)
+    assert(!genderedAgreement.test(field), `${label}: finalized Russian hero name is followed by gendered agreement.`)
+  }
+}
+
+const finalEpisodeFields = (episode) => [
+  episode.title,
+  episode.story_text,
+  episode.nextEpisodePreview,
+  ...episode.choices.flatMap((choice) => [choice.text, choice.effect_summary, choice.resolution_text, choice.tomorrow_seed]),
+  ...episode.vocabulary.flatMap((item) => [item.word, item.translation, item.example]),
+]
+
+const storyEditorialSource = await readFile(join(root, 'supabase/functions/story-generate/storySixMinuteEditorial.ts'), 'utf8')
+const childFirstSourceStart = storyEditorialSource.indexOf('const childFirstStories:')
+assert(childFirstSourceStart >= 0, 'child-first story source missing')
+const childFirstSource = storyEditorialSource.slice(childFirstSourceStart)
+for (const match of childFirstSource.matchAll(/ru: `([\s\S]*?)`,/gu)) {
+  const raw = match[1].replace(/— \{\{HERO\}\},/gu, '')
+  assert(!raw.includes('{{HERO}}') && !raw.includes('QISSA_HERO'), 'RU deterministic source must keep the raw hero token in direct address only.')
+}
+for (const match of childFirstSource.matchAll(/example: `([^`]*)`/gu)) {
+  assert(!match[1].includes('{{HERO}}') && !match[1].includes('QISSA_HERO'), 'RU vocabulary examples must not require hero-name declension.')
+}
+
 const baseContext = (language, stylePackId) => ({
   ageGroup: '5-7',
   language,
-  heroType: 'boy_hero',
-  heroName: 'Timur',
+  heroType: language === 'ru' ? 'custom' : 'boy_hero',
+  heroName: language === 'ru' ? 'Алия' : 'Timur',
   stylePackId,
   storyMode: 'series',
   storyMood: 'bedtime',
@@ -125,6 +162,8 @@ try {
       const episodeOneParagraphs = paragraphs(episodeOne.story_text)
       minimumEpisodeOneWords = Math.min(minimumEpisodeOneWords, episodeOneWords)
 
+      if (language === 'ru') assertRussianHeroFinalization(`${label}/episode-1`, context.heroName, finalEpisodeFields(episodeOne))
+
       assert(episodeOne.episode_id === `ep-1-${stylePackId}`, `${label}: wrong Episode 1 id.`)
       assert(episodeOne.series_id === context.seriesId, `${label}: Episode 1 lost series id.`)
       assert(episodeOneWords >= minBedtimeWords, `${label}: Episode 1 is below ${minBedtimeWords} words.`)
@@ -155,6 +194,7 @@ try {
         const episodeTwoWords = wordCount(episodeTwo.story_text)
         const episodeTwoParagraphs = paragraphs(episodeTwo.story_text)
         minimumEpisodeTwoWords = Math.min(minimumEpisodeTwoWords, episodeTwoWords)
+        if (language === 'ru') assertRussianHeroFinalization(`${label}/${branch}/episode-2`, context.heroName, finalEpisodeFields(episodeTwo))
         assert(episodeTwo.episode_id === `ep-2-${stylePackId}`, `${label}/${branch}: wrong Episode 2 id.`)
         assert(episodeTwo.series_id === context.seriesId, `${label}/${branch}: Episode 2 lost series id.`)
         assert(episodeTwoWords >= minBedtimeWords, `${label}/${branch}: Episode 2 is below ${minBedtimeWords} words.`)
