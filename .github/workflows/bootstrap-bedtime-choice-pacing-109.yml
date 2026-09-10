@@ -52,7 +52,7 @@ jobs:
           p = Path('supabase/functions/story-generate/storyCoreReference.ts')
           text = p.read_text()
           old_reflection = "Shu qisqa damdan keyin hamma narsa aniqroq bo‘ldi. Do‘stlar qayerda turganini bilardi, hech kim xavotirlanmasdi. Endi tanish yo‘lni birga bosib o‘tishning eng qulay usulini tanlash kerak edi. {{HERO}} uyqusi kelayotgan hayvonchalarga qarab, qaror eng sekin yuradigan do‘stga ham yordam berishi kerakligini tushundi."
-          new_reflection = "Do‘stlar yo‘lni bilardi. {{HERO}} hammaga mos usulni tanlashi kerak edi."
+          new_reflection = "Do‘stlar yo‘lni bilardi."
           if text.count(old_reflection) != 1:
               raise SystemExit('expected exactly one Uzbek cozy reflection')
           p.write_text(text.replace(old_reflection, new_reflection))
