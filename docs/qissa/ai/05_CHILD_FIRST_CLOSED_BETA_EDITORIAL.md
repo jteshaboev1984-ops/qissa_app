@@ -30,6 +30,7 @@ These are Story Agent generation invariants for both deterministic fallback cont
 - For the 5–7 bedtime series, `resolution_text` targets about 30–45 words and must stay below 320 characters so the UI bridge is complete and cannot be silently truncated.
 - Episode 2 begins after the bridge's visible change and must not replay the chosen action from the beginning.
 - Provider output that fails structural or safety validation still falls back to approved deterministic content.
+- Runtime enforcement lives in `story-generate/prompt.ts`, `story-generate/safety.ts`, and the Story AI CI contract, so future provider work must preserve these rules rather than relying on editorial memory.
 
 ## Safety and release gates
 
