@@ -1,0 +1,22 @@
+name: Final Editorial Render
+
+on:
+  push:
+    branches:
+      - fix/child-first-beta-stories-114
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Render all 12 RU UZ closed-beta story paths
+        run: node scripts/oneoff-render-child-first-beta.mjs
