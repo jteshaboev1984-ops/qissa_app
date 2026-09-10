@@ -8,7 +8,7 @@ if (!fallback.includes('magicGardenChoiceMemory(context, id)')) {
   throw new Error('Magic Garden choice memory must run before generic fallback memory.')
 }
 
-if (!memory.includes('Gulbargli yo‘lakda ko‘k tomchilar')) {
+if (!memory.includes('ko‘k tomchilar butun gulbargli yo‘lak bo‘ylab ko‘rindi')) {
   throw new Error('Magic Garden UZ water branch must include a story-like memory scene.')
 }
 
