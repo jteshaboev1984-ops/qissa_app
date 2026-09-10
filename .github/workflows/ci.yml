@@ -70,6 +70,9 @@ jobs:
       - name: Validate closed beta scope
         run: npm run check:beta-scope
 
+      - name: Validate legacy closed-beta migration
+        run: npm run check:legacy-beta-migration
+
       - name: Validate Story AI cost guard
         run: npm run check:story-cost-guard
 
