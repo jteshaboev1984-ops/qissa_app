@@ -16,8 +16,9 @@ const EDITORIAL_TARGET_MINUTES = 6
 const EDITORIAL_TARGET_MAX_MINUTES = 8
 const EDITORIAL_TARGET_MIN_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * EDITORIAL_TARGET_MINUTES
 const EDITORIAL_TARGET_MAX_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * EDITORIAL_TARGET_MAX_MINUTES
-const MIN_CHOICE_RATIO = 0.45
-const MAX_CHOICE_RATIO = 0.62
+const MIN_CHOICE_RATIO = 0.40
+const MAX_CHOICE_RATIO = 0.55
+const MIN_RESOLUTION_WORDS = 50
 const MIN_CODA_RATIO = 0.05
 const MAX_CODA_RATIO = 0.20
 const sourceNames = [
@@ -150,8 +151,12 @@ try {
           `${scenario}: ${totalWords} words is outside the deterministic closed-beta editorial target of ${EDITORIAL_TARGET_MIN_WORDS}-${EDITORIAL_TARGET_MAX_WORDS} words (${EDITORIAL_TARGET_MINUTES}-${EDITORIAL_TARGET_MAX_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM).`,
         )
         assert(
+          resolutionWords >= MIN_RESOLUTION_WORDS,
+          `${scenario}: post-choice resolution is only ${resolutionWords} words; deterministic beta requires at least ${MIN_RESOLUTION_WORDS} meaningful words before episode 2.`,
+        )
+        assert(
           choiceRatio >= MIN_CHOICE_RATIO && choiceRatio <= MAX_CHOICE_RATIO,
-          `${scenario}: choice arrives at ${(choiceRatio * 100).toFixed(1)}% of the spoken story; hard acceptance window is ${(MIN_CHOICE_RATIO * 100).toFixed(0)}-${(MAX_CHOICE_RATIO * 100).toFixed(0)}% (editorial target remains about 50-60%).`,
+          `${scenario}: choice arrives at ${(choiceRatio * 100).toFixed(1)}% of the spoken story; hard acceptance window is ${(MIN_CHOICE_RATIO * 100).toFixed(0)}-${(MAX_CHOICE_RATIO * 100).toFixed(0)}% (editorial target is about 40-50%).`,
         )
         assert(
           codaRatio >= MIN_CODA_RATIO && codaRatio <= MAX_CODA_RATIO,
@@ -180,7 +185,7 @@ try {
   console.log(`Bedtime session range: ${Math.min(...totals)}-${Math.max(...totals)} words.`)
   console.log(`Hard acceptance band: ${MIN_SESSION_WORDS}-${MAX_SESSION_WORDS} words = ${MIN_SESSION_MINUTES}-${MAX_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`)
   console.log(`Deterministic closed-beta editorial target: ${EDITORIAL_TARGET_MIN_WORDS}-${EDITORIAL_TARGET_MAX_WORDS} words = ${EDITORIAL_TARGET_MINUTES}-${EDITORIAL_TARGET_MAX_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`)
-  console.log(`Narrative pacing hard gate: child choice at ${(MIN_CHOICE_RATIO * 100).toFixed(0)}-${(MAX_CHOICE_RATIO * 100).toFixed(0)}% of total spoken story (editorial target about 50-60%); calm final coda at ${(MIN_CODA_RATIO * 100).toFixed(0)}-${(MAX_CODA_RATIO * 100).toFixed(0)}% (editorial target about 10-15%).`)
+  console.log(`Narrative pacing hard gate: child choice at ${(MIN_CHOICE_RATIO * 100).toFixed(0)}-${(MAX_CHOICE_RATIO * 100).toFixed(0)}% of total spoken story (editorial target about 40-50%); calm final coda at ${(MIN_CODA_RATIO * 100).toFixed(0)}-${(MAX_CODA_RATIO * 100).toFixed(0)}% (editorial target about 10-15%).`)
   console.log('Duration model: Episode 1 + confirmed choice resolution + Episode 2. 125/140/155 WPM are reported for visibility; 140 WPM is the release acceptance pace for normal expressive bedtime reading.')
   console.log('bedtime duration, six-to-eight-minute editorial target, and narrative pacing check passed for all 12 closed-beta RU/UZ branches.')
 } finally {
