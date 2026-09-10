@@ -27,7 +27,7 @@ jobs:
         run: |
           python <<'PY'
           from pathlib import Path
-          import subprocess, textwrap
+          import re, subprocess, textwrap
 
           old = subprocess.check_output([
               'git', 'show',
@@ -51,14 +51,20 @@ jobs:
 
           p = Path('supabase/functions/story-generate/storyCoreBranches.ts')
           text = p.read_text()
-          text = text.replace(
-              'Uzoqda eski to‘nka ko‘ringanda, do‘stlar endi uylariga xotirjam yetib borishini bildi.',
-              'Uzoqda eski to‘nka ko‘ringanda, do‘stlar endi uylariga xotirjam yetib borishini bildi. Eng kichik quyoncha orqasiga qarab, chiroqlar qolganlarga ham yo‘l ko‘rsatishini ko‘rdi. Nura esa oxirgi chiroqni biroz pastroq qo‘yib, kechikib kelayotgan do‘stlar ham uni ko‘ra olishini tekshirdi.',
-          )
-          text = text.replace(
-              'Uzoqda uylarning birinchi derazalari ko‘ringanda, qo‘shiq juda sekinlashib, xayrli tun tilagidek yangradi.',
-              'Uzoqda uylarning birinchi derazalari ko‘ringanda, qo‘shiq juda sekinlashib, xayrli tun tilagidek yangradi. Topa oxirgi burilishda ortda qolgan toshbaqani kutib turdi va kuy yordamida guruh yana bir joyga yig‘ildi. Shunda {{HERO}} tanlangan usul yo‘lning oxirigacha ishlaganini ko‘rdi.',
-          )
+          additions = [
+              (
+                  r'(\{\{HERO\}\} birinchi chiroqni chorrahada[^"\n]+)',
+                  r'\1 Eng kichik quyoncha orqasiga qarab, chiroqlar ortda kelayotganlarga ham yo‘l ko‘rsatishini ko‘rdi. Nura oxirgi chiroqni biroz pastroq qo‘yib, u uzoqdan ham ko‘rinishini tekshirdi.',
+              ),
+              (
+                  r'(\{\{HERO\}\} past va sekin kuylab[^"\n]+)',
+                  r'\1 Topa oxirgi burilishda ortda qolgan toshbaqani kutdi, kuy esa guruhni yana bir joyga yig‘di. {{HERO}} tanlangan usul yo‘lning oxirigacha ishlaganini ko‘rdi.',
+              ),
+          ]
+          for pattern, replacement in additions:
+              text, count = re.subn(pattern, replacement, text, count=1)
+              if count != 1:
+                  raise SystemExit(f'expected one Uzbek cozy resolution match, got {count}: {pattern}')
           p.write_text(text)
           PY
       - name: Verify rebalance
