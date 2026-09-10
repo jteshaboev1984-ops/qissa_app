@@ -38,12 +38,10 @@ jobs:
           end = old.index("          PY\n", start)
           patch = textwrap.dedent(old[start:end])
 
-          # Keep one meaningful reflection beat; remove only the redundant extra delay beat.
           patch = patch.replace(
               '"    ...expansionParagraphs,\\n    sixMinuteSettlingBeat[world][language],"',
               '"    ...expansionParagraphs,\\n    preChoiceReflection[world][language],\\n    sixMinuteSettlingBeat[world][language],"',
           )
-          # Make the automated gate reflect the physical-device finding.
           patch = patch.replace("'const MIN_CHOICE_RATIO = 0.38'", "'const MIN_CHOICE_RATIO = 0.40'")
           patch = patch.replace("'const MAX_CHOICE_RATIO = 0.52'", "'const MAX_CHOICE_RATIO = 0.55'")
           patch = patch.replace("'const MIN_RESOLUTION_WORDS = 70", "'const MIN_RESOLUTION_WORDS = 50")
@@ -51,12 +49,10 @@ jobs:
           Path('/tmp/qissa-pacing-patch.py').write_text(patch)
           subprocess.run(['python', '/tmp/qissa-pacing-patch.py'], check=True)
 
-          # Uzbek cozy was the sole branch still beyond the 55% hard gate.
-          # Shorten its reflection without removing the decision logic or bedtime tone.
           p = Path('supabase/functions/story-generate/storyCoreReference.ts')
           text = p.read_text()
           old_reflection = "Shu qisqa damdan keyin hamma narsa aniqroq bo‘ldi. Do‘stlar qayerda turganini bilardi, hech kim xavotirlanmasdi. Endi tanish yo‘lni birga bosib o‘tishning eng qulay usulini tanlash kerak edi. {{HERO}} uyqusi kelayotgan hayvonchalarga qarab, qaror eng sekin yuradigan do‘stga ham yordam berishi kerakligini tushundi."
-          new_reflection = "Do‘stlar qayerda turganini bilardi, hech kim xavotirlanmasdi. {{HERO}} uyqusi kelayotgan hayvonchalarga qarab, eng sekin yuradigan do‘stga ham yordam beradigan yo‘lni tanlash kerakligini tushundi."
+          new_reflection = "Do‘stlar yo‘lni bilardi. {{HERO}} hammaga mos usulni tanlashi kerak edi."
           if text.count(old_reflection) != 1:
               raise SystemExit('expected exactly one Uzbek cozy reflection')
           p.write_text(text.replace(old_reflection, new_reflection))
