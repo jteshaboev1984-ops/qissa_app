@@ -17,6 +17,7 @@ import {
   referenceEpisodeOneStory,
   referenceEpisodeTitle,
 } from './storyCoreReference.ts'
+import { buildChildFirstClosedBetaCandidate } from './storySixMinuteEditorial.ts'
 import { spaceChoiceMemory, spaceContinuationMemory } from './storySpaceMemory.ts'
 import { spaceBedtimeChoiceMemory } from './storySpaceBedtimeMemory.ts'
 import { magicGardenChoiceMemory } from './storyMagicGardenMemory.ts'
@@ -148,6 +149,16 @@ const patch = (event: string, arc: string): CandidatePatch => ({
 })
 
 export const buildSafeFallback = (context: NormalizedStoryContext) => {
+  const childFirstCandidate = buildChildFirstClosedBetaCandidate(context)
+  if (childFirstCandidate) {
+    return buildFinalEpisode(context, childFirstCandidate, {
+      approved: true,
+      risk_level: 'low',
+      flags: emptySafetyFlags(),
+      required_action: 'fallback',
+    })
+  }
+
   const world = worlds[context.stylePackId]
   const language = context.language
   const isForest = context.stylePackId === 'cozy_forest'
