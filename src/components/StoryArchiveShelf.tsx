@@ -1,4 +1,5 @@
 import { stylePacks } from '../data/stylePacks'
+import { isClosedBetaSelections } from '../lib/closedBetaScope'
 import { canRestoreArchiveItem, type StoryArchiveItem } from '../lib/storyArchive'
 import type { Language } from '../types/qissa'
 
@@ -13,6 +14,8 @@ const labels: Record<
     updated: string
     open: string
     unavailable: string
+    legacyRead: string
+    legacyNote: string
   }
 > = {
   ru: {
@@ -24,6 +27,8 @@ const labels: Record<
     updated: 'Сохранено',
     open: 'Открыть историю',
     unavailable: 'Можно открыть только новые сохранённые истории.',
+    legacyRead: 'Прочитать сохранённую историю',
+    legacyNote: 'Эта история создана в ранней версии QISSA. Она сохранена для чтения, но продолжение в закрытой beta создаётся только в текущем формате.',
   },
   uz: {
     title: 'Oldingi hikoyalar',
@@ -34,6 +39,8 @@ const labels: Record<
     updated: 'Saqlangan',
     open: 'Hikoyani ochish',
     unavailable: 'Faqat yangi saqlangan hikoyalarni ochish mumkin.',
+    legacyRead: 'Saqlangan hikoyani o‘qish',
+    legacyNote: 'Bu hikoya QISSA’ning oldingi versiyasida yaratilgan. U o‘qish uchun saqlanadi, ammo yopiq beta doirasida davomi faqat hozirgi formatda yaratiladi.',
   },
   kz: {
     title: 'Алдыңғы оқиғалар',
@@ -44,6 +51,8 @@ const labels: Record<
     updated: 'Сақталды',
     open: 'Оқиғаны ашу',
     unavailable: 'Тек жаңа сақталған оқиғаларды ашуға болады.',
+    legacyRead: 'Сақталған оқиғаны оқу',
+    legacyNote: 'Бұл оқиға QISSA-ның ертерек нұсқасында жасалған. Ол оқу үшін сақталады, бірақ жабық beta-дағы жалғасы тек қазіргі форматта жасалады.',
   },
 }
 
@@ -78,7 +87,8 @@ export function StoryArchiveShelf({
         {items.slice(0, 5).map((item) => {
           const pack = stylePacks.find((entry) => entry.id === item.stylePackId) ?? stylePacks[0]
           const savedDate = formatDate(item.updatedAt)
-          const canOpen = canRestoreArchiveItem(item)
+          const legacyScope = Boolean(item.selections && !isClosedBetaSelections(item.selections))
+          const canOpen = !legacyScope && canRestoreArchiveItem(item)
 
           return (
             <article key={`${item.id}-${item.updatedAt}`} className="rounded-[1.5rem] border border-[#eadfc9] bg-[#fff8e9] p-4">
@@ -107,7 +117,17 @@ export function StoryArchiveShelf({
               ) : null}
 
               <div className="mt-4 grid gap-2">
-                {canOpen && onOpenStory ? (
+                {legacyScope && item.episode ? (
+                  <div className="space-y-2">
+                    <p className="rounded-2xl border border-[#eadfc9] bg-white/60 px-3 py-2 text-xs leading-5 text-[#7a705d]">
+                      {copy.legacyNote}
+                    </p>
+                    <details className="rounded-2xl border border-[#eadfc9] bg-white/70 px-3 py-2 text-xs leading-5 text-[#4d4635]">
+                      <summary className="cursor-pointer font-bold text-[#5f5848]">{copy.legacyRead}</summary>
+                      <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[#4d4635]">{item.episode.story_text}</p>
+                    </details>
+                  </div>
+                ) : canOpen && onOpenStory ? (
                   <button className="q-secondary w-full py-2.5 text-xs" onClick={() => onOpenStory(item)}>
                     {copy.open}
                   </button>
