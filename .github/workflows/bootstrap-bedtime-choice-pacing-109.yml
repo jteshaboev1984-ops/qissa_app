@@ -53,11 +53,11 @@ jobs:
           text = p.read_text()
           additions = [
               (
-                  r'(\{\{HERO\}\} birinchi chiroqni chorrahada[^"\n]+)',
+                  r'(\{\{HERO\}\} birinchi chiroqni chorrahada[^\n]*?)(?=\x27,\n)',
                   r'\1 Eng kichik quyoncha orqasiga qarab, chiroqlar ortda kelayotganlarga ham yo‘l ko‘rsatishini ko‘rdi. Nura oxirgi chiroqni biroz pastroq qo‘yib, u uzoqdan ham ko‘rinishini tekshirdi.',
               ),
               (
-                  r'(\{\{HERO\}\} past va sekin kuylab[^"\n]+)',
+                  r'(\{\{HERO\}\} past va sekin kuylab[^\n]*?)(?=\x27,\n)',
                   r'\1 Topa oxirgi burilishda ortda qolgan toshbaqani kutdi, kuy esa guruhni yana bir joyga yig‘di. {{HERO}} tanlangan usul yo‘lning oxirigacha ishlaganini ko‘rdi.',
               ),
           ]
