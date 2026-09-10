@@ -1,0 +1,52 @@
+name: Finalize Child-first Grammar
+
+on:
+  push:
+    branches:
+      - fix/child-first-beta-stories-114
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/child-first-beta-stories-114
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply grammar hardening
+        run: python3 scripts/oneoff-finalize-child-first-grammar.py
+      - name: Install dependencies
+        run: npm ci
+      - name: Run focused permanent checks
+        run: |
+          npm run check:story-ai
+          npm run typecheck:story-ai
+          npm run check:beta-content
+          npm run check:bedtime-duration
+          npm run check:story-core
+          npm run check:localized-fallback
+          npm run check:beta-scope
+          npm run check:story-copy
+          git diff --check
+      - name: Render final 12 paths after grammar hardening
+        run: node scripts/oneoff-render-child-first-beta.mjs
+      - name: Commit permanent changes and remove temporary tooling
+        run: |
+          git config user.name "jteshaboev1984-ops"
+          git config user.email "j.teshaboev1984@gmail.com"
+          git add supabase/functions/story-generate/storySixMinuteEditorial.ts
+          git add supabase/functions/story-generate/safety.ts
+          git add scripts/check-story-ai-safety.mjs
+          git add scripts/check-closed-beta-content-matrix.mjs
+          git rm scripts/oneoff-finalize-child-first-grammar.py
+          git rm .github/workflows/finalize-child-first-grammar.yml
+          git rm scripts/oneoff-render-child-first-beta.mjs
+          git rm .github/workflows/final-editorial-render.yml
+          git commit -m "Harden Russian hero grammar and finalize beta stories"
+          git push origin HEAD:fix/child-first-beta-stories-114
