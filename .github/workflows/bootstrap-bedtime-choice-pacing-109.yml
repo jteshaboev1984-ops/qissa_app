@@ -1,0 +1,154 @@
+name: Bootstrap bedtime choice pacing fix
+
+on:
+  push:
+    branches:
+      - hardening/bedtime-choice-pacing-109
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Record baseline pacing
+        run: npm run check:bedtime-duration
+      - name: Rebalance deterministic and future AI pacing
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'missing expected text in {path}: {old[:120]!r}')
+              p.write_text(text.replace(old, new))
+
+          # Deterministic provider-free stories: remove two extra pre-choice padding beats.
+          replace(
+              'supabase/functions/story-generate/storyCoreReference.ts',
+              "    ...expansionParagraphs,\n    preChoiceReflection[world][language],\n    sixMinutePreChoiceBeat[world][language],\n    sixMinuteSettlingBeat[world][language],",
+              "    ...expansionParagraphs,\n    sixMinuteSettlingBeat[world][language],",
+          )
+
+          # Cozy forest post-choice consequence.
+          replace(
+              'supabase/functions/story-generate/storyCoreBranches.ts',
+              "{{HERO}} зажёг фонарики один за другим. Тёплый свет лёг на листья, и друзья уверенно нашли дорогу к старому пеньку. Сова Нура тихо кивнула с ветки.",
+              "{{HERO}} зажёг первый фонарик у развилки, потом второй у мокрой берёзы и третий рядом с большим камнем. Друзья не побежали вперёд: они проверяли каждый новый огонёк вместе. Черепаха шла первой, чтобы никто не торопился, кролики держались рядом, а Нура перелетала с ветки на ветку и смотрела, всем ли видно дорогу. У ручья один фонарик отразился в воде, и зверята сразу узнали знакомый поворот. Так выбранный путь действительно изменил их вечер: вместо сомнений появилась цепочка понятных тёплых знаков. Когда впереди показался старый пенёк, друзья поняли, что теперь спокойно дойдут до своих домиков.",
+          )
+          replace(
+              'supabase/functions/story-generate/storyCoreBranches.ts',
+              "{{HERO}} chiroqlarni birin-ketin yoqdi. Iliq nur barglarga tushdi va do‘stlar eski to‘nkaga bemalol yetib bordi. Boyqush Nura shoxdan sekin bosh irg‘adi.",
+              "{{HERO}} birinchi chiroqni chorrahada, ikkinchisini nam qayin yonida, uchinchisini esa katta tosh oldida yoqdi. Do‘stlar oldinga yugurmadi: har bir yangi chiroqni birga tekshirib bordi. Toshbaqa hech kim shoshilmasligi uchun oldinda yurdi, quyonchalar uning yonida qoldi, Nura esa shoxdan shoxga uchib, yo‘l hammaga ko‘rinayotganini kuzatdi. Ariq yonida bir chiroq suvda aks etdi va hayvonchalar tanish burilishni darrov bildi. Tanlov oqshomni aniq o‘zgartirdi: ikkilanish o‘rniga yo‘l bo‘ylab tushunarli iliq belgilar paydo bo‘ldi. Uzoqda eski to‘nka ko‘ringanda, do‘stlar endi uylariga xotirjam yetib borishini bildi.",
+          )
+          replace(
+              'supabase/functions/story-generate/storyCoreBranches.ts',
+              "{{HERO}} запел негромко и медленно. Светлячки зависли над тропинкой, ёжик Топа подошёл ближе, а сова слушала с нижней ветки. Вечер стал особенно тёплым.",
+              "{{HERO}} запел негромко и медленно, повторяя простую строчку, которую легко было услышать даже у ручья. Нура ответила коротким свистом, а ёжик Топа подхватил последние слова. Друзья двинулись по тропинке в одном ритме: когда песня становилась тише, все останавливались и ждали черепаху, а затем снова шли вместе. Светлячки держались над группой мягким облачком, поэтому никто не отделялся от остальных. У знакомого камня кролики уже сами напевали мелодию и улыбались. Выбор сработал именно потому, что помог друзьям слышать друг друга. Когда впереди показались первые окна домиков, песня стала совсем тихой, как спокойное пожелание доброй ночи.",
+          )
+          replace(
+              'supabase/functions/story-generate/storyCoreBranches.ts',
+              "{{HERO}} past va sekin kuyladi. Yaltirab turgan qo‘ng‘izlar yo‘l ustida to‘xtadi, tipratikan Topa yaqinroq keldi, boyqush esa pastki shoxdan tingladi. Oqshom yanada iliq bo‘ldi.",
+              "{{HERO}} past va sekin kuylab, ariq yonidan ham eshitiladigan oddiy satrni takrorladi. Nura qisqa hushtak bilan javob berdi, tipratikan Topa esa oxirgi so‘zlarni ilib oldi. Do‘stlar bir xil ritmda yo‘lga tushdi: qo‘shiq pasayganda hamma to‘xtab toshbaqani kutdi, keyin yana birga yurdi. Yorug‘qo‘ng‘izlar guruh ustida mayin bulut bo‘lib uchdi, shuning uchun hech kim boshqalardan ajralib qolmadi. Tanish tosh yoniga kelganda quyonchalar ham kuyga qo‘shilib, jilmayardi. Tanlov aynan do‘stlarga bir-birini eshitishga yordam bergani uchun ishladi. Uzoqda uylarning birinchi derazalari ko‘ringanda, qo‘shiq juda sekinlashib, xayrli tun tilagidek yangradi.",
+          )
+
+          # Magic garden post-choice consequence.
+          replace(
+              'supabase/functions/story-generate/storyMagicGardenMemory.ts',
+              "{{HERO}} полил землю у корней, и лунные цветы раскрылись один за другим. Вода не шумела, а будто передавала по цветнику маленькую добрую весть. На лепестковой дорожке появились голубые капли, и друзья поняли: сказка продолжится по этому следу.",
+              "{{HERO}} начал с самого сухого места и поливал землю маленькими кругами, чтобы вода не стекала мимо корней. Мирай показывала, где почва уже стала тёмной и прохладной, а Лило перелетала к следующему цветку. Сначала раскрылся один бутон, затем второй, и вскоре голубые капли появились на целой линии лепестков. Друзья увидели прямой результат выбора: вода вернула цветам силы, а дорожка снова стала различимой от фонтана до маленькой калитки. Они прошли вдоль неё ещё раз и убедились, что ни один цветок не остался в сухой земле. Только после этого {{HERO}} поставил лейку рядом с фонтаном, а сад начал постепенно затихать.",
+          )
+          replace(
+              'supabase/functions/story-generate/storyMagicGardenMemory.ts',
+              "{{HERO}} suvni gullarning ildizi yoniga quydi, oy gullari esa birin-ketin ochila boshladi. Suv shovqin qilmadi, go‘yo gulzor bo‘ylab kichik mehrli xabar uzatdi. Gulbargli yo‘lakda ko‘k tomchilar paydo bo‘ldi, do‘stlar esa hikoya shu izdan davom etishini tushundi.",
+              "{{HERO}} eng quruq joydan boshlab, suv ildizlardan chetga oqib ketmasligi uchun tuproqni kichik doiralar bilan sug‘ordi. Miroy qaysi joy allaqachon qorayib, salqinlashganini ko‘rsatdi, Lilo esa keyingi gul tomon uchdi. Avval bitta g‘uncha, keyin ikkinchisi ochildi va tez orada ko‘k tomchilar butun gulbargli yo‘lak bo‘ylab ko‘rindi. Do‘stlar tanlovning aniq natijasini ko‘rdi: suv gullarga kuch qaytardi, yo‘lak esa favvoradan kichik darvozagacha yana ravshan bo‘ldi. Ular yo‘lak bo‘ylab yana bir marta yurib, hech bir gul quruq tuproqda qolmaganini tekshirdi. Shundan keyingina {{HERO}} sug‘orgichni favvora yoniga qo‘ydi, bog‘ esa asta tinchlana boshladi.",
+          )
+          replace(
+              'supabase/functions/story-generate/storyMagicGardenMemory.ts',
+              "{{HERO}} поставил чашу рядом с лунными цветами, и светлячки поднялись над дорожкой мягкой цепочкой. Цветы повернулись к свету, лепестки вспомнили свой узор, а Лило услышала в мерцании первые ноты тихой садовой песни.",
+              "{{HERO}} поставил чашу у первого поворота лепестковой дорожки и прикрыл ладонью слишком яркий край. Светлячки поднялись не все сразу: несколько остались у чаши, другие выстроились дальше, показывая следующий участок пути. Мирай прошла за этой мягкой цепочкой и заметила, как лунные цветы один за другим поворачиваются к свету. Лило перенесла чашу чуть ближе к фонтану, и рисунок продолжился до самой калитки. Выбранный свет не просто украсил сад: он снова связал отдельные клумбы в понятную дорожку. Друзья проверили её от начала до конца, поправили один сбившийся огонёк и только потом остановились. Светлячки стали мерцать медленнее, а фонтан звучал всё тише.",
+          )
+          replace(
+              'supabase/functions/story-generate/storyMagicGardenMemory.ts',
+              "{{HERO}} kosani oy gullari yoniga qo‘ydi, yorug‘qo‘ng‘izlar esa yo‘lak ustida mayin zanjir bo‘lib ko‘tarildi. Gullar nur tomonga burildi, gulbarglar o‘z naqshini esladi, Lilo esa miltillash ichidan bog‘ning sokin allasidagi birinchi notalarni eshitdi.",
+              "{{HERO}} kosani gulbargli yo‘lakning birinchi burilishiga qo‘yib, juda yorqin chetini kafti bilan to‘sdi. Yorug‘qo‘ng‘izlar birdaniga emas, asta ko‘tarildi: bir nechtasi kosa yonida qoldi, boshqalari esa yo‘lning keyingi qismini ko‘rsatib saf tortdi. Miroy shu mayin zanjir ortidan yurib, oy gullari birin-ketin nur tomon burilayotganini ko‘rdi. Lilo kosani favvoraga yaqinroq surdi va naqsh kichik darvozagacha davom etdi. Tanlangan nur bog‘ni shunchaki bezamadi: u alohida gulzorlarni yana tushunarli yo‘lakka birlashtirdi. Do‘stlar yo‘lni boshidan oxirigacha tekshirib, bitta adashgan chiroqni joyiga qo‘ydi. Shundan keyin yorug‘qo‘ng‘izlar sekinroq miltillay boshladi, favvoraning ovozi esa pasaydi.",
+          )
+
+          # Space post-choice consequence.
+          replace(
+              'supabase/functions/story-generate/storySpaceBedtimeMemory.ts',
+              "{{HERO}} повернул световые кольца, и над станцией поднялся мягкий золотой луч. Капсула увидела его, ответила тремя маленькими огоньками и медленно повернула к стыковочному окну.",
+              "{{HERO}} повернул первое световое кольцо, затем второе и сделал луч широким и мягким, чтобы он не слепил капсулу. Пико следил за картой и называл расстояние до стыковочного окна. Через несколько секунд капсула ответила тремя маленькими огоньками и изменила курс. Она шла не прямо: сначала обогнула край облака звёздной пыли, потом выровнялась по золотому сигналу. {{HERO}} не трогал настройки, пока Пико не подтвердил, что маршрут устойчив. Так выбор превратился в настоящее решение задачи: маяк дал почте знакомый ориентир и спокойно довёл её до безопасного коридора станции. Когда на панели появилась ровная зелёная линия, друзья приглушили яркость маяка до ночного режима.",
+          )
+          replace(
+              'supabase/functions/story-generate/storySpaceBedtimeMemory.ts',
+              "{{HERO}} yorug‘lik halqalarini burdi, bekat ustida mayin oltin nur ko‘tarildi. Kapsula uni ko‘rib, uchta kichik chiroq bilan javob berdi va ulanish oynasi tomon sekin burildi.",
+              "{{HERO}} birinchi yorug‘lik halqasini, keyin ikkinchisini burib, kapsulani ko‘zni qamashtirmaydigan keng va mayin nur bilan yo‘naltirdi. Piko xaritani kuzatib, ulanish oynasigacha qolgan masofani aytib turdi. Bir necha soniyadan keyin kapsula uchta kichik chiroq bilan javob berib, yo‘nalishini o‘zgartirdi. U to‘g‘ri kelmadi: avval yulduz changi bulutining chetini aylanib o‘tdi, keyin oltin signal bo‘yicha tekislandi. Piko yo‘l barqarorligini tasdiqlamaguncha {{HERO}} sozlamalarga tegmadi. Shu tariqa tanlov muammoning haqiqiy yechimiga aylandi: mayoq pochtaga tanish belgi berib, uni bekatning xavfsiz yo‘lagigacha olib keldi. Panelda tekis yashil chiziq paydo bo‘lgach, do‘stlar mayoqni tungi rejimgacha xiralashtirdi.",
+          )
+          replace(
+              'supabase/functions/story-generate/storySpaceBedtimeMemory.ts',
+              "{{HERO}} соединил спокойные звёзды в фигуру птицы. Серебряная капсула увидела этот рисунок и пошла за ним, обходя тёмное облако звёздной пыли.",
+              "{{HERO}} выбрал на карте четыре спокойные звезды и соединил их в простую фигуру птицы, крыло которой указывало в сторону станции. Пико проверил, что рисунок хорошо виден с курса капсулы, и убрал все лишние линии. Серебряная капсула заметила новый знак, мигнула один раз и начала плавный поворот. На карте было видно, как она обходит тёмное облако звёздной пыли именно по нарисованной дорожке. У последней звезды {{HERO}} добавил короткий световой штрих к стыковочному окну. Выбор стал не украшением, а рабочей картой: каждый участок созвездия помогал сделать следующий безопасный шаг. Когда капсула вышла на прямой курс, Пико сохранил рисунок в атласе, а остальные линии экрана медленно погасли.",
+          )
+          replace(
+              'supabase/functions/story-generate/storySpaceBedtimeMemory.ts',
+              "{{HERO}} sokin yulduzlarni qush shakliga birlashtirdi. Kumush kapsula bu rasmni ko‘rib, yulduz changining qorong‘i bulutini aylanib o‘tdi.",
+              "{{HERO}} xaritada to‘rtta sokin yulduzni tanlab, ularni qanoti bekat tomon yo‘nalgan oddiy qush shakliga birlashtirdi. Piko rasm kapsula yo‘lidan yaxshi ko‘rinishini tekshirib, ortiqcha chiziqlarni o‘chirdi. Kumush kapsula yangi belgini ko‘rib, bir marta miltilladi va asta burila boshladi. Xaritada uning qorong‘i yulduz changi bulutini aynan chizilgan yo‘l bo‘ylab aylanib o‘tayotgani ko‘rindi. Oxirgi yulduz yonida {{HERO}} ulanish oynasiga olib boradigan qisqa yorug‘ chiziq qo‘shdi. Tanlov bezak emas, ishlaydigan xaritaga aylandi: yulduz turkumining har bir qismi keyingi xavfsiz qadamni ko‘rsatdi. Kapsula to‘g‘ri yo‘lga chiqqach, Piko rasmni atlasga saqladi, ekrandagi boshqa chiziqlar esa asta o‘chdi.",
+          )
+
+          # Future AI guidance mirrors the provider-free editorial fix without enabling AI.
+          replace('supabase/functions/story-generate/prompt.ts', "target_story_words: '450-520'", "target_story_words: '360-430'")
+          replace('supabase/functions/story-generate/prompt.ts', "choice_resolution_words: '20-60 for each of the two choices'", "choice_resolution_words: '80-130 for each of the two choices; show the selected action causing a visible change before episode 2'")
+          replace('supabase/functions/story-generate/prompt.ts', "target_story_words: '370-480'", "target_story_words: '390-500'")
+          replace('supabase/functions/story-generate/prompt.ts', "'opening / orientation: about 80-110 words — who, where, bedtime atmosphere, and what normal evening looks like'", "'opening / orientation: about 60-80 words — who, where, bedtime atmosphere, and what normal evening looks like'")
+          replace('supabase/functions/story-generate/prompt.ts', "'gentle need / problem: about 90-120 words — introduce exactly one concrete goal that can be solved tonight'", "'gentle need / problem: about 70-90 words — introduce exactly one concrete goal that can be solved tonight'")
+          replace('supabase/functions/story-generate/prompt.ts', "'exploration / build-up: about 160-210 words — discover relevant details and possible approaches; do not add a second unrelated problem'", "'exploration / build-up: about 120-150 words — discover only the details needed to make the decision meaningful; do not add a second unrelated problem'")
+          replace('supabase/functions/story-generate/prompt.ts', "'choice setup: about 100-130 words — make both options understandable as two safe ways to solve the SAME established goal'", "'choice setup: about 60-80 words — make both options understandable as two safe ways to solve the SAME established goal, then ask the child without another delay beat'")
+          replace('supabase/functions/story-generate/prompt.ts', "'The child choice should occur around 50-60% of the full read-aloud, after enough context to care but before the original problem is solved.'", "'The child choice should occur around 40-50% of the full read-aloud: early enough that the child sees a substantial consequence afterward, but only after the single goal and both safe options are clear.'")
+          replace('supabase/functions/story-generate/prompt.ts', "'choice consequence / working solution: about 230-320 words — the chosen method changes what happens and carries the original goal toward resolution'", "'choice consequence / working solution: about 260-340 words — begin from the visible consequence already started in resolution_text; the chosen method must materially change the route to the original goal'")
+
+          # Tighten automated pacing acceptance to the physical-device finding.
+          replace('scripts/report-bedtime-duration.mjs', 'const MIN_CHOICE_RATIO = 0.45', 'const MIN_CHOICE_RATIO = 0.38')
+          replace('scripts/report-bedtime-duration.mjs', 'const MAX_CHOICE_RATIO = 0.62', 'const MAX_CHOICE_RATIO = 0.52')
+          replace('scripts/report-bedtime-duration.mjs', 'const MIN_CODA_RATIO = 0.05', 'const MIN_RESOLUTION_WORDS = 70\nconst MIN_CODA_RATIO = 0.05')
+          replace(
+              'scripts/report-bedtime-duration.mjs',
+              "        assert(\n          choiceRatio >= MIN_CHOICE_RATIO && choiceRatio <= MAX_CHOICE_RATIO,",
+              "        assert(\n          resolutionWords >= MIN_RESOLUTION_WORDS,\n          `${scenario}: post-choice resolution is only ${resolutionWords} words; deterministic beta requires at least ${MIN_RESOLUTION_WORDS} meaningful words before episode 2.`,\n        )\n        assert(\n          choiceRatio >= MIN_CHOICE_RATIO && choiceRatio <= MAX_CHOICE_RATIO,",
+          )
+          replace('scripts/report-bedtime-duration.mjs', 'editorial target remains about 50-60%', 'editorial target is about 40-50%')
+          replace('scripts/report-bedtime-duration.mjs', 'editorial target about 50-60%', 'editorial target about 40-50%')
+          PY
+      - name: Verify rebalance
+        run: |
+          npm run audit:all
+          npm run check:bedtime-duration
+          npm run check:story-core
+          npm run check:beta-scope
+          npm run typecheck:story-ai
+      - name: Commit verified fix and remove bootstrap workflow
+        shell: bash
+        run: |
+          git rm .github/workflows/bootstrap-bedtime-choice-pacing-109.yml
+          git config user.name "qissa-hardening-bot"
+          git config user.email "qissa-hardening-bot@users.noreply.github.com"
+          git add supabase/functions/story-generate/storyCoreReference.ts \
+                  supabase/functions/story-generate/storyCoreBranches.ts \
+                  supabase/functions/story-generate/storyMagicGardenMemory.ts \
+                  supabase/functions/story-generate/storySpaceBedtimeMemory.ts \
+                  supabase/functions/story-generate/prompt.ts \
+                  scripts/report-bedtime-duration.mjs
+          git commit -m "Rebalance bedtime pacing around child choice (#109)"
+          git push origin HEAD:hardening/bedtime-choice-pacing-109
