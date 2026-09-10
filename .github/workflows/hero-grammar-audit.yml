@@ -1,0 +1,24 @@
+name: Hero Grammar Audit
+
+on:
+  push:
+    branches:
+      - fix/child-first-beta-stories-114
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Print RU lines containing hero token
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('supabase/functions/story-generate/storySixMinuteEditorial.ts')
+          for i,line in enumerate(p.read_text(encoding='utf-8').splitlines(),1):
+              if '{{HERO}}' in line and any('А' <= c <= 'я' or c in 'Ёё' for c in line):
+                  print(f'{i}: {line}')
+          PY
