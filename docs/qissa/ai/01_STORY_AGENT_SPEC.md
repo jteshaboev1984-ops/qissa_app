@@ -64,6 +64,20 @@ Disallowed:
 - dangerous instructions;
 - unresolved bedtime danger.
 
+## Child-first editorial invariants
+These rules apply to deterministic fallback content and to future provider-generated Story Agent output. The current RU/UZ 5–7 bedtime beta is the strictest release slice, but provider enablement must not weaken them.
+
+- Story prose tells the story; safety policy, pacing intent and system reassurance stay invisible to the child.
+- Calmness comes from scene, rhythm, sensory detail and the ending rather than repeated claims that everything is calm, safe, slow or unhurried.
+- Prefer child-scale goals, concrete action, memorable supporting characters, natural dialogue, visible reactions, gentle humor/wonder and small plot-serving surprises.
+- Positive values emerge from actions rather than lectures or moral summaries.
+- Age 5–7 language must be immediately understandable and avoid technical, operational or bureaucratic jargon.
+- Choices are child-visible actions and create visibly different consequences.
+- `resolution_text` is a short bridge shown separately by the UI; Episode 2 continues after its visible change and never replays the selected action.
+- Russian prose around `{{HERO}}` should avoid assuming hero gender; Uzbek must read as native Uzbek rather than a line-by-line Russian translation.
+
+`05_CHILD_FIRST_CLOSED_BETA_EDITORIAL.md` is the canonical editorial checklist used for these invariants.
+
 ## Style pack rules
 - Style pack influences setting, metaphors, atmosphere, sensory language and recurring world motifs.
 - Style pack must never override safety policy.

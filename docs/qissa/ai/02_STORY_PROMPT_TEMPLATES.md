@@ -15,6 +15,15 @@ Respect storyMode rules:
 - series episode 1: return exactly two safe and genuinely different choices.
 - series episode 2: visibly reflect the confirmed episode-1 choice, return no choices, and close calmly.
 For bedtime mode, do not end with unresolved fear, countdown, sudden danger, or a cliffhanger.
+Follow the child-first editorial contract for every generated story:
+- keep safety policy invisible in child-facing prose;
+- create calmness through scene, rhythm and ending rather than repeated reassurance words;
+- prefer concrete action, dialogue, reactions, gentle humor and wonder over explanation;
+- for ages 5–7 avoid technical/operational jargon and adult-supervisor behavior;
+- make choices child-visible actions with visibly different consequences;
+- keep resolution_text a short bridge (about 30–45 words, under 320 characters), then continue Episode 2 after that change without replaying it;
+- keep Russian hero-token grammar gender-neutral where possible;
+- write Uzbek as native storytelling rather than a sentence-by-sentence Russian translation.
 Never include political/religious persuasion, fear escalation, humiliation, stereotypes, conditional love, unsafe instructions, or adult themes.
 ```
 
@@ -141,3 +150,6 @@ The September 2026 closed beta publicly uses only `5-7`, `series`, `bedtime`, RU
 Fallback is not a separate UI contract. It must return the same final episode shape as provider generation.
 
 During launch hardening, Story AI is intentionally disabled and production returns deterministic editorial fallback content. When provider generation is enabled later, unsafe, invalid or failed provider output falls back to the same safe contract instead of exposing provider errors to the child.
+## 9) Child-first generation contract
+The runtime provider prompt and deterministic fallback share the same editorial bar. For the 5–7 bedtime series, target Episode 1 at roughly 430–470 words, keep the separate choice bridge at roughly 30–45 words and below 320 characters, and target Episode 2 at roughly 430–500 words. These are editorial targets inside the wider safety/runtime envelope. Safety constraints stay enforced internally and must not appear as reassurance or policy language in the story.
+

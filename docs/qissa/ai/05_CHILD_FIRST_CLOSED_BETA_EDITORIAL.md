@@ -1,6 +1,6 @@
 # Child-first closed-beta editorial rules
 
-These rules apply to the deterministic RU/UZ bedtime stories used for the 5–7 closed beta.
+These are Story Agent generation invariants for both deterministic fallback content and future provider-generated stories. The current RU/UZ 5–7 bedtime closed beta applies them as a strict release contract.
 
 ## Story experience
 
@@ -20,9 +20,16 @@ These rules apply to the deterministic RU/UZ bedtime stories used for the 5–7 
 
 ## Personalization and language
 
-- The hero token may resolve to a girl, boy, animal, magical hero or custom name. Russian deterministic prose around `{{HERO}}` must therefore avoid grammatical constructions that assume the hero's gender.
+- The hero token may resolve to a girl, boy, animal, magical hero or custom name. Russian prose around `{{HERO}}` must therefore avoid grammatical constructions that assume the hero's gender, including future provider output.
 - Uzbek copy should be written as natural Uzbek storytelling, not line-by-line Russian translation.
 - Character names, jokes and concrete details may differ between RU and UZ when that improves naturalness while preserving the same product contract.
+
+## Future provider generation
+
+- Provider generation must receive these child-first rules in the runtime prompt; they are not fallback-only editorial notes.
+- For the 5–7 bedtime series, `resolution_text` targets about 30–45 words and must stay below 320 characters so the UI bridge is complete and cannot be silently truncated.
+- Episode 2 begins after the bridge's visible change and must not replay the chosen action from the beginning.
+- Provider output that fails structural or safety validation still falls back to approved deterministic content.
 
 ## Safety and release gates
 

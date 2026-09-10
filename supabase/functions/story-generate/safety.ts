@@ -153,8 +153,9 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
         errors.push('invalid_resolution_text')
       } else if (isFiveToSevenBedtimeSeries(context) && context.episodeIndex === 1) {
         const resolutionWords = wordCount(choice.resolution_text)
-        if (resolutionWords < 20) errors.push('choice_resolution_too_short')
-        if (resolutionWords > 80) errors.push('choice_resolution_too_long')
+        if (choice.resolution_text.length > 360) errors.push('choice_resolution_too_long')
+        if (resolutionWords < 25) errors.push('choice_resolution_too_short')
+        if (resolutionWords > 60) errors.push('choice_resolution_too_long')
       }
       if (typeof choice.tomorrow_seed !== 'string' || choice.tomorrow_seed.length < 8) errors.push('invalid_tomorrow_seed')
       if (typeof choice.choice_icon !== 'string' || !choice.choice_icon.trim()) errors.push('invalid_choice_icon')
