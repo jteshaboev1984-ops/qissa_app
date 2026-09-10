@@ -74,7 +74,7 @@ These rules apply to deterministic fallback content and to future provider-gener
 - Age 5–7 language must be immediately understandable and avoid technical, operational or bureaucratic jargon.
 - Choices are child-visible actions and create visibly different consequences.
 - `resolution_text` is a short bridge shown separately by the UI; Episode 2 continues after its visible change and never replays the selected action.
-- Russian prose around `{{HERO}}` should avoid assuming hero gender; Uzbek must read as native Uzbek rather than a line-by-line Russian translation.
+- Russian prose uses `{{HERO}}` only where the unchanged name is grammatically invariant (prefer direct address); elsewhere rephrase with second-person wording rather than requiring name declension or gender agreement. Uzbek must read as native Uzbek rather than a line-by-line Russian translation.
 
 `05_CHILD_FIRST_CLOSED_BETA_EDITORIAL.md` is the canonical editorial checklist used for these invariants.
 

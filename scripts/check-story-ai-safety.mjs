@@ -78,7 +78,9 @@ requireText('story prompts', prompts, [
   'Do not make the hero behave like an adult supervisor',
   'avoid technical, operational and bureaucratic jargon',
   'Episode 2 must continue after its visible change and must not replay the selected action.',
-  'keep grammar around {{HERO}} gender-neutral where possible',
+  'Use {{HERO}} only in direct address or another position where the unchanged name needs no case ending',
+  'Never place {{HERO}} after a Russian preposition or where declension is required',
+  'For Russian, use {{HERO}} only in direct address or another grammatically invariant position.',
   'write native-sounding Uzbek rather than a sentence-by-sentence translation from Russian.',
   'child_first_editorial: childFirstEditorialGuidance(context)',
 ])

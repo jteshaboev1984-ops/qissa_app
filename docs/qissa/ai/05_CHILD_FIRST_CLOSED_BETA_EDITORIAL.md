@@ -20,7 +20,7 @@ These are Story Agent generation invariants for both deterministic fallback cont
 
 ## Personalization and language
 
-- The hero token may resolve to a girl, boy, animal, magical hero or custom name. Russian prose around `{{HERO}}` must therefore avoid grammatical constructions that assume the hero's gender, including future provider output.
+- The hero token may resolve to a girl, boy, animal, magical hero or custom name. Russian prose must use `{{HERO}}` only in direct address or another grammatically invariant position. Do not place the raw token where Russian case declension or gender agreement is required; rephrase with second-person wording instead. This applies to deterministic and future provider output.
 - Uzbek copy should be written as natural Uzbek storytelling, not line-by-line Russian translation.
 - Character names, jokes and concrete details may differ between RU and UZ when that improves naturalness while preserving the same product contract.
 

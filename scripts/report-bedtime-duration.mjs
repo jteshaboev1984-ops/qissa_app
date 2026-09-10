@@ -18,11 +18,12 @@ const EDITORIAL_TARGET_MIN_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * EDITORIAL_TARGET_
 const EDITORIAL_TARGET_MAX_WORDS = EXPRESSIVE_ACCEPTANCE_WPM * EDITORIAL_TARGET_MAX_MINUTES
 const MIN_CHOICE_RATIO = 0.40
 const MAX_CHOICE_RATIO = 0.55
-const MIN_RESOLUTION_WORDS = 50
+const MIN_RESOLUTION_WORDS = 30
+const MAX_RESOLUTION_WORDS = 45
 const MIN_CODA_RATIO = 0.05
 const MAX_CODA_RATIO = 0.20
 const STORY_TEXT_SANITIZER_LIMIT = 6000
-const RESOLUTION_TEXT_SANITIZER_LIMIT = 400
+const RESOLUTION_TEXT_EDITORIAL_LIMIT = 320
 const sourceNames = [
   'contracts',
   'storyCoreBranches',
@@ -147,8 +148,8 @@ try {
         const scenario = `${language}/${stylePackId}/${branch}`
 
         assert(
-          resolutionText.length < RESOLUTION_TEXT_SANITIZER_LIMIT,
-          `${scenario}: resolution reached the ${RESOLUTION_TEXT_SANITIZER_LIMIT}-character sanitizer ceiling and may have been clipped mid-sentence.`,
+          resolutionText.length <= RESOLUTION_TEXT_EDITORIAL_LIMIT,
+          `${scenario}: resolution is ${resolutionText.length} characters; child-first bridge limit is ${RESOLUTION_TEXT_EDITORIAL_LIMIT}.`,
         )
         assert(
           episodeTwo.story_text.length < STORY_TEXT_SANITIZER_LIMIT,
@@ -167,8 +168,12 @@ try {
           `${scenario}: ${totalWords} words is outside the deterministic closed-beta editorial target of ${EDITORIAL_TARGET_MIN_WORDS}-${EDITORIAL_TARGET_MAX_WORDS} words (${EDITORIAL_TARGET_MINUTES}-${EDITORIAL_TARGET_MAX_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM).`,
         )
         assert(
-          resolutionWords >= MIN_RESOLUTION_WORDS,
-          `${scenario}: post-choice resolution is only ${resolutionWords} words; deterministic beta requires at least ${MIN_RESOLUTION_WORDS} meaningful words before episode 2.`,
+          resolutionWords >= MIN_RESOLUTION_WORDS && resolutionWords <= MAX_RESOLUTION_WORDS,
+          `${scenario}: post-choice bridge is ${resolutionWords} words; child-first target is ${MIN_RESOLUTION_WORDS}-${MAX_RESOLUTION_WORDS}.`,
+        )
+        assert(
+          /(?:[.!?…]|[.!?…][»”"'])$/u.test(resolutionText.trim()),
+          `${scenario}: post-choice bridge must end with complete terminal punctuation.`,
         )
         assert(
           choiceRatio >= MIN_CHOICE_RATIO && choiceRatio <= MAX_CHOICE_RATIO,
@@ -203,7 +208,7 @@ try {
   console.log(`Hard acceptance band: ${MIN_SESSION_WORDS}-${MAX_SESSION_WORDS} words = ${MIN_SESSION_MINUTES}-${MAX_SESSION_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`)
   console.log(`Deterministic closed-beta editorial target: ${EDITORIAL_TARGET_MIN_WORDS}-${EDITORIAL_TARGET_MAX_WORDS} words = ${EDITORIAL_TARGET_MINUTES}-${EDITORIAL_TARGET_MAX_MINUTES} minutes at ${EXPRESSIVE_ACCEPTANCE_WPM} WPM.`)
   console.log(`Narrative pacing hard gate: child choice at ${(MIN_CHOICE_RATIO * 100).toFixed(0)}-${(MAX_CHOICE_RATIO * 100).toFixed(0)}% of total spoken story (editorial target about 40-50%); calm final coda at ${(MIN_CODA_RATIO * 100).toFixed(0)}-${(MAX_CODA_RATIO * 100).toFixed(0)}% (editorial target remains about 10-15%).`)
-  console.log(`Sanitizer headroom gate: story text must remain below ${STORY_TEXT_SANITIZER_LIMIT} characters and choice resolution below ${RESOLUTION_TEXT_SANITIZER_LIMIT} characters after finalization.`)
+  console.log(`Sanitizer headroom gate: story text must remain below ${STORY_TEXT_SANITIZER_LIMIT} characters and choice resolution below ${RESOLUTION_TEXT_EDITORIAL_LIMIT} characters after finalization.`)
   console.log('Duration model: Episode 1 + confirmed choice resolution + Episode 2. 125/140/155 WPM are reported for visibility; 140 WPM is the release acceptance pace for normal expressive bedtime reading.')
   console.log('bedtime duration, six-to-eight-minute editorial target, narrative pacing, and sanitizer-headroom check passed for all 12 closed-beta RU/UZ branches.')
 } finally {

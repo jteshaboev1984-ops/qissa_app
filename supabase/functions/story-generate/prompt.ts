@@ -143,7 +143,7 @@ const childFirstEditorialGuidance = (context: NormalizedStoryContext): JsonRecor
   language_quality: context.language === 'uz'
     ? 'Write natural Uzbek storytelling in Latin script. Do not translate Russian sentence by sentence; natural phrasing, jokes and concrete details may differ while preserving the same story contract.'
     : context.language === 'ru'
-      ? 'Write idiomatic Russian. Because {{HERO}} may become a girl, boy, animal, magical hero or custom name, avoid nearby grammar that assumes the hero is masculine or feminine whenever possible.'
+      ? 'Write idiomatic Russian. Use {{HERO}} only in direct address or another position where the unchanged name needs no case ending and no gender agreement. Never place {{HERO}} after a Russian preposition or where declension is required; rephrase with second-person wording instead.'
       : 'Write natively in the requested language rather than as a calque from another language.',
 })
 
@@ -315,7 +315,7 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
     'Do not make the hero behave like an adult supervisor checking readiness, schedules, procedures or rules; let positive values emerge from actions.',
     'For ages 5-7, avoid technical, operational and bureaucratic jargon even in fantasy or space settings; use things a child can picture.',
     'resolution_text is a short bridge shown separately in the UI. Episode 2 must continue after its visible change and must not replay the selected action.',
-    'For Russian, keep grammar around {{HERO}} gender-neutral where possible because the token can resolve to any hero type or custom name.',
+    'For Russian, use {{HERO}} only in direct address or another grammatically invariant position. Never place the raw token after a preposition or where case declension or gender agreement is required; rephrase with second-person wording instead.',
     'For Uzbek, write native-sounding Uzbek rather than a sentence-by-sentence translation from Russian.',
     'Never promote politics, religion, ideology, stereotypes, humiliation, shame, conditional parental love, bullying, adult themes, violence, or frightening unresolved danger.',
     'Do not contradict canon_state, prior choice consequences, relationships, or active arc.',
