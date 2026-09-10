@@ -1,0 +1,46 @@
+name: Fix Child-first Editorial
+
+on:
+  push:
+    branches:
+      - fix/child-first-beta-stories-114
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/child-first-beta-stories-114
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply editorial blocker fixes
+        run: python3 scripts/oneoff-fix-child-first-editorial.py
+      - name: Install dependencies
+        run: npm ci
+      - name: Run focused story checks
+        run: |
+          npm run check:story-ai
+          npm run typecheck:story-ai
+          npm run check:bedtime-duration
+          npm run check:story-core
+          npm run check:beta-content
+      - name: Commit fixes and remove this temporary fixer
+        run: |
+          git config user.name "jteshaboev1984-ops"
+          git config user.email "j.teshaboev1984@gmail.com"
+          git add supabase/functions/story-generate/storySixMinuteEditorial.ts
+          git add supabase/functions/story-generate/prompt.ts
+          git add scripts/report-bedtime-duration.mjs
+          git add scripts/check-story-ai-safety.mjs
+          git add docs/qissa/ai/01_STORY_AGENT_SPEC.md
+          git add docs/qissa/ai/05_CHILD_FIRST_CLOSED_BETA_EDITORIAL.md
+          git rm scripts/oneoff-fix-child-first-editorial.py
+          git rm .github/workflows/fix-child-first-editorial.yml
+          git commit -m "Fix child-first bridge and hero grammar blockers"
+          git push origin HEAD:fix/child-first-beta-stories-114
