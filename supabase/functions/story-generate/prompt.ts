@@ -73,14 +73,14 @@ const lengthGuidance = (context: NormalizedStoryContext): JsonRecord => {
   if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
     return context.episodeIndex === 1
       ? {
-          target_story_words: '450-520',
-          choice_resolution_words: '20-60 for each of the two choices',
+          target_story_words: '360-430',
+          choice_resolution_words: '80-130 for each of the two choices; show the selected action causing a visible change before episode 2',
           preferred_full_session_words: '840-1080 words, approximately 6-8 minutes at the release acceptance pace',
           hard_full_session_contract: 'Episode 1 + the selected choice resolution + Episode 2 must stay inside 700-1400 words.',
           acceptance_pace: '140 words per minute; 6-8 minutes is the editorial target and 5-10 minutes is the hard release envelope',
         }
       : {
-          target_story_words: '370-480',
+          target_story_words: '390-500',
           choice_resolution_words: 'not applicable; episode 2 has no new choice',
           preferred_full_session_words: '840-1080 words, approximately 6-8 minutes at the release acceptance pace',
           hard_full_session_contract: 'Episode 1 + the previously selected choice resolution + Episode 2 must stay inside 700-1400 words.',
@@ -102,12 +102,12 @@ const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord |
       classical_shape: 'Use a clear beginning, middle, turning decision, consequence, resolution, and calm coda. Every event must follow causally from the same original goal.',
       part_role: 'Episode 1 is the pre-choice half of the same story. It must establish one setting, one understandable goal/problem, develop it, then arrive naturally at one meaningful decision.',
       beat_budget: [
-        'opening / orientation: about 80-110 words — who, where, bedtime atmosphere, and what normal evening looks like',
-        'gentle need / problem: about 90-120 words — introduce exactly one concrete goal that can be solved tonight',
-        'exploration / build-up: about 160-210 words — discover relevant details and possible approaches; do not add a second unrelated problem',
-        'choice setup: about 100-130 words — make both options understandable as two safe ways to solve the SAME established goal',
+        'opening / orientation: about 60-80 words — who, where, bedtime atmosphere, and what normal evening looks like',
+        'gentle need / problem: about 70-90 words — introduce exactly one concrete goal that can be solved tonight',
+        'exploration / build-up: about 120-150 words — discover only the details needed to make the decision meaningful; do not add a second unrelated problem',
+        'choice setup: about 60-80 words — make both options understandable as two safe ways to solve the SAME established goal, then ask the child without another delay beat',
       ],
-      choice_position: 'The child choice should occur around 50-60% of the full read-aloud, after enough context to care but before the original problem is solved.',
+      choice_position: 'The child choice should occur around 40-50% of the full read-aloud: early enough that the child sees a substantial consequence afterward, but only after the single goal and both safe options are clear.',
       duration_role: 'The primary bedtime experience should feel substantial rather than rushed: aim for a 6-8 minute complete read while preserving calm pacing and one causal plot.',
       anti_pattern: 'Do not resolve the main problem and then ask a decorative choice. Do not make a chain of unrelated episodes. Do not repeat the same choice setup twice.',
     }
@@ -118,7 +118,7 @@ const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord |
     classical_shape: 'Continue from the confirmed choice, show its consequence, solve the original goal, then lower energy into a calm closed ending.',
     part_role: 'Start immediately from the selected action or its visible consequence. Keep the same core situation and causal thread.',
     beat_budget: [
-      'choice consequence / working solution: about 230-320 words — the chosen method changes what happens and carries the original goal toward resolution',
+      'choice consequence / working solution: about 260-340 words — begin from the visible consequence already started in resolution_text; the chosen method must materially change the route to the original goal',
       'resolution and bedtime coda: about 120-160 words — original problem clearly solved, loose ends closed, sensory energy reduced, final image feels complete and sleepy',
     ],
     continuity_rule: 'Do not reset to the next morning before resolving the choice. Do not introduce a new unrelated mission, missing object, new danger, or fresh problem merely to fill length.',

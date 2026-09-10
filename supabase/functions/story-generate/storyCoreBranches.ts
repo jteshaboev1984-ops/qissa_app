@@ -36,8 +36,8 @@ const cozyForest: Record<BranchId, BranchCopy> = {
       'Соқпақ бойындағы шамдар кішкентай аңдарға ескі томарға тыныш жетуге көмектесті.',
     ),
     resolution: localized(
-      '{{HERO}} зажёг фонарики один за другим. Тёплый свет лёг на листья, и друзья уверенно нашли дорогу к старому пеньку. Сова Нура тихо кивнула с ветки.',
-      '{{HERO}} chiroqlarni birin-ketin yoqdi. Iliq nur barglarga tushdi va do‘stlar eski to‘nkaga bemalol yetib bordi. Boyqush Nura shoxdan sekin bosh irg‘adi.',
+      '{{HERO}} зажёг первый фонарик у развилки, потом второй у мокрой берёзы и третий рядом с большим камнем. Друзья не побежали вперёд: они проверяли каждый новый огонёк вместе. Черепаха шла первой, чтобы никто не торопился, кролики держались рядом, а Нура перелетала с ветки на ветку и смотрела, всем ли видно дорогу. У ручья один фонарик отразился в воде, и зверята сразу узнали знакомый поворот. Так выбранный путь действительно изменил их вечер: вместо сомнений появилась цепочка понятных тёплых знаков. Когда впереди показался старый пенёк, друзья поняли, что теперь спокойно дойдут до своих домиков.',
+      '{{HERO}} birinchi chiroqni chorrahada, ikkinchisini nam qayin yonida, uchinchisini esa katta tosh oldida yoqdi. Do‘stlar oldinga yugurmadi: har bir yangi chiroqni birga tekshirib bordi. Toshbaqa hech kim shoshilmasligi uchun oldinda yurdi, quyonchalar uning yonida qoldi, Nura esa shoxdan shoxga uchib, yo‘l hammaga ko‘rinayotganini kuzatdi. Ariq yonida bir chiroq suvda aks etdi va hayvonchalar tanish burilishni darrov bildi. Tanlov oqshomni aniq o‘zgartirdi: ikkilanish o‘rniga yo‘l bo‘ylab tushunarli iliq belgilar paydo bo‘ldi. Uzoqda eski to‘nka ko‘ringanda, do‘stlar endi uylariga xotirjam yetib borishini bildi.',
       '{{HERO}} шамдарды бір-бірлеп жақты. Жылы жарық жапырақтарға түсіп, достар ескі томарға сенімді жетті. Нұра үкі бұтақтан жай ғана басын изеді.',
     ),
     seed: localized(
@@ -61,8 +61,8 @@ const cozyForest: Record<BranchId, BranchCopy> = {
       'Баяу ән орман достарын бір жерге жинап, кешті бірге тыныш аяқтауға көмектесті.',
     ),
     resolution: localized(
-      '{{HERO}} запел негромко и медленно. Светлячки зависли над тропинкой, ёжик Топа подошёл ближе, а сова слушала с нижней ветки. Вечер стал особенно тёплым.',
-      '{{HERO}} past va sekin kuyladi. Yaltirab turgan qo‘ng‘izlar yo‘l ustida to‘xtadi, tipratikan Topa yaqinroq keldi, boyqush esa pastki shoxdan tingladi. Oqshom yanada iliq bo‘ldi.',
+      '{{HERO}} запел негромко и медленно, повторяя простую строчку, которую легко было услышать даже у ручья. Нура ответила коротким свистом, а ёжик Топа подхватил последние слова. Друзья двинулись по тропинке в одном ритме: когда песня становилась тише, все останавливались и ждали черепаху, а затем снова шли вместе. Светлячки держались над группой мягким облачком, поэтому никто не отделялся от остальных. У знакомого камня кролики уже сами напевали мелодию и улыбались. Выбор сработал именно потому, что помог друзьям слышать друг друга. Когда впереди показались первые окна домиков, песня стала совсем тихой, как спокойное пожелание доброй ночи.',
+      '{{HERO}} past va sekin kuylab, ariq yonidan ham eshitiladigan oddiy satrni takrorladi. Nura qisqa hushtak bilan javob berdi, tipratikan Topa esa oxirgi so‘zlarni ilib oldi. Do‘stlar bir xil ritmda yo‘lga tushdi: qo‘shiq pasayganda hamma to‘xtab toshbaqani kutdi, keyin yana birga yurdi. Yorug‘qo‘ng‘izlar guruh ustida mayin bulut bo‘lib uchdi, shuning uchun hech kim boshqalardan ajralib qolmadi. Tanish tosh yoniga kelganda quyonchalar ham kuyga qo‘shilib, jilmayardi. Tanlov aynan do‘stlarga bir-birini eshitishga yordam bergani uchun ishladi. Uzoqda uylarning birinchi derazalari ko‘ringanda, qo‘shiq juda sekinlashib, xayrli tun tilagidek yangradi.',
       '{{HERO}} жай әрі баяу ән айтты. Жарқырауықтар соқпақ үстінде қалқып тұрды, Топа кірпі жақындады, ал үкі төменгі бұтақтан тыңдады. Кеш ерекше жылы болды.',
     ),
     seed: localized(

@@ -20,14 +20,14 @@ const text = {
   'choice-a': {
     ru: {
       effect: 'У лунных цветов появились голубые капли, которые показали дорогу к тихой беседке.',
-      resolution: '{{HERO}} полил землю у корней, и лунные цветы раскрылись один за другим. Вода не шумела, а будто передавала по цветнику маленькую добрую весть. На лепестковой дорожке появились голубые капли, и друзья поняли: сказка продолжится по этому следу.',
+      resolution: '{{HERO}} начал с самого сухого места и поливал землю маленькими кругами, чтобы вода не стекала мимо корней. Мирай показывала, где почва уже стала тёмной и прохладной, а Лило перелетала к следующему цветку. Сначала раскрылся один бутон, затем второй, и вскоре голубые капли появились на целой линии лепестков. Друзья увидели прямой результат выбора: вода вернула цветам силы, а дорожка снова стала различимой от фонтана до маленькой калитки. Они прошли вдоль неё ещё раз и убедились, что ни один цветок не остался в сухой земле. Только после этого {{HERO}} поставил лейку рядом с фонтаном, а сад начал постепенно затихать.',
       seed: 'Голубые капли останутся на дорожке и приведут друзей к семечку спокойного сна.',
       artifact: 'голубые капли на лепестковой дорожке',
       friend: 'улитка Мирай',
     },
     uz: {
       effect: 'Oy gullarida ko‘k tomchilar paydo bo‘lib, sokin ayvon tomon yo‘l ko‘rsatdi.',
-      resolution: '{{HERO}} suvni gullarning ildizi yoniga quydi, oy gullari esa birin-ketin ochila boshladi. Suv shovqin qilmadi, go‘yo gulzor bo‘ylab kichik mehrli xabar uzatdi. Gulbargli yo‘lakda ko‘k tomchilar paydo bo‘ldi, do‘stlar esa hikoya shu izdan davom etishini tushundi.',
+      resolution: '{{HERO}} eng quruq joydan boshlab, suv ildizlardan chetga oqib ketmasligi uchun tuproqni kichik doiralar bilan sug‘ordi. Miroy qaysi joy allaqachon qorayib, salqinlashganini ko‘rsatdi, Lilo esa keyingi gul tomon uchdi. Avval bitta g‘uncha, keyin ikkinchisi ochildi va tez orada ko‘k tomchilar butun gulbargli yo‘lak bo‘ylab ko‘rindi. Do‘stlar tanlovning aniq natijasini ko‘rdi: suv gullarga kuch qaytardi, yo‘lak esa favvoradan kichik darvozagacha yana ravshan bo‘ldi. Ular yo‘lak bo‘ylab yana bir marta yurib, hech bir gul quruq tuproqda qolmaganini tekshirdi. Shundan keyingina {{HERO}} sug‘orgichni favvora yoniga qo‘ydi, bog‘ esa asta tinchlana boshladi.',
       seed: 'Ko‘k tomchilar yo‘lakda qoladi va do‘stlarni sokin uyqu urug‘i tomon boshlab boradi.',
       artifact: 'gulbargli yo‘lakdagi ko‘k tomchilar',
       friend: 'shilliqqurt Miroy',
@@ -36,14 +36,14 @@ const text = {
   'choice-b': {
     ru: {
       effect: 'Светлячки превратили потерянный узор в тихую вечернюю карту.',
-      resolution: '{{HERO}} поставил чашу рядом с лунными цветами, и светлячки поднялись над дорожкой мягкой цепочкой. Цветы повернулись к свету, лепестки вспомнили свой узор, а Лило услышала в мерцании первые ноты тихой садовой песни.',
+      resolution: '{{HERO}} поставил чашу у первого поворота лепестковой дорожки и прикрыл ладонью слишком яркий край. Светлячки поднялись не все сразу: несколько остались у чаши, другие выстроились дальше, показывая следующий участок пути. Мирай прошла за этой мягкой цепочкой и заметила, как лунные цветы один за другим поворачиваются к свету. Лило перенесла чашу чуть ближе к фонтану, и рисунок продолжился до самой калитки. Выбранный свет не просто украсил сад: он снова связал отдельные клумбы в понятную дорожку. Друзья проверили её от начала до конца, поправили один сбившийся огонёк и только потом остановились. Светлячки стали мерцать медленнее, а фонтан звучал всё тише.',
       seed: 'Светлая цепочка останется у фонтана и приведёт друзей к колыбельной светлячков.',
       artifact: 'светлая цепочка у фонтана',
       friend: 'птица Лило',
     },
     uz: {
       effect: 'Yorug‘qo‘ng‘izlar yo‘qolgan naqshni sokin kechki xaritaga aylantirdi.',
-      resolution: '{{HERO}} kosani oy gullari yoniga qo‘ydi, yorug‘qo‘ng‘izlar esa yo‘lak ustida mayin zanjir bo‘lib ko‘tarildi. Gullar nur tomonga burildi, gulbarglar o‘z naqshini esladi, Lilo esa miltillash ichidan bog‘ning sokin allasidagi birinchi notalarni eshitdi.',
+      resolution: '{{HERO}} kosani gulbargli yo‘lakning birinchi burilishiga qo‘yib, juda yorqin chetini kafti bilan to‘sdi. Yorug‘qo‘ng‘izlar birdaniga emas, asta ko‘tarildi: bir nechtasi kosa yonida qoldi, boshqalari esa yo‘lning keyingi qismini ko‘rsatib saf tortdi. Miroy shu mayin zanjir ortidan yurib, oy gullari birin-ketin nur tomon burilayotganini ko‘rdi. Lilo kosani favvoraga yaqinroq surdi va naqsh kichik darvozagacha davom etdi. Tanlangan nur bog‘ni shunchaki bezamadi: u alohida gulzorlarni yana tushunarli yo‘lakka birlashtirdi. Do‘stlar yo‘lni boshidan oxirigacha tekshirib, bitta adashgan chiroqni joyiga qo‘ydi. Shundan keyin yorug‘qo‘ng‘izlar sekinroq miltillay boshladi, favvoraning ovozi esa pasaydi.',
       seed: 'Yorug‘ zanjir favvora yonida qoladi va do‘stlarni yorug‘qo‘ng‘izlar allasi tomon boshlab boradi.',
       artifact: 'favvora yonidagi yorug‘ zanjir',
       friend: 'Lilo qushi',

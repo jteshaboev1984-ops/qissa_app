@@ -28,7 +28,7 @@ const branchFromChoice = (choiceId: string): Branch | null => choiceId === 'choi
 const preChoiceReflection: Record<ClosedBetaWorld, Record<ClosedBetaLanguage, string>> = {
   cozy_forest: {
     ru: `После этой короткой остановки всё стало понятнее. Друзья уже знали, где находятся, и никто не волновался. Теперь оставалось просто выбрать самый удобный способ пройти знакомую дорогу вместе. {{HERO}} посмотрел на сонных зверят и понял, что решение должно помочь каждому, даже самому медленному.`,
-    uz: `Shu qisqa damdan keyin hamma narsa aniqroq bo‘ldi. Do‘stlar qayerda turganini bilardi, hech kim xavotirlanmasdi. Endi tanish yo‘lni birga bosib o‘tishning eng qulay usulini tanlash kerak edi. {{HERO}} uyqusi kelayotgan hayvonchalarga qarab, qaror eng sekin yuradigan do‘stga ham yordam berishi kerakligini tushundi.`,
+    uz: `Do‘stlar yo‘lni bilardi.`,
   },
   magic_garden: {
     ru: `Теперь {{HERO}} понимал, что саду не нужна новая загадка или большое приключение. Одна небольшая забота могла вернуть цветам их спокойный вечерний порядок. Вода и свет действовали по-разному, но оба пути вели к одной цели: помочь лунным цветам раскрыться и снова увидеть свою дорожку.`,
@@ -118,7 +118,6 @@ const withBedtimeExpansion = (
     ...baseParagraphs,
     ...expansionParagraphs,
     preChoiceReflection[world][language],
-    sixMinutePreChoiceBeat[world][language],
     sixMinuteSettlingBeat[world][language],
     withoutChoiceMeta(finalChoiceParagraph, language),
   ].filter(Boolean).join('\n\n')
