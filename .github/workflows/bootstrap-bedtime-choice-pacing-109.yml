@@ -48,6 +48,18 @@ jobs:
 
           Path('/tmp/qissa-pacing-patch.py').write_text(patch)
           subprocess.run(['python', '/tmp/qissa-pacing-patch.py'], check=True)
+
+          p = Path('supabase/functions/story-generate/storyCoreBranches.ts')
+          text = p.read_text()
+          text = text.replace(
+              'Uzoqda eski to‘nka ko‘ringanda, do‘stlar endi uylariga xotirjam yetib borishini bildi.',
+              'Uzoqda eski to‘nka ko‘ringanda, do‘stlar endi uylariga xotirjam yetib borishini bildi. Eng kichik quyoncha orqasiga qarab, chiroqlar qolganlarga ham yo‘l ko‘rsatishini ko‘rdi. Nura esa oxirgi chiroqni biroz pastroq qo‘yib, kechikib kelayotgan do‘stlar ham uni ko‘ra olishini tekshirdi.',
+          )
+          text = text.replace(
+              'Uzoqda uylarning birinchi derazalari ko‘ringanda, qo‘shiq juda sekinlashib, xayrli tun tilagidek yangradi.',
+              'Uzoqda uylarning birinchi derazalari ko‘ringanda, qo‘shiq juda sekinlashib, xayrli tun tilagidek yangradi. Topa oxirgi burilishda ortda qolgan toshbaqani kutib turdi va kuy yordamida guruh yana bir joyga yig‘ildi. Shunda {{HERO}} tanlangan usul yo‘lning oxirigacha ishlaganini ko‘rdi.',
+          )
+          p.write_text(text)
           PY
       - name: Verify rebalance
         run: |
