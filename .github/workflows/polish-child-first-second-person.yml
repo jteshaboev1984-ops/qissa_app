@@ -1,0 +1,65 @@
+name: Polish Child-first Second Person
+
+on:
+  push:
+    branches:
+      - fix/child-first-beta-stories-114
+
+permissions:
+  contents: write
+
+jobs:
+  polish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/child-first-beta-stories-114
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply editorial polish
+        run: python3 scripts/oneoff-polish-child-first-second-person.py
+      - name: Install dependencies
+        run: npm ci
+      - name: Run permanent story checks
+        run: |
+          npm run check:story-ai
+          npm run typecheck:story-ai
+          npm run check:beta-content
+          npm run check:bedtime-duration
+          npm run check:story-core
+          npm run check:localized-fallback
+          npm run check:beta-scope
+          npm run check:story-copy
+          git diff --check
+      - name: Assert fixed editorial phrases
+        run: |
+          node - <<'NODE'
+          const fs = require('fs')
+          const text = fs.readFileSync('supabase/functions/story-generate/storySixMinuteEditorial.ts', 'utf8')
+          const forbidden = [
+            'До ты ',
+            '. ты ',
+            'Пико увидел кивок тебе',
+            'У окна вы с Пико оказались',
+            'Tun pochtasi «Lyumen»ni topdi Piko',
+          ]
+          for (const phrase of forbidden) {
+            if (text.includes(phrase)) throw new Error(`editorial artifact remains: ${phrase}`)
+          }
+          console.log('final second-person editorial phrase check passed')
+          NODE
+      - name: Commit permanent polish and remove temporary tooling
+        run: |
+          git config user.name "jteshaboev1984-ops"
+          git config user.email "j.teshaboev1984@gmail.com"
+          git add supabase/functions/story-generate/storySixMinuteEditorial.ts
+          git add supabase/functions/story-generate/prompt.ts
+          git add scripts/check-closed-beta-content-matrix.mjs
+          git add scripts/check-story-ai-safety.mjs
+          git rm scripts/oneoff-polish-child-first-second-person.py
+          git rm .github/workflows/polish-child-first-second-person.yml
+          git commit -m "Polish child-first second-person narration"
+          git push origin HEAD:fix/child-first-beta-stories-114
