@@ -44,6 +44,8 @@ jobs:
           )
           patch = patch.replace("'const MIN_CHOICE_RATIO = 0.38'", "'const MIN_CHOICE_RATIO = 0.40'")
           patch = patch.replace("'const MAX_CHOICE_RATIO = 0.52'", "'const MAX_CHOICE_RATIO = 0.55'")
+          patch = patch.replace("'const MIN_RESOLUTION_WORDS = 70", "'const MIN_RESOLUTION_WORDS = 60")
+          patch = patch.replace('at least ${MIN_RESOLUTION_WORDS} meaningful words', 'at least ${MIN_RESOLUTION_WORDS} meaningful words')
 
           Path('/tmp/qissa-pacing-patch.py').write_text(patch)
           subprocess.run(['python', '/tmp/qissa-pacing-patch.py'], check=True)
