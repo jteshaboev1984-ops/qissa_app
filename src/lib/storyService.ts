@@ -1,5 +1,6 @@
 import type { StoryGenerationInput, StoryGenerationOutput } from '../contracts/agentContracts'
 import type { ReaderPreferences } from '../types/qissa'
+import { isClosedBetaSelections } from './closedBetaScope'
 import { createStoryEpisode } from './storyAgent'
 import { localPersistence } from './localPersistence'
 import { privacyConsent } from './privacyConsent'
@@ -41,6 +42,10 @@ const persistRemoteEpisode = async (
 }
 
 const generateEpisode = async (input: StoryGenerationInput): Promise<StoryGenerationOutput> => {
+  if (!isClosedBetaSelections(input.selections)) {
+    throw new Error('Story generation is restricted to the current closed-beta scope.')
+  }
+
   const config = getStoryProviderConfig()
   if (config.mode === 'local') return generateWithLocalAgent(input)
 
