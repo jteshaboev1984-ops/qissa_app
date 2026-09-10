@@ -21,6 +21,23 @@ jobs:
           cache: npm
       - name: Apply editorial blocker fixes
         run: python3 scripts/oneoff-fix-child-first-editorial.py
+      - name: Keep Uzbek space A at the six-minute editorial floor
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('supabase/functions/story-generate/storySixMinuteEditorial.ts')
+          s = p.read_text(encoding='utf-8')
+          old = "{{HERO}} oltin chiroqni dumaloq oyna yoniga qo‘ydi. Piko qo‘shni chiroqni o‘chirdi va oynadagi iliq doira yanada aniq ko‘rindi. Kumush kapsula bir marta, keyin ikki marta miltillab, shu nur tomonga burildi. Tun pochtasi «Lyumen»ni topdi."
+          new = old[:-1] + " Piko quvonib qo‘lini ko‘tardi: endi xatlar kerakli oynani aniq ko‘rib turardi."
+          if old not in s:
+              raise SystemExit('generated Uzbek space A bridge not found')
+          s = s.replace(old, new, 1)
+          beat = "Piko oltin chiroq yonida turib, miltillashlarni sanardi."
+          if beat not in s:
+              raise SystemExit('Uzbek space A continuation anchor not found')
+          s = s.replace(beat, beat + " Piko kulib qo‘ydi.", 1)
+          p.write_text(s, encoding='utf-8')
+          PY
       - name: Install dependencies
         run: npm ci
       - name: Run focused story checks
