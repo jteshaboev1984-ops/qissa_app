@@ -37,6 +37,11 @@ jobs:
               raise SystemExit('Uzbek space A continuation anchor not found')
           s = s.replace(beat, beat + " Piko kulib qo‘ydi.", 1)
           p.write_text(s, encoding='utf-8')
+
+          d = Path('scripts/report-bedtime-duration.mjs')
+          report = d.read_text(encoding='utf-8')
+          report = report.replace('${RESOLUTION_TEXT_SANITIZER_LIMIT} characters after finalization.', '${RESOLUTION_TEXT_EDITORIAL_LIMIT} characters after finalization.')
+          d.write_text(report, encoding='utf-8')
           PY
       - name: Install dependencies
         run: npm ci
