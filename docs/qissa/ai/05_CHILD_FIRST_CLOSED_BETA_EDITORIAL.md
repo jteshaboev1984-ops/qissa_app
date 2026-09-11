@@ -27,6 +27,8 @@ These are Story Agent generation invariants for both deterministic fallback cont
 
 ## Future provider generation
 
+- The deterministic fallback is a safe demo/recovery baseline, not the final engagement ceiling. Future generated stories must also satisfy `06_GENERATED_STORY_ENGAGEMENT_CONTRACT.md`.
+- For ages 5–7, hook quickly, minimize static description, keep scenes moving through action/dialogue, and maintain one child-scale anticipation loop until payoff. Bedtime calmness should increase mainly after the story has delivered that payoff.
 - Provider generation must receive these child-first rules in the runtime prompt; they are not fallback-only editorial notes.
 - For the 5–7 bedtime series, `resolution_text` targets about 30–45 words and must stay below 320 characters so the UI bridge is complete and cannot be silently truncated.
 - Episode 2 begins after the bridge's visible change and must not replay the chosen action from the beginning.

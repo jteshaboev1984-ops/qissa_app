@@ -102,10 +102,10 @@ const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord |
       classical_shape: 'Use a clear beginning, middle, turning decision, consequence, resolution, and calm coda. Every event must follow causally from the same original goal.',
       part_role: 'Episode 1 is the pre-choice half of the same story. It must establish one setting, one understandable goal/problem, develop it, then arrive naturally at one meaningful decision.',
       beat_budget: [
-        'opening / orientation: about 60-80 words — who, where, bedtime atmosphere, and what normal evening looks like',
-        'gentle need / problem: about 70-90 words — introduce exactly one concrete goal that can be solved tonight',
-        'exploration / build-up: about 120-150 words — discover only the details needed to make the decision meaningful; do not add a second unrelated problem',
-        'choice setup: about 60-80 words — make both options understandable as two safe ways to solve the SAME established goal, then ask the child without another delay beat',
+        'opening hook / orientation: about 35-50 words — begin with dialogue, visible action, a funny or surprising event, or an immediate child-scale question/problem; add only the minimum setting detail needed to picture the moment',
+        'desire / problem: about 55-75 words — make what the character wants understandable within roughly the first 100 words',
+        'exploration / build-up: about 150-180 words — move through action, dialogue, reactions and discoveries that deepen the same goal; description must serve what is happening',
+        'choice setup: about 55-70 words — make both options understandable as two safe ways to solve the SAME established goal, then ask the child without another delay beat',
       ],
       choice_position: 'The child choice should occur around 40-50% of the full read-aloud: early enough that the child sees a substantial consequence afterward, but only after the single goal and both safe options are clear.',
       duration_role: 'The primary bedtime experience should feel substantial rather than rushed: aim for a 6-8 minute complete read while preserving calm pacing and one causal plot.',
@@ -129,8 +129,12 @@ const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord |
 const childFirstEditorialGuidance = (context: NormalizedStoryContext): JsonRecord => ({
   story_first: 'Tell an engaging child story. Safety rules stay invisible in the prose: never narrate that there is no danger, enough time, or that both choices are safe, calm or good.',
   calmness: 'Create calmness through scene, rhythm, sensory detail and a warm ending. Do not pad the story by repeatedly saying calm, quiet, slow, gentle, safe or unhurried.',
+  opening_hook: context.ageGroup === '5-7' ? 'Hook the child within roughly the first 30-50 words through dialogue, visible action, a funny or surprising event, a clear desire, or an immediate question/problem. Do not spend the opening paragraph mainly describing scenery. Make the main desire/problem understandable within roughly the first 100 words.' : 'Open with a concrete event or desire before extended description.',
+  description_budget: 'Description must support current action. Prefer one or two concrete sensory details, then move. Avoid three or more consecutive sentences of static scenery, decorative lists, or narrator explanation that could be shown through a character reaction.',
+  scene_momentum: 'Every one or two short paragraphs should contain a meaningful change: somebody acts, reacts, discovers, asks, answers, jokes, tries, makes a small mistake, notices a clue, or decides. Bedtime can stay gentle without becoming uneventful.',
+  anticipation: 'Keep one simple anticipation loop alive until the payoff: a funny problem, small mystery, question, goal or plan the child wants to see resolved. Pay it off before the final bedtime coda rather than replacing it with a lesson.',
   character_life: context.ageGroup === '5-7'
-    ? 'Use one child-scale desire or problem, concrete action, 2-3 memorable supporting characters, natural dialogue, visible reactions, gentle humor or wonder, and one small surprise when it serves the same plot.'
+    ? 'Use one child-scale desire or problem, concrete action, 2-3 memorable supporting characters, natural dialogue, visible reactions, gentle humor or wonder, and one small surprise when it serves the same plot. Let dialogue and visible action carry most of the story rather than static description.'
     : 'Prefer concrete action, dialogue, character reactions and age-appropriate wonder over explanation.',
   agency: 'Let values emerge from what characters do. Do not turn the hero into an adult supervisor who checks readiness, schedules, procedures or explains the moral.',
   age_fit: context.ageGroup === '5-7'
@@ -311,6 +315,10 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
     'Never mention AI, prompts, policies, JSON, safety checks, or system behavior inside the story.',
     'Tell the story itself; keep safety policy invisible to the child. Never explain that there is no danger, enough time, or that both choices are safe, calm or good.',
     'Create bedtime calmness through scene, rhythm, sensory detail and a warm ending, not by repeatedly saying calm, quiet, slow, gentle, safe or unhurried.',
+    'Hook ages 5-7 within roughly the first 30-50 words using dialogue, visible action, a funny or surprising event, a clear desire, or an immediate question/problem; do not open with a long block of scenery.',
+    'Keep description lean: use one or two concrete sensory details that matter to the current action, then move the scene forward.',
+    'Keep scene momentum: every one or two short paragraphs should contain an action, reaction, discovery, exchange, joke, attempt, small mistake, clue, or decision.',
+    'Maintain one simple anticipation loop the child wants resolved, and pay it off before the final bedtime coda.',
     'Prefer concrete action, natural dialogue, visible character reactions, gentle humor, wonder and small plot-serving surprises over explanations or moral summaries.',
     'Do not make the hero behave like an adult supervisor checking readiness, schedules, procedures or rules; let positive values emerge from actions.',
     'For ages 5-7, avoid technical, operational and bureaucratic jargon even in fantasy or space settings; use things a child can picture.',
