@@ -100,6 +100,9 @@ jobs:
       - name: Validate Story AI safety contract
         run: npm run check:story-ai
 
+      - name: Validate Story AI language localization
+        run: node scripts/check-story-localization.mjs
+
       - name: Typecheck Story AI Edge Function
         run: npm run typecheck:story-ai
 
