@@ -153,7 +153,7 @@ const validateContinuation = (result, chosen, heroName, stylePackId) => {
 
   if (result.source === 'safe-fallback') {
     assert(episode.state_patch?.canon_updates?.remembered_choice === chosen.choice_id, `${stylePackId}/${chosen.choice_id}: confirmed choice is missing from canon`)
-    assert(episode.state_patch?.canon_updates?.remembered_artifact, `${stylePackId}/${chosen.choice_id}: remembered artifact is missing`)
+    assert(episode.state_patch?.canon_updates?.beta_story_version === 'child_first_v1', `${stylePackId}/${chosen.choice_id}: child-first story version is missing from canon`)
 
     if (stylePackId === 'cozy_forest' && chosen.choice_id === 'choice-a') {
       assert(/фонарик|светил|освещённой тропинке/iu.test(episode.story_text), 'cozy choice-a: lantern consequence is not visible')
@@ -218,7 +218,6 @@ for (const chosen of spaceEpisodeOne.choices) {
 }
 
 assert(spaceContinuations[0].story_text !== spaceContinuations[1].story_text, 'space: both choices produced the same continuation')
-assert(spaceContinuations[0].state_patch?.canon_updates?.remembered_artifact !== spaceContinuations[1].state_patch?.canon_updates?.remembered_artifact, 'space: choices produced the same remembered artifact')
 
 console.log(`ru/stars_and_space: editorial live smoke passed (${spaceFirstResult.source})`)
 console.log('Live story-generate smoke passed for RU/UZ/KZ cozy stories and both RU space branches.')
