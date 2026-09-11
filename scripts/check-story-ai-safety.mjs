@@ -8,6 +8,8 @@ const provider = readFileSync(`${base}/openai.ts`, 'utf8')
 const safety = readFileSync(`${base}/safety.ts`, 'utf8')
 const fallback = readFileSync(`${base}/fallback.ts`, 'utf8')
 const narrativeModel = readFileSync('docs/qissa/ai/07_STORY_AI_NARRATIVE_MODEL.md', 'utf8')
+const sampleRenderer = readFileSync('scripts/render-story-ai-sample.mjs', 'utf8')
+const packageJson = readFileSync('package.json', 'utf8')
 
 const failures = []
 const requireText = (label, source, fragments) => {
@@ -120,6 +122,22 @@ requireText('Story AI narrative model', narrativeModel, [
   'Human editorial review rubric',
 ])
 
+requireText('Story AI sample renderer', sampleRenderer, [
+  'QISSA Story AI editorial sample',
+  'The child is the listener/decision-maker',
+  'Child choice moment',
+  'Resolution bridge',
+  'Estimated duration at 140 WPM',
+  'Choice position',
+  'Human editorial review',
+  'First paragraph clearly orients world, hero and current situation.',
+  'Episode 2 continues after the bridge without replaying the selected action.',
+])
+
+requireText('package scripts', packageJson, [
+  '"render:story-ai-sample": "node scripts/render-story-ai-sample.mjs"',
+])
+
 for (const unsupportedKeyword of ['minLength', 'maxLength', 'minItems', 'maxItems']) {
   if (prompts.includes(unsupportedKeyword)) {
     failures.push(`strict Story AI schemas must not contain provider-sensitive keyword: ${unsupportedKeyword}`)
@@ -205,4 +223,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI safety, narrative roles, orientation, remembered-choice continuity, deterministic short-circuit, and 6-8 minute target contract check passed.')
+console.log('Story AI safety, narrative roles, orientation, remembered-choice continuity, review renderer, deterministic short-circuit, and 6-8 minute target contract check passed.')
