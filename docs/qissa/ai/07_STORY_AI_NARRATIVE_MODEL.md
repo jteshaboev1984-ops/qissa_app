@@ -24,7 +24,7 @@ The child is the listener/reader and decision-maker. The child's agency occurs a
 
 The child is not automatically a character in the prose. Ordinary story text should not use second-person narration such as "you walked", "you saw", or "you ran" unless a future product mode explicitly defines the child as the hero.
 
-## 2. What personalization means
+## 2. Memory and second-session wow
 
 Personalization is not simulated physical immersion.
 
