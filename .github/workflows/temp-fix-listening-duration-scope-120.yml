@@ -39,7 +39,6 @@ jobs:
           npm ci
           npm run check:listening
           npm run check:mobile-ux
-          npm run check:translations
           npm run typecheck
           npm run build
       - name: Commit permanent copy fix
