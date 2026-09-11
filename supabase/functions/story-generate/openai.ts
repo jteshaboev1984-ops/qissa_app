@@ -1,6 +1,7 @@
 import type { SafetyEvaluation, StoryCandidate } from './contracts.ts'
 import { buildSafetyPrompts, buildStoryPrompts, safetyOutputSchema, storyOutputSchema } from './prompt.ts'
 import type { NormalizedStoryContext } from './contracts.ts'
+import { storyLocalizationSystem } from './localization.ts'
 
 const RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const MODERATIONS_URL = 'https://api.openai.com/v1/moderations'
@@ -109,12 +110,13 @@ export const generateStoryCandidate = async (
   retryReason: string,
 ): Promise<StoryCandidate> => {
   const prompts = buildStoryPrompts(context, retryReason)
+  const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
   return requestStructured<StoryCandidate>(
     apiKey,
     model,
     'qissa_story_candidate',
     storyOutputSchema,
-    prompts.system,
+    localizedSystem,
     prompts.user,
     14_000,
     2200,
