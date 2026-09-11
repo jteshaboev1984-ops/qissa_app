@@ -9,8 +9,35 @@ permissions:
   contents: write
 
 jobs:
-  bootstrap:
+  patch-and-verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - run: echo engagement-workflow-ok
+        with:
+          ref: hardening/story-engagement-contract-116
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply engagement contract
+        run: node scripts/temp-patch-engagement-116.mjs
+      - name: Install dependencies
+        run: npm ci
+      - name: Verify Story AI and app contracts
+        run: |
+          npm run check:story-ai
+          npm run typecheck:story-ai
+          npm run check:beta-content
+          npm run check:bedtime-duration
+          npm run typecheck
+          npm run build
+      - name: Commit permanent changes and cleanup temporary tooling
+        run: |
+          rm scripts/temp-patch-engagement-116.mjs
+          rm .github/workflows/temp-engagement-contract-116.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Harden generated story engagement contract"
+          git push origin HEAD:hardening/story-engagement-contract-116
