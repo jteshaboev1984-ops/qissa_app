@@ -23,6 +23,7 @@
     "check:story-cost-guard": "node scripts/check-story-cost-guard.mjs",
     "check:observability": "node scripts/check-story-observability.mjs",
     "preview:stories": "node scripts/preview-stories.mjs",
+    "render:story-ai-sample": "node scripts/render-story-ai-sample.mjs",
     "check:story-service": "node scripts/check-story-service-boundary.mjs",
     "check:critical-sync-reload": "node scripts/check-critical-sync-reload-runtime.mjs",
     "check:installation-auth": "node scripts/check-installation-auth-boundary.mjs",
