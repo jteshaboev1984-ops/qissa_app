@@ -103,6 +103,9 @@ jobs:
       - name: Validate Story AI language localization
         run: node scripts/check-story-localization.mjs
 
+      - name: Validate Story AI family editorial scorecard
+        run: node scripts/check-story-editorial-scorecard.mjs
+
       - name: Typecheck Story AI Edge Function
         run: npm run typecheck:story-ai
 
