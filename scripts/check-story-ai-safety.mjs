@@ -7,6 +7,9 @@ const prompts = readFileSync(`${base}/prompt.ts`, 'utf8')
 const provider = readFileSync(`${base}/openai.ts`, 'utf8')
 const safety = readFileSync(`${base}/safety.ts`, 'utf8')
 const fallback = readFileSync(`${base}/fallback.ts`, 'utf8')
+const narrativeModel = readFileSync('docs/qissa/ai/07_STORY_AI_NARRATIVE_MODEL.md', 'utf8')
+const sampleRenderer = readFileSync('scripts/render-story-ai-sample.mjs', 'utf8')
+const packageJson = readFileSync('package.json', 'utf8')
 
 const failures = []
 const requireText = (label, source, fragments) => {
@@ -74,26 +77,65 @@ requireText('story prompts', prompts, [
   'Prefer the 6-8 minute editorial target',
   'Tell the story itself; keep safety policy invisible to the child.',
   'Create bedtime calmness through scene, rhythm, sensory detail and a warm ending',
-  'Hook the child within roughly the first 30-50 words',
-  'Do not spend the opening paragraph mainly describing scenery.',
+  'The selected hero is the in-world protagonist. The child is the listener/reader and decision-maker at explicit choice moments, not automatically a character inside the story prose.',
+  'Do not continuously address the listener as you or place the child physically inside scenes',
+  'begin with one short orienting paragraph: establish where the story is, who the hero is, and what the hero is doing',
+  'within roughly 60-120 words',
+  'do not force a context-free cold open',
   'Prefer one or two concrete sensory details, then move.',
-  'Every one or two short paragraphs should contain a meaningful change',
+  'After the brief setup, every one or two short paragraphs should contain a meaningful change',
   'Keep one simple anticipation loop alive until the payoff',
-  'Let dialogue and visible action carry most of the story rather than static description.',
-  'opening hook / orientation: about 35-50 words',
-  'make what the character wants understandable within roughly the first 100 words',
-  'Hook ages 5-7 within roughly the first 30-50 words',
-  'Keep scene momentum: every one or two short paragraphs',
-  'gentle humor, wonder and small plot-serving surprises',
+  'Let dialogue and visible action carry much of the middle rather than static description.',
+  'orientation: about 50-80 words',
+  'early curiosity / desire / problem: about 50-80 words',
+  'make the central story question understandable by roughly the first 100-120 words',
+  'Choices are decisions the child makes about what the HERO should do.',
   'Do not make the hero behave like an adult supervisor',
   'avoid technical, operational and bureaucratic jargon',
   'Episode 2 must continue after its visible change and must not replay the selected action.',
-  'Use {{HERO}} only in direct address or another position where the unchanged name needs no case ending',
+  'ordinary story prose should not rely on second-person child narration',
   'Never place {{HERO}} after a Russian preposition or where declension is required',
-  'Keep the child consistently in second-person narration when the child participates',
-  'For Russian, use {{HERO}} only in direct address or another grammatically invariant position.',
+  'For Russian, ordinary story prose should not rely on second-person child narration.',
   'write native-sounding Uzbek rather than a sentence-by-sentence translation from Russian.',
+  'let later fiction visibly reflect it through a returning character, object, relationship, remembered action or changed situation',
   'child_first_editorial: childFirstEditorialGuidance(context)',
+])
+
+for (const forbiddenPromptFragment of [
+  'Hook the child within roughly the first 30-50 words',
+  'Hook ages 5-7 within roughly the first 30-50 words',
+  'Keep the child consistently in second-person narration when the child participates',
+]) {
+  if (prompts.includes(forbiddenPromptFragment)) {
+    failures.push(`story prompt contains superseded narrative rule: ${forbiddenPromptFragment}`)
+  }
+}
+
+requireText('Story AI narrative model', narrativeModel, [
+  'The child is the listener/reader and decision-maker.',
+  'The child is not automatically a character in the prose.',
+  'First paragraph: orientation',
+  'Within roughly 60–120 words',
+  'Do not force a sound effect, exclamation or unexplained action into sentence one merely to satisfy a hook metric.',
+  'The child controls the decision, but the prose remains about the hero.',
+  'Memory and second-session wow',
+  'Human editorial review rubric',
+])
+
+requireText('Story AI sample renderer', sampleRenderer, [
+  'QISSA Story AI editorial sample',
+  'The child is the listener/decision-maker',
+  'Child choice moment',
+  'Resolution bridge',
+  'Estimated duration at 140 WPM',
+  'Choice position',
+  'Human editorial review',
+  'First paragraph clearly orients world, hero and current situation.',
+  'Episode 2 continues after the bridge without replaying the selected action.',
+])
+
+requireText('package scripts', packageJson, [
+  '"render:story-ai-sample": "node scripts/render-story-ai-sample.mjs"',
 ])
 
 for (const unsupportedKeyword of ['minLength', 'maxLength', 'minItems', 'maxItems']) {
@@ -181,4 +223,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI safety, deterministic short-circuit, narrative arc, paragraph-layout, and 6-8 minute target contract check passed.')
+console.log('Story AI safety, narrative roles, orientation, remembered-choice continuity, review renderer, deterministic short-circuit, and 6-8 minute target contract check passed.')
