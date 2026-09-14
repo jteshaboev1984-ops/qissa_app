@@ -12,13 +12,13 @@ export const betaScope = {
   nextStylePackId: 'silk_road' as StylePackId,
   defaultStoryMode: 'series' as StoryMode,
   defaultStoryMood: 'bedtime' as StoryMood,
-  storyGenerationDailyLimit: 5,
+  storyGenerationDailyLimit: 3,
   // TEMPORARY CLOSED-BETA CIRCUIT BREAKER ONLY.
-  // The value 30 is not a commercial entitlement and must not ship as a
-  // universal paid-production cap. Before public/paid launch, replace it with
-  // plan-aware quotas plus a separately configurable emergency project ceiling.
+  // The value 6 protects the small prepaid provider balance during real Story AI
+  // validation. It is not a commercial entitlement and must be replaced before
+  // public/paid launch by plan-aware quotas plus a configurable emergency cap.
   // Tracked in GitHub issue #98.
-  storyGenerationGlobalDailyLimit: 30,
+  storyGenerationGlobalDailyLimit: 6,
   providerAudioEnabledByDefault: false,
 } as const
 

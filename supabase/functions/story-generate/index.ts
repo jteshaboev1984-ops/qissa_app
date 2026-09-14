@@ -13,8 +13,9 @@ import { claimStoryGeneration, isInstallationId, type GenerationClaim } from './
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
-const aiEnabled = Deno.env.get('QISSA_AI_ENABLED') === 'true'
-const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.5'
+const aiEnabledSetting = Deno.env.get('QISSA_AI_ENABLED')?.trim().toLowerCase()
+const aiEnabled = Boolean(openAiApiKey) && aiEnabledSetting !== 'false'
+const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.6-terra'
 const safetyModel = Deno.env.get('OPENAI_SAFETY_MODEL')?.trim() || storyModel
 const maxAttempts = 2
 
@@ -133,10 +134,11 @@ Deno.serve(async (request: Request) => {
   const context = normalizeStoryRequest(input)
   if (!context) return json({ error: 'invalid_story_context' }, 422, origin)
 
-  // Development and normal CI intentionally stop here. No usage claim and no
-  // provider request is made while AI is disabled or no provider key exists.
+  // A configured API key enables the provider path by default. Operators can
+  // still fail closed instantly with QISSA_AI_ENABLED=false. No usage claim or
+  // provider request is made while the provider path is disabled or keyless.
   if (!aiEnabled || !openAiApiKey) {
-    return safeFallback(context, origin, !aiEnabled ? 'ai-disabled' : 'api-key-missing')
+    return safeFallback(context, origin, !openAiApiKey ? 'api-key-missing' : 'ai-disabled')
   }
 
   if (!hasValidPrivacyConsent(input)) {

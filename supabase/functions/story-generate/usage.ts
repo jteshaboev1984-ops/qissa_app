@@ -1,11 +1,11 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-const DAILY_STORY_GENERATION_LIMIT = 5
+const DAILY_STORY_GENERATION_LIMIT = 3
 // TEMPORARY CLOSED-BETA CIRCUIT BREAKER. This is intentionally conservative
-// while Story AI is not generally enabled. It is not a future paid-plan quota.
+// while Story AI is being validated with a small prepaid provider balance.
 // Before public/paid launch, use plan/account entitlements and keep a separate,
 // configurable emergency project spend ceiling. Tracked in GitHub issue #98.
-const GLOBAL_DAILY_STORY_GENERATION_LIMIT = 30
+const GLOBAL_DAILY_STORY_GENERATION_LIMIT = 6
 
 export type GenerationClaim = {
   allowed: boolean
