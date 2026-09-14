@@ -1,0 +1,27 @@
+name: Temporary Memory Dedupe Hardening
+
+on:
+  push:
+    branches:
+      - story-ai-memory-dedupe-20260914
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: story-ai-memory-dedupe-20260914
+      - name: Apply memory dedupe hardening
+        run: python3 scripts/temp-memory-dedupe.py
+      - name: Remove one-off patcher and commit
+        run: |
+          rm scripts/temp-memory-dedupe.py .github/workflows/temp-memory-dedupe.yml
+          git config user.name qissa-audit-bot
+          git config user.email actions@users.noreply.github.com
+          git add -A
+          git commit -m "Deduplicate canonicalized Story AI memory updates"
+          git push origin HEAD:story-ai-memory-dedupe-20260914
