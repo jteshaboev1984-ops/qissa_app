@@ -5,6 +5,7 @@ const read = (path) => readFileSync(path, 'utf8')
 const betaScope = read('src/config/betaScope.ts')
 const remoteClient = read('src/lib/storyRemoteClient.ts')
 const storyIndex = read('supabase/functions/story-generate/index.ts')
+const provider = read('supabase/functions/story-generate/openai.ts')
 const usage = read('supabase/functions/story-generate/usage.ts')
 const installationMigration = read('docs/qissa/backend/migrations/20260907_000010_add_story_generation_cost_guard.sql')
 const globalMigration = read('docs/qissa/backend/migrations/20260908_000014_add_global_story_generation_cap.sql')
@@ -45,6 +46,29 @@ requireCondition(
 requireCondition(
   /gpt-5\.6-terra/.test(storyIndex),
   'The default Story AI model must remain the cost-balanced GPT-5.6 Terra during prepaid closed-beta validation.',
+)
+
+requireCondition(
+  /30_000/.test(provider) &&
+    /'qissa_story_candidate'[\s\S]*30_000[\s\S]*2200[\s\S]*'none'/.test(provider) &&
+    /'qissa_safety_evaluation'[\s\S]*12_000[\s\S]*700[\s\S]*'none'/.test(provider),
+  'Story and semantic-safety structured calls must use latency-aware timeouts with reasoning disabled for this structured generation/classification workload.',
+)
+
+requireCondition(
+  /providerFailureClass/.test(storyIndex) &&
+    /lastFailureClass = providerFailureClass\(reason\)/.test(storyIndex) &&
+    /X-QISSA-Generation-Failure-Class/.test(storyIndex) &&
+    /X-QISSA-Generation-Attempts/.test(storyIndex),
+  'Provider fallbacks must expose a non-sensitive failure class and attempt count so paid failures can be diagnosed without blind repeat calls.',
+)
+
+const catchPosition = storyIndex.indexOf('} catch (error) {')
+const providerFailurePosition = storyIndex.indexOf('lastFailureClass = providerFailureClass(reason)', catchPosition)
+const providerBreakPosition = storyIndex.indexOf('break', providerFailurePosition)
+requireCondition(
+  catchPosition >= 0 && providerFailurePosition > catchPosition && providerBreakPosition > providerFailurePosition,
+  'Provider HTTP/timeout/config failures must fail closed instead of automatically paying for a second generation attempt.',
 )
 
 requireCondition(
@@ -132,4 +156,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI cost guard check passed: provider usage stays fail-closed, capped per installation and globally, with an emergency kill switch.')
+console.log('Story AI cost guard check passed: provider usage stays fail-closed, capped, diagnosable, and provider errors do not trigger blind paid retries.')
