@@ -17,7 +17,8 @@ const aiEnabledSetting = Deno.env.get('QISSA_AI_ENABLED')?.trim().toLowerCase()
 const aiEnabled = Boolean(openAiApiKey) && aiEnabledSetting !== 'false'
 const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.6-luna'
 const safetyModel = Deno.env.get('OPENAI_SAFETY_MODEL')?.trim() || storyModel
-const maxAttempts = 2
+const maxAttempts = 3
+const maxFullGenerationAttempts = 2
 
 const providerMetadata = (): Record<string, string> => ({
   'X-QISSA-Story-Model': storyModel,
@@ -193,6 +194,7 @@ Deno.serve(async (request: Request) => {
 
   let retryReason = ''
   let attemptsUsed = 0
+  let fullGenerationAttempts = 0
   let lastFailureClass = 'unknown'
   let repairCandidate: StoryCandidate | null = null
   let repairValidationErrors: string[] = []
@@ -217,6 +219,8 @@ Deno.serve(async (request: Request) => {
         repairCandidate = null
         repairValidationErrors = []
       } else {
+        if (fullGenerationAttempts >= maxFullGenerationAttempts) break
+        fullGenerationAttempts += 1
         candidate = await generateStoryCandidate(openAiApiKey, storyModel, context, retryReason)
       }
 
@@ -229,11 +233,18 @@ Deno.serve(async (request: Request) => {
         if (attempt < maxAttempts && isTextLengthOnlyFailure(validationErrors)) {
           repairCandidate = candidate
           repairValidationErrors = [...validationErrors]
-        } else {
-          repairCandidate = null
-          repairValidationErrors = []
+          continue
         }
-        continue
+
+        repairCandidate = null
+        repairValidationErrors = []
+        // At most two full generations are allowed. A third provider stage is
+        // reserved exclusively for deterministic text-length repair, never for
+        // another full rewrite of choices, state or canon.
+        if (!usedTextLengthRepair && fullGenerationAttempts < maxFullGenerationAttempts && attempt < maxAttempts) {
+          continue
+        }
+        break
       }
 
       const ruleFlags = scanRuleBasedSafety(context, candidate)
@@ -242,7 +253,8 @@ Deno.serve(async (request: Request) => {
         lastFailureClass = 'deterministic-safety'
         const flags = Object.entries(ruleFlags).filter(([, value]) => value).map(([key]) => key)
         failureTrace.push(`deterministic-safety:${flags.join(',') || 'flagged'}`)
-        continue
+        if (!usedTextLengthRepair && fullGenerationAttempts < maxFullGenerationAttempts && attempt < maxAttempts) continue
+        break
       }
 
       const [evaluation, moderation] = await Promise.all([
@@ -256,7 +268,8 @@ Deno.serve(async (request: Request) => {
         lastFailureClass = 'semantic-safety'
         const flags = Object.entries(safety.flags).filter(([, value]) => value).map(([key]) => key)
         failureTrace.push(`semantic-safety:${flags.join(',') || safety.required_action}`)
-        continue
+        if (!usedTextLengthRepair && fullGenerationAttempts < maxFullGenerationAttempts && attempt < maxAttempts) continue
+        break
       }
 
       const episode = buildFinalEpisode(context, candidate, safety)
@@ -268,6 +281,7 @@ Deno.serve(async (request: Request) => {
           ...providerMetadata(),
           'X-QISSA-Generation-Source': 'openai-structured',
           'X-QISSA-Generation-Attempts': String(attempt),
+          'X-QISSA-Full-Generation-Attempts': String(fullGenerationAttempts),
           'X-QISSA-Generation-Repair': usedTextLengthRepair ? 'text-length' : 'none',
           ...claimMetadata(claim),
         },
@@ -294,6 +308,7 @@ Deno.serve(async (request: Request) => {
       ...providerMetadata(),
       ...claimMetadata(claim),
       'X-QISSA-Generation-Attempts': String(attemptsUsed),
+      'X-QISSA-Full-Generation-Attempts': String(fullGenerationAttempts),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': failureTrace.join('>').slice(0, 480),
       'X-QISSA-Generation-Repair': usedTextLengthRepair ? 'text-length' : 'none',
