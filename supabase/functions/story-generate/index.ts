@@ -19,6 +19,11 @@ const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.6-terra'
 const safetyModel = Deno.env.get('OPENAI_SAFETY_MODEL')?.trim() || storyModel
 const maxAttempts = 2
 
+const providerMetadata = (): Record<string, string> => ({
+  'X-QISSA-Story-Model': storyModel,
+  'X-QISSA-Safety-Model': safetyModel,
+})
+
 const hasValidPrivacyConsent = (input: unknown): boolean => {
   if (!isRecord(input) || !isRecord(input.privacyConsent)) return false
   const consent = input.privacyConsent
@@ -150,22 +155,29 @@ Deno.serve(async (request: Request) => {
   }
 
   if (!hasValidPrivacyConsent(input)) {
-    return json({ error: 'privacy_consent_required' }, 403, origin)
+    // Model identifiers are operational metadata, not secrets. Returning them
+    // here lets operators verify the effective provider configuration without
+    // spending a generation claim or sending story content to the provider.
+    return json({ error: 'privacy_consent_required' }, 403, origin, providerMetadata())
   }
 
   const installationId = installationIdFromInput(input)
   if (!installationId) {
-    return safeFallback(context, origin, 'rate-limit-identity-missing')
+    return safeFallback(context, origin, 'rate-limit-identity-missing', providerMetadata())
   }
 
   const claim = await claimStoryGeneration(installationId)
   if (!claim.allowed) {
-    return safeFallback(context, origin, claim.reason, claimMetadata(claim))
+    return safeFallback(context, origin, claim.reason, {
+      ...providerMetadata(),
+      ...claimMetadata(claim),
+    })
   }
 
   let retryReason = ''
   let attemptsUsed = 0
   let lastFailureClass = 'unknown'
+  const failureTrace: string[] = []
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     attemptsUsed = attempt
@@ -175,17 +187,16 @@ Deno.serve(async (request: Request) => {
       if (validationErrors.length > 0) {
         retryReason = failureReason(validationErrors, null)
         lastFailureClass = 'validation'
+        failureTrace.push(`validation:${validationErrors.join(',')}`)
         continue
       }
 
       const ruleFlags = scanRuleBasedSafety(context, candidate)
-      // Deterministic policy violations are already sufficient to reject this
-      // candidate. Do not spend semantic safety/moderation calls on text that
-      // QISSA will never publish. The next story attempt receives the safe,
-      // compact retry reason.
       if (hasRuleViolation(ruleFlags)) {
         retryReason = failureReason([], ruleFailure(ruleFlags))
         lastFailureClass = 'deterministic-safety'
+        const flags = Object.entries(ruleFlags).filter(([, value]) => value).map(([key]) => key)
+        failureTrace.push(`deterministic-safety:${flags.join(',') || 'flagged'}`)
         continue
       }
 
@@ -198,6 +209,8 @@ Deno.serve(async (request: Request) => {
       if (!safety.approved) {
         retryReason = failureReason([], safety)
         lastFailureClass = 'semantic-safety'
+        const flags = Object.entries(safety.flags).filter(([, value]) => value).map(([key]) => key)
+        failureTrace.push(`semantic-safety:${flags.join(',') || safety.required_action}`)
         continue
       }
 
@@ -207,6 +220,7 @@ Deno.serve(async (request: Request) => {
         200,
         origin,
         {
+          ...providerMetadata(),
           'X-QISSA-Generation-Source': 'openai-structured',
           'X-QISSA-Generation-Attempts': String(attempt),
           ...claimMetadata(claim),
@@ -217,6 +231,7 @@ Deno.serve(async (request: Request) => {
       console.error('QISSA story generation attempt failed', { attempt, reason })
       retryReason = reason
       lastFailureClass = providerFailureClass(reason)
+      failureTrace.push(lastFailureClass)
       // Provider/configuration/time-out failures tend to repeat and may already
       // have consumed provider tokens. Fail closed instead of paying for the
       // same request again. Retries are reserved for candidates we actually
@@ -230,9 +245,11 @@ Deno.serve(async (request: Request) => {
     origin,
     'generation-or-safety-failed',
     {
+      ...providerMetadata(),
       ...claimMetadata(claim),
       'X-QISSA-Generation-Attempts': String(attemptsUsed),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
+      'X-QISSA-Generation-Failure-Trace': failureTrace.join('>').slice(0, 480),
     },
   )
 })
