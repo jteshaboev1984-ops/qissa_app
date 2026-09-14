@@ -10,7 +10,7 @@ import { buildSafeFallback } from './fallback.ts'
 import { evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
-import { narrationToCandidate, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
+import { narrationToCandidate, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
 import { claimStoryGeneration, isInstallationId, type GenerationClaim } from './usage.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
@@ -187,6 +187,7 @@ Deno.serve(async (request: Request) => {
 
   const trace: string[] = []
   let blueprint: StoryBlueprint
+  let blueprintKeysNormalized = 0
   let candidate: StoryCandidate | null = null
   let narratorModelUsed = narratorModel
   let repairUsed = false
@@ -210,6 +211,9 @@ Deno.serve(async (request: Request) => {
     })
   }
 
+  const normalizedBlueprint = normalizeStoryBlueprintMemoryKeys(context, blueprint)
+  blueprint = normalizedBlueprint.blueprint
+  blueprintKeysNormalized = normalizedBlueprint.normalizedCount
   const blueprintErrors = validateStoryBlueprint(context, blueprint)
   if (blueprintErrors.length > 0) {
     lastFailureClass = 'blueprint-validation'
@@ -220,6 +224,7 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Provider-Calls': String(providerCalls),
+      'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
     })
   }
 
@@ -363,6 +368,7 @@ Deno.serve(async (request: Request) => {
         'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
         'X-QISSA-Narrator-Model-Used': narratorModelUsed,
         'X-QISSA-Provider-Calls': String(providerCalls),
+        'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
       },
     )
   } catch (error) {
