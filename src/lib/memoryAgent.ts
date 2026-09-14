@@ -1,4 +1,3 @@
-// Prototype Memory Agent: local-only state mutation contract for MVP scaffolding.
 import type { ChoiceHistoryEntry, Episode, EpisodeChoice, OnboardingSelections, SeriesState } from '../types/qissa'
 
 function baseHeroName(selections: OnboardingSelections): string {
@@ -15,11 +14,26 @@ function baseHeroName(selections: OnboardingSelections): string {
   return byLanguage[selections.language][selections.heroType]
 }
 
+const uniqueId = (prefix: string): string => {
+  const uuid = globalThis.crypto?.randomUUID?.()
+  if (uuid) return `${prefix}-${uuid}`
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`
+}
+
+export const seriesSessionId = (seriesState: SeriesState): string =>
+  seriesState.sessionId?.trim() || seriesState.id
+
+export const seriesSessionIndex = (seriesState: SeriesState): number =>
+  Number.isInteger(seriesState.sessionIndex) && (seriesState.sessionIndex ?? 0) > 0
+    ? seriesState.sessionIndex as number
+    : 1
+
 export function createInitialSeriesState(selections: OnboardingSelections): SeriesState {
-  // Input: onboarding selections. Output: empty series state prepared for episode generation.
   return {
-    id: `series-${selections.stylePackId}-${selections.language}`,
+    id: uniqueId('series'),
     childProfileId: `child-${selections.ageGroup}-${selections.language}`,
+    sessionId: uniqueId('session'),
+    sessionIndex: 1,
     stylePackId: selections.stylePackId,
     mainCharacter: baseHeroName(selections),
     recurringCharacters: [],
@@ -32,8 +46,44 @@ export function createInitialSeriesState(selections: OnboardingSelections): Seri
   }
 }
 
+export function createNextSeriesSessionState(seriesState: SeriesState): SeriesState {
+  return {
+    ...seriesState,
+    sessionId: uniqueId('session'),
+    sessionIndex: seriesSessionIndex(seriesState) + 1,
+    episodeCount: 0,
+  }
+}
+
+const recurringWith = (seriesState: SeriesState, friend?: string): string[] => {
+  const recurring = [...seriesState.recurringCharacters]
+  if (friend && !recurring.includes(friend)) recurring.push(friend)
+  return recurring
+}
+
+export function applyEpisodeToSeriesState(seriesState: SeriesState, episode: Episode): SeriesState {
+  const patch = episode.state_patch ?? {}
+  const segment = episode.episode_id.startsWith('ep-2') ? 2 : 1
+  return {
+    ...seriesState,
+    sessionId: seriesSessionId(seriesState),
+    sessionIndex: seriesSessionIndex(seriesState),
+    episodeCount: Math.max(seriesState.episodeCount, segment),
+    lastEpisodeSummary: patch.last_event?.trim() || seriesState.lastEpisodeSummary,
+    activeArc: patch.open_arc ?? seriesState.activeArc,
+    relationshipState: {
+      ...seriesState.relationshipState,
+      ...(patch.relationship_updates ?? {}),
+    },
+    canonState: {
+      ...seriesState.canonState,
+      ...(patch.canon_updates ?? {}),
+    },
+    recurringCharacters: recurringWith(seriesState, patch.new_friend),
+  }
+}
+
 export function applyChoiceToSeriesState(seriesState: SeriesState, episode: Episode, choice: EpisodeChoice): SeriesState {
-  // Input: current state + confirmed choice. Output: updated in-memory continuity state.
   const selectedAt = new Date().toISOString()
   const entry: ChoiceHistoryEntry = {
     episode_id: episode.episode_id,
@@ -46,13 +96,10 @@ export function applyChoiceToSeriesState(seriesState: SeriesState, episode: Epis
     selected_at: selectedAt,
   }
 
-  const recurringCharacters = [...seriesState.recurringCharacters]
-  if (choice.state_patch.new_friend && !recurringCharacters.includes(choice.state_patch.new_friend)) {
-    recurringCharacters.push(choice.state_patch.new_friend)
-  }
-
   return {
     ...seriesState,
+    sessionId: seriesSessionId(seriesState),
+    sessionIndex: seriesSessionIndex(seriesState),
     choiceHistory: [...seriesState.choiceHistory, entry],
     lastEpisodeSummary: choice.effect_summary,
     activeArc: choice.state_patch.open_arc ?? seriesState.activeArc,
@@ -64,7 +111,7 @@ export function applyChoiceToSeriesState(seriesState: SeriesState, episode: Epis
       ...seriesState.canonState,
       ...(choice.state_patch.canon_updates ?? {}),
     },
-    recurringCharacters,
+    recurringCharacters: recurringWith(seriesState, choice.state_patch.new_friend),
     episodeCount: Math.max(seriesState.episodeCount, 1),
   }
 }

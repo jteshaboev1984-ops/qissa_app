@@ -40,6 +40,8 @@ export type StoryRequest = {
   }
   seriesState?: {
     id?: string
+    sessionId?: string
+    sessionIndex?: number
     mainCharacter?: string
     recurringCharacters?: unknown
     lastEpisodeSummary?: string
@@ -69,8 +71,11 @@ export type NormalizedStoryContext = {
   storyMode: StoryMode
   storyMood: StoryMood
   seriesId: string
+  sessionId: string
+  sessionIndex: number
   episodeIndex: 1 | 2
   isContinuation: boolean
+  hasSeriesMemory: boolean
   recurringCharacters: string[]
   lastEpisodeSummary: string
   activeArc: string
@@ -337,7 +342,15 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
   const stateName = safeName(seriesState.mainCharacter)
   const heroName = customName ?? stateName ?? defaultHeroNames[language][heroType]
   const choiceHistory = compactChoiceHistory(seriesState.choiceHistory, heroName)
-  const isContinuation = choiceHistory.length > 0
+  const explicitSessionIdentity = typeof seriesState.sessionId === 'string' || typeof seriesState.sessionIndex === 'number'
+  const sessionId = compactText(seriesState.sessionId, 128) || seriesId
+  const sessionIndex = typeof seriesState.sessionIndex === 'number' && Number.isInteger(seriesState.sessionIndex) && seriesState.sessionIndex > 0
+    ? Math.min(seriesState.sessionIndex, 10_000)
+    : 1
+  const sessionEpisodeCount = typeof seriesState.episodeCount === 'number' && Number.isFinite(seriesState.episodeCount)
+    ? Math.max(0, Math.floor(seriesState.episodeCount))
+    : 0
+  const isContinuation = sessionEpisodeCount > 0 || (!explicitSessionIdentity && choiceHistory.length > 0)
   const recurringCharacters = Array.isArray(seriesState.recurringCharacters)
     ? seriesState.recurringCharacters
         .map((item) => redactHeroName(compactText(item, 48), heroName))
@@ -354,8 +367,11 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
     storyMode,
     storyMood,
     seriesId,
+    sessionId,
+    sessionIndex,
     episodeIndex: isContinuation ? 2 : 1,
     isContinuation,
+    hasSeriesMemory: choiceHistory.length > 0 || Object.keys(compactStringRecord(seriesState.canonState, heroName)).length > 0 || Object.keys(compactStringRecord(seriesState.relationshipState, heroName)).length > 0,
     recurringCharacters,
     lastEpisodeSummary: redactHeroName(compactText(seriesState.lastEpisodeSummary, 300), heroName),
     activeArc: redactHeroName(compactText(seriesState.activeArc, 240), heroName),
@@ -404,7 +420,7 @@ export const buildFinalEpisode = (
   candidate: StoryCandidate,
   safety: SafetyResult,
 ): FinalEpisode => ({
-  episode_id: `ep-${context.episodeIndex}-${context.stylePackId}`,
+  episode_id: `ep-${context.episodeIndex}-${context.stylePackId}${context.sessionIndex > 1 ? `-s${context.sessionIndex}` : ''}`,
   series_id: context.seriesId,
   title: replaceHeroToken(compactText(candidate.title, 120), context.heroName),
   story_text: replaceHeroToken(compactStoryText(candidate.story_text, 6000), context.heroName),

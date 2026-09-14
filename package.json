@@ -43,7 +43,8 @@
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "audit:all": "npm audit --audit-level=high",
     "check:bedtime-session": "node scripts/check-bedtime-session-polish.mjs",
-    "check:cosmos-bedtime": "node scripts/check-cosmos-bedtime.mjs"
+    "check:cosmos-bedtime": "node scripts/check-cosmos-bedtime.mjs",
+    "check:story-library": "node scripts/check-story-library-persistence.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

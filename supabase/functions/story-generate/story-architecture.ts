@@ -411,6 +411,7 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'Never encode speculation, moral judgment, child identity labels, sensitive personal data, punishment or permanent negative traits in state.',
     'Both choices must be safe, understandable, meaningfully different hero actions. Neither choice may be a trick or a morally bad option.',
     'For Episode 1, plan 5-7 causal beats ending at one explicit decision point. Do not resolve either branch before the decision.',
+    'When Episode 1 starts a later bedtime session in an existing series, use remembered canon, relationships and prior consequences as continuity callbacks, then introduce one fresh child-scale goal for tonight. Do not replay or reopen a problem that the previous bedtime session already solved.',
     'For Episode 2, continue after the already-confirmed resolution bridge, use 4-7 causal beats, solve the original story goal and end with a calm bedtime coda. Return zero choices.',
     'Keep the plan concise. It is internal production state, not child-facing prose.',
     'All natural-language blueprint values, including effect summaries, state values, arc text and preview text, must be in the requested story language. Memory keys are machine identifiers and are the only exception.',
@@ -420,7 +421,11 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
   ].join(' ')
 
   const user = JSON.stringify({
-    task: context.episodeIndex === 1 ? 'Plan bedtime session segment 1 and its two branch consequences.' : 'Plan bedtime session segment 2 after the confirmed choice consequence.',
+    task: context.episodeIndex === 1
+      ? context.hasSeriesMemory
+        ? `Plan bedtime series session ${context.sessionIndex}, segment 1, using prior canon as continuity while starting one fresh story goal and two branch consequences.`
+        : 'Plan bedtime series session 1, segment 1 and its two branch consequences.'
+      : `Plan bedtime series session ${context.sessionIndex}, segment 2 after the confirmed choice consequence.`,
     requested_language: languageNames[context.language],
     age_group: context.ageGroup,
     hero: {
@@ -430,6 +435,7 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     style_pack: context.stylePackId,
     story_mode: context.storyMode,
     story_mood: context.storyMood,
+    series_session_index: context.sessionIndex,
     segment: context.episodeIndex,
     memory: memoryPayload(context),
     output_contract: {

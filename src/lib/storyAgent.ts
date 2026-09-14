@@ -235,7 +235,7 @@ function createEpisodeOne(selections: OnboardingSelections, seriesState?: Series
   const heroName = selections.heroType === 'custom' && selections.customHeroName ? selections.customHeroName : heroByType[selections.heroType][selections.language]
 
   return {
-    episode_id: `ep-1-${selections.stylePackId}-${selections.storyMood}`,
+    episode_id: `ep-1-${selections.stylePackId}-${selections.storyMood}${(seriesState?.sessionIndex ?? 1) > 1 ? `-s${seriesState?.sessionIndex}` : ''}`,
     series_id: seriesState?.id ?? `series-${selections.stylePackId}-${selections.language}`,
     title: ({ cozy_forest: { ru: 'Фонарики на лесной тропинке', uz: 'O‘rmon yo‘lidagi chiroqlar', kz: 'Орман соқпағындағы шамдар' }, magic_garden: { ru: 'Лепестковая дорожка', uz: 'Gulbargli yo‘lakcha', kz: 'Жапырақты жолақ' }, silk_road: { ru: 'Фонарь у каравана', uz: 'Karvon yonidagi chiroq', kz: 'Керуен жанындағы шам' }, stars_and_space: { ru: 'Свет звёздного маяка', uz: 'Yulduz mayog‘i nuri', kz: 'Жұлдыз шамшырағының жарығы' }, animal_world: { ru: 'Тёплая поляна друзей', uz: 'Do‘stlar yaylovidagi iliq oqshom', kz: 'Достар алаңқайындағы жылы кеш' }, sea_islands: { ru: 'Огонёк у маяка', uz: 'Mayoq yonidagi mayin chiroq', kz: 'Шамшырақ жанындағы жарық' }, castle_mystery: { ru: 'Лампа в тихой галерее', uz: 'Sokin yo‘lakdagi chiroq', kz: 'Тыныш дәліздегі шам' }, brave_adventure: { ru: 'Знак у поворота', uz: 'Burilishdagi belgi', kz: 'Бұрылыстағы белгі' } } as Record<OnboardingSelections['stylePackId'], Record<Language, string>>)[selections.stylePackId][selections.language],
     story_text: polishStoryText((worldTemplates[selections.stylePackId] ?? worldTemplates.cozy_forest).intro[selections.language]),
@@ -267,7 +267,7 @@ function createEpisodeTwo(selections: OnboardingSelections, seriesState: SeriesS
       : (lastChoice.choice_id === 'path_a' ? tpl.episodeTwo.kz.a : lastChoice.choice_id === 'path_b' ? tpl.episodeTwo.kz.b : tpl.episodeTwo.kz.fallback)
 
   return {
-    episode_id: `ep-2-${selections.stylePackId}-${seriesState.choiceHistory.length}`,
+    episode_id: `ep-2-${selections.stylePackId}-${seriesState.choiceHistory.length}${(seriesState.sessionIndex ?? 1) > 1 ? `-s${seriesState.sessionIndex}` : ''}`,
     series_id: seriesState.id,
     title: ({ cozy_forest: { ru: 'Огонёк у старого пенька', uz: 'Eski to‘nka yonidagi chiroq', kz: 'Ескі томар жанындағы шам' }, magic_garden: { ru: 'След у лунного цветка', uz: 'Oy guli yonidagi iz', kz: 'Ай гүлі жанындағы із' }, silk_road: { ru: 'Узор на карте каравана', uz: 'Karvon xaritasidagi naqsh', kz: 'Керуен картасындағы өрнек' }, stars_and_space: { ru: 'Луч над звёздной станцией', uz: 'Yulduz bekati ustidagi nur', kz: 'Жұлдыз бекеті үстіндегі сәуле' }, animal_world: { ru: 'Утро у поилки', uz: 'Suvdon yonidagi tong', kz: 'Суат жанындағы таң' }, sea_islands: { ru: 'Ракушка у тёплой воды', uz: 'Iliq suv yonidagi chig‘anoq', kz: 'Жылы су жанындағы қабыршақ' }, castle_mystery: { ru: 'Записка у старой двери', uz: 'Eski eshik yonidagi xat', kz: 'Ескі есік жанындағы хат' }, brave_adventure: { ru: 'След на тропе приключений', uz: 'Sarguzasht yo‘lidagi iz', kz: 'Шытырман жолындағы із' } } as Record<OnboardingSelections['stylePackId'], Record<Language, string>>)[selections.stylePackId][selections.language],
     story_text: rememberedText,
@@ -286,8 +286,9 @@ function createEpisodeTwo(selections: OnboardingSelections, seriesState: SeriesS
 // one_time stays self-contained; series episode 2 is the current first-chapter closure without Episode 3 promise.
 export function createStoryEpisode(input: StoryGenerationInput): Episode {
   const { selections, seriesState } = input
-  const hasHistory = Boolean(seriesState && seriesState.choiceHistory.length > 0)
-  const draftEpisode = hasHistory ? createEpisodeTwo(selections, seriesState as SeriesState) : createEpisodeOne(selections, seriesState)
+  const hasSessionIdentity = Boolean(seriesState?.sessionId || seriesState?.sessionIndex)
+  const isCurrentSessionContinuation = Boolean(seriesState && (seriesState.episodeCount > 0 || (!hasSessionIdentity && seriesState.choiceHistory.length > 0)))
+  const draftEpisode = isCurrentSessionContinuation ? createEpisodeTwo(selections, seriesState as SeriesState) : createEpisodeOne(selections, seriesState)
   const safety = runEpisodeSafetyCheck(draftEpisode)
 
   if (safety.approved) {

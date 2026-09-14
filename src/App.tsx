@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { OnboardingFlow } from './features/onboarding/OnboardingFlow'
-import { createInitialSeriesState, applyChoiceToSeriesState } from './lib/memoryAgent'
+import { applyChoiceToSeriesState, applyEpisodeToSeriesState, createInitialSeriesState } from './lib/memoryAgent'
 import { t } from './lib/i18n'
 import { rotateInstallationId } from './lib/installationIdentity'
 import { localPersistence, type AppScreen } from './lib/localPersistence'
@@ -220,7 +220,7 @@ function App() {
 
     try {
       const { episode: firstEpisode } = await storyService.generateEpisode({ selections, seriesState })
-      const nextSeries = { ...seriesState, episodeCount: 1 }
+      const nextSeries = applyEpisodeToSeriesState(seriesState, firstEpisode)
 
       setEpisode(firstEpisode)
       setSeriesState(nextSeries)
@@ -258,7 +258,7 @@ function App() {
 
     try {
       const { episode: secondEpisode } = await storyService.generateEpisode({ selections, seriesState })
-      const nextSeriesState = { ...seriesState, episodeCount: 2 }
+      const nextSeriesState = applyEpisodeToSeriesState(seriesState, secondEpisode)
 
       setEpisode(secondEpisode)
       setSeriesState(nextSeriesState)
