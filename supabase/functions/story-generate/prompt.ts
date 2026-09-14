@@ -69,18 +69,45 @@ const ageGuidance: Record<NormalizedStoryContext['ageGroup'], JsonRecord> = {
   },
 }
 
+const hardStoryWordRange = (context: NormalizedStoryContext): [number, number] => {
+  if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
+    return context.episodeIndex === 1 ? [430, 560] : [340, 520]
+  }
+  if (context.ageGroup === '3-4') return [80, 260]
+  if (context.ageGroup === '5-7') return [120, 390]
+  return [170, 540]
+}
+
+const targetStoryWordRange = (context: NormalizedStoryContext): string => {
+  if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
+    return context.episodeIndex === 1 ? '500-530' : '430-490'
+  }
+  if (context.ageGroup === '3-4') return '120-190'
+  if (context.ageGroup === '5-7') return '180-300'
+  return '260-420'
+}
+
 const lengthGuidance = (context: NormalizedStoryContext): JsonRecord => {
+  const [minimumStoryWords, maximumStoryWords] = hardStoryWordRange(context)
+  const base: JsonRecord = {
+    minimum_story_words: minimumStoryWords,
+    maximum_story_words: maximumStoryWords,
+    target_story_words: targetStoryWordRange(context),
+    counting_scope: 'Only story_text counts toward story word length. Choice text, resolution_text, state patches, vocabulary and preview do not count.',
+    anti_padding: 'Never reach the target with repeated explanation, repeated clues, decorative filler, an unrelated event or a second problem. Use useful action, dialogue, reactions, discovery, humor and cause-and-effect inside the same central story.',
+  }
+
   if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
     return context.episodeIndex === 1
       ? {
-          target_story_words: '430-470',
-          choice_resolution_words: '30-45 words; keep under 320 characters; begin the selected action, show one visible change, then stop so Episode 2 continues without replaying the action',
+          ...base,
+          choice_resolution_words: '30-45 words; keep under 320 characters; carry out the selected action far enough to show one concrete immediate consequence or durable state change, record that result in the branch state_patch, then stop so Episode 2 continues AFTER that payoff without replaying the action',
           preferred_full_session_words: '840-1080 words, approximately 6-8 minutes at the release acceptance pace',
           hard_full_session_contract: 'Episode 1 + the selected choice resolution + Episode 2 must stay inside 700-1400 words.',
           acceptance_pace: '140 words per minute; 6-8 minutes is the editorial target and 5-10 minutes is the hard release envelope',
         }
       : {
-          target_story_words: '430-500',
+          ...base,
           choice_resolution_words: 'not applicable; episode 2 has no new choice',
           preferred_full_session_words: '840-1080 words, approximately 6-8 minutes at the release acceptance pace',
           hard_full_session_contract: 'Episode 1 + the previously selected choice resolution + Episode 2 must stay inside 700-1400 words.',
@@ -88,9 +115,44 @@ const lengthGuidance = (context: NormalizedStoryContext): JsonRecord => {
         }
   }
 
-  if (context.ageGroup === '3-4') return { target_story_words: '120-190' }
-  if (context.ageGroup === '5-7') return { target_story_words: '180-300' }
-  return { target_story_words: '260-420' }
+  return base
+}
+
+const retryGuidance = (context: NormalizedStoryContext, retryReason: string): JsonRecord | null => {
+  const trimmed = retryReason.trim()
+  if (!trimmed) return null
+
+  const validatorErrors = trimmed.split(';').map((item) => item.trim()).filter(Boolean)
+  const [minimumStoryWords, maximumStoryWords] = hardStoryWordRange(context)
+  const feedback: JsonRecord = {
+    previous_candidate_rejected: true,
+    validator_errors: validatorErrors,
+    regenerate_rule: 'Generate a completely new candidate from the same context. Correct the validator failures while preserving all other story, continuity, language, safety and schema requirements.',
+  }
+
+  if (validatorErrors.includes('story_too_short')) {
+    feedback.story_length_correction = {
+      failure: 'story_too_short',
+      minimum_story_words: minimumStoryWords,
+      target_story_words: targetStoryWordRange(context),
+      counting_scope: 'story_text only',
+      instruction: 'Write safely above the minimum before returning. Do not pad with extra scenery, repeated explanation, repeated clues, an unrelated event or a second problem; develop the same story through meaningful action, dialogue, reactions, discovery, humor and cause-and-effect.',
+    }
+  } else if (validatorErrors.includes('story_too_long')) {
+    feedback.story_length_correction = {
+      failure: 'story_too_long',
+      maximum_story_words: maximumStoryWords,
+      target_story_words: targetStoryWordRange(context),
+      counting_scope: 'story_text only',
+      instruction: 'Rewrite the candidate inside the allowed range by removing repetition and nonessential description without deleting causal story beats.',
+    }
+  }
+
+  if (validatorErrors.includes('choice_resolution_too_short') || validatorErrors.includes('choice_resolution_too_long')) {
+    feedback.choice_resolution_correction = 'Each Episode 1 resolution_text must stay inside the configured bridge range, carry out the selected action far enough to create one concrete immediate consequence, and stop after that consequence so Episode 2 continues after it.'
+  }
+
+  return feedback
 }
 
 const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord | null => {
@@ -105,8 +167,8 @@ const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord |
       beat_budget: [
         'orientation: about 50-80 words — establish where the story is, who the hero is, and what the hero is doing in one compact paragraph; use only one or two concrete details and do not force a context-free cold open',
         'early curiosity / desire / problem: about 50-80 words — introduce the unusual event, desire, question or small problem within roughly the first 60-120 words and make the central story question understandable by roughly the first 100-120 words',
-        'exploration / build-up: about 180-220 words — move through action, dialogue, reactions and discoveries that deepen the same goal; description must serve what is happening',
-        'choice setup: about 55-75 words — make both options understandable as two safe actions the HERO could take to pursue the SAME established goal, then stop for the child decision without another delay beat',
+        'exploration / build-up: about 250-290 words — move through action, dialogue, reactions and discoveries that deepen the same goal; description must serve what is happening',
+        'choice setup: about 60-80 words — make both options understandable as two safe actions the HERO could take to pursue the SAME established goal, then stop for the child decision without another delay beat',
       ],
       choice_position: 'The child choice should occur around 40-50% of the full read-aloud: early enough that the child sees a substantial consequence afterward, but only after the single goal and both safe options are clear.',
       duration_role: 'The primary bedtime experience should feel substantial rather than rushed: aim for a 6-8 minute complete read while preserving calm pacing and one causal plot.',
@@ -148,13 +210,14 @@ const childFirstEditorialGuidance = (context: NormalizedStoryContext): JsonRecor
     : 'Match vocabulary and concepts to the requested age guidance.',
   choice_quality: 'Choices are decisions the child makes about what the HERO should do. They must be concrete hero actions with genuinely different consequences. Do not offer two technical mechanisms or two abstract values that immediately converge to the same narrated result.',
   bridge_role: context.storyMode === 'series' && context.episodeIndex === 1
-    ? 'resolution_text is shown as a separate child-facing bridge. Keep it short: about 30-45 words and under 320 characters. Start the chosen HERO action, show one visible change, then stop. Episode 2 must continue after that change and must not replay the action.'
-    : 'When continuing a saved choice, begin after the visible change already shown to the child; never retell the bridge.',
-  memory_quality: 'When prior state exists, let later fiction visibly reflect it through a returning character, object, relationship, remembered action or changed situation. UI may remind the child of the prior choice; ordinary story prose should express the consequence naturally inside the fictional world.',
+    ? 'resolution_text is shown as a separate child-facing bridge. Keep it short: about 30-45 words and under 320 characters. Carry out the selected HERO action far enough to give the child one concrete immediate payoff or durable state change, save that result in the branch state_patch, then stop. Episode 2 must continue AFTER that payoff and must not replay the action.'
+    : 'When continuing a saved choice, begin after the concrete visible result already shown to the child; never retell the bridge.',
+  memory_quality: 'When prior state exists, let later fiction visibly reflect it through a returning character, object, relationship, remembered action or changed situation. Treat canon_state and the latest confirmed selected choice as authoritative. Only selected choices become canon: never import hypothetical objects, discoveries or consequences from an unselected branch. If a past fact is absent from compact canon, do not invent it as a memory; introduce any new discovery as new.',
+  state_patch_quality: 'Assume the next episode may receive compact state instead of full story prose. Preserve confirmed durable continuity facts, important object/mechanism state and unresolved clues, but keep canon compact: normally prefer about 4-8 top-level canon_updates and about 1-4 new branch canon_updates, combine related properties of the same persistent object, avoid duplicate facts, and never store speculation as canon.',
   language_quality: context.language === 'uz'
     ? 'Write natural Uzbek storytelling in Latin script. Do not translate Russian sentence by sentence; natural phrasing, jokes and concrete details may differ while preserving the same story contract.'
     : context.language === 'ru'
-      ? 'Write idiomatic Russian in ordinary narrator-to-story prose, not continuous second-person child narration. Use {{HERO}} only where the unchanged token is grammatically safe, preferably as a nominative subject or direct address. Never place {{HERO}} after a Russian preposition or where declension is required; rephrase so the token remains invariant. For ambiguous/custom hero types, natural present-tense action may be used when it helps avoid unnecessary gender assumptions.'
+      ? 'Write idiomatic Russian in ordinary narrator-to-story prose, not continuous second-person child narration. Use {{HERO}} only where the unchanged token is grammatically safe, preferably as a nominative subject or direct address. Never place {{HERO}} after a preposition or where declension is required; rephrase so the token remains invariant. For ambiguous/custom hero types, natural present-tense action may be used when it helps avoid unnecessary gender assumptions.'
       : 'Write natively in the requested language rather than as a calque from another language.',
 })
 
@@ -332,18 +395,20 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
     'Do not make the hero behave like an adult supervisor checking readiness, schedules, procedures or rules; let positive values emerge from actions.',
     'For ages 5-7, avoid technical, operational and bureaucratic jargon even in fantasy or space settings; use things a child can picture.',
     'Choices are decisions the child makes about what the hero should do. Phrase them as concrete hero actions with genuinely different visible consequences.',
-    'resolution_text is a short bridge shown separately in the UI. Episode 2 must continue after its visible change and must not replay the selected action.',
+    'resolution_text is a short bridge shown separately in the UI. It must carry out the selected action far enough to give one concrete immediate payoff or durable state change that the branch state_patch records. Episode 2 must continue AFTER that payoff and must not replay the selected action.',
     'For Russian, ordinary story prose should not rely on second-person child narration. Use {{HERO}} only where the raw token is grammatically invariant, preferably as a nominative subject or direct address. Never place the raw token after a preposition or where case declension is required; rephrase the sentence instead.',
     'For Uzbek, write native-sounding Uzbek rather than a sentence-by-sentence translation from Russian.',
     'Never promote politics, religion, ideology, stereotypes, humiliation, shame, conditional parental love, bullying, adult themes, violence, or frightening unresolved danger.',
-    'Do not contradict canon_state, prior choice consequences, relationships, or active arc.',
-    'When memory exists, let later fiction visibly reflect it through a returning character, object, relationship, remembered action or changed situation rather than explaining memory abstractly.',
+    'Do not contradict canon_state, prior confirmed choice consequences, relationships, or active arc. Treat compact canon as authoritative.',
+    'Only confirmed selected choices become canon. Never import hypothetical objects, discoveries, state changes or consequences from an unselected branch, even if an alternative branch appeared in earlier context.',
+    'When memory exists, let later fiction visibly reflect it through a returning character, object, relationship, remembered action or changed situation rather than explaining memory abstractly. If a past fact is absent from compact canon, do not invent it as a memory; introduce any new discovery as new.',
     'Choices must both be safe, understandable, genuinely different, and never punish the child for selecting one.',
     'For bedtime mode, finish the complete story calmly and without a cliffhanger, countdown, sudden threat, or unresolved fear.',
     'For closed-beta bedtime series, Episode 1 and Episode 2 are technical delivery parts of one continuous story. Never write them as two unrelated stories.',
     'For episode 1, return exactly two choices. For episode 2, return no choices and visibly reflect the previous confirmed choice.',
     'For Russian only, return 2 or 3 gentle Russian-to-English vocabulary items. For Uzbek or Kazakh, return an empty vocabulary array.',
-    'Treat length_guidance and narrative_guidance as hard product requirements. Prefer the 6-8 minute editorial target, but never pad length with unrelated events, repeated exposition, or a second problem.',
+    'Treat length_guidance and narrative_guidance as hard product requirements. story_text must satisfy the configured minimum and maximum by itself. Aim for the configured target with a safe buffer above the minimum, but never pad length with unrelated events, repeated exposition, repeated clues, decorative filler, or a second problem.',
+    'If retry_feedback is present, it comes from the deterministic production validator. Generate a completely new candidate from the same context and correct those exact failures while preserving all other requirements.',
   ].join(' ')
 
   const payload = {
@@ -375,9 +440,10 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
       next_episode_preview: context.storyMode === 'series' && context.episodeIndex === 1
         ? 'one calm sentence about continuing the SAME unresolved story after the child chooses; no new problem or cliffhanger'
         : 'empty string',
-      state_patch: 'small, structured, and limited to facts introduced in this episode',
+      state_patch: 'continuity-safe but compact; store only confirmed durable facts introduced before the choice; normally prefer about 4-8 top-level canon_updates, combine related properties of the same persistent object or mechanism, avoid duplicate facts and speculation, and never include a branch result before the choice',
+      choice_state_patch: 'selected-branch-only memory; normally prefer about 1-4 compact durable canon_updates created by that resolution; do not repeat unchanged top-level canon and do not include facts from the unselected branch',
     },
-    retry_feedback: retryReason || null,
+    retry_feedback: retryGuidance(context, retryReason),
   }
 
   return { system, user: JSON.stringify(payload) }
