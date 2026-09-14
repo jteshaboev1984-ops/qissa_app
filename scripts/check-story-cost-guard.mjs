@@ -71,9 +71,13 @@ requireCondition(
   'Provider HTTP/timeout/config failures must fail closed instead of automatically paying for a second generation attempt.',
 )
 
+const deniedClaimPosition = storyIndex.indexOf('if (!claim.allowed)')
+const deniedClaimFallbackPosition = storyIndex.indexOf("safeFallback(context, origin, claim.reason", deniedClaimPosition)
+const deniedClaimMetadataPosition = storyIndex.indexOf('...claimMetadata(claim)', deniedClaimFallbackPosition)
 requireCondition(
-  /if \(!claim\.allowed\)/.test(storyIndex) &&
-    /safeFallback\(context, origin, claim\.reason, claimMetadata\(claim\)\)/.test(storyIndex) &&
+  deniedClaimPosition >= 0 &&
+    deniedClaimFallbackPosition > deniedClaimPosition &&
+    deniedClaimMetadataPosition > deniedClaimFallbackPosition &&
     /rate-limit-identity-missing/.test(storyIndex) &&
     /X-QISSA-Global-Daily-Limit/.test(storyIndex) &&
     /X-QISSA-Global-Daily-Used/.test(storyIndex),
