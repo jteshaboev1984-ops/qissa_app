@@ -100,6 +100,9 @@ jobs:
       - name: Validate Story AI safety contract
         run: npm run check:story-ai
 
+      - name: Validate split Story AI architecture contract
+        run: npm run check:story-ai-split
+
       - name: Validate Story AI language localization
         run: node scripts/check-story-localization.mjs
 
