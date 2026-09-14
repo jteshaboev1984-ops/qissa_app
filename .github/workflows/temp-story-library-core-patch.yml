@@ -1,0 +1,50 @@
+name: Temporary Story Library Core Patcher
+
+on:
+  push:
+    branches:
+      - story-library-series-persistence-20260914
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: contains(github.event.head_commit.message, 'Run one-off durable story library patcher')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: story-library-series-persistence-20260914
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Apply durable Story Library core patch
+        run: python3 scripts/temp-story-library-core-patch.py
+
+      - name: Remove one-off patcher
+        run: |
+          rm scripts/temp-story-library-core-patch.py
+          rm .github/workflows/temp-story-library-core-patch.yml
+
+      - name: Validate focused contracts
+        run: |
+          npm ci
+          npm run check:story-library
+          npm run check:story-service
+          npm run check:story-core
+          npm run typecheck:story-ai
+          npm run typecheck
+          npm run build
+
+      - name: Commit durable changes
+        run: |
+          git config user.name qissa-audit-bot
+          git config user.email actions@users.noreply.github.com
+          git add -A
+          git commit -m "Add durable Story Library and multi-session series core"
+          git push origin HEAD:story-library-series-persistence-20260914
