@@ -16,13 +16,13 @@ const requireCondition = (condition, message) => {
 }
 
 requireCondition(
-  /storyGenerationDailyLimit:\s*5/.test(betaScope) && /DAILY_STORY_GENERATION_LIMIT\s*=\s*5/.test(usage),
-  'Frontend beta scope and Story Edge Function must agree on the five-generation installation daily budget.',
+  /storyGenerationDailyLimit:\s*3/.test(betaScope) && /DAILY_STORY_GENERATION_LIMIT\s*=\s*3/.test(usage),
+  'Frontend beta scope and Story Edge Function must agree on the three-generation installation daily budget.',
 )
 
 requireCondition(
-  /storyGenerationGlobalDailyLimit:\s*30/.test(betaScope) && /GLOBAL_DAILY_STORY_GENERATION_LIMIT\s*=\s*30/.test(usage),
-  'Frontend beta scope and Story Edge Function must agree on the 30-claim closed-beta global daily ceiling.',
+  /storyGenerationGlobalDailyLimit:\s*6/.test(betaScope) && /GLOBAL_DAILY_STORY_GENERATION_LIMIT\s*=\s*6/.test(usage),
+  'Frontend beta scope and Story Edge Function must agree on the six-claim prepaid closed-beta global daily ceiling.',
 )
 
 requireCondition(
@@ -34,7 +34,17 @@ const disabledGuardPosition = storyIndex.indexOf('if (!aiEnabled || !openAiApiKe
 const claimPosition = storyIndex.indexOf('claimStoryGeneration(installationId)')
 requireCondition(
   disabledGuardPosition >= 0 && claimPosition > disabledGuardPosition,
-  'AI-disabled development must return deterministic fallback before any usage claim or provider path.',
+  'AI-disabled or keyless operation must return deterministic fallback before any usage claim or provider path.',
+)
+
+requireCondition(
+  /aiEnabledSetting !== 'false'/.test(storyIndex) && /Boolean\(openAiApiKey\)/.test(storyIndex),
+  'A configured provider key should enable Story AI by default while QISSA_AI_ENABLED=false remains an emergency kill switch.',
+)
+
+requireCondition(
+  /gpt-5\.6-terra/.test(storyIndex),
+  'The default Story AI model must remain the cost-balanced GPT-5.6 Terra during prepaid closed-beta validation.',
 )
 
 requireCondition(
@@ -101,7 +111,7 @@ requireCondition(
 requireCondition(
   /create or replace function public\.qissa_claim_story_generation\(/.test(globalMigration) &&
     /qissa_claim_story_generation_budget\([\s\S]*p_installation_id[\s\S]*p_daily_limit[\s\S]*30/.test(globalMigration),
-  'The legacy two-argument claim RPC must delegate to the new global budget so the currently deployed Story function is protected as soon as the migration lands.',
+  'The historical two-argument claim RPC must remain delegated to the global budget migration; the active Story function passes the tighter runtime ceiling explicitly.',
 )
 
 requireCondition(
@@ -122,4 +132,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI cost guard check passed: normal development stays zero-cost; provider-eligible stories are capped per installation and globally.')
+console.log('Story AI cost guard check passed: provider usage stays fail-closed, capped per installation and globally, with an emergency kill switch.')
