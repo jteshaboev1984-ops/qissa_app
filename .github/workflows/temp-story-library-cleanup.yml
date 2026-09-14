@@ -1,0 +1,41 @@
+name: Temporary Story Library Cleanup
+
+on:
+  push:
+    branches:
+      - story-library-series-persistence-20260914
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: contains(github.event.head_commit.message, 'Run one-off Story Library cleanup patcher')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: story-library-series-persistence-20260914
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply cleanup patch
+        run: python3 scripts/temp-story-library-cleanup.py
+      - name: Remove patcher script
+        run: rm scripts/temp-story-library-cleanup.py
+      - name: Validate focused contracts
+        run: |
+          npm ci
+          npm run check:story-library
+          npm run typecheck:story-ai
+          npm run typecheck
+          npm run build
+      - name: Commit cleanup
+        run: |
+          git config user.name qissa-audit-bot
+          git config user.email actions@users.noreply.github.com
+          git add -A ':!.github/workflows/temp-story-library-cleanup.yml'
+          git commit -m "Polish Story Library series contracts"
+          git push origin HEAD:story-library-series-persistence-20260914
