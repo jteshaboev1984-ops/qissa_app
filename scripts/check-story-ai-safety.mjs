@@ -143,11 +143,11 @@ requireText('story prompts', prompts, [
   'For story_too_short, do NOT rewrite the existing story.',
   'Return only NEW prose for insertion.',
   'target_additional_words',
+  'desired_total_after_insertion',
   'existing_final_choice_setup_paragraph',
   'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions',
   'Every other field of the existing candidate is immutable',
-  'Do not add a new durable object, clue, relationship, location, mechanism state, branch consequence, or canon fact',
-  'minimum_growth_words_if_expanding',
+  'Do not introduce a new durable object, clue, relationship, location, mechanism state, branch consequence, canon fact, problem or mission',
   'maximum_characters: 320',
   'immutable_candidate_context',
 ])
