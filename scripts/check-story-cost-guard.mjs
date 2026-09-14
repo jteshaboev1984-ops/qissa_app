@@ -17,18 +17,21 @@ const requireCondition = (condition, message) => {
 }
 
 requireCondition(
-  /storyGenerationDailyLimit:\s*3/.test(betaScope) && /DAILY_STORY_GENERATION_LIMIT\s*=\s*3/.test(usage),
-  'Frontend beta scope and Story Edge Function must agree on the three-generation installation daily budget.',
+  /storyGenerationThrottleEnabled:\s*false/.test(betaScope) &&
+    /DEVELOPMENT_ACCOUNTING_CEILING\s*=\s*2_000_000_000/.test(usage) &&
+    /DAILY_STORY_GENERATION_LIMIT\s*=\s*DEVELOPMENT_ACCOUNTING_CEILING/.test(usage) &&
+    /GLOBAL_DAILY_STORY_GENERATION_LIMIT\s*=\s*DEVELOPMENT_ACCOUNTING_CEILING/.test(usage),
+  'Active Story AI development must stay unthrottled while provider-eligible calls remain counted through a non-binding int4-safe accounting ceiling.',
 )
 
 requireCondition(
-  /storyGenerationGlobalDailyLimit:\s*6/.test(betaScope) && /GLOBAL_DAILY_STORY_GENERATION_LIMIT\s*=\s*6/.test(usage),
-  'Frontend beta scope and Story Edge Function must agree on the six-claim prepaid closed-beta global daily ceiling.',
+  !/storyGenerationDailyLimit:/.test(betaScope) && !/storyGenerationGlobalDailyLimit:/.test(betaScope),
+  'The frontend beta scope must not expose the retired temporary 3/6 Story AI quotas during active prompt and validator development.',
 )
 
 requireCondition(
   /getInstallationId/.test(remoteClient) && /installationId:\s*getInstallationId\(\)/.test(remoteClient),
-  'Remote story requests must carry the stable installation identity used by the server cost guard.',
+  'Remote story requests must carry the stable installation identity used by server-side usage accounting.',
 )
 
 const disabledGuardPosition = storyIndex.indexOf('if (!aiEnabled || !openAiApiKey)')
@@ -45,7 +48,7 @@ requireCondition(
 
 requireCondition(
   /gpt-5\.6-luna/.test(storyIndex),
-  'The default Story AI model must remain GPT-5.6 Luna during prepaid closed-beta validation to minimize latency and provider spend.',
+  'The default Story AI model must remain GPT-5.6 Luna during active development to minimize latency and provider spend.',
 )
 
 requireCondition(
@@ -81,15 +84,16 @@ requireCondition(
     /rate-limit-identity-missing/.test(storyIndex) &&
     /X-QISSA-Global-Daily-Limit/.test(storyIndex) &&
     /X-QISSA-Global-Daily-Used/.test(storyIndex),
-  'Missing identity, exhausted installation/global budget, or guard failure must fail closed and surface budget metadata before provider usage.',
+  'Missing identity or accounting-service failure must fail closed and surface usage metadata before provider usage.',
 )
 
 requireCondition(
   /admin\.rpc\('qissa_claim_story_generation_budget'/.test(usage) &&
+    /p_daily_limit:\s*DAILY_STORY_GENERATION_LIMIT/.test(usage) &&
     /p_global_daily_limit:\s*GLOBAL_DAILY_STORY_GENERATION_LIMIT/.test(usage) &&
     /rate_limit_service_unavailable/.test(usage) &&
     /rate_limit_check_failed/.test(usage),
-  'Story AI usage must be claimed through the aggregate server-side database guard and fail closed when unavailable.',
+  'Story AI usage must still be recorded through the aggregate server-side database guard and fail closed when accounting is unavailable.',
 )
 
 requireCondition(
@@ -123,7 +127,7 @@ requireCondition(
     /global_daily_limit/.test(globalMigration) &&
     /security definer/.test(globalMigration) &&
     /set search_path = public/.test(globalMigration),
-  'The global and installation limits must be claimed atomically with consistent lock ordering before accounting the provider-eligible story request.',
+  'Provider-eligible Story AI requests must continue to be accounted atomically with consistent lock ordering.',
 )
 
 requireCondition(
@@ -139,7 +143,7 @@ requireCondition(
 requireCondition(
   /create or replace function public\.qissa_claim_story_generation\(/.test(globalMigration) &&
     /qissa_claim_story_generation_budget\([\s\S]*p_installation_id[\s\S]*p_daily_limit[\s\S]*30/.test(globalMigration),
-  'The historical two-argument claim RPC must remain delegated to the global budget migration; the active Story function passes the tighter runtime ceiling explicitly.',
+  'The historical two-argument claim RPC must remain delegated to the global budget migration; the active Story function supplies the development accounting ceiling explicitly.',
 )
 
 requireCondition(
@@ -155,9 +159,9 @@ requireCondition(
 )
 
 if (failures.length > 0) {
-  console.error('Story AI cost guard check failed:')
+  console.error('Story AI accounting check failed:')
   for (const failure of failures) console.error(`- ${failure}`)
   process.exit(1)
 }
 
-console.log('Story AI cost guard check passed: provider usage stays fail-closed, capped, diagnosable, and provider errors do not trigger blind paid retries.')
+console.log('Story AI accounting check passed: active development is unthrottled, provider usage remains observable and fail-closed, and provider errors do not trigger blind paid retries.')
