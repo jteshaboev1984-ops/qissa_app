@@ -132,6 +132,13 @@ const candidateTextForModeration = (candidate: StoryCandidate) => [
   ]),
 ].join('\n')
 
+const wordCount = (text: string): number => text.trim().split(/\s+/u).filter(Boolean).length
+
+const candidateValidationMetrics = (candidate: StoryCandidate): string[] => [
+  `story_words=${wordCount(candidate.story_text)}`,
+  ...candidate.choices.map((choice, index) => `choice_${index + 1}_resolution_words=${wordCount(choice.resolution_text)}`),
+]
+
 Deno.serve(async (request: Request) => {
   const origin = request.headers.get('origin')
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(origin) })
@@ -185,9 +192,10 @@ Deno.serve(async (request: Request) => {
       const candidate = await generateStoryCandidate(openAiApiKey, storyModel, context, retryReason)
       const validationErrors = validateCandidate(context, candidate)
       if (validationErrors.length > 0) {
-        retryReason = failureReason(validationErrors, null)
+        const metrics = candidateValidationMetrics(candidate)
+        retryReason = failureReason([...validationErrors, ...metrics], null)
         lastFailureClass = 'validation'
-        failureTrace.push(`validation:${validationErrors.join(',')}`)
+        failureTrace.push(`validation:${validationErrors.join(',')}[${metrics.join(',')}]`)
         continue
       }
 

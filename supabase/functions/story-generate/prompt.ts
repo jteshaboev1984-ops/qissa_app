@@ -80,7 +80,7 @@ const hardStoryWordRange = (context: NormalizedStoryContext): [number, number] =
 
 const targetStoryWordRange = (context: NormalizedStoryContext): string => {
   if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
-    return context.episodeIndex === 1 ? '500-530' : '430-490'
+    return context.episodeIndex === 1 ? '515-545' : '430-490'
   }
   if (context.ageGroup === '3-4') return '120-190'
   if (context.ageGroup === '5-7') return '180-300'
@@ -94,6 +94,7 @@ const lengthGuidance = (context: NormalizedStoryContext): JsonRecord => {
     maximum_story_words: maximumStoryWords,
     target_story_words: targetStoryWordRange(context),
     counting_scope: 'Only story_text counts toward story word length. Choice text, resolution_text, state patches, vocabulary and preview do not count.',
+    composition_priority: 'Reserve enough output for story_text first. Do not shorten story_text to save space for choices, state patches, vocabulary or preview; keep those non-story fields concise while still complete.',
     anti_padding: 'Never reach the target with repeated explanation, repeated clues, decorative filler, an unrelated event or a second problem. Use useful action, dialogue, reactions, discovery, humor and cause-and-effect inside the same central story.',
   }
 
@@ -122,8 +123,19 @@ const retryGuidance = (context: NormalizedStoryContext, retryReason: string): Js
   const trimmed = retryReason.trim()
   if (!trimmed) return null
 
-  const validatorErrors = trimmed.split(';').map((item) => item.trim()).filter(Boolean)
+  const retryParts = trimmed.split(';').map((item) => item.trim()).filter(Boolean)
+  const validatorErrors = retryParts.filter((item) => !item.includes('='))
+  const metricValue = (name: string): number | null => {
+    const raw = retryParts.find((item) => item.startsWith(`${name}=`))
+    if (!raw) return null
+    const parsed = Number(raw.slice(name.length + 1))
+    return Number.isFinite(parsed) ? parsed : null
+  }
+  const previousStoryWords = metricValue('story_words')
   const [minimumStoryWords, maximumStoryWords] = hardStoryWordRange(context)
+  const retryTargetStoryWords = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime' && context.episodeIndex === 1
+    ? '525-550'
+    : targetStoryWordRange(context)
   const feedback: JsonRecord = {
     previous_candidate_rejected: true,
     validator_errors: validatorErrors,
@@ -134,9 +146,10 @@ const retryGuidance = (context: NormalizedStoryContext, retryReason: string): Js
     feedback.story_length_correction = {
       failure: 'story_too_short',
       minimum_story_words: minimumStoryWords,
-      target_story_words: targetStoryWordRange(context),
+      previous_story_words: previousStoryWords,
+      target_story_words: retryTargetStoryWords,
       counting_scope: 'story_text only',
-      instruction: 'Write safely above the minimum before returning. Do not pad with extra scenery, repeated explanation, repeated clues, an unrelated event or a second problem; develop the same story through meaningful action, dialogue, reactions, discovery, humor and cause-and-effect.',
+      instruction: 'The previous story_text was rejected as too short. Use the retry target with a real buffer above the hard minimum. Before ending story_text, develop the SAME central story further through meaningful action, dialogue, character reaction, discovery, humor and cause-and-effect. Keep choices and metadata concise rather than stealing space from story_text. Do not pad with scenery, repetition, an unrelated event or a second problem.',
     }
   } else if (validatorErrors.includes('story_too_long')) {
     feedback.story_length_correction = {
@@ -165,10 +178,10 @@ const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord |
       classical_shape: 'Use a clear beginning, middle, turning decision, consequence, resolution, and calm coda. Every event must follow causally from the same original goal.',
       part_role: 'Episode 1 is the pre-choice half of the same story. It must establish one setting, one understandable goal/problem, develop it, then arrive naturally at one meaningful decision.',
       beat_budget: [
-        'orientation: about 50-80 words — establish where the story is, who the hero is, and what the hero is doing in one compact paragraph; use only one or two concrete details and do not force a context-free cold open',
-        'early curiosity / desire / problem: about 50-80 words — introduce the unusual event, desire, question or small problem within roughly the first 60-120 words and make the central story question understandable by roughly the first 100-120 words',
-        'exploration / build-up: about 250-290 words — move through action, dialogue, reactions and discoveries that deepen the same goal; description must serve what is happening',
-        'choice setup: about 60-80 words — make both options understandable as two safe actions the HERO could take to pursue the SAME established goal, then stop for the child decision without another delay beat',
+        'orientation: about 55-70 words — establish where the story is, who the hero is, and what the hero is doing in one compact paragraph; use only one or two concrete details and do not force a context-free cold open',
+        'early curiosity / desire / problem: about 55-70 words — introduce the unusual event, desire, question or small problem within roughly the first 60-120 words and make the central story question understandable by roughly the first 100-120 words',
+        'exploration / build-up: about 320-340 words — move through action, dialogue, reactions and discoveries that deepen the same goal; description must serve what is happening',
+        'choice setup: about 65-75 words — make both options understandable as two safe actions the HERO could take to pursue the SAME established goal, then stop for the child decision without another delay beat',
       ],
       choice_position: 'The child choice should occur around 40-50% of the full read-aloud: early enough that the child sees a substantial consequence afterward, but only after the single goal and both safe options are clear.',
       duration_role: 'The primary bedtime experience should feel substantial rather than rushed: aim for a 6-8 minute complete read while preserving calm pacing and one causal plot.',
@@ -407,7 +420,7 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
     'For closed-beta bedtime series, Episode 1 and Episode 2 are technical delivery parts of one continuous story. Never write them as two unrelated stories.',
     'For episode 1, return exactly two choices. For episode 2, return no choices and visibly reflect the previous confirmed choice.',
     'For Russian only, return 2 or 3 gentle Russian-to-English vocabulary items. For Uzbek or Kazakh, return an empty vocabulary array.',
-    'Treat length_guidance and narrative_guidance as hard product requirements. story_text must satisfy the configured minimum and maximum by itself. Aim for the configured target with a safe buffer above the minimum, but never pad length with unrelated events, repeated exposition, repeated clues, decorative filler, or a second problem.',
+    'Treat length_guidance and narrative_guidance as hard product requirements. story_text must satisfy the configured minimum and maximum by itself. For Episode 1 bedtime, reserve enough output for story_text before writing compact metadata and aim near the middle-upper part of the configured target. Never pad length with unrelated events, repeated exposition, repeated clues, decorative filler, or a second problem.',
     'If retry_feedback is present, it comes from the deterministic production validator. Generate a completely new candidate from the same context and correct those exact failures while preserving all other requirements.',
   ].join(' ')
 
