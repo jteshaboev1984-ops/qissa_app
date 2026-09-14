@@ -6,6 +6,8 @@ import { storyLocalizationSystem } from './localization.ts'
 const RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const MODERATIONS_URL = 'https://api.openai.com/v1/moderations'
 
+type ReasoningEffort = 'none' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'
+
 const extractOutputText = (payload: unknown): string => {
   if (!payload || typeof payload !== 'object') throw new Error('openai_invalid_response')
   const output = (payload as { output?: unknown }).output
@@ -67,11 +69,12 @@ const requestStructured = async <T>(
   user: string,
   timeoutMs: number,
   maxOutputTokens: number,
+  reasoningEffort: ReasoningEffort,
 ): Promise<T> => {
   const payload = await postJson(RESPONSES_URL, apiKey, {
     model,
     store: false,
-    reasoning: { effort: 'low' },
+    reasoning: { effort: reasoningEffort },
     max_output_tokens: maxOutputTokens,
     input: [
       { role: 'system', content: system },
@@ -118,8 +121,9 @@ export const generateStoryCandidate = async (
     storyOutputSchema,
     localizedSystem,
     prompts.user,
-    14_000,
+    30_000,
     2200,
+    'none',
   )
 }
 
@@ -138,8 +142,9 @@ export const evaluateStorySafety = async (
     safetyOutputSchema,
     prompts.system,
     prompts.user,
-    9_000,
+    12_000,
     700,
+    'none',
   )
 }
 

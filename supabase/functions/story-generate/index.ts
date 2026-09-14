@@ -95,6 +95,14 @@ const failureReason = (errors: string[], safety: SafetyResult | null) => {
   return parts.join(';').slice(0, 600)
 }
 
+const providerFailureClass = (reason: string): string => {
+  if (reason === 'openai_timeout') return 'provider-timeout'
+  if (reason.startsWith('openai_http_')) return 'provider-http'
+  if (reason === 'openai_incomplete_response') return 'provider-incomplete'
+  if (reason.startsWith('openai_response_failed:')) return 'provider-failed'
+  return 'provider-error'
+}
+
 const hasRuleViolation = (flags: SafetyFlags): boolean => Object.values(flags).some(Boolean)
 
 const ruleFailure = (flags: SafetyFlags): SafetyResult => ({
@@ -156,22 +164,28 @@ Deno.serve(async (request: Request) => {
   }
 
   let retryReason = ''
+  let attemptsUsed = 0
+  let lastFailureClass = 'unknown'
+
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    attemptsUsed = attempt
     try {
       const candidate = await generateStoryCandidate(openAiApiKey, storyModel, context, retryReason)
       const validationErrors = validateCandidate(context, candidate)
       if (validationErrors.length > 0) {
         retryReason = failureReason(validationErrors, null)
+        lastFailureClass = 'validation'
         continue
       }
 
       const ruleFlags = scanRuleBasedSafety(context, candidate)
       // Deterministic policy violations are already sufficient to reject this
-      // candidate. Do not spend two more provider calls evaluating/moderating
-      // text that QISSA will never publish. Safe candidates still go through
-      // both semantic safety evaluation and provider moderation below.
+      // candidate. Do not spend semantic safety/moderation calls on text that
+      // QISSA will never publish. The next story attempt receives the safe,
+      // compact retry reason.
       if (hasRuleViolation(ruleFlags)) {
         retryReason = failureReason([], ruleFailure(ruleFlags))
+        lastFailureClass = 'deterministic-safety'
         continue
       }
 
@@ -183,6 +197,7 @@ Deno.serve(async (request: Request) => {
 
       if (!safety.approved) {
         retryReason = failureReason([], safety)
+        lastFailureClass = 'semantic-safety'
         continue
       }
 
@@ -198,13 +213,26 @@ Deno.serve(async (request: Request) => {
         },
       )
     } catch (error) {
-      console.error('QISSA story generation attempt failed', {
-        attempt,
-        reason: error instanceof Error ? error.message : 'unknown_error',
-      })
-      retryReason = error instanceof Error ? error.message.slice(0, 300) : 'provider_error'
+      const reason = error instanceof Error ? error.message.slice(0, 300) : 'provider_error'
+      console.error('QISSA story generation attempt failed', { attempt, reason })
+      retryReason = reason
+      lastFailureClass = providerFailureClass(reason)
+      // Provider/configuration/time-out failures tend to repeat and may already
+      // have consumed provider tokens. Fail closed instead of paying for the
+      // same request again. Retries are reserved for candidates we actually
+      // received and rejected deterministically or semantically.
+      break
     }
   }
 
-  return safeFallback(context, origin, 'generation-or-safety-failed', claimMetadata(claim))
+  return safeFallback(
+    context,
+    origin,
+    'generation-or-safety-failed',
+    {
+      ...claimMetadata(claim),
+      'X-QISSA-Generation-Attempts': String(attemptsUsed),
+      'X-QISSA-Generation-Failure-Class': lastFailureClass,
+    },
+  )
 })

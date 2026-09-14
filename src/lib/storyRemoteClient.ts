@@ -14,7 +14,7 @@ export interface StoryProviderConfig {
 
 const DEFAULT_TIMEOUT_MS = 12_000
 const MIN_TIMEOUT_MS = 1_000
-const MAX_TIMEOUT_MS = 60_000
+const MAX_TIMEOUT_MS = 90_000
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
