@@ -22,6 +22,9 @@ requireFragments('architecture', architecture, [
   'The architecture is the source of truth for canon, branch consequences and memory.',
   'The blueprint owns plot, choices, canon, relationships and branch consequences.',
   'Prefer updating an existing canon key when a persistent fact changes.',
+  'New canon and relationship keys must be stable lowercase ASCII semantic identifiers',
+  'type: context.heroType',
+  'patchHasStableMemoryKeys',
   'never import consequences from an unselected branch.',
   'For Episode 2, continue after the already-confirmed resolution bridge',
   "target_story_words: target",
@@ -32,6 +35,10 @@ const narrationSchemaEnd = architecture.indexOf('const languageNames', narration
 const narrationSchema = architecture.slice(narrationSchemaStart, narrationSchemaEnd)
 for (const forbidden of ['state_patch', 'canon_updates', 'relationship_updates', 'tomorrow_seed', 'effect_summary']) {
   if (narrationSchema.includes(forbidden)) failures.push(`Narrator schema must not own ${forbidden}`)
+}
+
+if ((provider.match(/storyLocalizationSystem\(context\)/g) ?? []).length < 2) {
+  failures.push('Architect and Narrator must both use storyLocalizationSystem')
 }
 
 requireFragments('split provider', provider, [

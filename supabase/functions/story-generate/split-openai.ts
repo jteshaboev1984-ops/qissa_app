@@ -112,12 +112,13 @@ export const generateStoryBlueprint = async (
   context: NormalizedStoryContext,
 ): Promise<StoryBlueprint> => {
   const prompts = buildArchitectPrompts(context)
+  const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
   return requestStructured<StoryBlueprint>(
     apiKey,
     model,
     'qissa_story_blueprint',
     storyBlueprintSchema,
-    prompts.system,
+    localizedSystem,
     prompts.user,
     18_000,
     1800,

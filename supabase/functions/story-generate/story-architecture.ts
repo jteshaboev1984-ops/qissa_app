@@ -192,6 +192,15 @@ const duplicateEntryKeys = (entries: CandidatePatch['canon_updates']): boolean =
 
 const textContainsHeroToken = (value: string): boolean => value.includes('{{HERO}}') || value.includes('QISSA_HERO')
 
+const stableMemoryKey = /^[a-z][a-z0-9_.-]{0,47}$/u
+
+const patchHasStableMemoryKeys = (context: NormalizedStoryContext, patch: CandidatePatch): boolean => {
+  const existingCanon = new Set(Object.keys(context.canonState))
+  const existingRelationships = new Set(Object.keys(context.relationshipState))
+  return patch.canon_updates.every((entry) => existingCanon.has(entry.key) || stableMemoryKey.test(entry.key)) &&
+    patch.relationship_updates.every((entry) => existingRelationships.has(entry.key) || stableMemoryKey.test(entry.key))
+}
+
 export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprint: unknown): string[] => {
   if (!isRecord(blueprint)) return ['blueprint_not_object']
   const value = blueprint as unknown as StoryBlueprint
@@ -211,6 +220,7 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   else {
     if (value.state_patch.canon_updates.length > 8) errors.push('blueprint_state_too_large')
     if (duplicateEntryKeys(value.state_patch.canon_updates)) errors.push('duplicate_blueprint_canon_keys')
+    if (!patchHasStableMemoryKeys(context, value.state_patch)) errors.push('unstable_blueprint_memory_key')
   }
 
   const expectedChoiceCount = context.episodeIndex === 1 ? 2 : 0
@@ -232,6 +242,7 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
       else {
         if (typed.state_patch.canon_updates.length > 4) errors.push('blueprint_choice_state_too_large')
         if (duplicateEntryKeys(typed.state_patch.canon_updates)) errors.push('duplicate_blueprint_choice_canon_keys')
+        if (!patchHasStableMemoryKeys(context, typed.state_patch)) errors.push('unstable_blueprint_choice_memory_key')
       }
       if (!Array.isArray(typed.value_alignment) || typed.value_alignment.some((item) => !positiveValues.has(item as PositiveValue))) {
         errors.push('invalid_blueprint_value_alignment')
@@ -279,6 +290,8 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'For Episode 1, plan 5-7 causal beats ending at one explicit decision point. Do not resolve either branch before the decision.',
     'For Episode 2, continue after the already-confirmed resolution bridge, use 4-7 causal beats, solve the original story goal and end with a calm bedtime coda. Return zero choices.',
     'Keep the plan concise. It is internal production state, not child-facing prose.',
+    'All natural-language blueprint values, including effect summaries, state values, arc text and preview text, must be in the requested story language. Memory keys are machine identifiers and are the only exception.',
+    'New canon and relationship keys must be stable lowercase ASCII semantic identifiers using letters, digits, underscore, dot or hyphen. Reuse an existing memory key exactly when updating an existing fact instead of creating a synonym.',
     'Choice display text must be in the requested story language. Do not use the {{HERO}} token in architect output; phrase choices without the hero name.',
     'Avoid politics, religious persuasion, stereotypes, humiliation, conditional love, adult themes, graphic violence and unresolved frightening danger.',
   ].join(' ')
@@ -287,6 +300,10 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     task: context.episodeIndex === 1 ? 'Plan bedtime session segment 1 and its two branch consequences.' : 'Plan bedtime session segment 2 after the confirmed choice consequence.',
     requested_language: languageNames[context.language],
     age_group: context.ageGroup,
+    hero: {
+      type: context.heroType,
+      note: 'Plan actions physically and socially appropriate for this hero type without inferring gender stereotypes or inventing child identity facts.',
+    },
     style_pack: context.stylePackId,
     story_mode: context.storyMode,
     story_mood: context.storyMood,
@@ -343,6 +360,10 @@ export const buildNarratorPrompts = (
     task: context.episodeIndex === 1 ? 'Narrate segment 1 from the immutable blueprint.' : 'Narrate segment 2 from the immutable blueprint.',
     requested_language: languageNames[context.language],
     age_group: context.ageGroup,
+    hero: {
+      type: context.heroType,
+      note: 'Plan actions physically and socially appropriate for this hero type without inferring gender stereotypes or inventing child identity facts.',
+    },
     style_pack: context.stylePackId,
     hard_story_word_range: { minimum: minimumWords, maximum: maximumWords },
     target_story_words: target,
