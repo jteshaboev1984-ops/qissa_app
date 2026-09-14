@@ -194,6 +194,73 @@ const textContainsHeroToken = (value: string): boolean => value.includes('{{HERO
 
 const stableMemoryKey = /^[a-z][a-z0-9_.-]{0,47}$/u
 
+const memoryKeyHash = (value: string): string => {
+  let hash = 2166136261
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index)
+    hash = Math.imul(hash, 16777619)
+  }
+  return (hash >>> 0).toString(36)
+}
+
+const canonicalNewMemoryKey = (rawKey: string, prefix: 'canon' | 'rel'): string => {
+  const lowered = rawKey.trim().toLocaleLowerCase('en-US')
+  if (stableMemoryKey.test(lowered)) return lowered
+
+  const asciiSlug = lowered
+    .normalize('NFKD')
+    .replace(/[^\x00-\x7F]/gu, '')
+    .replace(/[^a-z0-9]+/gu, '_')
+    .replace(/^_+|_+$/gu, '')
+  const prefixed = asciiSlug && /^[a-z]/u.test(asciiSlug) ? asciiSlug : `${prefix}_${asciiSlug}`.replace(/_+$/u, '')
+  const candidate = prefixed || prefix
+  if (stableMemoryKey.test(candidate)) return candidate
+
+  const suffix = memoryKeyHash(lowered || rawKey)
+  const stem = candidate.replace(/[^a-z0-9_.-]/gu, '').slice(0, Math.max(1, 47 - suffix.length - 1)) || prefix
+  const withHash = `${/^[a-z]/u.test(stem) ? stem : `${prefix}_${stem}`}_${suffix}`.slice(0, 48)
+  return stableMemoryKey.test(withHash) ? withHash : `${prefix}_${suffix}`.slice(0, 48)
+}
+
+const canonicalizePatchMemoryKeys = (
+  context: NormalizedStoryContext,
+  patch: CandidatePatch,
+): { patch: CandidatePatch; normalizedCount: number } => {
+  const existingCanon = new Set(Object.keys(context.canonState))
+  const existingRelationships = new Set(Object.keys(context.relationshipState))
+  let normalizedCount = 0
+
+  const canon_updates = patch.canon_updates.map((entry) => {
+    const key = existingCanon.has(entry.key) ? entry.key : canonicalNewMemoryKey(entry.key, 'canon')
+    if (key !== entry.key) normalizedCount += 1
+    return { ...entry, key }
+  })
+  const relationship_updates = patch.relationship_updates.map((entry) => {
+    const key = existingRelationships.has(entry.key) ? entry.key : canonicalNewMemoryKey(entry.key, 'rel')
+    if (key !== entry.key) normalizedCount += 1
+    return { ...entry, key }
+  })
+
+  return { patch: { ...patch, canon_updates, relationship_updates }, normalizedCount }
+}
+
+export const normalizeStoryBlueprintMemoryKeys = (
+  context: NormalizedStoryContext,
+  blueprint: StoryBlueprint,
+): { blueprint: StoryBlueprint; normalizedCount: number } => {
+  const topLevel = canonicalizePatchMemoryKeys(context, blueprint.state_patch)
+  let normalizedCount = topLevel.normalizedCount
+  const choices = blueprint.choices.map((choice) => {
+    const normalized = canonicalizePatchMemoryKeys(context, choice.state_patch)
+    normalizedCount += normalized.normalizedCount
+    return { ...choice, state_patch: normalized.patch }
+  })
+  return {
+    blueprint: { ...blueprint, state_patch: topLevel.patch, choices },
+    normalizedCount,
+  }
+}
+
 const patchHasStableMemoryKeys = (context: NormalizedStoryContext, patch: CandidatePatch): boolean => {
   const existingCanon = new Set(Object.keys(context.canonState))
   const existingRelationships = new Set(Object.keys(context.relationshipState))
