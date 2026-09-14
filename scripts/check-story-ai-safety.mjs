@@ -21,7 +21,8 @@ const requireText = (label, source, fragments) => {
 requireText('story entrypoint', index, [
   "Deno.env.get('QISSA_AI_ENABLED')",
   "Deno.env.get('OPENAI_API_KEY')",
-  'maxAttempts = 2',
+  'maxAttempts = 3',
+  'maxFullGenerationAttempts = 2',
   'validateCandidate',
   'scanRuleBasedSafety',
   'hasRuleViolation',
@@ -36,6 +37,10 @@ requireText('story entrypoint', index, [
   'choice_resolution_too_long',
   'repairStoryCandidateTextLengths',
   "'X-QISSA-Generation-Repair'",
+  "'X-QISSA-Full-Generation-Attempts'",
+  'fullGenerationAttempts >= maxFullGenerationAttempts',
+  'A third provider stage is',
+  'reserved exclusively for deterministic text-length repair',
   "'X-QISSA-Generation-Source': 'safe-fallback'",
 ])
 
