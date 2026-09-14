@@ -7,7 +7,7 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { buildSafeFallback } from './fallback.ts'
-import { evaluateStorySafety, generateStoryCandidate, moderateStoryText, repairStoryCandidateLength } from './openai.ts'
+import { evaluateStorySafety, generateStoryCandidate, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { claimStoryGeneration, isInstallationId, type GenerationClaim } from './usage.ts'
 
@@ -139,8 +139,15 @@ const candidateValidationMetrics = (candidate: StoryCandidate): string[] => [
   ...candidate.choices.map((choice, index) => `choice_${index + 1}_resolution_words=${wordCount(choice.resolution_text)}`),
 ]
 
-const isStoryLengthOnlyFailure = (errors: string[]): boolean =>
-  errors.length > 0 && errors.every((error) => error === 'story_too_short' || error === 'story_too_long')
+const textLengthValidationErrors = new Set([
+  'story_too_short',
+  'story_too_long',
+  'choice_resolution_too_short',
+  'choice_resolution_too_long',
+])
+
+const isTextLengthOnlyFailure = (errors: string[]): boolean =>
+  errors.length > 0 && errors.every((error) => textLengthValidationErrors.has(error))
 
 Deno.serve(async (request: Request) => {
   const origin = request.headers.get('origin')
@@ -189,24 +196,24 @@ Deno.serve(async (request: Request) => {
   let lastFailureClass = 'unknown'
   let repairCandidate: StoryCandidate | null = null
   let repairValidationErrors: string[] = []
-  let usedLengthRepair = false
+  let usedTextLengthRepair = false
   const failureTrace: string[] = []
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     attemptsUsed = attempt
     try {
-      // A pure story-length failure keeps all already-valid canon and branch data immutable.
+      // Text-length repair may change only invalid story/resolution prose; canon and branch state remain immutable.
       let candidate: StoryCandidate
       if (repairCandidate) {
         const candidateToRepair: StoryCandidate = repairCandidate
-        candidate = await repairStoryCandidateLength(
+        candidate = await repairStoryCandidateTextLengths(
           openAiApiKey,
           storyModel,
           context,
           candidateToRepair,
           repairValidationErrors,
         )
-        usedLengthRepair = true
+        usedTextLengthRepair = true
         repairCandidate = null
         repairValidationErrors = []
       } else {
@@ -219,7 +226,7 @@ Deno.serve(async (request: Request) => {
         retryReason = failureReason([...validationErrors, ...metrics], null)
         lastFailureClass = 'validation'
         failureTrace.push(`validation:${validationErrors.join(',')}[${metrics.join(',')}]`)
-        if (attempt < maxAttempts && isStoryLengthOnlyFailure(validationErrors)) {
+        if (attempt < maxAttempts && isTextLengthOnlyFailure(validationErrors)) {
           repairCandidate = candidate
           repairValidationErrors = [...validationErrors]
         } else {
@@ -261,7 +268,7 @@ Deno.serve(async (request: Request) => {
           ...providerMetadata(),
           'X-QISSA-Generation-Source': 'openai-structured',
           'X-QISSA-Generation-Attempts': String(attempt),
-          'X-QISSA-Generation-Repair': usedLengthRepair ? 'story-length' : 'none',
+          'X-QISSA-Generation-Repair': usedTextLengthRepair ? 'text-length' : 'none',
           ...claimMetadata(claim),
         },
       )
@@ -289,7 +296,7 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Attempts': String(attemptsUsed),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': failureTrace.join('>').slice(0, 480),
-      'X-QISSA-Generation-Repair': usedLengthRepair ? 'story-length' : 'none',
+      'X-QISSA-Generation-Repair': usedTextLengthRepair ? 'text-length' : 'none',
     },
   )
 })

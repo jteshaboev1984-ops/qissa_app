@@ -31,8 +31,10 @@ requireText('story entrypoint', index, [
   'buildSafeFallback',
   'candidateValidationMetrics',
   'story_words=',
-  'isStoryLengthOnlyFailure',
-  'repairStoryCandidateLength',
+  'isTextLengthOnlyFailure',
+  'choice_resolution_too_short',
+  'choice_resolution_too_long',
+  'repairStoryCandidateTextLengths',
   "'X-QISSA-Generation-Repair'",
   "'X-QISSA-Generation-Source': 'safe-fallback'",
 ])
@@ -58,9 +60,10 @@ requireText('OpenAI provider', provider, [
   'AbortController',
   "status === 'failed'",
   'openai_response_failed',
-  'buildStoryLengthRepairPrompts',
-  'storyLengthRepairOutputSchema',
-  "'qissa_story_length_repair'",
+  'buildTextLengthRepairPrompts',
+  'textLengthRepairOutputSchema',
+  "'qissa_text_length_repair'",
+  'targetChoiceIds',
   '3000',
 ])
 
@@ -128,11 +131,13 @@ requireText('story prompts', prompts, [
   'write native-sounding Uzbek rather than a sentence-by-sentence translation from Russian.',
   'child_first_editorial: childFirstEditorialGuidance(context)',
   'retry_feedback: retryGuidance(context, retryReason)',
-  'Story Length Repair Agent',
-  'Rewrite only story_text.',
+  'Text Length Repair Agent',
+  'Repair only text fields explicitly listed in repair_plan.',
+  'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions',
   'Every other field of the existing candidate is immutable',
   'Do not add a new durable object, clue, relationship, location, mechanism state, or branch consequence',
   'minimum_growth_words_if_expanding',
+  'maximum_characters: 320',
   'immutable_candidate_context',
 ])
 
@@ -258,4 +263,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI safety, targeted length repair, validator metrics, immediate choice payoff, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')
+console.log('Story AI safety, targeted story/resolution text-length repair, validator metrics, immediate choice payoff, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')

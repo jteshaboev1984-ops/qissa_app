@@ -1,5 +1,5 @@
 import type { SafetyEvaluation, StoryCandidate } from './contracts.ts'
-import { buildSafetyPrompts, buildStoryLengthRepairPrompts, buildStoryPrompts, safetyOutputSchema, storyLengthRepairOutputSchema, storyOutputSchema } from './prompt.ts'
+import { buildSafetyPrompts, buildStoryPrompts, buildTextLengthRepairPrompts, safetyOutputSchema, storyOutputSchema, textLengthRepairOutputSchema } from './prompt.ts'
 import type { NormalizedStoryContext } from './contracts.ts'
 import { storyLocalizationSystem } from './localization.ts'
 
@@ -128,20 +128,35 @@ export const generateStoryCandidate = async (
 }
 
 
-export const repairStoryCandidateLength = async (
+type TextLengthRepair = {
+  story_text: string | null
+  choice_resolutions: Array<{ choice_id: string; resolution_text: string }>
+}
+
+const repairWordCount = (text: string): number => text.trim().split(/\s+/u).filter(Boolean).length
+
+const needsChoiceResolutionRepair = (context: NormalizedStoryContext, resolutionText: string): boolean => {
+  if (!(context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime' && context.episodeIndex === 1)) {
+    return false
+  }
+  const words = repairWordCount(resolutionText)
+  return resolutionText.length > 360 || words < 25 || words > 60
+}
+
+export const repairStoryCandidateTextLengths = async (
   apiKey: string,
   model: string,
   context: NormalizedStoryContext,
   candidate: StoryCandidate,
   validationErrors: string[],
 ): Promise<StoryCandidate> => {
-  const prompts = buildStoryLengthRepairPrompts(context, candidate, validationErrors)
+  const prompts = buildTextLengthRepairPrompts(context, candidate, validationErrors)
   const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
-  const repair = await requestStructured<{ story_text: string }>(
+  const repair = await requestStructured<TextLengthRepair>(
     apiKey,
     model,
-    'qissa_story_length_repair',
-    storyLengthRepairOutputSchema,
+    'qissa_text_length_repair',
+    textLengthRepairOutputSchema,
     localizedSystem,
     prompts.user,
     30_000,
@@ -149,9 +164,31 @@ export const repairStoryCandidateLength = async (
     'none',
   )
 
+  const repairStoryText = validationErrors.includes('story_too_short') || validationErrors.includes('story_too_long')
+  if (repairStoryText && (typeof repair.story_text !== 'string' || !repair.story_text.trim())) {
+    throw new Error('openai_invalid_text_repair_story')
+  }
+
+  const targetChoiceIds = new Set(
+    candidate.choices
+      .filter((choice) => needsChoiceResolutionRepair(context, choice.resolution_text))
+      .map((choice) => choice.choice_id),
+  )
+  const repairedByChoiceId = new Map<string, string>()
+  for (const item of repair.choice_resolutions) {
+    if (!targetChoiceIds.has(item.choice_id) || repairedByChoiceId.has(item.choice_id) || !item.resolution_text.trim()) {
+      throw new Error('openai_invalid_text_repair_choice')
+    }
+    repairedByChoiceId.set(item.choice_id, item.resolution_text)
+  }
+  if (repairedByChoiceId.size !== targetChoiceIds.size) throw new Error('openai_incomplete_text_repair_choices')
+
   return {
     ...candidate,
-    story_text: repair.story_text,
+    story_text: repairStoryText ? (repair.story_text as string) : candidate.story_text,
+    choices: candidate.choices.map((choice) => targetChoiceIds.has(choice.choice_id)
+      ? { ...choice, resolution_text: repairedByChoiceId.get(choice.choice_id) as string }
+      : choice),
   }
 }
 
