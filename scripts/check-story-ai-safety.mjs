@@ -31,6 +31,9 @@ requireText('story entrypoint', index, [
   'buildSafeFallback',
   'candidateValidationMetrics',
   'story_words=',
+  'isStoryLengthOnlyFailure',
+  'repairStoryCandidateLength',
+  "'X-QISSA-Generation-Repair'",
   "'X-QISSA-Generation-Source': 'safe-fallback'",
 ])
 
@@ -55,6 +58,10 @@ requireText('OpenAI provider', provider, [
   'AbortController',
   "status === 'failed'",
   'openai_response_failed',
+  'buildStoryLengthRepairPrompts',
+  'storyLengthRepairOutputSchema',
+  "'qissa_story_length_repair'",
+  '3000',
 ])
 
 requireText('story prompts', prompts, [
@@ -121,6 +128,12 @@ requireText('story prompts', prompts, [
   'write native-sounding Uzbek rather than a sentence-by-sentence translation from Russian.',
   'child_first_editorial: childFirstEditorialGuidance(context)',
   'retry_feedback: retryGuidance(context, retryReason)',
+  'Story Length Repair Agent',
+  'Rewrite only story_text.',
+  'Every other field of the existing candidate is immutable',
+  'Do not add a new durable object, clue, relationship, location, mechanism state, or branch consequence',
+  'minimum_growth_words_if_expanding',
+  'immutable_candidate_context',
 ])
 
 for (const forbiddenPromptFragment of [
@@ -245,4 +258,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI safety, buffered length, validator retry feedback, immediate choice payoff, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')
+console.log('Story AI safety, targeted length repair, validator metrics, immediate choice payoff, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')

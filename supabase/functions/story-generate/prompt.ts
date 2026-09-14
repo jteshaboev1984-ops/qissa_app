@@ -1,4 +1,4 @@
-import type { JsonRecord, NormalizedStoryContext } from './contracts.ts'
+import type { JsonRecord, NormalizedStoryContext, StoryCandidate } from './contracts.ts'
 
 const styleGuidance: Record<NormalizedStoryContext['stylePackId'], JsonRecord> = {
   cozy_forest: {
@@ -347,6 +347,16 @@ export const storyOutputSchema = {
   },
 } as const
 
+
+export const storyLengthRepairOutputSchema = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['story_text'],
+  properties: {
+    story_text: { type: 'string' },
+  },
+} as const
+
 export const safetyOutputSchema = {
   type: 'object',
   additionalProperties: false,
@@ -460,6 +470,64 @@ export const buildStoryPrompts = (context: NormalizedStoryContext, retryReason =
   }
 
   return { system, user: JSON.stringify(payload) }
+}
+
+
+const storyWordCount = (text: string): number => text.trim().split(/\s+/u).filter(Boolean).length
+
+export const buildStoryLengthRepairPrompts = (
+  context: NormalizedStoryContext,
+  candidate: StoryCandidate,
+  validationErrors: string[],
+) => {
+  const [minimumStoryWords, maximumStoryWords] = hardStoryWordRange(context)
+  const currentStoryWords = storyWordCount(candidate.story_text)
+  const bedtimeEpisodeOne = context.ageGroup === '5-7' &&
+    context.storyMode === 'series' &&
+    context.storyMood === 'bedtime' &&
+    context.episodeIndex === 1
+  const targetMinimum = bedtimeEpisodeOne ? 500 : Math.min(maximumStoryWords - 10, minimumStoryWords + 40)
+  const targetMaximum = bedtimeEpisodeOne ? 535 : Math.max(targetMinimum, maximumStoryWords - 20)
+  const minimumGrowthWords = Math.max(0, targetMinimum - currentStoryWords)
+
+  const system = [
+    'You are QISSA Story Length Repair Agent.',
+    'Return only data matching the supplied JSON schema.',
+    'Rewrite only story_text. Every other field of the existing candidate is immutable and will be preserved by the server.',
+    'Preserve the same central goal, chronology, established characters, objects, clues, locations, confirmed facts, and final decision point.',
+    'Do not add a new durable object, clue, relationship, location, mechanism state, or branch consequence that would require changing state_patch or choices.',
+    'Do not resolve either choice inside story_text. End at the same child decision point so the existing choices remain valid.',
+    'Expand through meaningful action, dialogue, reactions, attempts, gentle humor, and cause-and-effect inside existing beats; never pad with repeated explanation, scenery, a second problem, or an unrelated event.',
+    'The hero name remains the literal token {{HERO}}. Never invent or expose a real child name.',
+    'Write only in the requested language and preserve bedtime tone and age fit.',
+  ].join(' ')
+
+  const user = JSON.stringify({
+    task: currentStoryWords < minimumStoryWords
+      ? 'Expand the existing story_text without changing its facts or decision point.'
+      : 'Shorten the existing story_text without changing its facts or decision point.',
+    language: languageNames[context.language],
+    validation_errors: validationErrors,
+    current_story_words: currentStoryWords,
+    hard_minimum_story_words: minimumStoryWords,
+    hard_maximum_story_words: maximumStoryWords,
+    target_story_words: `${targetMinimum}-${targetMaximum}`,
+    minimum_growth_words_if_expanding: minimumGrowthWords,
+    counting_scope: 'Whitespace-separated words in story_text only.',
+    immutable_candidate_context: {
+      title: candidate.title,
+      story_text: candidate.story_text,
+      choices: candidate.choices.map((choice) => ({
+        choice_id: choice.choice_id,
+        text: choice.text,
+        effect_summary: choice.effect_summary,
+      })),
+      state_patch: candidate.state_patch,
+      nextEpisodePreview: candidate.nextEpisodePreview,
+    },
+  })
+
+  return { system, user }
 }
 
 export const buildSafetyPrompts = (context: NormalizedStoryContext, candidateJson: string) => ({
