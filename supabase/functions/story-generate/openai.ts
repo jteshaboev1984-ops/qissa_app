@@ -1,5 +1,5 @@
 import type { SafetyEvaluation, StoryCandidate } from './contracts.ts'
-import { buildSafetyPrompts, buildStoryPrompts, safetyOutputSchema, storyOutputSchema } from './prompt.ts'
+import { buildSafetyPrompts, buildStoryLengthRepairPrompts, buildStoryPrompts, safetyOutputSchema, storyLengthRepairOutputSchema, storyOutputSchema } from './prompt.ts'
 import type { NormalizedStoryContext } from './contracts.ts'
 import { storyLocalizationSystem } from './localization.ts'
 
@@ -125,6 +125,34 @@ export const generateStoryCandidate = async (
     4000,
     'none',
   )
+}
+
+
+export const repairStoryCandidateLength = async (
+  apiKey: string,
+  model: string,
+  context: NormalizedStoryContext,
+  candidate: StoryCandidate,
+  validationErrors: string[],
+): Promise<StoryCandidate> => {
+  const prompts = buildStoryLengthRepairPrompts(context, candidate, validationErrors)
+  const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
+  const repair = await requestStructured<{ story_text: string }>(
+    apiKey,
+    model,
+    'qissa_story_length_repair',
+    storyLengthRepairOutputSchema,
+    localizedSystem,
+    prompts.user,
+    30_000,
+    3000,
+    'none',
+  )
+
+  return {
+    ...candidate,
+    story_text: repair.story_text,
+  }
 }
 
 export const evaluateStorySafety = async (
