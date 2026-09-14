@@ -404,8 +404,13 @@ export const buildNarratorPrompts = (
 ) => {
   const [minimumWords, maximumWords] = hardStoryWordRange(context)
   const target = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
-    ? context.episodeIndex === 1 ? '470-520' : '390-470'
+    ? context.episodeIndex === 1 ? '485-525' : '400-470'
     : `${Math.min(maximumWords - 10, minimumWords + 40)}-${Math.max(minimumWords + 40, maximumWords - 20)}`
+  const paragraphBudget = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
+    ? context.episodeIndex === 1
+      ? { target_paragraphs: 7, average_words_per_paragraph: '65-75', final_choice_setup_words: '55-75' }
+      : { target_paragraphs: '6-7', average_words_per_paragraph: '60-70', final_coda_words: '50-90' }
+    : null
 
   const system = [
     'You are QISSA Narrator. Turn an immutable Story Architect blueprint into child-facing prose.',
@@ -418,6 +423,7 @@ export const buildNarratorPrompts = (
     'For Episode 1, end story_text at the blueprint decision point before either branch happens. Do not print the two choices inside story_text.',
     'For Episode 2, begin after the confirmed choice resolution already happened. Do not replay that action. Resolve the same central goal and finish calmly without a cliffhanger.',
     'Follow the blueprint beat order. Every one or two short paragraphs should contain action, dialogue, discovery, reaction, attempt, humor or cause-and-effect.',
+    'For ages 5-7 bedtime series, treat paragraph_budget as a quantitative drafting plan. Do not compress several blueprint beats into a few very short paragraphs; hit the requested total through meaningful beat development, not filler.',
     'Avoid padding, repeated clues, repeated explanation, decorative filler and unrelated events.',
     'For each Episode 1 choice, write exactly one resolution_text matching its resolution_goal and state consequence. Aim for 30-45 words and stay below 320 characters.',
     'For Russian, return 2-3 gentle Russian-to-English vocabulary items grounded in the story. For Uzbek or Kazakh return an empty vocabulary array.',
@@ -434,6 +440,7 @@ export const buildNarratorPrompts = (
     style_pack: context.stylePackId,
     hard_story_word_range: { minimum: minimumWords, maximum: maximumWords },
     target_story_words: target,
+    paragraph_budget: paragraphBudget,
     counting_scope: 'Whitespace-separated words in story_text only.',
     immutable_blueprint: blueprint,
     retry_feedback: retryReason,

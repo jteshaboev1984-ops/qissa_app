@@ -32,6 +32,8 @@ requireFragments('architecture', architecture, [
   'never import consequences from an unselected branch.',
   'For Episode 2, continue after the already-confirmed resolution bridge',
   "target_story_words: target",
+  'paragraph_budget: paragraphBudget',
+  "target_paragraphs: 7",
 ])
 
 const narrationSchemaStart = architecture.indexOf('export const storyNarrationSchema')
@@ -66,6 +68,9 @@ requireFragments('split orchestrator', orchestrator, [
   'evaluateStorySafety',
   'moderateStoryText',
   "'X-QISSA-Provider-Calls'",
+  "'X-QISSA-Narrator-Retry-Used'",
+  'narratorRetryUsed = true',
+  'Previous narration failed deterministic validation',
   "'X-QISSA-Escalation-Used'",
 ])
 
