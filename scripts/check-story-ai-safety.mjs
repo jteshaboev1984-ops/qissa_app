@@ -135,7 +135,7 @@ requireText('story prompts', prompts, [
   'Repair only text fields explicitly listed in repair_plan.',
   'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions',
   'Every other field of the existing candidate is immutable',
-  'Do not add a new durable object, clue, relationship, location, mechanism state, or branch consequence',
+  'Do not add a new durable object, clue, relationship, location, mechanism state, branch consequence, or canon fact',
   'minimum_growth_words_if_expanding',
   'maximum_characters: 320',
   'immutable_candidate_context',
