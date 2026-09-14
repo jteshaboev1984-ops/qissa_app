@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import { hasSingleLanguageMismatch } from '../supabase/functions/story-generate/language.ts'
 
 const architecture = fs.readFileSync('supabase/functions/story-generate/story-architecture.ts', 'utf8')
 const provider = fs.readFileSync('supabase/functions/story-generate/split-openai.ts', 'utf8')
@@ -14,6 +15,17 @@ const requireFragments = (label, text, fragments) => {
     if (!text.includes(fragment)) failures.push(`${label} is missing: ${fragment}`)
   }
 }
+
+const requireLanguageGuard = (condition, message) => {
+  if (!condition) failures.push(`language guard regression: ${message}`)
+}
+
+requireLanguageGuard(hasSingleLanguageMismatch('ru', ['В лесу {{HERO}} увидел green light.']), 'RU must reject Latin leakage')
+requireLanguageGuard(!hasSingleLanguageMismatch('ru', ['В лесу {{HERO}} увидел зелёный огонёк.']), 'RU must accept Russian prose')
+requireLanguageGuard(hasSingleLanguageMismatch('uz', ['{{HERO}} o‘rmonda yurdi. Потом стало тихо.']), 'UZ must reject Cyrillic leakage')
+requireLanguageGuard(!hasSingleLanguageMismatch('uz', ['{{HERO}} o‘rmonda yurdi va mayin chiroqni ko‘rdi.']), 'UZ must accept Uzbek Latin prose')
+requireLanguageGuard(hasSingleLanguageMismatch('kz', ['{{HERO}} орманға кірді. Then the light moved.']), 'KZ must reject Latin leakage')
+requireLanguageGuard(!hasSingleLanguageMismatch('kz', ['{{HERO}} орманға кіріп, жарыққа жақындады. Құстар үнсіз қалды, өйткені түн тыныш еді.']), 'KZ must accept Kazakh Cyrillic prose')
 
 requireFragments('architecture', architecture, [
   "plan_version: 'split-v1'",
@@ -110,4 +122,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Split Story AI contract passed: Architect owns canon/branches, Narrator owns prose only, Luna is default, Sol escalation is opt-in, and long-series identity/memory scaling is documented.')
+console.log('Split Story AI contract passed: Architect owns canon/branches, Narrator owns prose only, selected language is publish-gated for RU/UZ/KZ, Luna is default, Sol escalation is opt-in, and long-series identity/memory scaling is documented.')
