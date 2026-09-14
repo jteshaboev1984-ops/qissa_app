@@ -41,6 +41,8 @@ requireFragments('architecture', architecture, [
   'patchHasStableMemoryKeys',
   'normalizeStoryBlueprintMemoryKeys',
   'canonicalNewMemoryKey',
+  'canonicalizeMemoryEntries',
+  'byKey.has(key)',
   'existingCanon.has(entry.key)',
   'existingRelationships.has(entry.key)',
   'never import consequences from an unselected branch.',
