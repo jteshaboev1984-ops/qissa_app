@@ -351,9 +351,10 @@ export const storyOutputSchema = {
 export const textLengthRepairOutputSchema = {
   type: 'object',
   additionalProperties: false,
-  required: ['story_text', 'choice_resolutions'],
+  required: ['story_rewrite', 'story_expansion', 'choice_resolutions'],
   properties: {
-    story_text: { type: ['string', 'null'] },
+    story_rewrite: { type: ['string', 'null'] },
+    story_expansion: { type: ['string', 'null'] },
     choice_resolutions: {
       type: 'array',
       items: {
@@ -505,14 +506,21 @@ export const buildTextLengthRepairPrompts = (
 ) => {
   const [minimumStoryWords, maximumStoryWords] = hardStoryWordRange(context)
   const currentStoryWords = storyWordCount(candidate.story_text)
-  const repairStoryText = validationErrors.includes('story_too_short') || validationErrors.includes('story_too_long')
+  const storyTooShort = validationErrors.includes('story_too_short')
+  const storyTooLong = validationErrors.includes('story_too_long')
   const bedtimeEpisodeOne = context.ageGroup === '5-7' &&
     context.storyMode === 'series' &&
     context.storyMood === 'bedtime' &&
     context.episodeIndex === 1
-  const targetMinimum = bedtimeEpisodeOne ? 500 : Math.min(maximumStoryWords - 10, minimumStoryWords + 40)
-  const targetMaximum = bedtimeEpisodeOne ? 535 : Math.max(targetMinimum, maximumStoryWords - 20)
-  const minimumGrowthWords = Math.max(0, targetMinimum - currentStoryWords)
+  const rewriteTargetMinimum = bedtimeEpisodeOne ? 500 : Math.min(maximumStoryWords - 10, minimumStoryWords + 40)
+  const rewriteTargetMaximum = bedtimeEpisodeOne ? 535 : Math.max(rewriteTargetMinimum, maximumStoryWords - 20)
+  const desiredExpandedTotal = Math.min(maximumStoryWords - 25, minimumStoryWords + 65)
+  const desiredGrowth = Math.max(0, desiredExpandedTotal - currentStoryWords)
+  const expansionMinimum = Math.max(25, desiredGrowth - 20)
+  const expansionMaximum = Math.max(
+    expansionMinimum,
+    Math.min(maximumStoryWords - currentStoryWords - 10, desiredGrowth + 20),
+  )
   const resolutionTargets = candidate.choices
     .filter((choice) => choiceNeedsResolutionLengthRepair(context, choice.resolution_text))
     .map((choice) => ({
@@ -527,18 +535,22 @@ export const buildTextLengthRepairPrompts = (
       tomorrow_seed: choice.tomorrow_seed,
       immutable_state_patch: choice.state_patch,
     }))
+  const storyParagraphs = candidate.story_text.trim().split(/\n\s*\n/u).map((item) => item.trim()).filter(Boolean)
+  const paragraphBeforeChoiceSetup = storyParagraphs.length >= 2 ? storyParagraphs[storyParagraphs.length - 2] : ''
+  const finalChoiceSetupParagraph = storyParagraphs[storyParagraphs.length - 1] ?? ''
 
   const system = [
     'You are QISSA Text Length Repair Agent.',
     'Return only data matching the supplied JSON schema.',
     'Repair only text fields explicitly listed in repair_plan. Every other field of the existing candidate is immutable and will be preserved by the server.',
-    'If repair_plan.story_text is null, return story_text as null. Otherwise rewrite story_text into the requested range while preserving the same central goal, chronology, established characters, objects, clues, locations, confirmed facts, and final decision point.',
+    'For story_too_short, do NOT rewrite the existing story. Return story_rewrite as null and write only story_expansion: one coherent passage that the server will insert immediately before the existing final choice-setup paragraph. The original story remains verbatim, so the expansion must continue naturally from the preceding paragraph and lead naturally into the existing final paragraph.',
+    'For story_too_long, return story_expansion as null and use story_rewrite to shorten the full story into the requested range without deleting causal beats.',
+    'If there is no story length failure, return both story_rewrite and story_expansion as null.',
+    'The expansion may deepen only existing action, dialogue, reactions, attempts, gentle humor and cause-and-effect. Do not introduce a new durable object, clue, relationship, location, mechanism state, branch consequence, canon fact, problem or mission.',
+    'Do not resolve either choice inside the expansion or rewrite. The final decision point and existing choices must remain valid.',
     'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions, no missing ids and no extras.',
     'For each repaired resolution_text, preserve the same selected action and the exact durable consequence already represented by its effect_summary and immutable_state_patch. Only adjust wording and useful immediate action/reaction to reach the target length.',
-    'Do not add a new durable object, clue, relationship, location, mechanism state, branch consequence, or canon fact.',
-    'Do not resolve either choice inside story_text. End at the same child decision point so the existing choices remain valid.',
-    'Expand through meaningful action, dialogue, reactions, attempts, gentle humor, and cause-and-effect inside existing beats; never pad with repeated explanation, scenery, a second problem, or an unrelated event.',
-    'The hero name remains the literal token {{HERO}}. Never invent or expose a real child name.',
+    'The hero name remains the literal token {{HERO}}. Never invent or expose a real child name. In Russian, use {{HERO}} only as a nominative subject or direct address and use grammatically invariant phrasing such as present-tense action; never put the token after a preposition or directly before a gendered past-tense verb.',
     'Write only in the requested language and preserve bedtime tone and age fit.',
   ].join(' ')
 
@@ -547,21 +559,33 @@ export const buildTextLengthRepairPrompts = (
     language: languageNames[context.language],
     validation_errors: validationErrors,
     repair_plan: {
-      story_text: repairStoryText
+      story_expansion: storyTooShort
+        ? {
+            current_story_words: currentStoryWords,
+            hard_minimum_story_words: minimumStoryWords,
+            hard_maximum_story_words: maximumStoryWords,
+            desired_total_after_insertion: desiredExpandedTotal,
+            target_additional_words: `${expansionMinimum}-${expansionMaximum}`,
+            insertion_point: 'Immediately before the existing final story paragraph.',
+            paragraph_before_insertion: paragraphBeforeChoiceSetup,
+            existing_final_choice_setup_paragraph: finalChoiceSetupParagraph,
+            rule: 'Return only NEW prose for insertion. Do not repeat either neighboring paragraph and do not restate the choices.',
+          }
+        : null,
+      story_rewrite: storyTooLong
         ? {
             current_story_text: candidate.story_text,
             current_words: currentStoryWords,
             hard_minimum_words: minimumStoryWords,
             hard_maximum_words: maximumStoryWords,
-            target_words: `${targetMinimum}-${targetMaximum}`,
-            minimum_growth_words_if_expanding: minimumGrowthWords,
-            counting_scope: 'Whitespace-separated words in story_text only.',
+            target_words: `${rewriteTargetMinimum}-${rewriteTargetMaximum}`,
           }
         : null,
       choice_resolutions: resolutionTargets,
     },
     immutable_candidate_context: {
       title: candidate.title,
+      story_text: candidate.story_text,
       state_patch: candidate.state_patch,
       choices: candidate.choices.map((choice) => ({
         choice_id: choice.choice_id,
