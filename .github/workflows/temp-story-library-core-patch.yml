@@ -24,12 +24,13 @@ jobs:
           cache: npm
 
       - name: Apply durable Story Library core patch
-        run: python3 scripts/temp-story-library-core-patch.py
-
-      - name: Remove one-off patcher
         run: |
-          rm scripts/temp-story-library-core-patch.py
-          rm .github/workflows/temp-story-library-core-patch.yml
+          cp .github/workflows/ci.yml /tmp/qissa-ci.yml
+          python3 scripts/temp-story-library-core-patch.py
+          cp /tmp/qissa-ci.yml .github/workflows/ci.yml
+
+      - name: Remove one-off patcher script
+        run: rm scripts/temp-story-library-core-patch.py
 
       - name: Validate focused contracts
         run: |
@@ -45,6 +46,6 @@ jobs:
         run: |
           git config user.name qissa-audit-bot
           git config user.email actions@users.noreply.github.com
-          git add -A
+          git add -A ':!.github/workflows/temp-story-library-core-patch.yml'
           git commit -m "Add durable Story Library and multi-session series core"
           git push origin HEAD:story-library-series-persistence-20260914
