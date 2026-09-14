@@ -195,14 +195,21 @@ Deno.serve(async (request: Request) => {
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     attemptsUsed = attempt
     try {
-      const useLengthRepair = repairCandidate !== null
-      const candidate = useLengthRepair
-        ? await repairStoryCandidateLength(openAiApiKey, storyModel, context, repairCandidate, repairValidationErrors)
-        : await generateStoryCandidate(openAiApiKey, storyModel, context, retryReason)
-      if (useLengthRepair) {
+      let candidate: StoryCandidate
+      if (repairCandidate) {
+        const candidateToRepair: StoryCandidate = repairCandidate
+        candidate = await repairStoryCandidateLength(
+          openAiApiKey,
+          storyModel,
+          context,
+          candidateToRepair,
+          repairValidationErrors,
+        )
         usedLengthRepair = true
         repairCandidate = null
         repairValidationErrors = []
+      } else {
+        candidate = await generateStoryCandidate(openAiApiKey, storyModel, context, retryReason)
       }
 
       const validationErrors = validateCandidate(context, candidate)
