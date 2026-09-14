@@ -1,11 +1,15 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-const DAILY_STORY_GENERATION_LIMIT = 3
-// TEMPORARY CLOSED-BETA CIRCUIT BREAKER. This is intentionally conservative
-// while Story AI is being validated with a small prepaid provider balance.
-// Before public/paid launch, use plan/account entitlements and keep a separate,
-// configurable emergency project spend ceiling. Tracked in GitHub issue #98.
-const GLOBAL_DAILY_STORY_GENERATION_LIMIT = 6
+// Active Story AI development must not be blocked by the temporary closed-beta
+// quota. The database RPC still requires positive integer limits in order to
+// atomically count provider-eligible requests, so use a deliberately non-binding
+// int4-safe ceiling while development is in progress. Usage remains observable
+// and QISSA_AI_ENABLED=false remains the emergency provider kill switch.
+// Replace this with plan-aware quotas plus an explicit emergency spend ceiling
+// before public launch.
+const DEVELOPMENT_ACCOUNTING_CEILING = 2_000_000_000
+const DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_CEILING
+const GLOBAL_DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_CEILING
 
 export type GenerationClaim = {
   allowed: boolean
@@ -52,7 +56,7 @@ export const claimStoryGeneration = async (installationId: string): Promise<Gene
   })
 
   if (error || !isRecord(data)) {
-    console.error('QISSA story generation cost guard failed', error)
+    console.error('QISSA story generation accounting guard failed', error)
     return deniedClaim('rate_limit_check_failed')
   }
 
