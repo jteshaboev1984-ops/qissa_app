@@ -15,7 +15,7 @@ const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
 const aiEnabledSetting = Deno.env.get('QISSA_AI_ENABLED')?.trim().toLowerCase()
 const aiEnabled = Boolean(openAiApiKey) && aiEnabledSetting !== 'false'
-const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.6-terra'
+const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.6-luna'
 const safetyModel = Deno.env.get('OPENAI_SAFETY_MODEL')?.trim() || storyModel
 const maxAttempts = 2
 

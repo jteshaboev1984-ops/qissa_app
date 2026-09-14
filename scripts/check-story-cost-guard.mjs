@@ -44,8 +44,8 @@ requireCondition(
 )
 
 requireCondition(
-  /gpt-5\.6-terra/.test(storyIndex),
-  'The default Story AI model must remain the cost-balanced GPT-5.6 Terra during prepaid closed-beta validation.',
+  /gpt-5\.6-luna/.test(storyIndex),
+  'The default Story AI model must remain GPT-5.6 Luna during prepaid closed-beta validation to minimize latency and provider spend.',
 )
 
 requireCondition(
