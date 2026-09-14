@@ -22,7 +22,7 @@ requireFragments('architecture', architecture, [
   'The architecture is the source of truth for canon, branch consequences and memory.',
   'The blueprint owns plot, choices, canon, relationships and branch consequences.',
   'Prefer updating an existing canon key when a persistent fact changes.',
-  'Never import consequences from an unselected branch.',
+  'never import consequences from an unselected branch.',
   'For Episode 2, continue after the already-confirmed resolution bridge',
   "target_story_words: target",
 ])
