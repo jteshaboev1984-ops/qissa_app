@@ -17,7 +17,10 @@ jobs:
           ref: story-ai-text-length-repair-20260914
           fetch-depth: 0
       - name: Apply text-length repair
-        run: python scripts/temp-apply-text-length-repair.py
+        run: |
+          python scripts/temp-fix-text-length-patcher.py
+          python scripts/temp-apply-text-length-repair.py
+          rm -f scripts/temp-fix-text-length-patcher.py
       - name: Commit text-length repair
         run: |
           git config user.name 'qissa-audit-bot'
