@@ -264,6 +264,7 @@ Deno.serve(async (request: Request) => {
         'Keep the immutable blueprint exactly unchanged.',
         'Correct every listed narration failure in one pass. If story_too_short is present, add meaningful action/dialogue/reaction inside existing blueprint beats until the hard minimum is safely exceeded.',
         'For russian_hero_requires_rewrite, keep {{HERO}} only as nominative subject or direct address and rewrite every case/preposition or gendered-past-tense construction around the token.',
+        'For story_language_mismatch, rewrite every natural-language field strictly in the requested story language. Do not translate machine keys or the {{HERO}} token.',
       ].join(' ')
       const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, retryFeedback)
       candidate = narrationToCandidate(context, blueprint, narration)

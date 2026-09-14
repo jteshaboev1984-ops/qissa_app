@@ -3,6 +3,8 @@ import fs from 'node:fs'
 const architecture = fs.readFileSync('supabase/functions/story-generate/story-architecture.ts', 'utf8')
 const provider = fs.readFileSync('supabase/functions/story-generate/split-openai.ts', 'utf8')
 const orchestrator = fs.readFileSync('supabase/functions/story-generate/split-index.ts', 'utf8')
+const safety = fs.readFileSync('supabase/functions/story-generate/safety.ts', 'utf8')
+const languageGuard = fs.readFileSync('supabase/functions/story-generate/language.ts', 'utf8')
 const scalingDoc = fs.readFileSync('docs/qissa/17_QISSA_Split_Story_Architecture_and_Series_Scaling_2026_09.md', 'utf8')
 
 const failures = []
@@ -33,6 +35,7 @@ requireFragments('architecture', architecture, [
   'For Episode 2, continue after the already-confirmed resolution bridge',
   "target_story_words: target",
   'paragraph_budget: paragraphBudget',
+  "errors.push('blueprint_language_mismatch')",
   "target_paragraphs: 7",
 ])
 
@@ -46,6 +49,18 @@ for (const forbidden of ['state_patch', 'canon_updates', 'relationship_updates',
 if ((provider.match(/storyLocalizationSystem\(context\)/g) ?? []).length < 2) {
   failures.push('Architect and Narrator must both use storyLocalizationSystem')
 }
+
+requireFragments('language guard', languageGuard, [
+  'hasSingleLanguageMismatch',
+  "language === 'ru'",
+  "language === 'uz'",
+  'kazakhSpecificCount',
+])
+
+requireFragments('candidate language validation', safety, [
+  "errors.push('story_language_mismatch')",
+  'candidateLanguageValues',
+])
 
 requireFragments('split provider', provider, [
   'generateStoryBlueprint',
@@ -71,6 +86,7 @@ requireFragments('split orchestrator', orchestrator, [
   "'X-QISSA-Narrator-Retry-Used'",
   'narratorRetryUsed = true',
   'Previous narration failed deterministic validation',
+  'For story_language_mismatch',
   "'X-QISSA-Escalation-Used'",
 ])
 
