@@ -259,26 +259,43 @@ const canonicalNewMemoryKey = (rawKey: string, prefix: 'canon' | 'rel'): string 
   return stableMemoryKey.test(withHash) ? withHash : `${prefix}_${suffix}`.slice(0, 48)
 }
 
+type MemoryUpdateEntry = { key: string; value: string }
+
+const canonicalizeMemoryEntries = (
+  entries: MemoryUpdateEntry[],
+  existingKeys: Set<string>,
+  prefix: 'canon' | 'rel',
+): { entries: MemoryUpdateEntry[]; normalizedCount: number } => {
+  const byKey = new Map<string, MemoryUpdateEntry>()
+  let normalizedCount = 0
+
+  for (const entry of entries) {
+    const key = existingKeys.has(entry.key) ? entry.key : canonicalNewMemoryKey(entry.key, prefix)
+    if (key !== entry.key) normalizedCount += 1
+    if (byKey.has(key)) normalizedCount += 1
+    byKey.set(key, { ...entry, key })
+  }
+
+  return { entries: [...byKey.values()], normalizedCount }
+}
+
 const canonicalizePatchMemoryKeys = (
   context: NormalizedStoryContext,
   patch: CandidatePatch,
 ): { patch: CandidatePatch; normalizedCount: number } => {
   const existingCanon = new Set(Object.keys(context.canonState))
   const existingRelationships = new Set(Object.keys(context.relationshipState))
-  let normalizedCount = 0
+  const canon = canonicalizeMemoryEntries(patch.canon_updates, existingCanon, 'canon')
+  const relationships = canonicalizeMemoryEntries(patch.relationship_updates, existingRelationships, 'rel')
 
-  const canon_updates = patch.canon_updates.map((entry) => {
-    const key = existingCanon.has(entry.key) ? entry.key : canonicalNewMemoryKey(entry.key, 'canon')
-    if (key !== entry.key) normalizedCount += 1
-    return { ...entry, key }
-  })
-  const relationship_updates = patch.relationship_updates.map((entry) => {
-    const key = existingRelationships.has(entry.key) ? entry.key : canonicalNewMemoryKey(entry.key, 'rel')
-    if (key !== entry.key) normalizedCount += 1
-    return { ...entry, key }
-  })
-
-  return { patch: { ...patch, canon_updates, relationship_updates }, normalizedCount }
+  return {
+    patch: {
+      ...patch,
+      canon_updates: canon.entries,
+      relationship_updates: relationships.entries,
+    },
+    normalizedCount: canon.normalizedCount + relationships.normalizedCount,
+  }
 }
 
 export const normalizeStoryBlueprintMemoryKeys = (
