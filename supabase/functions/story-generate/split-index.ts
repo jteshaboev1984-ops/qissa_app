@@ -191,6 +191,7 @@ Deno.serve(async (request: Request) => {
   let candidate: StoryCandidate | null = null
   let narratorModelUsed = narratorModel
   let repairUsed = false
+  let narratorRetryUsed = false
   let escalationUsed = false
   let providerCalls = 0
   let lastFailureClass = 'unknown'
@@ -242,65 +243,105 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Provider-Calls': String(providerCalls),
+      'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
     })
   }
 
   let validationErrors = validateCandidate(context, candidate)
   if (validationErrors.length > 0) {
     trace.push(`narrator-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
+  }
 
-    if (isTextLengthOnlyFailure(validationErrors)) {
-      try {
-        providerCalls += 1
-        candidate = await repairStoryCandidateTextLengths(
-          openAiApiKey,
-          narratorModel,
-          context,
-          candidate,
-          validationErrors,
-        )
-        repairUsed = true
-        validationErrors = validateCandidate(context, candidate)
-      } catch (error) {
-        const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
-        lastFailureClass = providerFailureClass(reason)
-        trace.push(`repair:${lastFailureClass}`)
-        return safeFallback(context, origin, 'generation-or-safety-failed', {
-          ...providerMetadata(),
-          ...claimMetadata(claim),
-          'X-QISSA-Generation-Failure-Class': lastFailureClass,
-          'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
-          'X-QISSA-Generation-Repair': 'text-length',
-          'X-QISSA-Provider-Calls': String(providerCalls),
-        })
+  // One prose-only Luna retry is safe because the immutable Architect blueprint owns all canon,
+  // branch consequences and choices. This retry cannot mutate state; it only rewrites narration.
+  if (validationErrors.length > 0 && !isTextLengthOnlyFailure(validationErrors)) {
+    try {
+      providerCalls += 1
+      narratorRetryUsed = true
+      const retryFeedback = [
+        `Previous narration failed deterministic validation: ${validationErrors.join(', ')}.`,
+        `Observed metrics: ${candidateValidationMetrics(candidate).join(', ')}.`,
+        'Keep the immutable blueprint exactly unchanged.',
+        'Correct every listed narration failure in one pass. If story_too_short is present, add meaningful action/dialogue/reaction inside existing blueprint beats until the hard minimum is safely exceeded.',
+        'For russian_hero_requires_rewrite, keep {{HERO}} only as nominative subject or direct address and rewrite every case/preposition or gendered-past-tense construction around the token.',
+        'For story_language_mismatch, rewrite every natural-language field strictly in the requested story language. Do not translate machine keys or the {{HERO}} token.',
+      ].join(' ')
+      const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, retryFeedback)
+      candidate = narrationToCandidate(context, blueprint, narration)
+      validationErrors = validateCandidate(context, candidate)
+      if (validationErrors.length > 0) {
+        trace.push(`narrator-retry-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
       }
+    } catch (error) {
+      const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
+      lastFailureClass = providerFailureClass(reason)
+      trace.push(`narrator-retry:${lastFailureClass}`)
+      return safeFallback(context, origin, 'generation-or-safety-failed', {
+        ...providerMetadata(),
+        ...claimMetadata(claim),
+        'X-QISSA-Generation-Failure-Class': lastFailureClass,
+        'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
+        'X-QISSA-Narrator-Retry-Used': 'true',
+        'X-QISSA-Provider-Calls': String(providerCalls),
+        'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
+      })
+    }
+  }
 
+  if (validationErrors.length > 0 && isTextLengthOnlyFailure(validationErrors)) {
+    try {
+      providerCalls += 1
+      candidate = await repairStoryCandidateTextLengths(
+        openAiApiKey,
+        narratorModel,
+        context,
+        candidate,
+        validationErrors,
+      )
+      repairUsed = true
+      validationErrors = validateCandidate(context, candidate)
       if (validationErrors.length > 0) {
         lastFailureClass = 'validation'
         trace.push(`repair-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
       }
-    } else if (escalationModel && escalationModel !== narratorModel) {
-      try {
-        providerCalls += 1
-        narratorModelUsed = escalationModel
-        const retryFeedback = `Previous narration failed deterministic validation: ${validationErrors.join(', ')}. Keep the immutable blueprint exactly unchanged and correct only the narration.`
-        const narration = await generateStoryNarration(openAiApiKey, escalationModel, context, blueprint, retryFeedback)
-        candidate = narrationToCandidate(context, blueprint, narration)
-        escalationUsed = true
-        validationErrors = validateCandidate(context, candidate)
-        if (validationErrors.length > 0) {
-          lastFailureClass = 'validation'
-          trace.push(`escalation-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
-        }
-      } catch (error) {
-        const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
-        lastFailureClass = providerFailureClass(reason)
-        trace.push(`escalation:${lastFailureClass}`)
-      }
-    } else {
-      lastFailureClass = 'validation'
+    } catch (error) {
+      const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
+      lastFailureClass = providerFailureClass(reason)
+      trace.push(`repair:${lastFailureClass}`)
+      return safeFallback(context, origin, 'generation-or-safety-failed', {
+        ...providerMetadata(),
+        ...claimMetadata(claim),
+        'X-QISSA-Generation-Failure-Class': lastFailureClass,
+        'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
+        'X-QISSA-Generation-Repair': 'text-length',
+        'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
+        'X-QISSA-Provider-Calls': String(providerCalls),
+        'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
+      })
     }
   }
+
+  if (validationErrors.length > 0 && escalationModel && escalationModel !== narratorModel) {
+    try {
+      providerCalls += 1
+      narratorModelUsed = escalationModel
+      const retryFeedback = `Luna narration still failed deterministic validation after bounded correction: ${validationErrors.join(', ')}. Keep the immutable blueprint exactly unchanged and correct only the narration.`
+      const narration = await generateStoryNarration(openAiApiKey, escalationModel, context, blueprint, retryFeedback)
+      candidate = narrationToCandidate(context, blueprint, narration)
+      escalationUsed = true
+      validationErrors = validateCandidate(context, candidate)
+      if (validationErrors.length > 0) {
+        lastFailureClass = 'validation'
+        trace.push(`escalation-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
+      }
+    } catch (error) {
+      const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
+      lastFailureClass = providerFailureClass(reason)
+      trace.push(`escalation:${lastFailureClass}`)
+    }
+  }
+
+  if (validationErrors.length > 0) lastFailureClass = lastFailureClass === 'unknown' ? 'validation' : lastFailureClass
 
   if (validationErrors.length > 0 || !candidate) {
     return safeFallback(context, origin, 'generation-or-safety-failed', {
@@ -309,9 +350,11 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Class': lastFailureClass || 'validation',
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
+      'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
       'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,
       'X-QISSA-Provider-Calls': String(providerCalls),
+      'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
     })
   }
 
@@ -326,6 +369,7 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
+      'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
       'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,
       'X-QISSA-Provider-Calls': String(providerCalls),
@@ -381,6 +425,7 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
+      'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
       'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,
       'X-QISSA-Provider-Calls': String(providerCalls),

@@ -8,6 +8,7 @@ import {
   type PositiveValue,
   type StoryCandidate,
 } from './contracts.ts'
+import { hasSingleLanguageMismatch } from './language.ts'
 
 export type StoryBlueprintChoice = {
   choice_id: string
@@ -192,6 +193,42 @@ const duplicateEntryKeys = (entries: CandidatePatch['canon_updates']): boolean =
 
 const textContainsHeroToken = (value: string): boolean => value.includes('{{HERO}}') || value.includes('QISSA_HERO')
 
+const patchNaturalLanguageValues = (patch: unknown): string[] => {
+  if (!isRecord(patch)) return []
+  const values: string[] = []
+  for (const field of ['last_event', 'new_friend', 'hero_trait', 'open_arc'] as const) {
+    if (typeof patch[field] === 'string') values.push(patch[field] as string)
+  }
+  for (const field of ['relationship_updates', 'canon_updates'] as const) {
+    const entries = patch[field]
+    if (!Array.isArray(entries)) continue
+    for (const entry of entries) {
+      if (isRecord(entry) && typeof entry.value === 'string') values.push(entry.value)
+    }
+  }
+  return values
+}
+
+const blueprintNaturalLanguageValues = (blueprint: StoryBlueprint): string[] => {
+  const values: string[] = []
+  for (const field of ['central_goal', 'setting_anchor', 'decision_point', 'next_episode_preview'] as const) {
+    if (typeof blueprint[field] === 'string') values.push(blueprint[field])
+  }
+  if (Array.isArray(blueprint.continuity_callbacks)) values.push(...blueprint.continuity_callbacks.filter((item): item is string => typeof item === 'string'))
+  if (Array.isArray(blueprint.beats)) values.push(...blueprint.beats.filter((item): item is string => typeof item === 'string'))
+  values.push(...patchNaturalLanguageValues(blueprint.state_patch))
+  if (Array.isArray(blueprint.choices)) {
+    for (const choice of blueprint.choices) {
+      if (!isRecord(choice)) continue
+      for (const field of ['text', 'effect_summary', 'resolution_goal', 'tomorrow_seed'] as const) {
+        if (typeof choice[field] === 'string') values.push(choice[field] as string)
+      }
+      values.push(...patchNaturalLanguageValues(choice.state_patch))
+    }
+  }
+  return values
+}
+
 const stableMemoryKey = /^[a-z][a-z0-9_.-]{0,47}$/u
 
 const memoryKeyHash = (value: string): string => {
@@ -272,6 +309,8 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   if (!isRecord(blueprint)) return ['blueprint_not_object']
   const value = blueprint as unknown as StoryBlueprint
   const errors: string[] = []
+
+  if (hasSingleLanguageMismatch(context.language, blueprintNaturalLanguageValues(value))) errors.push('blueprint_language_mismatch')
 
   if (value.plan_version !== 'split-v1') errors.push('invalid_blueprint_version')
   if (typeof value.central_goal !== 'string' || value.central_goal.trim().length < 8) errors.push('invalid_central_goal')
@@ -404,20 +443,26 @@ export const buildNarratorPrompts = (
 ) => {
   const [minimumWords, maximumWords] = hardStoryWordRange(context)
   const target = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
-    ? context.episodeIndex === 1 ? '470-520' : '390-470'
+    ? context.episodeIndex === 1 ? '485-525' : '400-470'
     : `${Math.min(maximumWords - 10, minimumWords + 40)}-${Math.max(minimumWords + 40, maximumWords - 20)}`
+  const paragraphBudget = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
+    ? context.episodeIndex === 1
+      ? { target_paragraphs: 7, average_words_per_paragraph: '65-75', final_choice_setup_words: '55-75' }
+      : { target_paragraphs: '6-7', average_words_per_paragraph: '60-70', final_coda_words: '50-90' }
+    : null
 
   const system = [
     'You are QISSA Narrator. Turn an immutable Story Architect blueprint into child-facing prose.',
     'Return only data matching the supplied JSON schema.',
     'The blueprint owns plot, choices, canon, relationships and branch consequences. Never change, replace or add a durable fact outside that blueprint.',
     'You may add ephemeral sensory detail, dialogue, reactions and gentle humor only when they do not create new persistent lore.',
-    'Write only in the requested language and for the requested age.',
+    'Write only in the requested language and for the requested age. Never switch languages inside dialogue, signs, inscriptions, narration, choice resolutions or examples.',
     'Use the literal token {{HERO}} for the hero name. Never invent a real child name.',
     'For Russian, use {{HERO}} only in grammatically invariant positions, preferably nominative subject or direct address. Never put it after a preposition and never attach gendered past-tense agreement directly to the token.',
     'For Episode 1, end story_text at the blueprint decision point before either branch happens. Do not print the two choices inside story_text.',
     'For Episode 2, begin after the confirmed choice resolution already happened. Do not replay that action. Resolve the same central goal and finish calmly without a cliffhanger.',
     'Follow the blueprint beat order. Every one or two short paragraphs should contain action, dialogue, discovery, reaction, attempt, humor or cause-and-effect.',
+    'For ages 5-7 bedtime series, treat paragraph_budget as a quantitative drafting plan. Do not compress several blueprint beats into a few very short paragraphs; hit the requested total through meaningful beat development, not filler.',
     'Avoid padding, repeated clues, repeated explanation, decorative filler and unrelated events.',
     'For each Episode 1 choice, write exactly one resolution_text matching its resolution_goal and state consequence. Aim for 30-45 words and stay below 320 characters.',
     'For Russian, return 2-3 gentle Russian-to-English vocabulary items grounded in the story. For Uzbek or Kazakh return an empty vocabulary array.',
@@ -434,6 +479,7 @@ export const buildNarratorPrompts = (
     style_pack: context.stylePackId,
     hard_story_word_range: { minimum: minimumWords, maximum: maximumWords },
     target_story_words: target,
+    paragraph_budget: paragraphBudget,
     counting_scope: 'Whitespace-separated words in story_text only.',
     immutable_blueprint: blueprint,
     retry_feedback: retryReason,

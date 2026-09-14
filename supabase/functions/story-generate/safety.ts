@@ -9,6 +9,7 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import type { ModerationResult } from './openai.ts'
+import { hasSingleLanguageMismatch } from './language.ts'
 
 const allFalse = (flags: SafetyFlags) => Object.values(flags).every((value) => value === false)
 
@@ -112,6 +113,45 @@ const startsWithNextDayReset = (context: NormalizedStoryContext, text: string) =
   return /^утром\b/u.test(first) || /^на следующее утро\b/u.test(first) || /^tongda\b/u.test(first) || /^ertasi tongda\b/u.test(first) || /^таңертең\b/u.test(first)
 }
 
+const patchLanguageValues = (patch: unknown): string[] => {
+  if (!isRecord(patch)) return []
+  const values: string[] = []
+  for (const field of ['last_event', 'new_friend', 'hero_trait', 'open_arc'] as const) {
+    if (typeof patch[field] === 'string') values.push(patch[field] as string)
+  }
+  for (const field of ['relationship_updates', 'canon_updates'] as const) {
+    const entries = patch[field]
+    if (!Array.isArray(entries)) continue
+    for (const entry of entries) {
+      if (isRecord(entry) && typeof entry.value === 'string') values.push(entry.value)
+    }
+  }
+  return values
+}
+
+const candidateLanguageValues = (candidate: StoryCandidate): string[] => {
+  const values = [candidate.title, candidate.story_text, candidate.nextEpisodePreview]
+    .filter((item): item is string => typeof item === 'string')
+  values.push(...patchLanguageValues(candidate.state_patch))
+  if (Array.isArray(candidate.choices)) {
+    for (const choice of candidate.choices) {
+      if (!isRecord(choice)) continue
+      for (const field of ['text', 'effect_summary', 'resolution_text', 'tomorrow_seed'] as const) {
+        if (typeof choice[field] === 'string') values.push(choice[field] as string)
+      }
+      values.push(...patchLanguageValues(choice.state_patch))
+    }
+  }
+  if (Array.isArray(candidate.vocabulary)) {
+    for (const item of candidate.vocabulary) {
+      if (!isRecord(item)) continue
+      if (typeof item.word === 'string') values.push(item.word)
+      if (typeof item.example === 'string') values.push(item.example)
+    }
+  }
+  return values
+}
+
 const russianHeroTokenNeedsRewrite = (text: string) => {
   const token = '(?:\\{\\{HERO\\}\\}|QISSA_HERO)'
   const preposition = new RegExp(
@@ -129,6 +169,8 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   const errors: string[] = []
   if (!isRecord(candidate)) return ['candidate_not_object']
   const value = candidate as StoryCandidate
+
+  if (hasSingleLanguageMismatch(context.language, candidateLanguageValues(value))) errors.push('story_language_mismatch')
 
   if (context.language === 'ru') {
     const choiceText = Array.isArray(value.choices)
