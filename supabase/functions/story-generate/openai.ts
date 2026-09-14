@@ -129,11 +129,18 @@ export const generateStoryCandidate = async (
 
 
 type TextLengthRepair = {
-  story_text: string | null
+  story_rewrite: string | null
+  story_expansion: string | null
   choice_resolutions: Array<{ choice_id: string; resolution_text: string }>
 }
 
 const repairWordCount = (text: string): number => text.trim().split(/\s+/u).filter(Boolean).length
+
+const insertStoryExpansionBeforeFinalParagraph = (storyText: string, expansion: string): string => {
+  const paragraphs = storyText.trim().split(/\n\s*\n/u).map((item) => item.trim()).filter(Boolean)
+  if (paragraphs.length < 2) throw new Error('openai_text_repair_story_structure')
+  return [...paragraphs.slice(0, -1), expansion.trim(), paragraphs[paragraphs.length - 1]].join('\n\n')
+}
 
 const needsChoiceResolutionRepair = (context: NormalizedStoryContext, resolutionText: string): boolean => {
   if (!(context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime' && context.episodeIndex === 1)) {
@@ -164,9 +171,16 @@ export const repairStoryCandidateTextLengths = async (
     'none',
   )
 
-  const repairStoryText = validationErrors.includes('story_too_short') || validationErrors.includes('story_too_long')
-  if (repairStoryText && (typeof repair.story_text !== 'string' || !repair.story_text.trim())) {
-    throw new Error('openai_invalid_text_repair_story')
+  const storyTooShort = validationErrors.includes('story_too_short')
+  const storyTooLong = validationErrors.includes('story_too_long')
+  if (storyTooShort && (typeof repair.story_expansion !== 'string' || !repair.story_expansion.trim() || repair.story_rewrite !== null)) {
+    throw new Error('openai_invalid_text_repair_expansion')
+  }
+  if (storyTooLong && (typeof repair.story_rewrite !== 'string' || !repair.story_rewrite.trim() || repair.story_expansion !== null)) {
+    throw new Error('openai_invalid_text_repair_rewrite')
+  }
+  if (!storyTooShort && !storyTooLong && (repair.story_rewrite !== null || repair.story_expansion !== null)) {
+    throw new Error('openai_unexpected_text_repair_story')
   }
 
   const targetChoiceIds = new Set(
@@ -185,7 +199,11 @@ export const repairStoryCandidateTextLengths = async (
 
   return {
     ...candidate,
-    story_text: repairStoryText ? (repair.story_text as string) : candidate.story_text,
+    story_text: storyTooShort
+      ? insertStoryExpansionBeforeFinalParagraph(candidate.story_text, repair.story_expansion as string)
+      : storyTooLong
+        ? (repair.story_rewrite as string)
+        : candidate.story_text,
     choices: candidate.choices.map((choice) => targetChoiceIds.has(choice.choice_id)
       ? { ...choice, resolution_text: repairedByChoiceId.get(choice.choice_id) as string }
       : choice),

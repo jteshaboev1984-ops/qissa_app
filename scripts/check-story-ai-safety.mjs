@@ -69,6 +69,8 @@ requireText('OpenAI provider', provider, [
   'textLengthRepairOutputSchema',
   "'qissa_text_length_repair'",
   'targetChoiceIds',
+  'insertStoryExpansionBeforeFinalParagraph',
+  'openai_invalid_text_repair_expansion',
   '3000',
 ])
 
@@ -138,6 +140,10 @@ requireText('story prompts', prompts, [
   'retry_feedback: retryGuidance(context, retryReason)',
   'Text Length Repair Agent',
   'Repair only text fields explicitly listed in repair_plan.',
+  'For story_too_short, do NOT rewrite the existing story.',
+  'Return only NEW prose for insertion.',
+  'target_additional_words',
+  'existing_final_choice_setup_paragraph',
   'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions',
   'Every other field of the existing candidate is immutable',
   'Do not add a new durable object, clue, relationship, location, mechanism state, branch consequence, or canon fact',
@@ -268,4 +274,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI safety, targeted story/resolution text-length repair, validator metrics, immediate choice payoff, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')
+console.log('Story AI safety, additive short-story repair, targeted resolution repair, validator metrics, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')
