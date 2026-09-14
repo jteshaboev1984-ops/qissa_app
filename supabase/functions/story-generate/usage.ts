@@ -1,15 +1,13 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-// Active Story AI development must not be blocked by the temporary closed-beta
-// quota. The database RPC still requires positive integer limits in order to
-// atomically count provider-eligible requests, so use a deliberately non-binding
-// int4-safe ceiling while development is in progress. Usage remains observable
-// and QISSA_AI_ENABLED=false remains the emergency provider kill switch.
-// Replace this with plan-aware quotas plus an explicit emergency spend ceiling
-// before public launch.
-const DEVELOPMENT_ACCOUNTING_CEILING = 2_000_000_000
-const DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_CEILING
-const GLOBAL_DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_CEILING
+// During active Story AI development, zero means accounting-only: provider-
+// eligible requests are still counted atomically, but no per-installation or
+// project-wide daily quota is enforced. QISSA_AI_ENABLED=false remains the
+// emergency provider kill switch. Positive limits keep their normal throttling
+// semantics and should be restored intentionally before external beta/launch.
+const DEVELOPMENT_ACCOUNTING_ONLY_LIMIT = 0
+const DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_ONLY_LIMIT
+const GLOBAL_DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_ONLY_LIMIT
 
 export type GenerationClaim = {
   allowed: boolean
