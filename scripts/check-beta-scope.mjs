@@ -16,8 +16,9 @@ assert(scope.includes("ageGroup: '5-7'"), 'Closed beta must stay scoped to age 5
 assert(scope.includes("publicLanguages: ['ru', 'uz']") || scope.includes("const publicLanguages: Language[] = ['ru', 'uz']"), 'Closed beta public languages must be RU and UZ only.')
 assert(scope.includes("publicStylePackIds: StylePackId[] = ['cozy_forest', 'magic_garden', 'stars_and_space']"), 'Closed beta must expose exactly the three approved flagship worlds.')
 assert(scope.includes("nextStylePackId: 'silk_road'"), 'Silk Road must remain the next localization priority.')
-assert(scope.includes('storyGenerationDailyLimit: 3'), 'Closed beta AI budget guardrail must remain three story generations per installation per day during prepaid validation.')
-assert(scope.includes('storyGenerationGlobalDailyLimit: 6'), 'Closed beta project-wide Story AI ceiling must remain six provider claims per day during prepaid validation.')
+assert(scope.includes('storyGenerationThrottleEnabled: false'), 'Story AI prompt/validator development must remain unthrottled until launch quotas are intentionally restored.')
+assert(!scope.includes('storyGenerationDailyLimit:'), 'Development beta scope must not expose the retired temporary per-installation Story AI quota.')
+assert(!scope.includes('storyGenerationGlobalDailyLimit:'), 'Development beta scope must not expose the retired temporary project-wide Story AI quota.')
 assert(scope.includes('providerAudioEnabledByDefault: false'), 'Provider TTS must remain off by default during development.')
 
 assert(onboardingSteps.includes("['hero', 'world']"), 'First-launch onboarding must remain focused on hero and world.')
