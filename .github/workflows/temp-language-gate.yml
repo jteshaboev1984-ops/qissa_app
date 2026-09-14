@@ -1,0 +1,27 @@
+name: Temporary Selected Language Hardening
+
+on:
+  push:
+    branches:
+      - story-ai-narrator-retry-hardening-20260914
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: story-ai-narrator-retry-hardening-20260914
+      - name: Apply selected-language gate
+        run: python3 scripts/temp-language-gate.py
+      - name: Remove one-off patcher and commit
+        run: |
+          rm scripts/temp-language-gate.py .github/workflows/temp-language-gate.yml
+          git config user.name qissa-audit-bot
+          git config user.email actions@users.noreply.github.com
+          git add -A
+          git commit -m "Enforce selected language across split Story AI"
+          git push origin HEAD:story-ai-narrator-retry-hardening-20260914
