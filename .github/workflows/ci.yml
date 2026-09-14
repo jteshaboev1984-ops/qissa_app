@@ -46,6 +46,9 @@ jobs:
       - name: Validate story service boundary
         run: npm run check:story-service
 
+      - name: Validate durable Story Library and multi-session series
+        run: npm run check:story-library
+
       - name: Validate critical sync across reloads
         run: npm run check:critical-sync-reload
 
