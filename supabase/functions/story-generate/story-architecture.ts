@@ -421,11 +421,13 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
   ].join(' ')
 
   const user = JSON.stringify({
-    task: context.episodeIndex === 1
-      ? context.hasSeriesMemory
-        ? `Plan bedtime series session ${context.sessionIndex}, segment 1, using prior canon as continuity while starting one fresh story goal and two branch consequences.`
-        : 'Plan bedtime series session 1, segment 1 and its two branch consequences.'
-      : `Plan bedtime series session ${context.sessionIndex}, segment 2 after the confirmed choice consequence.`,
+    task: context.storyMode === 'one_time'
+      ? 'Plan one self-contained bedtime story with one gentle decision and its two safe branch consequences.'
+      : context.episodeIndex === 1
+        ? context.hasSeriesMemory
+          ? `Plan bedtime series session ${context.sessionIndex}, segment 1, using prior canon as continuity while starting one fresh story goal and two branch consequences.`
+          : 'Plan bedtime series session 1, segment 1 and its two branch consequences.'
+        : `Plan bedtime series session ${context.sessionIndex}, segment 2 after the confirmed choice consequence.`,
     requested_language: languageNames[context.language],
     age_group: context.ageGroup,
     hero: {
