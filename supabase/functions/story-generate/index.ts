@@ -195,6 +195,7 @@ Deno.serve(async (request: Request) => {
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     attemptsUsed = attempt
     try {
+      // A pure story-length failure keeps all already-valid canon and branch data immutable.
       let candidate: StoryCandidate
       if (repairCandidate) {
         const candidateToRepair: StoryCandidate = repairCandidate
