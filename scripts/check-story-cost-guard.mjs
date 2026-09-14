@@ -53,9 +53,9 @@ requireCondition(
 
 requireCondition(
   /30_000/.test(provider) &&
-    /'qissa_story_candidate'[\s\S]*30_000[\s\S]*2200[\s\S]*'none'/.test(provider) &&
+    /'qissa_story_candidate'[\s\S]*30_000[\s\S]*4000[\s\S]*'none'/.test(provider) &&
     /'qissa_safety_evaluation'[\s\S]*12_000[\s\S]*700[\s\S]*'none'/.test(provider),
-  'Story and semantic-safety structured calls must use latency-aware timeouts with reasoning disabled for this structured generation/classification workload.',
+  'Story generation must have enough structured-output headroom for a 430-560 word Russian story plus choices/state, while both structured calls remain latency-aware with reasoning disabled.',
 )
 
 requireCondition(

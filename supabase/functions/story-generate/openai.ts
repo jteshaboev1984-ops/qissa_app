@@ -122,7 +122,7 @@ export const generateStoryCandidate = async (
     localizedSystem,
     prompts.user,
     30_000,
-    2200,
+    4000,
     'none',
   )
 }
