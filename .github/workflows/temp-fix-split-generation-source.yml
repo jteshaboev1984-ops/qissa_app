@@ -31,7 +31,7 @@ jobs:
           npm run check:story-library
           npm run check:story-service
           npm run check:story-ai
-          npm run check:story-ai-architecture
+          npm run check:story-ai-split
           npm run typecheck:story-ai
           npm run typecheck
           npm run build
