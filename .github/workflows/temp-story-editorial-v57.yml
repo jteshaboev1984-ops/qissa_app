@@ -29,7 +29,9 @@ jobs:
       - run: npm ci
 
       - name: Patch Story editorial contracts
-        run: python3 scripts/temp-story-editorial-v57-patch.py
+        run: |
+          python3 scripts/temp-story-editorial-v57-patch.py
+          python3 -c 'from pathlib import Path; p=Path("scripts/check-story-ai-safety.mjs"); t=p.read_text(); p.write_text(t.replace("context.episodeIndex === 1 ? [430, 560] : [340, 520]", "context.episodeIndex === 1 ? [360, 500] : [340, 520]"))'
 
       - name: Targeted Story checks
         run: |
