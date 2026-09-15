@@ -11,13 +11,11 @@ import { evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths
 import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
 import { narrationToCandidate, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
-import { claimStoryGeneration, isInstallationId, type GenerationClaim } from './usage.ts'
+import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
 const STORY_AI_PRODUCTION_ROLLOUT_ENABLED = true
-const aiEnabledSetting = Deno.env.get('QISSA_AI_ENABLED')?.trim().toLowerCase()
-const aiEnabled = STORY_AI_PRODUCTION_ROLLOUT_ENABLED && Boolean(openAiApiKey) && aiEnabledSetting === 'true'
 const legacyStoryModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || ''
 const architectModel = Deno.env.get('OPENAI_ARCHITECT_MODEL')?.trim() || legacyStoryModel || 'gpt-5.6-luna'
 const narratorModel = Deno.env.get('OPENAI_NARRATOR_MODEL')?.trim() || legacyStoryModel || 'gpt-5.6-luna'
@@ -165,12 +163,18 @@ Deno.serve(async (request: Request) => {
   const context = normalizeStoryRequest(input)
   if (!context) return json({ error: 'invalid_story_context' }, 422, origin)
 
-  if (!aiEnabled || !openAiApiKey) {
+  if (!STORY_AI_PRODUCTION_ROLLOUT_ENABLED || !openAiApiKey) {
     return safeFallback(context, origin, !openAiApiKey ? 'api-key-missing' : 'ai-disabled', providerMetadata())
   }
 
+  const runtimeState = await readStoryAiRuntimeState()
+  const runtimeMetadata = { 'X-QISSA-Runtime-AI': runtimeState.enabled ? 'enabled' : runtimeState.reason }
+  if (!runtimeState.enabled) {
+    return safeFallback(context, origin, runtimeState.reason, { ...providerMetadata(), ...runtimeMetadata })
+  }
+
   if (!hasValidPrivacyConsent(input)) {
-    return json({ error: 'privacy_consent_required' }, 403, origin, providerMetadata())
+    return json({ error: 'privacy_consent_required' }, 403, origin, { ...providerMetadata(), ...runtimeMetadata })
   }
 
   const installationId = installationIdFromInput(input)

@@ -14,6 +14,7 @@ const envExample = read('.env.example')
 const installationMigration = read('docs/qissa/backend/migrations/20260907_000010_add_story_generation_cost_guard.sql')
 const globalMigration = read('docs/qissa/backend/migrations/20260908_000014_add_global_story_generation_cap.sql')
 const accountingOnlyMigration = read('docs/qissa/backend/migrations/20260914_000015_allow_story_generation_accounting_only_mode.sql')
+const runtimeFlagMigration = read('docs/qissa/backend/migrations/20260915_000017_add_story_ai_runtime_flag.sql')
 const liveWorkflow = read('.github/workflows/live-story-smoke.yml')
 
 const failures = []
@@ -39,19 +40,22 @@ requireCondition(
   'Remote story requests must carry the stable installation identity used by server-side usage accounting.',
 )
 
-const disabledGuardPosition = storyIndex.indexOf('if (!aiEnabled || !openAiApiKey)')
+const disabledGuardPosition = storyIndex.indexOf('if (!STORY_AI_PRODUCTION_ROLLOUT_ENABLED || !openAiApiKey)')
+const runtimeGuardPosition = storyIndex.indexOf('readStoryAiRuntimeState()')
 const claimPosition = storyIndex.indexOf('claimStoryGeneration(installationId)')
 requireCondition(
-  disabledGuardPosition >= 0 && claimPosition > disabledGuardPosition,
-  'AI-disabled or keyless operation must return deterministic fallback before any accounting claim or provider path.',
+  disabledGuardPosition >= 0 && runtimeGuardPosition > disabledGuardPosition && claimPosition > runtimeGuardPosition,
+  'Code/key and service-role runtime guards must fail closed before any accounting claim or provider path.',
 )
 
 requireCondition(
   /STORY_AI_PRODUCTION_ROLLOUT_ENABLED = true/.test(storyIndex) &&
     /STORY_AI_PRODUCTION_ROLLOUT_ENABLED = true/.test(splitStoryIndex) &&
-    /STORY_AI_PRODUCTION_ROLLOUT_ENABLED && Boolean\(openAiApiKey\) && aiEnabledSetting === 'true'/.test(storyIndex) &&
-    /STORY_AI_PRODUCTION_ROLLOUT_ENABLED && Boolean\(openAiApiKey\) && aiEnabledSetting === 'true'/.test(splitStoryIndex),
-  'Story AI rollout must be explicitly code-reviewed ON and still require QISSA_AI_ENABLED=true plus a configured key in both entrypoints.',
+    /readStoryAiRuntimeState\(\)/.test(storyIndex) &&
+    /readStoryAiRuntimeState\(\)/.test(splitStoryIndex) &&
+    !/QISSA_AI_ENABLED/.test(storyIndex) &&
+    !/QISSA_AI_ENABLED/.test(splitStoryIndex),
+  'Story AI rollout must require the reviewed code gate, configured key and service-role runtime flag; the stale env opt-in must not remain an unmanageable production dependency.',
 )
 
 requireCondition(
@@ -103,6 +107,28 @@ requireCondition(
     /rate_limit_service_unavailable/.test(usage) &&
     /rate_limit_check_failed/.test(usage),
   'Story AI provider eligibility must still go through trusted server-side accounting and fail closed when accounting is unavailable.',
+)
+
+requireCondition(
+  /from\('qissa_runtime_flags'\)/.test(usage) &&
+    /eq\('flag', 'story_ai_enabled'\)/.test(usage) &&
+    /runtime-config-unavailable/.test(usage) &&
+    /runtime-config-check-failed/.test(usage) &&
+    /runtime-disabled/.test(usage) &&
+    /X-QISSA-Runtime-AI/.test(storyIndex) &&
+    /X-QISSA-Runtime-AI/.test(splitStoryIndex),
+  'Story AI runtime rollout state must be service-role checked, observable without secrets, and fail closed on missing/failed config.',
+)
+
+requireCondition(
+  /create table if not exists public\.qissa_runtime_flags/.test(runtimeFlagMigration) &&
+    /enabled boolean not null default false/.test(runtimeFlagMigration) &&
+    /alter table public\.qissa_runtime_flags enable row level security/.test(runtimeFlagMigration) &&
+    /revoke all on table public\.qissa_runtime_flags from anon/.test(runtimeFlagMigration) &&
+    /revoke all on table public\.qissa_runtime_flags from authenticated/.test(runtimeFlagMigration) &&
+    /grant select, update on table public\.qissa_runtime_flags to service_role/.test(runtimeFlagMigration) &&
+    /values \('story_ai_enabled', false\)/.test(runtimeFlagMigration),
+  'Runtime Story AI flag storage must default OFF and remain inaccessible to browser roles.',
 )
 
 requireCondition(
@@ -183,4 +209,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI launch guard passed: server spend is bounded, browser/server timeouts are aligned, usage remains atomic/private, and provider failures do not trigger blind paid retries.')
+console.log('Story AI launch guard passed: reviewed code + service-role runtime gates fail closed, spend is bounded, timeouts are aligned, and provider failures do not trigger blind paid retries.')

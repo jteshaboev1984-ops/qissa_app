@@ -9,13 +9,11 @@ import {
 import { buildSafeFallback } from './fallback.ts'
 import { evaluateStorySafety, generateStoryCandidate, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
-import { claimStoryGeneration, isInstallationId, type GenerationClaim } from './usage.ts'
+import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
 const STORY_AI_PRODUCTION_ROLLOUT_ENABLED = true
-const aiEnabledSetting = Deno.env.get('QISSA_AI_ENABLED')?.trim().toLowerCase()
-const aiEnabled = STORY_AI_PRODUCTION_ROLLOUT_ENABLED && Boolean(openAiApiKey) && aiEnabledSetting === 'true'
 const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.6-luna'
 const safetyModel = Deno.env.get('OPENAI_SAFETY_MODEL')?.trim() || storyModel
 const maxAttempts = 3
@@ -166,18 +164,18 @@ Deno.serve(async (request: Request) => {
   const context = normalizeStoryRequest(input)
   if (!context) return json({ error: 'invalid_story_context' }, 422, origin)
 
-  // Story AI is fail-closed behind a code-reviewed production rollout gate.
-  // Even QISSA_AI_ENABLED=true cannot enter the provider path while the rollout
-  // gate is false. Enabling paid generation therefore requires an explicit code change.
-  if (!aiEnabled || !openAiApiKey) {
-    return safeFallback(context, origin, !openAiApiKey ? 'api-key-missing' : 'ai-disabled')
+  if (!STORY_AI_PRODUCTION_ROLLOUT_ENABLED || !openAiApiKey) {
+    return safeFallback(context, origin, !openAiApiKey ? 'api-key-missing' : 'ai-disabled', providerMetadata())
+  }
+
+  const runtimeState = await readStoryAiRuntimeState()
+  const runtimeMetadata = { 'X-QISSA-Runtime-AI': runtimeState.enabled ? 'enabled' : runtimeState.reason }
+  if (!runtimeState.enabled) {
+    return safeFallback(context, origin, runtimeState.reason, { ...providerMetadata(), ...runtimeMetadata })
   }
 
   if (!hasValidPrivacyConsent(input)) {
-    // Model identifiers are operational metadata, not secrets. Returning them
-    // here lets operators verify the effective provider configuration without
-    // spending a generation claim or sending story content to the provider.
-    return json({ error: 'privacy_consent_required' }, 403, origin, providerMetadata())
+    return json({ error: 'privacy_consent_required' }, 403, origin, { ...providerMetadata(), ...runtimeMetadata })
   }
 
   const installationId = installationIdFromInput(input)

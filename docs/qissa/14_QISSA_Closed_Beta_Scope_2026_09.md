@@ -43,11 +43,11 @@ First launch should optimize time-to-story:
 
 Development must be zero-cost by default with respect to Story AI:
 
-- DEV / normal CI: `QISSA_AI_ENABLED=false` and deterministic Story Core/fallback tests;
+- DEV / normal CI: keep the service-role runtime flag `story_ai_enabled=false` and use deterministic Story Core/fallback tests;
 - live Story AI smoke: **manual only**;
 - before a paid AI test, the operator must explicitly choose the expected generation source;
 - closed-beta guardrail: **5 story-generation requests per profile/installation per day** once real AI is enabled;
-- there is **no project-wide/global daily cap in the current approved beta scope**; do not add one without a separate product decision;
+- launch-safety ceiling: **30 provider-eligible story requests project-wide per day**; this is an operational spend guard, not a product-facing family quota;
 - fallback content remains the graceful failure mode rather than exposing provider errors to the child.
 
 Production hardening status as of 2026-09-07:
@@ -62,7 +62,7 @@ Production hardening status as of 2026-09-07:
 - post-run database verification found **0** recent smoke profiles and **0** recent smoke sessions, so the acceptance run left no test story data behind;
 - the temporary one-shot GitHub Actions workflow used for this acceptance run was deleted after verification.
 
-Real Story AI remains intentionally disabled for the closed-beta hardening stage. Enabling it is a separate release decision and should be followed by a deliberately paid, manual acceptance run.
+Real Story AI remains fail-closed during routine hardening and CI. Production enablement is a separate release action through the service-role runtime flag and must be followed by a deliberately paid, manual acceptance run.
 
 The Story Agent is a launch capability, not a requirement for every development or CI run.
 

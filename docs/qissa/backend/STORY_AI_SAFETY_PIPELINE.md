@@ -15,14 +15,15 @@
 
 ## Server-only configuration
 
-The client must never receive an OpenAI API key. Configure these only as Supabase Edge Function secrets:
+The client must never receive an OpenAI API key. Configure provider keys/models only as Supabase Edge Function secrets:
 
 - `OPENAI_API_KEY`
-- `QISSA_AI_ENABLED`
-- `OPENAI_STORY_MODEL`
+- `OPENAI_ARCHITECT_MODEL`
+- `OPENAI_NARRATOR_MODEL`
 - `OPENAI_SAFETY_MODEL`
+- `OPENAI_NARRATOR_ESCALATION_MODEL` (optional; keep empty unless separately approved)
 
-AI remains disabled unless `QISSA_AI_ENABLED=true` and a non-empty `OPENAI_API_KEY` are both present.
+Story AI is fail-closed behind two operator-controlled gates: the reviewed code rollout gate and the service-role-only `qissa_runtime_flags.story_ai_enabled` row. A non-empty `OPENAI_API_KEY` and valid parental privacy consent are also required before any provider call. Browser roles cannot read or change the runtime flag.
 
 ## Safe rollout order
 
