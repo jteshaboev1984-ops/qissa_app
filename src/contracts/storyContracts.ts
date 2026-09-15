@@ -158,8 +158,8 @@ export interface Episode {
 }
 
 export interface SeriesState {
-  /** Stable identity for the whole continuing series. */
   id: string
+  /** Stable identity for the whole continuing series. */
   childProfileId: string
   /** Unique identity for the current bedtime story/session. Legacy snapshots may omit it. */
   sessionId?: string
