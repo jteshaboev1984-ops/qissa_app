@@ -416,6 +416,9 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'Return only data matching the supplied JSON schema.',
     'The architecture is the source of truth for canon, branch consequences and memory. The Narrator will be forbidden from changing these facts.',
     'Use exactly one central goal, question or gentle problem. Avoid a second unrelated problem.',
+    context.stylePackId === 'cozy_forest'
+      ? 'For cozy_forest, make living forest characters drive the story. Prefer friendly animals, birds, insects or other clearly living forest residents with a small desire, relationship, funny misunderstanding, discovery or need for help. Streams, stones, leaves, weather and paths may support the scene, but should not become the main protagonist or a maintenance task by themselves. Avoid plots centered on clearing water, repairing a path, moving debris or fixing nature unless that action directly serves a living character goal.'
+      : 'Make the central story problem emotionally legible to a child through a character desire, relationship, discovery or playful goal rather than an abstract process.',
     'Treat compact memory as authoritative. Never invent a past event that is absent from memory and never import consequences from an unselected branch.',
     'Prefer updating an existing canon key when a persistent fact changes. Create a new canon key only for a genuinely durable fact that may matter in later sessions.',
     'Keep state compact. Top-level state contains only durable facts true before the child choice. Choice state contains only the consequence of that specific branch.',
@@ -430,6 +433,12 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'For Episode 2, continue after the already-confirmed resolution bridge, use 4-7 causal beats, solve the original story goal and end with a calm bedtime coda. Return zero choices.',
     'Keep the plan concise. It is internal production state, not child-facing prose.',
     'All natural-language blueprint values, including effect summaries, state values, arc text and preview text, must be in the requested story language. Memory keys are machine identifiers and are the only exception.',
+    context.ageGroup === '5-7'
+      ? 'For ages 5-7, build the plan around concrete everyday words and situations a young child can immediately picture. Avoid literary, abstract, technical, procedural or adult vocabulary when a simpler child-level word exists.'
+      : 'Match concepts and vocabulary to the requested age.',
+    context.language === 'uz' && context.ageGroup === '5-7'
+      ? 'For Uzbek ages 5-7, prefer common natural Uzbek words, short direct phrases and child-familiar speech. Avoid bookish, formal, bureaucratic, scientific or translation-like wording merely to sound poetic.'
+      : 'Use native age-appropriate phrasing in the requested language.',
     'New canon and relationship keys must be stable lowercase ASCII semantic identifiers using letters, digits, underscore, dot or hyphen. Reuse an existing memory key exactly when updating an existing fact instead of creating a synonym.',
     context.episodeIndex === 1
       ? 'Choice display text must be in the requested story language. Do not use the {{HERO}} token in architect output; phrase choices without the hero name.'
@@ -512,6 +521,15 @@ export const buildNarratorPrompts = (
     'The blueprint owns plot, choices, canon, relationships and branch consequences. Never change, replace or add a durable fact outside that blueprint.',
     'You may add ephemeral sensory detail, dialogue, reactions and gentle humor only when they do not create new persistent lore.',
     'Write only in the requested language and for the requested age. Never switch languages inside dialogue, signs, inscriptions, narration, choice resolutions or examples.',
+    context.ageGroup === '5-7'
+      ? 'Use concrete child-level vocabulary. Prefer familiar words a 5-7-year-old can understand from context, mostly short sentences, and clear verbs. Do not choose rare literary synonyms, abstract nouns or adult-sounding wording just for beauty.'
+      : 'Keep vocabulary appropriate for the requested age.',
+    context.language === 'uz' && context.ageGroup === '5-7'
+      ? 'Write warm natural Uzbek for a young Uzbek-speaking child in Latin script. Prefer common spoken-and-read vocabulary and simple sentence structure; avoid Russian calques, formal written Uzbek and uncommon poetic words unless the story explains them through obvious action.'
+      : 'Write naturally in the requested language.',
+    context.stylePackId === 'cozy_forest'
+      ? 'Keep the forest socially alive: let 2-3 memorable living forest characters act, speak, react, joke or help. Nature can be beautiful and responsive scenery, but do not make a stream, stone pile, path or weather pattern the main child-facing subject when a living-character story can carry the same value.'
+      : 'Let characters, action and relationships carry the child-facing story.',
     'Use the literal token {{HERO}} for the hero name. Never invent a real child name.',
     'For Russian, use {{HERO}} only in grammatically invariant positions, preferably nominative subject or direct address. Never put it after a preposition and never attach gendered past-tense agreement directly to the token.',
     'For Episode 1, end story_text at the blueprint decision point before either branch happens. End with one neutral decision cue or question. Never restate, list, paraphrase, preview, or name either choice action inside story_text; the two actions belong only in the structured choices supplied by the blueprint.',

@@ -25,6 +25,8 @@ export const storyLocalizationSystem = (context: NormalizedStoryContext): string
       'For Uzbek stories, use natural Uzbek in Latin script, including correct Uzbek orthography such as o‘ and g‘ where needed.',
       'New supporting-character names and nicknames should feel natural to an Uzbek-speaking child. Do not mechanically transliterate Russian names or sentence structure.',
       'Uzbek dialogue, jokes, forms of address, and small expressions may differ from a Russian version while preserving the same story contract and canon.',
+      'For ages 3-7 especially, prefer common everyday Uzbek words and short direct sentences that a child can follow when heard aloud. Avoid rare bookish synonyms, formal official wording, heavy abstract nouns, and Russian-style sentence structure when a simpler natural Uzbek phrase exists.',
+      'Do not make Uzbek sound artificially old-fashioned or overly poetic. Warmth should come from characters, dialogue, rhythm and concrete images rather than difficult vocabulary.',
     ].join(' ')
   }
 

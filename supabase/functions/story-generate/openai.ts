@@ -174,13 +174,18 @@ export const repairStoryCandidateTextLengths = async (
 
   const storyTooShort = validationErrors.includes('story_too_short')
   const storyTooLong = validationErrors.includes('story_too_long')
-  if (storyTooShort && (typeof repair.story_expansion !== 'string' || !repair.story_expansion.trim() || repair.story_rewrite !== null)) {
+  const codaLengthFailure = validationErrors.includes('bedtime_coda_too_short') || validationErrors.includes('bedtime_coda_too_long')
+  const rewriteContinuation = context.episodeIndex === 2 && (storyTooShort || storyTooLong || codaLengthFailure)
+  if (rewriteContinuation && (typeof repair.story_rewrite !== 'string' || !repair.story_rewrite.trim() || repair.story_expansion !== null)) {
+    throw new Error('openai_invalid_continuation_text_repair_rewrite')
+  }
+  if (!rewriteContinuation && storyTooShort && (typeof repair.story_expansion !== 'string' || !repair.story_expansion.trim() || repair.story_rewrite !== null)) {
     throw new Error('openai_invalid_text_repair_expansion')
   }
-  if (storyTooLong && (typeof repair.story_rewrite !== 'string' || !repair.story_rewrite.trim() || repair.story_expansion !== null)) {
+  if (!rewriteContinuation && storyTooLong && (typeof repair.story_rewrite !== 'string' || !repair.story_rewrite.trim() || repair.story_expansion !== null)) {
     throw new Error('openai_invalid_text_repair_rewrite')
   }
-  if (!storyTooShort && !storyTooLong && (repair.story_rewrite !== null || repair.story_expansion !== null)) {
+  if (!storyTooShort && !storyTooLong && !codaLengthFailure && (repair.story_rewrite !== null || repair.story_expansion !== null)) {
     throw new Error('openai_unexpected_text_repair_story')
   }
 
@@ -200,11 +205,13 @@ export const repairStoryCandidateTextLengths = async (
 
   return {
     ...candidate,
-    story_text: storyTooShort
-      ? insertStoryExpansionBeforeFinalParagraph(candidate.story_text, repair.story_expansion as string)
-      : storyTooLong
-        ? (repair.story_rewrite as string)
-        : candidate.story_text,
+    story_text: rewriteContinuation
+      ? (repair.story_rewrite as string)
+      : storyTooShort
+        ? insertStoryExpansionBeforeFinalParagraph(candidate.story_text, repair.story_expansion as string)
+        : storyTooLong
+          ? (repair.story_rewrite as string)
+          : candidate.story_text,
     choices: candidate.choices.map((choice) => targetChoiceIds.has(choice.choice_id)
       ? { ...choice, resolution_text: repairedByChoiceId.get(choice.choice_id) as string }
       : choice),

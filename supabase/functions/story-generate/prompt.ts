@@ -508,12 +508,19 @@ export const buildTextLengthRepairPrompts = (
   const currentStoryWords = storyWordCount(candidate.story_text)
   const storyTooShort = validationErrors.includes('story_too_short')
   const storyTooLong = validationErrors.includes('story_too_long')
+  const codaTooShort = validationErrors.includes('bedtime_coda_too_short')
+  const codaTooLong = validationErrors.includes('bedtime_coda_too_long')
+  const bedtimeEpisodeTwo = context.ageGroup === '5-7' &&
+    context.storyMode === 'series' &&
+    context.storyMood === 'bedtime' &&
+    context.episodeIndex === 2
+  const rewriteContinuation = bedtimeEpisodeTwo && (storyTooShort || storyTooLong || codaTooShort || codaTooLong)
   const bedtimeEpisodeOne = context.ageGroup === '5-7' &&
     context.storyMode === 'series' &&
     context.storyMood === 'bedtime' &&
     context.episodeIndex === 1
-  const rewriteTargetMinimum = bedtimeEpisodeOne ? 350 : Math.min(maximumStoryWords - 10, minimumStoryWords + 40)
-  const rewriteTargetMaximum = bedtimeEpisodeOne ? 390 : Math.max(rewriteTargetMinimum, maximumStoryWords - 20)
+  const rewriteTargetMinimum = bedtimeEpisodeOne ? 350 : bedtimeEpisodeTwo ? 400 : Math.min(maximumStoryWords - 10, minimumStoryWords + 40)
+  const rewriteTargetMaximum = bedtimeEpisodeOne ? 390 : bedtimeEpisodeTwo ? 470 : Math.max(rewriteTargetMinimum, maximumStoryWords - 20)
   const desiredExpandedTotal = Math.min(maximumStoryWords - 25, minimumStoryWords + 45)
   const desiredGrowth = Math.max(0, desiredExpandedTotal - currentStoryWords)
   const expansionMinimum = Math.max(25, desiredGrowth - 20)
@@ -543,9 +550,12 @@ export const buildTextLengthRepairPrompts = (
     'You are QISSA Text Length Repair Agent.',
     'Return only data matching the supplied JSON schema.',
     'Repair only text fields explicitly listed in repair_plan. Every other field of the existing candidate is immutable and will be preserved by the server.',
-    'For story_too_short, do NOT rewrite the existing story. Return story_rewrite as null and write only story_expansion: one coherent passage that the server will insert immediately before the existing final choice-setup paragraph. The original story remains verbatim, so the expansion must continue naturally from the preceding paragraph and lead naturally into the existing final paragraph.',
+    rewriteContinuation
+      ? 'For Episode 2 continuation length or bedtime-coda failures, rewrite the full story_text while preserving the same characters, causal events, selected-choice consequence, central goal and immutable state. Return story_expansion as null. Reach the requested total naturally, solve the original problem before the end, and make the final paragraph a real 60-120 word sleepy coda rather than another plot beat.'
+      : 'For story_too_short, do NOT rewrite the existing story. Return story_rewrite as null and write only story_expansion: one coherent passage that the server will insert immediately before the existing final choice-setup paragraph. The original story remains verbatim, so the expansion must continue naturally from the preceding paragraph and lead naturally into the existing final paragraph.',
     'For story_too_long, return story_expansion as null and use story_rewrite to shorten the full story into the requested range without deleting causal beats.',
-    'If there is no story length failure, return both story_rewrite and story_expansion as null.',
+    'If there is no story length or Episode 2 bedtime-coda failure, return both story_rewrite and story_expansion as null.',
+    'When rewriting Episode 2, do not invent a new problem, location, character, durable object, clue, relationship or branch consequence. Do not replay the selected choice bridge. Use dialogue, reactions, humor and concrete action already licensed by the candidate to develop the same story, then lower energy into closure.',
     'The expansion may deepen only existing action, dialogue, reactions, attempts, gentle humor and cause-and-effect. Do not introduce a new durable object, clue, relationship, location, mechanism state, branch consequence, canon fact, problem or mission.',
     'Do not resolve either choice inside the expansion or rewrite. The final decision point and existing choices must remain valid.',
     'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions, no missing ids and no extras.',
@@ -559,7 +569,7 @@ export const buildTextLengthRepairPrompts = (
     language: languageNames[context.language],
     validation_errors: validationErrors,
     repair_plan: {
-      story_expansion: storyTooShort
+      story_expansion: storyTooShort && !rewriteContinuation
         ? {
             current_story_words: currentStoryWords,
             hard_minimum_story_words: minimumStoryWords,
@@ -572,13 +582,16 @@ export const buildTextLengthRepairPrompts = (
             rule: 'Return only NEW prose for insertion. Do not repeat either neighboring paragraph and do not restate the choices.',
           }
         : null,
-      story_rewrite: storyTooLong
+      story_rewrite: rewriteContinuation || storyTooLong
         ? {
             current_story_text: candidate.story_text,
             current_words: currentStoryWords,
             hard_minimum_words: minimumStoryWords,
             hard_maximum_words: maximumStoryWords,
             target_words: `${rewriteTargetMinimum}-${rewriteTargetMaximum}`,
+            preserve_story_contract: rewriteContinuation ? 'same Episode 2 plot, same selected-choice consequence, same characters and immutable state; no new problem or durable fact' : 'preserve all causal beats while shortening',
+            final_bedtime_coda_words: rewriteContinuation ? '60-120 words in the final paragraph after the main problem is solved' : null,
+            validation_errors: validationErrors,
           }
         : null,
       choice_resolutions: resolutionTargets,

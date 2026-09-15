@@ -7,6 +7,9 @@ const architecture = fs.readFileSync('supabase/functions/story-generate/story-ar
 const provider = fs.readFileSync('supabase/functions/story-generate/split-openai.ts', 'utf8')
 const orchestrator = fs.readFileSync('supabase/functions/story-generate/split-index.ts', 'utf8')
 const safety = fs.readFileSync('supabase/functions/story-generate/safety.ts', 'utf8')
+const repairPrompt = fs.readFileSync('supabase/functions/story-generate/prompt.ts', 'utf8')
+const repairProvider = fs.readFileSync('supabase/functions/story-generate/openai.ts', 'utf8')
+const localization = fs.readFileSync('supabase/functions/story-generate/localization.ts', 'utf8')
 const languageGuard = fs.readFileSync('supabase/functions/story-generate/language.ts', 'utf8')
 const scalingDoc = fs.readFileSync('docs/qissa/17_QISSA_Split_Story_Architecture_and_Series_Scaling_2026_09.md', 'utf8')
 
@@ -78,6 +81,8 @@ requireFragments('architecture', architecture, [
   'Never restate, list, paraphrase, preview, or name either choice action inside story_text',
   'next_episode_preview is child-facing story copy',
   'Episode 2 has no child decision menu',
+  'make living forest characters drive the story',
+  'For Uzbek ages 5-7, prefer common natural Uzbek words',
   "choices: context.episodeIndex === 1 ? 'exactly 2' : 'exactly 0'",
   "decision_point: context.episodeIndex === 1 ? 'one non-empty child decision point' : 'empty string'",
   'enforceStoryBlueprintContextContract',
@@ -141,6 +146,8 @@ requireFragments('split orchestrator', orchestrator, [
   'validateStoryBlueprint(context, blueprint)',
   'narrationToCandidate(context, blueprint, narration)',
   'repairStoryCandidateTextLengths',
+  'bedtime_coda_too_short',
+  'bedtime_coda_too_long',
   'evaluateStorySafety',
   'moderateStoryText',
   "'X-QISSA-Provider-Calls'",
@@ -171,6 +178,24 @@ if (!(runtimeMetadataPosition >= 0 && runtimeOnSuccessPosition > runtimeMetadata
 if (orchestrator.includes("OPENAI_NARRATOR_ESCALATION_MODEL')?.trim() || 'gpt-5.6-sol'")) {
   failures.push('Sol escalation must remain opt-in during tuning')
 }
+
+requireFragments('Episode 2 text repair prompt', repairPrompt, [
+  'rewriteContinuation',
+  'final_bedtime_coda_words',
+  '60-120 words in the final paragraph',
+  'same Episode 2 plot, same selected-choice consequence',
+])
+
+requireFragments('Episode 2 text repair provider', repairProvider, [
+  'codaLengthFailure',
+  'rewriteContinuation',
+  'openai_invalid_continuation_text_repair_rewrite',
+])
+
+requireFragments('Uzbek localization', localization, [
+  'prefer common everyday Uzbek words and short direct sentences',
+  'Do not make Uzbek sound artificially old-fashioned or overly poetic',
+])
 
 requireFragments('scaling architecture doc', scalingDoc, [
   'bedtime session',
