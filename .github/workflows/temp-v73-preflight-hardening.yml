@@ -1,0 +1,62 @@
+name: Temporary v73 Preflight Hardening
+
+on:
+  push:
+    branches:
+      - fix/uzbek-full-rewrite-repair-v73
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temp-v73-preflight-hardening
+  cancel-in-progress: false
+
+jobs:
+  patch-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/uzbek-full-rewrite-repair-v73
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Apply v73 patch
+        run: python3 scripts/temp-v73-preflight-hardening.py
+      - name: Run deterministic preflight suite before any live AI call
+        run: |
+          npm run check:story-core
+          npm run check:bedtime-duration
+          npm run check:story-ai
+          npm run check:story-ai-split
+          npm run check:localized-fallback
+          npm run check:story-cost-guard
+          npm run check:story-service
+          npm run typecheck:story-ai
+          npm run typecheck
+          npm run build
+      - name: Commit verified production patch
+        run: |
+          git config user.name "qissa-audit-bot"
+          git config user.email "qissa-audit-bot@users.noreply.github.com"
+          git add \
+            supabase/functions/story-generate/repair-routing.ts \
+            supabase/functions/story-generate/split-index.ts \
+            supabase/functions/story-generate/prompt.ts \
+            supabase/functions/story-generate/openai.ts \
+            supabase/functions/story-generate/safety.ts \
+            supabase/functions/story-generate/story-architecture.ts \
+            supabase/functions/story-generate/storySixMinuteEditorial.ts \
+            supabase/functions/story-generate/storyCoreBranches.ts \
+            scripts/check-story-ai-split.mjs \
+            scripts/check-story-core-proof.mjs
+          if git diff --cached --quiet; then
+            echo "No production patch to commit"
+            exit 0
+          fi
+          git commit -m "Harden story pipeline before live AI tuning"
+          git push origin HEAD:fix/uzbek-full-rewrite-repair-v73
