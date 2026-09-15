@@ -1,0 +1,44 @@
+name: Temporary Runtime Story AI Flag Patcher
+
+on:
+  push:
+    branches:
+      - fix/runtime-story-ai-flag-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: contains(github.event.head_commit.message, 'Run runtime Story AI flag patcher')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/runtime-story-ai-flag-20260915
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply runtime Story AI flag hardening
+        run: python3 scripts/temp-runtime-story-ai-flag-patch.py
+      - name: Remove patcher script
+        run: rm scripts/temp-runtime-story-ai-flag-patch.py
+      - name: Validate Story AI runtime flag contracts
+        run: |
+          npm ci
+          npm run check:story-cost-guard
+          npm run check:story-ai
+          npm run check:story-ai-split
+          npm run check:privacy
+          npm run typecheck:story-ai
+          npm run typecheck
+          npm run build
+      - name: Commit durable runtime flag changes
+        run: |
+          git config user.name qissa-audit-bot
+          git config user.email actions@users.noreply.github.com
+          git add -A ':!.github/workflows/temp-runtime-story-ai-flag-patch.yml'
+          git commit -m "Add service-role Story AI runtime flag"
+          git push origin HEAD:fix/runtime-story-ai-flag-20260915
