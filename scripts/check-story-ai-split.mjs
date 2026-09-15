@@ -109,6 +109,7 @@ requireFragments('architecture', architecture, [
   'central goal must stay warm, social or playful',
   'Do not center the plot on finding the way home',
   'For Uzbek ages 5-7, prefer common natural Uzbek words',
+  'Avoid words such as ritm, pauza, sincap, mox',
   'Existing recurring-character names are canonical identity labels',
   'selected language governs only names and nicknames of newly introduced supporting characters',
   'Any NEW ordinary supporting-character name or nickname must use Uzbek Latin spelling',
@@ -205,6 +206,7 @@ requireFragments('split orchestrator', orchestrator, [
   "'X-QISSA-Repair-Retry-Used'",
   'For visible_safety_language',
   'For story_language_mismatch',
+  'For uzbek_child_language_requires_rewrite',
   'For story_repeats_choice_menu',
   'For technical_preview_language',
   'For story_choice_menu_scaffolding',
@@ -238,6 +240,7 @@ requireFragments('Episode 2 text repair prompt', repairPrompt, [
   'retry_feedback: retryFeedback',
   'previous text repair failed deterministic validation',
   'For Uzbek repair prose, use natural Uzbek Latin script',
+  'avoid ritm, pauza, sincap, mox',
 ])
 
 requireFragments('interactive fear adjudication', repairProvider, [
