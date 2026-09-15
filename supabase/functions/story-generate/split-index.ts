@@ -141,6 +141,8 @@ const textLengthValidationErrors = new Set([
   'story_too_long',
   'choice_resolution_too_short',
   'choice_resolution_too_long',
+  'bedtime_coda_too_short',
+  'bedtime_coda_too_long',
 ])
 
 const isTextLengthOnlyFailure = (errors: string[]): boolean =>
