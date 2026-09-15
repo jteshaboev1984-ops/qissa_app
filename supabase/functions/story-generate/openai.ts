@@ -232,6 +232,8 @@ const safetySessionContract = (context: NormalizedStoryContext): string => {
       'The story_text intentionally stops at the explicit child decision point. Each choices[].resolution_text is the immediate spoken bridge that follows if that choice is selected, and Episode 2 continues after that bridge.',
       'Evaluate bedtime closure by considering story_text together with EACH available resolution_text branch.',
       'Do NOT set bedtime_overstimulation merely because story_text pauses for the child choice, because Episode 2 continues the same story, or because nextEpisodePreview gently signals continuation.',
+      'Do NOT set excessive_fear merely because the central low-stakes goal is not fully solved before the child chooses. excessive_fear is about frightening content intensity: sustained panic, threatening pursuit, abandonment, trapping, serious injury, frightening danger, or comparable age-inappropriate distress.',
+      'Ordinary evening darkness, rain, a brief worry, a harmless mistake, a friendly character asking for help, or uncertainty among trusted companions is not excessive_fear by itself when no real threat is present.',
       'Set bedtime_overstimulation when the material is genuinely over-activating for bedtime, contains an alarming/startling cliffhanger, or leaves material fear/tension unresolved even after an available immediate resolution branch.',
       'A gentle curiosity loop, quiet mystery, ordinary uncertainty, or calm decision point is acceptable when every immediate branch lowers or safely carries the tension forward.',
     ].join(' ')
