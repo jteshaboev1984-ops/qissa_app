@@ -1,0 +1,24 @@
+name: Temporary Uzbek v61 Acceptance
+
+on:
+  push:
+    branches:
+      - audit/uzbek-v61-acceptance
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-uzbek-v61-acceptance
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+      - name: Run one Uzbek full-session Luna acceptance
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/audit-uzbek-v61-acceptance.mjs
