@@ -13,8 +13,9 @@ import { claimStoryGeneration, isInstallationId, type GenerationClaim } from './
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
+const STORY_AI_PRODUCTION_ROLLOUT_ENABLED = false
 const aiEnabledSetting = Deno.env.get('QISSA_AI_ENABLED')?.trim().toLowerCase()
-const aiEnabled = Boolean(openAiApiKey) && aiEnabledSetting === 'true'
+const aiEnabled = STORY_AI_PRODUCTION_ROLLOUT_ENABLED && Boolean(openAiApiKey) && aiEnabledSetting === 'true'
 const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.6-luna'
 const safetyModel = Deno.env.get('OPENAI_SAFETY_MODEL')?.trim() || storyModel
 const maxAttempts = 3
@@ -165,9 +166,9 @@ Deno.serve(async (request: Request) => {
   const context = normalizeStoryRequest(input)
   if (!context) return json({ error: 'invalid_story_context' }, 422, origin)
 
-  // Story AI is explicit opt-in: a provider key alone is never enough.
-  // Only QISSA_AI_ENABLED=true may enter the provider path; absent, false, or
-  // any other value fails closed before accounting or provider requests.
+  // Story AI is fail-closed behind a code-reviewed production rollout gate.
+  // Even QISSA_AI_ENABLED=true cannot enter the provider path while the rollout
+  // gate is false. Enabling paid generation therefore requires an explicit code change.
   if (!aiEnabled || !openAiApiKey) {
     return safeFallback(context, origin, !openAiApiKey ? 'api-key-missing' : 'ai-disabled')
   }

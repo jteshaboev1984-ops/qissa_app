@@ -15,8 +15,9 @@ import { claimStoryGeneration, isInstallationId, type GenerationClaim } from './
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
+const STORY_AI_PRODUCTION_ROLLOUT_ENABLED = false
 const aiEnabledSetting = Deno.env.get('QISSA_AI_ENABLED')?.trim().toLowerCase()
-const aiEnabled = Boolean(openAiApiKey) && aiEnabledSetting === 'true'
+const aiEnabled = STORY_AI_PRODUCTION_ROLLOUT_ENABLED && Boolean(openAiApiKey) && aiEnabledSetting === 'true'
 const legacyStoryModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || ''
 const architectModel = Deno.env.get('OPENAI_ARCHITECT_MODEL')?.trim() || legacyStoryModel || 'gpt-5.6-luna'
 const narratorModel = Deno.env.get('OPENAI_NARRATOR_MODEL')?.trim() || legacyStoryModel || 'gpt-5.6-luna'
