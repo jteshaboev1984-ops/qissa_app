@@ -81,4 +81,6 @@ export const textRepairShouldRewriteAllChoiceResolutions = (errors: string[]): b
     error === 'russian_hero_requires_rewrite')
 
 export const textRepairShouldRepairAllChoiceResolutions = (errors: string[]): boolean =>
-  textRepairShouldRewriteAllChoiceResolutions(errors) || errors.includes('choice_resolution_defers_to_future_session')
+  textRepairShouldRewriteAllChoiceResolutions(errors) ||
+  errors.includes('choice_resolution_defers_to_future_session') ||
+  errors.includes('invalid_resolution_text')

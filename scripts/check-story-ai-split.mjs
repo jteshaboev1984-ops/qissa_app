@@ -3,7 +3,7 @@ import { hasSingleLanguageMismatch } from '../supabase/functions/story-generate/
 import { buildArchitectPrompts, enforceStoryBlueprintContextContract, validateStoryBlueprint } from '../supabase/functions/story-generate/story-architecture.ts'
 import { normalizeStoryBlueprintMemoryKeys } from '../supabase/functions/story-generate/story-architecture.ts'
 import { normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
-import { isTextRepairEligibleFailure, textRepairRequiresFullStoryRewrite, textRepairableValidationErrors } from '../supabase/functions/story-generate/repair-routing.ts'
+import { isTextRepairEligibleFailure, textRepairRequiresFullStoryRewrite, textRepairableValidationErrors, textRepairShouldRepairAllChoiceResolutions } from '../supabase/functions/story-generate/repair-routing.ts'
 
 const architecture = fs.readFileSync('supabase/functions/story-generate/story-architecture.ts', 'utf8')
 const provider = fs.readFileSync('supabase/functions/story-generate/split-openai.ts', 'utf8')
@@ -59,6 +59,7 @@ for (const errors of [
 requireLanguageGuard(textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_short', 'uzbek_child_language_requires_rewrite']), 'existing Uzbek language defects plus short text must use a full rewrite, not insertion')
 requireLanguageGuard(!textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_short']), 'pure Episode 1 short text should keep the cheaper insertion repair')
 requireLanguageGuard(textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_long']), 'Episode 1 story_too_long must use full rewrite because insertion cannot shorten prose')
+requireLanguageGuard(textRepairShouldRepairAllChoiceResolutions(['invalid_resolution_text']), 'malformed resolution text must target the structured choice resolution rather than no-op repair')
 requireLanguageGuard(!isTextRepairEligibleFailure(['invalid_choice_count', 'story_too_short']), 'structural/Architect-owned failures must not be sent to prose repair')
 
 const candidateValidatorErrors = new Set([
