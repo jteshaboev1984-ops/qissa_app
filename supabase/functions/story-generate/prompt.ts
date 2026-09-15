@@ -71,7 +71,7 @@ const ageGuidance: Record<NormalizedStoryContext['ageGroup'], JsonRecord> = {
 
 const hardStoryWordRange = (context: NormalizedStoryContext): [number, number] => {
   if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
-    return context.episodeIndex === 1 ? [430, 560] : [340, 520]
+    return context.episodeIndex === 1 ? [360, 500] : [340, 520]
   }
   if (context.ageGroup === '3-4') return [80, 260]
   if (context.ageGroup === '5-7') return [120, 390]
@@ -80,7 +80,7 @@ const hardStoryWordRange = (context: NormalizedStoryContext): [number, number] =
 
 const targetStoryWordRange = (context: NormalizedStoryContext): string => {
   if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
-    return context.episodeIndex === 1 ? '515-545' : '430-490'
+    return context.episodeIndex === 1 ? '400-440' : '430-490'
   }
   if (context.ageGroup === '3-4') return '120-190'
   if (context.ageGroup === '5-7') return '180-300'
@@ -134,7 +134,7 @@ const retryGuidance = (context: NormalizedStoryContext, retryReason: string): Js
   const previousStoryWords = metricValue('story_words')
   const [minimumStoryWords, maximumStoryWords] = hardStoryWordRange(context)
   const retryTargetStoryWords = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime' && context.episodeIndex === 1
-    ? '525-550'
+    ? '420-455'
     : targetStoryWordRange(context)
   const feedback: JsonRecord = {
     previous_candidate_rejected: true,
@@ -178,10 +178,10 @@ const bedtimeNarrativeGuidance = (context: NormalizedStoryContext): JsonRecord |
       classical_shape: 'Use a clear beginning, middle, turning decision, consequence, resolution, and calm coda. Every event must follow causally from the same original goal.',
       part_role: 'Episode 1 is the pre-choice half of the same story. It must establish one setting, one understandable goal/problem, develop it, then arrive naturally at one meaningful decision.',
       beat_budget: [
-        'orientation: about 55-70 words — establish where the story is, who the hero is, and what the hero is doing in one compact paragraph; use only one or two concrete details and do not force a context-free cold open',
-        'early curiosity / desire / problem: about 55-70 words — introduce the unusual event, desire, question or small problem within roughly the first 60-120 words and make the central story question understandable by roughly the first 100-120 words',
-        'exploration / build-up: about 320-340 words — move through action, dialogue, reactions and discoveries that deepen the same goal; description must serve what is happening',
-        'choice setup: about 65-75 words — make both options understandable as two safe actions the HERO could take to pursue the SAME established goal, then stop for the child decision without another delay beat',
+        'orientation: about 50-60 words — establish where the story is, who the hero is, and what the hero is doing in one compact paragraph; use only one or two concrete details and do not force a context-free cold open',
+        'early curiosity / desire / problem: about 50-60 words — introduce the unusual event, desire, question or small problem within roughly the first 60-120 words and make the central story question understandable by roughly the first 100-120 words',
+        'exploration / build-up: about 230-260 words — move through action, dialogue, reactions and discoveries that deepen the same goal; description must serve what is happening and avoid repeating the same inspection or explanation',
+        'choice setup: about 45-60 words — arrive at the decision naturally, end with one neutral decision cue or question, and keep the actual choice actions only in structured choices rather than listing or paraphrasing them in story_text',
       ],
       choice_position: 'The child choice should occur around 40-50% of the full read-aloud: early enough that the child sees a substantial consequence afterward, but only after the single goal and both safe options are clear.',
       duration_role: 'The primary bedtime experience should feel substantial rather than rushed: aim for a 6-8 minute complete read while preserving calm pacing and one causal plot.',
@@ -512,9 +512,9 @@ export const buildTextLengthRepairPrompts = (
     context.storyMode === 'series' &&
     context.storyMood === 'bedtime' &&
     context.episodeIndex === 1
-  const rewriteTargetMinimum = bedtimeEpisodeOne ? 500 : Math.min(maximumStoryWords - 10, minimumStoryWords + 40)
-  const rewriteTargetMaximum = bedtimeEpisodeOne ? 535 : Math.max(rewriteTargetMinimum, maximumStoryWords - 20)
-  const desiredExpandedTotal = Math.min(maximumStoryWords - 25, minimumStoryWords + 65)
+  const rewriteTargetMinimum = bedtimeEpisodeOne ? 400 : Math.min(maximumStoryWords - 10, minimumStoryWords + 40)
+  const rewriteTargetMaximum = bedtimeEpisodeOne ? 440 : Math.max(rewriteTargetMinimum, maximumStoryWords - 20)
+  const desiredExpandedTotal = Math.min(maximumStoryWords - 25, minimumStoryWords + 45)
   const desiredGrowth = Math.max(0, desiredExpandedTotal - currentStoryWords)
   const expansionMinimum = Math.max(25, desiredGrowth - 20)
   const expansionMaximum = Math.max(

@@ -100,7 +100,7 @@ const isFiveToSevenBedtimeSeries = (context: NormalizedStoryContext) =>
 
 const storyWordRange = (context: NormalizedStoryContext): [number, number] => {
   if (isFiveToSevenBedtimeSeries(context)) {
-    return context.episodeIndex === 1 ? [430, 560] : [340, 520]
+    return context.episodeIndex === 1 ? [360, 500] : [340, 520]
   }
   if (context.ageGroup === '3-4') return [80, 260]
   if (context.ageGroup === '5-7') return [120, 390]
@@ -184,7 +184,7 @@ export const russianHeroTokenNeedsRewrite = (
   const token = '(?:\\{\\{HERO\\}\\}|QISSA_HERO)'
   const tokenBoundary = '(?=[\\s,.:;!?»”")—-]|$)'
   const preposition = new RegExp(
-    `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${token}${tokenBoundary}`,
+    `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|на|в|во|из|из-за|из-под|по|через|после|мимо|среди|напротив|вместо|при|благодаря|вопреки|согласно|навстречу|рядом\\s+с|вместе\\s+с)\\s+${token}${tokenBoundary}`,
     'iu',
   )
   const masculinePastWord = '[\\p{L}Ёё-]{2,}?(?:лся|л)'
@@ -237,6 +237,42 @@ export const visibleSafetyLanguageNeedsRewrite = (language: string, text: string
       'таңдау|таңдаулар|нұсқа|нұсқалар|мүмкіндік|мүмкіндіктер',
       'қауіпсіз|жақсы|дұрыс|мейірімді|тыныш',
     ),
+  }
+  return (patterns[language] ?? []).some((pattern) => pattern.test(normalized))
+}
+
+const choiceMenuStopWords = new Set([
+  'можно', 'нужно', 'чтобы', 'вместе', 'помочь', 'герой', 'героиня', 'потом', 'сначала',
+  'bilan', 'uchun', 'qahramon', 'mumkin', 'kerak', 'keyin',
+  'бірге', 'үшін', 'кейіпкер', 'мүмкін', 'керек', 'кейін',
+])
+
+const significantChoiceWords = (text: string): Set<string> => new Set(
+  (text.toLocaleLowerCase().match(/[\p{L}\p{M}]{4,}/gu) ?? [])
+    .filter((word) => !choiceMenuStopWords.has(word)),
+)
+
+export const storyRepeatsChoiceMenu = (context: NormalizedStoryContext, candidate: StoryCandidate): boolean => {
+  if (context.episodeIndex !== 1 || !Array.isArray(candidate.choices) || candidate.choices.length < 2 || typeof candidate.story_text !== 'string') return false
+  const finalParagraph = paragraphs(candidate.story_text).at(-1) ?? ''
+  const finalWords = significantChoiceWords(finalParagraph)
+  if (finalWords.size < 4) return false
+
+  return candidate.choices.every((choice) => {
+    if (!isRecord(choice) || typeof choice.text !== 'string') return false
+    const choiceWords = significantChoiceWords(choice.text)
+    if (choiceWords.size < 3) return false
+    const overlap = [...choiceWords].filter((word) => finalWords.has(word)).length
+    return overlap >= Math.max(3, Math.ceil(choiceWords.size * 0.35))
+  })
+}
+
+export const technicalPreviewLanguageNeedsRewrite = (language: string, text: string): boolean => {
+  const normalized = text.replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()
+  const patterns: Record<string, RegExp[]> = {
+    ru: [/подтвержд(?:е|ё)нн[\p{L}\p{M}-]*\s+выбор/iu, /после\s+подтверждения\s+выбора/iu, /эпизод/iu, /сегмент/iu, /сюжетн[\p{L}\p{M}-]*\s+ветк/iu],
+    uz: [/tasdiqlangan\s+tanlov/iu, /tanlov\s+tasdiqlangach/iu, /epizod/iu, /segment/iu],
+    kz: [/расталған\s+таңдау/iu, /таңдау\s+расталғаннан/iu, /эпизод/iu, /сегмент/iu],
   }
   return (patterns[language] ?? []).some((pattern) => pattern.test(normalized))
 }
@@ -324,8 +360,11 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   else if (context.language === 'ru' && (value.vocabulary.length < 2 || value.vocabulary.length > 3)) errors.push('invalid_vocabulary_count')
   else if (context.language !== 'ru' && value.vocabulary.length !== 0) errors.push('unexpected_vocabulary')
 
+  if (storyRepeatsChoiceMenu(context, value)) errors.push('story_repeats_choice_menu')
+
   if (typeof value.nextEpisodePreview !== 'string') errors.push('invalid_preview')
   if (context.storyMode === 'series' && context.episodeIndex === 1 && !value.nextEpisodePreview.trim()) errors.push('missing_preview')
+  if (typeof value.nextEpisodePreview === 'string' && technicalPreviewLanguageNeedsRewrite(context.language, value.nextEpisodePreview)) errors.push('technical_preview_language')
   if ((context.storyMode === 'one_time' || context.episodeIndex === 2) && value.nextEpisodePreview.trim()) errors.push('unexpected_preview')
   return [...new Set(errors)]
 }

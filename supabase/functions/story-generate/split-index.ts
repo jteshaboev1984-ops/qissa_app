@@ -272,6 +272,8 @@ Deno.serve(async (request: Request) => {
         'For russian_hero_requires_rewrite, keep {{HERO}} only as nominative subject or direct address and rewrite every case/preposition or gendered-past-tense construction around the token.',
         'For visible_safety_language, remove any child-visible explanation that a choice, option or possibility is safe, good, calm, correct or morally preferred; show the story consequences without evaluating the menu.',
         'For story_language_mismatch, rewrite every natural-language field strictly in the requested story language. Do not translate machine keys or the {{HERO}} token.',
+        'For story_repeats_choice_menu, end story_text with one neutral decision cue or question and remove every listing or paraphrase of the two structured choice actions from story_text.',
+        'For technical_preview_language, rewrite the preview as one natural child-facing in-world sentence. Do not mention confirmation, selection mechanics, episodes, segments, pipelines, or story branches.',
       ].join(' ')
       const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, retryFeedback)
       candidate = narrationToCandidate(context, blueprint, narration)

@@ -423,6 +423,7 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'All natural-language blueprint values, including effect summaries, state values, arc text and preview text, must be in the requested story language. Memory keys are machine identifiers and are the only exception.',
     'New canon and relationship keys must be stable lowercase ASCII semantic identifiers using letters, digits, underscore, dot or hyphen. Reuse an existing memory key exactly when updating an existing fact instead of creating a synonym.',
     'Choice display text must be in the requested story language. Do not use the {{HERO}} token in architect output; phrase choices without the hero name.',
+    'next_episode_preview is child-facing story copy. Never mention confirmation, selection mechanics, an episode, segment, pipeline, or a story branch. Write one natural in-world sentence about what the hero may notice or do after the immediate chosen action.',
     'Avoid politics, religious persuasion, stereotypes, humiliation, conditional love, adult themes, graphic violence and unresolved frightening danger.',
   ].join(' ')
 
@@ -467,7 +468,7 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
 
 const hardStoryWordRange = (context: NormalizedStoryContext): [number, number] => {
   if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
-    return context.episodeIndex === 1 ? [430, 560] : [340, 520]
+    return context.episodeIndex === 1 ? [360, 500] : [340, 520]
   }
   if (context.ageGroup === '3-4') return [80, 260]
   if (context.ageGroup === '5-7') return [120, 390]
@@ -481,11 +482,11 @@ export const buildNarratorPrompts = (
 ) => {
   const [minimumWords, maximumWords] = hardStoryWordRange(context)
   const target = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
-    ? context.episodeIndex === 1 ? '485-525' : '400-470'
+    ? context.episodeIndex === 1 ? '400-440' : '400-470'
     : `${Math.min(maximumWords - 10, minimumWords + 40)}-${Math.max(minimumWords + 40, maximumWords - 20)}`
   const paragraphBudget = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
     ? context.episodeIndex === 1
-      ? { target_paragraphs: 7, average_words_per_paragraph: '65-75', final_choice_setup_words: '55-75' }
+      ? { target_paragraphs: 7, average_words_per_paragraph: '55-65', final_choice_setup_words: '45-60' }
       : { target_paragraphs: '6-7', average_words_per_paragraph: '60-70', final_coda_words: '50-90' }
     : null
 
@@ -497,7 +498,7 @@ export const buildNarratorPrompts = (
     'Write only in the requested language and for the requested age. Never switch languages inside dialogue, signs, inscriptions, narration, choice resolutions or examples.',
     'Use the literal token {{HERO}} for the hero name. Never invent a real child name.',
     'For Russian, use {{HERO}} only in grammatically invariant positions, preferably nominative subject or direct address. Never put it after a preposition and never attach gendered past-tense agreement directly to the token.',
-    'For Episode 1, end story_text at the blueprint decision point before either branch happens. Do not print the two choices inside story_text.',
+    'For Episode 1, end story_text at the blueprint decision point before either branch happens. End with one neutral decision cue or question. Never restate, list, paraphrase, preview, or name either choice action inside story_text; the two actions belong only in the structured choices supplied by the blueprint.',
     'For Episode 2, begin after the confirmed choice resolution already happened. Do not replay that action. Resolve the same central goal and finish calmly without a cliffhanger.',
     'If this is final series session 10, make the prose feel like a true finale: pay off remembered clues and relationships that matter, settle the active serialized arc, avoid sequel bait, and finish with emotional closure. Do not invent a new unresolved question in the final paragraphs.',
     'Follow the blueprint beat order. Every one or two short paragraphs should contain action, dialogue, discovery, reaction, attempt, humor or cause-and-effect.',
