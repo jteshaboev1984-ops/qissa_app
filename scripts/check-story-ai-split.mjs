@@ -190,6 +190,8 @@ requireFragments('split orchestrator', orchestrator, [
   'bedtime_coda_too_long',
   'evaluateStorySafety',
   'moderateStoryText',
+  'childVisibleStorySafetyText(candidate)',
+  'fear_adjudication:[a-z_]+',
   "'X-QISSA-Provider-Calls'",
   "'X-QISSA-Narrator-Retry-Used'",
   'narratorRetryUsed = true',
