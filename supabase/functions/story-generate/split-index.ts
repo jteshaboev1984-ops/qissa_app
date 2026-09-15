@@ -12,6 +12,7 @@ import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
 import { enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
 import { childVisibleStorySafetyText } from './story-safety-projection.ts'
+import { isTextLengthOnlyFailure, isTextRepairCorrectionEligible, isTextRepairEligibleFailure } from './repair-routing.ts'
 import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
@@ -127,35 +128,6 @@ const candidateValidationMetrics = (candidate: StoryCandidate): string[] => [
   `story_words=${wordCount(candidate.story_text)}`,
   ...candidate.choices.map((choice, index) => `choice_${index + 1}_resolution_words=${wordCount(choice.resolution_text)}`),
 ]
-
-const textLengthValidationErrors = new Set([
-  'story_too_short',
-  'story_too_long',
-  'choice_resolution_too_short',
-  'choice_resolution_too_long',
-  'bedtime_coda_too_short',
-  'bedtime_coda_too_long',
-])
-
-const isTextLengthOnlyFailure = (errors: string[]): boolean =>
-  errors.length > 0 && errors.every((error) => textLengthValidationErrors.has(error))
-
-const isTextLengthRepairEligibleFailure = (errors: string[]): boolean =>
-  errors.length > 0 &&
-  errors.some((error) => textLengthValidationErrors.has(error)) &&
-  errors.every((error) => textLengthValidationErrors.has(error) || error === 'missing_hero_token')
-
-const textRepairCorrectionErrors = new Set([
-  ...textLengthValidationErrors,
-  'story_language_mismatch',
-  'uzbek_child_language_requires_rewrite',
-  'missing_hero_token',
-  'choice_resolution_defers_to_future_session',
-  'continuation_resets_before_resolution',
-])
-
-const isTextRepairCorrectionEligible = (errors: string[]): boolean =>
-  errors.length > 0 && errors.every((error) => textRepairCorrectionErrors.has(error))
 
 const compactFailureTrace = (items: string[]): string => items.join('>').slice(0, 480)
 
@@ -317,7 +289,7 @@ Deno.serve(async (request: Request) => {
     }
   }
 
-  if (validationErrors.length > 0 && isTextLengthRepairEligibleFailure(validationErrors)) {
+  if (validationErrors.length > 0 && isTextRepairEligibleFailure(validationErrors)) {
     const repairBaseCandidate = candidate
     const repairBaseErrors = [...validationErrors]
     try {

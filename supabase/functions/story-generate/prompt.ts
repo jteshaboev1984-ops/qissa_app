@@ -1,4 +1,5 @@
 import type { JsonRecord, NormalizedStoryContext, StoryCandidate } from './contracts.ts'
+import { textRepairRequiresFullStoryRewrite, textRepairShouldRepairAllChoiceResolutions } from './repair-routing.ts'
 
 const styleGuidance: Record<NormalizedStoryContext['stylePackId'], JsonRecord> = {
   cozy_forest: {
@@ -351,8 +352,9 @@ export const storyOutputSchema = {
 export const textLengthRepairOutputSchema = {
   type: 'object',
   additionalProperties: false,
-  required: ['story_rewrite', 'story_expansion', 'choice_resolutions'],
+  required: ['title_rewrite', 'story_rewrite', 'story_expansion', 'choice_resolutions', 'vocabulary_rewrite'],
   properties: {
+    title_rewrite: { type: ['string', 'null'] },
     story_rewrite: { type: ['string', 'null'] },
     story_expansion: { type: ['string', 'null'] },
     choice_resolutions: {
@@ -364,6 +366,19 @@ export const textLengthRepairOutputSchema = {
         properties: {
           choice_id: { type: 'string' },
           resolution_text: { type: 'string' },
+        },
+      },
+    },
+    vocabulary_rewrite: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['word', 'translation', 'example'],
+        properties: {
+          word: { type: 'string' },
+          translation: { type: 'string' },
+          example: { type: 'string' },
         },
       },
     },
@@ -515,7 +530,8 @@ export const buildTextLengthRepairPrompts = (
     context.storyMode === 'series' &&
     context.storyMood === 'bedtime' &&
     context.episodeIndex === 2
-  const rewriteContinuation = bedtimeEpisodeTwo && (storyTooShort || storyTooLong || codaTooShort || codaTooLong)
+  const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors)
+  const repairAllChoiceResolutions = textRepairShouldRepairAllChoiceResolutions(validationErrors) || validationErrors.includes('choice_resolution_defers_to_future_session')
   const bedtimeEpisodeOne = context.ageGroup === '5-7' &&
     context.storyMode === 'series' &&
     context.storyMood === 'bedtime' &&
@@ -530,7 +546,7 @@ export const buildTextLengthRepairPrompts = (
     Math.min(maximumStoryWords - currentStoryWords - 10, desiredGrowth + 20),
   )
   const resolutionTargets = candidate.choices
-    .filter((choice) => choiceNeedsResolutionLengthRepair(context, choice.resolution_text))
+    .filter((choice) => repairAllChoiceResolutions || choiceNeedsResolutionLengthRepair(context, choice.resolution_text))
     .map((choice) => ({
       choice_id: choice.choice_id,
       current_resolution_text: choice.resolution_text,
@@ -551,10 +567,12 @@ export const buildTextLengthRepairPrompts = (
     'You are QISSA Text Length Repair Agent.',
     'Return only data matching the supplied JSON schema.',
     'Repair only text fields explicitly listed in repair_plan. Every other field of the existing candidate is immutable and will be preserved by the server.',
-    rewriteContinuation
-      ? 'For Episode 2 continuation length or bedtime-coda failures, rewrite the full story_text while preserving the same characters, causal events, selected-choice consequence, central goal and immutable state. Return story_expansion as null. Reach the requested total naturally, solve the original problem before the end, and make the final paragraph a real 60-120 word sleepy coda rather than another plot beat.'
-      : 'For story_too_short, do NOT rewrite the existing story. Return story_rewrite as null and write only story_expansion: one coherent passage that the server will insert immediately before the existing final choice-setup paragraph. The original story remains verbatim, so the expansion must continue naturally from the preceding paragraph and lead naturally into the existing final paragraph.',
-    'For story_too_long, return story_expansion as null and use story_rewrite to shorten the full story into the requested range without deleting causal beats.',
+    fullStoryRewrite
+      ? 'A deterministic prose or language defect is already present in the Narrator output, so rewrite the full title and story_text from the immutable candidate while preserving the exact same Architect-owned plot, characters, choices, canon, relationships and branch consequences. Return story_expansion as null. For Episode 2, solve the same original goal and keep the final paragraph a real 60-120 word sleepy coda. For Episode 1, stop at the same neutral decision point without replaying or naming either structured choice inside story_text.'
+      : 'For a pure Episode 1 story_too_short failure, do NOT rewrite the existing story. Return title_rewrite as null and story_rewrite as null; write only story_expansion: one coherent passage that the server will insert immediately before the existing final choice-setup paragraph. The original story remains verbatim, so the expansion must continue naturally from the preceding paragraph and lead naturally into the existing final paragraph.',
+    'For story_too_long, return story_expansion as null and use the full title/story rewrite path to shorten the story into the requested range without deleting causal beats.',
+    'When full-story rewrite is required, return title_rewrite as a child-facing title in the requested language that describes the same story. Do not rename established characters.',
+    'When full-story rewrite is required, also return a complete replacement vocabulary_rewrite: exactly 2-3 grounded Russian-to-English items for Russian, and an empty array for Uzbek or Kazakh. For a pure insertion-only or choice-resolution-only repair, vocabulary_rewrite must be an empty array.',
     'If there is no story length or Episode 2 bedtime-coda failure, return both story_rewrite and story_expansion as null.',
     'When rewriting Episode 2, do not invent a new problem, location, character, durable object, clue, relationship or branch consequence. Do not replay the selected choice bridge. Use dialogue, reactions, humor and concrete action already licensed by the candidate to develop the same story, then lower energy into closure.',
     'The expansion may deepen only existing action, dialogue, reactions, attempts, gentle humor and cause-and-effect. Do not introduce a new durable object, clue, relationship, location, mechanism state, branch consequence, canon fact, problem or mission.',
@@ -575,7 +593,8 @@ export const buildTextLengthRepairPrompts = (
     language: languageNames[context.language],
     validation_errors: validationErrors,
     repair_plan: {
-      story_expansion: storyTooShort && !rewriteContinuation
+      title_rewrite: fullStoryRewrite ? { current_title: candidate.title, rule: 'Same story and character identities; correct language, age fit and grammar.' } : null,
+      story_expansion: storyTooShort && !fullStoryRewrite
         ? {
             current_story_words: currentStoryWords,
             hard_minimum_story_words: minimumStoryWords,
@@ -588,19 +607,22 @@ export const buildTextLengthRepairPrompts = (
             rule: 'Return only NEW prose for insertion. Do not repeat either neighboring paragraph and do not restate the choices.',
           }
         : null,
-      story_rewrite: rewriteContinuation || storyTooLong
+      story_rewrite: fullStoryRewrite
         ? {
             current_story_text: candidate.story_text,
             current_words: currentStoryWords,
             hard_minimum_words: minimumStoryWords,
             hard_maximum_words: maximumStoryWords,
             target_words: `${rewriteTargetMinimum}-${rewriteTargetMaximum}`,
-            preserve_story_contract: rewriteContinuation ? 'same Episode 2 plot, same selected-choice consequence, same characters and immutable state; no new problem or durable fact' : 'preserve all causal beats while shortening',
-            final_bedtime_coda_words: rewriteContinuation ? '60-120 words in the final paragraph after the main problem is solved' : null,
+            preserve_story_contract: context.episodeIndex === 2 ? 'same Episode 2 plot, same selected-choice consequence, same established characters and immutable state; no new problem, helper group or durable fact' : 'same Episode 1 plot, same established characters, same decision point and structured choices; no new problem or durable fact',
+            final_bedtime_coda_words: context.episodeIndex === 2 ? '60-120 words in the final paragraph after the main problem is solved' : null,
             validation_errors: validationErrors,
           }
         : null,
       choice_resolutions: resolutionTargets,
+      vocabulary_rewrite: fullStoryRewrite
+        ? (context.language === 'ru' ? 'return exactly 2-3 complete replacement vocabulary items' : 'return an empty array')
+        : 'return an empty array',
     },
     retry_feedback: retryFeedback,
     immutable_candidate_context: {
@@ -616,6 +638,7 @@ export const buildTextLengthRepairPrompts = (
         state_patch: choice.state_patch,
       })),
       nextEpisodePreview: candidate.nextEpisodePreview,
+      vocabulary: candidate.vocabulary,
     },
   })
 

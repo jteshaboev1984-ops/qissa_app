@@ -216,27 +216,33 @@ const uzbekYoungChildAvoidPatterns = [
   /(?<![\p{L}\p{M}\p{N}_])(?:ritm|pauza|sincap|mox|paporotnik|kapyushon|spiral|tantanali|chorraha|naqadar|minnatdor|mamnun|sukunat|hissa)[\p{L}\p{M}-]*(?![\p{L}\p{M}\p{N}_])/iu,
 ]
 
-export const uzbekChildLanguageNeedsRewrite = (
+export const uzbekYoungChildValuesNeedRewrite = (
   context: Pick<NormalizedStoryContext, 'language' | 'ageGroup'>,
-  candidate: StoryCandidate,
+  values: Array<string | null | undefined>,
 ): boolean => {
   if (context.language !== 'uz' || context.ageGroup !== '5-7') return false
-  const visibleText = [
-    candidate.title,
-    candidate.story_text,
-    candidate.nextEpisodePreview,
-    ...(Array.isArray(candidate.choices)
-      ? candidate.choices.flatMap((choice) => [choice.text, choice.effect_summary, choice.resolution_text])
-      : []),
-    ...(Array.isArray(candidate.vocabulary)
-      ? candidate.vocabulary.flatMap((item) => [item.word, item.translation, item.example])
-      : []),
-  ].filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+  const visibleText = values
+    .filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
     .join(' ')
     .replace(/[\u2018\u2019\u02BB`]/g, "'")
     .toLocaleLowerCase()
   return uzbekYoungChildAvoidPatterns.some((pattern) => pattern.test(visibleText))
 }
+
+export const uzbekChildLanguageNeedsRewrite = (
+  context: Pick<NormalizedStoryContext, 'language' | 'ageGroup'>,
+  candidate: StoryCandidate,
+): boolean => uzbekYoungChildValuesNeedRewrite(context, [
+  candidate.title,
+  candidate.story_text,
+  candidate.nextEpisodePreview,
+  ...(Array.isArray(candidate.choices)
+    ? candidate.choices.flatMap((choice) => [choice.text, choice.effect_summary, choice.resolution_text])
+    : []),
+  ...(Array.isArray(candidate.vocabulary)
+    ? candidate.vocabulary.flatMap((item) => [item.word, item.translation, item.example])
+    : []),
+])
 
 const unicodeWordStart = '(?<![\\p{L}\\p{N}_])'
 const unicodeWordEnd = '(?![\\p{L}\\p{N}_])'

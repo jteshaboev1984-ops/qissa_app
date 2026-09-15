@@ -75,7 +75,8 @@ const baseSelections = {
 const baseContext = {
   ageGroup: '5-7', language: 'ru', heroType: 'custom', heroName: 'Мира',
   stylePackId: 'cozy_forest', storyMode: 'series', storyMood: 'bedtime',
-  seriesId: 'story-editorial-proof', episodeIndex: 1, isContinuation: false,
+  seriesId: 'story-editorial-proof', sessionId: 'story-editorial-proof-session', sessionIndex: 1,
+  seriesSessionsRemaining: 10, isFinalSeriesSession: false, episodeIndex: 1, isContinuation: false, hasSeriesMemory: false,
   recurringCharacters: [], lastEpisodeSummary: '', activeArc: '',
   relationshipState: {}, canonState: {}, choiceHistory: [],
 }
@@ -175,6 +176,17 @@ try {
     assert(fullSessionWords >= 700 && fullSessionWords <= 1400, `Uzbek forest ${choice.choice_id} full session is outside the hard release envelope.`)
     assert(!uzBookish.test(`${continuation.title} ${continuation.story_text}`), `Uzbek forest ${choice.choice_id} continuation uses avoidable vocabulary.`)
   }
+
+  const establishedUzSeries = buildSafeFallback({
+    ...uzForestContext,
+    sessionIndex: 2,
+    hasSeriesMemory: true,
+    recurringCharacters: ['Рыжик'],
+    activeArc: 'old_arc',
+    lastEpisodeSummary: 'Рыжик oldingi hikoyada qahramon bilan do‘stlashdi.',
+    canonState: { old_fact: 'saved' },
+  })
+  assert(!/Momiq|Oycha|Yong‘oqcha|Toshvoy/u.test(establishedUzSeries.story_text), 'Established Uzbek series fallback must not restart the fixed flagship cast after a language/session continuation.')
 
   const spaceOne = buildSafeFallback({ ...baseContext, stylePackId: 'stars_and_space' })
   assert(spaceOne.title === 'Тихий сигнал станции «Люмен»', 'Space Episode 1 title is not editorial.')

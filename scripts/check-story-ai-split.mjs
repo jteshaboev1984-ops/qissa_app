@@ -1,12 +1,14 @@
 import fs from 'node:fs'
 import { hasSingleLanguageMismatch } from '../supabase/functions/story-generate/language.ts'
-import { buildArchitectPrompts, enforceStoryBlueprintContextContract } from '../supabase/functions/story-generate/story-architecture.ts'
+import { buildArchitectPrompts, enforceStoryBlueprintContextContract, validateStoryBlueprint } from '../supabase/functions/story-generate/story-architecture.ts'
 import { normalizeStoryBlueprintMemoryKeys } from '../supabase/functions/story-generate/story-architecture.ts'
 import { normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
+import { isTextRepairEligibleFailure, textRepairRequiresFullStoryRewrite } from '../supabase/functions/story-generate/repair-routing.ts'
 
 const architecture = fs.readFileSync('supabase/functions/story-generate/story-architecture.ts', 'utf8')
 const provider = fs.readFileSync('supabase/functions/story-generate/split-openai.ts', 'utf8')
 const orchestrator = fs.readFileSync('supabase/functions/story-generate/split-index.ts', 'utf8')
+const repairRouting = fs.readFileSync('supabase/functions/story-generate/repair-routing.ts', 'utf8')
 const safety = fs.readFileSync('supabase/functions/story-generate/safety.ts', 'utf8')
 const repairPrompt = fs.readFileSync('supabase/functions/story-generate/prompt.ts', 'utf8')
 const repairProvider = fs.readFileSync('supabase/functions/story-generate/openai.ts', 'utf8')
@@ -35,6 +37,24 @@ requireLanguageGuard(hasSingleLanguageMismatch('uz', ['Рыжик Malika bilan y
 requireLanguageGuard(!hasSingleLanguageMismatch('kz', ['Momiq орманда жай жүрді.'], ['Momiq']), 'KZ must allow an established Latin recurring-character identity label')
 requireLanguageGuard(hasSingleLanguageMismatch('kz', ['{{HERO}} орманға кірді. Then the light moved.']), 'KZ must reject Latin leakage')
 requireLanguageGuard(!hasSingleLanguageMismatch('kz', ['{{HERO}} орманға кіріп, жарыққа жақындады. Құстар үнсіз қалды, өйткені түн тыныш еді.']), 'KZ must accept Kazakh Cyrillic prose')
+
+const repairRouteContext = { episodeIndex: 1 }
+for (const errors of [
+  ['story_too_short'],
+  ['story_too_short', 'missing_hero_token'],
+  ['story_too_short', 'uzbek_child_language_requires_rewrite'],
+  ['story_too_short', 'story_language_mismatch'],
+  ['story_too_short', 'visible_safety_language'],
+  ['story_too_short', 'insufficient_narrative_beats'],
+  ['story_too_short', 'story_repeats_choice_menu'],
+  ['story_too_short', 'story_choice_menu_scaffolding'],
+  ['choice_resolution_too_short', 'choice_resolution_defers_to_future_session'],
+]) {
+  requireLanguageGuard(isTextRepairEligibleFailure(errors), `repair routing must cover mixed narration errors: ${errors.join(',')}`)
+}
+requireLanguageGuard(textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_short', 'uzbek_child_language_requires_rewrite']), 'existing Uzbek language defects plus short text must use a full rewrite, not insertion')
+requireLanguageGuard(!textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_short']), 'pure Episode 1 short text should keep the cheaper insertion repair')
+requireLanguageGuard(!isTextRepairEligibleFailure(['invalid_choice_count', 'story_too_short']), 'structural/Architect-owned failures must not be sent to prose repair')
 
 
 const memoryKeyRegression = normalizeStoryBlueprintMemoryKeys(
@@ -68,6 +88,21 @@ const switchedLanguageContext = normalizeStoryRequest({
     relationshipState: {}, canonState: {}, choiceHistory: [], episodeCount: 0,
   },
 })
+const badImmutableUzBlueprint = {
+  plan_version: 'split-v1', central_goal: 'Momiqqa sovg‘a tayyorlash', setting_anchor: 'o‘rmon', continuity_callbacks: [],
+  beats: ['Momiq do‘stlarini chaqiradi', 'Do‘stlar sovg‘a haqida gaplashadi', 'Ular birga tayyorlanadi', 'Malika qaror beradi'],
+  decision_point: 'Malika qaysi yo‘lni tanlaydi?',
+  choices: [
+    { choice_id: 'a', text: 'Ritm bilan qo‘shiq aytish', effect_summary: 'Do‘stlar qo‘shiq tayyorlaydi', resolution_goal: 'Qo‘shiq tayyor bo‘ladi', tomorrow_seed: 'Do‘stlar sovg‘ani ko‘rsatadi', choice_icon: '🎵', state_patch: { last_event: 'a', new_friend: null, hero_trait: null, open_arc: 'arc', relationship_updates: [], canon_updates: [] }, value_alignment: ['friendship'] },
+    { choice_id: 'b', text: 'Bargdan rasm yasash', effect_summary: 'Do‘stlar rasm tayyorlaydi', resolution_goal: 'Rasm tayyor bo‘ladi', tomorrow_seed: 'Do‘stlar sovg‘ani ko‘rsatadi', choice_icon: '🍃', state_patch: { last_event: 'b', new_friend: null, hero_trait: null, open_arc: 'arc', relationship_updates: [], canon_updates: [] }, value_alignment: ['kindness'] },
+  ],
+  state_patch: { last_event: 'start', new_friend: 'Momiq', hero_trait: null, open_arc: 'arc', relationship_updates: [], canon_updates: [] },
+  next_episode_preview: 'Momiq bilan keyingi epizod davom etadi.',
+}
+const badBlueprintErrors = validateStoryBlueprint({ language: 'uz', ageGroup: '5-7', episodeIndex: 1, storyMode: 'series', storyMood: 'bedtime', isFinalSeriesSession: false, recurringCharacters: [], canonState: {}, relationshipState: {} }, badImmutableUzBlueprint)
+requireLanguageGuard(badBlueprintErrors.includes('blueprint_uzbek_child_language_requires_rewrite'), 'immutable Uzbek choice/preview vocabulary must fail at Architect validation before Narrator')
+requireLanguageGuard(badBlueprintErrors.includes('blueprint_technical_preview_language'), 'technical preview wording must fail at Architect validation before Narrator')
+
 if (!switchedLanguageContext) {
   failures.push('language switch continuity context failed to normalize')
 } else {
@@ -101,7 +136,7 @@ requireFragments('architecture', architecture, [
   'paragraph_budget: paragraphBudget',
   "errors.push('blueprint_language_mismatch')",
   "target_paragraphs: '6-7'",
-  "context.episodeIndex === 1 ? '350-390' : '430-490'",
+  "context.episodeIndex === 1 ? '380-420' : '430-490'",
   'Never restate, list, paraphrase, preview, or name either choice action inside story_text',
   'next_episode_preview is child-facing story copy',
   'Episode 2 has no child decision menu',
@@ -187,8 +222,6 @@ requireFragments('split orchestrator', orchestrator, [
   'validateStoryBlueprint(context, blueprint)',
   'narrationToCandidate(context, blueprint, narration)',
   'repairStoryCandidateTextLengths',
-  'bedtime_coda_too_short',
-  'bedtime_coda_too_long',
   'evaluateStorySafety',
   'moderateStoryText',
   'childVisibleStorySafetyText(candidate)',
@@ -203,7 +236,7 @@ requireFragments('split orchestrator', orchestrator, [
   'Previous narration failed deterministic validation',
   'For missing_hero_token',
   'For choice_resolution_defers_to_future_session',
-  'isTextLengthRepairEligibleFailure',
+  'isTextRepairEligibleFailure',
   'isTextRepairCorrectionEligible',
   'repairRetryUsed = true',
   'Previous text repair failed deterministic validation',
@@ -234,8 +267,21 @@ if (orchestrator.includes("OPENAI_NARRATOR_ESCALATION_MODEL')?.trim() || 'gpt-5.
   failures.push('Sol escalation must remain opt-in during tuning')
 }
 
+requireFragments('centralized repair routing', repairRouting, [
+  'bedtime_coda_too_short',
+  'bedtime_coda_too_long',
+  'uzbek_child_language_requires_rewrite',
+  'visible_safety_language',
+  'russian_hero_requires_rewrite',
+  'insufficient_narrative_beats',
+  'story_repeats_choice_menu',
+  'story_choice_menu_scaffolding',
+  'isTextRepairEligibleFailure',
+  'textRepairRequiresFullStoryRewrite',
+])
+
 requireFragments('Episode 2 text repair prompt', repairPrompt, [
-  'rewriteContinuation',
+  'fullStoryRewrite',
   'final_bedtime_coda_words',
   '60-120 words in the final paragraph',
   'same Episode 2 plot, same selected-choice consequence',
@@ -243,6 +289,9 @@ requireFragments('Episode 2 text repair prompt', repairPrompt, [
   'tomorrow_seed is future-session metadata only',
   'retry_feedback: retryFeedback',
   'previous text repair failed deterministic validation',
+  'title_rewrite',
+  'vocabulary_rewrite',
+  'textRepairRequiresFullStoryRewrite',
   'For Uzbek repair prose, use natural Uzbek Latin script',
   'avoid ritm, pauza, sincap, mox',
 ])
@@ -263,8 +312,8 @@ requireFragments('split safety session contract', repairProvider, [
 
 requireFragments('Episode 2 text repair provider', repairProvider, [
   'codaLengthFailure',
-  'rewriteContinuation',
-  'openai_invalid_continuation_text_repair_rewrite',
+  'fullStoryRewrite',
+  'openai_invalid_full_text_repair_rewrite',
 ])
 
 requireFragments('Uzbek localization', localization, [
