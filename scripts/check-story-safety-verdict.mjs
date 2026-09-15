@@ -138,19 +138,19 @@ const firstRequest = provider.indexOf('const first = await requestSafetyEvaluati
 const firstValidation = provider.indexOf('safetyEvaluationConsistencyErrors(first)', firstRequest)
 const correctedRequest = provider.indexOf('const corrected = await requestSafetyEvaluation', firstValidation)
 const correctedValidation = provider.indexOf('safetyEvaluationConsistencyErrors(corrected)', correctedRequest)
-const correctedReturn = provider.indexOf('return corrected', correctedValidation)
-const fearGate = provider.indexOf('needsInteractiveFearConfirmation(context, first)', correctedReturn)
+const correctedAssignment = provider.indexOf('evaluation = corrected', correctedValidation)
+const fearGate = provider.indexOf('needsInteractiveFearConfirmation(context, evaluation)', correctedAssignment)
 const adjudicationRequest = provider.indexOf('const adjudication = await requestFearAdjudication', fearGate)
 const adjudicationValidation = provider.indexOf('fearAdjudicationConsistencyErrors(adjudication', adjudicationRequest)
 const severeReturn = provider.indexOf('if (adjudication.excessive_fear) {', adjudicationValidation)
 const clearedReturn = provider.indexOf('return cleared', severeReturn)
 assert(
-  firstRequest >= 0 && firstValidation > firstRequest && correctedRequest > firstValidation && correctedValidation > correctedRequest && correctedReturn > correctedValidation,
-  'semantic safety must keep the bounded one-shot consistency correction and return before any fear adjudication',
+  firstRequest >= 0 && firstValidation > firstRequest && correctedRequest > firstValidation && correctedValidation > correctedRequest && correctedAssignment > correctedValidation,
+  'semantic safety must keep the bounded one-shot consistency correction and retain the corrected verdict for downstream adjudication',
 )
 assert(
-  fearGate > correctedReturn && adjudicationRequest > fearGate && adjudicationValidation > adjudicationRequest && severeReturn > adjudicationValidation && clearedReturn > severeReturn,
-  'isolated Episode 1 excessive-fear verdict must use exactly one evidence-based narrow adjudication before it can be cleared',
+  fearGate > correctedAssignment && adjudicationRequest > fearGate && adjudicationValidation > adjudicationRequest && severeReturn > adjudicationValidation && clearedReturn > severeReturn,
+  'both initially consistent and consistency-corrected isolated Episode 1 excessive-fear verdicts must use one evidence-based narrow adjudication before they can be cleared',
 )
 
 if (failures.length > 0) {
@@ -159,4 +159,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story semantic safety verdict check passed: general semantic safety remains fail-closed, isolated Episode 1 fear uses one evidence-based narrow adjudication, severe fear remains blocked, and malformed adjudication fails closed.')
+console.log('Story semantic safety verdict check passed: general semantic safety remains fail-closed, consistency-corrected isolated Episode 1 fear still reaches one evidence-based narrow adjudication, severe fear remains blocked, and malformed adjudication fails closed.')
