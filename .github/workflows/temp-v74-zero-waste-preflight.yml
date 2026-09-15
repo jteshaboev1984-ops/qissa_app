@@ -25,13 +25,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Apply deterministic hardening patch
-        run: |
-          python3 scripts/temp-v74-zero-waste-preflight.py
-          python3 scripts/temp-v74-fix1.py
-          python3 scripts/temp-v74-fix2.py
-          python3 scripts/temp-v74-fix3.py
-          python3 scripts/temp-v74-fix4.py
+      - name: Apply remaining deterministic hardening delta
+        run: python3 scripts/temp-v74-fix4.py
       - name: Run full deterministic preflight before any live AI call
         run: |
           npm run check:story-core
@@ -49,19 +44,11 @@ jobs:
           git config user.name "qissa-audit-bot"
           git config user.email "qissa-audit-bot@users.noreply.github.com"
           git add \
-            supabase/functions/story-generate/contracts.ts \
-            supabase/functions/story-generate/storyCoreReference.ts \
-            supabase/functions/story-generate/fallback.ts \
-            supabase/functions/story-generate/safety.ts \
-            supabase/functions/story-generate/story-architecture.ts \
             supabase/functions/story-generate/repair-routing.ts \
-            supabase/functions/story-generate/split-index.ts \
-            scripts/check-story-ai-safety.mjs \
-            scripts/check-story-ai-split.mjs \
-            scripts/check-story-core-proof.mjs
+            scripts/check-story-ai-split.mjs
           if git diff --cached --quiet; then
             echo "No production patch to commit"
             exit 0
           fi
-          git commit -m "Harden deterministic story preflight and series identity"
+          git commit -m "Cover malformed resolution in bounded repair"
           git push origin HEAD:fix/uzbek-full-rewrite-repair-v73
