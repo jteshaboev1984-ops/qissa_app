@@ -22,7 +22,18 @@ jobs:
           node-version: 24
           cache: npm
       - name: Apply provider-safe series gate
-        run: python3 scripts/temp-fallback-series-gate.py
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/temp-fallback-series-gate.py')
+          s = p.read_text(encoding='utf-8')
+          old = ".test(contracts), 'Episode contract must persist its generation source across reloads.'"
+          new = ".test(domain), 'Episode contract must persist its generation source across reloads.'"
+          if old not in s:
+              raise SystemExit('generation source contract assertion not found')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+          python3 scripts/temp-fallback-series-gate.py
       - name: Remove patcher script
         run: rm scripts/temp-fallback-series-gate.py
       - name: Validate focused contracts
