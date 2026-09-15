@@ -1,0 +1,47 @@
+name: Temporary Story Continuation v60 Patch
+
+on:
+  push:
+    branches:
+      - fix/story-continuation-v60
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temp-story-continuation-v60
+  cancel-in-progress: false
+
+jobs:
+  patch-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/story-continuation-v60
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Patch continuation contract
+        run: python3 scripts/temp-story-continuation-v60-patch.py
+      - name: Targeted checks
+        run: |
+          npm run check:story-ai-split
+          npm run check:story-ai
+          npm run check:story-cost-guard
+          npm run typecheck:story-ai
+          npm run typecheck
+      - name: Commit verified patch
+        run: |
+          git config user.name "qissa-audit-bot"
+          git config user.email "qissa-audit-bot@users.noreply.github.com"
+          git add supabase/functions/story-generate/story-architecture.ts supabase/functions/story-generate/split-index.ts scripts/check-story-ai-split.mjs
+          if git diff --cached --quiet; then
+            echo "No patch to commit"
+            exit 0
+          fi
+          git commit -m "Enforce Episode 2 Story blueprint contract"
+          git push origin HEAD:fix/story-continuation-v60
