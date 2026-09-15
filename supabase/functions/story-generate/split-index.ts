@@ -200,6 +200,7 @@ Deno.serve(async (request: Request) => {
   let narratorRetryUsed = false
   let escalationUsed = false
   let providerCalls = 0
+  let initialStoryWords = 0
   let lastFailureClass = 'unknown'
 
   try {
@@ -239,6 +240,7 @@ Deno.serve(async (request: Request) => {
     providerCalls += 1
     const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint)
     candidate = narrationToCandidate(context, blueprint, narration)
+    initialStoryWords = wordCount(candidate.story_text)
   } catch (error) {
     const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
     lastFailureClass = providerFailureClass(reason)
@@ -274,6 +276,8 @@ Deno.serve(async (request: Request) => {
         'For story_language_mismatch, rewrite every natural-language field strictly in the requested story language. Do not translate machine keys or the {{HERO}} token.',
         'For story_repeats_choice_menu, end story_text with one neutral decision cue or question and remove every listing or paraphrase of the two structured choice actions from story_text.',
         'For technical_preview_language, rewrite the preview as one natural child-facing in-world sentence. Do not mention confirmation, selection mechanics, episodes, segments, pipelines, or story branches.',
+        'For story_choice_menu_scaffolding, remove explicit alternative scaffolding such as “можно... а можно...” from story_text; end with only a neutral decision cue.',
+        'For branching_preview_language, make the preview branch-neutral and true after either choice. Do not mention both alternatives or join possible outcomes with or/yoki/немесе.',
       ].join(' ')
       const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, retryFeedback)
       candidate = narrationToCandidate(context, blueprint, narration)
@@ -421,6 +425,8 @@ Deno.serve(async (request: Request) => {
         'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
         'X-QISSA-Narrator-Model-Used': narratorModelUsed,
         'X-QISSA-Provider-Calls': String(providerCalls),
+        'X-QISSA-Initial-Story-Words': String(initialStoryWords),
+        'X-QISSA-Final-Story-Words': String(wordCount(candidate.story_text)),
         'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
       },
     )

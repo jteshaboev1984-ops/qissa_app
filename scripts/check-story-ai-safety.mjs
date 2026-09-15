@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { russianHeroTokenNeedsRewrite, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, russianHeroTokenNeedsRewrite, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
 
 const base = 'supabase/functions/story-generate'
 const index = readFileSync(`${base}/index.ts`, 'utf8')
@@ -67,6 +67,23 @@ requireRegression(
   russianHeroTokenNeedsRewrite('Рыжик посмотрел на {{HERO}} и улыбнулся.', 'girl_hero'),
   'Russian HERO token must be rejected after the preposition на',
 )
+requireRegression(
+  choiceMenuScaffoldingNeedsRewrite('ru', 'Ёжка прошептал: «Можно начать с веточек». Потом подумал. «А можно сначала обратиться к Степашке». Алиса посмотрела на ручей.'),
+  'explicit alternative scaffolding near the decision point must be rejected',
+)
+requireRegression(
+  !choiceMenuScaffoldingNeedsRewrite('ru', 'Ёжка предложил убрать один лист. Алиса посмотрела на друзей и спросила: «Как лучше начать?»'),
+  'ordinary lead-in plus neutral decision cue must remain allowed',
+)
+requireRegression(
+  branchingPreviewNeedsRewrite('ru', 'У чистого просвета или у Степашки найдётся новая подсказка.'),
+  'preview must not enumerate alternate branch outcomes',
+)
+requireRegression(
+  !branchingPreviewNeedsRewrite('ru', 'У ручейка вскоре найдётся новая подсказка.'),
+  'branch-neutral preview must remain allowed',
+)
+
 requireRegression(
   technicalPreviewLanguageNeedsRewrite('ru', 'После подтверждённого выбора ручеёк начнёт снова журчать.'),
   'child-facing preview must reject technical confirmation language',
@@ -179,15 +196,15 @@ requireText('story prompts', prompts, [
   'For episode 2, return no choices',
   'length_guidance',
   'narrative_guidance',
-  "return context.episodeIndex === 1 ? '400-440' : '430-490'",
-  "return context.episodeIndex === 1 ? [360, 500] : [340, 520]",
+  "return context.episodeIndex === 1 ? '350-390' : '430-490'",
+  "return context.episodeIndex === 1 ? [320, 470] : [355, 520]",
   'minimum_story_words: minimumStoryWords',
   'maximum_story_words: maximumStoryWords',
   'Only story_text counts toward story word length.',
   'Never reach the target with repeated explanation, repeated clues, decorative filler, an unrelated event or a second problem.',
   'story_too_short',
   "const retryTargetStoryWords = context.ageGroup === '5-7'",
-  "? '420-455'",
+  "? '365-405'",
   "metricValue('story_words')",
   'Generate a completely new candidate from the same context.',
   'story_text only',
@@ -210,10 +227,10 @@ requireText('story prompts', prompts, [
   'After the brief setup, every one or two short paragraphs should contain a meaningful change',
   'Keep one simple anticipation loop alive until the payoff',
   'Let dialogue and visible action carry much of the middle rather than static description.',
-  'orientation: about 50-60 words',
-  'early curiosity / desire / problem: about 50-60 words',
-  'exploration / build-up: about 230-260 words',
-  'choice setup: about 45-60 words',
+  'orientation: about 45-55 words',
+  'early curiosity / desire / problem: about 45-55 words',
+  'exploration / build-up: about 200-230 words',
+  'choice setup: about 35-50 words',
   'make the central story question understandable by roughly the first 100-120 words',
   'Choices are decisions the child makes about what the HERO should do.',
   'one concrete immediate payoff or durable state change',
@@ -315,7 +332,7 @@ requireText('runtime safety', safety, [
   'const validatePatch = (patch: unknown)',
   'isRecord(patch)',
   "context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'",
-  'context.episodeIndex === 1 ? [360, 500] : [340, 520]',
+  'context.episodeIndex === 1 ? [320, 470] : [355, 520]',
   'choice.resolution_text.length > 360',
   'resolutionWords < 25',
   'resolutionWords > 60',
