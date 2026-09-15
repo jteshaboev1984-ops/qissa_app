@@ -169,23 +169,24 @@ Deno.serve(async (request: Request) => {
 
   const runtimeState = await readStoryAiRuntimeState()
   const runtimeMetadata = { 'X-QISSA-Runtime-AI': runtimeState.enabled ? 'enabled' : runtimeState.reason }
+  const runtimeProviderMetadata = { ...providerMetadata(), ...runtimeMetadata }
   if (!runtimeState.enabled) {
-    return safeFallback(context, origin, runtimeState.reason, { ...providerMetadata(), ...runtimeMetadata })
+    return safeFallback(context, origin, runtimeState.reason, runtimeProviderMetadata)
   }
 
   if (!hasValidPrivacyConsent(input)) {
-    return json({ error: 'privacy_consent_required' }, 403, origin, { ...providerMetadata(), ...runtimeMetadata })
+    return json({ error: 'privacy_consent_required' }, 403, origin, runtimeProviderMetadata)
   }
 
   const installationId = installationIdFromInput(input)
   if (!installationId) {
-    return safeFallback(context, origin, 'rate-limit-identity-missing', providerMetadata())
+    return safeFallback(context, origin, 'rate-limit-identity-missing', runtimeProviderMetadata)
   }
 
   const claim = await claimStoryGeneration(installationId)
   if (!claim.allowed) {
     return safeFallback(context, origin, claim.reason, {
-      ...providerMetadata(),
+      ...runtimeProviderMetadata,
       ...claimMetadata(claim),
     })
   }
@@ -209,7 +210,7 @@ Deno.serve(async (request: Request) => {
     lastFailureClass = providerFailureClass(reason)
     trace.push(`architect:${lastFailureClass}`)
     return safeFallback(context, origin, 'generation-or-safety-failed', {
-      ...providerMetadata(),
+      ...runtimeProviderMetadata,
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
@@ -225,7 +226,7 @@ Deno.serve(async (request: Request) => {
     lastFailureClass = 'blueprint-validation'
     trace.push(`blueprint-validation:${blueprintErrors.join(',')}`)
     return safeFallback(context, origin, 'generation-or-safety-failed', {
-      ...providerMetadata(),
+      ...runtimeProviderMetadata,
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
@@ -243,7 +244,7 @@ Deno.serve(async (request: Request) => {
     lastFailureClass = providerFailureClass(reason)
     trace.push(`narrator:${lastFailureClass}`)
     return safeFallback(context, origin, 'generation-or-safety-failed', {
-      ...providerMetadata(),
+      ...runtimeProviderMetadata,
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
@@ -269,6 +270,7 @@ Deno.serve(async (request: Request) => {
         'Keep the immutable blueprint exactly unchanged.',
         'Correct every listed narration failure in one pass. If story_too_short is present, add meaningful action/dialogue/reaction inside existing blueprint beats until the hard minimum is safely exceeded.',
         'For russian_hero_requires_rewrite, keep {{HERO}} only as nominative subject or direct address and rewrite every case/preposition or gendered-past-tense construction around the token.',
+        'For visible_safety_language, remove any child-visible explanation that a choice, option or possibility is safe, good, calm, correct or morally preferred; show the story consequences without evaluating the menu.',
         'For story_language_mismatch, rewrite every natural-language field strictly in the requested story language. Do not translate machine keys or the {{HERO}} token.',
       ].join(' ')
       const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, retryFeedback)
@@ -282,7 +284,7 @@ Deno.serve(async (request: Request) => {
       lastFailureClass = providerFailureClass(reason)
       trace.push(`narrator-retry:${lastFailureClass}`)
       return safeFallback(context, origin, 'generation-or-safety-failed', {
-        ...providerMetadata(),
+        ...runtimeProviderMetadata,
         ...claimMetadata(claim),
         'X-QISSA-Generation-Failure-Class': lastFailureClass,
         'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
@@ -314,7 +316,7 @@ Deno.serve(async (request: Request) => {
       lastFailureClass = providerFailureClass(reason)
       trace.push(`repair:${lastFailureClass}`)
       return safeFallback(context, origin, 'generation-or-safety-failed', {
-        ...providerMetadata(),
+        ...runtimeProviderMetadata,
         ...claimMetadata(claim),
         'X-QISSA-Generation-Failure-Class': lastFailureClass,
         'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
@@ -350,7 +352,7 @@ Deno.serve(async (request: Request) => {
 
   if (validationErrors.length > 0 || !candidate) {
     return safeFallback(context, origin, 'generation-or-safety-failed', {
-      ...providerMetadata(),
+      ...runtimeProviderMetadata,
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass || 'validation',
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
@@ -369,7 +371,7 @@ Deno.serve(async (request: Request) => {
     const flags = Object.entries(ruleFlags).filter(([, value]) => value).map(([key]) => key)
     trace.push(`deterministic-safety:${flags.join(',') || 'flagged'}`)
     return safeFallback(context, origin, 'generation-or-safety-failed', {
-      ...providerMetadata(),
+      ...runtimeProviderMetadata,
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
@@ -393,7 +395,7 @@ Deno.serve(async (request: Request) => {
       const flags = Object.entries(safety.flags).filter(([, value]) => value).map(([key]) => key)
       trace.push(`semantic-safety:${flags.join(',') || safety.required_action}`)
       return safeFallback(context, origin, 'generation-or-safety-failed', {
-        ...providerMetadata(),
+        ...runtimeProviderMetadata,
         ...claimMetadata(claim),
         'X-QISSA-Generation-Failure-Class': lastFailureClass,
         'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
@@ -410,7 +412,7 @@ Deno.serve(async (request: Request) => {
       200,
       origin,
       {
-        ...providerMetadata(),
+        ...runtimeProviderMetadata,
         ...claimMetadata(claim),
         'X-QISSA-Generation-Source': 'openai-structured',
         'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
@@ -425,7 +427,7 @@ Deno.serve(async (request: Request) => {
     lastFailureClass = providerFailureClass(reason)
     trace.push(`safety:${lastFailureClass}`)
     return safeFallback(context, origin, 'generation-or-safety-failed', {
-      ...providerMetadata(),
+      ...runtimeProviderMetadata,
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),

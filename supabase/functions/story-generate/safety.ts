@@ -152,17 +152,81 @@ const candidateLanguageValues = (candidate: StoryCandidate): string[] => {
   return values
 }
 
-const russianHeroTokenNeedsRewrite = (text: string) => {
+const candidateChildVisibleValues = (candidate: StoryCandidate): string[] => {
+  const values = [candidate.title, candidate.story_text, candidate.nextEpisodePreview]
+    .filter((item): item is string => typeof item === 'string')
+  if (Array.isArray(candidate.choices)) {
+    for (const choice of candidate.choices) {
+      if (!isRecord(choice)) continue
+      for (const field of ['text', 'resolution_text', 'tomorrow_seed'] as const) {
+        if (typeof choice[field] === 'string') values.push(choice[field] as string)
+      }
+    }
+  }
+  if (Array.isArray(candidate.vocabulary)) {
+    for (const item of candidate.vocabulary) {
+      if (!isRecord(item)) continue
+      if (typeof item.example === 'string') values.push(item.example)
+    }
+  }
+  return values
+}
+
+const unicodeWordStart = '(?<![\\p{L}\\p{N}_])'
+const unicodeWordEnd = '(?![\\p{L}\\p{N}_])'
+
+export const russianHeroTokenNeedsRewrite = (text: string) => {
   const token = '(?:\\{\\{HERO\\}\\}|QISSA_HERO)'
+  const tokenBoundary = '(?=[\\s,.:;!?»”")—-]|$)'
   const preposition = new RegExp(
-    `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${token}(?=[\\s,.:;!?»”")—-]|$)`,
+    `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${token}${tokenBoundary}`,
     'iu',
   )
-  const genderedAgreement = new RegExp(
-    `${token}\\s+(?:сказал|сказала|подошёл|подошла|увидел|увидела|услышал|услышала|понял|поняла|решил|решила|оказался|оказалась|остановился|остановилась|улыбнулся|улыбнулась|засмеялся|засмеялась|пожелал|пожелала)\\b`,
+  const genderedPastWord = '[\\p{L}Ёё-]{2,}?(?:лся|лась|л|ла)'
+  const neutralModifier = '(?:вдруг|снова|уже|тихо|медленно|осторожно|бережно|быстро|спокойно|наконец|тоже|ещё|еще|чуть|немного|сразу|затем|потом|[\\p{L}-]+(?:о|е))'
+  const optionalModifiers = `(?:\\s+${neutralModifier}){0,3}`
+  const genderedPastAfter = new RegExp(
+    `${token}${tokenBoundary}${optionalModifiers}\\s+${unicodeWordStart}${genderedPastWord}${unicodeWordEnd}`,
     'iu',
   )
-  return preposition.test(text) || genderedAgreement.test(text)
+  const genderedPastBefore = new RegExp(
+    `${unicodeWordStart}${genderedPastWord}${unicodeWordEnd}${optionalModifiers}\\s+${token}${tokenBoundary}`,
+    'iu',
+  )
+  return preposition.test(text) || genderedPastAfter.test(text) || genderedPastBefore.test(text)
+}
+
+const metaChoicePatterns = (
+  choiceTerms: string,
+  evaluationTerms: string,
+): RegExp[] => [
+  new RegExp(
+    `${unicodeWordStart}(?:${choiceTerms})${unicodeWordEnd}[^.!?\\n]{0,80}${unicodeWordStart}(?:${evaluationTerms})${unicodeWordEnd}`,
+    'iu',
+  ),
+  new RegExp(
+    `${unicodeWordStart}(?:${evaluationTerms})${unicodeWordEnd}[^.!?\\n]{0,80}${unicodeWordStart}(?:${choiceTerms})${unicodeWordEnd}`,
+    'iu',
+  ),
+]
+
+export const visibleSafetyLanguageNeedsRewrite = (language: string, text: string) => {
+  const normalized = text.replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()
+  const patterns: Record<string, RegExp[]> = {
+    ru: metaChoicePatterns(
+      'вариант(?:а|ов)?|выбор(?:а|ов)?|возможност(?:ь|и|ей)',
+      'безопасн[\\p{L}-]*|добр[\\p{L}-]*|правильн[\\p{L}-]*|хорош[\\p{L}-]*|спокойн[\\p{L}-]*|верн[\\p{L}-]*',
+    ),
+    uz: metaChoicePatterns(
+      'tanlov|tanlovlar|variant|variantlar|imkoniyat|imkoniyatlar',
+      "xavfsiz|yaxshi|to'g'ri|mehribon|sokin",
+    ),
+    kz: metaChoicePatterns(
+      'таңдау|таңдаулар|нұсқа|нұсқалар|мүмкіндік|мүмкіндіктер',
+      'қауіпсіз|жақсы|дұрыс|мейірімді|тыныш',
+    ),
+  }
+  return (patterns[language] ?? []).some((pattern) => pattern.test(normalized))
 }
 
 export const validateCandidate = (context: NormalizedStoryContext, candidate: unknown): string[] => {
@@ -171,6 +235,9 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   const value = candidate as StoryCandidate
 
   if (hasSingleLanguageMismatch(context.language, candidateLanguageValues(value))) errors.push('story_language_mismatch')
+  if (visibleSafetyLanguageNeedsRewrite(context.language, candidateChildVisibleValues(value).join(' '))) {
+    errors.push('visible_safety_language')
+  }
 
   if (context.language === 'ru') {
     const choiceText = Array.isArray(value.choices)

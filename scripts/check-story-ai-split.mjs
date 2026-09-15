@@ -74,6 +74,9 @@ requireFragments('language guard', languageGuard, [
 requireFragments('candidate language validation', safety, [
   "errors.push('story_language_mismatch')",
   'candidateLanguageValues',
+  "errors.push('visible_safety_language')",
+  'visibleSafetyLanguageNeedsRewrite',
+  'genderedPastWord',
 ])
 
 requireFragments('split provider', provider, [
@@ -100,9 +103,20 @@ requireFragments('split orchestrator', orchestrator, [
   "'X-QISSA-Narrator-Retry-Used'",
   'narratorRetryUsed = true',
   'Previous narration failed deterministic validation',
+  'For visible_safety_language',
   'For story_language_mismatch',
+  'runtimeProviderMetadata',
+  "'X-QISSA-Runtime-AI'",
+  "'X-QISSA-Generation-Source': 'openai-structured'",
   "'X-QISSA-Escalation-Used'",
 ])
+
+const runtimeMetadataPosition = orchestrator.indexOf('const runtimeProviderMetadata')
+const providerSuccessPosition = orchestrator.indexOf("'X-QISSA-Generation-Source': 'openai-structured'")
+const runtimeOnSuccessPosition = orchestrator.lastIndexOf('...runtimeProviderMetadata', providerSuccessPosition)
+if (!(runtimeMetadataPosition >= 0 && runtimeOnSuccessPosition > runtimeMetadataPosition && runtimeOnSuccessPosition < providerSuccessPosition)) {
+  failures.push('openai-structured success response must carry X-QISSA-Runtime-AI metadata')
+}
 
 if (orchestrator.includes("OPENAI_NARRATOR_ESCALATION_MODEL')?.trim() || 'gpt-5.6-sol'")) {
   failures.push('Sol escalation must remain opt-in during tuning')
@@ -124,4 +138,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Split Story AI contract passed: Architect owns canon/branches, Narrator owns prose only, selected language is publish-gated for RU/UZ/KZ, Luna is default, Sol escalation is opt-in, and long-series identity/memory scaling is documented.')
+console.log('Split Story AI contract passed: Architect owns canon/branches, Narrator owns prose only, selected language and publication-quality validators are enforced, runtime AI state is observable on provider success, Luna is default, Sol escalation is opt-in, and long-series identity/memory scaling is documented.')

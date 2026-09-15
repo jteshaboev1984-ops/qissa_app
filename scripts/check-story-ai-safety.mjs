@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs'
+import { russianHeroTokenNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
 
 const base = 'supabase/functions/story-generate'
 const index = readFileSync(`${base}/index.ts`, 'utf8')
@@ -17,6 +18,35 @@ const requireText = (label, source, fragments) => {
     if (!source.includes(fragment)) failures.push(`${label} is missing: ${fragment}`)
   }
 }
+const requireRegression = (condition, message) => {
+  if (!condition) failures.push(`Story validator regression: ${message}`)
+}
+
+for (const invalid of [
+  '{{HERO}} шёл к окну.',
+  '{{HERO}} осторожно подошёл к двери.',
+  '{{HERO}} присел рядом с фонарём.',
+  'К окну медленно подошла {{HERO}}.',
+]) {
+  requireRegression(russianHeroTokenNeedsRewrite(invalid), `must reject gendered Russian past-tense form: ${invalid}`)
+}
+requireRegression(!russianHeroTokenNeedsRewrite('{{HERO}} идёт к окну и замечает свет.'), 'must allow gender-neutral Russian present-tense narration')
+requireRegression(
+  visibleSafetyLanguageNeedsRewrite('ru', 'Обе возможности были безопасными и добрыми.'),
+  'must reject visible Russian safety/meta-choice language',
+)
+requireRegression(
+  visibleSafetyLanguageNeedsRewrite('uz', "Har ikki tanlov xavfsiz va yaxshi edi."),
+  'must reject visible Uzbek safety/meta-choice language',
+)
+requireRegression(
+  visibleSafetyLanguageNeedsRewrite('kz', 'Екі нұсқа да қауіпсіз және жақсы еді.'),
+  'must reject visible Kazakh safety/meta-choice language',
+)
+requireRegression(
+  !visibleSafetyLanguageNeedsRewrite('ru', 'Перед героем были две двери, и за каждой слышался тихий звон.'),
+  'must not reject ordinary choice-scene prose without safety evaluation language',
+)
 
 requireText('story entrypoint', index, [
   'readStoryAiRuntimeState',
@@ -229,7 +259,11 @@ requireText('runtime safety', safety, [
   "errors.push('bedtime_coda_too_short')",
   "errors.push('bedtime_coda_too_long')",
   'russianHeroTokenNeedsRewrite',
+  'genderedPastWord',
   "errors.push('russian_hero_requires_rewrite')",
+  'visibleSafetyLanguageNeedsRewrite',
+  'candidateChildVisibleValues',
+  "errors.push('visible_safety_language')",
 ])
 
 for (const flag of [
@@ -274,4 +308,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI safety, additive short-story repair, targeted resolution repair, validator metrics, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')
+console.log('Story AI safety, hidden safety-language, Russian past-tense hero grammar, additive short-story repair, targeted resolution repair, validator metrics, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')
