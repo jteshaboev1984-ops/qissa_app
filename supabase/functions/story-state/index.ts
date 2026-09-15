@@ -8,6 +8,7 @@ type JsonRecord = Record<string, unknown>
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const AUDIO_BUCKET = 'story-audio'
+const MAX_SERIES_SESSIONS = 10
 
 type StoryStateRequest = {
   action?: 'sync_generated' | 'confirm_choice' | 'save_preferences' | 'reset_current' | 'load_current' | 'list_library' | 'delete_profile_data'
@@ -112,9 +113,9 @@ const storyIdentity = (seriesState: StoryStateRequest['seriesState']) => {
     ? seriesState.sessionId.trim()
     : seriesId
   const sessionIndex = typeof seriesState?.sessionIndex === 'number' && Number.isInteger(seriesState.sessionIndex) && seriesState.sessionIndex > 0
-    ? Math.min(seriesState.sessionIndex, 10_000)
+    ? seriesState.sessionIndex
     : 1
-  return { seriesId, sessionId, sessionIndex }
+  return { seriesId, sessionId, sessionIndex, withinSeriesLimit: sessionIndex <= MAX_SERIES_SESSIONS }
 }
 
 const findProfile = async (installationId: string) =>
@@ -163,7 +164,7 @@ async function syncGenerated(input: StoryStateRequest, origin: string | null) {
   const episodeNo = episodeNoFromId(episode.episode_id)
   const sessionStatus = episodeNo === 2 ? 'completed' : 'episode_1_active'
   const identity = storyIdentity(seriesState)
-  if (!identity.seriesId || !identity.sessionId) return fail('invalid_story_identity', 422, origin)
+  if (!identity.seriesId || !identity.sessionId || !identity.withinSeriesLimit) return fail('invalid_story_identity', 422, origin)
 
   const { data: session, error: sessionError } = await admin
     .from('story_sessions')
@@ -273,6 +274,7 @@ async function confirmChoice(input: StoryStateRequest, origin: string | null) {
   if (!profile) return fail('profile_not_found', 404, origin)
 
   const identity = storyIdentity(seriesState)
+  if (!identity.seriesId || !identity.sessionId || !identity.withinSeriesLimit) return fail('invalid_story_identity', 422, origin)
   const { data: session, error: sessionError } = await admin
     .from('story_sessions')
     .select('id,story_mode')
@@ -514,6 +516,32 @@ async function loadCurrent(input: StoryStateRequest, origin: string | null) {
 }
 
 
+type LibrarySessionRow = {
+  id: string
+  client_session_id: string
+  client_series_id: string | null
+  series_session_index: number
+  story_mode: StoryMode
+  story_mood: StoryMood
+  style_pack_id: string
+  status: string
+  title: string | null
+  summary: string | null
+  client_state: unknown
+  selection_snapshot: unknown
+  is_archived: boolean
+  created_at: string
+  updated_at: string
+  completed_at: string | null
+}
+
+type LibraryEpisodeRow = {
+  session_id: string
+  episode_no: number
+  domain_payload: unknown
+  created_at: string
+}
+
 async function listLibrary(input: StoryStateRequest, origin: string | null) {
   const { installationId } = input
   if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
@@ -530,9 +558,10 @@ async function listLibrary(input: StoryStateRequest, origin: string | null) {
     .limit(12)
 
   if (sessionError) return fail('library_session_load_failed', 500, origin)
-  if (!sessions || sessions.length === 0) return json({ sessions: [] }, 200, origin)
+  const sessionRows = (sessions ?? []) as LibrarySessionRow[]
+  if (sessionRows.length === 0) return json({ sessions: [] }, 200, origin)
 
-  const sessionIds = sessions.map((session) => session.id)
+  const sessionIds = sessionRows.map((session: LibrarySessionRow) => session.id)
   const { data: episodes, error: episodeError } = await admin
     .from('story_episodes')
     .select('session_id,episode_no,domain_payload,created_at')
@@ -540,8 +569,9 @@ async function listLibrary(input: StoryStateRequest, origin: string | null) {
     .order('episode_no', { ascending: true })
 
   if (episodeError) return fail('library_episode_load_failed', 500, origin)
+  const episodeRows = (episodes ?? []) as LibraryEpisodeRow[]
   const bySession = new Map<string, JsonRecord[]>()
-  for (const row of episodes ?? []) {
+  for (const row of episodeRows) {
     if (!isRecord(row.domain_payload)) continue
     const existing = bySession.get(row.session_id) ?? []
     existing.push(row.domain_payload)
@@ -549,7 +579,7 @@ async function listLibrary(input: StoryStateRequest, origin: string | null) {
   }
 
   return json({
-    sessions: sessions.map((session) => ({
+    sessions: sessionRows.map((session: LibrarySessionRow) => ({
       sessionId: session.client_session_id,
       seriesId: session.client_series_id ?? session.client_session_id,
       sessionIndex: session.series_session_index ?? 1,

@@ -3,6 +3,7 @@ export type AgeGroup = '3-4' | '5-7' | '8-9'
 export type HeroType = 'girl_hero' | 'boy_hero' | 'animal' | 'magical_hero' | 'custom'
 export type StoryMode = 'one_time' | 'series'
 export type StoryMood = 'bedtime' | 'kind_adventure'
+export const MAX_SERIES_SESSIONS = 10
 export type StylePackId =
   | 'cozy_forest'
   | 'magic_garden'
@@ -73,6 +74,8 @@ export type NormalizedStoryContext = {
   seriesId: string
   sessionId: string
   sessionIndex: number
+  seriesSessionsRemaining: number
+  isFinalSeriesSession: boolean
   episodeIndex: 1 | 2
   isContinuation: boolean
   hasSeriesMemory: boolean
@@ -145,7 +148,7 @@ export type FinalStatePatch = {
   last_event?: string
   new_friend?: string
   hero_trait?: string
-  open_arc?: string
+  open_arc?: string | null
   relationship_updates?: Record<string, string>
   canon_updates?: Record<string, string>
 }
@@ -344,9 +347,11 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
   const choiceHistory = compactChoiceHistory(seriesState.choiceHistory, heroName)
   const explicitSessionIdentity = typeof seriesState.sessionId === 'string' || typeof seriesState.sessionIndex === 'number'
   const sessionId = compactText(seriesState.sessionId, 128) || seriesId
-  const sessionIndex = typeof seriesState.sessionIndex === 'number' && Number.isInteger(seriesState.sessionIndex) && seriesState.sessionIndex > 0
-    ? Math.min(seriesState.sessionIndex, 10_000)
+  const rawSessionIndex = typeof seriesState.sessionIndex === 'number' && Number.isInteger(seriesState.sessionIndex) && seriesState.sessionIndex > 0
+    ? seriesState.sessionIndex
     : 1
+  if (storyMode === 'series' && rawSessionIndex > MAX_SERIES_SESSIONS) return null
+  const sessionIndex = storyMode === 'series' ? rawSessionIndex : 1
   const sessionEpisodeCount = typeof seriesState.episodeCount === 'number' && Number.isFinite(seriesState.episodeCount)
     ? Math.max(0, Math.floor(seriesState.episodeCount))
     : 0
@@ -369,6 +374,8 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
     seriesId,
     sessionId,
     sessionIndex,
+    seriesSessionsRemaining: storyMode === 'series' ? Math.max(0, MAX_SERIES_SESSIONS - sessionIndex) : 0,
+    isFinalSeriesSession: storyMode === 'series' && sessionIndex === MAX_SERIES_SESSIONS,
     episodeIndex: isContinuation ? 2 : 1,
     isContinuation,
     hasSeriesMemory: choiceHistory.length > 0 || Object.keys(compactStringRecord(seriesState.canonState, heroName)).length > 0 || Object.keys(compactStringRecord(seriesState.relationshipState, heroName)).length > 0,
@@ -399,14 +406,15 @@ export const finalPatchFromCandidate = (patch: unknown): FinalStatePatch => {
   const lastEvent = compactText(patch.last_event, 96)
   const newFriend = compactText(patch.new_friend, 64)
   const heroTrait = compactText(patch.hero_trait, 64)
-  const openArc = compactText(patch.open_arc, 120)
+  const openArc = patch.open_arc === null ? null : compactText(patch.open_arc, 120)
   const relationshipUpdates = entriesToRecord(patch.relationship_updates)
   const canonUpdates = entriesToRecord(patch.canon_updates)
 
   if (lastEvent) result.last_event = lastEvent
   if (newFriend) result.new_friend = newFriend
   if (heroTrait) result.hero_trait = heroTrait
-  if (openArc) result.open_arc = openArc
+  if (openArc === null) result.open_arc = null
+  else if (openArc) result.open_arc = openArc
   if (Object.keys(relationshipUpdates).length > 0) result.relationship_updates = relationshipUpdates
   if (Object.keys(canonUpdates).length > 0) result.canon_updates = canonUpdates
   return result

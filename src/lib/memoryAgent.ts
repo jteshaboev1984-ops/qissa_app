@@ -1,5 +1,7 @@
 import type { ChoiceHistoryEntry, Episode, EpisodeChoice, OnboardingSelections, SeriesState } from '../types/qissa'
 
+export const MAX_SERIES_SESSIONS = 10
+
 function baseHeroName(selections: OnboardingSelections): string {
   if (selections.heroType === 'custom' && selections.customHeroName) {
     return selections.customHeroName
@@ -25,8 +27,14 @@ export const seriesSessionId = (seriesState: SeriesState): string =>
 
 export const seriesSessionIndex = (seriesState: SeriesState): number =>
   Number.isInteger(seriesState.sessionIndex) && (seriesState.sessionIndex ?? 0) > 0
-    ? seriesState.sessionIndex as number
+    ? Math.min(seriesState.sessionIndex as number, MAX_SERIES_SESSIONS)
     : 1
+
+export const isFinalSeriesSession = (seriesState: SeriesState): boolean =>
+  seriesSessionIndex(seriesState) >= MAX_SERIES_SESSIONS
+
+export const canStartNextSeriesSession = (seriesState: SeriesState): boolean =>
+  seriesState.episodeCount >= 2 && !isFinalSeriesSession(seriesState)
 
 export function createInitialSeriesState(selections: OnboardingSelections): SeriesState {
   return {
@@ -47,6 +55,10 @@ export function createInitialSeriesState(selections: OnboardingSelections): Seri
 }
 
 export function createNextSeriesSessionState(seriesState: SeriesState): SeriesState {
+  if (!canStartNextSeriesSession(seriesState)) {
+    throw new Error('Series cannot advance beyond its completed ten-session arc.')
+  }
+
   return {
     ...seriesState,
     sessionId: uniqueId('session'),
@@ -70,7 +82,7 @@ export function applyEpisodeToSeriesState(seriesState: SeriesState, episode: Epi
     sessionIndex: seriesSessionIndex(seriesState),
     episodeCount: Math.max(seriesState.episodeCount, segment),
     lastEpisodeSummary: patch.last_event?.trim() || seriesState.lastEpisodeSummary,
-    activeArc: patch.open_arc ?? seriesState.activeArc,
+    activeArc: patch.open_arc === null ? '' : patch.open_arc ?? seriesState.activeArc,
     relationshipState: {
       ...seriesState.relationshipState,
       ...(patch.relationship_updates ?? {}),
@@ -102,7 +114,7 @@ export function applyChoiceToSeriesState(seriesState: SeriesState, episode: Epis
     sessionIndex: seriesSessionIndex(seriesState),
     choiceHistory: [...seriesState.choiceHistory, entry],
     lastEpisodeSummary: choice.effect_summary,
-    activeArc: choice.state_patch.open_arc ?? seriesState.activeArc,
+    activeArc: choice.state_patch.open_arc === null ? '' : choice.state_patch.open_arc ?? seriesState.activeArc,
     relationshipState: {
       ...seriesState.relationshipState,
       ...(choice.state_patch.relationship_updates ?? {}),

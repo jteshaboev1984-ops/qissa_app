@@ -21,7 +21,7 @@ begin
   ) then
     alter table public.story_sessions
       add constraint story_sessions_series_session_index_check
-      check (series_session_index >= 1);
+      check (series_session_index between 1 and 10);
   end if;
 end $$;
 

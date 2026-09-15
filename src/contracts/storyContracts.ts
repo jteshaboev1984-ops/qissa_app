@@ -99,7 +99,8 @@ export interface StatePatch {
   last_event?: string
   new_friend?: string
   hero_trait?: string
-  open_arc?: string
+  /** null explicitly closes the currently active serialized arc. */
+  open_arc?: string | null
   relationship_updates?: Record<string, string>
   canon_updates?: Record<string, string>
 }
@@ -158,8 +159,8 @@ export interface Episode {
 }
 
 export interface SeriesState {
-  id: string
   /** Stable identity for the whole continuing series. */
+  id: string
   childProfileId: string
   /** Unique identity for the current bedtime story/session. Legacy snapshots may omit it. */
   sessionId?: string

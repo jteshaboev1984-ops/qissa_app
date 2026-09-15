@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { OnboardingFlow } from './features/onboarding/OnboardingFlow'
-import { applyChoiceToSeriesState, applyEpisodeToSeriesState, createInitialSeriesState } from './lib/memoryAgent'
+import { applyChoiceToSeriesState, applyEpisodeToSeriesState, canStartNextSeriesSession, createInitialSeriesState, createNextSeriesSessionState, MAX_SERIES_SESSIONS, seriesSessionIndex } from './lib/memoryAgent'
 import { t } from './lib/i18n'
 import { rotateInstallationId } from './lib/installationIdentity'
 import { localPersistence, type AppScreen } from './lib/localPersistence'
@@ -274,6 +274,41 @@ function App() {
     }
   }
 
+  const handleStartNextSeriesSession = async () => {
+    if (
+      !selections ||
+      !seriesState ||
+      selections.storyMode !== 'series' ||
+      !canStartNextSeriesSession(seriesState) ||
+      generationLockRef.current
+    ) return
+
+    generationLockRef.current = true
+    setGenerationError(false)
+    setGenerationStatus('continuing')
+
+    const nextSessionState = createNextSeriesSessionState(seriesState)
+    archiveCurrentStory()
+
+    try {
+      const { episode: firstEpisode } = await storyService.generateEpisode({ selections, seriesState: nextSessionState })
+      const nextSeriesState = applyEpisodeToSeriesState(nextSessionState, firstEpisode)
+
+      setEpisode(firstEpisode)
+      setSeriesState(nextSeriesState)
+      localPersistence.saveCurrentEpisode(firstEpisode)
+      localPersistence.saveSeriesState(nextSeriesState)
+      setArchiveItems(storyArchive.load())
+      updateScreen('story')
+    } catch (error) {
+      console.error('Failed to start next series session', error)
+      setGenerationError(true)
+    } finally {
+      generationLockRef.current = false
+      setGenerationStatus('idle')
+    }
+  }
+
   const handleOpenStory = () => {
     if (
       selections?.storyMode === 'series' &&
@@ -466,6 +501,7 @@ function App() {
             generationErrorMessage={generationErrorMessage}
             onCreateFirstSeries={handleStartStory}
             onContinueStory={handleOpenStory}
+            onStartNextSeriesSession={handleStartNextSeriesSession}
             onResetStory={handleResetStory}
             onEditSetup={() => handleOpenOnboarding('edit_setup')}
             onCreateNewStorySetup={handleOpenNewStorySetup}
@@ -483,6 +519,7 @@ function App() {
             generationLabel={generationLabel}
             generationErrorMessage={generationErrorMessage}
             onOpenStory={handleOpenStory}
+            onStartNextSeriesSession={handleStartNextSeriesSession}
             onOpenArchivedStory={handleOpenArchivedStory}
             onCreateStory={handleStartStory}
           />
@@ -514,6 +551,9 @@ function App() {
             generationErrorMessage={generationErrorMessage}
             onChoiceSelected={handleChoiceSelected}
             onContinueNextEpisode={handleContinueNextEpisode}
+            onStartNextSeriesSession={handleStartNextSeriesSession}
+            seriesSessionIndex={seriesState ? seriesSessionIndex(seriesState) : 1}
+            maxSeriesSessions={MAX_SERIES_SESSIONS}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={updateReaderPreferences}
             isChoiceSavedForCurrentEpisode={Boolean(savedChoiceEntryForCurrentEpisode)}

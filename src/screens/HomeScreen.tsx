@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { StylePackCover } from '../components/StylePackCover'
 import { stylePacks } from '../data/stylePacks'
 import { t } from '../lib/i18n'
+import { canStartNextSeriesSession, MAX_SERIES_SESSIONS, seriesSessionIndex } from '../lib/memoryAgent'
 import { deriveStoryStatus } from '../lib/storyStatus'
 import type { Episode, Language, OnboardingSelections, SeriesState } from '../types/qissa'
 
@@ -15,6 +16,7 @@ interface HomeScreenProps {
   generationErrorMessage: string | null
   onCreateFirstSeries: () => void
   onContinueStory: () => void
+  onStartNextSeriesSession: () => void
   onResetStory: () => void
   onEditSetup: () => void
   onCreateNewStorySetup: () => void
@@ -51,6 +53,7 @@ export function HomeScreen({
   generationErrorMessage,
   onCreateFirstSeries,
   onContinueStory,
+  onStartNextSeriesSession,
   onResetStory,
   onEditSetup,
   onCreateNewStorySetup,
@@ -60,6 +63,9 @@ export function HomeScreen({
   const isSeriesMode = selections.storyMode === 'series'
   const storyStatus = deriveStoryStatus(selections, seriesState, episode)
   const isTomorrowMemoryState = isSeriesMode && storyStatus === 'episode_1_choice_saved'
+  const currentSeriesSession = seriesState ? seriesSessionIndex(seriesState) : 1
+  const canStartNextSession = Boolean(isSeriesMode && seriesState && canStartNextSeriesSession(seriesState))
+  const isWholeSeriesFinal = Boolean(isSeriesMode && storyStatus === 'completed' && currentSeriesSession >= MAX_SERIES_SESSIONS)
 
   const compactSummary = useMemo(() => {
     const hero = t(language, `hero.${selections.heroType}` as const)
@@ -77,11 +83,18 @@ export function HomeScreen({
   const primaryLabel = () => {
     if (storyStatus === 'not_started') return isSeriesMode ? t(language, 'home.create_first_series') : t(language, 'home.start_one_time')
     if (isTomorrowMemoryState) return t(language, 'home.continue_from_memory')
-    if (storyStatus === 'completed') return isSeriesMode ? t(language, 'home.open_last_story') : t(language, 'home.reopen_story')
+    if (storyStatus === 'completed') {
+      if (isSeriesMode && canStartNextSession) return language === 'ru' ? `Начать серию ${currentSeriesSession + 1} из ${MAX_SERIES_SESSIONS}` : language === 'uz' ? `${currentSeriesSession + 1}/${MAX_SERIES_SESSIONS}-qismni boshlash` : `${currentSeriesSession + 1}/${MAX_SERIES_SESSIONS}-бөлімді бастау`
+      return isSeriesMode ? t(language, 'home.open_last_story') : t(language, 'home.reopen_story')
+    }
     return t(language, 'home.open_current_story')
   }
 
-  const primaryAction = storyStatus === 'not_started' ? onCreateFirstSeries : onContinueStory
+  const primaryAction = storyStatus === 'not_started'
+    ? onCreateFirstSeries
+    : storyStatus === 'completed' && canStartNextSession
+      ? onStartNextSeriesSession
+      : onContinueStory
 
   const renderSetupSummary = () => (
     <div className="rounded-[1.75rem] border border-[#eadfc9] bg-[#fff8e9] p-4">
@@ -120,7 +133,11 @@ export function HomeScreen({
       : isTomorrowMemoryState
         ? memoryCopy[language].intro
         : completed
-          ? (isSeriesMode ? t(language, 'home.completed_series_body') : t(language, 'home.one_time_completed_body'))
+          ? isSeriesMode
+            ? isWholeSeriesFinal
+              ? (language === 'ru' ? 'Финальная серия завершена. Начатые сюжетные линии закрыты, и эту сказку можно перечитывать целиком.' : language === 'uz' ? 'Yakuniy qism tugadi. Boshlangan voqealar yakunlandi va bu ertakni qayta o‘qish mumkin.' : 'Соңғы бөлім аяқталды. Басталған желілер түйінделді, енді ертегіні қайта оқуға болады.')
+              : (language === 'ru' ? `Серия ${currentSeriesSession} из ${MAX_SERIES_SESSIONS} завершена. Выборы и важные события сохранены для следующей серии.` : language === 'uz' ? `${currentSeriesSession}/${MAX_SERIES_SESSIONS}-qism tugadi. Tanlovlar va muhim voqealar keyingi qism uchun saqlandi.` : `${currentSeriesSession}/${MAX_SERIES_SESSIONS}-бөлім аяқталды. Таңдаулар мен маңызды оқиғалар келесі бөлімге сақталды.`)
+            : t(language, 'home.one_time_completed_body')
           : t(language, 'home.read_together_hint')
 
     return (
