@@ -29,7 +29,7 @@
     "check:installation-auth": "node scripts/check-installation-auth-boundary.mjs",
     "check:secret-hygiene": "node scripts/check-repository-secret-hygiene.mjs",
     "check:mobile-ux": "node scripts/check-mobile-ux-contract.mjs",
-    "check:story-ai": "node scripts/check-story-ai-safety.mjs",
+    "check:story-ai": "node scripts/check-story-ai-safety.mjs && node scripts/check-story-safety-verdict.mjs",
     "check:story-ai-split": "node scripts/check-story-ai-split.mjs",
     "check:backend-contracts": "node scripts/check-backend-contracts.mjs",
     "check:backend-access": "node scripts/check-backend-access-boundary.mjs",
