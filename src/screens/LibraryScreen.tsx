@@ -107,7 +107,7 @@ export function LibraryScreen({
       ? seriesState.choiceHistory[seriesState.choiceHistory.length - 1]
       : null
   const seriesEpisodeNumber = seriesState && selections.storyMode === 'series' ? seriesSessionIndex(seriesState) : 1
-  const canStartNextSession = Boolean(seriesState && selections.storyMode === 'series' && canStartNextSeriesSession(seriesState))
+  const canStartNextSession = Boolean(seriesState && selections.storyMode === 'series' && canStartNextSeriesSession(seriesState, episode))
   const completed = status === 'completed'
 
   if (!episode) {

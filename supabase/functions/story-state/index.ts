@@ -49,6 +49,7 @@ type StoryStateRequest = {
     }>
     vocabulary?: unknown[]
     nextEpisodePreview?: string
+    generationSource?: string
     safety_self_check?: JsonRecord & {
       approved?: boolean
       risk_level?: string
@@ -210,7 +211,9 @@ async function syncGenerated(input: StoryStateRequest, origin: string | null) {
       language,
       mood: storyMood,
       style_pack_id: stylePackId,
-      generation_source: 'edge_story_agent',
+      generation_source: episode.generationSource === 'safe-fallback' || episode.generationSource === 'openai-structured' || episode.generationSource === 'local'
+        ? episode.generationSource
+        : 'edge_story_agent',
       safety_status: approved ? 'approved' : 'blocked',
       safety_result: safety,
       vocabulary: Array.isArray(episode.vocabulary) ? episode.vocabulary : [],

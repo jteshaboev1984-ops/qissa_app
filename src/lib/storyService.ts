@@ -20,7 +20,7 @@ const defaultReaderPreferences: ReaderPreferences = {
 }
 
 const generateWithLocalAgent = async (input: StoryGenerationInput): Promise<StoryGenerationOutput> => ({
-  episode: createStoryEpisode(input),
+  episode: { ...createStoryEpisode(input), generationSource: 'local' },
 })
 
 const persistRemoteEpisode = async (

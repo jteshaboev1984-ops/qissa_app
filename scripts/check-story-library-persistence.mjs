@@ -16,6 +16,9 @@ const localAgent = read('src/lib/storyAgent.ts')
 const archive = read('src/lib/storyArchive.ts')
 const home = read('src/screens/HomeScreen.tsx')
 const storyScreen = read('src/screens/StoryScreen.tsx')
+const storyGenerate = read('supabase/functions/story-generate/index.ts')
+const storyRemote = read('src/lib/storyRemoteClient.ts')
+const storyService = read('src/lib/storyService.ts')
 
 requireCondition(/client_series_id\s+text/.test(migration), 'Migration must add client_series_id.')
 requireCondition(/series_session_index\s+integer\s+not null\s+default 1/i.test(migration), 'Migration must add 1-based series_session_index.')
@@ -52,6 +55,11 @@ requireCondition(/MAX_SERIES_SESSIONS = 10/.test(state) && /withinSeriesLimit/.t
 requireCondition(/seriesSessionId\(seriesState\)/.test(archive), 'Local Story Library must key snapshots by bedtime session identity instead of stable series identity.')
 requireCondition(/onStartNextSeriesSession/.test(home) && /MAX_SERIES_SESSIONS/.test(home), 'Home must continue the same series after a completed session until 10/10.')
 requireCondition(/isWholeSeriesFinal/.test(storyScreen) && /onStartNextSeriesSession/.test(storyScreen), 'Story reader must distinguish a completed bedtime session from the whole-series finale.')
+requireCondition(/generationSource\?: StoryGenerationSource/.test(domain), 'Episode contract must persist its generation source across reloads.')
+requireCondition(/generationSource: 'safe-fallback'/.test(storyGenerate) && /generationSource: 'openai-structured'/.test(storyGenerate), 'Story Edge Function must stamp the actual generation source into episode payloads.')
+requireCondition(/generationSource: 'local'/.test(storyService) && /safe-fallback/.test(storyRemote), 'Browser generation clients must preserve and validate episode source metadata.')
+requireCondition(/episode\?\.generationSource === 'openai-structured'/.test(memory) && /episode\?\.generationSource === 'local'/.test(memory), 'A deterministic safe-fallback episode must not unlock another bedtime session that would repeat fallback content.')
+requireCondition(/canStartNextSeriesSession=\{Boolean/.test(app) && /canStartNextSeriesSession \?/.test(storyScreen), 'UI must fail closed when a fallback session cannot safely advance.')
 
 if (failures.length) {
   console.error(`Story Library / series persistence contract failed:\n- ${failures.join('\n- ')}`)

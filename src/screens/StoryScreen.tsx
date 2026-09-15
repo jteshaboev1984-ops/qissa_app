@@ -20,6 +20,7 @@ interface StoryScreenProps {
   onStartNextSeriesSession?: () => void
   seriesSessionIndex?: number
   maxSeriesSessions?: number
+  canStartNextSeriesSession?: boolean
   isChoiceSavedForCurrentEpisode?: boolean
   savedChoiceIdForCurrentEpisode?: string | null
   onBackHome?: () => void
@@ -57,6 +58,7 @@ export function StoryScreen({
   onStartNextSeriesSession,
   seriesSessionIndex = 1,
   maxSeriesSessions = 10,
+  canStartNextSeriesSession = false,
   isChoiceSavedForCurrentEpisode = false,
   savedChoiceIdForCurrentEpisode = null,
   onBackHome,
@@ -401,7 +403,9 @@ export function StoryScreen({
       : (language === 'ru' ? `Серия ${seriesSessionIndex} завершилась` : language === 'uz' ? `${seriesSessionIndex}-qism yakunlandi` : `${seriesSessionIndex}-бөлім аяқталды`)
     const body = isWholeSeriesFinal
       ? (language === 'ru' ? 'Финальная серия закрыла начатые сюжетные линии. Историю можно перечитать или начать новую сказку.' : language === 'uz' ? 'Yakuniy qism boshlangan voqealarni tugatdi. Ertakni qayta o‘qish yoki yangi hikoya boshlash mumkin.' : 'Соңғы бөлім басталған оқиғаларды түйіндеді. Ертегіні қайта оқуға немесе жаңасын бастауға болады.')
-      : (language === 'ru' ? `QISSA сохранила важные события и выборы. Следующая серия будет ${seriesSessionIndex + 1} из ${maxSeriesSessions}.` : language === 'uz' ? `QISSA muhim voqealar va tanlovlarni saqladi. Keyingi qism ${seriesSessionIndex + 1}/${maxSeriesSessions} bo‘ladi.` : `QISSA маңызды оқиғалар мен таңдауларды сақтады. Келесі бөлім ${seriesSessionIndex + 1}/${maxSeriesSessions} болады.`)
+      : canStartNextSeriesSession
+        ? (language === 'ru' ? `QISSA сохранила важные события и выборы. Следующая серия будет ${seriesSessionIndex + 1} из ${maxSeriesSessions}.` : language === 'uz' ? `QISSA muhim voqealar va tanlovlarni saqladi. Keyingi qism ${seriesSessionIndex + 1}/${maxSeriesSessions} bo‘ladi.` : `QISSA маңызды оқиғалар мен таңдауларды сақтады. Келесі бөлім ${seriesSessionIndex + 1}/${maxSeriesSessions} болады.`)
+        : (language === 'ru' ? 'Эта серия завершена и сохранена. Продолжение временно недоступно, поэтому сказку пока можно перечитать.' : language === 'uz' ? 'Bu qism tugadi va saqlandi. Davomi hozircha mavjud emas, ertakni qayta o‘qish mumkin.' : 'Бұл бөлім аяқталып, сақталды. Жалғасы әзірге қолжетімсіз, ертегіні қайта оқуға болады.')
 
     return (
       <>
@@ -415,11 +419,11 @@ export function StoryScreen({
               <button className="q-primary w-full" onClick={onStartNewStory}>
                 {t(language, 'story.start_new_story')}
               </button>
-            ) : (
+            ) : canStartNextSeriesSession ? (
               <button className="q-primary w-full" onClick={onStartNextSeriesSession}>
                 {language === 'ru' ? `Начать серию ${seriesSessionIndex + 1}` : language === 'uz' ? `${seriesSessionIndex + 1}-qismni boshlash` : `${seriesSessionIndex + 1}-бөлімді бастау`}
               </button>
-            )}
+            ) : null}
             <button className="q-secondary w-full" onClick={handleReadAgain}>
               {t(language, 'story.read_again')}
             </button>

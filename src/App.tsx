@@ -279,7 +279,7 @@ function App() {
       !selections ||
       !seriesState ||
       selections.storyMode !== 'series' ||
-      !canStartNextSeriesSession(seriesState) ||
+      !canStartNextSeriesSession(seriesState, episode) ||
       generationLockRef.current
     ) return
 
@@ -554,6 +554,7 @@ function App() {
             onStartNextSeriesSession={handleStartNextSeriesSession}
             seriesSessionIndex={seriesState ? seriesSessionIndex(seriesState) : 1}
             maxSeriesSessions={MAX_SERIES_SESSIONS}
+            canStartNextSeriesSession={Boolean(seriesState && canStartNextSeriesSession(seriesState, episode))}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={updateReaderPreferences}
             isChoiceSavedForCurrentEpisode={Boolean(savedChoiceEntryForCurrentEpisode)}

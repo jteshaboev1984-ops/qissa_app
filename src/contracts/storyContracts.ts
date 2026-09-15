@@ -8,6 +8,7 @@ export type HeroType = 'girl_hero' | 'boy_hero' | 'animal' | 'magical_hero' | 'c
 export type StoryMode = 'one_time' | 'series'
 export type PlaybackMode = 'read' | 'listen'
 export type StoryMood = 'bedtime' | 'kind_adventure'
+export type StoryGenerationSource = 'safe-fallback' | 'openai-structured' | 'local'
 
 export const PRIVACY_CONSENT_VERSION = '2026-06-25-v1' as const
 export interface PrivacyConsent {
@@ -146,6 +147,8 @@ export interface SafetyResult {
 export interface Episode {
   episode_id: string
   series_id: string
+  /** Operational source persisted with the episode; used to avoid repeating fallback stories across sessions. */
+  generationSource?: StoryGenerationSource
   title: string
   story_text: string
   mode: StoryMode

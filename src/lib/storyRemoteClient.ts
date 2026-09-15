@@ -44,6 +44,7 @@ const isEpisode = (value: unknown): value is Episode =>
   isRecord(value) &&
   typeof value.episode_id === 'string' &&
   typeof value.series_id === 'string' &&
+  (value.generationSource === undefined || ['safe-fallback', 'openai-structured', 'local'].includes(String(value.generationSource))) &&
   typeof value.title === 'string' &&
   typeof value.story_text === 'string' &&
   ['one_time', 'series'].includes(String(value.mode)) &&

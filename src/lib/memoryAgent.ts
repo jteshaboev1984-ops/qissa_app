@@ -33,8 +33,10 @@ export const seriesSessionIndex = (seriesState: SeriesState): number =>
 export const isFinalSeriesSession = (seriesState: SeriesState): boolean =>
   seriesSessionIndex(seriesState) >= MAX_SERIES_SESSIONS
 
-export const canStartNextSeriesSession = (seriesState: SeriesState): boolean =>
-  seriesState.episodeCount >= 2 && !isFinalSeriesSession(seriesState)
+export const canStartNextSeriesSession = (seriesState: SeriesState, episode: Episode | null | undefined): boolean =>
+  seriesState.episodeCount >= 2 &&
+  !isFinalSeriesSession(seriesState) &&
+  (episode?.generationSource === 'openai-structured' || episode?.generationSource === 'local')
 
 export function createInitialSeriesState(selections: OnboardingSelections): SeriesState {
   return {
@@ -55,8 +57,8 @@ export function createInitialSeriesState(selections: OnboardingSelections): Seri
 }
 
 export function createNextSeriesSessionState(seriesState: SeriesState): SeriesState {
-  if (!canStartNextSeriesSession(seriesState)) {
-    throw new Error('Series cannot advance beyond its completed ten-session arc.')
+  if (seriesState.episodeCount < 2 || isFinalSeriesSession(seriesState)) {
+    throw new Error('Series cannot advance before the current session completes or beyond its ten-session arc.')
   }
 
   return {

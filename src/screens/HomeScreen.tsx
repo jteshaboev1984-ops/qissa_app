@@ -64,7 +64,7 @@ export function HomeScreen({
   const storyStatus = deriveStoryStatus(selections, seriesState, episode)
   const isTomorrowMemoryState = isSeriesMode && storyStatus === 'episode_1_choice_saved'
   const currentSeriesSession = seriesState ? seriesSessionIndex(seriesState) : 1
-  const canStartNextSession = Boolean(isSeriesMode && seriesState && canStartNextSeriesSession(seriesState))
+  const canStartNextSession = Boolean(isSeriesMode && seriesState && canStartNextSeriesSession(seriesState, episode))
   const isWholeSeriesFinal = Boolean(isSeriesMode && storyStatus === 'completed' && currentSeriesSession >= MAX_SERIES_SESSIONS)
 
   const compactSummary = useMemo(() => {
@@ -136,7 +136,9 @@ export function HomeScreen({
           ? isSeriesMode
             ? isWholeSeriesFinal
               ? (language === 'ru' ? 'Финальная серия завершена. Начатые сюжетные линии закрыты, и эту сказку можно перечитывать целиком.' : language === 'uz' ? 'Yakuniy qism tugadi. Boshlangan voqealar yakunlandi va bu ertakni qayta o‘qish mumkin.' : 'Соңғы бөлім аяқталды. Басталған желілер түйінделді, енді ертегіні қайта оқуға болады.')
-              : (language === 'ru' ? `Серия ${currentSeriesSession} из ${MAX_SERIES_SESSIONS} завершена. Выборы и важные события сохранены для следующей серии.` : language === 'uz' ? `${currentSeriesSession}/${MAX_SERIES_SESSIONS}-qism tugadi. Tanlovlar va muhim voqealar keyingi qism uchun saqlandi.` : `${currentSeriesSession}/${MAX_SERIES_SESSIONS}-бөлім аяқталды. Таңдаулар мен маңызды оқиғалар келесі бөлімге сақталды.`)
+              : canStartNextSession
+                ? (language === 'ru' ? `Серия ${currentSeriesSession} из ${MAX_SERIES_SESSIONS} завершена. Выборы и важные события сохранены для следующей серии.` : language === 'uz' ? `${currentSeriesSession}/${MAX_SERIES_SESSIONS}-qism tugadi. Tanlovlar va muhim voqealar keyingi qism uchun saqlandi.` : `${currentSeriesSession}/${MAX_SERIES_SESSIONS}-бөлім аяқталды. Таңдаулар мен маңызды оқиғалар келесі бөлімге сақталды.`)
+                : (language === 'ru' ? `Серия ${currentSeriesSession} завершена и сохранена. Продолжение временно недоступно, поэтому эту серию пока можно перечитать.` : language === 'uz' ? `${currentSeriesSession}-qism tugadi va saqlandi. Davomi hozircha mavjud emas, shu qismni qayta o‘qish mumkin.` : `${currentSeriesSession}-бөлім аяқталып, сақталды. Жалғасы әзірге қолжетімсіз, бұл бөлімді қайта оқуға болады.`)
             : t(language, 'home.one_time_completed_body')
           : t(language, 'home.read_together_hint')
 
