@@ -1,0 +1,35 @@
+name: Temporary beta matrix diagnostic
+
+on:
+  push:
+    branches:
+      - fix/uzbek-full-rewrite-repair-v73
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Enrich Russian hero diagnostic
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/check-closed-beta-content-matrix.mjs')
+          s = p.read_text()
+          old = "assert(!afterPreposition.test(field), `${label}: finalized Russian hero name appears after a preposition and would require declension.`)"
+          new = "assert(!afterPreposition.test(field), `${label}: finalized Russian hero name appears after a preposition and would require declension. match=${JSON.stringify(field.match(afterPreposition)?.[0] ?? '')} field=${JSON.stringify(field)}`)"
+          if old not in s:
+              raise SystemExit('diagnostic target not found')
+          p.write_text(s.replace(old, new))
+          PY
+      - name: Run beta content diagnostic
+        run: npm run check:beta-content
