@@ -93,7 +93,7 @@ requireFragments('architecture', architecture, [
   'existingCanon.has(entry.key)',
   'existingRelationships.has(entry.key)',
   'never import consequences from an unselected branch.',
-  'For Episode 2, continue after the already-confirmed resolution bridge',
+  'For Episode 2, continue immediately after the already-confirmed resolution bridge',
   "target_story_words: target",
   'paragraph_budget: paragraphBudget',
   "errors.push('blueprint_language_mismatch')",
@@ -110,6 +110,10 @@ requireFragments('architecture', architecture, [
   'selected language governs only names and nicknames of newly introduced supporting characters',
   'Any NEW ordinary supporting-character name or nickname must use Uzbek Latin spelling',
   'Character identity is immutable',
+  'state_patch.new_friend is singular',
+  'tomorrow_seed is reserved only as a possible hook for a future bedtime session',
+  'same bedtime session and same evening',
+  'never say tomorrow, morning, next day, ertaga, ertalab, keyingi kuni',
   "choices: context.episodeIndex === 1 ? 'exactly 2' : 'exactly 0'",
   "decision_point: context.episodeIndex === 1 ? 'one non-empty child decision point' : 'empty string'",
   'enforceStoryBlueprintContextContract',
@@ -186,6 +190,9 @@ requireFragments('split orchestrator', orchestrator, [
   "'X-QISSA-Narrator-Retry-Used'",
   'narratorRetryUsed = true',
   'Previous narration failed deterministic validation',
+  'For missing_hero_token',
+  'For choice_resolution_defers_to_future_session',
+  'isTextLengthRepairEligibleFailure',
   'For visible_safety_language',
   'For story_language_mismatch',
   'For story_repeats_choice_menu',
@@ -216,6 +223,8 @@ requireFragments('Episode 2 text repair prompt', repairPrompt, [
   'final_bedtime_coda_words',
   '60-120 words in the final paragraph',
   'same Episode 2 plot, same selected-choice consequence',
+  'validation_errors includes missing_hero_token',
+  'tomorrow_seed is future-session metadata only',
 ])
 
 requireFragments('interactive fear confirmation', repairProvider, [

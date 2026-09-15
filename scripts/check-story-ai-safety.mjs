@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, choiceResolutionDefersToFutureSession, newFriendIsAtomic, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
 
 const base = 'supabase/functions/story-generate'
 const index = readFileSync(`${base}/index.ts`, 'utf8')
@@ -144,6 +144,14 @@ const realUzFearScan = scanRuleBasedSafety(uzRuleContext, {
   choices: [],
 })
 requireRegression(realUzFearScan.excessive_fear, 'real Uzbek blood/fear language must remain blocked')
+
+requireRegression(newFriendIsAtomic('Momiq'), 'one new recurring character name must be allowed')
+requireRegression(newFriendIsAtomic('Qizil Shapkacha'), 'one multi-word character name must be allowed')
+requireRegression(!newFriendIsAtomic('Momiq, Chirqiroq va Tikan'), 'new_friend must reject a list of multiple characters')
+requireRegression(!newFriendIsAtomic('Momiq va Tikan'), 'Uzbek va must not join multiple names inside singular new_friend')
+requireRegression(choiceResolutionDefersToFutureSession('uz', 'Momiq tugunni topdi va ertaga uni do‘stlariga ko‘rsatmoqchi bo‘ldi.'), 'Uzbek Episode 1 resolution must reject an ertaga deferral')
+requireRegression(choiceResolutionDefersToFutureSession('ru', 'Рыжик нашёл узелок и решил показать его завтра.'), 'Russian Episode 1 resolution must reject a tomorrow deferral')
+requireRegression(!choiceResolutionDefersToFutureSession('uz', 'Malika va Momiq tugunni topib, bezakni shu yerning o‘zida tugatdi.'), 'same-evening Uzbek resolution must remain allowed')
 
 requireText('story entrypoint', index, [
   'readStoryAiRuntimeState',

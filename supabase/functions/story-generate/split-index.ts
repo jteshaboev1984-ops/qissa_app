@@ -148,6 +148,11 @@ const textLengthValidationErrors = new Set([
 const isTextLengthOnlyFailure = (errors: string[]): boolean =>
   errors.length > 0 && errors.every((error) => textLengthValidationErrors.has(error))
 
+const isTextLengthRepairEligibleFailure = (errors: string[]): boolean =>
+  errors.length > 0 &&
+  errors.some((error) => textLengthValidationErrors.has(error)) &&
+  errors.every((error) => textLengthValidationErrors.has(error) || error === 'missing_hero_token')
+
 const compactFailureTrace = (items: string[]): string => items.join('>').slice(0, 480)
 
 Deno.serve(async (request: Request) => {
@@ -275,6 +280,8 @@ Deno.serve(async (request: Request) => {
         'Keep the immutable blueprint exactly unchanged.',
         'Correct every listed narration failure in one pass. If story_too_short is present, add meaningful action/dialogue/reaction inside existing blueprint beats until the hard minimum is safely exceeded.',
         'For russian_hero_requires_rewrite, keep {{HERO}} only as nominative subject or direct address and rewrite every case/preposition or gendered-past-tense construction around the token.',
+        'For missing_hero_token, restore the literal {{HERO}} token naturally inside story_text as the in-world protagonist. Do not invent a real child name and do not leave the hero only in metadata.',
+        'For choice_resolution_defers_to_future_session, keep each Episode 1 resolution in the same evening immediately after the child choice; remove tomorrow/morning/next-day transitions from resolution_text. tomorrow_seed remains separate future-session metadata.',
         'For visible_safety_language, remove any child-visible explanation that a choice, option or possibility is safe, good, calm, correct or morally preferred; show the story consequences without evaluating the menu.',
         'For story_language_mismatch, rewrite every natural-language field strictly in the requested story language. Do not translate machine keys or the {{HERO}} token.',
         'For story_repeats_choice_menu, end story_text with one neutral decision cue or question and remove every listing or paraphrase of the two structured choice actions from story_text.',
@@ -304,7 +311,7 @@ Deno.serve(async (request: Request) => {
     }
   }
 
-  if (validationErrors.length > 0 && isTextLengthOnlyFailure(validationErrors)) {
+  if (validationErrors.length > 0 && isTextLengthRepairEligibleFailure(validationErrors)) {
     try {
       providerCalls += 1
       candidate = await repairStoryCandidateTextLengths(
