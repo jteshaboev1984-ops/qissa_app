@@ -1,0 +1,26 @@
+name: Temporary Luna v56 Acceptance Audit
+
+on:
+  push:
+    branches:
+      - audit/luna-v56-acceptance
+
+permissions:
+  contents: read
+
+concurrency:
+  group: luna-v56-acceptance-audit
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@v7
+
+      - name: Run one controlled Luna acceptance sample
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/audit-luna-v56-single.mjs
