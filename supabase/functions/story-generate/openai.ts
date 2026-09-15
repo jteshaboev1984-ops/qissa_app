@@ -1,10 +1,11 @@
-import type { SafetyEvaluation, StoryCandidate } from './contracts.ts'
+import type { CandidateVocabulary, SafetyEvaluation, StoryCandidate } from './contracts.ts'
 import { buildSafetyPrompts, buildStoryPrompts, buildTextLengthRepairPrompts, safetyOutputSchema, storyOutputSchema, textLengthRepairOutputSchema } from './prompt.ts'
 import type { NormalizedStoryContext } from './contracts.ts'
 import { storyLocalizationSystem } from './localization.ts'
 import { safetyEvaluationConsistencyErrors } from './safety-verdict.ts'
 import { fearAdjudicationConsistencyErrors, fearAdjudicationOutputSchema, type FearAdjudication } from './fear-adjudication.ts'
 import { childVisibleStorySafetyProjection, childVisibleStorySafetyText } from './story-safety-projection.ts'
+import { textRepairRequiresFullStoryRewrite, textRepairShouldRepairAllChoiceResolutions } from './repair-routing.ts'
 
 const RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const MODERATIONS_URL = 'https://api.openai.com/v1/moderations'
@@ -132,9 +133,11 @@ export const generateStoryCandidate = async (
 
 
 type TextLengthRepair = {
+  title_rewrite: string | null
   story_rewrite: string | null
   story_expansion: string | null
   choice_resolutions: Array<{ choice_id: string; resolution_text: string }>
+  vocabulary_rewrite: CandidateVocabulary[]
 }
 
 const repairWordCount = (text: string): number => text.trim().split(/\s+/u).filter(Boolean).length
@@ -178,23 +181,28 @@ export const repairStoryCandidateTextLengths = async (
   const storyTooShort = validationErrors.includes('story_too_short')
   const storyTooLong = validationErrors.includes('story_too_long')
   const codaLengthFailure = validationErrors.includes('bedtime_coda_too_short') || validationErrors.includes('bedtime_coda_too_long')
-  const rewriteContinuation = context.episodeIndex === 2 && (storyTooShort || storyTooLong || codaLengthFailure)
-  if (rewriteContinuation && (typeof repair.story_rewrite !== 'string' || !repair.story_rewrite.trim() || repair.story_expansion !== null)) {
-    throw new Error('openai_invalid_continuation_text_repair_rewrite')
+  const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors)
+  const repairAllChoiceResolutions = textRepairShouldRepairAllChoiceResolutions(validationErrors) || validationErrors.includes('choice_resolution_defers_to_future_session')
+  if (fullStoryRewrite && (typeof repair.title_rewrite !== 'string' || !repair.title_rewrite.trim() || typeof repair.story_rewrite !== 'string' || !repair.story_rewrite.trim() || repair.story_expansion !== null)) {
+    throw new Error('openai_invalid_full_text_repair_rewrite')
   }
-  if (!rewriteContinuation && storyTooShort && (typeof repair.story_expansion !== 'string' || !repair.story_expansion.trim() || repair.story_rewrite !== null)) {
+  if (!fullStoryRewrite && repair.title_rewrite !== null) throw new Error('openai_unexpected_text_repair_title')
+  if (!fullStoryRewrite && storyTooShort && (typeof repair.story_expansion !== 'string' || !repair.story_expansion.trim() || repair.story_rewrite !== null)) {
     throw new Error('openai_invalid_text_repair_expansion')
   }
-  if (!rewriteContinuation && storyTooLong && (typeof repair.story_rewrite !== 'string' || !repair.story_rewrite.trim() || repair.story_expansion !== null)) {
-    throw new Error('openai_invalid_text_repair_rewrite')
-  }
-  if (!storyTooShort && !storyTooLong && !codaLengthFailure && (repair.story_rewrite !== null || repair.story_expansion !== null)) {
+  if (!fullStoryRewrite && !storyTooShort && !storyTooLong && !codaLengthFailure && (repair.story_rewrite !== null || repair.story_expansion !== null)) {
     throw new Error('openai_unexpected_text_repair_story')
+  }
+  if (fullStoryRewrite) {
+    if (context.language === 'ru' && (repair.vocabulary_rewrite.length < 2 || repair.vocabulary_rewrite.length > 3)) throw new Error('openai_invalid_text_repair_vocabulary')
+    if (context.language !== 'ru' && repair.vocabulary_rewrite.length !== 0) throw new Error('openai_unexpected_text_repair_vocabulary')
+  } else if (repair.vocabulary_rewrite.length !== 0) {
+    throw new Error('openai_unexpected_text_repair_vocabulary')
   }
 
   const targetChoiceIds = new Set(
     candidate.choices
-      .filter((choice) => needsChoiceResolutionRepair(context, choice.resolution_text))
+      .filter((choice) => repairAllChoiceResolutions || needsChoiceResolutionRepair(context, choice.resolution_text))
       .map((choice) => choice.choice_id),
   )
   const repairedByChoiceId = new Map<string, string>()
@@ -208,13 +216,13 @@ export const repairStoryCandidateTextLengths = async (
 
   return {
     ...candidate,
-    story_text: rewriteContinuation
+    title: fullStoryRewrite ? (repair.title_rewrite as string) : candidate.title,
+    story_text: fullStoryRewrite
       ? (repair.story_rewrite as string)
       : storyTooShort
         ? insertStoryExpansionBeforeFinalParagraph(candidate.story_text, repair.story_expansion as string)
-        : storyTooLong
-          ? (repair.story_rewrite as string)
-          : candidate.story_text,
+        : candidate.story_text,
+    vocabulary: fullStoryRewrite ? repair.vocabulary_rewrite : candidate.vocabulary,
     choices: candidate.choices.map((choice) => targetChoiceIds.has(choice.choice_id)
       ? { ...choice, resolution_text: repairedByChoiceId.get(choice.choice_id) as string }
       : choice),

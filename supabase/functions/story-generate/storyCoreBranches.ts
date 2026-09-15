@@ -161,18 +161,24 @@ export const fallbackChoiceMemory = (
     ? cozyForest[branchId]
     : null
 
-  if (branch) {
+  if (branch && !context.hasSeriesMemory && context.sessionIndex === 1) {
     return {
       effectSummary: branch.effect[context.language],
       resolutionText: branch.resolution[context.language],
       tomorrowSeed: branch.seed[context.language],
-      statePatch: choicePatch(
-        context,
-        choiceId,
-        branch.friend[context.language],
-        branch.friendId,
-        branch.artifact[context.language],
-      ),
+      statePatch: {
+        ...choicePatch(
+          context,
+          choiceId,
+          branch.friend[context.language],
+          branch.friendId,
+          branch.artifact[context.language],
+        ),
+        canon_updates: [
+          ...choicePatch(context, choiceId, branch.friend[context.language], branch.friendId, branch.artifact[context.language]).canon_updates,
+          { key: 'fallback_reference_branch', value: `cozy_forest_${branchId}` },
+        ],
+      },
     }
   }
 
@@ -193,7 +199,9 @@ export const fallbackContinuationMemory = (
     ? cozyForest[branchId]
     : null
 
-  if (branch && latestChoice) {
+  const referenceBranch = context.canonState.fallback_reference_branch
+  const expectedReferenceBranch = branchId ? `cozy_forest_${branchId}` : ''
+  if (branch && latestChoice && referenceBranch === expectedReferenceBranch) {
     const friend = branch.friend[context.language]
     const artifact = branch.artifact[context.language]
     return {

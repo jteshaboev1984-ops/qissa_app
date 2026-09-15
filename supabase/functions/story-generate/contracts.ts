@@ -343,7 +343,8 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
 
   const customName = heroType === 'custom' ? safeName(selections.customHeroName) : null
   const stateName = safeName(seriesState.mainCharacter)
-  const heroName = customName ?? stateName ?? defaultHeroNames[language][heroType]
+  // seriesState.mainCharacter is canonical once a series exists; UI language/name selections must not silently rename it.
+  const heroName = stateName ?? customName ?? defaultHeroNames[language][heroType]
   const choiceHistory = compactChoiceHistory(seriesState.choiceHistory, heroName)
   const explicitSessionIdentity = typeof seriesState.sessionId === 'string' || typeof seriesState.sessionIndex === 'number'
   const sessionId = compactText(seriesState.sessionId, 128) || seriesId
@@ -362,6 +363,17 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
         .filter(Boolean)
         .slice(0, 8)
     : []
+  const lastEpisodeSummary = redactHeroName(compactText(seriesState.lastEpisodeSummary, 300), heroName)
+  const activeArc = redactHeroName(compactText(seriesState.activeArc, 240), heroName)
+  const relationshipState = compactStringRecord(seriesState.relationshipState, heroName)
+  const canonState = compactStringRecord(seriesState.canonState, heroName)
+  const hasSeriesMemory =
+    choiceHistory.length > 0 ||
+    recurringCharacters.length > 0 ||
+    Boolean(lastEpisodeSummary) ||
+    Boolean(activeArc) ||
+    Object.keys(canonState).length > 0 ||
+    Object.keys(relationshipState).length > 0
 
   return {
     ageGroup,
@@ -378,12 +390,12 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
     isFinalSeriesSession: storyMode === 'series' && sessionIndex === MAX_SERIES_SESSIONS,
     episodeIndex: isContinuation ? 2 : 1,
     isContinuation,
-    hasSeriesMemory: choiceHistory.length > 0 || Object.keys(compactStringRecord(seriesState.canonState, heroName)).length > 0 || Object.keys(compactStringRecord(seriesState.relationshipState, heroName)).length > 0,
+    hasSeriesMemory,
     recurringCharacters,
-    lastEpisodeSummary: redactHeroName(compactText(seriesState.lastEpisodeSummary, 300), heroName),
-    activeArc: redactHeroName(compactText(seriesState.activeArc, 240), heroName),
-    relationshipState: compactStringRecord(seriesState.relationshipState, heroName),
-    canonState: compactStringRecord(seriesState.canonState, heroName),
+    lastEpisodeSummary,
+    activeArc,
+    relationshipState,
+    canonState,
     choiceHistory,
   }
 }

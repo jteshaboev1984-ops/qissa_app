@@ -1005,7 +1005,10 @@ const choicePatch = (world: ClosedBetaWorld, branch: 'choice-a' | 'choice-b'): C
   hero_trait: 'curious_and_kind',
   open_arc: `${world}_bedtime_arc`,
   relationship_updates: [{ key: 'friends', value: 'shared_a_kind_choice' }],
-  canon_updates: [{ key: 'remembered_choice', value: branch }],
+  canon_updates: [
+    { key: 'remembered_choice', value: branch },
+    { key: 'beta_story_version', value: 'child_first_v1' },
+  ],
 })
 
 const closingPatch = (world: ClosedBetaWorld, branch: 'choice-a' | 'choice-b'): CandidatePatch => ({
@@ -1036,6 +1039,7 @@ export const buildChildFirstClosedBetaCandidate = (
   const story = childFirstStories[world]
 
   if (context.isContinuation) {
+    if (context.canonState.beta_story_version !== 'child_first_v1') return null
     const branch = branchFromChoice(context.choiceHistory.at(-1)?.choice_id ?? '')
     if (!branch) return null
     const selected = story.choices[branch]
@@ -1049,6 +1053,8 @@ export const buildChildFirstClosedBetaCandidate = (
       nextEpisodePreview: '',
     }
   }
+
+  if (context.hasSeriesMemory || (typeof context.sessionIndex === 'number' && context.sessionIndex !== 1)) return null
 
   return {
     title: story.titleOne[language],

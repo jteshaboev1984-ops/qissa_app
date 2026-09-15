@@ -16,6 +16,7 @@ const getClosedBetaLanguage = (
 ): ClosedBetaLanguage | null => {
   if (context.stylePackId !== stylePackId) return null
   if (context.ageGroup !== '5-7' || context.storyMood !== 'bedtime') return null
+  if (context.hasSeriesMemory || context.sessionIndex !== 1 || context.recurringCharacters.length > 0) return null
   return context.language === 'ru' || context.language === 'uz' ? context.language : null
 }
 

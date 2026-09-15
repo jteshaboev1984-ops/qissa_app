@@ -139,6 +139,44 @@ const genericOpeningTail = localized(
   '{{HERO}} алдында екі тыныш жол тұрды. Қасында достары күтіп тұрды, ойланып, соның бірін таңдауға уақыт жеткілікті еді.',
 )
 
+const recurringCharacterLine = (context: NormalizedStoryContext): string => {
+  const names = context.recurringCharacters.slice(0, 3).join(', ')
+  if (!names) return ''
+  if (context.language === 'ru') return `Рядом снова были знакомые друзья: ${names}.`
+  if (context.language === 'uz') return `Tanish do‘stlar ham yana shu yerda edi: ${names}.`
+  return `Таныс достар да қайтадан осында еді: ${names}.`
+}
+
+const identitySafeContinuationText = (context: NormalizedStoryContext): string => {
+  const names = context.recurringCharacters.slice(0, 3).join(', ')
+  const choiceId = context.choiceHistory.at(-1)?.choice_id ?? ''
+  const isChoiceA = choiceId === 'choice-a' || choiceId === 'path_a'
+  const branchBeat = context.language === 'ru'
+    ? (isChoiceA ? 'Первый результат выбранного действия уже заметен рядом.' : 'Результат другого выбранного действия уже заметен рядом.')
+    : context.language === 'uz'
+      ? (isChoiceA ? 'Tanlangan ishning birinchi natijasi yonida ko‘rinib turardi.' : 'Boshqa tanlangan ishning natijasi ham yonida ko‘rinib turardi.')
+      : (isChoiceA ? 'Таңдалған істің алғашқы нәтижесі қасында көрініп тұрды.' : 'Басқа таңдалған істің нәтижесі де қасында көрініп тұрды.')
+  if (context.language === 'ru') {
+    return `{{HERO}} продолжает вечернюю историю с того же места. ${branchBeat} ${names ? `Рядом остаются знакомые друзья: ${names}.` : 'Рядом остаются уже знакомые друзья.'} Сделанный несколько минут назад выбор уже дал первый результат, поэтому никто не начинает новое приключение и не меняет общее дело.\n\nДрузья спокойно доводят начатое до конца. Один помогает держать нужную вещь, другой замечает маленькую деталь, а {{HERO}} следит, чтобы никто не спешил. Всё происходит рядом, в знакомом месте, и каждый шаг связан с тем, что уже было начато раньше этим вечером.\n\nКогда главное дело закончено, компания ещё немного остаётся вместе. Друзья проверяют, что всё на месте, тихо радуются результату и убирают лишние вещи. Никакой новой загадки не появляется.\n\n{{HERO}} смотрит на друзей и понимает, что вечер можно завершать. Вокруг становится тише, голоса звучат всё мягче, и знакомое место готовится ко сну. Друзья прощаются до следующей встречи, сохраняя именно ту общую историю, которую уже начали.`
+  }
+  if (context.language === 'uz') {
+    return `{{HERO}} kechki hikoyani aynan to‘xtagan joyidan davom ettirdi. ${branchBeat} ${names ? `Tanish do‘stlar ham shu yerda edi: ${names}.` : 'Oldindan tanish do‘stlar ham shu yerda edi.'} Bir necha daqiqa oldin qilingan tanlov allaqachon natija bera boshlagan, shuning uchun hech kim yangi sarguzasht boshlamadi.\n\nDo‘stlar boshlangan ishni birga va shoshmasdan tugatdi. Biri kerakli narsani ushlab turdi, boshqasi mayda bir detalni ko‘rdi, {{HERO}} esa hamma birga qolishiga e’tibor berdi. Har bir qadam shu oqshom avval boshlangan voqeaga bog‘liq edi.\n\nAsosiy ish tugagach, ular yana bir oz birga qoldi. Hamma narsa joyida ekanini tekshirdi, natijadan sekin quvondi va ortiqcha narsalarni yig‘ishtirdi. Yangi muammo ham, yangi sir ham paydo bo‘lmadi.\n\n{{HERO}} do‘stlariga qarab, oqshomni endi tinch yakunlash mumkinligini bildi. Atrof asta jimidi, ovozlar mayinlashdi. Do‘stlar keyingi uchrashuvgacha xayrlashdi va shu kecha boshlangan tanish hikoya xotirada qoldi.`
+  }
+  return `{{HERO}} кешкі оқиғаны дәл тоқтаған жерінен жалғастырды. ${branchBeat} ${names ? `Таныс достар да осында еді: ${names}.` : 'Бұрыннан таныс достар да осында еді.'} Бірнеше минут бұрын жасалған таңдау алғашқы нәтижесін берген, сондықтан ешкім жаңа оқиға бастамады.\n\nДостар басталған істі асықпай бірге аяқтады. Біреуі керек затты ұстап тұрды, екіншісі кішкентай бөлшекті байқады, ал {{HERO}} бәрінің бірге болғанын қадағалады. Әр қадам осы кеште бұрын басталған іске байланысты болды.\n\nНегізгі іс біткен соң, олар тағы біраз бірге отырды. Бәрінің орнында екенін тексеріп, нәтижеге тыныш қуанды. Жаңа мәселе де, жаңа жұмбақ та пайда болмады.\n\n{{HERO}} достарына қарап, кешті енді тыныш аяқтауға болатынын түсінді. Айнала біртіндеп тынды, дауыстар бәсеңдеді. Достар келесі кездесуге дейін қоштасып, осы кеште басталған таныс оқиғаны есте сақтады.`
+}
+
+const identitySafeContinuationPatch = (context: NormalizedStoryContext): CandidatePatch => {
+  const choiceId = context.choiceHistory.at(-1)?.choice_id ?? 'continued_saved_choice'
+  return {
+    last_event: `continued_${choiceId}`,
+    new_friend: null,
+    hero_trait: 'kind_and_attentive',
+    open_arc: null,
+    relationship_updates: [],
+    canon_updates: [{ key: 'remembered_choice', value: choiceId }],
+  }
+}
+
 const patch = (event: string, arc: string): CandidatePatch => ({
   last_event: event,
   new_friend: null,
@@ -162,6 +200,23 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
   const world = worlds[context.stylePackId]
   const language = context.language
   const isForest = context.stylePackId === 'cozy_forest'
+
+  if (context.isContinuation && context.hasSeriesMemory) {
+    const candidate: StoryCandidate = {
+      title: referenceEpisodeTitle(context, world.titleTwo[language]),
+      story_text: identitySafeContinuationText(context),
+      choices: [],
+      state_patch: identitySafeContinuationPatch(context),
+      vocabulary: [],
+      nextEpisodePreview: '',
+    }
+    return buildFinalEpisode(context, candidate, {
+      approved: true,
+      risk_level: 'low',
+      flags: emptySafetyFlags(),
+      required_action: 'fallback',
+    })
+  }
 
   if (context.isContinuation) {
     const choiceId = context.choiceHistory[context.choiceHistory.length - 1]?.choice_id ?? ''
@@ -207,7 +262,7 @@ export const buildSafeFallback = (context: NormalizedStoryContext) => {
       ]
     : []
 
-  const genericOpening = `${world.opening[language]} ${genericOpeningTail[language]}`
+  const genericOpening = `${world.opening[language]} ${recurringCharacterLine(context)} ${genericOpeningTail[language]}`.replace(/\s+/gu, ' ').trim()
   const candidate: StoryCandidate = {
     title: referenceEpisodeTitle(context, world.titleOne[language]),
     story_text: referenceEpisodeOneStory(context, genericOpening),

@@ -9,6 +9,7 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { hasSingleLanguageMismatch } from './language.ts'
+import { branchingPreviewNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
 
 export type StoryBlueprintChoice = {
   choice_id: string
@@ -218,6 +219,12 @@ const patchNaturalLanguageValues = (patch: unknown): string[] => {
   return values
 }
 
+const blueprintChildVisibleValues = (blueprint: StoryBlueprint): string[] => [
+  blueprint.decision_point,
+  blueprint.next_episode_preview,
+  ...blueprint.choices.flatMap((choice) => [choice.text, choice.effect_summary, choice.tomorrow_seed]),
+].filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+
 const blueprintNaturalLanguageValues = (blueprint: StoryBlueprint): string[] => {
   const values: string[] = []
   for (const field of ['central_goal', 'setting_anchor', 'decision_point', 'next_episode_preview'] as const) {
@@ -343,7 +350,14 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   const value = blueprint as unknown as StoryBlueprint
   const errors: string[] = []
 
-  if (hasSingleLanguageMismatch(context.language, blueprintNaturalLanguageValues(value), context.recurringCharacters)) errors.push('blueprint_language_mismatch')
+  const naturalLanguageBlueprint = blueprintNaturalLanguageValues(value)
+  if (hasSingleLanguageMismatch(context.language, naturalLanguageBlueprint, context.recurringCharacters)) errors.push('blueprint_language_mismatch')
+  if (Object.values(scanRuleBasedSafetyValues(context, naturalLanguageBlueprint)).some(Boolean)) errors.push('blueprint_rule_safety')
+  const childVisibleBlueprint = blueprintChildVisibleValues(value)
+  if (visibleSafetyLanguageNeedsRewrite(context.language, childVisibleBlueprint.join(' '))) errors.push('blueprint_visible_safety_language')
+  if (uzbekYoungChildValuesNeedRewrite(context, childVisibleBlueprint)) errors.push('blueprint_uzbek_child_language_requires_rewrite')
+  if (context.episodeIndex === 1 && typeof value.next_episode_preview === 'string' && technicalPreviewLanguageNeedsRewrite(context.language, value.next_episode_preview)) errors.push('blueprint_technical_preview_language')
+  if (context.episodeIndex === 1 && typeof value.next_episode_preview === 'string' && branchingPreviewNeedsRewrite(context.language, value.next_episode_preview)) errors.push('blueprint_branching_preview_language')
 
   if (value.plan_version !== 'split-v1') errors.push('invalid_blueprint_version')
   if (typeof value.central_goal !== 'string' || value.central_goal.trim().length < 8) errors.push('invalid_central_goal')
@@ -519,11 +533,11 @@ export const buildNarratorPrompts = (
 ) => {
   const [minimumWords, maximumWords] = hardStoryWordRange(context)
   const target = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
-    ? context.episodeIndex === 1 ? '350-390' : '430-490'
+    ? context.episodeIndex === 1 ? '380-420' : '430-490'
     : `${Math.min(maximumWords - 10, minimumWords + 40)}-${Math.max(minimumWords + 40, maximumWords - 20)}`
   const paragraphBudget = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
     ? context.episodeIndex === 1
-      ? { target_paragraphs: '6-7', average_words_per_paragraph: '50-60', final_choice_setup_words: '35-50' }
+      ? { target_paragraphs: '8-10', average_words_per_paragraph: '40-55', final_choice_setup_words: '35-50' }
       : { target_paragraphs: '6-7', average_words_per_paragraph: '60-70', final_coda_words: '50-90' }
     : null
 
@@ -551,7 +565,7 @@ export const buildNarratorPrompts = (
     'If this is final series session 10, make the prose feel like a true finale: pay off remembered clues and relationships that matter, settle the active serialized arc, avoid sequel bait, and finish with emotional closure. Do not invent a new unresolved question in the final paragraphs.',
     'Follow the blueprint beat order. Every one or two short paragraphs should contain action, dialogue, discovery, reaction, attempt, humor or cause-and-effect. Use distinct causal beats; do not repeat inspection, planning, caution or agreement as separate beats when the situation has not changed.',
     'Do not turn bedtime prose into a safety checklist or adult supervision lesson. One concrete cautious action is enough when needed; then move the story forward.',
-    'For ages 5-7 bedtime series, treat paragraph_budget as a quantitative drafting plan. Do not compress several blueprint beats into a few very short paragraphs; hit the requested total through meaningful beat development, not filler.',
+    'For ages 5-7 bedtime series, treat paragraph_budget as a quantitative drafting plan. Do not compress several blueprint beats into a few very short paragraphs; hit the requested total through meaningful beat development, not filler. For Episode 1, do not finish story_text below 340 words: develop each Architect beat with concrete action, dialogue or reaction before the final decision cue.',
     'Avoid padding, repeated clues, repeated explanation, decorative filler and unrelated events.',
     'For each Episode 1 choice, write exactly one resolution_text matching its resolution_goal and state consequence. The resolution happens immediately after the choice in the same evening; never say tomorrow, morning, next day, ertaga, ertalab, keyingi kuni, завтра, утром, ертең or таңертең in resolution_text. Aim for 30-45 words and stay below 320 characters.',
     'For Russian, return 2-3 gentle Russian-to-English vocabulary items grounded in the story. For Uzbek or Kazakh return an empty vocabulary array.',

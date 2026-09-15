@@ -75,7 +75,8 @@ const baseSelections = {
 const baseContext = {
   ageGroup: '5-7', language: 'ru', heroType: 'custom', heroName: 'Мира',
   stylePackId: 'cozy_forest', storyMode: 'series', storyMood: 'bedtime',
-  seriesId: 'story-editorial-proof', episodeIndex: 1, isContinuation: false,
+  seriesId: 'story-editorial-proof', sessionId: 'story-editorial-proof-session', sessionIndex: 1,
+  seriesSessionsRemaining: 10, isFinalSeriesSession: false, episodeIndex: 1, isContinuation: false, hasSeriesMemory: false,
   recurringCharacters: [], lastEpisodeSummary: '', activeArc: '',
   relationshipState: {}, canonState: {}, choiceHistory: [],
 }
@@ -175,6 +176,39 @@ try {
     assert(fullSessionWords >= 700 && fullSessionWords <= 1400, `Uzbek forest ${choice.choice_id} full session is outside the hard release envelope.`)
     assert(!uzBookish.test(`${continuation.title} ${continuation.story_text}`), `Uzbek forest ${choice.choice_id} continuation uses avoidable vocabulary.`)
   }
+
+  const recurringOnlyRequest = normalizeStoryRequest({
+    selections: {
+      ...baseSelections, language: 'uz', customHeroName: 'Malika', stylePackId: 'cozy_forest',
+    },
+    seriesState: {
+      id: 'identity-language-switch-series', sessionId: 'identity-language-switch-session', sessionIndex: 2,
+      mainCharacter: 'Алия', recurringCharacters: ['Рыжик'],
+      lastEpisodeSummary: '', activeArc: '', relationshipState: {}, canonState: {}, choiceHistory: [], episodeCount: 0,
+    },
+  })
+  assert(recurringOnlyRequest, 'Recurring-character-only series state must normalize.')
+  assert(recurringOnlyRequest.heroName === 'Алия', 'Existing series hero identity must outrank a changed custom-name selection.')
+  assert(recurringOnlyRequest.hasSeriesMemory, 'Recurring characters alone must count as series memory.')
+  assert(recurringOnlyRequest.recurringCharacters.join('|') === 'Рыжик', 'Recurring character identity must survive a language switch exactly.')
+
+  const establishedUzSeries = buildSafeFallback(recurringOnlyRequest)
+  assert(/Рыжик/u.test(establishedUzSeries.story_text), 'Established Uzbek series fallback must visibly preserve the canonical recurring character name.')
+  assert(!/Momiq|Oycha|Yong‘oqcha|Toshvoy|Nura|Topa|Puf|Lola|Toti/u.test(establishedUzSeries.story_text), 'Established Uzbek series fallback must not replace canonical characters with a fixed language-specific cast.')
+
+  const establishedUzContinuation = buildSafeFallback({
+    ...recurringOnlyRequest,
+    episodeIndex: 2,
+    isContinuation: true,
+    hasSeriesMemory: true,
+    choiceHistory: [{
+      episode_id: 'identity-e1', choice_id: 'choice-a', choice_text: 'Saqlangan tanlov',
+      effect_summary: 'Saqlangan natija', resolution_text: 'Tanlov shu oqshom bajarildi.', tomorrow_seed: 'Keyingi uchrashuv uchun iz.',
+    }],
+  })
+  assert(/Рыжик/u.test(establishedUzContinuation.story_text), 'Fallback continuation must keep the established recurring character identity.')
+  assert(!/Momiq|Oycha|Yong‘oqcha|Toshvoy|Nura|Topa|Puf|Lola|Toti/u.test(establishedUzContinuation.story_text), 'Fallback continuation must not inject a fixed cast when provider memory already exists.')
+  assert(establishedUzContinuation.choices.length === 0 && establishedUzContinuation.nextEpisodePreview === '', 'Identity-safe fallback continuation must stay closed and choice-free.')
 
   const spaceOne = buildSafeFallback({ ...baseContext, stylePackId: 'stars_and_space' })
   assert(spaceOne.title === 'Тихий сигнал станции «Люмен»', 'Space Episode 1 title is not editorial.')
