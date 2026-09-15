@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { fearAdjudicationConsistencyErrors } from '../supabase/functions/story-generate/fear-adjudication.ts'
+import { childVisibleStorySafetyProjection, childVisibleStorySafetyText } from '../supabase/functions/story-generate/story-safety-projection.ts'
 import { safetyEvaluationConsistencyErrors } from '../supabase/functions/story-generate/safety-verdict.ts'
 
 const provider = readFileSync('supabase/functions/story-generate/openai.ts', 'utf8')
@@ -61,6 +62,41 @@ const flaggedPublishErrors = safetyEvaluationConsistencyErrors(flaggedPublish)
 assert(flaggedPublishErrors.includes('flagged_verdict_approved'), 'flagged approved verdict must be rejected')
 assert(flaggedPublishErrors.includes('flagged_verdict_publish'), 'flagged publish action must be rejected')
 
+const projectionCandidate = {
+  title: 'Do‘stlarning sovg‘asi',
+  story_text: '{{HERO}} do‘stlari bilan barglardan rasm tayyorladi.',
+  choices: [{
+    choice_id: 'choice-a',
+    text: 'Rasmni tugatish',
+    effect_summary: 'Do‘stlar rasmni birga tugatdi.',
+    resolution_text: 'Ular rasmni kulib tugatib, bir-biriga ko‘rsatdi.',
+    tomorrow_seed: 'HIDDEN_SCARY_TOMORROW_SEED',
+    choice_icon: '🎁',
+    state_patch: {
+      last_event: 'HIDDEN_SCARY_STATE', new_friend: null, hero_trait: null, open_arc: null,
+      relationship_updates: [{ key: 'friend', value: 'HIDDEN_SCARY_RELATIONSHIP' }],
+      canon_updates: [{ key: 'secret', value: 'HIDDEN_SCARY_CANON' }],
+    },
+    value_alignment: ['kindness'],
+  }],
+  state_patch: {
+    last_event: 'HIDDEN_TOP_STATE', new_friend: null, hero_trait: null, open_arc: null,
+    relationship_updates: [], canon_updates: [],
+  },
+  vocabulary: [{ word: 'barg', translation: 'leaf', example: 'Barg yerga tushdi.' }],
+  nextEpisodePreview: 'Sovg‘ani ko‘rsatish vaqti yaqin edi.',
+}
+const safetyProjectionJson = JSON.stringify(childVisibleStorySafetyProjection(projectionCandidate))
+for (const visible of ['Do‘stlarning sovg‘asi', 'Rasmni tugatish', 'Do‘stlar rasmni birga tugatdi.', 'barg', 'Sovg‘ani ko‘rsatish vaqti yaqin edi.']) {
+  assert(safetyProjectionJson.includes(visible), `child-visible safety projection must preserve visible material: ${visible}`)
+}
+for (const hidden of ['HIDDEN_SCARY_TOMORROW_SEED', 'HIDDEN_SCARY_STATE', 'HIDDEN_SCARY_RELATIONSHIP', 'HIDDEN_SCARY_CANON', 'HIDDEN_TOP_STATE', 'state_patch', 'tomorrow_seed', 'value_alignment', 'choice_icon']) {
+  assert(!safetyProjectionJson.includes(hidden), `child-visible safety projection must exclude hidden machine metadata: ${hidden}`)
+}
+const safetyProjectionText = childVisibleStorySafetyText(projectionCandidate)
+assert(safetyProjectionText.includes('Barg yerga tushdi.'), 'child-visible safety text must include visible vocabulary examples')
+assert(!safetyProjectionText.includes('HIDDEN_SCARY_TOMORROW_SEED') && !safetyProjectionText.includes('HIDDEN_SCARY_CANON'), 'child-visible safety text must exclude hidden future-session and canon metadata')
+
 const mildFear = { excessive_fear: false, category: 'none_or_mild', evidence: '' }
 assert(fearAdjudicationConsistencyErrors(mildFear, 'O‘rmonda kech bo‘ldi, lekin do‘stlar birga kulishdi.').length === 0, 'mild fear adjudication must be valid without invented evidence')
 
@@ -91,6 +127,9 @@ for (const fragment of [
   'fearAdjudicationConsistencyErrors(adjudication',
   "throw new Error('openai_fear_adjudication_inconsistent')",
   'isolated excessive_fear was not confirmed by narrow fear adjudication',
+  'fear_adjudication:${adjudication.category}',
+  'childVisibleStorySafetyText(candidate)',
+  'childVisibleStorySafetyProjection(candidate)',
 ]) {
   assert(provider.includes(fragment), `safety provider is missing bounded safety adjudication contract: ${fragment}`)
 }
@@ -103,7 +142,7 @@ const correctedReturn = provider.indexOf('return corrected', correctedValidation
 const fearGate = provider.indexOf('needsInteractiveFearConfirmation(context, first)', correctedReturn)
 const adjudicationRequest = provider.indexOf('const adjudication = await requestFearAdjudication', fearGate)
 const adjudicationValidation = provider.indexOf('fearAdjudicationConsistencyErrors(adjudication', adjudicationRequest)
-const severeReturn = provider.indexOf('if (adjudication.excessive_fear) return first', adjudicationValidation)
+const severeReturn = provider.indexOf('if (adjudication.excessive_fear) {', adjudicationValidation)
 const clearedReturn = provider.indexOf('return cleared', severeReturn)
 assert(
   firstRequest >= 0 && firstValidation > firstRequest && correctedRequest > firstValidation && correctedValidation > correctedRequest && correctedReturn > correctedValidation,

@@ -4,6 +4,7 @@ import type { NormalizedStoryContext } from './contracts.ts'
 import { storyLocalizationSystem } from './localization.ts'
 import { safetyEvaluationConsistencyErrors } from './safety-verdict.ts'
 import { fearAdjudicationConsistencyErrors, fearAdjudicationOutputSchema, type FearAdjudication } from './fear-adjudication.ts'
+import { childVisibleStorySafetyProjection, childVisibleStorySafetyText } from './story-safety-projection.ts'
 
 const RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const MODERATIONS_URL = 'https://api.openai.com/v1/moderations'
@@ -271,18 +272,6 @@ const requestSafetyEvaluation = async (
   )
 }
 
-const childVisibleFearText = (candidate: StoryCandidate): string => [
-  candidate.title,
-  candidate.story_text,
-  candidate.nextEpisodePreview,
-  ...candidate.choices.flatMap((choice) => [
-    choice.text,
-    choice.effect_summary,
-    choice.resolution_text,
-    choice.tomorrow_seed,
-  ]),
-].filter((value): value is string => typeof value === 'string' && value.trim().length > 0).join('\n')
-
 const requestFearAdjudication = async (
   apiKey: string,
   model: string,
@@ -322,7 +311,7 @@ export const evaluateStorySafety = async (
   context: NormalizedStoryContext,
   candidate: StoryCandidate,
 ): Promise<SafetyEvaluation> => {
-  const candidateJson = JSON.stringify(candidate)
+  const candidateJson = JSON.stringify(childVisibleStorySafetyProjection(candidate))
   const first = await requestSafetyEvaluation(apiKey, model, context, candidateJson)
   const firstErrors = safetyEvaluationConsistencyErrors(first)
 
@@ -349,9 +338,14 @@ export const evaluateStorySafety = async (
   // of the severe fear categories. It may clear only that isolated flag; malformed or unsupported
   // adjudication fails closed and every other safety flag remains untouched.
   const adjudication = await requestFearAdjudication(apiKey, model, candidateJson)
-  const adjudicationErrors = fearAdjudicationConsistencyErrors(adjudication, childVisibleFearText(candidate))
+  const adjudicationErrors = fearAdjudicationConsistencyErrors(adjudication, childVisibleStorySafetyText(candidate))
   if (adjudicationErrors.length > 0) throw new Error('openai_fear_adjudication_inconsistent')
-  if (adjudication.excessive_fear) return first
+  if (adjudication.excessive_fear) {
+    return {
+      ...first,
+      notes: [`fear_adjudication:${adjudication.category}`],
+    }
+  }
 
   const cleared: SafetyEvaluation = {
     approved: true,

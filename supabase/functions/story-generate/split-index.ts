@@ -11,6 +11,7 @@ import { evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths
 import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
 import { enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
+import { childVisibleStorySafetyText } from './story-safety-projection.ts'
 import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
@@ -118,16 +119,7 @@ const ruleFailure = (flags: SafetyFlags): SafetyResult => ({
     : 'regenerate',
 })
 
-const candidateTextForModeration = (candidate: StoryCandidate) => [
-  candidate.title,
-  candidate.story_text,
-  ...candidate.choices.flatMap((choice) => [
-    choice.text,
-    choice.effect_summary,
-    choice.resolution_text,
-    choice.tomorrow_seed,
-  ]),
-].join('\n')
+const candidateTextForModeration = (candidate: StoryCandidate) => childVisibleStorySafetyText(candidate)
 
 const wordCount = (text: string): number => text.trim().split(/\s+/u).filter(Boolean).length
 
@@ -455,7 +447,8 @@ Deno.serve(async (request: Request) => {
     if (!safety.approved) {
       lastFailureClass = 'semantic-safety'
       const flags = Object.entries(safety.flags).filter(([, value]) => value).map(([key]) => key)
-      trace.push(`semantic-safety:${flags.join(',') || safety.required_action}`)
+      const fearDetail = evaluation.notes.find((note) => /^fear_adjudication:[a-z_]+$/u.test(note)) ?? ''
+      trace.push(`semantic-safety:${flags.join(',') || safety.required_action}${fearDetail ? `:${fearDetail}` : ''}`)
       return safeFallback(context, origin, 'generation-or-safety-failed', {
         ...runtimeProviderMetadata,
         ...claimMetadata(claim),
