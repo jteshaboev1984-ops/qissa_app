@@ -2,6 +2,7 @@ import type { SafetyEvaluation, StoryCandidate } from './contracts.ts'
 import { buildSafetyPrompts, buildStoryPrompts, buildTextLengthRepairPrompts, safetyOutputSchema, storyOutputSchema, textLengthRepairOutputSchema } from './prompt.ts'
 import type { NormalizedStoryContext } from './contracts.ts'
 import { storyLocalizationSystem } from './localization.ts'
+import { safetyEvaluationConsistencyErrors } from './safety-verdict.ts'
 
 const RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const MODERATIONS_URL = 'https://api.openai.com/v1/moderations'
@@ -210,6 +211,38 @@ export const repairStoryCandidateTextLengths = async (
   }
 }
 
+const safetyVerdictContract = [
+  'The safety flags are exhaustive for this classifier and the structured verdict must be internally consistent.',
+  'If every flag is false, approved MUST be true, risk_level MUST be low, and required_action MUST be publish.',
+  'If any flag is true, approved MUST be false and required_action MUST NOT be publish.',
+  'Never return regenerate, fallback, or block merely because the story contains an ordinary gentle challenge, uncertainty, choice, or bedtime mystery that does not trigger a named flag.',
+].join(' ')
+
+const requestSafetyEvaluation = async (
+  apiKey: string,
+  model: string,
+  context: NormalizedStoryContext,
+  candidateJson: string,
+  retryFeedback = '',
+  timeoutMs = 12_000,
+): Promise<SafetyEvaluation> => {
+  const prompts = buildSafetyPrompts(context, candidateJson)
+  const retryInstruction = retryFeedback
+    ? ` Previous structured verdict was rejected as internally inconsistent: ${retryFeedback}. Re-evaluate the exact same story from scratch and obey the verdict consistency contract.`
+    : ''
+  return requestStructured<SafetyEvaluation>(
+    apiKey,
+    model,
+    'qissa_safety_evaluation',
+    safetyOutputSchema,
+    `${prompts.system} ${safetyVerdictContract}${retryInstruction}`,
+    prompts.user,
+    timeoutMs,
+    700,
+    'none',
+  )
+}
+
 export const evaluateStorySafety = async (
   apiKey: string,
   model: string,
@@ -217,18 +250,24 @@ export const evaluateStorySafety = async (
   candidate: StoryCandidate,
 ): Promise<SafetyEvaluation> => {
   const candidateJson = JSON.stringify(candidate)
-  const prompts = buildSafetyPrompts(context, candidateJson)
-  return requestStructured<SafetyEvaluation>(
+  const first = await requestSafetyEvaluation(apiKey, model, context, candidateJson)
+  const firstErrors = safetyEvaluationConsistencyErrors(first)
+  if (firstErrors.length === 0) return first
+
+  // This is a classifier-only correction, not a new story generation. Keep it
+  // shorter than the primary safety window so even the worst bounded Story path
+  // remains inside the 130s browser timeout and the hosted Edge Function ceiling.
+  const second = await requestSafetyEvaluation(
     apiKey,
     model,
-    'qissa_safety_evaluation',
-    safetyOutputSchema,
-    prompts.system,
-    prompts.user,
-    12_000,
-    700,
-    'none',
+    context,
+    candidateJson,
+    firstErrors.join(','),
+    8_000,
   )
+  const secondErrors = safetyEvaluationConsistencyErrors(second)
+  if (secondErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
+  return second
 }
 
 export type ModerationResult = {

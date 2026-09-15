@@ -66,8 +66,9 @@ requireCondition(
 requireCondition(
   /30_000/.test(provider) &&
     /'qissa_story_candidate'[\s\S]*30_000[\s\S]*4000[\s\S]*'none'/.test(provider) &&
-    /'qissa_safety_evaluation'[\s\S]*12_000[\s\S]*700[\s\S]*'none'/.test(provider),
-  'Story generation must keep sufficient structured-output headroom while both structured calls use latency-aware timeouts and no reasoning.',
+    /timeoutMs = 12_000/.test(provider) &&
+    /'qissa_safety_evaluation'[\s\S]*timeoutMs[\s\S]*700[\s\S]*'none'/.test(provider),
+  'Story generation must keep sufficient structured-output headroom while Story and Safety structured calls use bounded latency-aware timeouts and no reasoning.',
 )
 
 requireCondition(
@@ -78,8 +79,9 @@ requireCondition(
     /'qissa_story_blueprint'[\s\S]*18_000[\s\S]*1800[\s\S]*'none'/.test(splitProvider) &&
     /'qissa_story_narration'[\s\S]*30_000[\s\S]*3200[\s\S]*'none'/.test(splitProvider) &&
     /'qissa_text_length_repair'[\s\S]*30_000[\s\S]*3000[\s\S]*'none'/.test(provider) &&
-    /'qissa_safety_evaluation'[\s\S]*12_000[\s\S]*700[\s\S]*'none'/.test(provider),
-  'Browser timeout must cover the bounded 18s architect + 30s narrator + 30s narrator retry + 30s repair + 12s parallel safety envelope without exceeding the 150s hosted Edge Function ceiling.',
+    /timeoutMs = 12_000/.test(provider) &&
+    /firstErrors\.join\(','\)[\s\S]*8_000/.test(provider),
+  'Browser timeout must cover the bounded 18s architect + 30s narrator + 30s narrator retry + 30s repair + 12s primary safety + 8s consistency-only safety retry envelope (128s) without exceeding the 150s hosted Edge Function ceiling.',
 )
 
 requireCondition(
@@ -209,4 +211,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI tuning accounting check passed: runtime gate remains fail-closed, provider-eligible calls are counted without a daily throttle, timeouts are bounded, and provider failures do not trigger blind paid retries.')
+console.log('Story AI tuning accounting check passed: runtime gate remains fail-closed, provider-eligible calls are counted without a daily throttle, timeouts including the bounded safety-only consistency retry are aligned, and provider failures do not trigger blind paid retries.')
