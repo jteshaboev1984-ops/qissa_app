@@ -68,14 +68,21 @@ must_replace(
     "# Story AI is fail-closed: the reviewed production rollout gate must be ON and the service-role-only\n# qissa_runtime_flags.story_ai_enabled flag must be true. The legacy QISSA_AI_ENABLED secret is no longer used.\n# OPENAI_ARCHITECT_MODEL=gpt-5.6-luna",
 )
 
-# Keep the safety regression aligned with the new fail-closed runtime gate.
 must_replace(
     'scripts/check-story-ai-safety.mjs',
     "  \"Deno.env.get('QISSA_AI_ENABLED')\",\n  \"Deno.env.get('OPENAI_API_KEY')\",",
     "  'readStoryAiRuntimeState',\n  \"Deno.env.get('OPENAI_API_KEY')\",",
 )
 
-# Operational docs must describe the mechanism operators can actually control.
+# Privacy regression still needs to prove consent is checked after all non-provider gates and before accounting/provider work.
+p = Path('scripts/check-privacy-contract.mjs')
+text = p.read_text()
+old_privacy = """const aiDisabledGuardPosition = storyGenerate.indexOf('if (!aiEnabled || !openAiApiKey)')\nconst aiConsentGuardPosition = storyGenerate.indexOf('if (!hasValidPrivacyConsent(input))')\nconst usageClaimPosition = storyGenerate.indexOf('claimStoryGeneration(installationId)')\nrequireCondition(\n  /privacy_consent_required/.test(storyGenerate) &&\n    aiDisabledGuardPosition >= 0 &&\n    aiConsentGuardPosition > aiDisabledGuardPosition &&\n    usageClaimPosition > aiConsentGuardPosition,\n  'Real AI processing must require valid consent before usage is claimed or any provider work can begin.',\n)\n"""
+new_privacy = """const aiDisabledGuardPosition = storyGenerate.indexOf('if (!STORY_AI_PRODUCTION_ROLLOUT_ENABLED || !openAiApiKey)')\nconst aiRuntimeGuardPosition = storyGenerate.indexOf('readStoryAiRuntimeState()')\nconst aiConsentGuardPosition = storyGenerate.indexOf('if (!hasValidPrivacyConsent(input))')\nconst usageClaimPosition = storyGenerate.indexOf('claimStoryGeneration(installationId)')\nrequireCondition(\n  /privacy_consent_required/.test(storyGenerate) &&\n    aiDisabledGuardPosition >= 0 &&\n    aiRuntimeGuardPosition > aiDisabledGuardPosition &&\n    aiConsentGuardPosition > aiRuntimeGuardPosition &&\n    usageClaimPosition > aiConsentGuardPosition,\n  'Real AI processing must require valid consent after fail-closed rollout gates and before usage is claimed or any provider work can begin.',\n)\n"""
+if old_privacy not in text:
+    raise SystemExit('missing privacy AI gate assertion')
+p.write_text(text.replace(old_privacy, new_privacy))
+
 p = Path('docs/qissa/backend/STORY_AI_SAFETY_PIPELINE.md')
 text = p.read_text()
 old = """The client must never receive an OpenAI API key. Configure these only as Supabase Edge Function secrets:\n\n- `OPENAI_API_KEY`\n- `QISSA_AI_ENABLED`\n- `OPENAI_STORY_MODEL`\n- `OPENAI_SAFETY_MODEL`\n\nAI remains disabled unless `QISSA_AI_ENABLED=true` and a non-empty `OPENAI_API_KEY` are both present.\n"""
