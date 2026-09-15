@@ -24,15 +24,15 @@ const requireCondition = (condition, message) => {
 
 requireCondition(
   /storyGenerationThrottleEnabled:\s*false/.test(betaScope) &&
-    /DAILY_STORY_GENERATION_LIMIT\s*=\s*5/.test(usage) &&
-    /GLOBAL_DAILY_STORY_GENERATION_LIMIT\s*=\s*30/.test(usage) &&
-    !/DEVELOPMENT_ACCOUNTING_ONLY_LIMIT/.test(usage),
-  'Launch-capable Story AI must keep an invisible server-side 5/install and 30/project emergency spend ceiling even when no product-facing quota is shown.',
+    /DEVELOPMENT_ACCOUNTING_ONLY_LIMIT\s*=\s*0/.test(usage) &&
+    /DAILY_STORY_GENERATION_LIMIT\s*=\s*DEVELOPMENT_ACCOUNTING_ONLY_LIMIT/.test(usage) &&
+    /GLOBAL_DAILY_STORY_GENERATION_LIMIT\s*=\s*DEVELOPMENT_ACCOUNTING_ONLY_LIMIT/.test(usage),
+  'Active Story AI tuning must use explicit zero accounting-only limits so validation work cannot be blocked by a temporary daily throttle.',
 )
 
 requireCondition(
   !/storyGenerationDailyLimit:/.test(betaScope) && !/storyGenerationGlobalDailyLimit:/.test(betaScope),
-  'The frontend beta scope must not expose retired temporary Story AI quotas during active development.',
+  'The frontend beta scope must not expose Story AI accounting or operational ceilings as a family quota.',
 )
 
 requireCondition(
@@ -209,4 +209,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI launch guard passed: reviewed code + service-role runtime gates fail closed, spend is bounded, timeouts are aligned, and provider failures do not trigger blind paid retries.')
+console.log('Story AI tuning accounting check passed: runtime gate remains fail-closed, provider-eligible calls are counted without a daily throttle, timeouts are bounded, and provider failures do not trigger blind paid retries.')

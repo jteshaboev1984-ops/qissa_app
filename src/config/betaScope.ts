@@ -12,10 +12,10 @@ export const betaScope = {
   nextStylePackId: 'silk_road' as StylePackId,
   defaultStoryMode: 'series' as StoryMode,
   defaultStoryMood: 'bedtime' as StoryMood,
-  // Do not expose a product-facing family quota during the closed beta. The
-  // backend still enforces a conservative emergency provider-spend ceiling and
-  // keeps private aggregate accounting. Any future visible quota is a product
-  // decision and should remain separate from this operational safety guard.
+  // Story AI is still being tuned. Do not expose a product-facing family quota
+  // or let an operational daily throttle block validator/prompt acceptance work.
+  // Provider-eligible calls remain privately counted server-side. Positive
+  // emergency ceilings must be restored deliberately before external beta/launch.
   storyGenerationThrottleEnabled: false,
   providerAudioEnabledByDefault: false,
 } as const
