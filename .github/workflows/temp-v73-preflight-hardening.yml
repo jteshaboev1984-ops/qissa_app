@@ -30,6 +30,7 @@ jobs:
           python3 scripts/temp-v73-preflight-hardening.py
           python3 scripts/temp-v73-fix1.py
           python3 scripts/temp-v73-fix2.py
+          python3 scripts/temp-v73-fix3.py
       - name: Run deterministic preflight suite before any live AI call
         run: |
           npm run check:story-core
