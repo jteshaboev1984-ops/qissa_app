@@ -153,6 +153,17 @@ const isTextLengthRepairEligibleFailure = (errors: string[]): boolean =>
   errors.some((error) => textLengthValidationErrors.has(error)) &&
   errors.every((error) => textLengthValidationErrors.has(error) || error === 'missing_hero_token')
 
+const textRepairCorrectionErrors = new Set([
+  ...textLengthValidationErrors,
+  'story_language_mismatch',
+  'missing_hero_token',
+  'choice_resolution_defers_to_future_session',
+  'continuation_resets_before_resolution',
+])
+
+const isTextRepairCorrectionEligible = (errors: string[]): boolean =>
+  errors.length > 0 && errors.every((error) => textRepairCorrectionErrors.has(error))
+
 const compactFailureTrace = (items: string[]): string => items.join('>').slice(0, 480)
 
 Deno.serve(async (request: Request) => {
@@ -204,6 +215,7 @@ Deno.serve(async (request: Request) => {
   let candidate: StoryCandidate | null = null
   let narratorModelUsed = narratorModel
   let repairUsed = false
+  let repairRetryUsed = false
   let narratorRetryUsed = false
   let escalationUsed = false
   let providerCalls = 0
@@ -312,14 +324,16 @@ Deno.serve(async (request: Request) => {
   }
 
   if (validationErrors.length > 0 && isTextLengthRepairEligibleFailure(validationErrors)) {
+    const repairBaseCandidate = candidate
+    const repairBaseErrors = [...validationErrors]
     try {
       providerCalls += 1
       candidate = await repairStoryCandidateTextLengths(
         openAiApiKey,
         narratorModel,
         context,
-        candidate,
-        validationErrors,
+        repairBaseCandidate,
+        repairBaseErrors,
       )
       repairUsed = true
       validationErrors = validateCandidate(context, candidate)
@@ -327,16 +341,46 @@ Deno.serve(async (request: Request) => {
         lastFailureClass = 'validation'
         trace.push(`repair-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
       }
+
+      if (validationErrors.length > 0 && isTextRepairCorrectionEligible(validationErrors)) {
+        providerCalls += 1
+        repairRetryUsed = true
+        const repairRetryFeedback = [
+          `Previous text repair failed deterministic validation: ${validationErrors.join(', ')}.`,
+          `Rejected repair metrics: ${candidateValidationMetrics(candidate).join(', ')}.`,
+          'Rebuild the repair from the ORIGINAL immutable candidate, not from the rejected repaired text.',
+          'Keep every existing plot beat, character identity, choice, state patch and branch consequence unchanged.',
+          context.language === 'uz'
+            ? 'Use natural Uzbek Latin script in all newly written prose. Do not emit Cyrillic characters unless they are part of an already-established recurring-character name supplied by memory.'
+            : 'Use only the requested story language in newly written prose, apart from immutable established recurring-character names.',
+          'If missing_hero_token is listed, include literal {{HERO}} naturally in final story_text.',
+          'If a future-session/reset error is listed, keep the repaired action in the current bedtime evening; tomorrow_seed is not Episode 2 material.',
+        ].join(' ')
+        candidate = await repairStoryCandidateTextLengths(
+          openAiApiKey,
+          narratorModel,
+          context,
+          repairBaseCandidate,
+          repairBaseErrors,
+          repairRetryFeedback,
+        )
+        validationErrors = validateCandidate(context, candidate)
+        if (validationErrors.length > 0) {
+          lastFailureClass = 'validation'
+          trace.push(`repair-retry-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
+        }
+      }
     } catch (error) {
       const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
       lastFailureClass = providerFailureClass(reason)
-      trace.push(`repair:${lastFailureClass}`)
+      trace.push(`${repairRetryUsed ? 'repair-retry' : 'repair'}:${lastFailureClass}`)
       return safeFallback(context, origin, 'generation-or-safety-failed', {
         ...runtimeProviderMetadata,
         ...claimMetadata(claim),
         'X-QISSA-Generation-Failure-Class': lastFailureClass,
         'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
         'X-QISSA-Generation-Repair': 'text-length',
+        'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
         'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
         'X-QISSA-Provider-Calls': String(providerCalls),
         'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
@@ -373,6 +417,7 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Class': lastFailureClass || 'validation',
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
+      'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
       'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,
@@ -392,6 +437,7 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
+      'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
       'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,
@@ -416,6 +462,7 @@ Deno.serve(async (request: Request) => {
         'X-QISSA-Generation-Failure-Class': lastFailureClass,
         'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
         'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
+      'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
         'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
         'X-QISSA-Narrator-Model-Used': narratorModelUsed,
         'X-QISSA-Provider-Calls': String(providerCalls),
@@ -434,6 +481,7 @@ Deno.serve(async (request: Request) => {
         ...claimMetadata(claim),
         'X-QISSA-Generation-Source': 'openai-structured',
         'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
+      'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
         'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
         'X-QISSA-Narrator-Model-Used': narratorModelUsed,
         'X-QISSA-Provider-Calls': String(providerCalls),
@@ -452,6 +500,7 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
+      'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
       'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,

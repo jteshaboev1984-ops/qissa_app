@@ -30,6 +30,9 @@ requireLanguageGuard(hasSingleLanguageMismatch('ru', ['В лесу {{HERO}} ув
 requireLanguageGuard(!hasSingleLanguageMismatch('ru', ['В лесу {{HERO}} увидел зелёный огонёк.']), 'RU must accept Russian prose')
 requireLanguageGuard(hasSingleLanguageMismatch('uz', ['{{HERO}} o‘rmonda yurdi. Потом стало тихо.']), 'UZ must reject Cyrillic leakage')
 requireLanguageGuard(!hasSingleLanguageMismatch('uz', ['{{HERO}} o‘rmonda yurdi va mayin chiroqni ko‘rdi.']), 'UZ must accept Uzbek Latin prose')
+requireLanguageGuard(!hasSingleLanguageMismatch('uz', ['Рыжик Malika bilan o‘rmonda yurdi.'], ['Рыжик']), 'UZ must allow one established Cyrillic recurring-character identity label')
+requireLanguageGuard(hasSingleLanguageMismatch('uz', ['Рыжик Malika bilan yurdi. Потом стало тихо.'], ['Рыжик']), 'UZ must still reject unrelated Cyrillic prose after stripping an allowed recurring name')
+requireLanguageGuard(!hasSingleLanguageMismatch('kz', ['Momiq орманда жай жүрді.'], ['Momiq']), 'KZ must allow an established Latin recurring-character identity label')
 requireLanguageGuard(hasSingleLanguageMismatch('kz', ['{{HERO}} орманға кірді. Then the light moved.']), 'KZ must reject Latin leakage')
 requireLanguageGuard(!hasSingleLanguageMismatch('kz', ['{{HERO}} орманға кіріп, жарыққа жақындады. Құстар үнсіз қалды, өйткені түн тыныш еді.']), 'KZ must accept Kazakh Cyrillic prose')
 
@@ -158,6 +161,7 @@ requireFragments('language guard', languageGuard, [
 
 requireFragments('candidate language validation', safety, [
   "errors.push('story_language_mismatch')",
+  'context.recurringCharacters',
   'candidateLanguageValues',
   "errors.push('visible_safety_language')",
   'visibleSafetyLanguageNeedsRewrite',
@@ -193,6 +197,10 @@ requireFragments('split orchestrator', orchestrator, [
   'For missing_hero_token',
   'For choice_resolution_defers_to_future_session',
   'isTextLengthRepairEligibleFailure',
+  'isTextRepairCorrectionEligible',
+  'repairRetryUsed = true',
+  'Previous text repair failed deterministic validation',
+  "'X-QISSA-Repair-Retry-Used'",
   'For visible_safety_language',
   'For story_language_mismatch',
   'For story_repeats_choice_menu',
@@ -225,6 +233,9 @@ requireFragments('Episode 2 text repair prompt', repairPrompt, [
   'same Episode 2 plot, same selected-choice consequence',
   'validation_errors includes missing_hero_token',
   'tomorrow_seed is future-session metadata only',
+  'retry_feedback: retryFeedback',
+  'previous text repair failed deterministic validation',
+  'For Uzbek repair prose, use natural Uzbek Latin script',
 ])
 
 requireFragments('interactive fear confirmation', repairProvider, [

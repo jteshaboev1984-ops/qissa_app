@@ -201,6 +201,7 @@ requireText('OpenAI provider', provider, [
   "status === 'failed'",
   'openai_response_failed',
   'buildTextLengthRepairPrompts',
+  'retryFeedback',
   'textLengthRepairOutputSchema',
   "'qissa_text_length_repair'",
   'targetChoiceIds',

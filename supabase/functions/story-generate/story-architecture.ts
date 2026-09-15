@@ -343,7 +343,7 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   const value = blueprint as unknown as StoryBlueprint
   const errors: string[] = []
 
-  if (hasSingleLanguageMismatch(context.language, blueprintNaturalLanguageValues(value))) errors.push('blueprint_language_mismatch')
+  if (hasSingleLanguageMismatch(context.language, blueprintNaturalLanguageValues(value), context.recurringCharacters)) errors.push('blueprint_language_mismatch')
 
   if (value.plan_version !== 'split-v1') errors.push('invalid_blueprint_version')
   if (typeof value.central_goal !== 'string' || value.central_goal.trim().length < 8) errors.push('invalid_central_goal')
