@@ -1054,7 +1054,7 @@ export const buildChildFirstClosedBetaCandidate = (
     }
   }
 
-  if (context.hasSeriesMemory || context.sessionIndex !== 1) return null
+  if (context.hasSeriesMemory || (typeof context.sessionIndex === 'number' && context.sessionIndex !== 1)) return null
 
   return {
     title: story.titleOne[language],
