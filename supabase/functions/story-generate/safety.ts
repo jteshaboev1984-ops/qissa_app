@@ -189,11 +189,12 @@ export const russianHeroTokenNeedsRewrite = (
   )
   const masculinePastWord = '[\\p{L}Ёё-]{2,}?(?:лся|л)'
   const femininePastWord = '[\\p{L}Ёё-]{2,}?(?:лась|ла)'
+  const genderedPastWord = `(?:${masculinePastWord}|${femininePastWord})`
   const disallowedPastWord = heroType === 'girl_hero'
     ? masculinePastWord
     : heroType === 'boy_hero'
       ? femininePastWord
-      : `(?:${masculinePastWord}|${femininePastWord})`
+      : genderedPastWord
   const neutralModifier = '(?:вдруг|снова|уже|тихо|медленно|осторожно|бережно|быстро|спокойно|наконец|тоже|ещё|еще|чуть|немного|сразу|затем|потом|[\\p{L}-]+(?:о|е))'
   const optionalModifiers = `(?:\\s+${neutralModifier}){0,3}`
   const wrongAgreementAfter = new RegExp(
