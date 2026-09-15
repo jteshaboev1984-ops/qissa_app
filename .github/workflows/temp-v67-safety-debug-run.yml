@@ -1,0 +1,22 @@
+name: Temporary v67 Uzbek Safety Debug Run
+
+on:
+  push:
+    branches:
+      - audit/uzbek-v67-safety-debug
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: audit/uzbek-v67-safety-debug
+      - name: Run one Uzbek semantic-safety diagnostic
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/audit-uzbek-v67-safety-debug.mjs
