@@ -82,6 +82,7 @@ requireFragments('architecture', architecture, [
   'next_episode_preview is child-facing story copy',
   'Episode 2 has no child decision menu',
   'make living forest characters drive the story',
+  'prefer warm social or playful stakes',
   'For Uzbek ages 5-7, prefer common natural Uzbek words',
   "choices: context.episodeIndex === 1 ? 'exactly 2' : 'exactly 0'",
   "decision_point: context.episodeIndex === 1 ? 'one non-empty child decision point' : 'empty string'",
@@ -184,6 +185,12 @@ requireFragments('Episode 2 text repair prompt', repairPrompt, [
   'final_bedtime_coda_words',
   '60-120 words in the final paragraph',
   'same Episode 2 plot, same selected-choice consequence',
+])
+
+requireFragments('split safety session contract', repairProvider, [
+  'Do NOT set excessive_fear merely because the central low-stakes goal is not fully solved before the child chooses',
+  'Ordinary evening darkness, rain, a brief worry',
+  'sustained panic, threatening pursuit, abandonment, trapping, serious injury',
 ])
 
 requireFragments('Episode 2 text repair provider', repairProvider, [

@@ -621,7 +621,8 @@ export const buildSafetyPrompts = (context: NormalizedStoryContext, candidateJso
     'Return only data matching the supplied JSON schema.',
     'Approve only when every policy flag is false.',
     'Be strict about humiliation, conditional love, identity stereotypes, ideological or religious promotion, adult themes, excessive fear, and unresolved bedtime tension.',
-    'A gentle mystery or ordinary challenge is acceptable only when it resolves safely and calmly.',
+    'For excessive_fear, judge the intensity and nature of frightening content, not merely whether a low-stakes story goal is unfinished at an interactive Episode 1 choice. Mark excessive_fear for age-inappropriate sustained fear, panic, threatening pursuit, abandonment, trapping, serious injury, frightening danger, or similarly distressing material. Ordinary evening darkness, rain, a moment of worry, a harmless mistake, a gentle mystery, or uncertainty among trusted friendly characters is not excessive fear by itself.',
+    'A gentle mystery or ordinary challenge is acceptable when it stays low-stakes and emotionally safe. In technical Episode 1 it may pause at the child decision point; use the appended session contract to judge whether an immediate branch keeps the experience safe.',
     'Do not rewrite the story. Classify it.',
   ].join(' '),
   user: JSON.stringify({
