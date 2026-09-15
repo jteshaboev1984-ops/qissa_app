@@ -125,7 +125,7 @@ try {
     assert(episodeTwoA.story_text !== episodeTwoB.story_text, `${stylePackId}: continuations are identical.`)
     assert(episodeTwoA.state_patch.canon_updates?.remembered_choice === 'choice-a', `${stylePackId}/A lost canon choice.`)
     assert(episodeTwoB.state_patch.canon_updates?.remembered_choice === 'choice-b', `${stylePackId}/B lost canon choice.`)
-    assert(episodeTwoA.state_patch.open_arc === undefined && episodeTwoB.state_patch.open_arc === undefined, `${stylePackId}: Episode 2 left an open arc.`)
+    assert(episodeTwoA.state_patch.open_arc === null && episodeTwoB.state_patch.open_arc === null, `${stylePackId}: safe fallback did not explicitly close its nightly arc.`)
     assert(!technicalStoryLanguage.test(`${episodeTwoA.title} ${episodeTwoA.story_text}`), `${stylePackId}/A continuation exposes technical wording.`)
     assert(!technicalStoryLanguage.test(`${episodeTwoB.title} ${episodeTwoB.story_text}`), `${stylePackId}/B continuation exposes technical wording.`)
     return [episodeTwoA, episodeTwoB]
