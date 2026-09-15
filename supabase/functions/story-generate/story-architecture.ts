@@ -9,7 +9,7 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { hasSingleLanguageMismatch } from './language.ts'
-import { branchingPreviewNeedsRewrite, technicalPreviewLanguageNeedsRewrite, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
+import { branchingPreviewNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
 
 export type StoryBlueprintChoice = {
   choice_id: string
@@ -350,7 +350,9 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   const value = blueprint as unknown as StoryBlueprint
   const errors: string[] = []
 
-  if (hasSingleLanguageMismatch(context.language, blueprintNaturalLanguageValues(value), context.recurringCharacters)) errors.push('blueprint_language_mismatch')
+  const naturalLanguageBlueprint = blueprintNaturalLanguageValues(value)
+  if (hasSingleLanguageMismatch(context.language, naturalLanguageBlueprint, context.recurringCharacters)) errors.push('blueprint_language_mismatch')
+  if (Object.values(scanRuleBasedSafetyValues(context, naturalLanguageBlueprint)).some(Boolean)) errors.push('blueprint_rule_safety')
   const childVisibleBlueprint = blueprintChildVisibleValues(value)
   if (visibleSafetyLanguageNeedsRewrite(context.language, childVisibleBlueprint.join(' '))) errors.push('blueprint_visible_safety_language')
   if (uzbekYoungChildValuesNeedRewrite(context, childVisibleBlueprint)) errors.push('blueprint_uzbek_child_language_requires_rewrite')

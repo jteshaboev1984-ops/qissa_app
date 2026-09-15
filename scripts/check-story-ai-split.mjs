@@ -3,7 +3,7 @@ import { hasSingleLanguageMismatch } from '../supabase/functions/story-generate/
 import { buildArchitectPrompts, enforceStoryBlueprintContextContract, validateStoryBlueprint } from '../supabase/functions/story-generate/story-architecture.ts'
 import { normalizeStoryBlueprintMemoryKeys } from '../supabase/functions/story-generate/story-architecture.ts'
 import { normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
-import { isTextRepairEligibleFailure, textRepairRequiresFullStoryRewrite } from '../supabase/functions/story-generate/repair-routing.ts'
+import { isTextRepairEligibleFailure, textRepairRequiresFullStoryRewrite, textRepairableValidationErrors } from '../supabase/functions/story-generate/repair-routing.ts'
 
 const architecture = fs.readFileSync('supabase/functions/story-generate/story-architecture.ts', 'utf8')
 const provider = fs.readFileSync('supabase/functions/story-generate/split-openai.ts', 'utf8')
@@ -49,12 +49,31 @@ for (const errors of [
   ['story_too_short', 'story_repeats_choice_menu'],
   ['story_too_short', 'story_choice_menu_scaffolding'],
   ['choice_resolution_too_short', 'choice_resolution_defers_to_future_session'],
+  ['invalid_title'],
+  ['invalid_resolution_text'],
+  ['invalid_vocabulary_count'],
+  ['unexpected_vocabulary'],
 ]) {
   requireLanguageGuard(isTextRepairEligibleFailure(errors), `repair routing must cover mixed narration errors: ${errors.join(',')}`)
 }
 requireLanguageGuard(textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_short', 'uzbek_child_language_requires_rewrite']), 'existing Uzbek language defects plus short text must use a full rewrite, not insertion')
 requireLanguageGuard(!textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_short']), 'pure Episode 1 short text should keep the cheaper insertion repair')
+requireLanguageGuard(textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_long']), 'Episode 1 story_too_long must use full rewrite because insertion cannot shorten prose')
 requireLanguageGuard(!isTextRepairEligibleFailure(['invalid_choice_count', 'story_too_short']), 'structural/Architect-owned failures must not be sent to prose repair')
+
+const candidateValidatorErrors = new Set([
+  'candidate_not_object',
+  ...[...safety.matchAll(/errors\.push\('([^']+)'\)/gu)].map((match) => match[1]),
+])
+const architectOrSchemaOwnedCandidateErrors = new Set([
+  'candidate_not_object', 'invalid_story_text', 'invalid_choice_count', 'invalid_choice', 'invalid_choice_id',
+  'invalid_choice_text', 'invalid_effect_summary', 'invalid_tomorrow_seed', 'invalid_choice_icon',
+  'invalid_choice_state_patch', 'invalid_value_alignment', 'invalid_state_patch', 'invalid_vocabulary',
+  'invalid_preview', 'missing_preview', 'technical_preview_language', 'branching_preview_language', 'unexpected_preview',
+])
+const unclassifiedCandidateErrors = [...candidateValidatorErrors].filter((error) =>
+  !textRepairableValidationErrors.has(error) && !architectOrSchemaOwnedCandidateErrors.has(error))
+requireLanguageGuard(unclassifiedCandidateErrors.length === 0, `every candidate validator outcome must be classified before live AI; unclassified=${unclassifiedCandidateErrors.join(',')}`)
 
 
 const memoryKeyRegression = normalizeStoryBlueprintMemoryKeys(
@@ -102,6 +121,10 @@ const badImmutableUzBlueprint = {
 const badBlueprintErrors = validateStoryBlueprint({ language: 'uz', ageGroup: '5-7', episodeIndex: 1, storyMode: 'series', storyMood: 'bedtime', isFinalSeriesSession: false, recurringCharacters: [], canonState: {}, relationshipState: {} }, badImmutableUzBlueprint)
 requireLanguageGuard(badBlueprintErrors.includes('blueprint_uzbek_child_language_requires_rewrite'), 'immutable Uzbek choice/preview vocabulary must fail at Architect validation before Narrator')
 requireLanguageGuard(badBlueprintErrors.includes('blueprint_technical_preview_language'), 'technical preview wording must fail at Architect validation before Narrator')
+const unsafeBlueprint = structuredClone(badImmutableUzBlueprint)
+unsafeBlueprint.central_goal = 'Do‘stlar qon haqida gaplashadi'
+const unsafeBlueprintErrors = validateStoryBlueprint({ language: 'uz', ageGroup: '5-7', episodeIndex: 1, storyMode: 'series', storyMood: 'bedtime', isFinalSeriesSession: false, recurringCharacters: [], canonState: {}, relationshipState: {} }, unsafeBlueprint)
+requireLanguageGuard(unsafeBlueprintErrors.includes('blueprint_rule_safety'), 'deterministic safety present in Architect output must fail before the paid Narrator stage')
 
 if (!switchedLanguageContext) {
   failures.push('language switch continuity context failed to normalize')
@@ -232,22 +255,13 @@ requireFragments('split orchestrator', orchestrator, [
   "'mod=clear'",
   "'X-QISSA-Provider-Calls'",
   "'X-QISSA-Narrator-Retry-Used'",
-  'narratorRetryUsed = true',
-  'Previous narration failed deterministic validation',
-  'For missing_hero_token',
-  'For choice_resolution_defers_to_future_session',
+  'deterministic-safety-pre-repair',
+  'nonrepairable-validation',
   'isTextRepairEligibleFailure',
   'isTextRepairCorrectionEligible',
   'repairRetryUsed = true',
   'Previous text repair failed deterministic validation',
   "'X-QISSA-Repair-Retry-Used'",
-  'For visible_safety_language',
-  'For story_language_mismatch',
-  'For uzbek_child_language_requires_rewrite',
-  'For story_repeats_choice_menu',
-  'For technical_preview_language',
-  'For story_choice_menu_scaffolding',
-  'For branching_preview_language',
   "'X-QISSA-Initial-Story-Words'",
   "'X-QISSA-Final-Story-Words'",
   'runtimeProviderMetadata',
@@ -261,6 +275,16 @@ const providerSuccessPosition = orchestrator.indexOf("'X-QISSA-Generation-Source
 const runtimeOnSuccessPosition = orchestrator.lastIndexOf('...runtimeProviderMetadata', providerSuccessPosition)
 if (!(runtimeMetadataPosition >= 0 && runtimeOnSuccessPosition > runtimeMetadataPosition && runtimeOnSuccessPosition < providerSuccessPosition)) {
   failures.push('openai-structured success response must carry X-QISSA-Runtime-AI metadata')
+}
+
+if (orchestrator.includes('narratorRetryUsed = true') || orchestrator.includes('Previous narration failed deterministic validation')) {
+  failures.push('Narrator deterministic defects must route directly to bounded repair; a redundant full Narrator retry wastes provider calls')
+}
+
+const preRepairSafetyPosition = orchestrator.indexOf('const initialRuleFlags = scanRuleBasedSafety')
+const repairCallPosition = orchestrator.indexOf('repairStoryCandidateTextLengths(', preRepairSafetyPosition)
+if (!(preRepairSafetyPosition >= 0 && repairCallPosition > preRepairSafetyPosition)) {
+  failures.push('deterministic safety must run before any paid text-repair call')
 }
 
 if (orchestrator.includes("OPENAI_NARRATOR_ESCALATION_MODEL')?.trim() || 'gpt-5.6-sol'")) {

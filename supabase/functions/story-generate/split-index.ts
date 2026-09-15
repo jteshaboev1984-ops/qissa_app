@@ -12,7 +12,7 @@ import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
 import { enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
 import { childVisibleStorySafetyText } from './story-safety-projection.ts'
-import { isTextLengthOnlyFailure, isTextRepairCorrectionEligible, isTextRepairEligibleFailure } from './repair-routing.ts'
+import { isTextRepairCorrectionEligible, isTextRepairEligibleFailure } from './repair-routing.ts'
 import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
@@ -240,53 +240,46 @@ Deno.serve(async (request: Request) => {
     })
   }
 
+  const initialRuleFlags = scanRuleBasedSafety(context, candidate)
+  if (hasRuleViolation(initialRuleFlags)) {
+    lastFailureClass = 'deterministic-safety'
+    const flags = Object.entries(initialRuleFlags).filter(([, value]) => value).map(([key]) => key)
+    trace.push(`deterministic-safety-pre-repair:${flags.join(',') || 'flagged'}`)
+    return safeFallback(context, origin, 'generation-or-safety-failed', {
+      ...runtimeProviderMetadata,
+      ...claimMetadata(claim),
+      'X-QISSA-Generation-Failure-Class': lastFailureClass,
+      'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
+      'X-QISSA-Generation-Repair': 'none',
+      'X-QISSA-Narrator-Retry-Used': 'false',
+      'X-QISSA-Provider-Calls': String(providerCalls),
+      'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
+    })
+  }
+
   let validationErrors = validateCandidate(context, candidate)
   if (validationErrors.length > 0) {
     trace.push(`narrator-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
   }
 
-  // One prose-only Luna retry is safe because the immutable Architect blueprint owns all canon,
-  // branch consequences and choices. This retry cannot mutate state; it only rewrites narration.
-  if (validationErrors.length > 0 && !isTextLengthOnlyFailure(validationErrors)) {
-    try {
-      providerCalls += 1
-      narratorRetryUsed = true
-      const retryFeedback = [
-        `Previous narration failed deterministic validation: ${validationErrors.join(', ')}.`,
-        `Observed metrics: ${candidateValidationMetrics(candidate).join(', ')}.`,
-        'Keep the immutable blueprint exactly unchanged.',
-        'Correct every listed narration failure in one pass. If story_too_short is present, add meaningful action/dialogue/reaction inside existing blueprint beats until the hard minimum is safely exceeded.',
-        'For russian_hero_requires_rewrite, keep {{HERO}} only as nominative subject or direct address and rewrite every case/preposition or gendered-past-tense construction around the token.',
-        'For missing_hero_token, restore the literal {{HERO}} token naturally inside story_text as the in-world protagonist. Do not invent a real child name and do not leave the hero only in metadata.',
-        'For choice_resolution_defers_to_future_session, keep each Episode 1 resolution in the same evening immediately after the child choice; remove tomorrow/morning/next-day transitions from resolution_text. tomorrow_seed remains separate future-session metadata.',
-        'For visible_safety_language, remove any child-visible explanation that a choice, option or possibility is safe, good, calm, correct or morally preferred; show the story consequences without evaluating the menu.',
-        'For story_language_mismatch, rewrite every natural-language field strictly in the requested story language. Do not translate machine keys or the {{HERO}} token.',
-        'For uzbek_child_language_requires_rewrite, replace bookish, borrowed, neighboring-language or adult-sounding words with simple natural Uzbek for ages 5-7. Do not use ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat or hissa when a simpler phrase exists.',
-        'For story_repeats_choice_menu, end story_text with one neutral decision cue or question and remove every listing or paraphrase of the two structured choice actions from story_text.',
-        'For technical_preview_language, rewrite the preview as one natural child-facing in-world sentence. Do not mention confirmation, selection mechanics, episodes, segments, pipelines, or story branches.',
-        'For story_choice_menu_scaffolding, remove explicit alternative scaffolding such as “можно... а можно...” from story_text; end with only a neutral decision cue.',
-        'For branching_preview_language, make the preview branch-neutral and true after either choice. Do not mention both alternatives or join possible outcomes with or/yoki/немесе.',
-      ].join(' ')
-      const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, retryFeedback)
-      candidate = narrationToCandidate(context, blueprint, narration)
-      validationErrors = validateCandidate(context, candidate)
-      if (validationErrors.length > 0) {
-        trace.push(`narrator-retry-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
-      }
-    } catch (error) {
-      const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
-      lastFailureClass = providerFailureClass(reason)
-      trace.push(`narrator-retry:${lastFailureClass}`)
-      return safeFallback(context, origin, 'generation-or-safety-failed', {
-        ...runtimeProviderMetadata,
-        ...claimMetadata(claim),
-        'X-QISSA-Generation-Failure-Class': lastFailureClass,
-        'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
-        'X-QISSA-Narrator-Retry-Used': 'true',
-        'X-QISSA-Provider-Calls': String(providerCalls),
-        'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
-      })
-    }
+  // v74: every known Narrator-owned deterministic defect goes straight to the bounded repair agent.
+  // Architect/schema-owned defects cannot be corrected by another prose generation, so fail closed without paying for a futile retry.
+  if (validationErrors.length > 0 && !isTextRepairEligibleFailure(validationErrors)) {
+    lastFailureClass = 'validation'
+    trace.push(`nonrepairable-validation:${validationErrors.join(',')}`)
+    return safeFallback(context, origin, 'generation-or-safety-failed', {
+      ...runtimeProviderMetadata,
+      ...claimMetadata(claim),
+      'X-QISSA-Generation-Failure-Class': lastFailureClass,
+      'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
+      'X-QISSA-Generation-Repair': 'none',
+      'X-QISSA-Repair-Retry-Used': 'false',
+      'X-QISSA-Narrator-Retry-Used': 'false',
+      'X-QISSA-Escalation-Used': 'false',
+      'X-QISSA-Narrator-Model-Used': narratorModelUsed,
+      'X-QISSA-Provider-Calls': String(providerCalls),
+      'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
+    })
   }
 
   if (validationErrors.length > 0 && isTextRepairEligibleFailure(validationErrors)) {

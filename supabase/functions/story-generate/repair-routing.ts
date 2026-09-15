@@ -12,6 +12,10 @@ export const textLengthValidationErrors = new Set([
 // These are narration-owned defects that a bounded text repair is allowed to correct
 // without changing Architect-owned plot, choices, canon, relationships or branch state.
 export const textRewriteValidationErrors = new Set([
+  'invalid_title',
+  'invalid_resolution_text',
+  'invalid_vocabulary_count',
+  'unexpected_vocabulary',
   'story_language_mismatch',
   'uzbek_child_language_requires_rewrite',
   'visible_safety_language',
@@ -30,6 +34,9 @@ export const textRepairableValidationErrors = new Set([
 ])
 
 const fullStoryRewriteErrors = new Set([
+  'invalid_title',
+  'invalid_vocabulary_count',
+  'unexpected_vocabulary',
   'story_language_mismatch',
   'uzbek_child_language_requires_rewrite',
   'visible_safety_language',
@@ -56,6 +63,8 @@ export const textRepairRequiresFullStoryRewrite = (
   errors: string[],
 ): boolean => {
   if (errors.some((error) => fullStoryRewriteErrors.has(error))) return true
+  // Short Episode 1 can use bounded insertion. Long prose must always be rewritten; insertion cannot shorten it.
+  if (errors.includes('story_too_long')) return true
   if (context.episodeIndex === 2 && errors.some((error) =>
     error === 'story_too_short' ||
     error === 'story_too_long' ||

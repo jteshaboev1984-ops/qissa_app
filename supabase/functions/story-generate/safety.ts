@@ -90,6 +90,18 @@ export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: 
   return flags
 }
 
+export const scanRuleBasedSafetyValues = (
+  context: NormalizedStoryContext,
+  values: Array<string | null | undefined>,
+): SafetyFlags => scanRuleBasedSafety(context, {
+  title: '',
+  story_text: values.filter((value): value is string => typeof value === 'string' && value.trim().length > 0).join(' '),
+  choices: [],
+  state_patch: { last_event: '', new_friend: null, hero_trait: null, open_arc: null, relationship_updates: [], canon_updates: [] },
+  vocabulary: [],
+  nextEpisodePreview: '',
+})
+
 export const newFriendIsAtomic = (value: unknown): boolean => {
   if (value === null) return true
   if (typeof value !== 'string') return false
