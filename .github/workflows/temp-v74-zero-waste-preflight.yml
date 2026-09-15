@@ -29,6 +29,7 @@ jobs:
         run: |
           python3 scripts/temp-v74-zero-waste-preflight.py
           python3 scripts/temp-v74-fix1.py
+          python3 scripts/temp-v74-fix2.py
       - name: Run full deterministic preflight before any live AI call
         run: |
           npm run check:story-core
