@@ -1,0 +1,93 @@
+name: Temporary Story Memory v59 Patch
+
+on:
+  push:
+    branches:
+      - fix/story-memory-v59
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temp-story-memory-v59
+  cancel-in-progress: false
+
+jobs:
+  patch-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/story-memory-v59
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Patch memory-key normalization regression
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          arch = Path('supabase/functions/story-generate/story-architecture.ts')
+          text = arch.read_text()
+          old = "  if (stableMemoryKey.test(candidate)) return candidate"
+          new = "  if (asciiSlug && stableMemoryKey.test(candidate)) return candidate"
+          if text.count(old) != 1:
+              raise SystemExit(f'architecture match count: {text.count(old)}')
+          arch.write_text(text.replace(old, new, 1))
+
+          check = Path('scripts/check-story-ai-split.mjs')
+          text = check.read_text()
+          old_import = "import { hasSingleLanguageMismatch } from '../supabase/functions/story-generate/language.ts'"
+          new_import = old_import + "\nimport { normalizeStoryBlueprintMemoryKeys } from '../supabase/functions/story-generate/story-architecture.ts'"
+          if text.count(old_import) != 1:
+              raise SystemExit('check import mismatch')
+          text = text.replace(old_import, new_import, 1)
+
+          marker = "requireLanguageGuard(!hasSingleLanguageMismatch('kz', ['{{HERO}} орманға кіріп, жарыққа жақындады. Құстар үнсіз қалды, өйткені түн тыныш еді.']), 'KZ must accept Kazakh Cyrillic prose')\n"
+          regression = r'''
+
+const memoryKeyRegression = normalizeStoryBlueprintMemoryKeys(
+  { canonState: {}, relationshipState: {} },
+  {
+    state_patch: {
+      last_event: '', new_friend: null, hero_trait: null, open_arc: null,
+      relationship_updates: [{ key: 'дружба Топы', value: 'Топа доверяет героине.' }],
+      canon_updates: [
+        { key: 'узор у ручья', value: 'На камнях появился узор.' },
+        { key: 'семечко у ручья', value: 'У воды появилось семечко.' },
+      ],
+    },
+    choices: [],
+  },
+).blueprint
+const normalizedCanonKeys = memoryKeyRegression.state_patch.canon_updates.map((entry) => entry.key)
+const normalizedRelationshipKeys = memoryKeyRegression.state_patch.relationship_updates.map((entry) => entry.key)
+requireLanguageGuard(normalizedCanonKeys.every((key) => key !== 'canon' && /^canon_[a-z0-9]+$/u.test(key)), 'Cyrillic canon keys must hash to stable unique ASCII identifiers')
+requireLanguageGuard(new Set(normalizedCanonKeys).size === normalizedCanonKeys.length, 'distinct Cyrillic canon keys must not collapse to the same identifier')
+requireLanguageGuard(normalizedRelationshipKeys.every((key) => key !== 'rel' && /^rel_[a-z0-9]+$/u.test(key)), 'Cyrillic relationship keys must hash to stable ASCII identifiers')
+'''
+          if text.count(marker) != 1:
+              raise SystemExit('check regression marker mismatch')
+          check.write_text(text.replace(marker, marker + regression, 1))
+          PY
+      - name: Targeted checks
+        run: |
+          npm run check:story-ai-split
+          npm run check:story-ai
+          npm run check:story-cost-guard
+          npm run typecheck:story-ai
+          npm run typecheck
+      - name: Commit verified patch
+        run: |
+          git config user.name "qissa-audit-bot"
+          git config user.email "qissa-audit-bot@users.noreply.github.com"
+          git add supabase/functions/story-generate/story-architecture.ts scripts/check-story-ai-split.mjs
+          if git diff --cached --quiet; then
+            echo "No patch to commit"
+            exit 0
+          fi
+          git commit -m "Prevent non-ASCII Story memory key collisions"
+          git push origin HEAD:fix/story-memory-v59
