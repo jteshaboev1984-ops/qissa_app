@@ -9,7 +9,6 @@ def must_replace(path: str, old: str, new: str) -> None:
         raise SystemExit(f'missing expected block in {path}: {old[:120]!r}')
     p.write_text(text.replace(old, new))
 
-# Runtime state reader lives beside the existing trusted service-role accounting client.
 usage = Path('supabase/functions/story-generate/usage.ts')
 text = usage.read_text()
 needle = """export type GenerationClaim = {\n  allowed: boolean\n  reason: string\n  used: number\n  limit: number\n  globalUsed: number\n  globalLimit: number\n}\n"""
@@ -68,6 +67,38 @@ must_replace(
     "# Story AI is fail-closed: the reviewed production rollout gate must be enabled in code AND this must be explicitly true.\n# QISSA_AI_ENABLED=false\n# OPENAI_ARCHITECT_MODEL=gpt-5.6-luna",
     "# Story AI is fail-closed: the reviewed production rollout gate must be ON and the service-role-only\n# qissa_runtime_flags.story_ai_enabled flag must be true. The legacy QISSA_AI_ENABLED secret is no longer used.\n# OPENAI_ARCHITECT_MODEL=gpt-5.6-luna",
 )
+
+# Keep the safety regression aligned with the new fail-closed runtime gate.
+must_replace(
+    'scripts/check-story-ai-safety.mjs',
+    "  \"Deno.env.get('QISSA_AI_ENABLED')\",\n  \"Deno.env.get('OPENAI_API_KEY')\",",
+    "  'readStoryAiRuntimeState',\n  \"Deno.env.get('OPENAI_API_KEY')\",",
+)
+
+# Operational docs must describe the mechanism operators can actually control.
+p = Path('docs/qissa/backend/STORY_AI_SAFETY_PIPELINE.md')
+text = p.read_text()
+old = """The client must never receive an OpenAI API key. Configure these only as Supabase Edge Function secrets:\n\n- `OPENAI_API_KEY`\n- `QISSA_AI_ENABLED`\n- `OPENAI_STORY_MODEL`\n- `OPENAI_SAFETY_MODEL`\n\nAI remains disabled unless `QISSA_AI_ENABLED=true` and a non-empty `OPENAI_API_KEY` are both present.\n"""
+new = """The client must never receive an OpenAI API key. Configure provider keys/models only as Supabase Edge Function secrets:\n\n- `OPENAI_API_KEY`\n- `OPENAI_ARCHITECT_MODEL`\n- `OPENAI_NARRATOR_MODEL`\n- `OPENAI_SAFETY_MODEL`\n- `OPENAI_NARRATOR_ESCALATION_MODEL` (optional; keep empty unless separately approved)\n\nStory AI is fail-closed behind two operator-controlled gates: the reviewed code rollout gate and the service-role-only `qissa_runtime_flags.story_ai_enabled` row. A non-empty `OPENAI_API_KEY` and valid parental privacy consent are also required before any provider call. Browser roles cannot read or change the runtime flag.\n"""
+if old not in text:
+    raise SystemExit('missing safety pipeline server config block')
+p.write_text(text.replace(old, new))
+
+p = Path('docs/qissa/14_QISSA_Closed_Beta_Scope_2026_09.md')
+text = p.read_text()
+text = text.replace(
+    "- DEV / normal CI: `QISSA_AI_ENABLED=false` and deterministic Story Core/fallback tests;",
+    "- DEV / normal CI: keep the service-role runtime flag `story_ai_enabled=false` and use deterministic Story Core/fallback tests;",
+)
+text = text.replace(
+    "- there is **no project-wide/global daily cap in the current approved beta scope**; do not add one without a separate product decision;",
+    "- launch-safety ceiling: **30 provider-eligible story requests project-wide per day**; this is an operational spend guard, not a product-facing family quota;",
+)
+text = text.replace(
+    "Real Story AI remains intentionally disabled for the closed-beta hardening stage. Enabling it is a separate release decision and should be followed by a deliberately paid, manual acceptance run.",
+    "Real Story AI remains fail-closed during routine hardening and CI. Production enablement is a separate release action through the service-role runtime flag and must be followed by a deliberately paid, manual acceptance run.",
+)
+p.write_text(text)
 
 check = Path('scripts/check-story-cost-guard.mjs')
 text = check.read_text()
