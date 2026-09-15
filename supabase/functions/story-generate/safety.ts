@@ -152,17 +152,57 @@ const candidateLanguageValues = (candidate: StoryCandidate): string[] => {
   return values
 }
 
-const russianHeroTokenNeedsRewrite = (text: string) => {
+const candidateChildVisibleValues = (candidate: StoryCandidate): string[] => {
+  const values = [candidate.title, candidate.story_text, candidate.nextEpisodePreview]
+    .filter((item): item is string => typeof item === 'string')
+  if (Array.isArray(candidate.choices)) {
+    for (const choice of candidate.choices) {
+      if (!isRecord(choice)) continue
+      for (const field of ['text', 'resolution_text', 'tomorrow_seed'] as const) {
+        if (typeof choice[field] === 'string') values.push(choice[field] as string)
+      }
+    }
+  }
+  if (Array.isArray(candidate.vocabulary)) {
+    for (const item of candidate.vocabulary) {
+      if (!isRecord(item)) continue
+      if (typeof item.example === 'string') values.push(item.example)
+    }
+  }
+  return values
+}
+
+export const russianHeroTokenNeedsRewrite = (text: string) => {
   const token = '(?:\\{\\{HERO\\}\\}|QISSA_HERO)'
+  const tokenBoundary = '(?=[\\s,.:;!?»”")—-]|$)'
   const preposition = new RegExp(
-    `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${token}(?=[\\s,.:;!?»”")—-]|$)`,
+    `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${token}${tokenBoundary}`,
     'iu',
   )
-  const genderedAgreement = new RegExp(
-    `${token}\\s+(?:сказал|сказала|подошёл|подошла|увидел|увидела|услышал|услышала|понял|поняла|решил|решила|оказался|оказалась|остановился|остановилась|улыбнулся|улыбнулась|засмеялся|засмеялась|пожелал|пожелала)\\b`,
-    'iu',
-  )
-  return preposition.test(text) || genderedAgreement.test(text)
+  const genderedPastWord = '[\\p{L}Ёё-]+(?:л|ла|лся|лась)'
+  const sameClauseGap = '(?:(?![,.;:!?\\n]).){0,56}?'
+  const genderedPastAfter = new RegExp(`${token}${tokenBoundary}${sameClauseGap}\\b${genderedPastWord}\\b`, 'iu')
+  const genderedPastBefore = new RegExp(`\\b${genderedPastWord}\\b${sameClauseGap}${token}${tokenBoundary}`, 'iu')
+  return preposition.test(text) || genderedPastAfter.test(text) || genderedPastBefore.test(text)
+}
+
+export const visibleSafetyLanguageNeedsRewrite = (language: string, text: string) => {
+  const normalized = text.replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()
+  const patterns: Record<string, RegExp[]> = {
+    ru: [
+      /\b(?:вариант(?:а|ов)?|выбор(?:а|ов)?|возможност(?:ь|и|ей))\b[^.!?\n]{0,80}\b(?:безопасн\p{L}*|добр\p{L}*|правильн\p{L}*|хорош\p{L}*|спокойн\p{L}*|верн\p{L}*)\b/iu,
+      /\b(?:безопасн\p{L}*|добр\p{L}*|правильн\p{L}*|хорош\p{L}*|спокойн\p{L}*|верн\p{L}*)\b[^.!?\n]{0,80}\b(?:вариант(?:а|ов)?|выбор(?:а|ов)?|возможност(?:ь|и|ей))\b/iu,
+    ],
+    uz: [
+      /\b(?:tanlov|tanlovlar|variant|variantlar|imkoniyat|imkoniyatlar)\b[^.!?\n]{0,80}\b(?:xavfsiz|yaxshi|to'g'ri|mehribon|sokin)\b/iu,
+      /\b(?:xavfsiz|yaxshi|to'g'ri|mehribon|sokin)\b[^.!?\n]{0,80}\b(?:tanlov|tanlovlar|variant|variantlar|imkoniyat|imkoniyatlar)\b/iu,
+    ],
+    kz: [
+      /\b(?:таңдау|таңдаулар|нұсқа|нұсқалар|мүмкіндік|мүмкіндіктер)\b[^.!?\n]{0,80}\b(?:қауіпсіз|жақсы|дұрыс|мейірімді|тыныш)\b/iu,
+      /\b(?:қауіпсіз|жақсы|дұрыс|мейірімді|тыныш)\b[^.!?\n]{0,80}\b(?:таңдау|таңдаулар|нұсқа|нұсқалар|мүмкіндік|мүмкіндіктер)\b/iu,
+    ],
+  }
+  return (patterns[language] ?? []).some((pattern) => pattern.test(normalized))
 }
 
 export const validateCandidate = (context: NormalizedStoryContext, candidate: unknown): string[] => {
@@ -171,6 +211,9 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   const value = candidate as StoryCandidate
 
   if (hasSingleLanguageMismatch(context.language, candidateLanguageValues(value))) errors.push('story_language_mismatch')
+  if (visibleSafetyLanguageNeedsRewrite(context.language, candidateChildVisibleValues(value).join(' '))) {
+    errors.push('visible_safety_language')
+  }
 
   if (context.language === 'ru') {
     const choiceText = Array.isArray(value.choices)
