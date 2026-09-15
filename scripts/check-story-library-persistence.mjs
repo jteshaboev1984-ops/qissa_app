@@ -46,6 +46,7 @@ requireCondition(/MAX_SERIES_SESSIONS = 10/.test(contracts) && /rawSessionIndex 
 requireCondition(/isCurrentSessionContinuation/.test(localAgent), 'Local fallback agent must also use current-session progress.')
 
 requireCondition(/client_session_id: identity\.sessionId/.test(state), 'story-state must key rows by bedtime session ID.')
+requireCondition(/generation_source: 'edge_story_agent'/.test(state) && /domain_payload: episode/.test(state), 'story-state must keep the database operational source stable while preserving exact generationSource in the domain payload.')
 requireCondition(/client_series_id: identity\.seriesId/.test(state), 'story-state must persist stable series identity.')
 requireCondition(/series_session_index: identity\.sessionIndex/.test(state), 'story-state must persist session order.')
 requireCondition(/selection_snapshot: selections/.test(state), 'story-state must snapshot the selections used to create each story.')
