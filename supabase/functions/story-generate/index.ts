@@ -170,24 +170,23 @@ Deno.serve(async (request: Request) => {
 
   const runtimeState = await readStoryAiRuntimeState()
   const runtimeMetadata = { 'X-QISSA-Runtime-AI': runtimeState.enabled ? 'enabled' : runtimeState.reason }
-  const runtimeProviderMetadata = { ...providerMetadata(), ...runtimeMetadata }
   if (!runtimeState.enabled) {
-    return safeFallback(context, origin, runtimeState.reason, runtimeProviderMetadata)
+    return safeFallback(context, origin, runtimeState.reason, { ...providerMetadata(), ...runtimeMetadata })
   }
 
   if (!hasValidPrivacyConsent(input)) {
-    return json({ error: 'privacy_consent_required' }, 403, origin, runtimeProviderMetadata)
+    return json({ error: 'privacy_consent_required' }, 403, origin, { ...providerMetadata(), ...runtimeMetadata })
   }
 
   const installationId = installationIdFromInput(input)
   if (!installationId) {
-    return safeFallback(context, origin, 'rate-limit-identity-missing', runtimeProviderMetadata)
+    return safeFallback(context, origin, 'rate-limit-identity-missing', providerMetadata())
   }
 
   const claim = await claimStoryGeneration(installationId)
   if (!claim.allowed) {
     return safeFallback(context, origin, claim.reason, {
-      ...runtimeProviderMetadata,
+      ...providerMetadata(),
       ...claimMetadata(claim),
     })
   }
@@ -204,6 +203,7 @@ Deno.serve(async (request: Request) => {
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     attemptsUsed = attempt
     try {
+      // Text-length repair may change only invalid story/resolution prose; canon and branch state remain immutable.
       let candidate: StoryCandidate
       if (repairCandidate) {
         const candidateToRepair: StoryCandidate = repairCandidate
@@ -237,6 +237,9 @@ Deno.serve(async (request: Request) => {
 
         repairCandidate = null
         repairValidationErrors = []
+        // At most two full generations are allowed. A third provider stage is
+        // reserved exclusively for deterministic text-length repair, never for
+        // another full rewrite of choices, state or canon.
         if (!usedTextLengthRepair && fullGenerationAttempts < maxFullGenerationAttempts && attempt < maxAttempts) {
           continue
         }
@@ -274,7 +277,7 @@ Deno.serve(async (request: Request) => {
         200,
         origin,
         {
-          ...runtimeProviderMetadata,
+          ...providerMetadata(),
           'X-QISSA-Generation-Source': 'openai-structured',
           'X-QISSA-Generation-Attempts': String(attempt),
           'X-QISSA-Full-Generation-Attempts': String(fullGenerationAttempts),
@@ -288,6 +291,10 @@ Deno.serve(async (request: Request) => {
       retryReason = reason
       lastFailureClass = providerFailureClass(reason)
       failureTrace.push(lastFailureClass)
+      // Provider/configuration/time-out failures tend to repeat and may already
+      // have consumed provider tokens. Fail closed instead of paying for the
+      // same request again. Retries are reserved for candidates we actually
+      // received and rejected deterministically or semantically.
       break
     }
   }
@@ -297,7 +304,7 @@ Deno.serve(async (request: Request) => {
     origin,
     'generation-or-safety-failed',
     {
-      ...runtimeProviderMetadata,
+      ...providerMetadata(),
       ...claimMetadata(claim),
       'X-QISSA-Generation-Attempts': String(attemptsUsed),
       'X-QISSA-Full-Generation-Attempts': String(fullGenerationAttempts),
