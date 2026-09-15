@@ -14,7 +14,7 @@ import { claimStoryGeneration, isInstallationId, type GenerationClaim } from './
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
 const aiEnabledSetting = Deno.env.get('QISSA_AI_ENABLED')?.trim().toLowerCase()
-const aiEnabled = Boolean(openAiApiKey) && aiEnabledSetting !== 'false'
+const aiEnabled = Boolean(openAiApiKey) && aiEnabledSetting === 'true'
 const storyModel = Deno.env.get('OPENAI_STORY_MODEL')?.trim() || 'gpt-5.6-luna'
 const safetyModel = Deno.env.get('OPENAI_SAFETY_MODEL')?.trim() || storyModel
 const maxAttempts = 3
@@ -165,9 +165,9 @@ Deno.serve(async (request: Request) => {
   const context = normalizeStoryRequest(input)
   if (!context) return json({ error: 'invalid_story_context' }, 422, origin)
 
-  // A configured API key enables the provider path by default. Operators can
-  // still fail closed instantly with QISSA_AI_ENABLED=false. No usage claim or
-  // provider request is made while the provider path is disabled or keyless.
+  // Story AI is explicit opt-in: a provider key alone is never enough.
+  // Only QISSA_AI_ENABLED=true may enter the provider path; absent, false, or
+  // any other value fails closed before accounting or provider requests.
   if (!aiEnabled || !openAiApiKey) {
     return safeFallback(context, origin, !openAiApiKey ? 'api-key-missing' : 'ai-disabled')
   }

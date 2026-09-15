@@ -5,6 +5,7 @@ const read = (path) => readFileSync(path, 'utf8')
 const betaScope = read('src/config/betaScope.ts')
 const remoteClient = read('src/lib/storyRemoteClient.ts')
 const storyIndex = read('supabase/functions/story-generate/index.ts')
+const splitStoryIndex = read('supabase/functions/story-generate/split-index.ts')
 const provider = read('supabase/functions/story-generate/openai.ts')
 const usage = read('supabase/functions/story-generate/usage.ts')
 const installationMigration = read('docs/qissa/backend/migrations/20260907_000010_add_story_generation_cost_guard.sql')
@@ -43,8 +44,11 @@ requireCondition(
 )
 
 requireCondition(
-  /aiEnabledSetting !== 'false'/.test(storyIndex) && /Boolean\(openAiApiKey\)/.test(storyIndex),
-  'A configured provider key should enable Story AI by default while QISSA_AI_ENABLED=false remains an emergency kill switch.',
+  /aiEnabledSetting === 'true'/.test(storyIndex) &&
+    /aiEnabledSetting === 'true'/.test(splitStoryIndex) &&
+    /Boolean\(openAiApiKey\)/.test(storyIndex) &&
+    /Boolean\(openAiApiKey\)/.test(splitStoryIndex),
+  'Story AI must fail closed unless QISSA_AI_ENABLED=true is explicitly configured in both production entrypoints.',
 )
 
 requireCondition(
