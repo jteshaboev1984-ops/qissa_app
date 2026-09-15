@@ -322,6 +322,13 @@ const patchHasStableMemoryKeys = (context: NormalizedStoryContext, patch: Candid
     patch.relationship_updates.every((entry) => existingRelationships.has(entry.key) || stableMemoryKey.test(entry.key))
 }
 
+export const enforceStoryBlueprintContextContract = (
+  context: NormalizedStoryContext,
+  blueprint: StoryBlueprint,
+): StoryBlueprint => context.episodeIndex === 2
+  ? { ...blueprint, choices: [], decision_point: '', next_episode_preview: '' }
+  : blueprint
+
 export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprint: unknown): string[] => {
   if (!isRecord(blueprint)) return ['blueprint_not_object']
   const value = blueprint as unknown as StoryBlueprint
@@ -413,7 +420,9 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'Prefer updating an existing canon key when a persistent fact changes. Create a new canon key only for a genuinely durable fact that may matter in later sessions.',
     'Keep state compact. Top-level state contains only durable facts true before the child choice. Choice state contains only the consequence of that specific branch.',
     'Never encode speculation, moral judgment, child identity labels, sensitive personal data, punishment or permanent negative traits in state.',
-    'Both choices must be safe, understandable, meaningfully different hero actions. Neither choice may be a trick or a morally bad option.',
+    context.episodeIndex === 1
+      ? 'Both choices must be safe, understandable, meaningfully different hero actions. Neither choice may be a trick or a morally bad option.'
+      : 'Episode 2 has no child decision menu. Return choices as an empty array, decision_point as an empty string, and next_episode_preview as an empty string.',
     'For Episode 1, plan 5-7 causal beats ending at one explicit decision point. Do not resolve either branch before the decision.',
     'When Episode 1 starts a later bedtime session in an existing series, use remembered canon, relationships and prior consequences as continuity callbacks, then introduce one fresh child-scale goal for tonight. Do not replay or reopen a problem that the previous bedtime session already solved.',
     'A serialized QISSA story has at most 10 bedtime sessions. Sessions 1-6 may establish or develop one gentle long-running arc while still resolving each night local goal. Sessions 7-8 must increasingly pay off existing clues and relationships and must not introduce a new major unresolved arc. Session 9 is penultimate: resolve secondary threads and position the existing central arc for its finale without adding sequel bait. Session 10 is the finale: resolve the current goal plus every meaningful unresolved thread carried in active_arc or compact canon, close the active arc, and end without a cliffhanger, future quest, mystery tease or promise of session 11.',
@@ -422,8 +431,12 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'Keep the plan concise. It is internal production state, not child-facing prose.',
     'All natural-language blueprint values, including effect summaries, state values, arc text and preview text, must be in the requested story language. Memory keys are machine identifiers and are the only exception.',
     'New canon and relationship keys must be stable lowercase ASCII semantic identifiers using letters, digits, underscore, dot or hyphen. Reuse an existing memory key exactly when updating an existing fact instead of creating a synonym.',
-    'Choice display text must be in the requested story language. Do not use the {{HERO}} token in architect output; phrase choices without the hero name.',
-    'next_episode_preview is child-facing story copy and must be branch-neutral: it has to remain true after either choice. Never mention confirmation, selection mechanics, an episode, segment, pipeline, story branch, or both alternatives joined by or/yoki/немесе. Write one natural in-world sentence about the same story continuing after the immediate chosen action.',
+    context.episodeIndex === 1
+      ? 'Choice display text must be in the requested story language. Do not use the {{HERO}} token in architect output; phrase choices without the hero name.'
+      : 'Do not create, describe, compare or preview any new child choice in Episode 2. The already-confirmed choice is memory, not a new decision point.',
+    context.episodeIndex === 1
+      ? 'next_episode_preview is child-facing story copy and must be branch-neutral: it has to remain true after either choice. Never mention confirmation, selection mechanics, an episode, segment, pipeline, story branch, or both alternatives joined by or/yoki/немесе. Write one natural in-world sentence about the same story continuing after the immediate chosen action.'
+      : 'For Episode 2 next_episode_preview must be exactly an empty string. Do not promise another segment or repeat the selected choice.',
     'Avoid politics, religious persuasion, stereotypes, humiliation, conditional love, adult themes, graphic violence and unresolved frightening danger.',
   ].join(' ')
 
@@ -459,6 +472,9 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
       top_level_canon_updates: 'normally 2-6, maximum 8',
       branch_canon_updates: 'normally 1-3, maximum 4',
       episode_1_choices: context.episodeIndex === 1 ? 2 : 0,
+      choices: context.episodeIndex === 1 ? 'exactly 2' : 'exactly 0',
+      decision_point: context.episodeIndex === 1 ? 'one non-empty child decision point' : 'empty string',
+      next_episode_preview: context.episodeIndex === 1 ? 'one branch-neutral in-world sentence' : 'empty string',
       continuity_callbacks: '0-3 relevant remembered facts or relationships, maximum 5',
     },
   })
