@@ -224,6 +224,7 @@ const requestSafetyEvaluation = async (
   context: NormalizedStoryContext,
   candidateJson: string,
   retryFeedback = '',
+  timeoutMs = 12_000,
 ): Promise<SafetyEvaluation> => {
   const prompts = buildSafetyPrompts(context, candidateJson)
   const retryInstruction = retryFeedback
@@ -236,7 +237,7 @@ const requestSafetyEvaluation = async (
     safetyOutputSchema,
     `${prompts.system} ${safetyVerdictContract}${retryInstruction}`,
     prompts.user,
-    12_000,
+    timeoutMs,
     700,
     'none',
   )
@@ -253,12 +254,16 @@ export const evaluateStorySafety = async (
   const firstErrors = safetyEvaluationConsistencyErrors(first)
   if (firstErrors.length === 0) return first
 
+  // This is a classifier-only correction, not a new story generation. Keep it
+  // shorter than the primary safety window so even the worst bounded Story path
+  // remains inside the 130s browser timeout and the hosted Edge Function ceiling.
   const second = await requestSafetyEvaluation(
     apiKey,
     model,
     context,
     candidateJson,
     firstErrors.join(','),
+    8_000,
   )
   const secondErrors = safetyEvaluationConsistencyErrors(second)
   if (secondErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
