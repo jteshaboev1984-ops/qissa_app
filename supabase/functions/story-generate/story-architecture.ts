@@ -251,7 +251,7 @@ const canonicalNewMemoryKey = (rawKey: string, prefix: 'canon' | 'rel'): string 
     .replace(/^_+|_+$/gu, '')
   const prefixed = asciiSlug && /^[a-z]/u.test(asciiSlug) ? asciiSlug : `${prefix}_${asciiSlug}`.replace(/_+$/u, '')
   const candidate = prefixed || prefix
-  if (stableMemoryKey.test(candidate)) return candidate
+  if (asciiSlug && stableMemoryKey.test(candidate)) return candidate
 
   const suffix = memoryKeyHash(lowered || rawKey)
   const stem = candidate.replace(/[^a-z0-9_.-]/gu, '').slice(0, Math.max(1, 47 - suffix.length - 1)) || prefix
