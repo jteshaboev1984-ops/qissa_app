@@ -187,6 +187,9 @@ const runScenario = async ({ language, stylePackId, branchIndex }) => {
     assert(Array.isArray(episodeOne.choices) && episodeOne.choices.length === 2, `${label}: episode 1 must have two choices`)
     assert(wordCount(episodeOne.story_text) >= minBedtimeWords, `${label}: episode 1 is below ${minBedtimeWords} words`)
 
+    // sync_generated may create the installation credential/profile before a later
+    // episode upsert fails, so cleanup must be armed before the request starts.
+    profileCreated = true
     const syncOne = await invokeJson(stateEndpoint, {
       action: 'sync_generated',
       installationId,
@@ -197,7 +200,6 @@ const runScenario = async ({ language, stylePackId, branchIndex }) => {
       privacyConsent,
     })
     assert(syncOne.body?.ok === true, `${label}: episode 1 persistence failed`)
-    profileCreated = true
 
     const choice = episodeOne.choices[branchIndex]
     assert(choice && typeof choice.choice_id === 'string', `${label}: choice missing`)

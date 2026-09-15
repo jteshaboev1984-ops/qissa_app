@@ -211,9 +211,9 @@ async function syncGenerated(input: StoryStateRequest, origin: string | null) {
       language,
       mood: storyMood,
       style_pack_id: stylePackId,
-      generation_source: episode.generationSource === 'safe-fallback' || episode.generationSource === 'openai-structured' || episode.generationSource === 'local'
-        ? episode.generationSource
-        : 'edge_story_agent',
+      // Keep the database operational source within its stable schema contract.
+      // The exact generation path remains preserved in domain_payload.generationSource.
+      generation_source: 'edge_story_agent',
       safety_status: approved ? 'approved' : 'blocked',
       safety_result: safety,
       vocabulary: Array.isArray(episode.vocabulary) ? episode.vocabulary : [],
