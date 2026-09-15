@@ -29,6 +29,7 @@ jobs:
         run: |
           python3 scripts/temp-v73-preflight-hardening.py
           python3 scripts/temp-v73-fix1.py
+          python3 scripts/temp-v73-fix2.py
       - name: Run deterministic preflight suite before any live AI call
         run: |
           npm run check:story-core
@@ -54,8 +55,10 @@ jobs:
             supabase/functions/story-generate/story-architecture.ts \
             supabase/functions/story-generate/storySixMinuteEditorial.ts \
             supabase/functions/story-generate/storyCoreBranches.ts \
+            scripts/check-story-ai-safety.mjs \
             scripts/check-story-ai-split.mjs \
-            scripts/check-story-core-proof.mjs
+            scripts/check-story-core-proof.mjs \
+            scripts/report-bedtime-duration.mjs
           if git diff --cached --quiet; then
             echo "No production patch to commit"
             exit 0
