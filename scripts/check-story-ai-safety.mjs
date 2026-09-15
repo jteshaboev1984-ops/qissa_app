@@ -28,9 +28,41 @@ for (const invalid of [
   '{{HERO}} присел рядом с фонарём.',
   'К окну медленно подошла {{HERO}}.',
 ]) {
-  requireRegression(russianHeroTokenNeedsRewrite(invalid), `must reject gendered Russian past-tense form: ${invalid}`)
+  requireRegression(russianHeroTokenNeedsRewrite(invalid), `must reject gendered Russian past-tense form when grammatical gender is unknown: ${invalid}`)
 }
 requireRegression(!russianHeroTokenNeedsRewrite('{{HERO}} идёт к окну и замечает свет.'), 'must allow gender-neutral Russian present-tense narration')
+requireRegression(
+  !russianHeroTokenNeedsRewrite('{{HERO}} осторожно подошла к двери.', 'girl_hero'),
+  'girl_hero must allow correct feminine singular past-tense agreement in nominative position',
+)
+requireRegression(
+  russianHeroTokenNeedsRewrite('{{HERO}} осторожно подошёл к двери.', 'girl_hero'),
+  'girl_hero must reject masculine singular past-tense agreement',
+)
+requireRegression(
+  !russianHeroTokenNeedsRewrite('{{HERO}} осторожно подошёл к двери.', 'boy_hero'),
+  'boy_hero must allow correct masculine singular past-tense agreement in nominative position',
+)
+requireRegression(
+  russianHeroTokenNeedsRewrite('{{HERO}} осторожно подошла к двери.', 'boy_hero'),
+  'boy_hero must reject feminine singular past-tense agreement',
+)
+for (const heroType of ['custom', 'animal', 'magical_hero']) {
+  requireRegression(
+    russianHeroTokenNeedsRewrite('{{HERO}} осторожно подошла к двери.', heroType),
+    `${heroType} must remain conservative when Russian grammatical gender is not guaranteed`,
+  )
+  requireRegression(
+    russianHeroTokenNeedsRewrite('{{HERO}} осторожно подошёл к двери.', heroType),
+    `${heroType} must remain conservative for masculine agreement when Russian grammatical gender is not guaranteed`,
+  )
+}
+for (const heroType of ['girl_hero', 'boy_hero', 'custom', 'animal', 'magical_hero']) {
+  requireRegression(
+    russianHeroTokenNeedsRewrite('К {{HERO}} подошёл фонарщик.', heroType),
+    `${heroType} must still reject preposition/case constructions around the invariant HERO token`,
+  )
+}
 requireRegression(
   visibleSafetyLanguageNeedsRewrite('ru', 'Обе возможности были безопасными и добрыми.'),
   'must reject visible Russian safety/meta-choice language',
@@ -260,6 +292,7 @@ requireText('runtime safety', safety, [
   "errors.push('bedtime_coda_too_long')",
   'russianHeroTokenNeedsRewrite',
   'genderedPastWord',
+  'context.heroType',
   "errors.push('russian_hero_requires_rewrite')",
   'visibleSafetyLanguageNeedsRewrite',
   'candidateChildVisibleValues',
@@ -308,4 +341,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI safety, hidden safety-language, Russian past-tense hero grammar, additive short-story repair, targeted resolution repair, validator metrics, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')
+console.log('Story AI safety, hidden safety-language, hero-type-aware Russian agreement, additive short-story repair, targeted resolution repair, validator metrics, branch isolation, compact canon, narrative roles, and deterministic short-circuit contract check passed.')
