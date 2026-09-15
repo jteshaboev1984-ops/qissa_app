@@ -477,6 +477,28 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   return [...new Set(errors)]
 }
 
+export const moderationNeedsFearAdjudication = (
+  context: Pick<NormalizedStoryContext, 'ageGroup' | 'storyMode' | 'storyMood'>,
+  ruleFlags: SafetyFlags,
+  evaluation: SafetyEvaluation,
+  moderation: ModerationResult,
+): boolean => {
+  if (!(context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime')) return false
+  if (!allFalse(ruleFlags) || !evaluation.approved || !allFalse(evaluation.flags)) return false
+  const activeCategories = Object.entries(moderation.categories)
+    .filter(([, value]) => value)
+    .map(([key]) => key)
+  return moderation.flagged && activeCategories.length === 1 && activeCategories[0] === 'violence'
+}
+
+export const clearAdjudicatedNonSevereViolence = (moderation: ModerationResult): ModerationResult => {
+  const categories = { ...moderation.categories, violence: false }
+  return {
+    flagged: Object.values(categories).some((value) => value === true),
+    categories,
+  }
+}
+
 export const moderationFlags = (moderation: ModerationResult): SafetyFlags => {
   const flags = emptySafetyFlags()
   const categories = moderation.categories

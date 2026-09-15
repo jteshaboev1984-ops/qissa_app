@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, choiceResolutionDefersToFutureSession, newFriendIsAtomic, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, uzbekChildLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, choiceResolutionDefersToFutureSession, clearAdjudicatedNonSevereViolence, moderationNeedsFearAdjudication, newFriendIsAtomic, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, uzbekChildLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
 
 const base = 'supabase/functions/story-generate'
 const index = readFileSync(`${base}/index.ts`, 'utf8')
@@ -160,6 +160,17 @@ const realUzFearScan = scanRuleBasedSafety(uzRuleContext, {
   choices: [],
 })
 requireRegression(realUzFearScan.excessive_fear, 'real Uzbek blood/fear language must remain blocked')
+
+const moderationConflictContext = { ageGroup: '5-7', storyMode: 'series', storyMood: 'bedtime' }
+const clearSafetyFlags = { discrimination: false, humiliation: false, religious_push: false, political_push: false, gender_stereotype: false, nationality_stereotype: false, conditional_love: false, bedtime_overstimulation: false, adult_theme: false, excessive_fear: false }
+const clearEvaluation = { approved: true, risk_level: 'low', flags: clearSafetyFlags, required_action: 'publish', notes: [] }
+const isolatedViolenceModeration = { flagged: true, categories: { violence: true, 'violence/graphic': false, harassment: false } }
+requireRegression(moderationNeedsFearAdjudication(moderationConflictContext, clearSafetyFlags, clearEvaluation, isolatedViolenceModeration), 'isolated moderation violence with a clear child-safety verdict must route to one narrow fear adjudication')
+const clearedModeration = clearAdjudicatedNonSevereViolence(isolatedViolenceModeration)
+requireRegression(!clearedModeration.flagged && clearedModeration.categories.violence === false, 'a non-severe narrow adjudication must clear only the isolated violence moderation category')
+requireRegression(!moderationNeedsFearAdjudication(moderationConflictContext, clearSafetyFlags, clearEvaluation, { flagged: true, categories: { violence: true, 'violence/graphic': true } }), 'graphic violence must never enter the narrow moderation-conflict clearing path')
+requireRegression(!moderationNeedsFearAdjudication(moderationConflictContext, clearSafetyFlags, clearEvaluation, { flagged: true, categories: { violence: true, 'self-harm': true } }), 'self-harm must never enter the narrow moderation-conflict clearing path')
+requireRegression(!moderationNeedsFearAdjudication(moderationConflictContext, { ...clearSafetyFlags, excessive_fear: true }, clearEvaluation, isolatedViolenceModeration), 'a deterministic fear flag must remain authoritative and bypass conflict adjudication')
 
 requireRegression(newFriendIsAtomic('Momiq'), 'one new recurring character name must be allowed')
 requireRegression(newFriendIsAtomic('Qizil Shapkacha'), 'one multi-word character name must be allowed')

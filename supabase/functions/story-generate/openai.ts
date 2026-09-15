@@ -304,6 +304,22 @@ const requestFearAdjudication = async (
   'low',
 )
 
+export const adjudicateStoryFear = async (
+  apiKey: string,
+  model: string,
+  candidate: StoryCandidate,
+): Promise<FearAdjudication> => {
+  const childVisibleText = childVisibleStorySafetyText(candidate)
+  const adjudication = await requestFearAdjudication(
+    apiKey,
+    model,
+    JSON.stringify(childVisibleStorySafetyProjection(candidate)),
+  )
+  const adjudicationErrors = fearAdjudicationConsistencyErrors(adjudication, childVisibleText)
+  if (adjudicationErrors.length > 0) throw new Error('openai_fear_adjudication_inconsistent')
+  return adjudication
+}
+
 const needsInteractiveFearConfirmation = (
   context: NormalizedStoryContext,
   evaluation: SafetyEvaluation,
