@@ -29,7 +29,9 @@ jobs:
       - run: npm ci
 
       - name: Patch Story editorial contracts
-        run: python3 scripts/temp-story-editorial-v58-patch.py
+        run: |
+          python3 scripts/temp-story-editorial-v58-patch.py
+          python3 -c 'from pathlib import Path; p=Path("supabase/functions/story-generate/prompt.ts"); t=p.read_text(); p.write_text(t.replace("within roughly the first 60-110 words and make the central story question understandable early", "within roughly the first 60-110 words and make the central story question understandable by roughly the first 100-120 words"))'
 
       - name: Targeted Story checks
         run: |
