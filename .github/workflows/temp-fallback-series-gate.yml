@@ -1,0 +1,44 @@
+name: Temporary Provider-Safe Series Continuation Patcher
+
+on:
+  push:
+    branches:
+      - story-library-series-persistence-20260914
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: contains(github.event.head_commit.message, 'Run one-off provider-safe series continuation patcher')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: story-library-series-persistence-20260914
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply provider-safe series gate
+        run: python3 scripts/temp-fallback-series-gate.py
+      - name: Remove patcher script
+        run: rm scripts/temp-fallback-series-gate.py
+      - name: Validate focused contracts
+        run: |
+          npm ci
+          npm run check:story-library
+          npm run check:story-service
+          npm run check:beta-content
+          npm run check:story-core
+          npm run typecheck:story-ai
+          npm run typecheck
+          npm run build
+      - name: Commit durable changes
+        run: |
+          git config user.name qissa-audit-bot
+          git config user.email actions@users.noreply.github.com
+          git add -A ':!.github/workflows/temp-fallback-series-gate.yml'
+          git commit -m "Prevent repeated fallback stories across series sessions"
+          git push origin HEAD:story-library-series-persistence-20260914
