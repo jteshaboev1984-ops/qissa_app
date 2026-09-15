@@ -172,6 +172,9 @@ const candidateChildVisibleValues = (candidate: StoryCandidate): string[] => {
   return values
 }
 
+const unicodeWordStart = '(?<![\\p{L}\\p{N}_])'
+const unicodeWordEnd = '(?![\\p{L}\\p{N}_])'
+
 export const russianHeroTokenNeedsRewrite = (text: string) => {
   const token = '(?:\\{\\{HERO\\}\\}|QISSA_HERO)'
   const tokenBoundary = '(?=[\\s,.:;!?»”")—-]|$)'
@@ -179,28 +182,49 @@ export const russianHeroTokenNeedsRewrite = (text: string) => {
     `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${token}${tokenBoundary}`,
     'iu',
   )
-  const genderedPastWord = '[\\p{L}Ёё-]+(?:л|ла|лся|лась)'
-  const sameClauseGap = '(?:(?![,.;:!?\\n]).){0,56}?'
-  const genderedPastAfter = new RegExp(`${token}${tokenBoundary}${sameClauseGap}\\b${genderedPastWord}\\b`, 'iu')
-  const genderedPastBefore = new RegExp(`\\b${genderedPastWord}\\b${sameClauseGap}${token}${tokenBoundary}`, 'iu')
+  const genderedPastWord = '[\\p{L}Ёё-]{2,}?(?:лся|лась|л|ла)'
+  const neutralModifier = '(?:вдруг|снова|уже|тихо|медленно|осторожно|бережно|быстро|спокойно|наконец|тоже|ещё|еще|чуть|немного|сразу|затем|потом|[\\p{L}-]+(?:о|е))'
+  const optionalModifiers = `(?:\\s+${neutralModifier}){0,3}`
+  const genderedPastAfter = new RegExp(
+    `${token}${tokenBoundary}${optionalModifiers}\\s+${unicodeWordStart}${genderedPastWord}${unicodeWordEnd}`,
+    'iu',
+  )
+  const genderedPastBefore = new RegExp(
+    `${unicodeWordStart}${genderedPastWord}${unicodeWordEnd}${optionalModifiers}\\s+${token}${tokenBoundary}`,
+    'iu',
+  )
   return preposition.test(text) || genderedPastAfter.test(text) || genderedPastBefore.test(text)
 }
+
+const metaChoicePatterns = (
+  choiceTerms: string,
+  evaluationTerms: string,
+): RegExp[] => [
+  new RegExp(
+    `${unicodeWordStart}(?:${choiceTerms})${unicodeWordEnd}[^.!?\\n]{0,80}${unicodeWordStart}(?:${evaluationTerms})${unicodeWordEnd}`,
+    'iu',
+  ),
+  new RegExp(
+    `${unicodeWordStart}(?:${evaluationTerms})${unicodeWordEnd}[^.!?\\n]{0,80}${unicodeWordStart}(?:${choiceTerms})${unicodeWordEnd}`,
+    'iu',
+  ),
+]
 
 export const visibleSafetyLanguageNeedsRewrite = (language: string, text: string) => {
   const normalized = text.replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()
   const patterns: Record<string, RegExp[]> = {
-    ru: [
-      /\b(?:вариант(?:а|ов)?|выбор(?:а|ов)?|возможност(?:ь|и|ей))\b[^.!?\n]{0,80}\b(?:безопасн\p{L}*|добр\p{L}*|правильн\p{L}*|хорош\p{L}*|спокойн\p{L}*|верн\p{L}*)\b/iu,
-      /\b(?:безопасн\p{L}*|добр\p{L}*|правильн\p{L}*|хорош\p{L}*|спокойн\p{L}*|верн\p{L}*)\b[^.!?\n]{0,80}\b(?:вариант(?:а|ов)?|выбор(?:а|ов)?|возможност(?:ь|и|ей))\b/iu,
-    ],
-    uz: [
-      /\b(?:tanlov|tanlovlar|variant|variantlar|imkoniyat|imkoniyatlar)\b[^.!?\n]{0,80}\b(?:xavfsiz|yaxshi|to'g'ri|mehribon|sokin)\b/iu,
-      /\b(?:xavfsiz|yaxshi|to'g'ri|mehribon|sokin)\b[^.!?\n]{0,80}\b(?:tanlov|tanlovlar|variant|variantlar|imkoniyat|imkoniyatlar)\b/iu,
-    ],
-    kz: [
-      /\b(?:таңдау|таңдаулар|нұсқа|нұсқалар|мүмкіндік|мүмкіндіктер)\b[^.!?\n]{0,80}\b(?:қауіпсіз|жақсы|дұрыс|мейірімді|тыныш)\b/iu,
-      /\b(?:қауіпсіз|жақсы|дұрыс|мейірімді|тыныш)\b[^.!?\n]{0,80}\b(?:таңдау|таңдаулар|нұсқа|нұсқалар|мүмкіндік|мүмкіндіктер)\b/iu,
-    ],
+    ru: metaChoicePatterns(
+      'вариант(?:а|ов)?|выбор(?:а|ов)?|возможност(?:ь|и|ей)',
+      'безопасн[\\p{L}-]*|добр[\\p{L}-]*|правильн[\\p{L}-]*|хорош[\\p{L}-]*|спокойн[\\p{L}-]*|верн[\\p{L}-]*',
+    ),
+    uz: metaChoicePatterns(
+      'tanlov|tanlovlar|variant|variantlar|imkoniyat|imkoniyatlar',
+      "xavfsiz|yaxshi|to'g'ri|mehribon|sokin",
+    ),
+    kz: metaChoicePatterns(
+      'таңдау|таңдаулар|нұсқа|нұсқалар|мүмкіндік|мүмкіндіктер',
+      'қауіпсіз|жақсы|дұрыс|мейірімді|тыныш',
+    ),
   }
   return (patterns[language] ?? []).some((pattern) => pattern.test(normalized))
 }
