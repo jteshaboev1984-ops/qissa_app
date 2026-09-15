@@ -81,7 +81,7 @@ const safeFallback = (
   reason: string,
   metadata: Record<string, string> = {},
 ) => json(
-  { episode: buildSafeFallback(context) },
+  { episode: { ...buildSafeFallback(context), generationSource: 'safe-fallback' } },
   200,
   origin,
   {
@@ -401,7 +401,7 @@ Deno.serve(async (request: Request) => {
 
     const episode = buildFinalEpisode(context, candidate, safety)
     return json(
-      { episode },
+      { episode: { ...episode, generationSource: 'openai-structured' } },
       200,
       origin,
       {
