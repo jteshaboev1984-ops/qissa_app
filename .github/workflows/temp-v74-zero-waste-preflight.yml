@@ -31,6 +31,7 @@ jobs:
           python3 scripts/temp-v74-fix1.py
           python3 scripts/temp-v74-fix2.py
           python3 scripts/temp-v74-fix3.py
+          python3 scripts/temp-v74-fix4.py
       - name: Run full deterministic preflight before any live AI call
         run: |
           npm run check:story-core
