@@ -175,10 +175,19 @@ const languageNames: Record<NormalizedStoryContext['language'], string> = {
   kz: 'Kazakh',
 }
 
+const newFriendPatchValueIsValid = (value: unknown): boolean => {
+  if (value === null) return true
+  if (typeof value !== 'string') return false
+  const normalized = value.trim()
+  if (!normalized || normalized.length > 48) return false
+  if (/[;,/|]/u.test(normalized)) return false
+  return !/\s(?:va|and|и|және)\s/iu.test(normalized)
+}
+
 const patchIsValid = (patch: unknown): patch is CandidatePatch =>
   isRecord(patch) &&
   typeof patch.last_event === 'string' &&
-  (patch.new_friend === null || typeof patch.new_friend === 'string') &&
+  newFriendPatchValueIsValid(patch.new_friend) &&
   (patch.hero_trait === null || typeof patch.hero_trait === 'string') &&
   (patch.open_arc === null || typeof patch.open_arc === 'string') &&
   Array.isArray(patch.relationship_updates) &&
@@ -423,15 +432,17 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'Existing recurring-character names are canonical identity labels. Preserve them exactly as supplied by memory even if the requested language changed since an earlier session. Never translate, transliterate or rename an existing recurring character. The selected language governs only names and nicknames of newly introduced supporting characters and new place labels.',
     'Prefer updating an existing canon key when a persistent fact changes. Create a new canon key only for a genuinely durable fact that may matter in later sessions.',
     'Keep state compact. Top-level state contains only durable facts true before the child choice. Choice state contains only the consequence of that specific branch.',
+    'state_patch.new_friend is singular. It may contain exactly one newly introduced recurring character name or null. Never join multiple characters with commas, va, и, and, және or another list separator. If several characters appear, choose at most one character that truly needs to recur and represent other relationships through relationship_updates.',
     'Never encode speculation, moral judgment, child identity labels, sensitive personal data, punishment or permanent negative traits in state.',
     context.episodeIndex === 1
       ? 'Both choices must be safe, understandable, meaningfully different hero actions. Neither choice may be a trick or a morally bad option.'
       : 'Episode 2 has no child decision menu. Return choices as an empty array, decision_point as an empty string, and next_episode_preview as an empty string.',
     'For Episode 1, plan 5-7 causal beats ending at one explicit decision point. Do not resolve either branch before the decision.',
+    'Each Episode 1 resolution_goal is the immediate same-evening consequence shown right after the child chooses. Do not defer that selected action or its payoff to tomorrow, morning or the next day. tomorrow_seed is reserved only as a possible hook for a future bedtime session after tonight Episode 2 is fully complete; it is never an instruction for technical Episode 2.',
     'When Episode 1 starts a later bedtime session in an existing series, use remembered canon, relationships and prior consequences as continuity callbacks, then introduce one fresh child-scale goal for tonight. Do not replay or reopen a problem that the previous bedtime session already solved.',
     'A serialized QISSA story has at most 10 bedtime sessions. Sessions 1-6 may establish or develop one gentle long-running arc while still resolving each night local goal. Sessions 7-8 must increasingly pay off existing clues and relationships and must not introduce a new major unresolved arc. Session 9 is penultimate: resolve secondary threads and position the existing central arc for its finale without adding sequel bait. Session 10 is the finale: resolve the current goal plus every meaningful unresolved thread carried in active_arc or compact canon, close the active arc, and end without a cliffhanger, future quest, mystery tease or promise of session 11.',
     'In final session Episode 2, state_patch.open_arc must be null to mark the serialized arc closed. The ending may leave the world emotionally open for imagination, but it must not leave a pending plot obligation.',
-    'For Episode 2, continue after the already-confirmed resolution bridge, use 4-7 causal beats, solve the original story goal and end with a calm bedtime coda. Return zero choices.',
+    'For Episode 2, continue immediately after the already-confirmed resolution bridge in the same bedtime session and same evening unless the established scene itself uses another same-session time. Never jump to tomorrow, morning or the next day. The latest confirmed choice tomorrow_seed belongs to a future bedtime session and must not become an Episode 2 opening beat. Use 4-7 causal beats, solve the original story goal and end with a calm bedtime coda. Return zero choices.',
     'Keep the plan concise. It is internal production state, not child-facing prose.',
     'All natural-language blueprint values, including effect summaries, state values, arc text and preview text, must be in the requested story language. Memory keys are machine identifiers and are the only exception.',
     context.ageGroup === '5-7'
@@ -535,13 +546,13 @@ export const buildNarratorPrompts = (
     'Use the literal token {{HERO}} for the hero name. Never invent a real child name.',
     'For Russian, use {{HERO}} only in grammatically invariant positions, preferably nominative subject or direct address. Never put it after a preposition and never attach gendered past-tense agreement directly to the token.',
     'For Episode 1, end story_text at the blueprint decision point before either branch happens. End with one neutral decision cue or question. Never restate, list, paraphrase, preview, or name either choice action inside story_text; the two actions belong only in the structured choices supplied by the blueprint.',
-    'For Episode 2, begin after the confirmed choice resolution already happened. Do not replay that action. Resolve the same central goal and finish calmly without a cliffhanger.',
+    'For Episode 2, begin immediately after the confirmed choice resolution already happened, in the same bedtime session. Do not replay that action and do not jump to tomorrow, morning or the next day. Treat any tomorrow_seed in memory as a deferred future-session hook, not as Episode 2 material. Resolve the same central goal and finish calmly without a cliffhanger.',
     'If this is final series session 10, make the prose feel like a true finale: pay off remembered clues and relationships that matter, settle the active serialized arc, avoid sequel bait, and finish with emotional closure. Do not invent a new unresolved question in the final paragraphs.',
     'Follow the blueprint beat order. Every one or two short paragraphs should contain action, dialogue, discovery, reaction, attempt, humor or cause-and-effect. Use distinct causal beats; do not repeat inspection, planning, caution or agreement as separate beats when the situation has not changed.',
     'Do not turn bedtime prose into a safety checklist or adult supervision lesson. One concrete cautious action is enough when needed; then move the story forward.',
     'For ages 5-7 bedtime series, treat paragraph_budget as a quantitative drafting plan. Do not compress several blueprint beats into a few very short paragraphs; hit the requested total through meaningful beat development, not filler.',
     'Avoid padding, repeated clues, repeated explanation, decorative filler and unrelated events.',
-    'For each Episode 1 choice, write exactly one resolution_text matching its resolution_goal and state consequence. Aim for 30-45 words and stay below 320 characters.',
+    'For each Episode 1 choice, write exactly one resolution_text matching its resolution_goal and state consequence. The resolution happens immediately after the choice in the same evening; never say tomorrow, morning, next day, ertaga, ertalab, keyingi kuni, завтра, утром, ертең or таңертең in resolution_text. Aim for 30-45 words and stay below 320 characters.',
     'For Russian, return 2-3 gentle Russian-to-English vocabulary items grounded in the story. For Uzbek or Kazakh return an empty vocabulary array.',
   ].join(' ')
 

@@ -90,10 +90,19 @@ export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: 
   return flags
 }
 
+export const newFriendIsAtomic = (value: unknown): boolean => {
+  if (value === null) return true
+  if (typeof value !== 'string') return false
+  const normalized = value.trim()
+  if (!normalized || normalized.length > 48) return false
+  if (/[;,/|]/u.test(normalized)) return false
+  return !/\s(?:va|and|и|және)\s/iu.test(normalized)
+}
+
 const validatePatch = (patch: unknown): boolean =>
   isRecord(patch) &&
   typeof patch.last_event === 'string' &&
-  (patch.new_friend === null || typeof patch.new_friend === 'string') &&
+  newFriendIsAtomic(patch.new_friend) &&
   (patch.hero_trait === null || typeof patch.hero_trait === 'string') &&
   (patch.open_arc === null || typeof patch.open_arc === 'string') &&
   Array.isArray(patch.relationship_updates) &&
@@ -116,10 +125,32 @@ const storyWordRange = (context: NormalizedStoryContext): [number, number] => {
   return [170, 540]
 }
 
+const futureSessionPatterns: Record<string, RegExp[]> = {
+  ru: [
+    /(?<![\p{L}\p{M}\p{N}_])завтра(?![\p{L}\p{M}\p{N}_])/iu,
+    /(?<![\p{L}\p{M}\p{N}_])утром(?![\p{L}\p{M}\p{N}_])/iu,
+    /(?<![\p{L}\p{M}\p{N}_])на\s+следующ(?:ий|ее)\s+(?:день|утро)(?![\p{L}\p{M}\p{N}_])/iu,
+  ],
+  uz: [
+    /(?<![\p{L}\p{M}\p{N}_])ertaga(?![\p{L}\p{M}\p{N}_])/iu,
+    /(?<![\p{L}\p{M}\p{N}_])ertalab(?![\p{L}\p{M}\p{N}_])/iu,
+    /(?<![\p{L}\p{M}\p{N}_])ertasi\s+(?:kuni|tongda)(?![\p{L}\p{M}\p{N}_])/iu,
+    /(?<![\p{L}\p{M}\p{N}_])keyingi\s+kuni(?![\p{L}\p{M}\p{N}_])/iu,
+  ],
+  kz: [
+    /(?<![\p{L}\p{M}\p{N}_])ертең(?![\p{L}\p{M}\p{N}_])/iu,
+    /(?<![\p{L}\p{M}\p{N}_])таңертең(?![\p{L}\p{M}\p{N}_])/iu,
+    /(?<![\p{L}\p{M}\p{N}_])келесі\s+күні(?![\p{L}\p{M}\p{N}_])/iu,
+  ],
+}
+
+export const choiceResolutionDefersToFutureSession = (language: string, text: string): boolean =>
+  (futureSessionPatterns[language] ?? []).some((pattern) => pattern.test(text))
+
 const startsWithNextDayReset = (context: NormalizedStoryContext, text: string) => {
   if (!isFiveToSevenBedtimeSeries(context) || context.episodeIndex !== 2) return false
-  const first = text.trim().slice(0, 80).toLocaleLowerCase()
-  return /^утром\b/u.test(first) || /^на следующее утро\b/u.test(first) || /^tongda\b/u.test(first) || /^ertasi tongda\b/u.test(first) || /^таңертең\b/u.test(first)
+  const firstParagraph = paragraphs(text)[0] ?? ''
+  return choiceResolutionDefersToFutureSession(context.language, firstParagraph)
 }
 
 const patchLanguageValues = (patch: unknown): string[] => {
@@ -372,6 +403,9 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
         if (choice.resolution_text.length > 360) errors.push('choice_resolution_too_long')
         if (resolutionWords < 25) errors.push('choice_resolution_too_short')
         if (resolutionWords > 60) errors.push('choice_resolution_too_long')
+        if (choiceResolutionDefersToFutureSession(context.language, choice.resolution_text)) {
+          errors.push('choice_resolution_defers_to_future_session')
+        }
       }
       if (typeof choice.tomorrow_seed !== 'string' || choice.tomorrow_seed.length < 8) errors.push('invalid_tomorrow_seed')
       if (typeof choice.choice_icon !== 'string' || !choice.choice_icon.trim()) errors.push('invalid_choice_icon')
