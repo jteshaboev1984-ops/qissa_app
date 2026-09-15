@@ -3,6 +3,7 @@ import { buildSafetyPrompts, buildStoryPrompts, buildTextLengthRepairPrompts, sa
 import type { NormalizedStoryContext } from './contracts.ts'
 import { storyLocalizationSystem } from './localization.ts'
 import { safetyEvaluationConsistencyErrors } from './safety-verdict.ts'
+import { fearAdjudicationConsistencyErrors, fearAdjudicationOutputSchema, type FearAdjudication } from './fear-adjudication.ts'
 
 const RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const MODERATIONS_URL = 'https://api.openai.com/v1/moderations'
@@ -270,6 +271,42 @@ const requestSafetyEvaluation = async (
   )
 }
 
+const childVisibleFearText = (candidate: StoryCandidate): string => [
+  candidate.title,
+  candidate.story_text,
+  candidate.nextEpisodePreview,
+  ...candidate.choices.flatMap((choice) => [
+    choice.text,
+    choice.effect_summary,
+    choice.resolution_text,
+    choice.tomorrow_seed,
+  ]),
+].filter((value): value is string => typeof value === 'string' && value.trim().length > 0).join('\n')
+
+const requestFearAdjudication = async (
+  apiKey: string,
+  model: string,
+  candidateJson: string,
+): Promise<FearAdjudication> => requestStructured<FearAdjudication>(
+  apiKey,
+  model,
+  'qissa_fear_adjudication',
+  fearAdjudicationOutputSchema,
+  [
+    'You are the narrow child-bedtime fear adjudicator for QISSA.',
+    'Classify ONLY whether the exact child-visible material contains excessive fear for age 5-7 bedtime.',
+    'excessive_fear=true ONLY for sustained panic, threatening pursuit, abandonment or separation distress, trapping, serious injury, frightening danger, or comparable age-inappropriate distress that is actually present in the text.',
+    'Ordinary evening darkness, forest sounds, sleep difficulty, yawning, a harmless mistake, brief worry, gentle uncertainty, a child choice boundary, an unfinished low-stakes goal, or a friendly character asking for help is none_or_mild by itself.',
+    'If excessive fear is present, choose the matching severe category and copy one short exact excerpt from the supplied child-visible text into evidence. Do not paraphrase or invent evidence.',
+    'If no severe category is directly supported, return excessive_fear=false, category=none_or_mild, evidence as an empty string.',
+    'Do not classify any other safety issue here.',
+  ].join(' '),
+  candidateJson,
+  8_000,
+  260,
+  'low',
+)
+
 const needsInteractiveFearConfirmation = (
   context: NormalizedStoryContext,
   evaluation: SafetyEvaluation,
@@ -307,21 +344,25 @@ export const evaluateStorySafety = async (
 
   if (!needsInteractiveFearConfirmation(context, first)) return first
 
-  // A single independent confirmation protects interactive Episode 1 from a false positive where
-  // an unfinished low-stakes choice boundary is mistaken for excessive fear. It never auto-clears
-  // the flag: the second classifier sees the exact same candidate and may confirm fear or flag any
-  // other safety issue. Maximum semantic-safety calls on this path remain two.
-  const confirmed = await requestSafetyEvaluation(
-    apiKey,
-    model,
-    context,
-    candidateJson,
-    'The previous internally consistent verdict flagged only excessive_fear. Independently re-evaluate the exact same story from scratch. For this technical Episode 1, do not treat an unfinished low-stakes goal or child choice boundary as fear by itself. Keep excessive_fear=true if the content actually contains sustained panic, threatening pursuit, abandonment, trapping, serious injury, frightening danger, or comparable age-inappropriate distress. Do not clear any real safety issue.',
-    8_000,
-  )
-  const confirmedErrors = safetyEvaluationConsistencyErrors(confirmed)
-  if (confirmedErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
-  return confirmed
+  // General semantic safety remains authoritative for every named flag. When Episode 1 is
+  // rejected ONLY for excessive_fear, one bounded narrow adjudicator checks for direct evidence
+  // of the severe fear categories. It may clear only that isolated flag; malformed or unsupported
+  // adjudication fails closed and every other safety flag remains untouched.
+  const adjudication = await requestFearAdjudication(apiKey, model, candidateJson)
+  const adjudicationErrors = fearAdjudicationConsistencyErrors(adjudication, childVisibleFearText(candidate))
+  if (adjudicationErrors.length > 0) throw new Error('openai_fear_adjudication_inconsistent')
+  if (adjudication.excessive_fear) return first
+
+  const cleared: SafetyEvaluation = {
+    approved: true,
+    risk_level: 'low',
+    flags: { ...first.flags, excessive_fear: false },
+    required_action: 'publish',
+    notes: ['isolated excessive_fear was not confirmed by narrow fear adjudication'],
+  }
+  const clearedErrors = safetyEvaluationConsistencyErrors(cleared)
+  if (clearedErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
+  return cleared
 }
 
 export type ModerationResult = {

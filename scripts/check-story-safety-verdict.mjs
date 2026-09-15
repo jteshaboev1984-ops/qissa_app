@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs'
+import { fearAdjudicationConsistencyErrors } from '../supabase/functions/story-generate/fear-adjudication.ts'
 import { safetyEvaluationConsistencyErrors } from '../supabase/functions/story-generate/safety-verdict.ts'
 
 const provider = readFileSync('supabase/functions/story-generate/openai.ts', 'utf8')
@@ -60,6 +61,22 @@ const flaggedPublishErrors = safetyEvaluationConsistencyErrors(flaggedPublish)
 assert(flaggedPublishErrors.includes('flagged_verdict_approved'), 'flagged approved verdict must be rejected')
 assert(flaggedPublishErrors.includes('flagged_verdict_publish'), 'flagged publish action must be rejected')
 
+const mildFear = { excessive_fear: false, category: 'none_or_mild', evidence: '' }
+assert(fearAdjudicationConsistencyErrors(mildFear, 'O‘rmonda kech bo‘ldi, lekin do‘stlar birga kulishdi.').length === 0, 'mild fear adjudication must be valid without invented evidence')
+
+const realFearText = 'Bo‘ri bolani uzoq vaqt quvladi va bola vahimaga tushdi.'
+const realFear = { excessive_fear: true, category: 'threatening_pursuit', evidence: 'Bo‘ri bolani uzoq vaqt quvladi' }
+assert(fearAdjudicationConsistencyErrors(realFear, realFearText).length === 0, 'severe fear must require a supported severe category and exact evidence')
+
+const mismatchedFear = { excessive_fear: true, category: 'none_or_mild', evidence: '' }
+assert(fearAdjudicationConsistencyErrors(mismatchedFear, realFearText).includes('fear_category_boolean_mismatch'), 'fear boolean/category mismatch must fail closed')
+
+const inventedEvidence = { excessive_fear: true, category: 'trapping', evidence: 'eshik qulflanib qoldi' }
+assert(fearAdjudicationConsistencyErrors(inventedEvidence, 'Do‘stlar ochiq ayvonda suhbatlashdi.').includes('fear_evidence_not_in_story'), 'severe fear evidence must be copied from the actual child-visible text')
+
+const nonSevereEvidence = { excessive_fear: false, category: 'none_or_mild', evidence: 'qorong‘i edi' }
+assert(fearAdjudicationConsistencyErrors(nonSevereEvidence, 'Kechasi qorong‘i edi.').includes('nonsevere_fear_must_not_invent_evidence'), 'non-severe adjudication must not manufacture fear evidence')
+
 for (const fragment of [
   'safetyVerdictContract',
   'The safety flags are exhaustive for this classifier',
@@ -69,10 +86,13 @@ for (const fragment of [
   'safetyEvaluationConsistencyErrors(corrected)',
   "throw new Error('openai_safety_evaluation_inconsistent')",
   'needsInteractiveFearConfirmation',
-  'previous internally consistent verdict flagged only excessive_fear',
-  'safetyEvaluationConsistencyErrors(confirmed)',
+  'requestFearAdjudication',
+  'narrow child-bedtime fear adjudicator',
+  'fearAdjudicationConsistencyErrors(adjudication',
+  "throw new Error('openai_fear_adjudication_inconsistent')",
+  'isolated excessive_fear was not confirmed by narrow fear adjudication',
 ]) {
-  assert(provider.includes(fragment), `safety provider is missing bounded safety recheck contract: ${fragment}`)
+  assert(provider.includes(fragment), `safety provider is missing bounded safety adjudication contract: ${fragment}`)
 }
 
 const firstRequest = provider.indexOf('const first = await requestSafetyEvaluation')
@@ -81,16 +101,17 @@ const correctedRequest = provider.indexOf('const corrected = await requestSafety
 const correctedValidation = provider.indexOf('safetyEvaluationConsistencyErrors(corrected)', correctedRequest)
 const correctedReturn = provider.indexOf('return corrected', correctedValidation)
 const fearGate = provider.indexOf('needsInteractiveFearConfirmation(context, first)', correctedReturn)
-const confirmedRequest = provider.indexOf('const confirmed = await requestSafetyEvaluation', fearGate)
-const confirmedValidation = provider.indexOf('safetyEvaluationConsistencyErrors(confirmed)', confirmedRequest)
-const confirmedReturn = provider.indexOf('return confirmed', confirmedValidation)
+const adjudicationRequest = provider.indexOf('const adjudication = await requestFearAdjudication', fearGate)
+const adjudicationValidation = provider.indexOf('fearAdjudicationConsistencyErrors(adjudication', adjudicationRequest)
+const severeReturn = provider.indexOf('if (adjudication.excessive_fear) return first', adjudicationValidation)
+const clearedReturn = provider.indexOf('return cleared', severeReturn)
 assert(
   firstRequest >= 0 && firstValidation > firstRequest && correctedRequest > firstValidation && correctedValidation > correctedRequest && correctedReturn > correctedValidation,
-  'semantic safety must keep the bounded one-shot consistency correction and return before any fear confirmation',
+  'semantic safety must keep the bounded one-shot consistency correction and return before any fear adjudication',
 )
 assert(
-  fearGate > correctedReturn && confirmedRequest > fearGate && confirmedValidation > confirmedRequest && confirmedReturn > confirmedValidation,
-  'isolated Episode 1 excessive-fear verdict may receive exactly one independent confirmation',
+  fearGate > correctedReturn && adjudicationRequest > fearGate && adjudicationValidation > adjudicationRequest && severeReturn > adjudicationValidation && clearedReturn > severeReturn,
+  'isolated Episode 1 excessive-fear verdict must use exactly one evidence-based narrow adjudication before it can be cleared',
 )
 
 if (failures.length > 0) {
@@ -99,4 +120,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story semantic safety verdict check passed: all-false rejection is treated as inconsistent, named-flag rejection remains valid, one safety-only recheck is bounded, and repeated inconsistency fails closed.')
+console.log('Story semantic safety verdict check passed: general semantic safety remains fail-closed, isolated Episode 1 fear uses one evidence-based narrow adjudication, severe fear remains blocked, and malformed adjudication fails closed.')
