@@ -565,7 +565,7 @@ export const buildTextLengthRepairPrompts = (
     'For Episode 1 resolution repair, keep the selected consequence in the same evening immediately after the choice. Do not move it to tomorrow or the next morning; tomorrow_seed is future-session metadata only.',
     'If retry_feedback is non-empty, the previous text repair failed deterministic validation. Rebuild the requested repair fields from the original immutable candidate and correct every listed repair-output failure. Do not preserve faulty wording from the rejected repair.',
     context.language === 'uz'
-      ? 'For Uzbek repair prose, use natural Uzbek Latin script. Do not introduce Cyrillic text. Existing recurring-character identity labels supplied by immutable context remain unchanged.'
+      ? 'For Uzbek repair prose, use natural Uzbek Latin script. Do not introduce Cyrillic text. Existing recurring-character identity labels supplied by immutable context remain unchanged. For ages 5-7 use simple everyday Uzbek and avoid ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat and hissa when a simpler child-level phrase exists.'
       : 'Keep repair prose strictly in the requested language while preserving established character identity labels.',
     'Write only in the requested language and preserve bedtime tone and age fit.',
   ].join(' ')

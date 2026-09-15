@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, choiceResolutionDefersToFutureSession, newFriendIsAtomic, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, choiceResolutionDefersToFutureSession, newFriendIsAtomic, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, uzbekChildLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
 
 const base = 'supabase/functions/story-generate'
 const index = readFileSync(`${base}/index.ts`, 'utf8')
@@ -130,6 +130,22 @@ requireRegression(
   !visibleSafetyLanguageNeedsRewrite('ru', 'Перед героем были две двери, и за каждой слышался тихий звон.'),
   'must not reject ordinary choice-scene prose without safety evaluation language',
 )
+
+const uzChildContext = { language: 'uz', ageGroup: '5-7' }
+const simpleUzCandidate = {
+  title: 'Quyonchaning bayrami',
+  story_text: '{{HERO}} quyoncha bilan kuldi. Olmaxon chapak chaldi, keyin bir oz to‘xtadi. Hamma rahmat aytdi va jim o‘tirdi.',
+  choices: [],
+  vocabulary: [],
+  nextEpisodePreview: '',
+}
+requireRegression(!uzbekChildLanguageNeedsRewrite(uzChildContext, simpleUzCandidate), 'simple everyday Uzbek for ages 5-7 must remain allowed')
+for (const badWord of ['ritmga', 'pauza', 'sincapchalar', 'mox', 'naqadar', 'minnatdorlik', 'mamnun', 'sukunat', 'hissasini']) {
+  requireRegression(
+    uzbekChildLanguageNeedsRewrite(uzChildContext, { ...simpleUzCandidate, story_text: `{{HERO}} ${badWord} haqida gapirdi.` }),
+    `Uzbek ages 5-7 must reject avoidable advanced/borrowed wording: ${badWord}`,
+  )
+}
 
 const uzRuleContext = { storyMood: 'bedtime' }
 const harmlessUzFearScan = scanRuleBasedSafety(uzRuleContext, {

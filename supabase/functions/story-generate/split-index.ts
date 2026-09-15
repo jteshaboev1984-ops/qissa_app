@@ -148,6 +148,7 @@ const isTextLengthRepairEligibleFailure = (errors: string[]): boolean =>
 const textRepairCorrectionErrors = new Set([
   ...textLengthValidationErrors,
   'story_language_mismatch',
+  'uzbek_child_language_requires_rewrite',
   'missing_hero_token',
   'choice_resolution_defers_to_future_session',
   'continuation_resets_before_resolution',
@@ -288,6 +289,7 @@ Deno.serve(async (request: Request) => {
         'For choice_resolution_defers_to_future_session, keep each Episode 1 resolution in the same evening immediately after the child choice; remove tomorrow/morning/next-day transitions from resolution_text. tomorrow_seed remains separate future-session metadata.',
         'For visible_safety_language, remove any child-visible explanation that a choice, option or possibility is safe, good, calm, correct or morally preferred; show the story consequences without evaluating the menu.',
         'For story_language_mismatch, rewrite every natural-language field strictly in the requested story language. Do not translate machine keys or the {{HERO}} token.',
+        'For uzbek_child_language_requires_rewrite, replace bookish, borrowed, neighboring-language or adult-sounding words with simple natural Uzbek for ages 5-7. Do not use ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat or hissa when a simpler phrase exists.',
         'For story_repeats_choice_menu, end story_text with one neutral decision cue or question and remove every listing or paraphrase of the two structured choice actions from story_text.',
         'For technical_preview_language, rewrite the preview as one natural child-facing in-world sentence. Do not mention confirmation, selection mechanics, episodes, segments, pipelines, or story branches.',
         'For story_choice_menu_scaffolding, remove explicit alternative scaffolding such as “можно... а можно...” from story_text; end with only a neutral decision cue.',
@@ -343,7 +345,7 @@ Deno.serve(async (request: Request) => {
           'Rebuild the repair from the ORIGINAL immutable candidate, not from the rejected repaired text.',
           'Keep every existing plot beat, character identity, choice, state patch and branch consequence unchanged.',
           context.language === 'uz'
-            ? 'Use natural Uzbek Latin script in all newly written prose. Do not emit Cyrillic characters unless they are part of an already-established recurring-character name supplied by memory.'
+            ? 'Use natural Uzbek Latin script in all newly written prose. Do not emit Cyrillic characters unless they are part of an already-established recurring-character name supplied by memory. For ages 5-7 keep wording concrete and everyday; avoid ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat and hissa when a simpler phrase exists.'
             : 'Use only the requested story language in newly written prose, apart from immutable established recurring-character names.',
           'If missing_hero_token is listed, include literal {{HERO}} naturally in final story_text.',
           'If a future-session/reset error is listed, keep the repaired action in the current bedtime evening; tomorrow_seed is not Episode 2 material.',
