@@ -26,7 +26,9 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Apply v69 patch
-        run: python3 scripts/temp-v69-child-visible-safety.py
+        run: |
+          python3 scripts/temp-v69-child-visible-safety.py
+          python3 scripts/temp-v69-test-fix.py
       - name: Targeted checks
         run: |
           npm run check:story-core
