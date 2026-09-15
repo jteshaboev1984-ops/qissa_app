@@ -1,13 +1,11 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-// During active Story AI development, zero means accounting-only: provider-
-// eligible requests are still counted atomically, but no per-installation or
-// project-wide daily quota is enforced. QISSA_AI_ENABLED=false remains the
-// emergency provider kill switch. Positive limits keep their normal throttling
-// semantics and should be restored intentionally before external beta/launch.
-const DEVELOPMENT_ACCOUNTING_ONLY_LIMIT = 0
-const DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_ONLY_LIMIT
-const GLOBAL_DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_ONLY_LIMIT
+// Launch-safe emergency ceilings. These are server-side spend guards, not a
+// product-facing family quota. They bound accidental/abusive provider spend even
+// when the browser has no visible throttle. Claims are still counted atomically.
+// Increase deliberately only after observing real closed-beta usage and cost.
+const DAILY_STORY_GENERATION_LIMIT = 5
+const GLOBAL_DAILY_STORY_GENERATION_LIMIT = 30
 
 export type GenerationClaim = {
   allowed: boolean

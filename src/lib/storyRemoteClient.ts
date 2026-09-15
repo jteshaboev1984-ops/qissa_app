@@ -12,9 +12,13 @@ export interface StoryProviderConfig {
   fallbackToLocal: boolean
 }
 
-const DEFAULT_TIMEOUT_MS = 12_000
+// The split Luna path can legitimately run Architect → Narrator → one bounded
+// narration correction → one text-length repair → parallel safety/moderation.
+// Keep the browser alive for that bounded path, while staying below Supabase's
+// hosted 150s request/worker ceiling.
+const DEFAULT_TIMEOUT_MS = 130_000
 const MIN_TIMEOUT_MS = 1_000
-const MAX_TIMEOUT_MS = 90_000
+const MAX_TIMEOUT_MS = 140_000
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
