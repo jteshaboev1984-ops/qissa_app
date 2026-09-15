@@ -175,25 +175,37 @@ const candidateChildVisibleValues = (candidate: StoryCandidate): string[] => {
 const unicodeWordStart = '(?<![\\p{L}\\p{N}_])'
 const unicodeWordEnd = '(?![\\p{L}\\p{N}_])'
 
-export const russianHeroTokenNeedsRewrite = (text: string) => {
+type RussianHeroAgreement = NormalizedStoryContext['heroType']
+
+export const russianHeroTokenNeedsRewrite = (
+  text: string,
+  heroType: RussianHeroAgreement = 'custom',
+) => {
   const token = '(?:\\{\\{HERO\\}\\}|QISSA_HERO)'
   const tokenBoundary = '(?=[\\s,.:;!?»”")—-]|$)'
   const preposition = new RegExp(
     `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${token}${tokenBoundary}`,
     'iu',
   )
-  const genderedPastWord = '[\\p{L}Ёё-]{2,}?(?:лся|лась|л|ла)'
+  const masculinePastWord = '[\\p{L}Ёё-]{2,}?(?:лся|л)'
+  const femininePastWord = '[\\p{L}Ёё-]{2,}?(?:лась|ла)'
+  const genderedPastWord = `(?:${masculinePastWord}|${femininePastWord})`
+  const disallowedPastWord = heroType === 'girl_hero'
+    ? masculinePastWord
+    : heroType === 'boy_hero'
+      ? femininePastWord
+      : genderedPastWord
   const neutralModifier = '(?:вдруг|снова|уже|тихо|медленно|осторожно|бережно|быстро|спокойно|наконец|тоже|ещё|еще|чуть|немного|сразу|затем|потом|[\\p{L}-]+(?:о|е))'
   const optionalModifiers = `(?:\\s+${neutralModifier}){0,3}`
-  const genderedPastAfter = new RegExp(
-    `${token}${tokenBoundary}${optionalModifiers}\\s+${unicodeWordStart}${genderedPastWord}${unicodeWordEnd}`,
+  const wrongAgreementAfter = new RegExp(
+    `${token}${tokenBoundary}${optionalModifiers}\\s+${unicodeWordStart}${disallowedPastWord}${unicodeWordEnd}`,
     'iu',
   )
-  const genderedPastBefore = new RegExp(
-    `${unicodeWordStart}${genderedPastWord}${unicodeWordEnd}${optionalModifiers}\\s+${token}${tokenBoundary}`,
+  const wrongAgreementBefore = new RegExp(
+    `${unicodeWordStart}${disallowedPastWord}${unicodeWordEnd}${optionalModifiers}\\s+${token}${tokenBoundary}`,
     'iu',
   )
-  return preposition.test(text) || genderedPastAfter.test(text) || genderedPastBefore.test(text)
+  return preposition.test(text) || wrongAgreementAfter.test(text) || wrongAgreementBefore.test(text)
 }
 
 const metaChoicePatterns = (
@@ -255,7 +267,7 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
     const heroGrammarText = [value.title, value.story_text, value.nextEpisodePreview, choiceText, vocabularyText]
       .filter((item): item is string => typeof item === 'string')
       .join(' ')
-    if (russianHeroTokenNeedsRewrite(heroGrammarText)) errors.push('russian_hero_requires_rewrite')
+    if (russianHeroTokenNeedsRewrite(heroGrammarText, context.heroType)) errors.push('russian_hero_requires_rewrite')
   }
 
   if (typeof value.title !== 'string' || value.title.trim().length < 2) errors.push('invalid_title')
