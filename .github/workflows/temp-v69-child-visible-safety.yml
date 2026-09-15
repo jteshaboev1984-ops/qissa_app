@@ -29,6 +29,7 @@ jobs:
         run: |
           python3 scripts/temp-v69-child-visible-safety.py
           python3 scripts/temp-v69-test-fix.py
+          python3 scripts/temp-v69-trace-fix.py
       - name: Targeted checks
         run: |
           npm run check:story-core
