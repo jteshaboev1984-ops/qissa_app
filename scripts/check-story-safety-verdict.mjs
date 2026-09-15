@@ -64,22 +64,33 @@ for (const fragment of [
   'safetyVerdictContract',
   'The safety flags are exhaustive for this classifier',
   'If every flag is false, approved MUST be true',
-  'Previous structured verdict was rejected as internally inconsistent',
+  'Previous structured verdict was internally inconsistent',
   'safetyEvaluationConsistencyErrors(first)',
-  'safetyEvaluationConsistencyErrors(second)',
+  'safetyEvaluationConsistencyErrors(corrected)',
   "throw new Error('openai_safety_evaluation_inconsistent')",
+  'needsInteractiveFearConfirmation',
+  'previous internally consistent verdict flagged only excessive_fear',
+  'safetyEvaluationConsistencyErrors(confirmed)',
 ]) {
-  assert(provider.includes(fragment), `safety provider is missing bounded consistency retry contract: ${fragment}`)
+  assert(provider.includes(fragment), `safety provider is missing bounded safety recheck contract: ${fragment}`)
 }
 
 const firstRequest = provider.indexOf('const first = await requestSafetyEvaluation')
 const firstValidation = provider.indexOf('safetyEvaluationConsistencyErrors(first)', firstRequest)
-const secondRequest = provider.indexOf('const second = await requestSafetyEvaluation', firstValidation)
-const secondValidation = provider.indexOf('safetyEvaluationConsistencyErrors(second)', secondRequest)
-const failClosed = provider.indexOf("throw new Error('openai_safety_evaluation_inconsistent')", secondValidation)
+const correctedRequest = provider.indexOf('const corrected = await requestSafetyEvaluation', firstValidation)
+const correctedValidation = provider.indexOf('safetyEvaluationConsistencyErrors(corrected)', correctedRequest)
+const correctedReturn = provider.indexOf('return corrected', correctedValidation)
+const fearGate = provider.indexOf('needsInteractiveFearConfirmation(context, first)', correctedReturn)
+const confirmedRequest = provider.indexOf('const confirmed = await requestSafetyEvaluation', fearGate)
+const confirmedValidation = provider.indexOf('safetyEvaluationConsistencyErrors(confirmed)', confirmedRequest)
+const confirmedReturn = provider.indexOf('return confirmed', confirmedValidation)
 assert(
-  firstRequest >= 0 && firstValidation > firstRequest && secondRequest > firstValidation && secondValidation > secondRequest && failClosed > secondValidation,
-  'semantic safety must do at most one consistency-only recheck and then fail closed',
+  firstRequest >= 0 && firstValidation > firstRequest && correctedRequest > firstValidation && correctedValidation > correctedRequest && correctedReturn > correctedValidation,
+  'semantic safety must keep the bounded one-shot consistency correction and return before any fear confirmation',
+)
+assert(
+  fearGate > correctedReturn && confirmedRequest > fearGate && confirmedValidation > confirmedRequest && confirmedReturn > confirmedValidation,
+  'isolated Episode 1 excessive-fear verdict may receive exactly one independent confirmation',
 )
 
 if (failures.length > 0) {

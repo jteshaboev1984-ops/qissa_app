@@ -187,6 +187,13 @@ requireFragments('Episode 2 text repair prompt', repairPrompt, [
   'same Episode 2 plot, same selected-choice consequence',
 ])
 
+requireFragments('interactive fear confirmation', repairProvider, [
+  'needsInteractiveFearConfirmation',
+  'previous internally consistent verdict flagged only excessive_fear',
+  'Maximum semantic-safety calls on this path remain two',
+  'Do not clear any real safety issue',
+])
+
 requireFragments('split safety session contract', repairProvider, [
   'Do NOT set excessive_fear merely because the central low-stakes goal is not fully solved before the child chooses',
   'Ordinary evening darkness, rain, a brief worry',

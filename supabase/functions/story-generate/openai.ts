@@ -249,12 +249,12 @@ const requestSafetyEvaluation = async (
   model: string,
   context: NormalizedStoryContext,
   candidateJson: string,
-  retryFeedback = '',
+  additionalInstruction = '',
   timeoutMs = 12_000,
 ): Promise<SafetyEvaluation> => {
   const prompts = buildSafetyPrompts(context, candidateJson)
-  const retryInstruction = retryFeedback
-    ? ` Previous structured verdict was rejected as internally inconsistent: ${retryFeedback}. Re-evaluate the exact same story from scratch and obey the verdict consistency contract.`
+  const retryInstruction = additionalInstruction.trim()
+    ? ` ${additionalInstruction.trim()}`
     : ''
   return requestStructured<SafetyEvaluation>(
     apiKey,
@@ -269,6 +269,15 @@ const requestSafetyEvaluation = async (
   )
 }
 
+const needsInteractiveFearConfirmation = (
+  context: NormalizedStoryContext,
+  evaluation: SafetyEvaluation,
+): boolean => {
+  if (!(context.storyMood === 'bedtime' && context.storyMode === 'series' && context.episodeIndex === 1)) return false
+  if (evaluation.flags.excessive_fear !== true) return false
+  return Object.entries(evaluation.flags).every(([flag, value]) => flag === 'excessive_fear' || value !== true)
+}
+
 export const evaluateStorySafety = async (
   apiKey: string,
   model: string,
@@ -278,22 +287,40 @@ export const evaluateStorySafety = async (
   const candidateJson = JSON.stringify(candidate)
   const first = await requestSafetyEvaluation(apiKey, model, context, candidateJson)
   const firstErrors = safetyEvaluationConsistencyErrors(first)
-  if (firstErrors.length === 0) return first
 
-  // This is a classifier-only correction, not a new story generation. Keep it
-  // shorter than the primary safety window so even the worst bounded Story path
-  // remains inside the 130s browser timeout and the hosted Edge Function ceiling.
-  const second = await requestSafetyEvaluation(
+  if (firstErrors.length > 0) {
+    // This is a classifier-only consistency correction, not a new story generation. Keep it
+    // shorter than the primary safety window so even the worst bounded Story path remains bounded.
+    const corrected = await requestSafetyEvaluation(
+      apiKey,
+      model,
+      context,
+      candidateJson,
+      `Previous structured verdict was internally inconsistent: ${firstErrors.join(',')}. Re-evaluate the exact same story from scratch and obey the verdict consistency contract.`,
+      8_000,
+    )
+    const correctedErrors = safetyEvaluationConsistencyErrors(corrected)
+    if (correctedErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
+    return corrected
+  }
+
+  if (!needsInteractiveFearConfirmation(context, first)) return first
+
+  // A single independent confirmation protects interactive Episode 1 from a false positive where
+  // an unfinished low-stakes choice boundary is mistaken for excessive fear. It never auto-clears
+  // the flag: the second classifier sees the exact same candidate and may confirm fear or flag any
+  // other safety issue. Maximum semantic-safety calls on this path remain two.
+  const confirmed = await requestSafetyEvaluation(
     apiKey,
     model,
     context,
     candidateJson,
-    firstErrors.join(','),
+    'The previous internally consistent verdict flagged only excessive_fear. Independently re-evaluate the exact same story from scratch. For this technical Episode 1, do not treat an unfinished low-stakes goal or child choice boundary as fear by itself. Keep excessive_fear=true if the content actually contains sustained panic, threatening pursuit, abandonment, trapping, serious injury, frightening danger, or comparable age-inappropriate distress. Do not clear any real safety issue.',
     8_000,
   )
-  const secondErrors = safetyEvaluationConsistencyErrors(second)
-  if (secondErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
-  return second
+  const confirmedErrors = safetyEvaluationConsistencyErrors(confirmed)
+  if (confirmedErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
+  return confirmed
 }
 
 export type ModerationResult = {
