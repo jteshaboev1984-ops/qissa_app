@@ -47,11 +47,11 @@ requireCondition(
 )
 
 requireCondition(
-  /STORY_AI_PRODUCTION_ROLLOUT_ENABLED = false/.test(storyIndex) &&
-    /STORY_AI_PRODUCTION_ROLLOUT_ENABLED = false/.test(splitStoryIndex) &&
+  /STORY_AI_PRODUCTION_ROLLOUT_ENABLED = true/.test(storyIndex) &&
+    /STORY_AI_PRODUCTION_ROLLOUT_ENABLED = true/.test(splitStoryIndex) &&
     /STORY_AI_PRODUCTION_ROLLOUT_ENABLED && Boolean\(openAiApiKey\) && aiEnabledSetting === 'true'/.test(storyIndex) &&
     /STORY_AI_PRODUCTION_ROLLOUT_ENABLED && Boolean\(openAiApiKey\) && aiEnabledSetting === 'true'/.test(splitStoryIndex),
-  'Story AI must remain behind a code-reviewed false production rollout gate plus explicit QISSA_AI_ENABLED=true in both entrypoints.',
+  'Story AI rollout must be explicitly code-reviewed ON and still require QISSA_AI_ENABLED=true plus a configured key in both entrypoints.',
 )
 
 requireCondition(
