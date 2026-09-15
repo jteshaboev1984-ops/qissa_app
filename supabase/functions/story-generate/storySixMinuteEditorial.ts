@@ -41,7 +41,7 @@ const childFirstStories: Record<ClosedBetaWorld, ChildFirstStory> = {
   cozy_forest: {
     titleOne: {
       ru: `Дорога домой после дождя`,
-      uz: `Yomg‘irdan keyingi uy yo‘li`,
+      uz: `Pufning uyqu oldi sovg‘asi`,
     },
     episodeOne: {
       ru: `Вечером дождь только что закончился, и Уютный лес пах мокрой травой, грибами и тёплой корой. У старого пенька собрались те, кто обычно желал друг другу доброй ночи. Сова Нура поправляла перья, маленький кролик Пух держал старшего брата за лапу, а черепаха терпеливо ждала у дорожки.
@@ -71,35 +71,43 @@ const childFirstStories: Record<ClosedBetaWorld, ChildFirstStory> = {
 — {{HERO}}, как поведём всех домой?
 
 Нура поставила сумку с фонариками на пень. Пух приготовился петь, хотя заранее предупредил, что знает всего три ноты. Белка прижала корзинку к животу, чтобы орехи больше не разбегались. Даже черепаха подняла голову. Теперь выбор был за тобой.`,
-      uz: `Yomg‘ir endigina tinib, Shinam o‘rmon nam maysa, qo‘ziqorin va daraxt po‘stlog‘i hidiga to‘lgandi. Eski to‘nka yonida har oqshom bir-biriga xayrli tun tilaydigan do‘stlar yig‘ildi. Boyqush Nura patlarini tuzatib qo‘ydi, kichkina quyoncha Puf akasining panjasidan ushlab turardi, toshbaqa esa yo‘l chetida kutardi.
+      uz: `Shinam o‘rmonda oqshom edi. Puf ismli quyoncha eski to‘nka yonida katta-katta barglarni bir joyga yig‘ib qo‘ygan edi. Yonida boyqush Nura, olmaxon Lola va sekin yuradigan toshbaqa Toti ham bor edi. {{HERO}} kelganda Puf bir bargni qulog‘iga qo‘yib, juda jiddiy ko‘rinishga urindi.
 
-— Menimcha, yomg‘ir yo‘l ko‘rsatkichlarimizni yuvib ketibdi, — dedi Puf.
+— Men akamga uyqudan oldin sovg‘a qilmoqchiman, — dedi Puf. — U har kecha ko‘rpamni to‘g‘rilab beradi. Bugun men ham uni xursand qilaman.
 
-Rostdan ham, kichkina yog‘och belgilar ustidagi rang deyarli ko‘rinmay qolgan edi. To‘nka yonidan ikki so‘qmoq ajralib chiqardi, qorong‘iroqda ikkalasi ham bir xil ko‘rinardi. Puf avval bir yo‘lni, keyin boshqasini hidladi.
+Puf barglar orasidan eng kattasini oldi. Barg uning yuzini butunlay yopib qoldi.
 
-— Bizning uyimiz yalpiz hidiga o‘xshaydi, — dedi u. — Lekin yomg‘irdan keyin butun o‘rmon yalpiz hidiga o‘xshayapti!
+— Avval seni topib olaylik, — dedi Lola.
 
-Nura kulib yubordi. Yong‘oq solingan savat ko‘targan olmaxon ham jilmayib, savatini to‘nka ustiga qo‘ydi. Savat olmaxonning o‘zidan deyarli katta edi. U har safar ko‘targanda tepasidan bittadan yong‘oq dumalab tushardi. Puf yong‘oqlarni tutib, yana joyiga solardi. Uchinchisini esa quloqlari bilan tutib oldi.
+Barg pastga tushganda hamma kuldi. Puf ham kulib, bargni ehtiyotkorlik bilan yerga qo‘ydi.
 
-— Zo‘r savat ekan, — dedi Puf. — Faqat ichidagilar sayr qilishni yaxshi ko‘radi.
+Nura Pufdan sovg‘a qanday bo‘lishini so‘radi. Puf yelka qisdi. U faqat akasi kulsa, sovg‘a yaxshi chiqqanini bilishini aytdi.
 
-Nura {{HERO}}ga eski to‘qilgan xaltani ko‘rsatdi. Ichida qog‘oz chiroqlar bor edi. Paporotnik ustida esa yorug‘qo‘ng‘izlar aylanib uchardi. Ular navbat bilan yonib-o‘char, xuddi kimdir ko‘rinmas tugmachalarni bosayotgandek edi.
+Lola uchta yong‘oq po‘chog‘ini olib keldi. Toti esa yo‘lda topgan yumshoq sariq bargni ko‘rsatdi. {{HERO}} ularni eski to‘nka ustiga terib chiqdi. Hamma bir oz o‘ylab qoldi.
 
-{{HERO}} avval chorrahagacha birga borishni taklif qildi. Yo‘lda ular oy shaklidagi ko‘lmakni, yiqilgan novdani va uchta yaltiroq yong‘oqni ko‘rdi. Puf bittasini cho‘ntagiga solmoqchi bo‘ldi, ammo adashib kapyushoniga tashlab yubordi. Uni topguncha toshbaqa ham Pufdan o‘tib ketdi.
+Shu payt ikkita yorug‘qo‘ng‘iz uchib kelib, Pufning uzun quloqlari orasida aylana boshladi. Puf boshini burdi, ular ham burildi. Puf boshini yana burdi, ular yana ergashdi.
 
-Chorrahaga yetmay turib, ular boshiga yaproq tutgan kichkina qo‘ng‘izni uchratdi. Puf undan yo‘lni bilasanmi, deb so‘radi. Qo‘ng‘iz juda jiddiy bosh irg‘ab, faqat qo‘ziqoringacha bo‘lgan yo‘lni bilishini aytdi. U o‘ng tomondagi ulkan qo‘ziqorinni ko‘rsatib, o‘zi ham shu yerga kelganini faxr bilan bildirdi. Puf unga xayrli tun tiladi.
+— Menimcha, ular ham yordam bermoqchi, — dedi Nura.
 
-Chorrahada Nura past shoxga uchib chiqdi. Bir tomonda qayin qorayib ko‘rinar, boshqa tomondan ariqning shovqini eshitilardi. Oldinda olmaxon uyining eshigidagi kichkina qo‘ng‘iroq bir marta jarangladi.
+Puf juda past ovozda “xayrli tun” deb ko‘rdi. Yorug‘qo‘ng‘izlardan biri shu payt yonib-o‘chdi.
 
-— Uylar uzoq emas, — dedi Nura. — Burilishlarga chiroqlar osib chiqishimiz mumkin. Yoki tanish joylarda aytib boradigan juda qisqa qo‘shiq o‘ylab topamiz. Shunda hamma do‘stlarining ovozini eshitib boradi.
+— Mana, u javob berdi! — dedi Puf.
 
-Puf endi xafa ko‘rinmasdi. U bir chiroqlarga, bir yorug‘qo‘ng‘izlarga qarardi. Daraxtlar orasida birinchi dumaloq deraza ko‘rinib turardi. Ichkarida tungi chiroq yonib, parda ustida choynakning soyasi tushgandi.
+Endi hammaning kayfiyati yanada ko‘tarildi. {{HERO}} barglarni bir tomonga, yong‘oq po‘choqlarini ikkinchi tomonga qo‘ydi. Bir fikr barglardan kichkina rasm yasash edi. Unda oy, quyon quloqlari va bitta yulduz bo‘lishi mumkin edi.
 
-{{HERO}} Puf yoniga cho‘kkaladi.
+Ikkinchi fikr esa juda sokin qo‘shiq edi. Yong‘oq po‘choqlari “toq-toq” qilardi, Lola barglarni mayin shitirlatardi, Nura esa ikki notani cho‘zib aytardi. Puf faqat oxirida “xayrli tun” deb qo‘shilardi.
 
-— Hamma uyiga qanday boradi?
+Puf avval barglardan kichkina quyon yuzini yasab ko‘rdi. Bir quloq juda uzun, ikkinchisi juda kalta chiqdi. Lola uni ko‘rib, bu quyon emas, sabziga o‘xshaydi, dedi. Puf rasmni aylantirib ko‘rdi. Shunda u rostdan ham sabziga o‘xshab qoldi. Hamma yana kuldi. So‘ng Nura yong‘oq po‘choqlarini bir-biriga sekin urib ko‘rdi. Ovozi baland emas, yoqimli edi.
 
-Nura chiroqlar solingan xaltani to‘nka ustiga qo‘ydi. Puf esa kuylashga tayyorlandi, lekin oldindan uchta notadan boshqasini bilmasligini aytdi. Olmaxon yong‘oqlari yana qochib ketmasin deb savatini qorniga bosdi. Toshbaqa ham boshini ko‘tardi. Endi tanlov {{HERO}}da edi.`,
+Puf ikkala fikrni ham tasavvur qilib ko‘rdi. Avval quloqlarini tik tutdi, keyin birini bukdi. Yorug‘qo‘ng‘izlar ham go‘yo tanlayotgandek bir bargga, bir yong‘oq po‘chog‘iga uchib qo‘nardi. Lola ularning bu jiddiy ishiga qarab kulmaslikka harakat qildi.
+
+— Ikkalasi ham yoqdi, — dedi Puf. — Lekin bittasidan boshlashimiz kerak.
+
+{{HERO}} Puf yoniga o‘tirdi. Lola yong‘oq po‘choqlarini kaftida ushlab turardi. Toti sariq bargni shamol uchirib ketmasin deb oyog‘i bilan bosib oldi. Nura esa jim kutdi.
+
+Puf kulib qaradi.
+
+— Akam uchun qaysi sovg‘ani tayyorlaymiz?`,
     },
     vocabulary: [
       { word: `развилка`, translation: `fork in the road`, example: `У развилки собрались друзья.` },
@@ -109,23 +117,23 @@ Nura chiroqlar solingan xaltani to‘nka ustiga qo‘ydi. Puf esa kuylashga tayy
       'choice-a': {
         text: {
           ru: `Зажечь фонарики вдоль тропинки`,
-          uz: `Yo‘l bo‘ylab chiroqlar yoqish`,
+          uz: `Barglardan kichkina rasm yasash`,
         },
         effect: {
           ru: `По твоему выбору фонарики зажглись, и у друзей появилась золотая дорожка домой.`,
-          uz: `{{HERO}} chiroqlarni yoqdi va do‘stlar uchun uyga boradigan oltinrang yo‘l paydo bo‘ldi.`,
+          uz: `{{HERO}} va do‘stlar barglardan Pufning akasi uchun oy va quyon quloqlari bor kulgili rasm yasadi.`,
         },
         resolution: {
           ru: `Ты зажигаешь первый бумажный фонарик. Из него вылетает сонный мотылёк и смешно чихает. Пух прыскает от смеха. Второй фонарик появляется у лужи-луны, третий — у берёзы. Между деревьями складывается золотая дорожка, и друзья отправляются к первому дому.`,
-          uz: `{{HERO}} birinchi qog‘oz chiroqni yoqdi. Ichidan uyqusi kelgan kapalak uchib chiqib, kulgili aksirdi. Puf kulib yubordi. Ikkinchi chiroq oy shaklidagi ko‘lmak yoniga, uchinchisi qayin oldiga osildi. Daraxtlar orasida oltinrang yo‘l paydo bo‘lib, do‘stlar birinchi uy tomon yurdi.`,
+          uz: `{{HERO}} sariq bargni o‘rtaga qo‘ydi. Lola yoniga ikki kichik bargdan quyon qulog‘i yasadi. Puf oy uchun dumaloq barg topdi, ammo uni teskari qo‘yib yubordi. Hamma kuldi. Rasm tayyor bo‘lganda Puf uni ikki panjasi bilan ehtiyotkor ushladi.`,
         },
         seed: {
           ru: `У первого домика фонарики уже приготовили маленький сюрприз.`,
-          uz: `Birinchi uy oldida chiroqlar kichkina kutilmagan voqeani boshlab berdi.`,
+          uz: `Puf rasmni akasiga ko‘rsatish uchun do‘stlari bilan in tomon yurdi.`,
         },
         titleTwo: {
           ru: `Фонарики до самого дома`,
-          uz: `Uyga eltgan chiroqlar`,
+          uz: `Barglardan yasalgan sovg‘a`,
         },
         episodeTwo: {
           ru: `У орехового дерева их встретила белка. Она сразу узнала свою корзинку, которую оставила у пенька, и ахнула:
@@ -159,63 +167,77 @@ Nura chiroqlar solingan xaltani to‘nka ustiga qo‘ydi. Puf esa kuylashga tayy
 — Завтра вернём владельцу.
 
 За деревьями погасло последнее окно. Ручей шуршал за кустами, мотылёк больше не чихал, а единственный фонарик стал похож на маленькую тёплую звезду. Вы с Нурой пожелали друг другу доброй ночи. Потом огонёк стал совсем маленьким, и лес остался под круглой луной. Где-то далеко Пух уже наверняка спал под своим мятным одеялом, а забытый желудь тихо ждал утра на краю пенька.`,
-          uz: `Olmaxonning daraxtiga yetganda, u savatini darrov tanidi.
+          uz: `Puf rasmni ikki panjasi bilan ushlab, akasining ini tomon yurdi. {{HERO}}, Nura, Lola va Toti uning yonida edi. Rasm katta emasdi, lekin Puf uni xuddi juda qimmat narsa kabi ehtiyot qilardi.
 
-— Yaxshi keldinglar! Men yong‘oqlarim o‘zlari sayrga chiqib ketdi, deb o‘ylab qoldim, — dedi u.
+Yo‘lda bir kichik shamol bargning burchagini ko‘tardi. Puf darrov to‘xtadi.
 
-Puf savatni tantanali ravishda uzatdi. Shu payt bitta yong‘oq baribir otilib chiqib, ildiz bo‘ylab dumaladi. {{HERO}} uni oyog‘ining uchi bilan to‘xtatdi. Olmaxon bugunga savatga yetarlicha sarguzasht bo‘lganini aytdi. Pastdagi chiroq kovakka olib boradigan yo‘lni yoritdi. Olmaxon dumini silkitib xayrlashdi va ichkariga kirdi. Bir lahzadan keyin derazadan faqat panjasi chiqib, yana bir marta xayr dedi.
+— Qulog‘i uchib ketayapti! — dedi u.
 
-Keyingi burilish ariq tomonda edi. Shamol bitta chiroqni aylantirib yubordi, uning qog‘oz orqasi yo‘lga qarab qoldi. Yer birdan qorong‘iroq bo‘ldi. {{HERO}} chiroqni to‘g‘rilamoqchi edi, Puf suvdagi oltin aksni ko‘rib qoldi.
+Lola barg qulog‘ini joyiga bosdi. Toti esa rasm tagiga kichkina novda qo‘ydi. Endi uni ko‘tarish osonroq bo‘ldi.
 
-— Qarang! Chiroq yo‘lni pastdan ham ko‘rsatyapti!
+— Sovg‘aning o‘zi ham yurishni o‘rganayapti, — dedi Nura.
 
-Ular chiroqni boshqa shoxga ko‘chirdi. Endi nur kichik ko‘prikka ham, suvga ham tushardi. Puf toshbaqa yonida borib, keyingi chiroqni hammadan oldin topishga harakat qildi. Bir chiroq tagida u kapyushonidagi o‘sha yong‘oqni ham topdi: yo‘lda tushib qolib, oltin nur ichida yotgan ekan.
+Puf kulib yubordi.
 
-Tepalik oldidan eski quruq daraxt ildizi ko‘rindi. Chiroq uning uzun soyasini yo‘lga tashladi. Puf birdan to‘xtab qoldi: yerda ulkan quloqli maxluq paydo bo‘lgandek edi. U {{HERO}} ortiga yashirindi, keyin soyadagi quloqlar o‘zining quloqlari ekanini tushundi. Puf yon tomonga turdi, soya yanada kulgili bo‘lib ketdi. Nura ham kuldi.
+Birozdan keyin ular quyonlar iniga yetdi. Eshik oldida Pufning akasi o‘tirgan edi. U Pufni ko‘rib, kulimsiradi.
 
-Nihoyat quyonlar ini ko‘rindi. Pufning akasi kichik eshikni ochdi. Ichkaridan quruq o‘t va yalpiz hidi keldi.
+— Hali uxlamadingmi?
 
-— Ana! Men aytgandim-ku, yalpiz! — dedi Puf.
+Puf darrov rasmni orqasiga yashirdi. Rasm undan kengroq bo‘lgani uchun ikki tomondan barg quloqlari chiqib turardi.
 
-U ichkariga kirmoqchi bo‘lib, keyin ortiga qaradi. Toshbaqa hali o‘zining tekis toshi tomon ketayotgan edi.
+Aka bir bargga, keyin ikkinchisiga qaradi.
 
-— U hali uyiga yetgani yo‘q.
+— Menimcha, orqangda juda katta quyon turibdi, — dedi u.
 
-Puf yana yo‘lga chiqdi. Ikki quyon ham do‘stlar bilan ariqgacha bordi. Toshbaqa soyabon ostidan quruq katta yaproqni topdi, uni ko‘rpa kabi ustiga tortdi va mamnun xo‘rsindi. Puf unga xayrli tun tilab, shundan keyingina o‘z iniga qaytdi.
+Puf kulib, sovg‘ani oldiga chiqardi.
 
-Endi {{HERO}} bilan Nura ortga qaytdi. Ular chiroqlarni bittadan o‘chirib borardi. Oltin doira yo‘qolgan joyda oy nuri, nam barglar va tanish so‘qmoq qolardi. Birinchi chiroq ichidagi kapalak qog‘oz devorga yopishib uxlab qolgan edi. Uni bezovta qilmaslik uchun o‘sha chiroqni yana biroz yoqib qo‘yishdi.
+Rasmda sariq oy, ikkita quyon qulog‘i va kichkina yulduz bor edi. Puf bitta bargni biroz qiyshiq qo‘yganini ko‘rsatdi.
 
-Qaytishda ariq yonidan mitti qurbaqa boshini chiqardi. Suvda chiroqning aksi hali ham ko‘rinib turardi. Qurbaqa bir osmonga, bir suvga qarab, bugun ikkita oy chiqqanmi, deb so‘radi. {{HERO}} unga ikkinchisi shunchaki chiroqning aksi ekanini ko‘rsatdi. Qurbaqa bundan juda mamnun bo‘lib, «bitta oy yetadi», dedi.
+— Bu sening qulog‘ing, — dedi u. — Chunki sen uxlayotganda bittasi doim yon tomonga tushib qoladi.
 
-Eski to‘nka yonida Nura Puf tashlab ketgan yong‘oqni topdi va chetga qo‘ydi.
+Aka avval rasmga qaradi, keyin Pufga. So‘ng ukasini quchdi.
 
-— Ertaga egasiga beramiz.
+— Menga juda yoqdi.
 
-Daraxtlar orasidagi oxirgi deraza ham o‘chdi. Ariq shivirlab oqardi, kapalak boshqa aksirmadi, bitta chiroq esa kichkina iliq yulduzga o‘xshab qoldi. {{HERO}} Nuraga xayrli tun tiladi. Keyin chiroq ham xiralashdi va Shinam o‘rmon dumaloq oy ostida uxlab qoldi. Uzoqda Puf yalpiz hidli inida allaqachon mizg‘ib qolgan bo‘lsa kerak, to‘nka chetidagi yong‘oq esa tonggacha jim kutardi.`,
+Pufning quloqlari tik turib qoldi. U orqasiga qarab, do‘stlariga sekin bosh irg‘adi. Lola xuddi ishni juda katta sir bilan tugatgandek barmog‘ini labiga qo‘ydi. Toti esa allaqachon eshik yonidagi yumshoq maysaga o‘tirib olgan edi.
+
+Aka rasmni in ichidagi past devorga ilib qo‘ydi. Yorug‘qo‘ng‘izlardan biri kirib, rasm yonida bir marta yonib-o‘chdi. Puf buni “yulduz ham ishlayapti” deb tushuntirdi.
+
+Puf akasiga rasmdagi har bir narsani ko‘rsatib chiqdi. Dumaloq barg oy edi. Ikki uzun barg quloq edi. Eng kichik barg esa yulduz edi. Aka yulduzni Pufning burniga o‘xshatdi. Puf bunga rozi bo‘lmadi va burnini ko‘rsatib, uning ancha chiroyli ekanini aytdi. Lola darrov Pufning burniga qarab tekshirgandek bo‘ldi. Toti esa juda jiddiy bosh irg‘adi. Bu gap yana hammani kuldirdi.
+
+Keyin hamma eshik oldida bir necha daqiqa o‘tirdi. Nura bugun hech qanday yangi hikoya boshlamasligini aytdi. Lola qolgan yong‘oq po‘choqlarini kichkina xaltasiga soldi. Toti esa sariq bargdan qolgan mayda bo‘lakni Pufga berdi.
+
+— Ertaga yana bir narsa yasarsan, — dedi u.
+
+Puf bosh irg‘adi, lekin ko‘zlari allaqachon yumila boshlagan edi.
+
+Aka uning yelkasiga yengil ko‘rpa yopdi. Puf rasmga yana bir marta qaradi. Oy bargi sokin turardi, quyon quloqlari esa devorda kulgili ko‘rinardi.
+
+{{HERO}} do‘stlar bilan sekin xayrlashdi. Nura past shoxga uchdi, Lola uyiga qaytdi, Toti esa o‘z yo‘lida asta yurdi. In eshigi yopilmadi, faqat biroz tortildi. Ichkaridan Pufning “xayrli tun” degan ovozi eshitildi. Keyin hamma narsa jim bo‘ldi. Devoridagi kichkina barg rasmi oy nurida juda oddiy, juda iliq va yoqimli sovg‘adek ko‘rinib turardi.`,
         },
-        icon: `🏮`,
+        icon: `🎁`,
         values: ['mutual_help', 'kindness'],
       },
       'choice-b': {
         text: {
           ru: `Придумать дорожную песенку`,
-          uz: `Yo‘l uchun kichkina qo‘shiq o‘ylab topish`,
+          uz: `Sokin “xayrli tun” qo‘shig‘ini chalish`,
         },
         effect: {
           ru: `Вместе с тобой друзья придумали песенку, и знакомые звуки стали вести друзей по тропинке.`,
-          uz: `{{HERO}} kichkina qo‘shiq o‘ylab topdi va tanish tovushlar do‘stlarni yo‘l bo‘ylab boshlab bordi.`,
+          uz: `{{HERO}} va do‘stlar Pufning akasi uchun yong‘oq po‘choqlari, barg va yumshoq kuy bilan kichkina “xayrli tun” qo‘shig‘ini tayyorladi.`,
         },
         resolution: {
           ru: `Ты хлопаешь в ладоши: раз, два, пауза. Нура отвечает двумя нотами, Пух тянет смешное «пи-и», а светлячки мигают в такт. Белка стучит двумя орехами. Через минуту у компании уже есть короткая дорожная песенка, и все отправляются домой.`,
-          uz: `{{HERO}} kaftini urib ritm boshladi: bir, ikki, tanaffus. Nura ikki nota bilan javob berdi, Puf kulgili «pi-i» dedi, yorug‘qo‘ng‘izlar esa ritmga mos miltilladi. Olmaxon ikki yong‘oqni «toq-toq» urdi. Bir daqiqada yo‘l qo‘shig‘i tayyor bo‘lib, do‘stlar uy tomon yurdi.`,
+          uz: `{{HERO}} ikki yong‘oq po‘chog‘ini sekin “toq-toq” qildi. Lola bargni mayin shitirlatdi, Nura past ovozda kuy boshladi. Puf oxirida kulib “xayrli tun” dedi. Yorug‘qo‘ng‘izlar ham birin-ketin yonib-o‘chdi. Kichkina qo‘shiq tayyor bo‘ldi.`,
         },
         seed: {
           ru: `У берёзы к песенке сразу добавился новый звук.`,
-          uz: `Qayin yonida qo‘shiqka darrov yangi tovush qo‘shildi.`,
+          uz: `Puf qo‘shiqni akasiga aytish uchun do‘stlari bilan in tomon yurdi.`,
         },
         titleTwo: {
           ru: `Песня, которая знала дорогу`,
-          uz: `Yo‘lni bilgan qo‘shiq`,
+          uz: `Pufning “xayrli tun” qo‘shig‘i`,
         },
         episodeTwo: {
           ru: `У берёзы песенка получила новый звук. Дождевые капли падали с листьев: кап, кап. Пух вставил эти два «кап» между нотами, и все сразу поняли, что дошли до первого поворота.
@@ -247,37 +269,67 @@ Daraxtlar orasidagi oxirgi deraza ham o‘chdi. Ariq shivirlab oqardi, kapalak b
 На обратном пути никто уже не пел весь припев. У берёзы Нура напела две ноты. У ручья в ответ от тебя прозвучала ещё одна нота. Белкино «тук-тук» донеслось из далёкого окна. Этого хватало, чтобы вспомнить всю дорогу.
 
 У старого пенька Пух наконец попрощался. Он побежал к норе всего на три шага, потом вспомнил, что устал, и перешёл на обычный шаг. Нура улыбнулась. Светлячки спрятались в траве, ручей продолжил свою часть песни, и лес постепенно остался только с ночными звуками. Вдалеке один раз звякнул колокольчик у беличьей двери.`,
-          uz: `Qayin yoniga yetganda qo‘shiqka yangi tovush qo‘shildi. Barglardan tomchilar tushardi: tom, tom. Puf shu ikki «tom»ni notalar orasiga qo‘shdi. Hamma birinchi burilishga kelganini darrov bildi.
+          uz: `Kichkina qo‘shiq tayyor bo‘lgach, Puf eng oldinda yurishni xohladi. {{HERO}}, Nura, Lola va Toti uning ortidan ketdi. Ular baland aytmadi. Qo‘shiq shunaqa past ediki, hatto barglarning shitirlashi ham unga qo‘shilib ketardi.
 
-Ariq yonida suv o‘zining «sh-sh-sh»ini qo‘shdi. Nura boshladi, Puf davom ettirdi, {{HERO}} esa satrni tugatdi. Yorug‘qo‘ng‘izlar boshlar ustida uchib, aynan tanaffus paytida yonardi.
+{{HERO}} ikki yong‘oq po‘chog‘ini “toq-toq” qildi. Lola yumshoq bargni silkitdi. Nura ikki notani cho‘zdi.
 
-— Bizning qo‘shig‘imizda qayin ham bor, ariq ham bor, — dedi Puf. — Tez orada butun o‘rmon sig‘adi!
+Navbat Pufga kelganda u og‘zini ochdi, lekin hech narsa demadi.
 
-Olmaxon savatini ko‘tarib, ikki yong‘oq bilan ritm berardi: toq-toq, tanaffus. Uchinchi «toq»da bitta yong‘oq panjasidan chiqib, yo‘l bo‘ylab dumaladi. Toshbaqa uni qobig‘i bilan to‘xtatdi.
+— Men so‘zimni unutdim, — dedi u.
 
-— Qo‘shiqda tanaffus shuning uchun ham kerak, — dedi Nura.
+— Bitta so‘z edi-ku, — dedi Lola.
 
-Birinchi bo‘lib olmaxon uyiga yetdi. Kovak eshigi oldida u oxirgi ikki notani aytdi va shunaqa past egildiki, dumi boshini yopib qoldi. Puf yana kuldi, lekin endi kulgisi ham uyquli edi. Olmaxon savatini ichkariga qo‘yib, derazadan ikki marta «toq-toq» deb xayrlashdi.
+Puf biroz o‘yladi.
 
-Tepalik oldida quyonlar uyiga yetdi. Puf yalpiz hidini sezib, bir qadam ichkariga kirdi. Keyin toshbaqaga qaradi.
+— Unda yanada uyat bo‘ldi.
 
-— Men qo‘shiqni oxirigacha aytib boraman.
+Hamma kuldi. Nura Pufga hech kim shoshmayotganini aytdi. Puf yana urinib ko‘rdi.
 
-U do‘stlar bilan yana bir oz yo‘l yurdi. Katta tosh yonida qo‘shiq birdan sustlashdi: yorug‘qo‘ng‘izlar har tomonga tarqalib ketgan edi. {{HERO}} quloq soldi. Ho‘l barg ustidan yolg‘izgina «pi»ga o‘xshagan miltillash ko‘rindi. Bitta kichik yorug‘qo‘ng‘iz ortda qolibdi.
+— Xayrli... puf!
 
-Nura tanish uch notani aytdi. Puf o‘zining kulgili ingichka «pi»sini qo‘shdi. Yorug‘qo‘ng‘iz yonib, do‘stlari tomonga uchdi. Bir lahzadan keyin yo‘l ustida yana ko‘p mayda chiroqlar uchardi. Puf esa eng g‘alati notasi eng foydali bo‘lib chiqqanini faxr bilan aytdi.
+Bu safar Lola shunaqa kuldiki, bargi qo‘lidan tushib ketdi. Puf ham o‘z xatosiga kuldi.
 
-Ariqqa yaqin eski daraxt kovagi ularning qo‘shig‘ini qaytarib yubordi. Puf «pi» dedi, kovak ham «pi-i» deb javob berdi. U pastroq ovozda sinab ko‘rdi, javob ham pastroq bo‘ldi. Puf daraxt ichida ko‘rinmas qo‘shiqchi yashasa kerak, deb pichirladi. Nura hech narsani tushuntirmay, {{HERO}}ga ko‘z qisdi.
+— Mayli, yangi qo‘shiqda “puf” ham bo‘lsin, — dedi {{HERO}}.
 
-Toshbaqa uyiga eng oxirida yetdi. U quruq yaproq ostiga joylashib:
+Shundan keyin qo‘shiq yanada qiziq bo‘ldi. “Toq-toq”, mayin barg ovozi, Nuraning ikki notasi va oxirida Pufning “xayrli tun... puf!” degan joyi bor edi.
 
-— Endi bu qo‘shiqni ko‘zimni yumib ham taniyman, — dedi.
+Ular quyonlar iniga yetganda Pufning akasi eshik oldida turardi. U uzoqdan qo‘shiqni eshitib, kutib qolgan ekan.
 
-Ortga qaytganda hech kim qo‘shiqni boshidan oxirigacha aytmadi. Qayin yonida Nura ikki nota kuyladi. Ariq oldida {{HERO}} bitta nota bilan javob berdi. Uzoqdagi olmaxon derazasidan «toq-toq» eshitildi. Shu tovushlarning o‘zi butun yo‘lni eslatishga yetardi.
+— Bu qanday musiqa? — deb so‘radi u.
 
-Qaytishda ariq yonidagi mitti qurbaqa qo‘shiqning «sh-sh-sh» qismini eshitib, suvdan boshini chiqardi. U ham kuylamoqchi bo‘ldi, ammo faqat «vaq» dedi. Puf bir lahza o‘ylab, bu ham yomon nota emasligini aytdi. Nura esa bugungi qo‘shiqda joy qolganini bildirib kuldi.
+Puf ko‘kragini kerdi.
 
-Eski to‘nka oldida Puf nihoyat xayrlashdi. U iniga qarab uch qadam yugurdi, keyin charchaganini eslab, oddiy yurishga o‘tdi. Nura jilmaydi. Yorug‘qo‘ng‘izlar maysa orasiga qo‘ndi, ariq qo‘shiqning o‘z qismini davom ettirdi, o‘rmon esa asta-sekin tungi tovushlar bilan qoldi. Uzoqdagi in eshigi yopildi. So‘ng faqat barglarning shitiri va suvning «sh-sh-sh»i eshitilib turdi.`,
+— Bu senga.
+
+Hamma o‘z joyini egalladi. {{HERO}} yong‘oq po‘choqlarini sekin urdi. Lola bargni mayin shitirlatdi. Nura kuyladi. Puf esa bu safar so‘zni to‘g‘ri aytdi.
+
+— Xayrli tun!
+
+Aka jim turib eshitdi. Keyin u ham ikki marta kaftini sekin urdi.
+
+Aka qo‘shiq tugagach, Pufdan yana qanday ovozlar borligini so‘radi. Lola yong‘oq po‘chog‘ini kaftida aylantirdi. Toti quruq bargga bitta panjasini qo‘ydi. Puf esa quloqlarini navbat bilan ko‘tarib, o‘zini boshliqdek ko‘rsatdi. O‘ng qulog‘i ko‘tarilsa hamma chalardi, chap qulog‘i ko‘tarilsa hamma jim turardi. Bir safar ikkala qulog‘i birga ko‘tarilib, Pufning o‘zi nima qilishni bilmay qoldi. Hamma kuldi. Lola ham boshliq bo‘lish uchun dumini baland ko‘tardi, Puf esa bunga darrov rozi bo‘ldi.
+
+— Yana bir marta bo‘ladimi?
+
+Pufning quloqlari tik turib qoldi. Ikkinchi marta ular yanada sekin chaldi. Toti ham qo‘shilishni xohlab, panjasi bilan yerga bir marta “tap” qildi. Shu bitta ovoz hammaga yoqdi.
+
+Uchinchi marta esa Nura qo‘shiqni boshlamadi.
+
+— Endi qo‘shiqning o‘zi uxlashi kerak, — dedi u.
+
+Puf jiddiy bosh irg‘adi. Yong‘oq po‘choqlari Lola xaltasiga qaytdi. Barg Toti yoniga qo‘yildi. Yorug‘qo‘ng‘izlar ham asta pastlab, maysa ustida dam oldi.
+
+Puf akasining yoniga o‘tirdi. Aka uning quloqlaridan birini ohista siladi.
+
+— Eng yaxshi joyi qaysi edi? — deb so‘radi.
+
+Puf ko‘zlarini yumib javob berdi:
+
+— “Puf” degan joyi.
+
+Hamma yana bir marta kuldi, ammo bu safar juda past ovozda.
+
+{{HERO}} do‘stlar bilan xayrlashib, sekin ortga yurdi. Nura yaqin shoxga qo‘ndi, Lola uyiga ketdi, Toti odatdagidek shoshmasdan yo‘l oldi. In ichida Puf bilan akasi qo‘shiqning oxirgi ikki notasini juda past ovozda yana bir marta aytdi. So‘ng ularning ovozi ham tinib qoldi. Tashqarida barglar mayin shitirlardi, yorug‘qo‘ng‘izlar esa birin-ketin chiroqlarini pasaytirib, o‘rmonni uyquga tayyorlayotgandek ko‘rinardi.`,
         },
         icon: `🎵`,
         values: ['friendship', 'curiosity'],
@@ -1018,6 +1070,8 @@ export const buildChildFirstClosedBetaCandidate = (
     vocabulary: language === 'ru' ? story.vocabulary : [],
     nextEpisodePreview: language === 'ru'
       ? 'История продолжится сразу после твоего выбора.'
-      : 'Hikoya tanlovingdan keyin darrov davom etadi.',
+      : world === 'cozy_forest'
+        ? 'Puf akasiga sovg‘ani ko‘rsatadigan payt juda yaqin edi.'
+        : 'Hikoya tanlovingdan keyin darrov davom etadi.',
   }
 }
