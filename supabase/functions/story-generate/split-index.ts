@@ -449,8 +449,19 @@ Deno.serve(async (request: Request) => {
     if (!safety.approved) {
       lastFailureClass = 'semantic-safety'
       const flags = Object.entries(safety.flags).filter(([, value]) => value).map(([key]) => key)
+      const evaluationFlags = Object.entries(evaluation.flags).filter(([, value]) => value).map(([key]) => key)
+      const moderationCategories = Object.entries(moderation.categories)
+        .filter(([, value]) => value)
+        .map(([key]) => key.replace(/[^a-z0-9_-]/giu, '_').slice(0, 48))
+        .slice(0, 6)
       const fearDetail = evaluation.notes.find((note) => /^fear_adjudication:[a-z_]+$/u.test(note)) ?? ''
-      trace.push(`semantic-safety:${flags.join(',') || safety.required_action}${fearDetail ? `:${fearDetail}` : ''}`)
+      const sourceDetail = [
+        evaluationFlags.length > 0 ? `eval=${evaluationFlags.join(',')}` : 'eval=clear',
+        moderation.flagged || moderationCategories.length > 0
+          ? `mod=${moderationCategories.join(',') || 'flagged'}`
+          : 'mod=clear',
+      ].join(';')
+      trace.push(`semantic-safety:${flags.join(',') || safety.required_action}${fearDetail ? `:${fearDetail}` : ''}[${sourceDetail}]`)
       return safeFallback(context, origin, 'generation-or-safety-failed', {
         ...runtimeProviderMetadata,
         ...claimMetadata(claim),
