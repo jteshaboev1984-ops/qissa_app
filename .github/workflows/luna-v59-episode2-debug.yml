@@ -1,0 +1,20 @@
+name: Temporary Luna v59 Episode2 Debug
+
+on:
+  push:
+    branches:
+      - audit/luna-v59-episode2-debug
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Run one Luna Episode 2 diagnostic
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/audit-luna-v59-episode2-debug.mjs
