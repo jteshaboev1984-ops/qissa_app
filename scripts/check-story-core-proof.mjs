@@ -139,6 +139,41 @@ try {
   assert(/песня|мелодия|куй|напела/iu.test(forestB.story_text), 'Forest B lost song consequence.')
   assert(!/^утром\b/iu.test(forestA.story_text.trim()) && !/^утром\b/iu.test(forestB.story_text.trim()), 'Forest continuation incorrectly restarts the story next morning.')
 
+  const uzForestContext = { ...baseContext, language: 'uz', heroName: 'Malika' }
+  const uzForestOne = buildSafeFallback(uzForestContext)
+  const uzBookish = /chorraha|paporotnik|kapyushon|ritm|spiral|tantanali|so‘qmoq|yo‘l ko‘rsatkich/iu
+  assert(uzForestOne.title === 'Pufning uyqu oldi sovg‘asi', 'Uzbek forest title must stay character-led.')
+  assert(wordCount(uzForestOne.story_text) >= 320 && wordCount(uzForestOne.story_text) <= 470, 'Uzbek forest Episode 1 release length failed.')
+  assert(!uzBookish.test(uzForestOne.story_text), 'Uzbek forest Episode 1 contains avoidable bookish/borrowed vocabulary.')
+  assert(uzForestOne.vocabulary.length === 0, 'Uzbek forest must not expose Russian-English vocabulary cards.')
+  assert(uzForestOne.nextEpisodePreview === 'Puf akasiga sovg‘ani ko‘rsatadigan payt juda yaqin edi.', 'Uzbek forest preview must stay in-world.')
+  assert(uzForestOne.choices.length === 2, 'Uzbek forest must have two choices.')
+  for (const choice of uzForestOne.choices) {
+    const resolutionWords = wordCount(choice.resolution_text)
+    assert(resolutionWords >= 30 && resolutionWords <= 45, `Uzbek forest ${choice.choice_id} bridge length failed.`)
+    assert(!uzBookish.test(`${choice.text} ${choice.effect_summary} ${choice.resolution_text}`), `Uzbek forest ${choice.choice_id} uses avoidable vocabulary.`)
+  }
+  const uzContinuation = (choice) => buildSafeFallback({
+    ...uzForestContext,
+    episodeIndex: 2,
+    isContinuation: true,
+    choiceHistory: [memoryFromChoice(uzForestOne, choice)],
+    lastEpisodeSummary: choice.effect_summary,
+    activeArc: choice.state_patch.open_arc ?? '',
+    relationshipState: choice.state_patch.relationship_updates ?? {},
+    canonState: choice.state_patch.canon_updates ?? {},
+  })
+  for (const choice of uzForestOne.choices) {
+    const continuation = uzContinuation(choice)
+    const continuationWords = wordCount(continuation.story_text)
+    const coda = continuation.story_text.trim().split(/\n\s*\n/u).filter(Boolean).at(-1) ?? ''
+    const fullSessionWords = wordCount(uzForestOne.story_text) + wordCount(choice.resolution_text) + continuationWords
+    assert(continuationWords >= 355 && continuationWords <= 520, `Uzbek forest ${choice.choice_id} Episode 2 release length failed.`)
+    assert(wordCount(coda) >= 50, `Uzbek forest ${choice.choice_id} bedtime coda is too short.`)
+    assert(fullSessionWords >= 700 && fullSessionWords <= 1400, `Uzbek forest ${choice.choice_id} full session is outside the hard release envelope.`)
+    assert(!uzBookish.test(`${continuation.title} ${continuation.story_text}`), `Uzbek forest ${choice.choice_id} continuation uses avoidable vocabulary.`)
+  }
+
   const spaceOne = buildSafeFallback({ ...baseContext, stylePackId: 'stars_and_space' })
   assert(spaceOne.title === 'Тихий сигнал станции «Люмен»', 'Space Episode 1 title is not editorial.')
   assert(wordCount(spaceOne.story_text) >= 300 && wordCount(spaceOne.story_text) <= 650, 'Space Episode 1 is not a full bedtime scene.')

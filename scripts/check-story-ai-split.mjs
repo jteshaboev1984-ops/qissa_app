@@ -82,11 +82,17 @@ requireFragments('architecture', architecture, [
   'next_episode_preview is child-facing story copy',
   'Episode 2 has no child decision menu',
   'make living forest characters drive the story',
-  'prefer warm social or playful stakes',
+  'central goal must stay warm, social or playful',
+  'Do not center the plot on finding the way home',
   'For Uzbek ages 5-7, prefer common natural Uzbek words',
   "choices: context.episodeIndex === 1 ? 'exactly 2' : 'exactly 0'",
   "decision_point: context.episodeIndex === 1 ? 'one non-empty child decision point' : 'empty string'",
   'enforceStoryBlueprintContextContract',
+])
+
+requireFragments('Uzbek child language prompt', repairPrompt, [
+  'prefer words common in everyday family speech',
+  'chorraha, paporotnik, kapyushon, ritm, spiral and tantanali',
 ])
 
 const continuationBlueprint = enforceStoryBlueprintContextContract(

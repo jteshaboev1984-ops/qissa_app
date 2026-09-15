@@ -3,9 +3,9 @@ import type { JsonRecord, NormalizedStoryContext, StoryCandidate } from './contr
 const styleGuidance: Record<NormalizedStoryContext['stylePackId'], JsonRecord> = {
   cozy_forest: {
     tone: 'calm, warm, gentle',
-    motifs: ['forest path', 'fireflies', 'small houses', 'kind animals'],
+    motifs: ['forest clearing', 'fireflies', 'cozy burrow', 'acorns', 'kind animals'],
     values: ['friendship', 'care_for_nature', 'mutual_help'],
-    forbidden: ['predator threat', 'being lost at night', 'dark unresolved danger'],
+    forbidden: ['predator threat', 'being lost at night', 'finding the way home in darkness', 'washed-away path signs', 'dark unresolved danger'],
   },
   magic_garden: {
     tone: 'soft wonder, beauty, care',
@@ -228,7 +228,7 @@ const childFirstEditorialGuidance = (context: NormalizedStoryContext): JsonRecor
   memory_quality: 'When prior state exists, let later fiction visibly reflect it through a returning character, object, relationship, remembered action or changed situation. Treat canon_state and the latest confirmed selected choice as authoritative. Only selected choices become canon: never import hypothetical objects, discoveries or consequences from an unselected branch. If a past fact is absent from compact canon, do not invent it as a memory; introduce any new discovery as new.',
   state_patch_quality: 'Assume the next episode may receive compact state instead of full story prose. Preserve confirmed durable continuity facts, important object/mechanism state and unresolved clues, but keep canon compact: normally prefer about 4-8 top-level canon_updates and about 1-4 new branch canon_updates, combine related properties of the same persistent object, avoid duplicate facts, and never store speculation as canon.',
   language_quality: context.language === 'uz'
-    ? 'Write natural Uzbek storytelling in Latin script. Do not translate Russian sentence by sentence; natural phrasing, jokes and concrete details may differ while preserving the same story contract.'
+    ? 'Write natural Uzbek storytelling in Latin script. Do not translate Russian sentence by sentence. For ages 5-7, prefer words common in everyday family speech and short direct phrasing. Avoid bookish or borrowed words such as chorraha, paporotnik, kapyushon, ritm, spiral and tantanali when a simpler child-level phrase exists. Natural jokes and concrete details may differ while preserving the same story contract.'
     : context.language === 'ru'
       ? 'Write idiomatic Russian in ordinary narrator-to-story prose, not continuous second-person child narration. Use {{HERO}} only where the unchanged token is grammatically safe, preferably as a nominative subject or direct address. Never place {{HERO}} after a preposition or where declension is required; rephrase so the token remains invariant. For ambiguous/custom hero types, natural present-tense action may be used when it helps avoid unnecessary gender assumptions.'
       : 'Write natively in the requested language rather than as a calque from another language.',
