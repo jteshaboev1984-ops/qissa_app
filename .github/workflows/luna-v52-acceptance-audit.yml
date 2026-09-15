@@ -15,59 +15,12 @@ concurrency:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
     steps:
-      - name: Provider-free runtime OFF probe
+      - name: Checkout audit branch
+        uses: actions/checkout@v7
+
+      - name: Run one controlled Luna acceptance sample
         env:
           QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
-        run: |
-          node <<'NODE'
-          const endpoint = 'https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate'
-          const key = process.env.QISSA_SUPABASE_ANON_KEY?.trim()
-          if (!key) throw new Error('QISSA_SUPABASE_ANON_KEY missing')
-          const payload = {
-            installationId: '7c64da91-4e2c-4e42-8299-ff8521bf30ef',
-            selections: {
-              ageGroup: '5-7', language: 'ru', heroType: 'girl_hero',
-              stylePackId: 'cozy_forest', storyMode: 'series', storyMood: 'bedtime',
-            },
-            seriesState: {
-              id: 'audit-luna-7a8cc03f-ca04-4056-819d-88e791c68ddf',
-              mainCharacter: 'Алиса', recurringCharacters: [], lastEpisodeSummary: '',
-              activeArc: '', relationshipState: {}, choiceHistory: [], canonState: {}, episodeCount: 0,
-            },
-          }
-          const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-              'content-type': 'application/json',
-              apikey: key,
-              authorization: `Bearer ${key}`,
-              origin: 'https://jteshaboev1984-ops.github.io',
-            },
-            body: JSON.stringify(payload),
-          })
-          const raw = await response.text()
-          let body
-          try { body = JSON.parse(raw) } catch { body = { raw } }
-          const result = {
-            status: response.status,
-            source: response.headers.get('x-qissa-generation-source'),
-            fallbackReason: response.headers.get('x-qissa-fallback-reason'),
-            runtimeAi: response.headers.get('x-qissa-runtime-ai'),
-            pipeline: response.headers.get('x-qissa-story-pipeline'),
-            architectModel: response.headers.get('x-qissa-architect-model'),
-            narratorModel: response.headers.get('x-qissa-narrator-model'),
-            safetyModel: response.headers.get('x-qissa-safety-model'),
-            escalationModel: response.headers.get('x-qissa-escalation-model'),
-            episodeSource: body?.episode?.generationSource ?? null,
-          }
-          console.log(JSON.stringify(result, null, 2))
-          if (response.status !== 200) throw new Error(`Expected 200, got ${response.status}`)
-          if (result.source !== 'safe-fallback' || result.episodeSource !== 'safe-fallback') throw new Error('Runtime OFF did not return safe fallback')
-          if (result.fallbackReason !== 'runtime-disabled') throw new Error(`Unexpected fallback reason: ${result.fallbackReason}`)
-          if (result.runtimeAi !== 'runtime-disabled') throw new Error(`Unexpected runtime header: ${result.runtimeAi}`)
-          if (result.pipeline !== 'split-v1') throw new Error(`Unexpected pipeline: ${result.pipeline}`)
-          if (result.architectModel !== 'gpt-5.6-luna' || result.narratorModel !== 'gpt-5.6-luna' || result.safetyModel !== 'gpt-5.6-luna') throw new Error('Unexpected model metadata')
-          if (result.escalationModel !== 'disabled') throw new Error(`Sol escalation unexpectedly configured: ${result.escalationModel}`)
-          NODE
+        run: node scripts/audit-luna-v52-single.mjs
