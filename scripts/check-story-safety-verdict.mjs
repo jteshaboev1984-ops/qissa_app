@@ -123,6 +123,7 @@ for (const fragment of [
   "throw new Error('openai_safety_evaluation_inconsistent')",
   'needsInteractiveFearConfirmation',
   'requestFearAdjudication',
+  'adjudicateStoryFear',
   'narrow child-bedtime fear adjudicator',
   'fearAdjudicationConsistencyErrors(adjudication',
   "throw new Error('openai_fear_adjudication_inconsistent')",

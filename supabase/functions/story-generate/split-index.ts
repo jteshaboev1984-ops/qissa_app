@@ -7,8 +7,8 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { buildSafeFallback } from './fallback.ts'
-import { evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
-import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
+import { adjudicateStoryFear, evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
+import { clearAdjudicatedNonSevereViolence, combineSafety, moderationNeedsFearAdjudication, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
 import { enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
 import { childVisibleStorySafetyText } from './story-safety-projection.ts'
@@ -410,7 +410,17 @@ Deno.serve(async (request: Request) => {
       evaluateStorySafety(openAiApiKey, safetyModel, context, candidate),
       moderateStoryText(openAiApiKey, candidateTextForModeration(candidate)),
     ])
-    const safety = combineSafety(ruleFlags, evaluation, moderation)
+    let moderationForSafety = moderation
+    let moderationFearDetail = ''
+    if (moderationNeedsFearAdjudication(context, ruleFlags, evaluation, moderation)) {
+      providerCalls += 1
+      const adjudication = await adjudicateStoryFear(openAiApiKey, safetyModel, candidate)
+      moderationFearDetail = `moderation_fear_adjudication:${adjudication.category}`
+      if (!adjudication.excessive_fear) {
+        moderationForSafety = clearAdjudicatedNonSevereViolence(moderation)
+      }
+    }
+    const safety = combineSafety(ruleFlags, evaluation, moderationForSafety)
     if (!safety.approved) {
       lastFailureClass = 'semantic-safety'
       const flags = Object.entries(safety.flags).filter(([, value]) => value).map(([key]) => key)
@@ -419,7 +429,7 @@ Deno.serve(async (request: Request) => {
         .filter(([, value]) => value)
         .map(([key]) => key.replace(/[^a-z0-9_-]/giu, '_').slice(0, 48))
         .slice(0, 6)
-      const fearDetail = evaluation.notes.find((note) => /^fear_adjudication:[a-z_]+$/u.test(note)) ?? ''
+      const fearDetail = evaluation.notes.find((note) => /^fear_adjudication:[a-z_]+$/u.test(note)) ?? moderationFearDetail
       const sourceDetail = [
         evaluationFlags.length > 0 ? `eval=${evaluationFlags.join(',')}` : 'eval=clear',
         moderation.flagged || moderationCategories.length > 0
