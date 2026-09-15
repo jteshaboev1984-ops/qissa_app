@@ -7,7 +7,10 @@ const remoteClient = read('src/lib/storyRemoteClient.ts')
 const storyIndex = read('supabase/functions/story-generate/index.ts')
 const splitStoryIndex = read('supabase/functions/story-generate/split-index.ts')
 const provider = read('supabase/functions/story-generate/openai.ts')
+const splitProvider = read('supabase/functions/story-generate/split-openai.ts')
 const usage = read('supabase/functions/story-generate/usage.ts')
+const pagesWorkflow = read('.github/workflows/deploy-pages.yml')
+const envExample = read('.env.example')
 const installationMigration = read('docs/qissa/backend/migrations/20260907_000010_add_story_generation_cost_guard.sql')
 const globalMigration = read('docs/qissa/backend/migrations/20260908_000014_add_global_story_generation_cap.sql')
 const accountingOnlyMigration = read('docs/qissa/backend/migrations/20260914_000015_allow_story_generation_accounting_only_mode.sql')
@@ -20,10 +23,10 @@ const requireCondition = (condition, message) => {
 
 requireCondition(
   /storyGenerationThrottleEnabled:\s*false/.test(betaScope) &&
-    /DEVELOPMENT_ACCOUNTING_ONLY_LIMIT\s*=\s*0/.test(usage) &&
-    /DAILY_STORY_GENERATION_LIMIT\s*=\s*DEVELOPMENT_ACCOUNTING_ONLY_LIMIT/.test(usage) &&
-    /GLOBAL_DAILY_STORY_GENERATION_LIMIT\s*=\s*DEVELOPMENT_ACCOUNTING_ONLY_LIMIT/.test(usage),
-  'Active Story AI development must use the explicit zero accounting-only sentinel rather than an invalid giant quota.',
+    /DAILY_STORY_GENERATION_LIMIT\s*=\s*5/.test(usage) &&
+    /GLOBAL_DAILY_STORY_GENERATION_LIMIT\s*=\s*30/.test(usage) &&
+    !/DEVELOPMENT_ACCOUNTING_ONLY_LIMIT/.test(usage),
+  'Launch-capable Story AI must keep an invisible server-side 5/install and 30/project emergency spend ceiling even when no product-facing quota is shown.',
 )
 
 requireCondition(
@@ -61,6 +64,18 @@ requireCondition(
     /'qissa_story_candidate'[\s\S]*30_000[\s\S]*4000[\s\S]*'none'/.test(provider) &&
     /'qissa_safety_evaluation'[\s\S]*12_000[\s\S]*700[\s\S]*'none'/.test(provider),
   'Story generation must keep sufficient structured-output headroom while both structured calls use latency-aware timeouts and no reasoning.',
+)
+
+requireCondition(
+  /DEFAULT_TIMEOUT_MS = 130_000/.test(remoteClient) &&
+    /MAX_TIMEOUT_MS = 140_000/.test(remoteClient) &&
+    /VITE_QISSA_STORY_TIMEOUT_MS:\s*130000/.test(pagesWorkflow) &&
+    /VITE_QISSA_STORY_TIMEOUT_MS=130000/.test(envExample) &&
+    /'qissa_story_blueprint'[\s\S]*18_000[\s\S]*1800[\s\S]*'none'/.test(splitProvider) &&
+    /'qissa_story_narration'[\s\S]*30_000[\s\S]*3200[\s\S]*'none'/.test(splitProvider) &&
+    /'qissa_text_length_repair'[\s\S]*30_000[\s\S]*3000[\s\S]*'none'/.test(provider) &&
+    /'qissa_safety_evaluation'[\s\S]*12_000[\s\S]*700[\s\S]*'none'/.test(provider),
+  'Browser timeout must cover the bounded 18s architect + 30s narrator + 30s narrator retry + 30s repair + 12s parallel safety envelope without exceeding the 150s hosted Edge Function ceiling.',
 )
 
 requireCondition(
@@ -168,4 +183,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI accounting check passed: development uses explicit accounting-only mode, usage remains atomic and private, positive throttles remain available, and provider failures do not trigger blind paid retries.')
+console.log('Story AI launch guard passed: server spend is bounded, browser/server timeouts are aligned, usage remains atomic/private, and provider failures do not trigger blind paid retries.')
