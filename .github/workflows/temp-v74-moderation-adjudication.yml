@@ -40,21 +40,9 @@ jobs:
           openai = 'supabase/functions/story-generate/openai.ts'
           replace_once(
               openai,
-              "const requestFearAdjudication = async (\n  apiKey: string,\n  model: string,\n  candidateJson: string,\n): Promise<FearAdjudication> => requestStructured<FearAdjudication>(",
-              "const requestFearAdjudication = async (\n  apiKey: string,\n  model: string,\n  candidateJson: string,\n): Promise<FearAdjudication> => requestStructured<FearAdjudication>(",
-              'fear request anchor',
-          )
-          replace_once(
-              openai,
               ")\n\nconst needsInteractiveFearConfirmation = (",
               ")\n\nexport const adjudicateStoryFear = async (\n  apiKey: string,\n  model: string,\n  candidate: StoryCandidate,\n): Promise<FearAdjudication> => {\n  const childVisibleText = childVisibleStorySafetyText(candidate)\n  const adjudication = await requestFearAdjudication(\n    apiKey,\n    model,\n    JSON.stringify(childVisibleStorySafetyProjection(candidate)),\n  )\n  const adjudicationErrors = fearAdjudicationConsistencyErrors(adjudication, childVisibleText)\n  if (adjudicationErrors.length > 0) throw new Error('openai_fear_adjudication_inconsistent')\n  return adjudication\n}\n\nconst needsInteractiveFearConfirmation = (",
               'add shared fear adjudicator',
-          )
-          replace_once(
-              openai,
-              "  const adjudication = await requestFearAdjudication(apiKey, model, candidateJson)\n  const adjudicationErrors = fearAdjudicationConsistencyErrors(adjudication, childVisibleStorySafetyText(candidate))\n  if (adjudicationErrors.length > 0) throw new Error('openai_fear_adjudication_inconsistent')",
-              "  const adjudication = await adjudicateStoryFear(apiKey, model, candidate)",
-              'reuse shared adjudicator',
           )
 
           safety = 'supabase/functions/story-generate/safety.ts'
