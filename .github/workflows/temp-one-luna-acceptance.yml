@@ -1,0 +1,25 @@
+name: Temporary One Luna Acceptance Request
+
+on:
+  push:
+    branches:
+      - audit/luna-launch-audit-20260915
+
+permissions:
+  contents: read
+
+jobs:
+  acceptance:
+    if: contains(github.event.head_commit.message, 'Run one Luna acceptance request')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: audit/luna-launch-audit-20260915
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Run one acceptance client
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/temp-one-luna-acceptance.mjs
