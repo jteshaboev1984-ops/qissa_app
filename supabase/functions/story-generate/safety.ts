@@ -100,7 +100,7 @@ const isFiveToSevenBedtimeSeries = (context: NormalizedStoryContext) =>
 
 const storyWordRange = (context: NormalizedStoryContext): [number, number] => {
   if (isFiveToSevenBedtimeSeries(context)) {
-    return context.episodeIndex === 1 ? [360, 500] : [340, 520]
+    return context.episodeIndex === 1 ? [320, 470] : [355, 520]
   }
   if (context.ageGroup === '3-4') return [80, 260]
   if (context.ageGroup === '5-7') return [120, 390]
@@ -267,6 +267,24 @@ export const storyRepeatsChoiceMenu = (context: NormalizedStoryContext, candidat
   })
 }
 
+export const choiceMenuScaffoldingNeedsRewrite = (language: string, text: string): boolean => {
+  const tail = paragraphs(text).slice(-4).join(' ').replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()
+  const patterns: Record<string, RegExp[]> = {
+    ru: [/можно[\s\S]{0,260}(?:а\s+можно|или\s+можно)/iu],
+    uz: [/mumkin[\s\S]{0,260}(?:yoki[\s\S]{0,100}mumkin|yana[\s\S]{0,100}mumkin)/iu],
+    kz: [/болады[\s\S]{0,260}(?:немесе[\s\S]{0,100}болады|тағы[\s\S]{0,100}болады)/iu],
+  }
+  return (patterns[language] ?? []).some((pattern) => pattern.test(tail))
+}
+
+export const branchingPreviewNeedsRewrite = (language: string, text: string): boolean => {
+  const normalized = ` ${text.replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()} `
+  if (language === 'ru') return /\sили\s/iu.test(normalized)
+  if (language === 'uz') return /\syoki\s/iu.test(normalized)
+  if (language === 'kz') return /\sнемесе\s/iu.test(normalized)
+  return false
+}
+
 export const technicalPreviewLanguageNeedsRewrite = (language: string, text: string): boolean => {
   const normalized = text.replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()
   const patterns: Record<string, RegExp[]> = {
@@ -361,10 +379,12 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   else if (context.language !== 'ru' && value.vocabulary.length !== 0) errors.push('unexpected_vocabulary')
 
   if (storyRepeatsChoiceMenu(context, value)) errors.push('story_repeats_choice_menu')
+  if (context.episodeIndex === 1 && typeof value.story_text === 'string' && choiceMenuScaffoldingNeedsRewrite(context.language, value.story_text)) errors.push('story_choice_menu_scaffolding')
 
   if (typeof value.nextEpisodePreview !== 'string') errors.push('invalid_preview')
   if (context.storyMode === 'series' && context.episodeIndex === 1 && !value.nextEpisodePreview.trim()) errors.push('missing_preview')
   if (typeof value.nextEpisodePreview === 'string' && technicalPreviewLanguageNeedsRewrite(context.language, value.nextEpisodePreview)) errors.push('technical_preview_language')
+  if (context.episodeIndex === 1 && typeof value.nextEpisodePreview === 'string' && branchingPreviewNeedsRewrite(context.language, value.nextEpisodePreview)) errors.push('branching_preview_language')
   if ((context.storyMode === 'one_time' || context.episodeIndex === 2) && value.nextEpisodePreview.trim()) errors.push('unexpected_preview')
   return [...new Set(errors)]
 }

@@ -423,7 +423,7 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'All natural-language blueprint values, including effect summaries, state values, arc text and preview text, must be in the requested story language. Memory keys are machine identifiers and are the only exception.',
     'New canon and relationship keys must be stable lowercase ASCII semantic identifiers using letters, digits, underscore, dot or hyphen. Reuse an existing memory key exactly when updating an existing fact instead of creating a synonym.',
     'Choice display text must be in the requested story language. Do not use the {{HERO}} token in architect output; phrase choices without the hero name.',
-    'next_episode_preview is child-facing story copy. Never mention confirmation, selection mechanics, an episode, segment, pipeline, or a story branch. Write one natural in-world sentence about what the hero may notice or do after the immediate chosen action.',
+    'next_episode_preview is child-facing story copy and must be branch-neutral: it has to remain true after either choice. Never mention confirmation, selection mechanics, an episode, segment, pipeline, story branch, or both alternatives joined by or/yoki/немесе. Write one natural in-world sentence about the same story continuing after the immediate chosen action.',
     'Avoid politics, religious persuasion, stereotypes, humiliation, conditional love, adult themes, graphic violence and unresolved frightening danger.',
   ].join(' ')
 
@@ -468,7 +468,7 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
 
 const hardStoryWordRange = (context: NormalizedStoryContext): [number, number] => {
   if (context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime') {
-    return context.episodeIndex === 1 ? [360, 500] : [340, 520]
+    return context.episodeIndex === 1 ? [320, 470] : [355, 520]
   }
   if (context.ageGroup === '3-4') return [80, 260]
   if (context.ageGroup === '5-7') return [120, 390]
@@ -482,11 +482,11 @@ export const buildNarratorPrompts = (
 ) => {
   const [minimumWords, maximumWords] = hardStoryWordRange(context)
   const target = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
-    ? context.episodeIndex === 1 ? '400-440' : '400-470'
+    ? context.episodeIndex === 1 ? '350-390' : '430-490'
     : `${Math.min(maximumWords - 10, minimumWords + 40)}-${Math.max(minimumWords + 40, maximumWords - 20)}`
   const paragraphBudget = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
     ? context.episodeIndex === 1
-      ? { target_paragraphs: 7, average_words_per_paragraph: '55-65', final_choice_setup_words: '45-60' }
+      ? { target_paragraphs: '6-7', average_words_per_paragraph: '50-60', final_choice_setup_words: '35-50' }
       : { target_paragraphs: '6-7', average_words_per_paragraph: '60-70', final_coda_words: '50-90' }
     : null
 
@@ -501,7 +501,8 @@ export const buildNarratorPrompts = (
     'For Episode 1, end story_text at the blueprint decision point before either branch happens. End with one neutral decision cue or question. Never restate, list, paraphrase, preview, or name either choice action inside story_text; the two actions belong only in the structured choices supplied by the blueprint.',
     'For Episode 2, begin after the confirmed choice resolution already happened. Do not replay that action. Resolve the same central goal and finish calmly without a cliffhanger.',
     'If this is final series session 10, make the prose feel like a true finale: pay off remembered clues and relationships that matter, settle the active serialized arc, avoid sequel bait, and finish with emotional closure. Do not invent a new unresolved question in the final paragraphs.',
-    'Follow the blueprint beat order. Every one or two short paragraphs should contain action, dialogue, discovery, reaction, attempt, humor or cause-and-effect.',
+    'Follow the blueprint beat order. Every one or two short paragraphs should contain action, dialogue, discovery, reaction, attempt, humor or cause-and-effect. Use distinct causal beats; do not repeat inspection, planning, caution or agreement as separate beats when the situation has not changed.',
+    'Do not turn bedtime prose into a safety checklist or adult supervision lesson. One concrete cautious action is enough when needed; then move the story forward.',
     'For ages 5-7 bedtime series, treat paragraph_budget as a quantitative drafting plan. Do not compress several blueprint beats into a few very short paragraphs; hit the requested total through meaningful beat development, not filler.',
     'Avoid padding, repeated clues, repeated explanation, decorative filler and unrelated events.',
     'For each Episode 1 choice, write exactly one resolution_text matching its resolution_goal and state consequence. Aim for 30-45 words and stay below 320 characters.',
