@@ -1,0 +1,32 @@
+name: Temporary v67 Safety Debug Build
+
+on:
+  push:
+    branches:
+      - audit/uzbek-v67-safety-debug
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temp-v67-safety-debug-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: audit/uzbek-v67-safety-debug
+      - name: Build audit-only source
+        run: python3 scripts/temp-v67-safety-debug-patch.py
+      - name: Commit audit-only source
+        run: |
+          git config user.name "qissa-audit-bot"
+          git config user.email "qissa-audit-bot@users.noreply.github.com"
+          git add supabase/functions/story-generate/audit-debug.ts
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Build v67 safety debug edge source"
+          git push origin HEAD:audit/uzbek-v67-safety-debug
