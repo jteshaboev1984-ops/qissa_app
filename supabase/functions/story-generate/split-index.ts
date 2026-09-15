@@ -412,6 +412,8 @@ Deno.serve(async (request: Request) => {
         'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
         'X-QISSA-Narrator-Model-Used': narratorModelUsed,
         'X-QISSA-Provider-Calls': String(providerCalls),
+        'X-QISSA-Initial-Story-Words': String(initialStoryWords),
+        'X-QISSA-Final-Story-Words': String(wordCount(candidate.story_text)),
       })
     }
 
