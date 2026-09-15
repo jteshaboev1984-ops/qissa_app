@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { russianHeroTokenNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
+import { russianHeroTokenNeedsRewrite, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
 
 const base = 'supabase/functions/story-generate'
 const index = readFileSync(`${base}/index.ts`, 'utf8')
@@ -63,6 +63,40 @@ for (const heroType of ['girl_hero', 'boy_hero', 'custom', 'animal', 'magical_he
     `${heroType} must still reject preposition/case constructions around the invariant HERO token`,
   )
 }
+requireRegression(
+  russianHeroTokenNeedsRewrite('Рыжик посмотрел на {{HERO}} и улыбнулся.', 'girl_hero'),
+  'Russian HERO token must be rejected after the preposition на',
+)
+requireRegression(
+  technicalPreviewLanguageNeedsRewrite('ru', 'После подтверждённого выбора ручеёк начнёт снова журчать.'),
+  'child-facing preview must reject technical confirmation language',
+)
+requireRegression(
+  !technicalPreviewLanguageNeedsRewrite('ru', 'Ручеёк зажурчит, и под ивой покажется синий камешек.'),
+  'natural in-world preview must remain allowed',
+)
+const duplicateChoiceContext = { episodeIndex: 1 }
+requireRegression(
+  storyRepeatsChoiceMenu(duplicateChoiceContext, {
+    story_text: 'Рыжик прислушался к ручью. Можно осторожно разобрать лёгкие веточки вместе с Рыжиком. А можно позвать сову Ульяну и попросить показать первую веточку.',
+    choices: [
+      { text: 'Осторожно разобрать лёгкие веточки вместе с Рыжиком.' },
+      { text: 'Позвать сову Ульяну и попросить показать первую веточку.' },
+    ],
+  }),
+  'story_text must reject a duplicated structured choice menu',
+)
+requireRegression(
+  !storyRepeatsChoiceMenu(duplicateChoiceContext, {
+    story_text: 'Рыжик посмотрел на ручей и спросил: «Как лучше начать?»',
+    choices: [
+      { text: 'Осторожно разобрать лёгкие веточки вместе с Рыжиком.' },
+      { text: 'Позвать сову Ульяну и попросить показать первую веточку.' },
+    ],
+  }),
+  'neutral decision cue must not be mistaken for a duplicated choice menu',
+)
+
 requireRegression(
   visibleSafetyLanguageNeedsRewrite('ru', 'Обе возможности были безопасными и добрыми.'),
   'must reject visible Russian safety/meta-choice language',
@@ -145,15 +179,15 @@ requireText('story prompts', prompts, [
   'For episode 2, return no choices',
   'length_guidance',
   'narrative_guidance',
-  "return context.episodeIndex === 1 ? '515-545' : '430-490'",
-  "return context.episodeIndex === 1 ? [430, 560] : [340, 520]",
+  "return context.episodeIndex === 1 ? '400-440' : '430-490'",
+  "return context.episodeIndex === 1 ? [360, 500] : [340, 520]",
   'minimum_story_words: minimumStoryWords',
   'maximum_story_words: maximumStoryWords',
   'Only story_text counts toward story word length.',
   'Never reach the target with repeated explanation, repeated clues, decorative filler, an unrelated event or a second problem.',
   'story_too_short',
   "const retryTargetStoryWords = context.ageGroup === '5-7'",
-  "? '525-550'",
+  "? '420-455'",
   "metricValue('story_words')",
   'Generate a completely new candidate from the same context.',
   'story_text only',
@@ -176,10 +210,10 @@ requireText('story prompts', prompts, [
   'After the brief setup, every one or two short paragraphs should contain a meaningful change',
   'Keep one simple anticipation loop alive until the payoff',
   'Let dialogue and visible action carry much of the middle rather than static description.',
-  'orientation: about 55-70 words',
-  'early curiosity / desire / problem: about 55-70 words',
-  'exploration / build-up: about 320-340 words',
-  'choice setup: about 65-75 words',
+  'orientation: about 50-60 words',
+  'early curiosity / desire / problem: about 50-60 words',
+  'exploration / build-up: about 230-260 words',
+  'choice setup: about 45-60 words',
   'make the central story question understandable by roughly the first 100-120 words',
   'Choices are decisions the child makes about what the HERO should do.',
   'one concrete immediate payoff or durable state change',
@@ -269,6 +303,7 @@ requireText('input normalization', contracts, [
   'const entriesToRecord = (entries: unknown)',
   'export const finalPatchFromCandidate = (patch: unknown)',
   'export const compactStoryText',
+  'const compactMemoryText = (value: unknown, maxLength: number)',
   ".join('\\n\\n')",
   'compactStoryText(candidate.story_text, 6000)',
   'Array.isArray(candidate.choices)',
@@ -280,7 +315,7 @@ requireText('runtime safety', safety, [
   'const validatePatch = (patch: unknown)',
   'isRecord(patch)',
   "context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'",
-  'context.episodeIndex === 1 ? [430, 560] : [340, 520]',
+  'context.episodeIndex === 1 ? [360, 500] : [340, 520]',
   'choice.resolution_text.length > 360',
   'resolutionWords < 25',
   'resolutionWords > 60',

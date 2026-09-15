@@ -388,13 +388,22 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
   }
 }
 
+const compactMemoryText = (value: unknown, maxLength: number): string => {
+  if (typeof value !== 'string') return ''
+  const normalized = normalizeSpace(value)
+  if (normalized.length <= maxLength) return normalized
+  const clipped = normalized.slice(0, maxLength + 1)
+  const boundary = clipped.lastIndexOf(' ')
+  return (boundary >= Math.floor(maxLength * 0.6) ? clipped.slice(0, boundary) : normalized.slice(0, maxLength)).trim()
+}
+
 const entriesToRecord = (entries: unknown): Record<string, string> => {
   if (!Array.isArray(entries)) return {}
   const result: Record<string, string> = {}
   for (const item of entries.slice(0, 12)) {
     if (!isRecord(item)) continue
     const key = compactText(item.key, 48)
-    const value = compactText(item.value, 120)
+    const value = compactMemoryText(item.value, 120)
     if (key && value) result[key] = value
   }
   return result
@@ -403,10 +412,10 @@ const entriesToRecord = (entries: unknown): Record<string, string> => {
 export const finalPatchFromCandidate = (patch: unknown): FinalStatePatch => {
   if (!isRecord(patch)) return {}
   const result: FinalStatePatch = {}
-  const lastEvent = compactText(patch.last_event, 96)
-  const newFriend = compactText(patch.new_friend, 64)
-  const heroTrait = compactText(patch.hero_trait, 64)
-  const openArc = patch.open_arc === null ? null : compactText(patch.open_arc, 120)
+  const lastEvent = compactMemoryText(patch.last_event, 96)
+  const newFriend = compactMemoryText(patch.new_friend, 64)
+  const heroTrait = compactMemoryText(patch.hero_trait, 64)
+  const openArc = patch.open_arc === null ? null : compactMemoryText(patch.open_arc, 120)
   const relationshipUpdates = entriesToRecord(patch.relationship_updates)
   const canonUpdates = entriesToRecord(patch.canon_updates)
 

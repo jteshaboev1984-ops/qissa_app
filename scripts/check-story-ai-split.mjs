@@ -51,6 +51,9 @@ requireFragments('architecture', architecture, [
   'paragraph_budget: paragraphBudget',
   "errors.push('blueprint_language_mismatch')",
   "target_paragraphs: 7",
+  "context.episodeIndex === 1 ? '400-440' : '400-470'",
+  'Never restate, list, paraphrase, preview, or name either choice action inside story_text',
+  'next_episode_preview is child-facing story copy',
 ])
 
 const narrationSchemaStart = architecture.indexOf('export const storyNarrationSchema')
@@ -105,6 +108,8 @@ requireFragments('split orchestrator', orchestrator, [
   'Previous narration failed deterministic validation',
   'For visible_safety_language',
   'For story_language_mismatch',
+  'For story_repeats_choice_menu',
+  'For technical_preview_language',
   'runtimeProviderMetadata',
   "'X-QISSA-Runtime-AI'",
   "'X-QISSA-Generation-Source': 'openai-structured'",
