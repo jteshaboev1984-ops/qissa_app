@@ -3,6 +3,7 @@ import type { ReaderPreferences } from '../types/qissa'
 import { isClosedBetaSelections } from './closedBetaScope'
 import { createStoryEpisode } from './storyAgent'
 import { localPersistence } from './localPersistence'
+import { applyEpisodeToSeriesState } from './memoryAgent'
 import { privacyConsent } from './privacyConsent'
 import { generateWithRemoteProvider, getStoryProviderConfig } from './storyRemoteClient'
 import { storyStateService } from './storyStateService'
@@ -19,7 +20,7 @@ const defaultReaderPreferences: ReaderPreferences = {
 }
 
 const generateWithLocalAgent = async (input: StoryGenerationInput): Promise<StoryGenerationOutput> => ({
-  episode: createStoryEpisode(input),
+  episode: { ...createStoryEpisode(input), generationSource: 'local' },
 })
 
 const persistRemoteEpisode = async (
@@ -29,8 +30,7 @@ const persistRemoteEpisode = async (
   const seriesState = input.seriesState ?? localPersistence.loadSeriesStateOrRepair(input.selections)
   if (!seriesState || !input.privacyConsent) return
 
-  const episodeCount = output.episode.episode_id.startsWith('ep-2') ? 2 : 1
-  const nextSeriesState = { ...seriesState, episodeCount }
+  const nextSeriesState = applyEpisodeToSeriesState(seriesState, output.episode)
 
   await storyStateService.syncGenerated({
     selections: input.selections,

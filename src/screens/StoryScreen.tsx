@@ -17,6 +17,10 @@ interface StoryScreenProps {
   onReaderPreferencesChange: (patch: Partial<ReaderPreferences>) => void
   onChoiceSelected?: (choice: EpisodeChoice) => void
   onContinueNextEpisode?: () => void
+  onStartNextSeriesSession?: () => void
+  seriesSessionIndex?: number
+  maxSeriesSessions?: number
+  canStartNextSeriesSession?: boolean
   isChoiceSavedForCurrentEpisode?: boolean
   savedChoiceIdForCurrentEpisode?: string | null
   onBackHome?: () => void
@@ -51,6 +55,10 @@ export function StoryScreen({
   onReaderPreferencesChange,
   onChoiceSelected,
   onContinueNextEpisode,
+  onStartNextSeriesSession,
+  seriesSessionIndex = 1,
+  maxSeriesSessions = 10,
+  canStartNextSeriesSession = false,
   isChoiceSavedForCurrentEpisode = false,
   savedChoiceIdForCurrentEpisode = null,
   onBackHome,
@@ -73,11 +81,12 @@ export function StoryScreen({
   const isEpisodeTwo = episode.episode_id.startsWith('ep-2')
   const isChoiceLocked = Boolean(isChoiceSavedForCurrentEpisode && savedChoiceIdForCurrentEpisode)
   const isOneTimeFinal = storyMode === 'one_time' && isChoiceLocked
-  const isSeriesFinal = isSeriesMode && isEpisodeTwo
+  const isSeriesSessionComplete = isSeriesMode && isEpisodeTwo
+  const isWholeSeriesFinal = isSeriesSessionComplete && seriesSessionIndex >= maxSeriesSessions
   const hasVocabulary = episode.vocabulary.length > 0
-  const showChoicePanel = episode.choices.length > 0 && !isSeriesFinal
+  const showChoicePanel = episode.choices.length > 0 && !isSeriesSessionComplete
 
-  const hasSavedChoiceForStage = Boolean(isChoiceLocked && !isSeriesFinal)
+  const hasSavedChoiceForStage = Boolean(isChoiceLocked && !isSeriesSessionComplete)
   const [storyStage, setStoryStage] = useState<StoryStage>(hasSavedChoiceForStage ? 'resolution' : 'reading')
 
   const effectiveChoiceId = storyStage === 'resolution'
@@ -101,7 +110,7 @@ export function StoryScreen({
   )
 
   const canConfirmChoice = Boolean(previewChoiceId && !isChoiceLocked && showChoicePanel)
-  const canShowVocabulary = hasVocabulary && (isSeriesFinal || storyStage === 'resolution')
+  const canShowVocabulary = hasVocabulary && (isSeriesSessionComplete || storyStage === 'resolution')
 
   useEffect(() => {
     setPreviewChoiceId(savedChoiceIdForCurrentEpisode)
@@ -172,7 +181,7 @@ export function StoryScreen({
         </button>
         <p className="q-label rounded-full bg-[#fff8e9] px-3 py-1">{stylePack.title[language]}</p>
       </div>
-      {storyStage === 'reading' || isSeriesFinal ? (
+      {storyStage === 'reading' || isSeriesSessionComplete ? (
         <>
           <StylePackCover
             stylePack={stylePack}
@@ -386,20 +395,35 @@ export function StoryScreen({
     )
   }
 
-  const renderSeriesFinal = () => {
-    if (!isSeriesFinal) return null
+  const renderSeriesSessionComplete = () => {
+    if (!isSeriesSessionComplete) return null
+
+    const title = isWholeSeriesFinal
+      ? (language === 'ru' ? 'Сказка завершена' : language === 'uz' ? 'Ertak yakunlandi' : 'Ертегі аяқталды')
+      : (language === 'ru' ? `Серия ${seriesSessionIndex} завершилась` : language === 'uz' ? `${seriesSessionIndex}-qism yakunlandi` : `${seriesSessionIndex}-бөлім аяқталды`)
+    const body = isWholeSeriesFinal
+      ? (language === 'ru' ? 'Финальная серия закрыла начатые сюжетные линии. Историю можно перечитать или начать новую сказку.' : language === 'uz' ? 'Yakuniy qism boshlangan voqealarni tugatdi. Ertakni qayta o‘qish yoki yangi hikoya boshlash mumkin.' : 'Соңғы бөлім басталған оқиғаларды түйіндеді. Ертегіні қайта оқуға немесе жаңасын бастауға болады.')
+      : canStartNextSeriesSession
+        ? (language === 'ru' ? `QISSA сохранила важные события и выборы. Следующая серия будет ${seriesSessionIndex + 1} из ${maxSeriesSessions}.` : language === 'uz' ? `QISSA muhim voqealar va tanlovlarni saqladi. Keyingi qism ${seriesSessionIndex + 1}/${maxSeriesSessions} bo‘ladi.` : `QISSA маңызды оқиғалар мен таңдауларды сақтады. Келесі бөлім ${seriesSessionIndex + 1}/${maxSeriesSessions} болады.`)
+        : (language === 'ru' ? 'Эта серия завершена и сохранена. Продолжение временно недоступно, поэтому сказку пока можно перечитать.' : language === 'uz' ? 'Bu qism tugadi va saqlandi. Davomi hozircha mavjud emas, ertakni qayta o‘qish mumkin.' : 'Бұл бөлім аяқталып, сақталды. Жалғасы әзірге қолжетімсіз, ертегіні қайта оқуға болады.')
 
     return (
       <>
         {renderNarrativeCard()}
         <section className="q-card space-y-4 p-5 text-center">
-          <p className="q-label">QISSA</p>
-          <h3 className="q-heading text-3xl font-bold leading-tight">{t(language, 'story.series_final_title')}</h3>
-          <p className="mx-auto max-w-xs text-sm leading-6 text-[#625846]">{t(language, 'story.series_final_body')}</p>
+          <p className="q-label">QISSA · {seriesSessionIndex}/{maxSeriesSessions}</p>
+          <h3 className="q-heading text-3xl font-bold leading-tight">{title}</h3>
+          <p className="mx-auto max-w-xs text-sm leading-6 text-[#625846]">{body}</p>
           <div className="grid gap-2.5 pt-1">
-            <button className="q-primary w-full" onClick={onStartNewStory}>
-              {t(language, 'story.start_new_story')}
-            </button>
+            {isWholeSeriesFinal ? (
+              <button className="q-primary w-full" onClick={onStartNewStory}>
+                {t(language, 'story.start_new_story')}
+              </button>
+            ) : canStartNextSeriesSession ? (
+              <button className="q-primary w-full" onClick={onStartNextSeriesSession}>
+                {language === 'ru' ? `Начать серию ${seriesSessionIndex + 1}` : language === 'uz' ? `${seriesSessionIndex + 1}-qismni boshlash` : `${seriesSessionIndex + 1}-бөлімді бастау`}
+              </button>
+            ) : null}
             <button className="q-secondary w-full" onClick={handleReadAgain}>
               {t(language, 'story.read_again')}
             </button>
@@ -413,7 +437,7 @@ export function StoryScreen({
   }
 
   const renderReturnToResultCta = () => {
-    if (!(isChoiceLocked && !isSeriesFinal && storyStage === 'reading')) return null
+    if (!(isChoiceLocked && !isSeriesSessionComplete && storyStage === 'reading')) return null
     return (
       <button className="q-secondary w-full" onClick={() => setStoryStage('resolution')}>
         {t(language, 'story.back_to_result')}
@@ -457,7 +481,7 @@ export function StoryScreen({
   }
 
   const renderMainStage = () => {
-    if (isSeriesFinal) return renderSeriesFinal()
+    if (isSeriesSessionComplete) return renderSeriesSessionComplete()
     if (storyStage === 'resolution') return renderResolutionStage()
 
     return (

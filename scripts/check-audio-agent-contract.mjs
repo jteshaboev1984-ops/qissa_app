@@ -79,7 +79,8 @@ requireCondition(
 )
 
 requireCondition(
-  /id:\s*`series-\$\{selections\.stylePackId\}-\$\{selections\.language\}`/.test(memory) &&
+  /id:\s*uniqueId\('series'\)/.test(memory) &&
+    /sessionId:\s*uniqueId\('session'\)/.test(memory) &&
     /isClientStoryId\(seriesId\)/.test(audio) &&
     /isClientStoryId\(episodeId\)/.test(audio),
   'Audio identity must accept app client story IDs.',

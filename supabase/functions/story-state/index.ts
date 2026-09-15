@@ -8,9 +8,10 @@ type JsonRecord = Record<string, unknown>
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const AUDIO_BUCKET = 'story-audio'
+const MAX_SERIES_SESSIONS = 10
 
 type StoryStateRequest = {
-  action?: 'sync_generated' | 'confirm_choice' | 'save_preferences' | 'reset_current' | 'load_current' | 'delete_profile_data'
+  action?: 'sync_generated' | 'confirm_choice' | 'save_preferences' | 'reset_current' | 'load_current' | 'list_library' | 'delete_profile_data'
   installationId?: string
   installationAuth?: string
   selections?: {
@@ -24,6 +25,8 @@ type StoryStateRequest = {
   }
   seriesState?: JsonRecord & {
     id?: string
+    sessionId?: string
+    sessionIndex?: number
     mainCharacter?: string
     lastEpisodeSummary?: string
     activeArc?: string
@@ -46,6 +49,7 @@ type StoryStateRequest = {
     }>
     vocabulary?: unknown[]
     nextEpisodePreview?: string
+    generationSource?: string
     safety_self_check?: JsonRecord & {
       approved?: boolean
       risk_level?: string
@@ -104,6 +108,17 @@ const json = (body: unknown, status: number, origin: string | null) =>
 const fail = (message: string, status: number, origin: string | null) => json({ error: message }, status, origin)
 const episodeNoFromId = (episodeId: string): number => episodeId.startsWith('ep-2') ? 2 : 1
 
+const storyIdentity = (seriesState: StoryStateRequest['seriesState']) => {
+  const seriesId = typeof seriesState?.id === 'string' ? seriesState.id.trim() : ''
+  const sessionId = typeof seriesState?.sessionId === 'string' && seriesState.sessionId.trim()
+    ? seriesState.sessionId.trim()
+    : seriesId
+  const sessionIndex = typeof seriesState?.sessionIndex === 'number' && Number.isInteger(seriesState.sessionIndex) && seriesState.sessionIndex > 0
+    ? seriesState.sessionIndex
+    : 1
+  return { seriesId, sessionId, sessionIndex, withinSeriesLimit: sessionIndex <= MAX_SERIES_SESSIONS }
+}
+
 const findProfile = async (installationId: string) =>
   admin.from('child_profiles').select('id').eq('installation_id', installationId).maybeSingle()
 
@@ -149,12 +164,17 @@ async function syncGenerated(input: StoryStateRequest, origin: string | null) {
 
   const episodeNo = episodeNoFromId(episode.episode_id)
   const sessionStatus = episodeNo === 2 ? 'completed' : 'episode_1_active'
+  const identity = storyIdentity(seriesState)
+  if (!identity.seriesId || !identity.sessionId || !identity.withinSeriesLimit) return fail('invalid_story_identity', 422, origin)
 
   const { data: session, error: sessionError } = await admin
     .from('story_sessions')
     .upsert({
       child_profile_id: profile.id,
-      client_session_id: seriesState.id,
+      client_session_id: identity.sessionId,
+      client_series_id: identity.seriesId,
+      series_session_index: identity.sessionIndex,
+      selection_snapshot: selections,
       story_mode: storyMode,
       story_mood: storyMood,
       style_pack_id: stylePackId,
@@ -191,7 +211,9 @@ async function syncGenerated(input: StoryStateRequest, origin: string | null) {
       language,
       mood: storyMood,
       style_pack_id: stylePackId,
-      generation_source: 'edge_story_agent',
+      generation_source: episode.generationSource === 'safe-fallback' || episode.generationSource === 'openai-structured' || episode.generationSource === 'local'
+        ? episode.generationSource
+        : 'edge_story_agent',
       safety_status: approved ? 'approved' : 'blocked',
       safety_result: safety,
       vocabulary: Array.isArray(episode.vocabulary) ? episode.vocabulary : [],
@@ -254,11 +276,13 @@ async function confirmChoice(input: StoryStateRequest, origin: string | null) {
   if (profileError) return fail('profile_load_failed', 500, origin)
   if (!profile) return fail('profile_not_found', 404, origin)
 
+  const identity = storyIdentity(seriesState)
+  if (!identity.seriesId || !identity.sessionId || !identity.withinSeriesLimit) return fail('invalid_story_identity', 422, origin)
   const { data: session, error: sessionError } = await admin
     .from('story_sessions')
     .select('id,story_mode')
     .eq('child_profile_id', profile.id)
-    .eq('client_session_id', seriesState.id)
+    .eq('client_session_id', identity.sessionId)
     .maybeSingle()
 
   if (sessionError || !session) return fail('session_not_found', 404, origin)
@@ -453,7 +477,7 @@ async function loadCurrent(input: StoryStateRequest, origin: string | null) {
 
   const { data: session, error: sessionError } = await admin
     .from('story_sessions')
-    .select('id,story_mode,story_mood,style_pack_id,client_state,updated_at')
+    .select('id,story_mode,story_mood,style_pack_id,client_state,selection_snapshot,updated_at')
     .eq('child_profile_id', profile.id)
     .eq('is_archived', false)
     .order('updated_at', { ascending: false })
@@ -476,19 +500,105 @@ async function loadCurrent(input: StoryStateRequest, origin: string | null) {
 
   return json({
     snapshot: {
-      selections: {
-        ageGroup: profile.age_group,
-        language: profile.language,
-        heroType: profile.hero_type,
-        ...(profile.custom_hero_name ? { customHeroName: profile.custom_hero_name } : {}),
-        stylePackId: session.style_pack_id,
-        storyMode: session.story_mode,
-        storyMood: session.story_mood,
-      },
+      selections: isRecord(session.selection_snapshot) && Object.keys(session.selection_snapshot).length > 0
+        ? session.selection_snapshot
+        : {
+            ageGroup: profile.age_group,
+            language: profile.language,
+            heroType: profile.hero_type,
+            ...(profile.custom_hero_name ? { customHeroName: profile.custom_hero_name } : {}),
+            stylePackId: session.style_pack_id,
+            storyMode: session.story_mode,
+            storyMood: session.story_mood,
+          },
       seriesState: session.client_state,
       episode: episode.domain_payload,
       readerPreferences: profile.reader_preferences,
     },
+  }, 200, origin)
+}
+
+
+type LibrarySessionRow = {
+  id: string
+  client_session_id: string
+  client_series_id: string | null
+  series_session_index: number
+  story_mode: StoryMode
+  story_mood: StoryMood
+  style_pack_id: string
+  status: string
+  title: string | null
+  summary: string | null
+  client_state: unknown
+  selection_snapshot: unknown
+  is_archived: boolean
+  created_at: string
+  updated_at: string
+  completed_at: string | null
+}
+
+type LibraryEpisodeRow = {
+  session_id: string
+  episode_no: number
+  domain_payload: unknown
+  created_at: string
+}
+
+async function listLibrary(input: StoryStateRequest, origin: string | null) {
+  const { installationId } = input
+  if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
+
+  const { data: profile, error: profileError } = await findProfile(installationId)
+  if (profileError) return fail('profile_load_failed', 500, origin)
+  if (!profile) return json({ sessions: [] }, 200, origin)
+
+  const { data: sessions, error: sessionError } = await admin
+    .from('story_sessions')
+    .select('id,client_session_id,client_series_id,series_session_index,story_mode,story_mood,style_pack_id,status,title,summary,client_state,selection_snapshot,is_archived,created_at,updated_at,completed_at')
+    .eq('child_profile_id', profile.id)
+    .order('updated_at', { ascending: false })
+    .limit(12)
+
+  if (sessionError) return fail('library_session_load_failed', 500, origin)
+  const sessionRows = (sessions ?? []) as LibrarySessionRow[]
+  if (sessionRows.length === 0) return json({ sessions: [] }, 200, origin)
+
+  const sessionIds = sessionRows.map((session: LibrarySessionRow) => session.id)
+  const { data: episodes, error: episodeError } = await admin
+    .from('story_episodes')
+    .select('session_id,episode_no,domain_payload,created_at')
+    .in('session_id', sessionIds)
+    .order('episode_no', { ascending: true })
+
+  if (episodeError) return fail('library_episode_load_failed', 500, origin)
+  const episodeRows = (episodes ?? []) as LibraryEpisodeRow[]
+  const bySession = new Map<string, JsonRecord[]>()
+  for (const row of episodeRows) {
+    if (!isRecord(row.domain_payload)) continue
+    const existing = bySession.get(row.session_id) ?? []
+    existing.push(row.domain_payload)
+    bySession.set(row.session_id, existing)
+  }
+
+  return json({
+    sessions: sessionRows.map((session: LibrarySessionRow) => ({
+      sessionId: session.client_session_id,
+      seriesId: session.client_series_id ?? session.client_session_id,
+      sessionIndex: session.series_session_index ?? 1,
+      status: session.status,
+      title: session.title,
+      summary: session.summary,
+      isArchived: session.is_archived,
+      createdAt: session.created_at,
+      updatedAt: session.updated_at,
+      completedAt: session.completed_at,
+      selections: isRecord(session.selection_snapshot) && Object.keys(session.selection_snapshot).length > 0
+        ? session.selection_snapshot
+        : null,
+      seriesState: isRecord(session.client_state) ? session.client_state : null,
+      episodes: bySession.get(session.id) ?? [],
+    })),
   }, 200, origin)
 }
 
@@ -511,6 +621,7 @@ Deno.serve(async (request: Request) => {
     'reset_current',
     'delete_profile_data',
     'load_current',
+    'list_library',
   ])
   if (!input.action || !supportedActions.has(input.action)) return fail('unsupported_action', 400, origin)
 
@@ -518,7 +629,7 @@ Deno.serve(async (request: Request) => {
     ? 'create'
     : input.action === 'reset_current'
       ? 'allow-missing-profile'
-      : input.action === 'load_current' || input.action === 'delete_profile_data'
+      : input.action === 'load_current' || input.action === 'list_library' || input.action === 'delete_profile_data'
         ? 'allow-empty'
         : 'required'
 
@@ -534,6 +645,7 @@ Deno.serve(async (request: Request) => {
   if (input.action === 'save_preferences') return savePreferences(input, origin)
   if (input.action === 'reset_current') return resetCurrent(input, origin)
   if (input.action === 'load_current') return loadCurrent(input, origin)
+  if (input.action === 'list_library') return listLibrary(input, origin)
   if (input.action === 'delete_profile_data') {
     const response = await deleteProfileData(input, origin)
     if (response.ok) {

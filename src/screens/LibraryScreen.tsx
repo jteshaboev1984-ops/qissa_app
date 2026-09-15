@@ -3,6 +3,7 @@ import { StylePackCover } from '../components/StylePackCover'
 import { stylePacks } from '../data/stylePacks'
 import { t } from '../lib/i18n'
 import { deriveStoryStatus } from '../lib/storyStatus'
+import { canStartNextSeriesSession, MAX_SERIES_SESSIONS, seriesSessionIndex } from '../lib/memoryAgent'
 import type { Episode, Language, OnboardingSelections, SeriesState, StoryStatus } from '../types/qissa'
 import type { StoryArchiveItem } from '../lib/storyArchive'
 
@@ -81,6 +82,7 @@ export function LibraryScreen({
   generationLabel,
   generationErrorMessage,
   onOpenStory,
+  onStartNextSeriesSession,
   onOpenArchivedStory,
   onCreateStory,
 }: {
@@ -93,6 +95,7 @@ export function LibraryScreen({
   generationLabel: string
   generationErrorMessage: string | null
   onOpenStory: () => void
+  onStartNextSeriesSession: () => void
   onOpenArchivedStory: (item: StoryArchiveItem) => void
   onCreateStory: () => void
 }) {
@@ -103,7 +106,8 @@ export function LibraryScreen({
     seriesState && seriesState.choiceHistory.length > 0
       ? seriesState.choiceHistory[seriesState.choiceHistory.length - 1]
       : null
-  const episodeNumber = Math.max(seriesState?.episodeCount ?? (episode?.episode_id.startsWith('ep-2') ? 2 : 1), 1)
+  const seriesEpisodeNumber = seriesState && selections.storyMode === 'series' ? seriesSessionIndex(seriesState) : 1
+  const canStartNextSession = Boolean(seriesState && selections.storyMode === 'series' && canStartNextSeriesSession(seriesState, episode))
   const completed = status === 'completed'
 
   if (!episode) {
@@ -165,7 +169,7 @@ export function LibraryScreen({
       </div>
 
       <article className="q-card overflow-hidden p-0">
-        <StylePackCover stylePack={pack} variant="hero" title={episode.title} subtitle={`${pack.title[language]} · ${labels.episode} ${episodeNumber}`} />
+        <StylePackCover stylePack={pack} variant="hero" title={episode.title} subtitle={`${pack.title[language]} · ${labels.episode} ${seriesEpisodeNumber}${selections.storyMode === 'series' ? ` / ${MAX_SERIES_SESSIONS}` : ''}`} />
 
         <div className="space-y-4 p-5">
           <div className="flex items-center justify-between gap-3">
@@ -182,7 +186,7 @@ export function LibraryScreen({
             </div>
             <div className="rounded-2xl border border-[#eadfc9] bg-[#fff8e9] px-4 py-3">
               <p className="q-label mb-1">{labels.progress}</p>
-              <p className="text-sm font-bold text-[#3d382c]">{labels.episode} {episodeNumber}</p>
+              <p className="text-sm font-bold text-[#3d382c]">{labels.episode} {seriesEpisodeNumber}{selections.storyMode === 'series' ? ` / ${MAX_SERIES_SESSIONS}` : ''}</p>
             </div>
           </div>
 
@@ -214,13 +218,15 @@ export function LibraryScreen({
 
           <button
             className="q-primary w-full disabled:cursor-wait disabled:opacity-70"
-            onClick={onOpenStory}
+            onClick={completed && canStartNextSession ? onStartNextSeriesSession : onOpenStory}
             disabled={isGenerating}
             aria-busy={isGenerating}
           >
             {isGenerating
               ? generationLabel
-              : storyActionLabel(language, status, selections.storyMode)}
+              : completed && canStartNextSession
+                ? (language === 'ru' ? `Начать серию ${seriesEpisodeNumber + 1} из ${MAX_SERIES_SESSIONS}` : language === 'uz' ? `${seriesEpisodeNumber + 1}/${MAX_SERIES_SESSIONS}-qismni boshlash` : `${seriesEpisodeNumber + 1}/${MAX_SERIES_SESSIONS}-бөлімді бастау`)
+                : storyActionLabel(language, status, selections.storyMode)}
           </button>
 
           {generationErrorMessage ? (

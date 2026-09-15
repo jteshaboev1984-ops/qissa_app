@@ -110,6 +110,7 @@ export const isEpisode = (value: unknown): value is Episode => {
   if (!isRecord(value)) return false
   return typeof value.episode_id === 'string' &&
     typeof value.series_id === 'string' &&
+    (value.generationSource === undefined || value.generationSource === 'safe-fallback' || value.generationSource === 'openai-structured' || value.generationSource === 'local') &&
     typeof value.title === 'string' &&
     typeof value.story_text === 'string' &&
     typeof value.mode === 'string' &&

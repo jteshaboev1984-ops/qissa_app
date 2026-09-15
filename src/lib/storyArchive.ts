@@ -1,5 +1,6 @@
 import type { Episode, OnboardingSelections, SeriesState, StoryMode, StoryMood, StylePackId, Language } from '../types/qissa'
 import { playbackProgress } from './playbackProgress'
+import { seriesSessionId, seriesSessionIndex } from './memoryAgent'
 
 export interface StoryArchiveItem {
   id: string
@@ -22,7 +23,7 @@ export interface StoryArchiveItem {
 }
 
 const STORY_ARCHIVE_KEY = 'qissa:v1:storyArchive'
-const MAX_ARCHIVE_ITEMS = 8
+const MAX_ARCHIVE_ITEMS = 20
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
@@ -66,9 +67,9 @@ const isArchiveItem = (value: unknown): value is StoryArchiveItem => {
 export const canRestoreArchiveItem = (item: StoryArchiveItem): boolean =>
   Boolean(item.selections && item.seriesState && item.episode)
 
-const episodeNumberFrom = (episode: Episode, seriesState: SeriesState | null): number => {
-  if (seriesState?.episodeCount) return Math.max(seriesState.episodeCount, 1)
-  return episode.episode_id.startsWith('ep-2') ? 2 : 1
+const episodeNumberFrom = (selections: OnboardingSelections, episode: Episode, seriesState: SeriesState | null): number => {
+  if (selections.storyMode === 'series' && seriesState) return seriesSessionIndex(seriesState)
+  return episode.episode_id.startsWith('ep-2') ? 1 : 1
 }
 
 const buildArchiveItem = (
@@ -90,14 +91,14 @@ const buildArchiveItem = (
     episode.story_text.slice(0, 120)
 
   return {
-    id: episode.series_id,
+    id: seriesState ? seriesSessionId(seriesState) : `${episode.series_id}:${episode.episode_id}`,
     title: episode.title,
     stylePackId: episode.stylePackId,
     storyMode: selections.storyMode,
     storyMood: selections.storyMood,
     language: selections.language,
     episodeId: episode.episode_id,
-    episodeNumber: episodeNumberFrom(episode, seriesState),
+    episodeNumber: episodeNumberFrom(selections, episode, seriesState),
     summary,
     lastChoiceText: latestChoice?.choice_text?.trim() ?? '',
     tomorrowSeed: latestChoice?.tomorrow_seed?.trim() ?? '',

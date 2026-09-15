@@ -379,6 +379,10 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
     }
   }
 
+  if (context.storyMode === 'series' && context.isFinalSeriesSession && context.episodeIndex === 2 && patchIsValid(value.state_patch) && value.state_patch.open_arc !== null) {
+    errors.push('final_series_arc_not_closed')
+  }
+
   if (context.episodeIndex === 1) {
     if (!value.decision_point?.trim()) errors.push('missing_blueprint_decision_point')
     if (typeof value.next_episode_preview !== 'string' || !value.next_episode_preview.trim()) errors.push('missing_blueprint_preview')
@@ -411,6 +415,9 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'Never encode speculation, moral judgment, child identity labels, sensitive personal data, punishment or permanent negative traits in state.',
     'Both choices must be safe, understandable, meaningfully different hero actions. Neither choice may be a trick or a morally bad option.',
     'For Episode 1, plan 5-7 causal beats ending at one explicit decision point. Do not resolve either branch before the decision.',
+    'When Episode 1 starts a later bedtime session in an existing series, use remembered canon, relationships and prior consequences as continuity callbacks, then introduce one fresh child-scale goal for tonight. Do not replay or reopen a problem that the previous bedtime session already solved.',
+    'A serialized QISSA story has at most 10 bedtime sessions. Sessions 1-6 may establish or develop one gentle long-running arc while still resolving each night local goal. Sessions 7-8 must increasingly pay off existing clues and relationships and must not introduce a new major unresolved arc. Session 9 is penultimate: resolve secondary threads and position the existing central arc for its finale without adding sequel bait. Session 10 is the finale: resolve the current goal plus every meaningful unresolved thread carried in active_arc or compact canon, close the active arc, and end without a cliffhanger, future quest, mystery tease or promise of session 11.',
+    'In final session Episode 2, state_patch.open_arc must be null to mark the serialized arc closed. The ending may leave the world emotionally open for imagination, but it must not leave a pending plot obligation.',
     'For Episode 2, continue after the already-confirmed resolution bridge, use 4-7 causal beats, solve the original story goal and end with a calm bedtime coda. Return zero choices.',
     'Keep the plan concise. It is internal production state, not child-facing prose.',
     'All natural-language blueprint values, including effect summaries, state values, arc text and preview text, must be in the requested story language. Memory keys are machine identifiers and are the only exception.',
@@ -420,7 +427,17 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
   ].join(' ')
 
   const user = JSON.stringify({
-    task: context.episodeIndex === 1 ? 'Plan bedtime session segment 1 and its two branch consequences.' : 'Plan bedtime session segment 2 after the confirmed choice consequence.',
+    task: context.storyMode === 'one_time'
+      ? 'Plan one self-contained bedtime story with one gentle decision and its two safe branch consequences.'
+      : context.isFinalSeriesSession
+        ? context.episodeIndex === 1
+          ? 'Plan final bedtime series session 10, segment 1. Use prior canon as payoff material, begin the final child-scale goal, and offer two safe actions that both lead toward a fully closed ending in segment 2.'
+          : 'Plan final bedtime series session 10, segment 2. Resolve tonight central goal and all meaningful unresolved serialized threads, close active_arc with null, and end with a calm definitive coda and no sequel hook.'
+        : context.episodeIndex === 1
+          ? context.hasSeriesMemory
+            ? `Plan bedtime series session ${context.sessionIndex}, segment 1, using prior canon as continuity while starting one fresh story goal and two branch consequences.`
+            : 'Plan bedtime series session 1, segment 1 and its two branch consequences.'
+          : `Plan bedtime series session ${context.sessionIndex}, segment 2 after the confirmed choice consequence.`,
     requested_language: languageNames[context.language],
     age_group: context.ageGroup,
     hero: {
@@ -430,6 +447,10 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     style_pack: context.stylePackId,
     story_mode: context.storyMode,
     story_mood: context.storyMood,
+    series_session_index: context.sessionIndex,
+    series_session_limit: 10,
+    series_sessions_remaining_after_tonight: context.seriesSessionsRemaining,
+    final_series_session: context.isFinalSeriesSession,
     segment: context.episodeIndex,
     memory: memoryPayload(context),
     output_contract: {
@@ -478,6 +499,7 @@ export const buildNarratorPrompts = (
     'For Russian, use {{HERO}} only in grammatically invariant positions, preferably nominative subject or direct address. Never put it after a preposition and never attach gendered past-tense agreement directly to the token.',
     'For Episode 1, end story_text at the blueprint decision point before either branch happens. Do not print the two choices inside story_text.',
     'For Episode 2, begin after the confirmed choice resolution already happened. Do not replay that action. Resolve the same central goal and finish calmly without a cliffhanger.',
+    'If this is final series session 10, make the prose feel like a true finale: pay off remembered clues and relationships that matter, settle the active serialized arc, avoid sequel bait, and finish with emotional closure. Do not invent a new unresolved question in the final paragraphs.',
     'Follow the blueprint beat order. Every one or two short paragraphs should contain action, dialogue, discovery, reaction, attempt, humor or cause-and-effect.',
     'For ages 5-7 bedtime series, treat paragraph_budget as a quantitative drafting plan. Do not compress several blueprint beats into a few very short paragraphs; hit the requested total through meaningful beat development, not filler.',
     'Avoid padding, repeated clues, repeated explanation, decorative filler and unrelated events.',
@@ -494,6 +516,8 @@ export const buildNarratorPrompts = (
       note: 'Plan actions physically and socially appropriate for this hero type without inferring gender stereotypes or inventing child identity facts.',
     },
     style_pack: context.stylePackId,
+    series_session_index: context.sessionIndex,
+    final_series_session: context.isFinalSeriesSession,
     hard_story_word_range: { minimum: minimumWords, maximum: maximumWords },
     target_story_words: target,
     paragraph_budget: paragraphBudget,

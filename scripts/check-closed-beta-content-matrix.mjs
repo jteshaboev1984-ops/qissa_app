@@ -206,7 +206,7 @@ try {
         assert(Array.isArray(episodeTwo.choices) && episodeTwo.choices.length === 0, `${label}/${branch}: Episode 2 must contain zero choices.`)
         assert(episodeTwo.nextEpisodePreview === '', `${label}/${branch}: Episode 2 must not promise another episode.`)
         assert(episodeTwo.state_patch?.canon_updates?.remembered_choice === `choice-${branch}`, `${label}/${branch}: remembered branch is missing from canon patch.`)
-        assert(episodeTwo.state_patch?.open_arc === undefined, `${label}/${branch}: Episode 2 must close the active arc.`)
+        assert(episodeTwo.state_patch?.open_arc === null, `${label}/${branch}: Episode 2 must explicitly close the active arc.`)
         assert(!technicalCopy.test(`${episodeTwo.title} ${episodeTwo.story_text}`), `${label}/${branch}: Episode 2 exposes technical copy.`)
         assert(!unresolvedBedtime.test(episodeTwo.story_text), `${label}/${branch}: Episode 2 breaks bedtime tone.`)
       }

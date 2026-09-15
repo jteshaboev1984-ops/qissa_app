@@ -1,0 +1,68 @@
+import fs from 'node:fs'
+
+const read = (path) => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+const failures = []
+const requireCondition = (condition, message) => { if (!condition) failures.push(message) }
+
+const migration = read('docs/qissa/backend/migrations/20260914_000016_add_series_session_library.sql')
+const state = read('supabase/functions/story-state/index.ts')
+const contracts = read('supabase/functions/story-generate/contracts.ts')
+const architecture = read('supabase/functions/story-generate/story-architecture.ts')
+const domain = read('src/contracts/storyContracts.ts')
+const memory = read('src/lib/memoryAgent.ts')
+const service = read('src/lib/storyService.ts')
+const app = read('src/App.tsx')
+const localAgent = read('src/lib/storyAgent.ts')
+const archive = read('src/lib/storyArchive.ts')
+const home = read('src/screens/HomeScreen.tsx')
+const storyScreen = read('src/screens/StoryScreen.tsx')
+const storyGenerate = read('supabase/functions/story-generate/index.ts')
+const storyRemote = read('src/lib/storyRemoteClient.ts')
+const storyService = read('src/lib/storyService.ts')
+
+requireCondition(/client_series_id\s+text/.test(migration), 'Migration must add client_series_id.')
+requireCondition(/series_session_index\s+integer\s+not null\s+default 1/i.test(migration), 'Migration must add 1-based series_session_index.')
+requireCondition(/series_session_index between 1 and 10/.test(migration), 'Database must cap a serialized story at ten sessions.')
+requireCondition(/selection_snapshot\s+jsonb\s+not null/i.test(migration), 'Migration must persist per-session selections for rereading.')
+requireCondition(/ux_story_sessions_profile_series_session_index/.test(migration), 'Series/session identity must be unique per child profile.')
+
+requireCondition(/sessionId\?: string/.test(domain) && /sessionIndex\?: number/.test(domain), 'SeriesState must carry backward-compatible session identity.')
+requireCondition(/id: uniqueId\('series'\)/.test(memory), 'New series IDs must be unique, not world/language deterministic.')
+requireCondition(/sessionId: uniqueId\('session'\)/.test(memory), 'Every bedtime session must have a unique session ID.')
+requireCondition(/MAX_SERIES_SESSIONS = 10/.test(memory), 'Series lifecycle must define a ten-session maximum.')
+requireCondition(/createNextSeriesSessionState/.test(memory) && /episodeCount: 0/.test(memory) && /canStartNextSeriesSession/.test(memory), 'A bounded next-series-session helper must preserve series memory while resetting current-session progress.')
+requireCondition(/applyEpisodeToSeriesState/.test(memory) && /canon_updates/.test(memory) && /relationship_updates/.test(memory), 'Durable episode patches must be merged into SeriesState.')
+requireCondition(/applyEpisodeToSeriesState\(seriesState, output\.episode\)/.test(service), 'Remote persistence must save the merged episode state.')
+requireCondition(/applyEpisodeToSeriesState\(seriesState, firstEpisode\)/.test(app) && /applyEpisodeToSeriesState\(seriesState, secondEpisode\)/.test(app), 'App state must match the durable episode state.')
+
+requireCondition(/explicitSessionIdentity/.test(contracts) && /sessionEpisodeCount/.test(contracts), 'Story AI must derive current segment from session progress, not all historical choices.')
+requireCondition(/hasSeriesMemory/.test(contracts) && /sessionIndex/.test(contracts), 'Story AI context must distinguish later series sessions from current-session continuation.')
+requireCondition(/-s\$\{context\.sessionIndex\}/.test(contracts), 'Later bedtime sessions must receive unique episode IDs.')
+requireCondition(/fresh child-scale goal for tonight/.test(architecture), 'Architect must start a fresh bedtime goal in later series sessions.')
+requireCondition(/at most 10 bedtime sessions/.test(architecture) && /Session 9 is penultimate/.test(architecture) && /Session 10 is the finale/.test(architecture), 'Architect must follow a ten-session serialized arc with penultimate and finale discipline.')
+requireCondition(/final_series_arc_not_closed/.test(architecture) && /open_arc must be null/.test(architecture), 'Final session segment 2 must deterministically close the active serialized arc.')
+requireCondition(/MAX_SERIES_SESSIONS = 10/.test(contracts) && /rawSessionIndex > MAX_SERIES_SESSIONS/.test(contracts), 'Story AI request normalization must reject session 11+.')
+requireCondition(/isCurrentSessionContinuation/.test(localAgent), 'Local fallback agent must also use current-session progress.')
+
+requireCondition(/client_session_id: identity\.sessionId/.test(state), 'story-state must key rows by bedtime session ID.')
+requireCondition(/client_series_id: identity\.seriesId/.test(state), 'story-state must persist stable series identity.')
+requireCondition(/series_session_index: identity\.sessionIndex/.test(state), 'story-state must persist session order.')
+requireCondition(/selection_snapshot: selections/.test(state), 'story-state must snapshot the selections used to create each story.')
+requireCondition(/'list_library'/.test(state) && /async function listLibrary/.test(state), 'story-state must expose an authenticated server Story Library action.')
+requireCondition(/episodes: bySession\.get\(session\.id\) \?\? \[\]/.test(state), 'Server Story Library must return stored episode payloads for rereading.')
+requireCondition(/\.eq\('client_session_id', identity\.sessionId\)/.test(state), 'Choice confirmation must target the current bedtime session, not the whole series ID.')
+requireCondition(/MAX_SERIES_SESSIONS = 10/.test(state) && /withinSeriesLimit/.test(state), 'story-state must reject writes beyond session 10.')
+requireCondition(/seriesSessionId\(seriesState\)/.test(archive), 'Local Story Library must key snapshots by bedtime session identity instead of stable series identity.')
+requireCondition(/onStartNextSeriesSession/.test(home) && /MAX_SERIES_SESSIONS/.test(home), 'Home must continue the same series after a completed session until 10/10.')
+requireCondition(/isWholeSeriesFinal/.test(storyScreen) && /onStartNextSeriesSession/.test(storyScreen), 'Story reader must distinguish a completed bedtime session from the whole-series finale.')
+requireCondition(/generationSource\?: StoryGenerationSource/.test(domain), 'Episode contract must persist its generation source across reloads.')
+requireCondition(/generationSource: 'safe-fallback'/.test(storyGenerate) && /generationSource: 'openai-structured'/.test(storyGenerate), 'Story Edge Function must stamp the actual generation source into episode payloads.')
+requireCondition(/generationSource: 'local'/.test(storyService) && /safe-fallback/.test(storyRemote), 'Browser generation clients must preserve and validate episode source metadata.')
+requireCondition(/episode\?\.generationSource === 'openai-structured'/.test(memory) && /episode\?\.generationSource === 'local'/.test(memory), 'A deterministic safe-fallback episode must not unlock another bedtime session that would repeat fallback content.')
+requireCondition(/canStartNextSeriesSession=\{Boolean/.test(app) && /canStartNextSeriesSession \?/.test(storyScreen), 'UI must fail closed when a fallback session cannot safely advance.')
+
+if (failures.length) {
+  console.error(`Story Library / series persistence contract failed:\n- ${failures.join('\n- ')}`)
+  process.exit(1)
+}
+console.log('Story Library / multi-session series persistence contract passed.')
