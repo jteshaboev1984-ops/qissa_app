@@ -16,6 +16,11 @@ export type GenerationClaim = {
   globalLimit: number
 }
 
+export type StoryAiRuntimeState = {
+  enabled: boolean
+  reason: 'runtime-enabled' | 'runtime-disabled' | 'runtime-config-unavailable' | 'runtime-config-check-failed'
+}
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
@@ -40,6 +45,28 @@ const deniedClaim = (reason: string): GenerationClaim => ({
   globalUsed: 0,
   globalLimit: GLOBAL_DAILY_STORY_GENERATION_LIMIT,
 })
+
+export const readStoryAiRuntimeState = async (): Promise<StoryAiRuntimeState> => {
+  const admin = adminClient()
+  if (!admin) return { enabled: false, reason: 'runtime-config-unavailable' }
+
+  const { data, error } = await admin
+    .from('qissa_runtime_flags')
+    .select('enabled')
+    .eq('flag', 'story_ai_enabled')
+    .maybeSingle()
+
+  if (error) {
+    console.error('QISSA Story AI runtime flag check failed', error)
+    return { enabled: false, reason: 'runtime-config-check-failed' }
+  }
+
+  if (!isRecord(data) || data.enabled !== true) {
+    return { enabled: false, reason: 'runtime-disabled' }
+  }
+
+  return { enabled: true, reason: 'runtime-enabled' }
+}
 
 export const claimStoryGeneration = async (installationId: string): Promise<GenerationClaim> => {
   const admin = adminClient()

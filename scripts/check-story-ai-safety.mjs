@@ -19,7 +19,7 @@ const requireText = (label, source, fragments) => {
 }
 
 requireText('story entrypoint', index, [
-  "Deno.env.get('QISSA_AI_ENABLED')",
+  'readStoryAiRuntimeState',
   "Deno.env.get('OPENAI_API_KEY')",
   'maxAttempts = 3',
   'maxFullGenerationAttempts = 2',
