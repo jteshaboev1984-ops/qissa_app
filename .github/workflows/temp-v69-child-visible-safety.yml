@@ -1,0 +1,50 @@
+name: Temporary v69 Child Visible Safety Patch
+
+on:
+  push:
+    branches:
+      - fix/child-visible-safety-v69
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temp-v69-child-visible-safety
+  cancel-in-progress: false
+
+jobs:
+  patch-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/child-visible-safety-v69
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Apply v69 patch
+        run: python3 scripts/temp-v69-child-visible-safety.py
+      - name: Targeted checks
+        run: |
+          npm run check:story-core
+          npm run check:bedtime-duration
+          npm run check:story-ai
+          npm run check:story-ai-split
+          npm run check:localized-fallback
+          npm run check:story-cost-guard
+          npm run typecheck:story-ai
+          npm run typecheck
+      - name: Commit verified patch
+        run: |
+          git config user.name "qissa-audit-bot"
+          git config user.email "qissa-audit-bot@users.noreply.github.com"
+          git add supabase/functions/story-generate/openai.ts supabase/functions/story-generate/split-index.ts scripts/check-story-safety-verdict.mjs scripts/check-story-ai-split.mjs
+          if git diff --cached --quiet; then
+            echo "No patch to commit"
+            exit 0
+          fi
+          git commit -m "Classify safety on child-visible story only"
+          git push origin HEAD:fix/child-visible-safety-v69
