@@ -22,7 +22,7 @@ replace_once(
 
 replace_once(
     "Aka jim turib eshitdi. Keyin u ham ikki marta kaftini sekin urdi.\n\n— Yana bir marta bo‘ladimi?",
-    "Aka jim turib eshitdi. Keyin u ham ikki marta kaftini sekin urdi.\n\nAka qo‘shiq tugagach, Pufdan yana qanday ovozlar borligini so‘radi. Lola yong‘oq po‘chog‘ini kaftida aylantirdi. Toti quruq bargga bitta panjasini qo‘ydi. Puf esa quloqlarini navbat bilan ko‘tarib, o‘zini boshliqdek ko‘rsatdi. O‘ng qulog‘i ko‘tarilsa hamma chalardi, chap qulog‘i ko‘tarilsa hamma jim turardi. Bir safar ikkala qulog‘i birga ko‘tarilib, Pufning o‘zi nima qilishni bilmay qoldi. Hamma kuldi.\n\n— Yana bir marta bo‘ladimi?",
+    "Aka jim turib eshitdi. Keyin u ham ikki marta kaftini sekin urdi.\n\nAka qo‘shiq tugagach, Pufdan yana qanday ovozlar borligini so‘radi. Lola yong‘oq po‘chog‘ini kaftida aylantirdi. Toti quruq bargga bitta panjasini qo‘ydi. Puf esa quloqlarini navbat bilan ko‘tarib, o‘zini boshliqdek ko‘rsatdi. O‘ng qulog‘i ko‘tarilsa hamma chalardi, chap qulog‘i ko‘tarilsa hamma jim turardi. Bir safar ikkala qulog‘i birga ko‘tarilib, Pufning o‘zi nima qilishni bilmay qoldi. Hamma kuldi. Lola ham boshliq bo‘lish uchun dumini baland ko‘tardi, Puf esa bunga darrov rozi bo‘ldi.\n\n— Yana bir marta bo‘ladimi?",
 )
 
 path.write_text(text)
