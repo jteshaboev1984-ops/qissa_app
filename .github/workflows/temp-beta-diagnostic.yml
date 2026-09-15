@@ -6,30 +6,51 @@ on:
       - fix/uzbek-full-rewrite-repair-v73
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: temp-beta-matrix-fix
+  cancel-in-progress: false
 
 jobs:
-  diagnose:
+  patch-and-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: fix/uzbek-full-rewrite-repair-v73
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Enrich Russian hero diagnostic
+      - name: Patch first-session guard
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p = Path('scripts/check-closed-beta-content-matrix.mjs')
+          p = Path('supabase/functions/story-generate/storySixMinuteEditorial.ts')
           s = p.read_text()
-          old = "assert(!afterPreposition.test(field), `${label}: finalized Russian hero name appears after a preposition and would require declension.`)"
-          new = "assert(!afterPreposition.test(field), `${label}: finalized Russian hero name appears after a preposition and would require declension. match=${JSON.stringify(field.match(afterPreposition)?.[0] ?? '')} field=${JSON.stringify(field)}`)"
+          old = "  if (context.hasSeriesMemory || context.sessionIndex !== 1) return null"
+          new = "  if (context.hasSeriesMemory || (typeof context.sessionIndex === 'number' && context.sessionIndex !== 1)) return null"
           if old not in s:
-              raise SystemExit('diagnostic target not found')
-          p.write_text(s.replace(old, new))
+              raise SystemExit('first-session guard target not found')
+          p.write_text(s.replace(old, new, 1))
           PY
-      - name: Run beta content diagnostic
-        run: npm run check:beta-content
+      - name: Verify deterministic beta content and story core
+        run: |
+          npm run check:beta-content
+          npm run check:story-core
+          npm run check:story-ai-split
+          npm run typecheck:story-ai
+      - name: Commit verified production fix
+        run: |
+          git config user.name "qissa-audit-bot"
+          git config user.email "qissa-audit-bot@users.noreply.github.com"
+          git add supabase/functions/story-generate/storySixMinuteEditorial.ts
+          if git diff --cached --quiet; then
+            echo "No production fix to commit"
+            exit 0
+          fi
+          git commit -m "Allow implicit first session in deterministic fallback checks"
+          git push origin HEAD:fix/uzbek-full-rewrite-repair-v73
