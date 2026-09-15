@@ -1,11 +1,13 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-// Launch-safe emergency ceilings. These are server-side spend guards, not a
-// product-facing family quota. They bound accidental/abusive provider spend even
-// when the browser has no visible throttle. Claims are still counted atomically.
-// Increase deliberately only after observing real closed-beta usage and cost.
-const DAILY_STORY_GENERATION_LIMIT = 5
-const GLOBAL_DAILY_STORY_GENERATION_LIMIT = 30
+// During active Story AI tuning, zero means accounting-only: provider-eligible
+// requests are still counted atomically, but no per-installation or project-wide
+// daily throttle is enforced. The service-role runtime flag remains the provider
+// kill switch and stays OFF outside deliberate acceptance windows. Restore
+// positive emergency ceilings intentionally before external closed beta/launch.
+const DEVELOPMENT_ACCOUNTING_ONLY_LIMIT = 0
+const DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_ONLY_LIMIT
+const GLOBAL_DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_ONLY_LIMIT
 
 export type GenerationClaim = {
   allowed: boolean
