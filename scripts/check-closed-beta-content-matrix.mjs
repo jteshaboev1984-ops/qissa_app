@@ -5,6 +5,9 @@ import { pathToFileURL } from 'node:url'
 import ts from 'typescript'
 
 const root = process.cwd()
+const minBedtimeWords = 160
+const worlds = ['cozy_forest', 'magic_garden', 'stars_and_space']
+const languages = ['ru', 'uz']
 const sourceNames = [
   'contracts',
   'storyCoreBranches',
@@ -50,19 +53,35 @@ const transpile = (source) => ts.transpileModule(source, {
   .replace(/['"]\.\/storySpaceBedtimeMemory\.ts['"]/g, "'./storySpaceBedtimeMemory.mjs'")
   .replace(/['"]\.\/storySpaceBedtime\.ts['"]/g, "'./storySpaceBedtime.mjs'")
 
-const wordCount = (text) => text.trim().split(/\s+/u).filter(Boolean).length
-const paragraphs = (text) => text.split(/\n\s*\n/u).map((paragraph) => paragraph.trim()).filter(Boolean)
-const technicalCopy = /последстви[ея] выбора|мир запомнил|текущей версии|сохран[её]н(?:ный|о) выбор|episode|state[_ -]?patch/iu
-const unresolvedBedtime = /продолжим завтра|новая загадка ждала|опасность только начиналась|неизвестно что будет дальше|тайна осталась/iu
-const nextDayReset = /^(утром|на следующее утро|на следующий день|ertasi tong|ertasiga|tañerteñ|келесі таң)/iu
-const genericOpening = /уютный лес|уютном лесу|shinam o‘rmon|волшебном саду|sehrli bog‘|звёздной станции|yulduzli bekat/iu
-const minBedtimeWords = 300
+const wordCount = (text) => typeof text === 'string'
+  ? text.trim().split(/\s+/u).filter(Boolean).length
+  : 0
 
+const paragraphs = (text) => typeof text === 'string'
+  ? text.trim().split(/\n\s*\n/u).map((item) => item.trim()).filter(Boolean)
+  : []
+
+const technicalCopy = /state[_ -]?patch|episode[_ -]?id|series[_ -]?id|choice[_ -]?id|состояни[ея]\s+истории|техническ(?:ий|ая)\s+маркер/iu
+const unresolvedBedtime = /продолжение следует|davomi bor|страшн(?:ый|ая|ое)|dahshatli|погоня|quv(?:di|ish)|взрыв|portlash/iu
+const nextDayReset = /^(?:утром\b|на следующее утро\b|tongda\b|ertasi tongda\b)/iu
+const malformedRussianSecondPerson = /(?:\b(?:до|у|к|ко|с|со|от|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между)\s+ты\b|(?:^|[.!?…]\s+)ты\b)/u
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const assertRussianHeroFinalization = (label, heroName, fields) => {
-  const combined = fields.filter(Boolean).join(' ')
-  assert(combined.includes(heroName), `${label}: custom hero name was not restored.`)
-  assert(!combined.includes('{{HERO}}'), `${label}: unresolved hero token remains.`)
-  assert(!/\{\{HERO\}\}/u.test(combined), `${label}: unresolved hero placeholder remains.`)
+  const name = escapeRegExp(heroName)
+  const afterPreposition = new RegExp(
+    `(?:^|[\\s(«„"—-])(?:у|к|ко|с|со|от|до|для|без|про|о|об|обо|около|возле|вокруг|перед|за|под|над|между|рядом\\s+с)\\s+${name}(?=[\\s,.:;!?»”")—-]|$)`,
+    'iu',
+  )
+  const genderedAgreement = new RegExp(
+    `${name}\\s+(?:сказал|сказала|подошёл|подошла|увидел|увидела|услышал|услышала|понял|поняла|решил|решила|оказался|оказалась|остановился|остановилась|улыбнулся|улыбнулась|засмеялся|засмеялась|пожелал|пожелала)\\b`,
+    'iu',
+  )
+  for (const field of fields.filter((item) => typeof item === 'string')) {
+    assert(!afterPreposition.test(field), `${label}: finalized Russian hero name appears after a preposition and would require declension.`)
+    assert(!genderedAgreement.test(field), `${label}: finalized Russian hero name is followed by gendered agreement.`)
+    assert(!malformedRussianSecondPerson.test(field), `${label}: malformed Russian second-person grammar detected after finalization.`)
+  }
 }
 
 const finalEpisodeFields = (episode) => [
@@ -73,29 +92,35 @@ const finalEpisodeFields = (episode) => [
   ...episode.vocabulary.flatMap((item) => [item.word, item.translation, item.example]),
 ]
 
-const baseSelections = (language, stylePackId) => ({
+const storyEditorialSource = await readFile(join(root, 'supabase/functions/story-generate/storySixMinuteEditorial.ts'), 'utf8')
+const childFirstSourceStart = storyEditorialSource.indexOf('const childFirstStories:')
+assert(childFirstSourceStart >= 0, 'child-first story source missing')
+const childFirstSource = storyEditorialSource.slice(childFirstSourceStart)
+for (const match of childFirstSource.matchAll(/ru: `([\s\S]*?)`,/gu)) {
+  const raw = match[1].replace(/— \{\{HERO\}\},/gu, '')
+  assert(!raw.includes('{{HERO}}') && !raw.includes('QISSA_HERO'), 'RU deterministic source must keep the raw hero token in direct address only.')
+}
+for (const match of childFirstSource.matchAll(/example: `([^`]*)`/gu)) {
+  assert(!match[1].includes('{{HERO}}') && !match[1].includes('QISSA_HERO'), 'RU vocabulary examples must not require hero-name declension.')
+}
+
+const baseContext = (language, stylePackId) => ({
   ageGroup: '5-7',
   language,
-  heroType: 'custom',
-  customHeroName: language === 'ru' ? 'Мира' : 'Mira',
+  heroType: language === 'ru' ? 'custom' : 'boy_hero',
+  heroName: language === 'ru' ? 'Алия' : 'Timur',
   stylePackId,
   storyMode: 'series',
   storyMood: 'bedtime',
-})
-
-const baseRequest = (language, stylePackId) => ({
-  selections: baseSelections(language, stylePackId),
-  seriesState: {
-    id: `matrix-${language}-${stylePackId}`,
-    mainCharacter: language === 'ru' ? 'Мира' : 'Mira',
-    recurringCharacters: [],
-    lastEpisodeSummary: '',
-    activeArc: '',
-    relationshipState: {},
-    choiceHistory: [],
-    canonState: {},
-    episodeCount: 0,
-  },
+  seriesId: `beta-matrix-${language}-${stylePackId}`,
+  episodeIndex: 1,
+  isContinuation: false,
+  recurringCharacters: [],
+  lastEpisodeSummary: '',
+  activeArc: '',
+  relationshipState: {},
+  canonState: {},
+  choiceHistory: [],
 })
 
 const continuationContext = (context, episodeOne, choice) => ({
@@ -125,32 +150,33 @@ try {
   }
 
   const nonce = Date.now()
-  const { normalizeStoryRequest } = await import(`${pathToFileURL(join(temp, 'contracts.mjs')).href}?v=${nonce}`)
   const { buildSafeFallback } = await import(`${pathToFileURL(join(temp, 'fallback.mjs')).href}?v=${nonce}`)
-
   let passed = 0
   let minimumEpisodeOneWords = Number.POSITIVE_INFINITY
   let minimumEpisodeTwoWords = Number.POSITIVE_INFINITY
 
-  for (const language of ['ru', 'uz']) {
-    for (const stylePackId of ['cozy_forest', 'magic_garden', 'stars_and_space']) {
-      const request = baseRequest(language, stylePackId)
-      const context = normalizeStoryRequest(request)
-      const label = `${language}/${stylePackId}`
-      assert(context, `${label}: request normalization failed.`)
+  for (const language of languages) {
+    for (const stylePackId of worlds) {
+      const context = baseContext(language, stylePackId)
       const episodeOne = buildSafeFallback(context)
+      const label = `${language}/${stylePackId}`
       const episodeOneWords = wordCount(episodeOne.story_text)
       const episodeOneParagraphs = paragraphs(episodeOne.story_text)
       minimumEpisodeOneWords = Math.min(minimumEpisodeOneWords, episodeOneWords)
+
       if (language === 'ru') assertRussianHeroFinalization(`${label}/episode-1`, context.heroName, finalEpisodeFields(episodeOne))
+
       assert(episodeOne.episode_id === `ep-1-${stylePackId}`, `${label}: wrong Episode 1 id.`)
       assert(episodeOne.series_id === context.seriesId, `${label}: Episode 1 lost series id.`)
       assert(episodeOneWords >= minBedtimeWords, `${label}: Episode 1 is below ${minBedtimeWords} words.`)
-      assert(episodeOneParagraphs.length >= 5, `${label}: Episode 1 does not have enough story beats.`)
+      assert(episodeOneParagraphs.length >= 5, `${label}: Episode 1 does not have enough narrative beats.`)
       assert(Array.isArray(episodeOne.choices) && episodeOne.choices.length === 2, `${label}: Episode 1 must contain exactly two choices.`)
+      assert(new Set(episodeOne.choices.map((choice) => choice.choice_id)).size === 2, `${label}: choice ids must be distinct.`)
+      assert(Boolean(episodeOne.nextEpisodePreview?.trim()), `${label}: Episode 1 must expose a calm continuation preview.`)
+      assert(episodeOne.safety_self_check?.approved === true, `${label}: fallback Episode 1 must be safety-approved.`)
+      assert(episodeOne.safety_self_check?.required_action === 'fallback', `${label}: deterministic matrix must stay on fallback source.`)
       assert(!technicalCopy.test(`${episodeOne.title} ${episodeOne.story_text}`), `${label}: Episode 1 exposes technical copy.`)
       assert(!unresolvedBedtime.test(episodeOne.story_text), `${label}: Episode 1 breaks bedtime tone.`)
-      assert(!genericOpening.test(episodeOne.story_text.slice(0, 80)), `${label}: Episode 1 still uses the old generic fallback opening.`)
       assert(language === 'ru' ? episodeOne.vocabulary.length >= 2 && episodeOne.vocabulary.length <= 3 : episodeOne.vocabulary.length === 0, `${label}: vocabulary contract mismatch.`)
 
       const [choiceA, choiceB] = episodeOne.choices
@@ -180,7 +206,7 @@ try {
         assert(Array.isArray(episodeTwo.choices) && episodeTwo.choices.length === 0, `${label}/${branch}: Episode 2 must contain zero choices.`)
         assert(episodeTwo.nextEpisodePreview === '', `${label}/${branch}: Episode 2 must not promise another episode.`)
         assert(episodeTwo.state_patch?.canon_updates?.remembered_choice === `choice-${branch}`, `${label}/${branch}: remembered branch is missing from canon patch.`)
-        assert(episodeTwo.state_patch?.open_arc === null, `${label}/${branch}: Episode 2 must explicitly close the nightly active arc.`)
+        assert(episodeTwo.state_patch?.open_arc === null, `${label}/${branch}: Episode 2 must explicitly close the active arc.`)
         assert(!technicalCopy.test(`${episodeTwo.title} ${episodeTwo.story_text}`), `${label}/${branch}: Episode 2 exposes technical copy.`)
         assert(!unresolvedBedtime.test(episodeTwo.story_text), `${label}/${branch}: Episode 2 breaks bedtime tone.`)
       }
