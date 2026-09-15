@@ -238,11 +238,12 @@ requireFragments('Episode 2 text repair prompt', repairPrompt, [
   'For Uzbek repair prose, use natural Uzbek Latin script',
 ])
 
-requireFragments('interactive fear confirmation', repairProvider, [
+requireFragments('interactive fear adjudication', repairProvider, [
   'needsInteractiveFearConfirmation',
-  'previous internally consistent verdict flagged only excessive_fear',
-  'Maximum semantic-safety calls on this path remain two',
-  'Do not clear any real safety issue',
+  'requestFearAdjudication',
+  'narrow child-bedtime fear adjudicator',
+  'fearAdjudicationConsistencyErrors(adjudication',
+  'isolated excessive_fear was not confirmed by narrow fear adjudication',
 ])
 
 requireFragments('split safety session contract', repairProvider, [
