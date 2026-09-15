@@ -1,0 +1,25 @@
+name: Temporary Luna v59 Continuation Audit
+
+on:
+  push:
+    branches:
+      - audit/luna-v59-continuation
+
+permissions:
+  contents: read
+
+concurrency:
+  group: luna-v59-continuation-audit
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@v7
+      - name: Run controlled Luna Episode 1 to Episode 2 acceptance
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/audit-luna-v59-continuation.mjs
