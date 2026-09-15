@@ -1,0 +1,43 @@
+name: Temporary Luna Launch Readiness Patcher
+
+on:
+  push:
+    branches:
+      - fix/luna-launch-readiness-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: contains(github.event.head_commit.message, 'Run Luna launch readiness patcher')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/luna-launch-readiness-20260915
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply launch readiness fixes
+        run: python3 scripts/temp-luna-launch-readiness-patch.py
+      - name: Remove patcher script
+        run: rm scripts/temp-luna-launch-readiness-patch.py
+      - name: Validate focused launch contracts
+        run: |
+          npm ci
+          npm run check:story-cost-guard
+          npm run check:story-ai
+          npm run check:story-ai-split
+          npm run typecheck:story-ai
+          npm run typecheck
+          npm run build
+      - name: Commit durable fixes
+        run: |
+          git config user.name qissa-audit-bot
+          git config user.email actions@users.noreply.github.com
+          git add -A ':!.github/workflows/temp-luna-launch-readiness-patch.yml'
+          git commit -m "Harden Luna launch spend and timeout guards"
+          git push origin HEAD:fix/luna-launch-readiness-20260915
