@@ -314,6 +314,7 @@ export const evaluateStorySafety = async (
   const candidateJson = JSON.stringify(childVisibleStorySafetyProjection(candidate))
   const first = await requestSafetyEvaluation(apiKey, model, context, candidateJson)
   const firstErrors = safetyEvaluationConsistencyErrors(first)
+  let evaluation = first
 
   if (firstErrors.length > 0) {
     // This is a classifier-only consistency correction, not a new story generation. Keep it
@@ -328,10 +329,10 @@ export const evaluateStorySafety = async (
     )
     const correctedErrors = safetyEvaluationConsistencyErrors(corrected)
     if (correctedErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
-    return corrected
+    evaluation = corrected
   }
 
-  if (!needsInteractiveFearConfirmation(context, first)) return first
+  if (!needsInteractiveFearConfirmation(context, evaluation)) return evaluation
 
   // General semantic safety remains authoritative for every named flag. When Episode 1 is
   // rejected ONLY for excessive_fear, one bounded narrow adjudicator checks for direct evidence
@@ -342,7 +343,7 @@ export const evaluateStorySafety = async (
   if (adjudicationErrors.length > 0) throw new Error('openai_fear_adjudication_inconsistent')
   if (adjudication.excessive_fear) {
     return {
-      ...first,
+      ...evaluation,
       notes: [`fear_adjudication:${adjudication.category}`],
     }
   }
@@ -350,7 +351,7 @@ export const evaluateStorySafety = async (
   const cleared: SafetyEvaluation = {
     approved: true,
     risk_level: 'low',
-    flags: { ...first.flags, excessive_fear: false },
+    flags: { ...evaluation.flags, excessive_fear: false },
     required_action: 'publish',
     notes: ['isolated excessive_fear was not confirmed by narrow fear adjudication'],
   }
