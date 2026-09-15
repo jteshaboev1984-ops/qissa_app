@@ -1,9 +1,7 @@
 name: Temporary v65 Uzbek Safety Debug Run
 
 on:
-  push:
-    branches:
-      - audit/uzbek-v65-safety-debug
+  workflow_dispatch:
 
 permissions:
   contents: read
