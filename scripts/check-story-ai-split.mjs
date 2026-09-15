@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import { hasSingleLanguageMismatch } from '../supabase/functions/story-generate/language.ts'
+import { enforceStoryBlueprintContextContract } from '../supabase/functions/story-generate/story-architecture.ts'
 import { normalizeStoryBlueprintMemoryKeys } from '../supabase/functions/story-generate/story-architecture.ts'
 
 const architecture = fs.readFileSync('supabase/functions/story-generate/story-architecture.ts', 'utf8')
@@ -76,7 +77,25 @@ requireFragments('architecture', architecture, [
   "context.episodeIndex === 1 ? '350-390' : '430-490'",
   'Never restate, list, paraphrase, preview, or name either choice action inside story_text',
   'next_episode_preview is child-facing story copy',
+  'Episode 2 has no child decision menu',
+  "choices: context.episodeIndex === 1 ? 'exactly 2' : 'exactly 0'",
+  "decision_point: context.episodeIndex === 1 ? 'one non-empty child decision point' : 'empty string'",
+  'enforceStoryBlueprintContextContract',
 ])
+
+const continuationBlueprint = enforceStoryBlueprintContextContract(
+  { episodeIndex: 2 },
+  {
+    plan_version: 'split-v1', central_goal: 'Продолжить историю', setting_anchor: 'лес', continuity_callbacks: [], beats: ['один спокойный шаг', 'второй спокойный шаг', 'третий спокойный шаг', 'тихий финал'],
+    decision_point: 'Ошибочный новый выбор',
+    choices: [{ choice_id: 'wrong', text: 'Новый выбор', effect_summary: 'ошибка', resolution_goal: 'ошибка', tomorrow_seed: '', choice_icon: '✨', state_patch: { last_event: '', new_friend: null, hero_trait: null, open_arc: null, relationship_updates: [], canon_updates: [] }, value_alignment: ['kindness'] }],
+    state_patch: { last_event: '', new_friend: null, hero_trait: null, open_arc: null, relationship_updates: [], canon_updates: [] },
+    next_episode_preview: 'Ошибочный preview',
+  },
+)
+if (continuationBlueprint.choices.length !== 0 || continuationBlueprint.decision_point !== '' || continuationBlueprint.next_episode_preview !== '') {
+  failures.push('Episode 2 context contract must deterministically remove choices, decision point and preview before blueprint validation')
+}
 
 const narrationSchemaStart = architecture.indexOf('export const storyNarrationSchema')
 const narrationSchemaEnd = architecture.indexOf('const languageNames', narrationSchemaStart)

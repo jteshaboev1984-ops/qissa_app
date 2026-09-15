@@ -10,7 +10,7 @@ import { buildSafeFallback } from './fallback.ts'
 import { evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { combineSafety, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
-import { narrationToCandidate, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
+import { enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
 import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
@@ -219,6 +219,7 @@ Deno.serve(async (request: Request) => {
     })
   }
 
+  blueprint = enforceStoryBlueprintContextContract(context, blueprint)
   const normalizedBlueprint = normalizeStoryBlueprintMemoryKeys(context, blueprint)
   blueprint = normalizedBlueprint.blueprint
   blueprintKeysNormalized = normalizedBlueprint.normalizedCount
