@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, russianHeroTokenNeedsRewrite, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
 
 const base = 'supabase/functions/story-generate'
 const index = readFileSync(`${base}/index.ts`, 'utf8')
@@ -130,6 +130,20 @@ requireRegression(
   !visibleSafetyLanguageNeedsRewrite('ru', 'Перед героем были две двери, и за каждой слышался тихий звон.'),
   'must not reject ordinary choice-scene prose without safety evaluation language',
 )
+
+const uzRuleContext = { storyMood: 'bedtime' }
+const harmlessUzFearScan = scanRuleBasedSafety(uzRuleContext, {
+  title: 'Momiqning sovg‘asi',
+  story_text: "Momiq qong‘iroq ovozini eshitib kuldi. Qo‘ng‘iroq yonida qonun yozilgan qog‘oz emas, oddiy rasm turardi.",
+  choices: [],
+})
+requireRegression(!harmlessUzFearScan.excessive_fear, 'Uzbek qong‘iroq/qonun must not trigger the standalone qon fear rule')
+const realUzFearScan = scanRuleBasedSafety(uzRuleContext, {
+  title: 'Tekshiruv',
+  story_text: 'Yo‘lda qon bor edi va manzara dahshatli edi.',
+  choices: [],
+})
+requireRegression(realUzFearScan.excessive_fear, 'real Uzbek blood/fear language must remain blocked')
 
 requireText('story entrypoint', index, [
   'readStoryAiRuntimeState',
