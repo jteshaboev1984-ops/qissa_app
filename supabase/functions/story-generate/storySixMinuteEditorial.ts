@@ -41,7 +41,7 @@ const childFirstStories: Record<ClosedBetaWorld, ChildFirstStory> = {
   cozy_forest: {
     titleOne: {
       ru: `Дорога домой после дождя`,
-      uz: `Pufning uyqu oldi sovg‘asi`,
+      uz: `Momiqning uyqu oldi sovg‘asi`,
     },
     episodeOne: {
       ru: `Вечером дождь только что закончился, и Уютный лес пах мокрой травой, грибами и тёплой корой. У старого пенька собрались те, кто обычно желал друг другу доброй ночи. Сова Нура поправляла перья, маленький кролик Пух держал старшего брата за лапу, а черепаха терпеливо ждала у дорожки.
@@ -71,41 +71,41 @@ const childFirstStories: Record<ClosedBetaWorld, ChildFirstStory> = {
 — {{HERO}}, как поведём всех домой?
 
 Нура поставила сумку с фонариками на пень. Пух приготовился петь, хотя заранее предупредил, что знает всего три ноты. Белка прижала корзинку к животу, чтобы орехи больше не разбегались. Даже черепаха подняла голову. Теперь выбор был за тобой.`,
-      uz: `Shinam o‘rmonda oqshom edi. Puf ismli quyoncha eski to‘nka yonida katta-katta barglarni bir joyga yig‘ib qo‘ygan edi. Yonida boyqush Nura, olmaxon Lola va sekin yuradigan toshbaqa Toti ham bor edi. {{HERO}} kelganda Puf bir bargni qulog‘iga qo‘yib, juda jiddiy ko‘rinishga urindi.
+      uz: `Shinam o‘rmonda oqshom edi. Momiq ismli quyoncha eski to‘nka yonida katta-katta barglarni bir joyga yig‘ib qo‘ygan edi. Yonida boyqush Oycha, olmaxon Yong‘oqcha va sekin yuradigan toshbaqa Toshvoy ham bor edi. {{HERO}} kelganda Momiq bir bargni qulog‘iga qo‘yib, juda jiddiy ko‘rinishga urindi.
 
-— Men akamga uyqudan oldin sovg‘a qilmoqchiman, — dedi Puf. — U har kecha ko‘rpamni to‘g‘rilab beradi. Bugun men ham uni xursand qilaman.
+— Men akamga uyqudan oldin sovg‘a qilmoqchiman, — dedi Momiq. — U har kecha ko‘rpamni to‘g‘rilab beradi. Bugun men ham uni xursand qilaman.
 
-Puf barglar orasidan eng kattasini oldi. Barg uning yuzini butunlay yopib qoldi.
+Momiq barglar orasidan eng kattasini oldi. Barg uning yuzini butunlay yopib qoldi.
 
-— Avval seni topib olaylik, — dedi Lola.
+— Avval seni topib olaylik, — dedi Yong‘oqcha.
 
-Barg pastga tushganda hamma kuldi. Puf ham kulib, bargni ehtiyotkorlik bilan yerga qo‘ydi.
+Barg pastga tushganda hamma kuldi. Momiq ham kulib, bargni ehtiyotkorlik bilan yerga qo‘ydi.
 
-Nura Pufdan sovg‘a qanday bo‘lishini so‘radi. Puf yelka qisdi. U faqat akasi kulsa, sovg‘a yaxshi chiqqanini bilishini aytdi.
+Oycha Momiqdan sovg‘a qanday bo‘lishini so‘radi. Momiq yelka qisdi. U faqat akasi kulsa, sovg‘a yaxshi chiqqanini bilishini aytdi.
 
-Lola uchta yong‘oq po‘chog‘ini olib keldi. Toti esa yo‘lda topgan yumshoq sariq bargni ko‘rsatdi. {{HERO}} ularni eski to‘nka ustiga terib chiqdi. Hamma bir oz o‘ylab qoldi.
+Yong‘oqcha uchta yong‘oq po‘chog‘ini olib keldi. Toshvoy esa yo‘lda topgan yumshoq sariq bargni ko‘rsatdi. {{HERO}} ularni eski to‘nka ustiga terib chiqdi. Hamma bir oz o‘ylab qoldi.
 
-Shu payt ikkita yorug‘qo‘ng‘iz uchib kelib, Pufning uzun quloqlari orasida aylana boshladi. Puf boshini burdi, ular ham burildi. Puf boshini yana burdi, ular yana ergashdi.
+Shu payt ikkita yorug‘qo‘ng‘iz uchib kelib, Momiqning uzun quloqlari orasida aylana boshladi. Momiq boshini burdi, ular ham burildi. Momiq boshini yana burdi, ular yana ergashdi.
 
-— Menimcha, ular ham yordam bermoqchi, — dedi Nura.
+— Menimcha, ular ham yordam bermoqchi, — dedi Oycha.
 
-Puf juda past ovozda “xayrli tun” deb ko‘rdi. Yorug‘qo‘ng‘izlardan biri shu payt yonib-o‘chdi.
+Momiq juda past ovozda “xayrli tun” deb ko‘rdi. Yorug‘qo‘ng‘izlardan biri shu payt yonib-o‘chdi.
 
-— Mana, u javob berdi! — dedi Puf.
+— Mana, u javob berdi! — dedi Momiq.
 
 Endi hammaning kayfiyati yanada ko‘tarildi. {{HERO}} barglarni bir tomonga, yong‘oq po‘choqlarini ikkinchi tomonga qo‘ydi. Bir fikr barglardan kichkina rasm yasash edi. Unda oy, quyon quloqlari va bitta yulduz bo‘lishi mumkin edi.
 
-Ikkinchi fikr esa juda sokin qo‘shiq edi. Yong‘oq po‘choqlari “toq-toq” qilardi, Lola barglarni mayin shitirlatardi, Nura esa ikki notani cho‘zib aytardi. Puf faqat oxirida “xayrli tun” deb qo‘shilardi.
+Ikkinchi fikr esa juda sokin qo‘shiq edi. Yong‘oq po‘choqlari “toq-toq” qilardi, Yong‘oqcha barglarni mayin shitirlatardi, Oycha esa ikki notani cho‘zib aytardi. Momiq faqat oxirida “xayrli tun” deb qo‘shilardi.
 
-Puf avval barglardan kichkina quyon yuzini yasab ko‘rdi. Bir quloq juda uzun, ikkinchisi juda kalta chiqdi. Lola uni ko‘rib, bu quyon emas, sabziga o‘xshaydi, dedi. Puf rasmni aylantirib ko‘rdi. Shunda u rostdan ham sabziga o‘xshab qoldi. Hamma yana kuldi. So‘ng Nura yong‘oq po‘choqlarini bir-biriga sekin urib ko‘rdi. Ovozi baland emas, yoqimli edi.
+Momiq avval barglardan kichkina quyon yuzini yasab ko‘rdi. Bir quloq juda uzun, ikkinchisi juda kalta chiqdi. Yong‘oqcha uni ko‘rib, bu quyon emas, sabziga o‘xshaydi, dedi. Momiq rasmni aylantirib ko‘rdi. Shunda u rostdan ham sabziga o‘xshab qoldi. Hamma yana kuldi. So‘ng Oycha yong‘oq po‘choqlarini bir-biriga sekin urib ko‘rdi. Ovozi baland emas, yoqimli edi.
 
-Puf ikkala fikrni ham tasavvur qilib ko‘rdi. Avval quloqlarini tik tutdi, keyin birini bukdi. Yorug‘qo‘ng‘izlar ham go‘yo tanlayotgandek bir bargga, bir yong‘oq po‘chog‘iga uchib qo‘nardi. Lola ularning bu jiddiy ishiga qarab kulmaslikka harakat qildi.
+Momiq ikkala fikrni ham tasavvur qilib ko‘rdi. Avval quloqlarini tik tutdi, keyin birini bukdi. Yorug‘qo‘ng‘izlar ham go‘yo tanlayotgandek bir bargga, bir yong‘oq po‘chog‘iga uchib qo‘nardi. Yong‘oqcha ularning bu jiddiy ishiga qarab kulmaslikka harakat qildi.
 
-— Ikkalasi ham yoqdi, — dedi Puf. — Lekin bittasidan boshlashimiz kerak.
+— Ikkalasi ham yoqdi, — dedi Momiq. — Lekin bittasidan boshlashimiz kerak.
 
-{{HERO}} Puf yoniga o‘tirdi. Lola yong‘oq po‘choqlarini kaftida ushlab turardi. Toti sariq bargni shamol uchirib ketmasin deb oyog‘i bilan bosib oldi. Nura esa jim kutdi.
+{{HERO}} Momiq yoniga o‘tirdi. Yong‘oqcha yong‘oq po‘choqlarini kaftida ushlab turardi. Toshvoy sariq bargni shamol uchirib ketmasin deb oyog‘i bilan bosib oldi. Oycha esa jim kutdi.
 
-Puf kulib qaradi.
+Momiq kulib qaradi.
 
 — Akam uchun qaysi sovg‘ani tayyorlaymiz?`,
     },
@@ -121,15 +121,15 @@ Puf kulib qaradi.
         },
         effect: {
           ru: `По твоему выбору фонарики зажглись, и у друзей появилась золотая дорожка домой.`,
-          uz: `{{HERO}} va do‘stlar barglardan Pufning akasi uchun oy va quyon quloqlari bor kulgili rasm yasadi.`,
+          uz: `{{HERO}} va do‘stlar barglardan Momiqning akasi uchun oy va quyon quloqlari bor kulgili rasm yasadi.`,
         },
         resolution: {
           ru: `Ты зажигаешь первый бумажный фонарик. Из него вылетает сонный мотылёк и смешно чихает. Пух прыскает от смеха. Второй фонарик появляется у лужи-луны, третий — у берёзы. Между деревьями складывается золотая дорожка, и друзья отправляются к первому дому.`,
-          uz: `{{HERO}} sariq bargni o‘rtaga qo‘ydi. Lola yoniga ikki kichik bargdan quyon qulog‘i yasadi. Puf oy uchun dumaloq barg topdi, ammo uni teskari qo‘yib yubordi. Hamma kuldi. Rasm tayyor bo‘lganda Puf uni ikki panjasi bilan ehtiyotkor ushladi.`,
+          uz: `{{HERO}} sariq bargni o‘rtaga qo‘ydi. Yong‘oqcha yoniga ikki kichik bargdan quyon qulog‘i yasadi. Momiq oy uchun dumaloq barg topdi, ammo uni teskari qo‘yib yubordi. Hamma kuldi. Rasm tayyor bo‘lganda Momiq uni ikki panjasi bilan ehtiyotkor ushladi.`,
         },
         seed: {
           ru: `У первого домика фонарики уже приготовили маленький сюрприз.`,
-          uz: `Puf rasmni akasiga ko‘rsatish uchun do‘stlari bilan in tomon yurdi.`,
+          uz: `Momiq rasmni akasiga ko‘rsatish uchun do‘stlari bilan in tomon yurdi.`,
         },
         titleTwo: {
           ru: `Фонарики до самого дома`,
@@ -167,53 +167,53 @@ Puf kulib qaradi.
 — Завтра вернём владельцу.
 
 За деревьями погасло последнее окно. Ручей шуршал за кустами, мотылёк больше не чихал, а единственный фонарик стал похож на маленькую тёплую звезду. Вы с Нурой пожелали друг другу доброй ночи. Потом огонёк стал совсем маленьким, и лес остался под круглой луной. Где-то далеко Пух уже наверняка спал под своим мятным одеялом, а забытый желудь тихо ждал утра на краю пенька.`,
-          uz: `Puf rasmni ikki panjasi bilan ushlab, akasining ini tomon yurdi. {{HERO}}, Nura, Lola va Toti uning yonida edi. Rasm katta emasdi, lekin Puf uni xuddi juda qimmat narsa kabi ehtiyot qilardi.
+          uz: `Momiq rasmni ikki panjasi bilan ushlab, akasining ini tomon yurdi. {{HERO}}, Oycha, Yong‘oqcha va Toshvoy uning yonida edi. Rasm katta emasdi, lekin Momiq uni xuddi juda qimmat narsa kabi ehtiyot qilardi.
 
-Yo‘lda bir kichik shamol bargning burchagini ko‘tardi. Puf darrov to‘xtadi.
+Yo‘lda bir kichik shamol bargning burchagini ko‘tardi. Momiq darrov to‘xtadi.
 
 — Qulog‘i uchib ketayapti! — dedi u.
 
-Lola barg qulog‘ini joyiga bosdi. Toti esa rasm tagiga kichkina novda qo‘ydi. Endi uni ko‘tarish osonroq bo‘ldi.
+Yong‘oqcha barg qulog‘ini joyiga bosdi. Toshvoy esa rasm tagiga kichkina novda qo‘ydi. Endi uni ko‘tarish osonroq bo‘ldi.
 
-— Sovg‘aning o‘zi ham yurishni o‘rganayapti, — dedi Nura.
+— Sovg‘aning o‘zi ham yurishni o‘rganayapti, — dedi Oycha.
 
-Puf kulib yubordi.
+Momiq kulib yubordi.
 
-Birozdan keyin ular quyonlar iniga yetdi. Eshik oldida Pufning akasi o‘tirgan edi. U Pufni ko‘rib, kulimsiradi.
+Birozdan keyin ular quyonlar iniga yetdi. Eshik oldida Momiqning akasi o‘tirgan edi. U Momiqni ko‘rib, kulimsiradi.
 
 — Hali uxlamadingmi?
 
-Puf darrov rasmni orqasiga yashirdi. Rasm undan kengroq bo‘lgani uchun ikki tomondan barg quloqlari chiqib turardi.
+Momiq darrov rasmni orqasiga yashirdi. Rasm undan kengroq bo‘lgani uchun ikki tomondan barg quloqlari chiqib turardi.
 
 Aka bir bargga, keyin ikkinchisiga qaradi.
 
 — Menimcha, orqangda juda katta quyon turibdi, — dedi u.
 
-Puf kulib, sovg‘ani oldiga chiqardi.
+Momiq kulib, sovg‘ani oldiga chiqardi.
 
-Rasmda sariq oy, ikkita quyon qulog‘i va kichkina yulduz bor edi. Puf bitta bargni biroz qiyshiq qo‘yganini ko‘rsatdi.
+Rasmda sariq oy, ikkita quyon qulog‘i va kichkina yulduz bor edi. Momiq bitta bargni biroz qiyshiq qo‘yganini ko‘rsatdi.
 
 — Bu sening qulog‘ing, — dedi u. — Chunki sen uxlayotganda bittasi doim yon tomonga tushib qoladi.
 
-Aka avval rasmga qaradi, keyin Pufga. So‘ng ukasini quchdi.
+Aka avval rasmga qaradi, keyin Momiqga. So‘ng ukasini quchdi.
 
 — Menga juda yoqdi.
 
-Pufning quloqlari tik turib qoldi. U orqasiga qarab, do‘stlariga sekin bosh irg‘adi. Lola xuddi ishni juda katta sir bilan tugatgandek barmog‘ini labiga qo‘ydi. Toti esa allaqachon eshik yonidagi yumshoq maysaga o‘tirib olgan edi.
+Momiqning quloqlari tik turib qoldi. U orqasiga qarab, do‘stlariga sekin bosh irg‘adi. Yong‘oqcha xuddi ishni juda katta sir bilan tugatgandek barmog‘ini labiga qo‘ydi. Toshvoy esa allaqachon eshik yonidagi yumshoq maysaga o‘tirib olgan edi.
 
-Aka rasmni in ichidagi past devorga ilib qo‘ydi. Yorug‘qo‘ng‘izlardan biri kirib, rasm yonida bir marta yonib-o‘chdi. Puf buni “yulduz ham ishlayapti” deb tushuntirdi.
+Aka rasmni in ichidagi past devorga ilib qo‘ydi. Yorug‘qo‘ng‘izlardan biri kirib, rasm yonida bir marta yonib-o‘chdi. Momiq buni “yulduz ham ishlayapti” deb tushuntirdi.
 
-Puf akasiga rasmdagi har bir narsani ko‘rsatib chiqdi. Dumaloq barg oy edi. Ikki uzun barg quloq edi. Eng kichik barg esa yulduz edi. Aka yulduzni Pufning burniga o‘xshatdi. Puf bunga rozi bo‘lmadi va burnini ko‘rsatib, uning ancha chiroyli ekanini aytdi. Lola darrov Pufning burniga qarab tekshirgandek bo‘ldi. Toti esa juda jiddiy bosh irg‘adi. Bu gap yana hammani kuldirdi.
+Momiq akasiga rasmdagi har bir narsani ko‘rsatib chiqdi. Dumaloq barg oy edi. Ikki uzun barg quloq edi. Eng kichik barg esa yulduz edi. Aka yulduzni Momiqning burniga o‘xshatdi. Momiq bunga rozi bo‘lmadi va burnini ko‘rsatib, uning ancha chiroyli ekanini aytdi. Yong‘oqcha darrov Momiqning burniga qarab tekshirgandek bo‘ldi. Toshvoy esa juda jiddiy bosh irg‘adi. Bu gap yana hammani kuldirdi.
 
-Keyin hamma eshik oldida bir necha daqiqa o‘tirdi. Nura bugun hech qanday yangi hikoya boshlamasligini aytdi. Lola qolgan yong‘oq po‘choqlarini kichkina xaltasiga soldi. Toti esa sariq bargdan qolgan mayda bo‘lakni Pufga berdi.
+Keyin hamma eshik oldida bir necha daqiqa o‘tirdi. Oycha bugun hech qanday yangi hikoya boshlamasligini aytdi. Yong‘oqcha qolgan yong‘oq po‘choqlarini kichkina xaltasiga soldi. Toshvoy esa sariq bargdan qolgan mayda bo‘lakni Momiqga berdi.
 
 — Ertaga yana bir narsa yasarsan, — dedi u.
 
-Puf bosh irg‘adi, lekin ko‘zlari allaqachon yumila boshlagan edi.
+Momiq bosh irg‘adi, lekin ko‘zlari allaqachon yumila boshlagan edi.
 
-Aka uning yelkasiga yengil ko‘rpa yopdi. Puf rasmga yana bir marta qaradi. Oy bargi sokin turardi, quyon quloqlari esa devorda kulgili ko‘rinardi.
+Aka uning yelkasiga yengil ko‘rpa yopdi. Momiq rasmga yana bir marta qaradi. Oy bargi sokin turardi, quyon quloqlari esa devorda kulgili ko‘rinardi.
 
-{{HERO}} do‘stlar bilan sekin xayrlashdi. Nura past shoxga uchdi, Lola uyiga qaytdi, Toti esa o‘z yo‘lida asta yurdi. In eshigi yopilmadi, faqat biroz tortildi. Ichkaridan Pufning “xayrli tun” degan ovozi eshitildi. Keyin hamma narsa jim bo‘ldi. Devoridagi kichkina barg rasmi oy nurida juda oddiy, juda iliq va yoqimli sovg‘adek ko‘rinib turardi.`,
+{{HERO}} do‘stlar bilan sekin xayrlashdi. Oycha past shoxga uchdi, Yong‘oqcha uyiga qaytdi, Toshvoy esa o‘z yo‘lida asta yurdi. In eshigi yopilmadi, faqat biroz tortildi. Ichkaridan Momiqning “xayrli tun” degan ovozi eshitildi. Keyin hamma narsa jim bo‘ldi. Devoridagi kichkina barg rasmi oy nurida juda oddiy, juda iliq va yoqimli sovg‘adek ko‘rinib turardi.`,
         },
         icon: `🎁`,
         values: ['mutual_help', 'kindness'],
@@ -225,19 +225,19 @@ Aka uning yelkasiga yengil ko‘rpa yopdi. Puf rasmga yana bir marta qaradi. Oy 
         },
         effect: {
           ru: `Вместе с тобой друзья придумали песенку, и знакомые звуки стали вести друзей по тропинке.`,
-          uz: `{{HERO}} va do‘stlar Pufning akasi uchun yong‘oq po‘choqlari, barg va yumshoq kuy bilan kichkina “xayrli tun” qo‘shig‘ini tayyorladi.`,
+          uz: `{{HERO}} va do‘stlar Momiqning akasi uchun yong‘oq po‘choqlari, barg va yumshoq kuy bilan kichkina “xayrli tun” qo‘shig‘ini tayyorladi.`,
         },
         resolution: {
           ru: `Ты хлопаешь в ладоши: раз, два, пауза. Нура отвечает двумя нотами, Пух тянет смешное «пи-и», а светлячки мигают в такт. Белка стучит двумя орехами. Через минуту у компании уже есть короткая дорожная песенка, и все отправляются домой.`,
-          uz: `{{HERO}} ikki yong‘oq po‘chog‘ini sekin “toq-toq” qildi. Lola bargni mayin shitirlatdi, Nura past ovozda kuy boshladi. Puf oxirida kulib “xayrli tun” dedi. Yorug‘qo‘ng‘izlar ham birin-ketin yonib-o‘chdi. Kichkina qo‘shiq tayyor bo‘ldi.`,
+          uz: `{{HERO}} ikki yong‘oq po‘chog‘ini sekin “toq-toq” qildi. Yong‘oqcha bargni mayin shitirlatdi, Oycha past ovozda kuy boshladi. Momiq oxirida kulib “xayrli tun” dedi. Yorug‘qo‘ng‘izlar ham birin-ketin yonib-o‘chdi. Kichkina qo‘shiq tayyor bo‘ldi.`,
         },
         seed: {
           ru: `У берёзы к песенке сразу добавился новый звук.`,
-          uz: `Puf qo‘shiqni akasiga aytish uchun do‘stlari bilan in tomon yurdi.`,
+          uz: `Momiq qo‘shiqni akasiga aytish uchun do‘stlari bilan in tomon yurdi.`,
         },
         titleTwo: {
           ru: `Песня, которая знала дорогу`,
-          uz: `Pufning “xayrli tun” qo‘shig‘i`,
+          uz: `Momiqning “xayrli tun” qo‘shig‘i`,
         },
         episodeTwo: {
           ru: `У берёзы песенка получила новый звук. Дождевые капли падали с листьев: кап, кап. Пух вставил эти два «кап» между нотами, и все сразу поняли, что дошли до первого поворота.
@@ -269,67 +269,67 @@ Aka uning yelkasiga yengil ko‘rpa yopdi. Puf rasmga yana bir marta qaradi. Oy 
 На обратном пути никто уже не пел весь припев. У берёзы Нура напела две ноты. У ручья в ответ от тебя прозвучала ещё одна нота. Белкино «тук-тук» донеслось из далёкого окна. Этого хватало, чтобы вспомнить всю дорогу.
 
 У старого пенька Пух наконец попрощался. Он побежал к норе всего на три шага, потом вспомнил, что устал, и перешёл на обычный шаг. Нура улыбнулась. Светлячки спрятались в траве, ручей продолжил свою часть песни, и лес постепенно остался только с ночными звуками. Вдалеке один раз звякнул колокольчик у беличьей двери.`,
-          uz: `Kichkina qo‘shiq tayyor bo‘lgach, Puf eng oldinda yurishni xohladi. {{HERO}}, Nura, Lola va Toti uning ortidan ketdi. Ular baland aytmadi. Qo‘shiq shunaqa past ediki, hatto barglarning shitirlashi ham unga qo‘shilib ketardi.
+          uz: `Kichkina qo‘shiq tayyor bo‘lgach, Momiq eng oldinda yurishni xohladi. {{HERO}}, Oycha, Yong‘oqcha va Toshvoy uning ortidan ketdi. Ular baland aytmadi. Qo‘shiq shunaqa past ediki, hatto barglarning shitirlashi ham unga qo‘shilib ketardi.
 
-{{HERO}} ikki yong‘oq po‘chog‘ini “toq-toq” qildi. Lola yumshoq bargni silkitdi. Nura ikki notani cho‘zdi.
+{{HERO}} ikki yong‘oq po‘chog‘ini “toq-toq” qildi. Yong‘oqcha yumshoq bargni silkitdi. Oycha ikki notani cho‘zdi.
 
-Navbat Pufga kelganda u og‘zini ochdi, lekin hech narsa demadi.
+Navbat Momiqga kelganda u og‘zini ochdi, lekin hech narsa demadi.
 
 — Men so‘zimni unutdim, — dedi u.
 
-— Bitta so‘z edi-ku, — dedi Lola.
+— Bitta so‘z edi-ku, — dedi Yong‘oqcha.
 
-Puf biroz o‘yladi.
+Momiq biroz o‘yladi.
 
 — Unda yanada uyat bo‘ldi.
 
-Hamma kuldi. Nura Pufga hech kim shoshmayotganini aytdi. Puf yana urinib ko‘rdi.
+Hamma kuldi. Oycha Momiqga hech kim shoshmayotganini aytdi. Momiq yana urinib ko‘rdi.
 
 — Xayrli... puf!
 
-Bu safar Lola shunaqa kuldiki, bargi qo‘lidan tushib ketdi. Puf ham o‘z xatosiga kuldi.
+Bu safar Yong‘oqcha shunaqa kuldiki, bargi qo‘lidan tushib ketdi. Momiq ham o‘z xatosiga kuldi.
 
 — Mayli, yangi qo‘shiqda “puf” ham bo‘lsin, — dedi {{HERO}}.
 
-Shundan keyin qo‘shiq yanada qiziq bo‘ldi. “Toq-toq”, mayin barg ovozi, Nuraning ikki notasi va oxirida Pufning “xayrli tun... puf!” degan joyi bor edi.
+Shundan keyin qo‘shiq yanada qiziq bo‘ldi. “Toq-toq”, mayin barg ovozi, Oychaning ikki notasi va oxirida Momiqning “xayrli tun... puf!” degan joyi bor edi.
 
-Ular quyonlar iniga yetganda Pufning akasi eshik oldida turardi. U uzoqdan qo‘shiqni eshitib, kutib qolgan ekan.
+Ular quyonlar iniga yetganda Momiqning akasi eshik oldida turardi. U uzoqdan qo‘shiqni eshitib, kutib qolgan ekan.
 
 — Bu qanday musiqa? — deb so‘radi u.
 
-Puf ko‘kragini kerdi.
+Momiq ko‘kragini kerdi.
 
 — Bu senga.
 
-Hamma o‘z joyini egalladi. {{HERO}} yong‘oq po‘choqlarini sekin urdi. Lola bargni mayin shitirlatdi. Nura kuyladi. Puf esa bu safar so‘zni to‘g‘ri aytdi.
+Hamma o‘z joyini egalladi. {{HERO}} yong‘oq po‘choqlarini sekin urdi. Yong‘oqcha bargni mayin shitirlatdi. Oycha kuyladi. Momiq esa bu safar so‘zni to‘g‘ri aytdi.
 
 — Xayrli tun!
 
 Aka jim turib eshitdi. Keyin u ham ikki marta kaftini sekin urdi.
 
-Aka qo‘shiq tugagach, Pufdan yana qanday ovozlar borligini so‘radi. Lola yong‘oq po‘chog‘ini kaftida aylantirdi. Toti quruq bargga bitta panjasini qo‘ydi. Puf esa quloqlarini navbat bilan ko‘tarib, o‘zini boshliqdek ko‘rsatdi. O‘ng qulog‘i ko‘tarilsa hamma chalardi, chap qulog‘i ko‘tarilsa hamma jim turardi. Bir safar ikkala qulog‘i birga ko‘tarilib, Pufning o‘zi nima qilishni bilmay qoldi. Hamma kuldi. Lola ham boshliq bo‘lish uchun dumini baland ko‘tardi, Puf esa bunga darrov rozi bo‘ldi.
+Aka qo‘shiq tugagach, Momiqdan yana qanday ovozlar borligini so‘radi. Yong‘oqcha yong‘oq po‘chog‘ini kaftida aylantirdi. Toshvoy quruq bargga bitta panjasini qo‘ydi. Momiq esa quloqlarini navbat bilan ko‘tarib, o‘zini boshliqdek ko‘rsatdi. O‘ng qulog‘i ko‘tarilsa hamma chalardi, chap qulog‘i ko‘tarilsa hamma jim turardi. Bir safar ikkala qulog‘i birga ko‘tarilib, Momiqning o‘zi nima qilishni bilmay qoldi. Hamma kuldi. Yong‘oqcha ham boshliq bo‘lish uchun dumini baland ko‘tardi, Momiq esa bunga darrov rozi bo‘ldi.
 
 — Yana bir marta bo‘ladimi?
 
-Pufning quloqlari tik turib qoldi. Ikkinchi marta ular yanada sekin chaldi. Toti ham qo‘shilishni xohlab, panjasi bilan yerga bir marta “tap” qildi. Shu bitta ovoz hammaga yoqdi.
+Momiqning quloqlari tik turib qoldi. Ikkinchi marta ular yanada sekin chaldi. Toshvoy ham qo‘shilishni xohlab, panjasi bilan yerga bir marta “tap” qildi. Shu bitta ovoz hammaga yoqdi.
 
-Uchinchi marta esa Nura qo‘shiqni boshlamadi.
+Uchinchi marta esa Oycha qo‘shiqni boshlamadi.
 
 — Endi qo‘shiqning o‘zi uxlashi kerak, — dedi u.
 
-Puf jiddiy bosh irg‘adi. Yong‘oq po‘choqlari Lola xaltasiga qaytdi. Barg Toti yoniga qo‘yildi. Yorug‘qo‘ng‘izlar ham asta pastlab, maysa ustida dam oldi.
+Momiq jiddiy bosh irg‘adi. Yong‘oq po‘choqlari Yong‘oqcha xaltasiga qaytdi. Barg Toshvoy yoniga qo‘yildi. Yorug‘qo‘ng‘izlar ham asta pastlab, maysa ustida dam oldi.
 
-Puf akasining yoniga o‘tirdi. Aka uning quloqlaridan birini ohista siladi.
+Momiq akasining yoniga o‘tirdi. Aka uning quloqlaridan birini ohista siladi.
 
 — Eng yaxshi joyi qaysi edi? — deb so‘radi.
 
-Puf ko‘zlarini yumib javob berdi:
+Momiq ko‘zlarini yumib javob berdi:
 
-— “Puf” degan joyi.
+— “Momiq” degan joyi.
 
 Hamma yana bir marta kuldi, ammo bu safar juda past ovozda.
 
-{{HERO}} do‘stlar bilan xayrlashib, sekin ortga yurdi. Nura yaqin shoxga qo‘ndi, Lola uyiga ketdi, Toti odatdagidek shoshmasdan yo‘l oldi. In ichida Puf bilan akasi qo‘shiqning oxirgi ikki notasini juda past ovozda yana bir marta aytdi. So‘ng ularning ovozi ham tinib qoldi. Tashqarida barglar mayin shitirlardi, yorug‘qo‘ng‘izlar esa birin-ketin chiroqlarini pasaytirib, o‘rmonni uyquga tayyorlayotgandek ko‘rinardi.`,
+{{HERO}} do‘stlar bilan xayrlashib, sekin ortga yurdi. Oycha yaqin shoxga qo‘ndi, Yong‘oqcha uyiga ketdi, Toshvoy odatdagidek shoshmasdan yo‘l oldi. In ichida Momiq bilan akasi qo‘shiqning oxirgi ikki notasini juda past ovozda yana bir marta aytdi. So‘ng ularning ovozi ham tinib qoldi. Tashqarida barglar mayin shitirlardi, yorug‘qo‘ng‘izlar esa birin-ketin chiroqlarini pasaytirib, o‘rmonni uyquga tayyorlayotgandek ko‘rinardi.`,
         },
         icon: `🎵`,
         values: ['friendship', 'curiosity'],
@@ -1071,7 +1071,7 @@ export const buildChildFirstClosedBetaCandidate = (
     nextEpisodePreview: language === 'ru'
       ? 'История продолжится сразу после твоего выбора.'
       : world === 'cozy_forest'
-        ? 'Puf akasiga sovg‘ani ko‘rsatadigan payt juda yaqin edi.'
+        ? 'Momiq akasiga sovg‘ani ko‘rsatadigan payt juda yaqin edi.'
         : 'Hikoya tanlovingdan keyin darrov davom etadi.',
   }
 }

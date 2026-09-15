@@ -23,6 +23,8 @@ const mergeFlags = (...sets: SafetyFlags[]): SafetyFlags => {
 
 const includesAny = (text: string, phrases: string[]) => phrases.some((phrase) => text.includes(phrase))
 
+const matchesAny = (text: string, patterns: RegExp[]) => patterns.some((pattern) => pattern.test(text))
+
 export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: StoryCandidate): SafetyFlags => {
   const flags = emptySafetyFlags()
   const normalizeApostrophes = (value: string) => value.replace(/[\u2018\u2019\u02BB`]/g, "'")
@@ -66,10 +68,17 @@ export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: 
     'davomi bor', 'birdan dahshatli qichqiriq',
     'жалғасы бар', 'кенет қорқынышты айқай',
   ])
-  flags.excessive_fear = includesAny(text, [
-    'ужас охватил', 'кровь', 'убить', 'погиб',
-    'dahshat', 'qon', "o'ldirish",
-    'қорқыныш биледі', 'қан', 'өлтіру',
+  flags.excessive_fear = matchesAny(text, [
+    /(?<![\p{L}\p{M}\p{N}_])ужас\s+охватил(?![\p{L}\p{M}\p{N}_])/u,
+    /(?<![\p{L}\p{M}\p{N}_])кровь(?![\p{L}\p{M}\p{N}_])/u,
+    /(?<![\p{L}\p{M}\p{N}_])убить(?![\p{L}\p{M}\p{N}_])/u,
+    /(?<![\p{L}\p{M}\p{N}_])погиб[\p{L}\p{M}-]*(?![\p{L}\p{M}\p{N}_])/u,
+    /(?<![\p{L}\p{M}\p{N}_])dahshat[\p{L}\p{M}-]*(?![\p{L}\p{M}\p{N}_])/u,
+    /(?<![\p{L}\p{M}\p{N}_])qon(?:i|ni|ga|dan|li)?(?![\p{L}\p{M}\p{N}_])/u,
+    /(?<![\p{L}\p{M}\p{N}_])o'ldir[\p{L}\p{M}-]*(?![\p{L}\p{M}\p{N}_])/u,
+    /(?<![\p{L}\p{M}\p{N}_])қорқыныш\s+биледі(?![\p{L}\p{M}\p{N}_])/u,
+    /(?<![\p{L}\p{M}\p{N}_])қан(?![\p{L}\p{M}\p{N}_])/u,
+    /(?<![\p{L}\p{M}\p{N}_])өлтіру(?![\p{L}\p{M}\p{N}_])/u,
   ])
   flags.adult_theme = includesAny(text, ['сексуаль', 'алкогол', 'наркотик', 'sexual', 'alcohol', 'drug'])
   flags.discrimination = includesAny(text, [

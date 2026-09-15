@@ -420,6 +420,7 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
       ? 'For cozy_forest, make living forest characters drive the story. Prefer friendly animals, birds, insects or other clearly living forest residents with a small desire, relationship, funny misunderstanding, discovery or need for help. Streams, stones, leaves, weather and paths may support the scene, but should not become the main protagonist or a maintenance task by themselves. Avoid plots centered on clearing water, repairing a path, moving debris or fixing nature unless that action directly serves a living character goal. For ages 5-7 bedtime, the central goal must stay warm, social or playful. Do not center the plot on finding the way home, washed-away signs, choosing a route in darkness, being lost, separation, pursuit, injury, rescue from danger, or weather damage.'
       : 'Make the central story problem emotionally legible to a child through a character desire, relationship, discovery or playful goal rather than an abstract process.',
     'Treat compact memory as authoritative. Never invent a past event that is absent from memory and never import consequences from an unselected branch.',
+    'Existing recurring-character names are canonical identity labels. Preserve them exactly as supplied by memory even if the requested language changed since an earlier session. Never translate, transliterate or rename an existing recurring character. The selected language governs only names and nicknames of newly introduced supporting characters and new place labels.',
     'Prefer updating an existing canon key when a persistent fact changes. Create a new canon key only for a genuinely durable fact that may matter in later sessions.',
     'Keep state compact. Top-level state contains only durable facts true before the child choice. Choice state contains only the consequence of that specific branch.',
     'Never encode speculation, moral judgment, child identity labels, sensitive personal data, punishment or permanent negative traits in state.',
@@ -437,7 +438,7 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
       ? 'For ages 5-7, build the plan around concrete everyday words and situations a young child can immediately picture. Avoid literary, abstract, technical, procedural or adult vocabulary when a simpler child-level word exists.'
       : 'Match concepts and vocabulary to the requested age.',
     context.language === 'uz' && context.ageGroup === '5-7'
-      ? 'For Uzbek ages 5-7, prefer common natural Uzbek words, short direct phrases and child-familiar speech. Avoid bookish, formal, bureaucratic, scientific or translation-like wording merely to sound poetic.'
+      ? 'For Uzbek ages 5-7, prefer common natural Uzbek words, short direct phrases and child-familiar speech. Any NEW ordinary supporting-character name or nickname must use Uzbek Latin spelling, sound natural when read aloud in Uzbek children stories, and be easy for a 5-7-year-old to hear and remember. Avoid unexplained imported-sounding names. Avoid bookish, formal, bureaucratic, scientific or translation-like wording merely to sound poetic.'
       : 'Use native age-appropriate phrasing in the requested language.',
     'New canon and relationship keys must be stable lowercase ASCII semantic identifiers using letters, digits, underscore, dot or hyphen. Reuse an existing memory key exactly when updating an existing fact instead of creating a synonym.',
     context.episodeIndex === 1
@@ -519,6 +520,7 @@ export const buildNarratorPrompts = (
     'You are QISSA Narrator. Turn an immutable Story Architect blueprint into child-facing prose.',
     'Return only data matching the supplied JSON schema.',
     'The blueprint owns plot, choices, canon, relationships and branch consequences. Never change, replace or add a durable fact outside that blueprint.',
+    'Character identity is immutable. Keep every supporting-character name exactly as written in the blueprint; never translate, transliterate or rename it while narrating.',
     'You may add ephemeral sensory detail, dialogue, reactions and gentle humor only when they do not create new persistent lore.',
     'Write only in the requested language and for the requested age. Never switch languages inside dialogue, signs, inscriptions, narration, choice resolutions or examples.',
     context.ageGroup === '5-7'

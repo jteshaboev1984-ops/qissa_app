@@ -1,7 +1,8 @@
 import fs from 'node:fs'
 import { hasSingleLanguageMismatch } from '../supabase/functions/story-generate/language.ts'
-import { enforceStoryBlueprintContextContract } from '../supabase/functions/story-generate/story-architecture.ts'
+import { buildArchitectPrompts, enforceStoryBlueprintContextContract } from '../supabase/functions/story-generate/story-architecture.ts'
 import { normalizeStoryBlueprintMemoryKeys } from '../supabase/functions/story-generate/story-architecture.ts'
+import { normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
 
 const architecture = fs.readFileSync('supabase/functions/story-generate/story-architecture.ts', 'utf8')
 const provider = fs.readFileSync('supabase/functions/story-generate/split-openai.ts', 'utf8')
@@ -53,6 +54,26 @@ requireLanguageGuard(normalizedCanonKeys.every((key) => key !== 'canon' && /^can
 requireLanguageGuard(new Set(normalizedCanonKeys).size === normalizedCanonKeys.length, 'distinct Cyrillic canon keys must not collapse to the same identifier')
 requireLanguageGuard(normalizedRelationshipKeys.every((key) => key !== 'rel' && /^rel_[a-z0-9]+$/u.test(key)), 'Cyrillic relationship keys must hash to stable ASCII identifiers')
 
+
+const switchedLanguageContext = normalizeStoryRequest({
+  selections: {
+    ageGroup: '5-7', language: 'uz', heroType: 'girl_hero', stylePackId: 'cozy_forest', storyMode: 'series', storyMood: 'bedtime',
+  },
+  seriesState: {
+    id: 'language-switch-series', mainCharacter: 'Алия', recurringCharacters: ['Рыжик', 'Ульяна'],
+    lastEpisodeSummary: 'Рыжик и Ульяна уже стали друзьями героини.', activeArc: 'Тихая лесная история продолжается.',
+    relationshipState: {}, canonState: {}, choiceHistory: [], episodeCount: 0,
+  },
+})
+if (!switchedLanguageContext) {
+  failures.push('language switch continuity context failed to normalize')
+} else {
+  requireLanguageGuard(switchedLanguageContext.heroName === 'Алия', 'changing story language must preserve the established hero name from series state')
+  requireLanguageGuard(switchedLanguageContext.recurringCharacters.join('|') === 'Рыжик|Ульяна', 'changing story language must preserve established recurring-character names exactly')
+  const switchedPrompts = buildArchitectPrompts(switchedLanguageContext)
+  requireLanguageGuard(switchedPrompts.user.includes('Рыжик') && switchedPrompts.user.includes('Ульяна'), 'architect memory must carry established names unchanged after a language switch')
+}
+
 requireFragments('architecture', architecture, [
   "plan_version: 'split-v1'",
   'storyBlueprintSchema',
@@ -85,6 +106,10 @@ requireFragments('architecture', architecture, [
   'central goal must stay warm, social or playful',
   'Do not center the plot on finding the way home',
   'For Uzbek ages 5-7, prefer common natural Uzbek words',
+  'Existing recurring-character names are canonical identity labels',
+  'selected language governs only names and nicknames of newly introduced supporting characters',
+  'Any NEW ordinary supporting-character name or nickname must use Uzbek Latin spelling',
+  'Character identity is immutable',
   "choices: context.episodeIndex === 1 ? 'exactly 2' : 'exactly 0'",
   "decision_point: context.episodeIndex === 1 ? 'one non-empty child decision point' : 'empty string'",
   'enforceStoryBlueprintContextContract',

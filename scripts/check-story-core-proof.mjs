@@ -142,11 +142,13 @@ try {
   const uzForestContext = { ...baseContext, language: 'uz', heroName: 'Malika' }
   const uzForestOne = buildSafeFallback(uzForestContext)
   const uzBookish = /chorraha|paporotnik|kapyushon|ritm|spiral|tantanali|so‘qmoq|yo‘l ko‘rsatkich/iu
-  assert(uzForestOne.title === 'Pufning uyqu oldi sovg‘asi', 'Uzbek forest title must stay character-led.')
+  assert(uzForestOne.title === 'Momiqning uyqu oldi sovg‘asi', 'Uzbek forest title must stay character-led and naturally localized.')
+  assert(/Momiq/u.test(uzForestOne.story_text) && /Oycha/u.test(uzForestOne.story_text) && /Yong‘oqcha/u.test(uzForestOne.story_text) && /Toshvoy/u.test(uzForestOne.story_text), 'Uzbek forest must use the localized child-story cast.')
+  assert(!/\b(?:Puf|Nura|Lola|Toti)\b/u.test(uzForestOne.story_text), 'Uzbek forest must not expose the old imported-sounding fallback cast.')
   assert(wordCount(uzForestOne.story_text) >= 320 && wordCount(uzForestOne.story_text) <= 470, 'Uzbek forest Episode 1 release length failed.')
   assert(!uzBookish.test(uzForestOne.story_text), 'Uzbek forest Episode 1 contains avoidable bookish/borrowed vocabulary.')
   assert(uzForestOne.vocabulary.length === 0, 'Uzbek forest must not expose Russian-English vocabulary cards.')
-  assert(uzForestOne.nextEpisodePreview === 'Puf akasiga sovg‘ani ko‘rsatadigan payt juda yaqin edi.', 'Uzbek forest preview must stay in-world.')
+  assert(uzForestOne.nextEpisodePreview === 'Momiq akasiga sovg‘ani ko‘rsatadigan payt juda yaqin edi.', 'Uzbek forest preview must stay in-world.')
   assert(uzForestOne.choices.length === 2, 'Uzbek forest must have two choices.')
   for (const choice of uzForestOne.choices) {
     const resolutionWords = wordCount(choice.resolution_text)
