@@ -3,8 +3,8 @@ from pathlib import Path
 path = Path('scripts/check-story-ai-split.mjs')
 text = path.read_text()
 
-old = "const orchestrator = readFileSync(`${base}/split-index.ts`, 'utf8')\n"
-new = "const orchestrator = readFileSync(`${base}/split-index.ts`, 'utf8')\nconst repairRouting = readFileSync(`${base}/repair-routing.ts`, 'utf8')\n"
+old = "const orchestrator = fs.readFileSync('supabase/functions/story-generate/split-index.ts', 'utf8')\n"
+new = "const orchestrator = fs.readFileSync('supabase/functions/story-generate/split-index.ts', 'utf8')\nconst repairRouting = fs.readFileSync('supabase/functions/story-generate/repair-routing.ts', 'utf8')\n"
 if old not in text:
     raise SystemExit('orchestrator source load fragment missing')
 text = text.replace(old, new, 1)
