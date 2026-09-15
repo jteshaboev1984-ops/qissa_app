@@ -157,8 +157,9 @@ export const repairStoryCandidateTextLengths = async (
   context: NormalizedStoryContext,
   candidate: StoryCandidate,
   validationErrors: string[],
+  retryFeedback = '',
 ): Promise<StoryCandidate> => {
-  const prompts = buildTextLengthRepairPrompts(context, candidate, validationErrors)
+  const prompts = buildTextLengthRepairPrompts(context, candidate, validationErrors, retryFeedback)
   const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
   const repair = await requestStructured<TextLengthRepair>(
     apiKey,

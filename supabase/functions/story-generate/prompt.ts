@@ -503,6 +503,7 @@ export const buildTextLengthRepairPrompts = (
   context: NormalizedStoryContext,
   candidate: StoryCandidate,
   validationErrors: string[],
+  retryFeedback = '',
 ) => {
   const [minimumStoryWords, maximumStoryWords] = hardStoryWordRange(context)
   const currentStoryWords = storyWordCount(candidate.story_text)
@@ -562,6 +563,10 @@ export const buildTextLengthRepairPrompts = (
     'For each repaired resolution_text, preserve the same selected action and the exact durable consequence already represented by its effect_summary and immutable_state_patch. Only adjust wording and useful immediate action/reaction to reach the target length.',
     'The hero name remains the literal token {{HERO}}. Never invent or expose a real child name. If validation_errors includes missing_hero_token, the repaired story_rewrite or story_expansion must naturally contain {{HERO}} as the in-world protagonist so the final story_text contains the token. In Russian, use {{HERO}} only as a nominative subject or direct address and use grammatically invariant phrasing such as present-tense action; never put the token after a preposition or directly before a gendered past-tense verb.',
     'For Episode 1 resolution repair, keep the selected consequence in the same evening immediately after the choice. Do not move it to tomorrow or the next morning; tomorrow_seed is future-session metadata only.',
+    'If retry_feedback is non-empty, the previous text repair failed deterministic validation. Rebuild the requested repair fields from the original immutable candidate and correct every listed repair-output failure. Do not preserve faulty wording from the rejected repair.',
+    context.language === 'uz'
+      ? 'For Uzbek repair prose, use natural Uzbek Latin script. Do not introduce Cyrillic text. Existing recurring-character identity labels supplied by immutable context remain unchanged.'
+      : 'Keep repair prose strictly in the requested language while preserving established character identity labels.',
     'Write only in the requested language and preserve bedtime tone and age fit.',
   ].join(' ')
 
@@ -597,6 +602,7 @@ export const buildTextLengthRepairPrompts = (
         : null,
       choice_resolutions: resolutionTargets,
     },
+    retry_feedback: retryFeedback,
     immutable_candidate_context: {
       title: candidate.title,
       story_text: candidate.story_text,

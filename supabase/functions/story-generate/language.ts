@@ -7,8 +7,24 @@ const stripMachineTokens = (value: string): string => value
 
 const wordCount = (value: string): number => value.trim().split(/\s+/u).filter(Boolean).length
 
-export const hasSingleLanguageMismatch = (language: StoryLanguage, values: string[]): boolean => {
-  const text = stripMachineTokens(values.filter(Boolean).join(' '))
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
+
+const stripAllowedForeignTerms = (value: string, allowedTerms: string[]): string => {
+  let result = value
+  for (const term of allowedTerms) {
+    const normalized = term.trim()
+    if (!normalized) continue
+    result = result.replace(new RegExp(escapeRegExp(normalized), 'gu'), ' ')
+  }
+  return result
+}
+
+export const hasSingleLanguageMismatch = (
+  language: StoryLanguage,
+  values: string[],
+  allowedForeignTerms: string[] = [],
+): boolean => {
+  const text = stripMachineTokens(stripAllowedForeignTerms(values.filter(Boolean).join(' '), allowedForeignTerms))
   if (!text.trim()) return false
 
   const latinWords = text.match(/\b[A-Za-z]{2,}\b/gu) ?? []

@@ -340,7 +340,7 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   if (!isRecord(candidate)) return ['candidate_not_object']
   const value = candidate as StoryCandidate
 
-  if (hasSingleLanguageMismatch(context.language, candidateLanguageValues(value))) errors.push('story_language_mismatch')
+  if (hasSingleLanguageMismatch(context.language, candidateLanguageValues(value), context.recurringCharacters)) errors.push('story_language_mismatch')
   if (visibleSafetyLanguageNeedsRewrite(context.language, candidateChildVisibleValues(value).join(' '))) {
     errors.push('visible_safety_language')
   }
