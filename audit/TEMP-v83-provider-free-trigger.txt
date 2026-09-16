@@ -1,0 +1,1 @@
+Single-use trigger for offline-only checks of the v83 E1 validation-failure patch; do not invoke any provider or deploy production.
