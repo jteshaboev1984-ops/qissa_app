@@ -1,0 +1,23 @@
+import type { NormalizedStoryContext } from './contracts.ts'
+
+// Editorial quality supplements the existing immutable blueprint, deterministic
+// validators and child-safety gates; it must never override any of them.
+// No new model request, schema field, scoring assertion or provider retry.
+export const storyArchitectEditorialGuidance = (context: NormalizedStoryContext): string => [
+  'Editorial story quality: keep one concrete child-scale desire or goal with a satisfying observable payoff. If the setup promises an event tonight, let the characters experience a small version of that event by tonight\'s ending; if an event is genuinely tomorrow, say so in the setup and fully resolve tonight\'s separate local goal. Do not silently postpone the promised event or leave a stated obstacle such as a missing necessary item unexplained.',
+  'Plan causal beats in which something actually changes: a character makes an attempt, discovers a gentle surprise, reacts to a consequence, changes a relationship or accomplishes a child-visible action. Dialogue and listening are welcome, but do not fill most beats with characters debating the same object or repeatedly comparing its position. Do not invent a second unrelated problem, danger, pursuit or stressful cliffhanger merely to create momentum.',
+  'Give {{HERO}} a specific fictional want, understandable emotional response or playful curiosity, plus a self-initiated action that matters to this story. Show the protagonist doing something rather than only watching and combining others\' opinions. A mistake is optional; never force a mistake, assign real-world personality traits to the child or moralize the response.',
+  context.episodeIndex === 1
+    ? 'Both safe choices pursue the same established goal and offer visibly different child actions and child-visible consequences. Imagine how the later scene, interaction or discovery will differ after each bridge. Differences only in choice labels, adjectives, JSON keys or hero_trait are insufficient. Resolve neither choice before the child selects it; keep the preview true for both.'
+    : 'Episode 2 begins AFTER the exact selected bridge, with a genuinely new reaction, consequence or attempt arising from that completed action. Develop and finish tonight\'s established goal, including any promised small payoff, before a gentle bedtime coda. Do not repeat Episode 1\'s deliberation structure, re-enact the bridge, invent another child decision, or turn the sequel into placement/logistics of the same prop.',
+  'Keep characters and invented species internally consistent. A vivid prop or opening problem should either matter later or be clearly incidental; avoid setting up a missing item as an obstacle and then dropping it. Use a concrete earned funny, tender or surprising moment when the existing characters and scene make it natural. No required refrain, physical action quota, or artificial spectacle.',
+].join(' ')
+
+export const storyNarratorEditorialGuidance = (context: NormalizedStoryContext): string => [
+  'The immutable blueprint remains authoritative. Bring each planned change to life through specific character action, reaction, short natural dialogue and an image a child can picture. Do not replace events with several paragraphs of planning, looking, discussing or describing where one object should go. Keep the same single goal and all existing safety and identity rules.',
+  'Show an earned gentle joke or surprise through what actually happens and how characters react, rather than only announcing that something is funny. Let {{HERO}} visibly want, feel, notice or initiate something already supported by the blueprint. Do not invent an unplanned mistake, a new branch, new lore or a personality claim about the real child.',
+  'Use naturally spoken age-appropriate sentences and avoid adult logistics language. Shorten overloaded sentences where it improves read-aloud clarity, without imposing a fixed word cap or padding to reach the target word count.',
+  context.episodeIndex === 1
+    ? 'The immediate choice bridges must show two distinct and satisfying consequences, each grounded in its architect-owned resolution_goal. Keep story_text branch-neutral before the choice, and do not show either action as already done.'
+    : 'The selected resolution_text has already been read to the child. Begin with a new consequence, continue toward the promised local payoff, and let that goal visibly finish before the calm closing image. Never ask the child or {{HERO}} for an unstructured new decision or suggest a third installment is necessary to finish this session.',
+].join(' ')
