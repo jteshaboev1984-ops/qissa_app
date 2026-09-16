@@ -409,6 +409,19 @@ const compactMemoryText = (value: unknown, maxLength: number): string => {
   return (boundary >= Math.floor(maxLength * 0.6) ? clipped.slice(0, boundary) : normalized.slice(0, maxLength)).trim()
 }
 
+// Event summaries are later displayed and supplied to Episode 2 as memory.
+// Preserve complete short events; over budget, keep only a finished sentence
+// rather than persisting a misleading fragment. Other memory caps stay unchanged.
+const compactCompleteMemoryEvent = (value: unknown, maxLength: number): string => {
+  if (typeof value !== 'string') return ''
+  const normalized = normalizeSpace(value)
+  if (normalized.length <= maxLength) return normalized
+  const prefix = normalized.slice(0, maxLength)
+  const sentenceEnds = [...prefix.matchAll(/[.!?。؟](?=\s|$)/gu)]
+  const finalSentence = sentenceEnds.at(-1)
+  return finalSentence ? prefix.slice(0, finalSentence.index! + finalSentence[0].length).trim() : ''
+}
+
 const resolveHeroTokenForMemory = (value: string, heroName: string): string => heroName
   ? value.replaceAll('{{HERO}}', heroName).replaceAll('QISSA_HERO', heroName)
   : value
@@ -428,7 +441,7 @@ const entriesToRecord = (entries: unknown, heroName = ''): Record<string, string
 export const finalPatchFromCandidate = (patch: unknown, heroName = ''): FinalStatePatch => {
   if (!isRecord(patch)) return {}
   const result: FinalStatePatch = {}
-  const lastEvent = compactMemoryText(resolveHeroTokenForMemory(typeof patch.last_event === 'string' ? patch.last_event : '', heroName), 96)
+  const lastEvent = compactCompleteMemoryEvent(resolveHeroTokenForMemory(typeof patch.last_event === 'string' ? patch.last_event : '', heroName), 300)
   const newFriend = compactMemoryText(resolveHeroTokenForMemory(typeof patch.new_friend === 'string' ? patch.new_friend : '', heroName), 64)
   const heroTrait = compactMemoryText(resolveHeroTokenForMemory(typeof patch.hero_trait === 'string' ? patch.hero_trait : '', heroName), 64)
   const openArc = patch.open_arc === null ? null : compactMemoryText(resolveHeroTokenForMemory(typeof patch.open_arc === 'string' ? patch.open_arc : '', heroName), 120)
