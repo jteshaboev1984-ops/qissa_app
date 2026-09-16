@@ -1,0 +1,1 @@
+Provider-free preflight of single-E1 runner after fixing Architect choice IDs. No generation should run until a separately marked one-shot commit and operator authorization.
