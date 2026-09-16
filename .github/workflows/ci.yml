@@ -112,6 +112,9 @@ jobs:
       - name: Validate Story AI family editorial scorecard
         run: node scripts/check-story-editorial-scorecard.mjs
 
+      - name: Validate editorial prompt guidance and baseline evidence
+        run: node scripts/check-story-editorial-guidance.mjs
+
       - name: Typecheck Story AI Edge Function
         run: npm run typecheck:story-ai
 
