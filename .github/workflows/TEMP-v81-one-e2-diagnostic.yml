@@ -1,0 +1,39 @@
+name: TEMP v81 one-E2 diagnostic (one paid request maximum)
+
+on:
+  push:
+    branches:
+      - audit/v81-diagnose-one-e2-20260916
+    paths:
+      - .github/workflows/TEMP-v81-one-e2-diagnostic.yml
+      - audit/TEMP-v81-e2-trigger.txt
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: qissa-v81-e2-one-diagnostic-20260916
+  cancel-in-progress: false
+
+jobs:
+  diagnostic:
+    if: github.event.head_commit.message == 'PREFLIGHT ONE E2 DIAGNOSTIC' || github.event.head_commit.message == 'RUN APPROVED ONE E2 DIAGNOSTIC ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Verify historic E1 and diagnose ONE E2(A) if explicitly triggered
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+          QISSA_AUDIT_STORY_SHA: 1f59ef09128122ec0ccd430566a8a516be925fbf
+          QISSA_DIAGNOSTIC_PREFLIGHT: ${{ github.event.head_commit.message == 'PREFLIGHT ONE E2 DIAGNOSTIC' }}
+        run: node scripts/TEMP-v81-single-e2-diagnostic.mjs
+
+# The trigger accepts ONE precise paid commit message. Remove file and workflow after this test.
