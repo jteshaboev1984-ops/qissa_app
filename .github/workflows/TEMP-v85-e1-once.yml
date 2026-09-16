@@ -1,0 +1,38 @@
+name: TEMP v85 one-shot E1 audit
+on:
+  push:
+    branches:
+      - audit/v85-e1-once-20260916
+    paths:
+      - audit/TEMP-v85-e1-trigger.txt
+permissions:
+  contents: read
+concurrency:
+  group: qissa-v85-single-e1-20260916
+  cancel-in-progress: false
+jobs:
+  e1:
+    if: github.event.head_commit.message == 'RUN V85 E1 DRY PREFLIGHT' || github.event.head_commit.message == 'RUN V85 E1 LIVE ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Provider-free dry preflight (no HTTP)
+        if: github.event.head_commit.message == 'RUN V85 E1 DRY PREFLIGHT'
+        run: node scripts/TEMP-v85-e1-once.mjs
+      - name: Live just-in-time runtime gate
+        if: github.event.head_commit.message == 'RUN V85 E1 LIVE ONCE'
+        run: |
+          echo 'SINGLE_E1_GATE_WAIT: 45-second admission window for short-lived service-role lease.'
+          sleep 45
+      - name: Invoke one synthetic production E1 (no retries)
+        if: github.event.head_commit.message == 'RUN V85 E1 LIVE ONCE'
+        env:
+          QISSA_LIVE: '1'
+          GITHUB_TOKEN: ${{ github.token }}
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/TEMP-v85-e1-once.mjs
+# Never rerun a historical paid job. Delete the trigger and workflow on this audit branch after evidence capture.
