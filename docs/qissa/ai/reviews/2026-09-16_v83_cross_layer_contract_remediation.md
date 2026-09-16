@@ -1,25 +1,34 @@
 # QISSA v83 — offline cross-layer remediation, 2026-09-16
 
-**Result: C1–C6 source fixes and regressions PASS offline. Family-beta Story AI remains NO-GO.** This is an engineering checkpoint, not proof that Luna will produce acceptable Uzbek fiction; there were no paid calls during this remediation.
+**Result: C1–C11 source fixes and permanent regressions PASS offline. Family-beta Story AI remains NO-GO.** This is an engineering checkpoint, not proof that Luna will produce acceptable Uzbek fiction. No paid model, TTS, database or production-deploy calls were made during these audits/remediations.
 
 ## Evidence and exact changes
 
-Original [defect reproduction run 35094936207](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35094936207) established nine failures in five groups; see `2026-09-16_v83_prepaid_cross_layer_contradiction_audit.md`. Following the genuine failed E1 [run 35092551269](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35092551269), the remediation branch fixes:
+The first provider-free audit [run 35094936207](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35094936207) reproduced nine failures in five groups after the genuine failed E1 [run 35092551269](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35092551269). The remediation then closed:
 
-- **C1**: Align `prompt.ts` full-story rewrite instruction with `repair-routing.ts`, strict JSON schema and `repair_plan`; independently test standalone menu, title and language failures plus historical mixed failures and pure-length insertion.
-- **C2**: Architect now rejects short `tomorrow_seed`, whitespace-only `choice_icon` and empty `value_alignment` before incurring a Narrator request; the final candidate guard remains unchanged.
-- **C3**: `narrationToCandidate` rejects duplicated, missing and extra resolution IDs instead of silently keeping the last duplicate; ordinary dynamic IDs remain supported.
-- **C4**: Architect now applies the pre-existing choice-menu scaffolding check to its own Episode 1 `decision_point`; the child-facing validator remains in force and a neutral decision positive fixture passes.
-- **C5**: Non-string `nextEpisodePreview` is classified as `invalid_preview` without `.trim()` exceptions. Strict provider JSON was already supposed to prevent this, so this is defense-in-depth.
-- **C6 (found during remediation)**: When only a choice bridge needs repair, Repair now requests only the affected `choice_resolutions`; it no longer asks for a `story_expansion` that the strict JSON schema requires to be null. A dedicated regression verifies this case.
+- **C1**: Repair full-story-rewrite instruction now agrees with routing, strict schema and repair plan for standalone and mixed prose defects.
+- **C2**: Architect rejects short `tomorrow_seed`, blank `choice_icon` and empty `value_alignment` before a Narrator request.
+- **C3**: Narrator resolution mapping rejects duplicate, missing and extra choice IDs instead of silently overwriting a duplicate.
+- **C4**: Architect rejects generic choice-menu scaffolding in immutable Episode 1 `decision_point`.
+- **C5**: malformed non-string `nextEpisodePreview` returns `invalid_preview` rather than throwing.
+- **C6**: choice-resolution-only Repair requests only affected `choice_resolutions`; it no longer asks for a story expansion forbidden by its strict schema.
 
-Permanent offline tests: `scripts/check-story-cross-layer-contracts.mjs` and `scripts/check-story-resolution-only-repair.mjs`, both invoked by the existing `npm run check:story-ai-split` step in official CI. No retry-budget increase, model changes, validator bypass, Safety relaxation, schema change, RLS/DB write, new paid stage or TTS.
+A second provider-free audit [run 35100380811](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35100380811) then reproduced three further cross-layer mismatches before any new paid request:
 
-Single-use provider-free application [run 35096574316](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35096574316) passed C1–C5, existing Story AI checks, TypeScript and build before committing the exact three changed production source files. C6 also passed its provider-free source-application job before its one-file commit. All temporary workflows, patch scripts and triggers were then removed. Final official [QISSA CI #414](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35097492190) and [Story Core #244](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35097492121) passed on commit `0a0882b72dc9da9c9e1f6a26b1527c624448c7bf`; report/plan follow-up commits require their own exact-SHA verification before merge.
+- **C7**: Architect's minimum `effect_summary` length was weaker than the downstream Candidate validator even though the field is copied directly. The thresholds now match upstream.
+- **C8**: `one_time` E1 previously required a non-empty Architect preview while the final Candidate contract requires no preview. Architect validation and prompt/output contract now require empty preview for one-time, while series E1 retains its branch-neutral preview.
+- **C9**: immutable Russian Architect fields could contain invalid raw `{{HERO}}` grammar that later Repair cannot change. Architect now applies the existing Russian hero-token grammar check before Narrator spend. The provider-free source application [run 35100751690](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35100751690) passed Story AI split/safety checks and Story AI typecheck before committing these changes.
+
+A third provider-free audit [run 35101207570](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35101207570) found two more admission gaps:
+
+- **C10**: stale series-shaped state (`episodeCount > 0` or old choice history) could normalize a `one_time` request as technical Episode 2. `isContinuation` is now gated by `storyMode === 'series'`, so one-time remains Episode 1.
+- **C11**: Architect's generic menu-scaffolding regex did not reject a `decision_point` that directly repeated both structured choice labels. The same structured-choice overlap detector is now shared by the final Candidate check and Architect preflight, so direct menu duplication is rejected before Narrator. Provider-free application [run 35101359193](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35101359193) passed Story AI split/safety checks, Story AI/app typechecks and build before committing and removing all third-pass temporary tooling.
+
+Permanent offline regressions are `scripts/check-story-cross-layer-contracts.mjs` (C1–C5 and C7–C11) plus `scripts/check-story-resolution-only-repair.mjs` (C6), both wired into `npm run check:story-ai-split`. The deterministic safety validators remain enabled. No model, retry-budget, moderation/Safety-policy, RLS, database schema, secrets or TTS changes were introduced.
 
 ## Limits and remaining conditions
 
-- Fixes eliminate the reproduced **source-level contradictions**. The earlier rejected E1 prose was not retained, so these changes cannot be called a confirmed historical root-cause fix or literary improvement.
-- Russian `{{HERO}}` grammatical screening of immutable Architect fields remains a separate unproven risk; investigate with a RU fixture before extending paid RU acceptance. A single Uzbek test cannot qualify Russian or other age/world combinations.
-- Before another authorized paid request: review exact clean diff, official full CI and Story Core on final SHA, merge, deploy exact main SHA with AI OFF and JWT/180-second admission lease intact, and verify the runtime flag independently. Use one-shot E1 and STOP on fallback; no automatic user-orchestrated retry, TTS or escalation. Actual invoices cannot be derived from claim counters.
-- Genuine one E1 + same-E1 two E2 A/B with native Story State persistence/reload/cleanup and independent native Uzbek editor plus parent/child read-aloud remain unfulfilled. Neither this report nor passing CI is family-beta authorization. Preserve temporary execution plan until all release gates pass.
+- These changes eliminate the **reproduced source-level contradictions** above. The rejected v83 E1 prose was not retained, so this does not prove those contradictions were the sole historical literary cause or that a future Luna story will be good.
+- The audit compared the important Architect-owned fields that flow into final Candidate validation and specifically exercised Repair routing/schema, resolution IDs, preview semantics, one-time episode identity, choice-menu duplication and Russian immutable hero grammar. Strict provider JSON schema still supplies structural type guarantees before blueprint normalization; malformed-provider-schema defense beyond that remains a separate resilience topic, not evidence for spending another model call.
+- Before another paid request: obtain full official QISSA CI and Story Core GREEN on the **exact final PR head**, review the clean diff, merge only that SHA, deploy exact merged `main` to production with Story AI OFF, verify JWT + 180-second admission lease + runtime OFF independently, and remove/confirm absence of temporary workflows.
+- A fresh live check remains deliberately separate: one genuine E1 first and STOP on fallback; only a valid E1 may fan out to same-E1 A/B E2 persistence/reload/cleanup. Technical success still requires independent native Uzbek editor plus parent/child read-aloud before family-beta GO.
