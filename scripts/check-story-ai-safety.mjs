@@ -229,7 +229,7 @@ requireText('OpenAI provider', provider, [
   'openai_response_failed',
   'buildTextLengthRepairPrompts',
   'retryFeedback',
-  'textLengthRepairOutputSchema',
+  'buildTextLengthRepairOutputSchema',
   "'qissa_text_length_repair'",
   'targetChoiceIds',
   'insertStoryExpansionBeforeFinalParagraph',
