@@ -8,6 +8,7 @@ import {
   type StoryNarration,
 } from './story-architecture.ts'
 import { storyLocalizationSystem } from './localization.ts'
+import { storyArchitectEditorialGuidance, storyNarratorEditorialGuidance } from './editorial-guidance.ts'
 
 const RESPONSES_URL = 'https://api.openai.com/v1/responses'
 
@@ -112,7 +113,7 @@ export const generateStoryBlueprint = async (
   context: NormalizedStoryContext,
 ): Promise<StoryBlueprint> => {
   const prompts = buildArchitectPrompts(context)
-  const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
+  const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)} ${storyArchitectEditorialGuidance(context)}`
   return requestStructured<StoryBlueprint>(
     apiKey,
     model,
@@ -134,7 +135,7 @@ export const generateStoryNarration = async (
   retryReason = '',
 ): Promise<StoryNarration> => {
   const prompts = buildNarratorPrompts(context, blueprint, retryReason)
-  const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
+  const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)} ${storyNarratorEditorialGuidance(context)}`
   return requestStructured<StoryNarration>(
     apiKey,
     model,
