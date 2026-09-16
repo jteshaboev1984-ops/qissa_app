@@ -12,3 +12,11 @@ new = "  \"export const finalPatchFromCandidate = (patch: unknown, heroName = ''
 if old not in text:
     raise SystemExit('finalPatchFromCandidate contract marker missing')
 path.write_text(text.replace(old, new, 1))
+
+split = Path('scripts/check-story-ai-split.mjs')
+text = split.read_text()
+invalid = "  'identity_token: '{{HERO}}'',"
+valid = '  "identity_token: \'{{HERO}}\'",'
+if invalid not in text:
+    raise SystemExit('identity token fragment quote marker missing')
+split.write_text(text.replace(invalid, valid, 1))
