@@ -1,0 +1,1 @@
+One-shot, user-approved E2(A) diagnostic following preflight run 35089264517. One story-generate request; no E1 regeneration, no retry, no TTS, no escalation. Remove after run.
