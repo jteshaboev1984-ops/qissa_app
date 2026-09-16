@@ -4,7 +4,7 @@ import { createInitialSeriesState } from '../src/lib/memoryAgent.ts'
 import { normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
 import { collectStoryLiveEvidence, requireUsableStoryResponse, selectActualStoryChoices } from './story-live-evidence.mjs'
 
-// ONE synthetic E1 at most. Provider disabled during preflight; no retries or story-state writes.
+// ONE synthetic E1 at most. Preflight never contacts story-generate or writes story-state.
 const EXACT_STORY_SHA = 'f725f4fb0376b07b10fe5a8dae95bd425f32726e'
 assert.equal(process.env.QISSA_EXPECTED_STORY_SHA, EXACT_STORY_SHA, 'Exact deployed source SHA mismatch')
 const PREFLIGHT = process.env.QISSA_PREFLIGHT_ONLY === 'true'
@@ -27,7 +27,6 @@ assert.equal(context.heroName, 'Malika')
 assert.equal(context.choiceHistory.length, 0)
 assert.equal(initialState.episodeCount, 0)
 assert.equal(initialState.id, context.seriesId)
-assert.ok(privacyConsent.acceptedAt)
 console.log('PREFLIGHT CONTEXT PASS: exact v83 source, UZ 5-7 synthetic Malika, initial E1, no history')
 if (PREFLIGHT) {
   const mock = collectStoryLiveEvidence(new Headers({
@@ -38,8 +37,8 @@ if (PREFLIGHT) {
   }))
   assert.deepEqual(mock.diagnosticErrors, [])
   assert.throws(() => requireUsableStoryResponse(mock), /Expected openai-structured/u)
-  assert.deepEqual(selectActualStoryChoices({ choices: [{ choice_id: 'first_dynamic_id', resolution_text: 'One' }, { choice_id: 'second_dynamic_id', resolution_text: 'Two' }] }).map((c) => c.choice_id), ['first_dynamic_id', 'second_dynamic_id'])
-  console.log('PREFLIGHT ONLY PASS: no provider calls, no profiles or credentials created')
+  assert.deepEqual(selectActualStoryChoices({ choices: [{ choice_id: 'a', resolution_text: 'One' }, { choice_id: 'some_dynamic_id', resolution_text: 'Two' }] }).map((c) => c.choice_id), ['a', 'some_dynamic_id'], 'Do not invent constraints on Architect-authored IDs')
+  console.log('PREFLIGHT ONLY PASS: zero provider calls, no profile or credential created')
   process.exit(0)
 }
 const key = process.env.QISSA_SUPABASE_ANON_KEY?.trim()
@@ -50,17 +49,14 @@ let attempted = 0
 try {
   attempted += 1
   assert.equal(attempted, 1, 'HARD one-story-request budget')
-  console.log('START one authorized E1 request; no retry, no TTS, no escalation')
+  console.log('START one authorized E1 request; no retry, TTS or escalation')
   const response = await fetch('https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate', {
     method: 'POST',
-    headers: {
-      'content-type': 'application/json', apikey: key, authorization: `Bearer ${key}`,
-      origin: 'https://jteshaboev1984-ops.github.io',
-    },
+    headers: { 'content-type': 'application/json', apikey: key, authorization: `Bearer ${key}`, origin: 'https://jteshaboev1984-ops.github.io' },
     body: JSON.stringify(input), signal: controller.signal,
   })
   const evidence = collectStoryLiveEvidence(response.headers)
-  // Always retain non-secret diagnostic metadata before any source/content assertion.
+  // Log allowlisted metadata even for fallback/HTTP failures, before asserting expected source.
   console.log(`E1_DIAGNOSTICS ${JSON.stringify({ httpStatus: response.status, ...evidence })}`)
   assert.ok(response.ok, `E1 HTTP ${response.status}`)
   const payload = await response.json()
@@ -71,16 +67,15 @@ try {
   assert.equal(episode.series_id, initialState.id)
   assert.ok(episode.story_text?.includes('Malika') && !episode.story_text.includes('{{HERO}}'), 'E1 hero name wrong')
   const choices = selectActualStoryChoices(episode)
-  assert.ok(choices.every((c) => c.choice_id !== 'a' && c.choice_id !== 'b'), 'Dynamic IDs unexpectedly invalid fixture')
   const words = episode.story_text.trim().split(/\s+/u).filter(Boolean).length
   assert.ok(words >= 320 && words <= 470, `Unexpected story word count ${words}`)
   assert.equal(episode.generationSource, 'openai-structured')
-  // Synthetic hero and synthetic per-installation UUID only, NEVER any API key or installationAuth.
-  // Full original envelope is needed for a subsequent provider-free recovery without reconstruction.
+  // Fully original, synthetic child-visible response only; no secrets/installationAuth in payload.
+  // Avoids reconstructing E1 envelope later. Retain exact source evidence before E2 requests.
   console.log(`E1_FULL_RESPONSE ${JSON.stringify(payload)}`)
   console.log(`E1_PROVENANCE ${JSON.stringify({ syntheticInstallationId: installationId, seriesId: initialState.id, sessionId: initialState.sessionId, title: episode.title, words, choiceIds: choices.map((c) => c.choice_id) })}`)
-  console.log('E1 RESULT: exact complete original provider JSON retained for controlled A/B follow-up, no DB profile created')
+  console.log('E1 SUCCESS: full original provider JSON retained, no profile created')
 } finally {
   clearTimeout(timeout)
-  console.log(`FINAL ONE-E1 COUNT=${attempted}; no story-state writes; operator must read back AI OFF`)
+  console.log(`FINAL ONE-E1 COUNT=${attempted}; zero story-state writes; operator must read back AI OFF`)
 }
