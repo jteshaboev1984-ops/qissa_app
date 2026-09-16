@@ -1,0 +1,45 @@
+name: TEMP v83 offline contract fixes
+on:
+  push:
+    branches:
+      - fix/v83-e1-choice-scaffolding-repair
+    paths:
+      - audit/TEMP-v83-apply-contracts-trigger.txt
+permissions:
+  contents: write
+concurrency:
+  group: qissa-v83-offline-contract-fixes
+  cancel-in-progress: false
+jobs:
+  apply-and-test:
+    if: github.event.head_commit.message == 'RUN OFFLINE V83 C1-C5 FIXES'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Apply exact audited local replacements only
+        run: python3 audit/TEMP-v83-apply-contract-fixes.py
+      - name: Assert C1-C5 corrected before publishing source
+        run: |
+          node scripts/check-story-cross-layer-contracts.mjs
+          npm run check:story-ai
+          npm run check:story-ai-split
+          npm run typecheck:story-ai
+          npm run typecheck
+          npm run build
+          git diff --check
+      - name: Commit only four reviewed production source files on feature branch
+        run: |
+          git config user.name 'QISSA offline contract audit'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add supabase/functions/story-generate/prompt.ts supabase/functions/story-generate/story-architecture.ts supabase/functions/story-generate/safety.ts
+          git commit -m 'Align cross-layer generation contracts C1-C5'
+          git push origin HEAD:refs/heads/fix/v83-e1-choice-scaffolding-repair
+# NO provider secrets, no network to models, no Supabase operations or deployment.
