@@ -372,7 +372,9 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   if (typeof value.decision_point !== 'string') errors.push('invalid_decision_point')
   if (!patchIsValid(value.state_patch)) errors.push('invalid_blueprint_state_patch')
   else {
-    if (!textContainsHeroToken(value.state_patch.last_event)) errors.push('blueprint_state_missing_hero_token')
+    // last_event may describe a supporting-character-only event. Identity safety is enforced
+    // across all blueprint natural-language values above; require {{HERO}} only when a field
+    // contractually describes the protagonist rather than inventing hero participation here.
     if (typeof value.state_patch.new_friend === 'string' && (textContainsHeroToken(value.state_patch.new_friend) || genericHeroAliasNeedsRewrite(context, ['{{HERO}}', value.state_patch.new_friend]))) errors.push('blueprint_new_friend_is_hero')
     if (value.state_patch.canon_updates.length > 8) errors.push('blueprint_state_too_large')
     if (duplicateEntryKeys(value.state_patch.canon_updates)) errors.push('duplicate_blueprint_canon_keys')
@@ -407,7 +409,6 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
       if (!textContainsHeroToken(typed.effect_summary)) errors.push('blueprint_choice_effect_missing_hero_token')
       if (!textContainsHeroToken(typed.resolution_goal)) errors.push('blueprint_choice_resolution_goal_missing_hero_token')
       if (patchIsValid(typed.state_patch)) {
-        if (!textContainsHeroToken(typed.state_patch.last_event)) errors.push('blueprint_choice_state_missing_hero_token')
         if (typeof typed.state_patch.new_friend === 'string' && (textContainsHeroToken(typed.state_patch.new_friend) || genericHeroAliasNeedsRewrite(context, ['{{HERO}}', typed.state_patch.new_friend]))) errors.push('blueprint_choice_new_friend_is_hero')
       }
     }

@@ -137,6 +137,52 @@ unsafeBlueprint.central_goal = 'Do‘stlar qon haqida gaplashadi'
 const unsafeBlueprintErrors = validateStoryBlueprint({ language: 'uz', ageGroup: '5-7', episodeIndex: 1, storyMode: 'series', storyMood: 'bedtime', isFinalSeriesSession: false, recurringCharacters: [], canonState: {}, relationshipState: {} }, unsafeBlueprint)
 requireLanguageGuard(unsafeBlueprintErrors.includes('blueprint_rule_safety'), 'deterministic safety present in Architect output must fail before the paid Narrator stage')
 
+const heroNeutralStateContext = {
+  language: 'uz', heroType: 'girl_hero', ageGroup: '5-7', episodeIndex: 1, storyMode: 'series', storyMood: 'bedtime',
+  isFinalSeriesSession: false, recurringCharacters: [], canonState: {}, relationshipState: {},
+}
+const heroNeutralStateBlueprint = {
+  plan_version: 'split-v1',
+  central_goal: 'Momiqqa sovg‘a tayyorlash',
+  setting_anchor: 'shinam o‘rmon',
+  continuity_callbacks: [],
+  beats: [
+    '{{HERO}} Momiq bilan sovg‘a haqida gaplashadi',
+    'Momiq ikki oddiy fikrni ko‘rsatadi',
+    '{{HERO}} do‘stlar bilan ikkalasini sinab ko‘radi',
+    '{{HERO}} bittasini tanlashga tayyor bo‘ladi',
+  ],
+  decision_point: 'Qaysi sovg‘adan boshlaymiz?',
+  choices: [
+    {
+      choice_id: 'choice-a', text: 'Barglardan rasm yasash',
+      effect_summary: '{{HERO}} Momiq bilan barglardan rasm yasaydi.',
+      resolution_goal: '{{HERO}} rasmni Momiqqa tayyorlab beradi.',
+      tomorrow_seed: 'Momiq sovg‘ani akasiga ko‘rsatadi.', choice_icon: '🎁',
+      state_patch: { last_event: 'Barglardan rasm tayyor bo‘ldi', new_friend: null, hero_trait: null, open_arc: 'Momiq sovg‘asi', relationship_updates: [], canon_updates: [] },
+      value_alignment: ['kindness'],
+    },
+    {
+      choice_id: 'choice-b', text: 'Sokin qo‘shiq aytish',
+      effect_summary: '{{HERO}} Momiq bilan sokin qo‘shiq aytadi.',
+      resolution_goal: '{{HERO}} Momiqqa sokin qo‘shiq tayyorlab beradi.',
+      tomorrow_seed: 'Momiq qo‘shiqni akasiga aytadi.', choice_icon: '🎵',
+      state_patch: { last_event: 'Sokin qo‘shiq tayyor bo‘ldi', new_friend: null, hero_trait: null, open_arc: 'Momiq sovg‘asi', relationship_updates: [], canon_updates: [] },
+      value_alignment: ['friendship'],
+    },
+  ],
+  state_patch: { last_event: 'Momiq akasi uchun sovg‘a tayyorlamoqchi', new_friend: 'Momiq', hero_trait: null, open_arc: 'Momiq sovg‘asi', relationship_updates: [], canon_updates: [] },
+  next_episode_preview: 'Momiq sovg‘ani akasiga ko‘rsatishga tayyorlanadi.',
+}
+const heroNeutralStateErrors = validateStoryBlueprint(heroNeutralStateContext, heroNeutralStateBlueprint)
+requireLanguageGuard(!heroNeutralStateErrors.includes('blueprint_state_missing_hero_token'), 'hero-neutral top-level last_event must not be rejected merely for omitting {{HERO}}')
+requireLanguageGuard(!heroNeutralStateErrors.includes('blueprint_choice_state_missing_hero_token'), 'hero-neutral choice last_event must not be rejected merely for omitting {{HERO}}')
+
+const duplicateHeroInStateBlueprint = structuredClone(heroNeutralStateBlueprint)
+duplicateHeroInStateBlueprint.choices[0].state_patch.last_event = 'Qizaloq barglardan rasm tayyorladi.'
+const duplicateHeroInStateErrors = validateStoryBlueprint(heroNeutralStateContext, duplicateHeroInStateBlueprint)
+requireLanguageGuard(duplicateHeroInStateErrors.includes('blueprint_generic_hero_alias_requires_rewrite'), 'generic qizaloq identity inside state memory must still fail before Narrator')
+
 if (!switchedLanguageContext) {
   failures.push('language switch continuity context failed to normalize')
 } else {
@@ -382,9 +428,8 @@ requireFragments('repair contract observability', orchestrator, [
   'repair-contract',
 ])
 
-requireFragments('hero identity continuity v76', architecture, [
+requireFragments('hero identity continuity v77', architecture, [
   'The protagonist identity token is literal {{HERO}}',
-  "errors.push('blueprint_state_missing_hero_token')",
   "errors.push('blueprint_choice_effect_missing_hero_token')",
   "errors.push('blueprint_choice_resolution_goal_missing_hero_token')",
   "identity_token: '{{HERO}}'",
