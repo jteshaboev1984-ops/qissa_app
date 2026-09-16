@@ -530,6 +530,7 @@ export const buildTextLengthRepairPrompts = (
   retryFeedback = '',
 ) => {
   const [minimumStoryWords, maximumStoryWords] = hardStoryWordRange(context)
+  const latestChoice = context.choiceHistory[context.choiceHistory.length - 1] ?? null
   const currentStoryWords = storyWordCount(candidate.story_text)
   const storyTooShort = validationErrors.includes('story_too_short')
   const storyTooLong = validationErrors.includes('story_too_long')
@@ -583,8 +584,9 @@ export const buildTextLengthRepairPrompts = (
     'When full-story rewrite is required, return title_rewrite as a child-facing title in the requested language that describes the same story. Do not rename established characters.',
     'When full-story rewrite is required, also return a complete replacement vocabulary_rewrite: exactly 2-3 grounded Russian-to-English items for Russian, and an empty array for Uzbek or Kazakh. For a pure insertion-only or choice-resolution-only repair, vocabulary_rewrite must be an empty array.',
     'If there is no story length or Episode 2 bedtime-coda failure, return both story_rewrite and story_expansion as null.',
-    'When rewriting Episode 2, do not invent a new problem, location, character, durable object, clue, relationship or branch consequence. Do not replay the selected choice bridge. Use dialogue, reactions, humor and concrete action already licensed by the candidate to develop the same story, then lower energy into closure.',
-    'The expansion may deepen only existing action, dialogue, reactions, attempts, gentle humor and cause-and-effect. Do not introduce a new durable object, clue, relationship, location, mechanism state, branch consequence, canon fact, problem or mission.',
+    'When rewriting Episode 2, do not invent a new problem, location, character, durable object, clue, relationship or branch consequence. confirmed_choice_bridge.resolution_text has already been shown to the child. The rewritten opening must start AFTER that visible bridge with a genuinely new reaction, consequence, exchange or next action. Do not copy, paraphrase, enlarge, restage, slow down, or replay any bridge action, object placement, joke, reaction or payoff, even if the wording changes. Use dialogue, reactions, humor and concrete action licensed by the candidate only after that boundary, then lower energy into closure.',
+    'The expansion may deepen only existing branch-neutral setup, dialogue, reactions, attempts, gentle humor and cause-and-effect. Do not introduce a new durable object, clue, relationship, location, mechanism state, branch consequence, canon fact, problem or mission.',
+    'For an Episode 1 insertion, structured choices are FUTURE material. Treat every choice.text, effect_summary, resolution_text and branch state_patch as forbidden content before the decision. Do not rehearse, begin, partially perform, prepare the distinctive mechanics of, or show the result/payoff of either choice. The inserted passage must remain equally true after either choice is selected.',
     'Do not resolve either choice inside the expansion or rewrite. The final decision point and existing choices must remain valid.',
     'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions, no missing ids and no extras.',
     'For each repaired resolution_text, preserve the same selected action and the exact durable consequence already represented by its effect_summary and immutable_state_patch. Only adjust wording and useful immediate action/reaction to reach the target length.',
@@ -613,7 +615,14 @@ export const buildTextLengthRepairPrompts = (
             insertion_point: 'Immediately before the existing final story paragraph.',
             paragraph_before_insertion: paragraphBeforeChoiceSetup,
             existing_final_choice_setup_paragraph: finalChoiceSetupParagraph,
-            rule: 'Return only NEW prose for insertion. Do not repeat either neighboring paragraph and do not restate the choices.',
+            rule: 'Return only NEW PRE-CHOICE prose for insertion. It must remain branch-neutral and equally true whichever structured choice is selected. Do not repeat either neighboring paragraph. Do not name, restate, rehearse, begin performing, partially perform, prepare the distinctive mechanics of, or show the payoff/result of either choice.',
+            forbidden_future_branch_material: candidate.choices.map((choice) => ({
+              choice_id: choice.choice_id,
+              choice_text: choice.text,
+              effect_summary: choice.effect_summary,
+              resolution_text: choice.resolution_text,
+              branch_state_patch: choice.state_patch,
+            })),
           }
         : null,
       story_rewrite: fullStoryRewrite
@@ -623,7 +632,7 @@ export const buildTextLengthRepairPrompts = (
             hard_minimum_words: minimumStoryWords,
             hard_maximum_words: maximumStoryWords,
             target_words: `${rewriteTargetMinimum}-${rewriteTargetMaximum}`,
-            preserve_story_contract: context.episodeIndex === 2 ? 'same Episode 2 plot, same selected-choice consequence, same established characters and immutable state; no new problem, helper group or durable fact' : 'same Episode 1 plot, same established characters, same decision point and structured choices; no new problem or durable fact',
+            preserve_story_contract: context.episodeIndex === 2 ? 'same Episode 2 plot, same selected-choice consequence, same established characters and immutable state; start strictly after confirmed_choice_bridge and do not replay any bridge action or payoff; no new problem, helper group or durable fact' : 'same Episode 1 plot, same established characters, same decision point and structured choices; all prose before the decision remains branch-neutral and does not begin or perform either choice; no new problem or durable fact',
             final_bedtime_coda_words: context.episodeIndex === 2 ? '60-120 words in the final paragraph after the main problem is solved' : null,
             validation_errors: validationErrors,
           }
@@ -634,6 +643,12 @@ export const buildTextLengthRepairPrompts = (
         : 'return an empty array',
     },
     retry_feedback: retryFeedback,
+    confirmed_choice_bridge: context.episodeIndex === 2 && latestChoice ? {
+      choice_text: latestChoice.choice_text,
+      effect_summary: latestChoice.effect_summary,
+      resolution_text: latestChoice.resolution_text,
+      instruction: 'Already displayed before this repair output begins. Start after its visible result and do not copy, paraphrase, expand or restage it.',
+    } : null,
     immutable_candidate_context: {
       title: candidate.title,
       story_text: candidate.story_text,
