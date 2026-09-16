@@ -64,6 +64,11 @@ export const readStoryAiRuntimeState = async (): Promise<StoryAiRuntimeState> =>
     return { enabled: false, reason: 'runtime-config-check-failed' }
   }
 
+  // Keep OFF unconditionally denied; a fresh timestamp cannot enable a false flag.
+  if (!isRecord(data) || data.enabled !== true) {
+    return { enabled: false, reason: 'runtime-disabled' }
+  }
+
   return evaluateStoryAiRuntimeLease(data, Date.now())
 }
 
@@ -87,8 +92,7 @@ export const claimStoryGeneration = async (installationId: string): Promise<Gene
     reason: typeof data.reason === 'string' ? data.reason : 'unknown',
     used: typeof data.used === 'number' && Number.isFinite(data.used) ? data.used : 0,
     limit: typeof data.limit === 'number' && Number.isFinite(data.limit)
-      ? data.limit
-      : DAILY_STORY_GENERATION_LIMIT,
+      ? data.limit : DAILY_STORY_GENERATION_LIMIT,
     globalUsed: typeof data.global_used === 'number' && Number.isFinite(data.global_used) ? data.global_used : 0,
     globalLimit: typeof data.global_limit === 'number' && Number.isFinite(data.global_limit)
       ? data.global_limit : GLOBAL_DAILY_STORY_GENERATION_LIMIT,
