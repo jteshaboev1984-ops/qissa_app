@@ -80,3 +80,5 @@ split_check = split_check.replace(anchor, regression)
 
 architecture_path.write_text(architecture)
 split_check_path.write_text(split_check)
+
+# preflight trigger 3
