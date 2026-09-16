@@ -27,6 +27,7 @@ export const textRewriteValidationErrors = new Set([
   'story_choice_menu_scaffolding',
   'choice_resolution_defers_to_future_session',
   'continuation_resets_before_resolution',
+  'episode_2_unresolved_decision',
 ])
 
 export const textRepairableValidationErrors = new Set([
@@ -48,6 +49,7 @@ const fullStoryRewriteErrors = new Set([
   'story_repeats_choice_menu',
   'story_choice_menu_scaffolding',
   'continuation_resets_before_resolution',
+  'episode_2_unresolved_decision',
 ])
 
 const allRepairable = (errors: string[]): boolean =>

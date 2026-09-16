@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, choiceResolutionDefersToFutureSession, clearAdjudicatedNonSevereViolence, genericHeroAliasNeedsRewrite, moderationNeedsFearAdjudication, newFriendIsAtomic, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, uzbekChildLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, choiceResolutionDefersToFutureSession, episodeTwoUnresolvedDecisionNeedsRewrite, clearAdjudicatedNonSevereViolence, genericHeroAliasNeedsRewrite, moderationNeedsFearAdjudication, newFriendIsAtomic, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, uzbekChildLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
 
 const base = 'supabase/functions/story-generate'
 const index = readFileSync(`${base}/index.ts`, 'utf8')
@@ -74,6 +74,34 @@ requireRegression(
 requireRegression(
   !choiceMenuScaffoldingNeedsRewrite('ru', 'Ёжка предложил убрать один лист. Алиса посмотрела на друзей и спросила: «Как лучше начать?»'),
   'ordinary lead-in plus neutral decision cue must remain allowed',
+)
+requireRegression(
+  episodeTwoUnresolvedDecisionNeedsRewrite(
+    { language: 'uz', ageGroup: '5-7', episodeIndex: 2, storyMode: 'series', storyMood: 'bedtime' },
+    '{{HERO}} do‘stlariga qaradi. Quvnoq va Chittak {{HERO}} qayerga osishni tanlashini kutishdi. Qaysi joy bayram maydonchasini eng quvnoq ko‘rsatardi?\n\nKech kirgach, o‘rmon asta tinchidi va hamma dam oldi.',
+  ),
+  'Episode 2 must reject the live Uzbek phantom choice that asks the child to decide without structured choices',
+)
+requireRegression(
+  episodeTwoUnresolvedDecisionNeedsRewrite(
+    { language: 'ru', ageGroup: '5-7', episodeIndex: 2, storyMode: 'series', storyMood: 'bedtime' },
+    '{{HERO}} посмотрел на друзей. Они ждали, какое место герой выберет для флажков. Какое место лучше подойдёт для праздника?\n\nЛес стих, и друзья устроились отдыхать.',
+  ),
+  'Episode 2 must reject an unresolved Russian child decision',
+)
+requireRegression(
+  episodeTwoUnresolvedDecisionNeedsRewrite(
+    { language: 'kz', ageGroup: '5-7', episodeIndex: 2, storyMode: 'series', storyMood: 'bedtime' },
+    '{{HERO}} достарына қарады. Олар кейіпкер қай жерді таңдайтынын күтіп тұрды. Қайсы жер жақсы лайық болады?\n\nОрман тынышталып, достар демалды.',
+  ),
+  'Episode 2 must reject an unresolved Kazakh child decision',
+)
+requireRegression(
+  !episodeTwoUnresolvedDecisionNeedsRewrite(
+    { language: 'uz', ageGroup: '5-7', episodeIndex: 2, storyMode: 'series', storyMood: 'bedtime' },
+    'Quvnoq kulib: “Bayroqchalar chiroyli ko‘rinyaptimi?” dedi. {{HERO}} kuldi. Keyin do‘stlar bayroqchalarni eman yoniga o‘zlari osib bo‘lishdi.\n\nKech kirgach, o‘rmon asta tinchidi va hamma dam oldi.',
+  ),
+  'Episode 2 must still allow ordinary dialogue questions when the action resolves inside the prose',
 )
 requireRegression(
   branchingPreviewNeedsRewrite('ru', 'У чистого просвета или у Степашки найдётся новая подсказка.'),
