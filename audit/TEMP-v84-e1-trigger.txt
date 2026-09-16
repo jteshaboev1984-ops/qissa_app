@@ -1,1 +1,0 @@
-Exactly one authorized production E1 request. Stop on fallback. Never rerun this historical live commit.
