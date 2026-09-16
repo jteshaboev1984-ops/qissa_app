@@ -1,0 +1,33 @@
+name: TEMP v83 single authentic E1 (one paid request maximum)
+on:
+  push:
+    branches:
+      - audit/v83-new-e1-once-20260916
+    paths:
+      - .github/workflows/TEMP-v83-single-e1.yml
+      - audit/TEMP-v83-e1-trigger.txt
+permissions:
+  contents: read
+concurrency:
+  group: qissa-v83-single-e1-20260916
+  cancel-in-progress: false
+jobs:
+  audit:
+    if: github.event.head_commit.message == 'PREFLIGHT V83 SINGLE E1 NO PROVIDER' || github.event.head_commit.message == 'RUN APPROVED V83 E1 EXACTLY ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Validate source and perform optional one-time E1
+        env:
+          QISSA_EXPECTED_STORY_SHA: f725f4fb0376b07b10fe5a8dae95bd425f32726e
+          QISSA_PREFLIGHT_ONLY: ${{ github.event.head_commit.message == 'PREFLIGHT V83 SINGLE E1 NO PROVIDER' }}
+          QISSA_RUN_ONE_E1: ${{ github.event.head_commit.message == 'RUN APPROVED V83 E1 EXACTLY ONCE' }}
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/TEMP-v83-single-e1.mjs
+# Remove this one-shot workflow and runner when complete. Never rerun the paid commit.
