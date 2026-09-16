@@ -1,0 +1,37 @@
+name: Temporary v80 CI correction
+
+on:
+  push:
+    branches:
+      - fix/v80-episode2-no-phantom-choice
+    paths:
+      - .github/v80-ci-fix-trigger
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/v80-episode2-no-phantom-choice
+      - name: Correct split static assertion ownership
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/check-story-ai-split.mjs')
+          text = p.read_text()
+          line = "  'episode_2_unresolved_decision',\n"
+          if text.count(line) != 1:
+              raise SystemExit(f'expected one misplaced static assertion, found {text.count(line)}')
+          p.write_text(text.replace(line, '', 1))
+          PY
+      - name: Commit correction
+        run: |
+          git config user.name "qissa-audit-bot"
+          git config user.email "qissa-audit-bot@users.noreply.github.com"
+          git add scripts/check-story-ai-split.mjs
+          git commit -m "Fix v80 split contract assertion ownership"
+          git push origin HEAD:fix/v80-episode2-no-phantom-choice
