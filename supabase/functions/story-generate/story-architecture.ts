@@ -331,6 +331,23 @@ export const normalizeStoryBlueprintMemoryKeys = (
   }
 }
 
+export const normalizeStoryBlueprintHeroReferences = (
+  blueprint: StoryBlueprint,
+): { blueprint: StoryBlueprint; normalizedCount: number } => {
+  let normalizedCount = 0
+  const choices = blueprint.choices.map((choice) => {
+    if (textContainsHeroToken(choice.resolution_goal) || !textContainsHeroToken(choice.effect_summary)) return choice
+    normalizedCount += 1
+    return {
+      ...choice,
+      // effect_summary already owns the selected hero action. Reuse that immutable branch
+      // fact to anchor a result-centered resolution_goal without inventing a new action.
+      resolution_goal: `${choice.effect_summary} ${choice.resolution_goal}`.trim(),
+    }
+  })
+  return { blueprint: { ...blueprint, choices }, normalizedCount }
+}
+
 const patchHasStableMemoryKeys = (context: NormalizedStoryContext, patch: CandidatePatch): boolean => {
   const existingCanon = new Set(Object.keys(context.canonState))
   const existingRelationships = new Set(Object.keys(context.relationshipState))

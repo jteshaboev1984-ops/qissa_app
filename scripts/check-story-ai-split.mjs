@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import { hasSingleLanguageMismatch } from '../supabase/functions/story-generate/language.ts'
 import { buildArchitectPrompts, enforceStoryBlueprintContextContract, validateStoryBlueprint } from '../supabase/functions/story-generate/story-architecture.ts'
-import { normalizeStoryBlueprintMemoryKeys } from '../supabase/functions/story-generate/story-architecture.ts'
+import { normalizeStoryBlueprintHeroReferences, normalizeStoryBlueprintMemoryKeys } from '../supabase/functions/story-generate/story-architecture.ts'
 import { finalPatchFromCandidate, normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
 import { isTextRepairEligibleFailure, textRepairRequiresFullStoryRewrite, textRepairableValidationErrors, textRepairShouldRepairAllChoiceResolutions } from '../supabase/functions/story-generate/repair-routing.ts'
 
@@ -183,6 +183,30 @@ duplicateHeroInStateBlueprint.choices[0].state_patch.last_event = 'Qizaloq bargl
 const duplicateHeroInStateErrors = validateStoryBlueprint(heroNeutralStateContext, duplicateHeroInStateBlueprint)
 requireLanguageGuard(duplicateHeroInStateErrors.includes('blueprint_generic_hero_alias_requires_rewrite'), 'generic qizaloq identity inside state memory must still fail before Narrator')
 
+const resultCenteredResolutionBlueprint = structuredClone(heroNeutralStateBlueprint)
+resultCenteredResolutionBlueprint.choices[0].resolution_goal = 'Momiq tayyor rasmni ikki panjasi bilan ehtiyotkor ushlaydi.'
+const resultCenteredBefore = validateStoryBlueprint(heroNeutralStateContext, resultCenteredResolutionBlueprint)
+requireLanguageGuard(resultCenteredBefore.includes('blueprint_choice_resolution_goal_missing_hero_token'), 'result-centered resolution goal should expose the missing hero anchor before normalization')
+const resultCenteredNormalized = normalizeStoryBlueprintHeroReferences(resultCenteredResolutionBlueprint)
+const resultCenteredAfter = validateStoryBlueprint(heroNeutralStateContext, resultCenteredNormalized.blueprint)
+requireLanguageGuard(resultCenteredNormalized.normalizedCount === 1, 'exactly one result-centered resolution goal should be deterministically hero-anchored')
+requireLanguageGuard(!resultCenteredAfter.includes('blueprint_choice_resolution_goal_missing_hero_token'), 'hero-bearing effect_summary must safely anchor a result-centered resolution_goal without another provider call')
+requireLanguageGuard(resultCenteredNormalized.blueprint.choices[0].resolution_goal.includes('{{HERO}}'), 'normalized resolution_goal must inherit the canonical hero token from immutable effect_summary')
+
+const missingBothHeroAnchorsBlueprint = structuredClone(heroNeutralStateBlueprint)
+missingBothHeroAnchorsBlueprint.choices[0].effect_summary = 'Momiq tayyor rasmni ko‘radi.'
+missingBothHeroAnchorsBlueprint.choices[0].resolution_goal = 'Momiq rasmni ikki panjasi bilan ushlaydi.'
+const missingBothNormalized = normalizeStoryBlueprintHeroReferences(missingBothHeroAnchorsBlueprint)
+const missingBothErrors = validateStoryBlueprint(heroNeutralStateContext, missingBothNormalized.blueprint)
+requireLanguageGuard(missingBothNormalized.normalizedCount === 0, 'normalizer must not invent hero participation when both branch consequence fields omit the hero')
+requireLanguageGuard(missingBothErrors.includes('blueprint_choice_effect_missing_hero_token') && missingBothErrors.includes('blueprint_choice_resolution_goal_missing_hero_token'), 'missing hero in both branch consequence fields must remain fail-closed')
+
+const aliasInResolutionBlueprint = structuredClone(resultCenteredResolutionBlueprint)
+aliasInResolutionBlueprint.choices[0].resolution_goal = 'Qizaloq rasmni Momiqqa beradi.'
+const aliasInResolutionNormalized = normalizeStoryBlueprintHeroReferences(aliasInResolutionBlueprint)
+const aliasInResolutionErrors = validateStoryBlueprint(heroNeutralStateContext, aliasInResolutionNormalized.blueprint)
+requireLanguageGuard(aliasInResolutionErrors.includes('blueprint_generic_hero_alias_requires_rewrite'), 'deterministic resolution-goal anchoring must not hide a generic qizaloq duplicate identity')
+
 if (!switchedLanguageContext) {
   failures.push('language switch continuity context failed to normalize')
 } else {
@@ -205,6 +229,7 @@ requireFragments('architecture', architecture, [
   'type: context.heroType',
   'patchHasStableMemoryKeys',
   'normalizeStoryBlueprintMemoryKeys',
+  'normalizeStoryBlueprintHeroReferences',
   'canonicalNewMemoryKey',
   'canonicalizeMemoryEntries',
   'byKey.has(key)',
@@ -299,6 +324,7 @@ requireFragments('split orchestrator', orchestrator, [
   "'gpt-5.6-luna'",
   "OPENAI_NARRATOR_ESCALATION_MODEL",
   "|| ''",
+  'normalizeStoryBlueprintHeroReferences(blueprint).blueprint',
   'validateStoryBlueprint(context, blueprint)',
   'narrationToCandidate(context, blueprint, narration)',
   'repairStoryCandidateTextLengths',
