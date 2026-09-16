@@ -1,0 +1,24 @@
+name: TEMP v83 provider-free second-pass contract audit
+on:
+  push:
+    branches:
+      - fix/v83-e1-choice-scaffolding-repair
+    paths:
+      - audit/TEMP-v83-second-pass-contract-audit-trigger.txt
+permissions:
+  contents: read
+jobs:
+  audit:
+    if: github.event.head_commit.message == 'RUN PROVIDER FREE SECOND PASS AUDIT'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Reproduce second-pass cross-layer risks (NO provider)
+        run: node scripts/TEMP-v83-second-pass-contract-audit.mjs
+# Read-only source audit. No API keys, no provider calls, no database writes.
