@@ -1,0 +1,37 @@
+# QISSA v84 — authentic new E1 acceptance and editorial checkpoint
+
+**Date:** 2026-09-16 UTC. **Verdict:** one authentic E1 technical PASS; full literary/session qualification **INCOMPLETE / family-beta NO-GO**. No E2 provider request or full client persistence/reload occurred in this checkpoint. This document contains no full story prose, actual child data, credentials or provider secrets.
+
+## Provenance and technical result
+
+- Previously reviewed PR #192 (cross-layer C1–C11) merged as `e9d369c1b8af4036c95734af28a1f89c89c7a8d6`; PR #193 was a docs-only follow-up. The exact `main` at this checkpoint was `e082c9d1fd3d93575ccdf0917d77956f974f985d`.
+- The sole new provider-eligible E1 request was already admitted before this checkpoint: [workflow run 35102524645, job 104815249550](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35102524645). The workflow completed `success`, and the job logs contain the original full HTTP response; run artifacts are empty. **Never rerun that historical live job.**
+- HTTP 200; `x-qissa-generation-source=openai-structured`; `x-qissa-fallback-reason=null`; `x-qissa-runtime-ai=enabled` for this admitted request; failure class/trace null; `x-qissa-story-pipeline=split-v1`; narrator model `gpt-5.6-luna`; `x-qissa-generation-repair=text-length`; `x-qissa-repair-retry-used=false`; escalation false; diagnostic provider calls `4`.
+- Authenticated E1 has **363 words** (`story_text` only), exactly two choice IDs `a` and `b`, and 26/29-word selected-action bridges respectively. The one-shot runner's E1 assertions passed. The age 5–7 bedtime series target for E1 is 350–390 words; the bridge soft target in prompt guidance is 30–45 words while its hard acceptance bound allows 25–60. Thus both bridges are technically valid but slightly below the editorial target.
+- Model-reported safety verdict was `approved=true`, `risk_level=low`, `required_action=publish` with false flags. The displayed story has no obvious prohibited material in this internal reading; this is not independent child-safety or native editorial certification.
+- Project-wide production daily admission claims on 2026-09-16 are **16**, after the reported 15→16 increase for this E1. Read-only SQL separately confirmed `qissa_runtime_flags.story_ai_enabled=false`, updated at 13:34:10.447218 UTC, and the daily admission row remained 16. The claims counter is not an invoice, billed request count, or provider balance. No new provider calls were made during the post-run review.
+
+## E1-only editorial assessment — observations, not independent approval
+
+1. **Premature payoff before the child chooses.** The established child-scale problem is a timid character's soft singing voice and whether friends can hear/include it. Before the choice, the character already sings with the group, receives explicit support, and the narrator/hero concludes that every voice belongs. The later choice between two game formats consequently has a weakened causal role. This violates the intended editorial shape even though the existing prompt already explicitly says not to resolve the main problem before a decision. Do not claim that merely repeating that prompt will reliably fix the output.
+2. **Branch differentiation is present in method but not yet established as meaningful in a full story.** A selects turn-taking and B call-and-response; choice-specific bridges, relationship text and canon strings differ. Yet both short bridges already yield the same broad emotional result, and there is no genuine v84 E2 for either route. No claim of proven A/B narrative divergence is justified.
+3. **Padding / momentum concern.** Several late E1 sentences restate the group's patient acceptance and quiet mood after that fact is already conveyed. This is an editorial observation only: the initial pre-repair prose is not in the retained successful job log, so repetition cannot be attributed definitively to the `text-length` repair stage.
+4. **Uzbek language polish.** The observed form `qo‘shiqka` merits correction to `qo‘shiqqa`; one phrase describing very loud singing is awkward. These are preliminary language notes pending a native Uzbek review, not a claim of comprehensive proofreading.
+5. **Positive observations.** The selected fictional hero stays consistent; no hero-token leak; supporting characters speak and react, gentle humor is present, scene stays calm, and A/B memory patches are populated. These technical/content strengths do not erase the choice-causality gap.
+
+The official 12-dimension story scorecard requires a *complete child-visible session*, including selected bridge and actual E2. Because neither v84 E2 exists yet, **no 24-point score or release PASS is assigned**. Independent native Uzbek editorial and parent/child read-aloud review have not occurred.
+
+## Provider-free preparation of the two isolated E2 branches
+
+A local, credential-free standalone fixture was assembled manually from the authentic E1 response in the run logs. It contains ONLY minimal synthetic selections plus memory and chosen patch, not full E1 prose, HTTP credentials or a runnable live workflow. A local Node assertion pass verified two branches, one prior choice per branch, preserved original E1 episode/series identity, the original bridge text per branch, identical shared story arc, and different selected summaries/canon/bridges. It is a **structural preparation only**, not the repository's canonical `normalizeStoryRequest` run, not an end-to-end browser test and not a production E2 call.
+
+- **A (`choice_id=a`)**: turn-taking method, 26-word selected resolution; preserve this method in the future E2's concrete interaction and canon.
+- **B (`choice_id=b`)**: call-and-response/echo method, 29-word selected resolution; preserve the echo interaction and prevent its continuation from collapsing into A's ordinary turn-taking song.
+- Both state preparations point to the original synthetic series and set `episodeCount=1`. Only the selected choice appears in each branch's history; the unselected choice must never enter the E2 context.
+
+## Containment and next gate
+
+- The completed E1's temporary workflow, runner and push-trigger file were removed from `audit/v84-new-e1-once-20260916`. Branch head `7b83c4de81f82973efd20e5ad789f795a5d4104b` compares to source `main` with `files=[]`. Historical logs remain accessible; no live executable trigger remains on the audit branch.
+- **Story AI stays OFF.** Do not initiate v84 E2 A/B, another E1, TTS, or escalation on the strength of the green technical run. Avoid new paid experiments until the decision's pre-choice causal role and natural Uzbek quality are addressed and reviewed provider-free, and a narrowly scoped live run is deliberately authorized. No broad qualification matrix.
+- Next provider-free work: trace whether the pre-choice resolution appears at Architect plan level or only in Narrator/Repair; assess whether existing offline contracts can guard the causal decision without fragile language-specific regex or expensive extra AI checks. Prepare two separate selected-only test runners only after a reviewed E1 is approved for diagnostic use. If code changes are warranted, require regression/official CI GREEN before deploy and keep runtime OFF throughout.
+- Additional unproven criteria: two actual v84 E2 outputs from the same E1, no bridge replay, meaningful distinct scenes and memory, story-state persistence/reload, full six-to-eight-minute quality, independent native Uzbek review and family read-aloud acceptance.
