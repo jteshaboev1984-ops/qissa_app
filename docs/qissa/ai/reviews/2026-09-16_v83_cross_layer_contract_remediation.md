@@ -26,9 +26,14 @@ A third provider-free audit [run 35101207570](https://github.com/jteshaboev1984-
 
 Permanent offline regressions are `scripts/check-story-cross-layer-contracts.mjs` (C1–C5 and C7–C11) plus `scripts/check-story-resolution-only-repair.mjs` (C6), both wired into `npm run check:story-ai-split`. The deterministic safety validators remain enabled. No model, retry-budget, moderation/Safety-policy, RLS, database schema, secrets or TTS changes were introduced.
 
+## Deployment checkpoint
+
+Final PR #192 head `d2b2f82f20dd89ed1bc4b0b66def5b5c68ec4b87` passed [QISSA CI #437](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35101589983) and [Story Core #267](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35101589548), with a clean permanent-only diff and no temporary audit/fixer workflow, trigger or script. PR #192 merged as `main` SHA `e9d369c1b8af4036c95734af28a1f89c89c7a8d6`.
+
+Production `story-generate` was then deployed as **Edge v84 ACTIVE / verify_jwt=true**, importing exactly that merged SHA. Story AI was independently verified OFF after deployment. `qissa_provider_daily_usage` still showed **15** claims for 2026-09-16, unchanged from the prior failed E1, so the provider-free audits, remediations, CI, merge and deployment added zero Story-generation claims.
+
 ## Limits and remaining conditions
 
 - These changes eliminate the **reproduced source-level contradictions** above. The rejected v83 E1 prose was not retained, so this does not prove those contradictions were the sole historical literary cause or that a future Luna story will be good.
-- The audit compared the important Architect-owned fields that flow into final Candidate validation and specifically exercised Repair routing/schema, resolution IDs, preview semantics, one-time episode identity, choice-menu duplication and Russian immutable hero grammar. Strict provider JSON schema still supplies structural type guarantees before blueprint normalization; malformed-provider-schema defense beyond that remains a separate resilience topic, not evidence for spending another model call.
-- Before another paid request: obtain full official QISSA CI and Story Core GREEN on the **exact final PR head**, review the clean diff, merge only that SHA, deploy exact merged `main` to production with Story AI OFF, verify JWT + 180-second admission lease + runtime OFF independently, and remove/confirm absence of temporary workflows.
+- The audit compared important Architect-owned fields that flow into final Candidate validation and exercised Repair routing/schema, resolution IDs, preview semantics, one-time episode identity, choice-menu duplication and Russian immutable hero grammar. Strict provider JSON schema still supplies structural type guarantees before blueprint normalization; malformed-provider-schema defense beyond that remains a separate resilience topic.
 - A fresh live check remains deliberately separate: one genuine E1 first and STOP on fallback; only a valid E1 may fan out to same-E1 A/B E2 persistence/reload/cleanup. Technical success still requires independent native Uzbek editor plus parent/child read-aloud before family-beta GO.
