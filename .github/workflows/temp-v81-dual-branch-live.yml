@@ -1,0 +1,38 @@
+name: TEMP v81 single-E1 dual-E2 acceptance
+
+on:
+  push:
+    branches:
+      - audit/v81-single-e1-dual-e2-once
+    paths:
+      - .github/workflows/temp-v81-dual-branch-live.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qissa-v81-dual-branch-one-shot
+  cancel-in-progress: false
+
+jobs:
+  acceptance:
+    if: github.event.head_commit.message == 'RUN APPROVED V81 ONE E1 TWO E2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact audit branch
+        uses: actions/checkout@v7
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Execute exactly one E1 and two independent E2 requests
+        env:
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+          QISSA_AUDIT_BASE_SHA: 1f59ef09128122ec0ccd430566a8a516be925fbf
+        run: node scripts/temp-v81-dual-branch-live.mjs
+
+# DISARMED: this initial commit does not match the one-shot job guard.
