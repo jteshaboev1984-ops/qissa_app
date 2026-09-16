@@ -1,127 +1,136 @@
 import { randomBytes, randomUUID } from 'node:crypto'
 import { applyChoiceToSeriesState, applyEpisodeToSeriesState, createInitialSeriesState } from '../src/lib/memoryAgent.ts'
 
-// ONE-TIME SYNTHETIC ACCEPTANCE. No service role, retry, TTS, escalation or lease renewal.
-const PROJECT = 'phwakdpxxyncyslvnqht'
-const ROOT = `https://${PROJECT}.supabase.co/functions/v1`
-const KEY = process.env.QISSA_SUPABASE_ANON_KEY?.trim()
+// Resume ONE existing E1. NEVER regenerate E1, retry E2 or use service-role credentials.
 const EXPECTED_SHA = '1f59ef09128122ec0ccd430566a8a516be925fbf'
-const SELECTIONS = { ageGroup: '5-7', language: 'uz', heroType: 'custom', customHeroName: 'Malika', stylePackId: 'cozy_forest', storyMode: 'series', storyMood: 'bedtime' }
-const readerPreferences = { textSize: 'medium', fontMode: 'standard', lineSpacing: 'relaxed', theme: 'warm', showTextWithAudio: true, audioOnlyNightMode: true, voicePresetId: 'neutral_storyteller', defaultPlaybackMode: 'read' }
-const assert = (value, message) => { if (!value) throw new Error(message) }
-assert(KEY, 'Missing public client key: no story requests initiated')
-assert(process.env.QISSA_AUDIT_BASE_SHA === EXPECTED_SHA, 'Unexpected reviewed source SHA; abort before provider')
+const ORIGINAL_JOB_ID = 104751515156
+const ROOT = 'https://phwakdpxxyncyslvnqht.supabase.co/functions/v1'
+const preflightOnly = process.env.QISSA_PREFLIGHT_ONLY === 'true'
+const KEY = process.env.QISSA_SUPABASE_ANON_KEY?.trim()
+const LOG_TOKEN = process.env.GH_READ_TOKEN?.trim()
+const assert = (condition, message) => { if (!condition) throw new Error(message) }
+assert(process.env.QISSA_AUDIT_BASE_SHA === EXPECTED_SHA, 'Unexpected deployment SHA')
+assert(LOG_TOKEN, 'Missing read-only GitHub log token')
+assert(preflightOnly || KEY, 'Missing public Supabase key')
+const wc = text => typeof text === 'string' ? text.trim().split(/\s+/u).filter(Boolean).length : 0
+const selections = { ageGroup: '5-7', language: 'uz', heroType: 'custom', customHeroName: 'Malika', stylePackId: 'cozy_forest', storyMode: 'series', storyMood: 'bedtime' }
+const prefs = { textSize: 'medium', fontMode: 'standard', lineSpacing: 'relaxed', theme: 'warm', showTextWithAudio: true, audioOnlyNightMode: true, voicePresetId: 'neutral_storyteller', defaultPlaybackMode: 'read' }
 const consent = { version: '2026-06-25-v1', acceptedAt: new Date().toISOString(), parentOrGuardianConfirmed: true, aiProcessingAccepted: true }
-const headers = { 'content-type': 'application/json', apikey: KEY, authorization: `Bearer ${KEY}`, origin: 'https://jteshaboev1984-ops.github.io' }
-const wc = (text) => typeof text === 'string' ? text.trim().split(/\s+/u).filter(Boolean).length : 0
-let storyRequests = 0
-const branches = ['a', 'b'].map((label) => {
-  const installationId = randomUUID()
-  return { label, installationId, installationAuth: randomBytes(32).toString('hex'), initial: { ...createInitialSeriesState(SELECTIONS), childProfileId: installationId }, cleanupArmed: false }
-})
-assert(branches[0].initial.id !== branches[1].initial.id && branches[0].initial.sessionId !== branches[1].initial.sessionId, 'Branches need separate identities')
 
-async function post(path, body, timeoutMs) {
+async function loadRealE1() {
+  const url = `https://api.github.com/repos/jteshaboev1984-ops/qissa_app/actions/jobs/${ORIGINAL_JOB_ID}/logs`
+  const response = await fetch(url, { headers: { authorization: `Bearer ${LOG_TOKEN}`, accept: 'application/vnd.github+json' } })
+  assert(response.ok, `Cannot retrieve genuine E1 evidence: ${response.status}`)
+  const log = await response.text()
+  const findRecord = marker => {
+    const line = log.split(/\r?\n/u).find(row => row.includes(marker))
+    assert(line, `Missing original E1 evidence ${marker}`)
+    return JSON.parse(line.slice(line.indexOf(marker) + marker.length).trim())
+  }
+  const meta = findRecord('RESULT E1 branch=a: ')
+  assert(meta['x-qissa-generation-source'] === 'openai-structured' && meta['x-qissa-escalation-used'] === 'false', 'Original E1 source mismatch')
+  const record = findRecord('STORY E1 branch=a: ')
+  assert(record.title === 'Tikan uchun quvnoq qo‘shiq' && wc(record.story_text) === 357, 'Original E1 signature mismatch')
+  assert(record.story_text.includes('Malika') && !record.story_text.includes('{{HERO}}'), 'E1 hero marker mismatch')
+  assert(record.choices?.length === 2 && record.choices[0].choice_id === 'choice_song_circle' && record.choices[1].choice_id === 'choice_song_echo', 'Original choice IDs changed')
+  assert(record.choices.every(choice => choice.resolution_text?.trim()), 'E1 choice bridge missing')
+  assert(record.state_patch && typeof record.state_patch === 'object', 'E1 patch missing')
+  console.log(`VERIFIED prior E1 job ${ORIGINAL_JOB_ID}: 357 words, two genuine choices, original source`)
+  // Only the persistence envelope is reconstructed: prior run verified safety approved
+  // but logged only child-visible title, text, choices and exact state_patch.
+  return { episode_id: 'ep-1-cozy_forest', title: record.title, story_text: record.story_text,
+    choices: record.choices, state_patch: record.state_patch, generationSource: 'openai-structured',
+    safety_self_check: { approved: true } }
+}
+const e1 = await loadRealE1()
+if (preflightOnly) { console.log('PROVIDER-FREE E1 LOG RESTORATION PASS; ZERO STORY REQUESTS'); process.exit(0) }
+const headers = { 'content-type': 'application/json', apikey: KEY, authorization: `Bearer ${KEY}`, origin: 'https://jteshaboev1984-ops.github.io' }
+let storyRequests = 0
+const branches = ['a','b'].map((label,i) => {
+  const installationId = randomUUID()
+  return { label, i, installationId, installationAuth: randomBytes(32).toString('hex'), initial: { ...createInitialSeriesState(selections), childProfileId: installationId }, cleanupArmed: false }
+})
+assert(branches[0].initial.id !== branches[1].initial.id && branches[0].initial.sessionId !== branches[1].initial.sessionId, 'Branch ID collision')
+
+async function post(slug, data, timeoutMs) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), timeoutMs)
   try {
-    const response = await fetch(`${ROOT}/${path}`, { method: 'POST', headers, body: JSON.stringify(body), signal: controller.signal })
+    const response = await fetch(`${ROOT}/${slug}`, { method: 'POST', headers, body: JSON.stringify(data), signal: controller.signal })
     const raw = await response.text()
-    let payload
-    try { payload = JSON.parse(raw) } catch { throw new Error(`${path}: non-JSON response`) }
-    assert(response.ok, `${path}: HTTP ${response.status} ${String(payload?.error || 'unknown')}`)
+    let body
+    try { body = JSON.parse(raw) } catch { throw new Error(`${slug}: non-JSON response`) }
+    assert(response.ok, `${slug}: HTTP ${response.status} ${String(body?.error || 'unknown')}`)
     const metadata = {}
-    for (const name of ['x-qissa-generation-source', 'x-qissa-fallback-reason', 'x-qissa-runtime-ai', 'x-qissa-architect-model', 'x-qissa-narrator-model-used', 'x-qissa-escalation-used', 'x-qissa-provider-calls', 'x-qissa-initial-story-words', 'x-qissa-final-story-words', 'x-qissa-generation-repair', 'x-qissa-repair-retry-used', 'x-qissa-story-pipeline']) metadata[name] = response.headers.get(name)
-    return { payload, metadata }
+    for (const name of ['x-qissa-generation-source','x-qissa-fallback-reason','x-qissa-runtime-ai','x-qissa-architect-model','x-qissa-narrator-model-used','x-qissa-escalation-used','x-qissa-provider-calls','x-qissa-initial-story-words','x-qissa-final-story-words','x-qissa-generation-repair','x-qissa-story-pipeline']) metadata[name] = response.headers.get(name)
+    return { body, metadata }
   } finally { clearTimeout(timer) }
 }
+const state = (branch, action, extra = {}) => post('story-state', { action, installationId: branch.installationId, installationAuth: branch.installationAuth, ...extra }, 35_000)
 
-async function story(branch, seriesState, phase) {
-  storyRequests += 1
-  assert(storyRequests <= 3, 'HARD STOP: more than 3 generation requests')
-  console.log(`REQUEST ${storyRequests}/3 start ${phase} branch=${branch.label}`)
-  const result = await post('story-generate', { installationId: branch.installationId, selections: SELECTIONS, seriesState, privacyConsent: consent }, 145_000)
-  console.log(`RESULT ${phase} branch=${branch.label}: ${JSON.stringify(result.metadata)}`)
-  assert(result.metadata['x-qissa-generation-source'] === 'openai-structured', `${phase}: fallback or AI unavailable; do not retry`)
-  assert(result.metadata['x-qissa-escalation-used'] !== 'true', `${phase}: escalation is forbidden`)
-  const episode = result.payload?.episode
-  assert(episode?.safety_self_check?.approved === true, `${phase}: safety not approved`)
-  assert(episode.series_id === seriesState.id, `${phase}: series mismatch`)
-  assert(episode.episode_id === `ep-${phase === 'E1' ? 1 : 2}-cozy_forest`, `${phase}: episode mismatch`)
-  assert(episode.story_text?.includes('Malika') && !episode.story_text.includes('{{HERO}}'), `${phase}: broken hero identity`)
-  assert(Array.isArray(episode.choices) && episode.choices.length === (phase === 'E1' ? 2 : 0), `${phase}: wrong choice count`)
-  assert(wc(episode.story_text) >= (phase === 'E1' ? 320 : 355), `${phase}: below minimum length`)
-  console.log(`STORY ${phase} branch=${branch.label}: ${JSON.stringify({ title: episode.title, story_text: episode.story_text, choices: episode.choices, state_patch: episode.state_patch, words: wc(episode.story_text) })}`)
-  return episode
-}
-
-async function state(branch, action, extra = {}) {
-  return post('story-state', { action, installationId: branch.installationId, installationAuth: branch.installationAuth, ...extra }, 35_000)
-}
-
-async function prepareBranch(branch, originalE1) {
-  const e1 = { ...originalE1, series_id: branch.initial.id }
-  assert(e1.story_text === originalE1.story_text && JSON.stringify(e1.choices) === JSON.stringify(originalE1.choices), 'E1 differs across branches')
-  const afterE1 = applyEpisodeToSeriesState(branch.initial, e1)
+async function prepare(branch) {
+  const episode = { ...e1, series_id: branch.initial.id }
+  assert(episode.story_text === e1.story_text && JSON.stringify(episode.choices) === JSON.stringify(e1.choices), 'Shared E1 copy mutated')
+  const afterE1 = applyEpisodeToSeriesState(branch.initial, episode)
   branch.cleanupArmed = true
-  assert((await state(branch, 'sync_generated', { selections: SELECTIONS, seriesState: afterE1, episode: e1, readerPreferences, privacyConsent: consent })).payload.ok === true, `E1 sync failed ${branch.label}`)
-  const choice = e1.choices.find((c) => c.choice_id === branch.label)
-  assert(choice && typeof choice.resolution_text === 'string' && choice.resolution_text.trim(), `Missing bridge ${branch.label}`)
-  const afterChoice = applyChoiceToSeriesState(afterE1, e1, choice)
-  assert(afterChoice.choiceHistory.length === 1 && afterChoice.choiceHistory[0].choice_id === branch.label, `Choice history contamination ${branch.label}`)
-  assert((await state(branch, 'confirm_choice', { seriesState: afterChoice, episodeId: e1.episode_id, choiceId: choice.choice_id })).payload.ok === true, `Choice sync failed ${branch.label}`)
-  const restored = (await state(branch, 'load_current')).payload.snapshot
-  assert(restored?.seriesState?.choiceHistory?.length === 1 && restored.seriesState.choiceHistory[0].choice_id === branch.label, `Wrong restored choice ${branch.label}`)
-  assert(restored.seriesState.mainCharacter === 'Malika' && restored.seriesState.choiceHistory[0].resolution_text === choice.resolution_text, `Wrong restored hero/bridge ${branch.label}`)
+  assert((await state(branch,'sync_generated',{ selections, seriesState: afterE1, episode, readerPreferences: prefs, privacyConsent: consent })).body.ok === true, `E1 sync failed ${branch.label}`)
+  const choice = episode.choices[branch.i]
+  const afterChoice = applyChoiceToSeriesState(afterE1, episode, choice)
+  assert(afterChoice.choiceHistory.length === 1 && afterChoice.choiceHistory[0].choice_id === choice.choice_id, 'Selected-only memory violated')
+  assert((await state(branch,'confirm_choice',{ seriesState: afterChoice, episodeId: episode.episode_id, choiceId: choice.choice_id })).body.ok === true, `Choice sync failed ${branch.label}`)
+  const loaded = (await state(branch,'load_current')).body.snapshot
+  assert(loaded?.seriesState?.choiceHistory?.length === 1 && loaded.seriesState.choiceHistory[0].choice_id === choice.choice_id, `Choice reload failed ${branch.label}`)
+  assert(loaded.seriesState.mainCharacter === 'Malika' && loaded.seriesState.choiceHistory[0].resolution_text === choice.resolution_text, `Canon/bridge mismatch ${branch.label}`)
   branch.afterChoice = afterChoice
-  console.log(`PERSIST E1+CHOICE ${branch.label} PASS`)
+  branch.choice = choice
+  console.log(`PREPARED ${branch.label}: real choice_id=${choice.choice_id}; independent persistence PASS`)
 }
 
-async function finishBranch(branch) {
-  const e2 = await story(branch, branch.afterChoice, 'E2')
-  const afterE2 = applyEpisodeToSeriesState(branch.afterChoice, e2)
-  assert(afterE2.choiceHistory.length === 1 && afterE2.choiceHistory[0].choice_id === branch.label, `E2 cross-branch history ${branch.label}`)
-  assert((await state(branch, 'sync_generated', { selections: SELECTIONS, seriesState: afterE2, episode: e2, readerPreferences, privacyConsent: consent })).payload.ok === true, `E2 sync failed ${branch.label}`)
-  const loaded = (await state(branch, 'load_current')).payload.snapshot
-  assert(loaded?.episode?.story_text === e2.story_text, `E2 reload mismatch ${branch.label}`)
-  assert(loaded.seriesState?.choiceHistory?.length === 1 && loaded.seriesState.choiceHistory[0].choice_id === branch.label && loaded.seriesState.mainCharacter === 'Malika', `E2 memory mismatch ${branch.label}`)
-  branch.e2 = e2
-  console.log(`PASS E2 ${branch.label}: persistence and reload`)
+async function finish(branch) {
+  storyRequests++
+  assert(storyRequests <= 2, 'HARD STOP: only two E2 requests permitted')
+  console.log(`REQUEST E2 ${storyRequests}/2 start branch ${branch.label}`)
+  const result = await post('story-generate', { installationId: branch.installationId, selections, seriesState: branch.afterChoice, privacyConsent: consent }, 145_000)
+  console.log(`E2 ${branch.label} metadata ${JSON.stringify(result.metadata)}`)
+  assert(result.metadata['x-qissa-generation-source'] === 'openai-structured', `E2 ${branch.label} fallback; no retry`)
+  assert(result.metadata['x-qissa-escalation-used'] !== 'true', `E2 ${branch.label} escalation unexpected`)
+  const ep = result.body?.episode
+  assert(ep?.safety_self_check?.approved === true && ep.episode_id === 'ep-2-cozy_forest', `Invalid E2 ${branch.label}`)
+  assert(ep.series_id === branch.afterChoice.id && Array.isArray(ep.choices) && ep.choices.length === 0, `Wrong branch or choices ${branch.label}`)
+  assert(ep.story_text?.includes('Malika') && !ep.story_text.includes('{{HERO}}') && wc(ep.story_text) >= 355, `Identity or length failed ${branch.label}`)
+  console.log(`STORY E2 ${branch.label}: ${JSON.stringify({ title: ep.title, story_text: ep.story_text, state_patch: ep.state_patch, words: wc(ep.story_text) })}`)
+  const afterE2 = applyEpisodeToSeriesState(branch.afterChoice, ep)
+  assert(afterE2.choiceHistory.length === 1 && afterE2.choiceHistory[0].choice_id === branch.choice.choice_id, `E2 history contamination ${branch.label}`)
+  assert((await state(branch,'sync_generated',{ selections, seriesState: afterE2, episode: ep, readerPreferences: prefs, privacyConsent: consent })).body.ok === true, `E2 persistence failed ${branch.label}`)
+  const loaded = (await state(branch,'load_current')).body.snapshot
+  assert(loaded?.episode?.story_text === ep.story_text && loaded.seriesState?.choiceHistory?.length === 1 && loaded.seriesState.choiceHistory[0].choice_id === branch.choice.choice_id, `E2 reload failed ${branch.label}`)
+  branch.e2 = ep
+  console.log(`PASS branch ${branch.label}: E2 persisted and reloaded`)
 }
 
 let failed = false
 try {
-  console.log(`START reviewed SHA ${EXPECTED_SHA}; synthetic installations ${branches.map(b => `${b.label}:${b.installationId}`).join(' ')}`)
-  const e1 = await story(branches[0], branches[0].initial, 'E1')
-  assert(e1.choices.map(c => c.choice_id).sort().join(',') === 'a,b', 'E1 must have choices A and B')
-  assert(e1.choices.every(c => typeof c.resolution_text === 'string' && c.resolution_text.trim()), 'E1 missing a visible bridge')
-  for (const branch of branches) await prepareBranch(branch, e1)
-  const outcomes = await Promise.allSettled(branches.map(finishBranch))
-  for (let i = 0; i < outcomes.length; i++) if (outcomes[i].status === 'rejected') {
+  console.log(`CONTINUATION ONLY SHA=${EXPECTED_SHA}; synthetic installs ${branches.map(b => `${b.label}:${b.installationId}`).join(' ')}`)
+  for (const branch of branches) await prepare(branch)
+  const results = await Promise.allSettled(branches.map(finish))
+  for (let i=0; i<results.length; i++) if (results[i].status === 'rejected') {
     failed = true
-    console.error(`E2 ${branches[i].label} FAIL: ${outcomes[i].reason?.message || 'unknown'}`)
+    console.error(`FAIL E2 ${branches[i].label}: ${results[i].reason?.message || 'unknown'}`)
   }
   if (!failed) {
-    assert(branches[0].e2.story_text !== branches[1].e2.story_text, 'Identical continuations')
-    console.log(`TECHNICAL PASS: ${storyRequests}/3 story requests; single E1 and distinct A/B E2`)
+    assert(branches[0].e2.story_text !== branches[1].e2.story_text, 'Branch continuations identical')
+    console.log(`TECHNICAL PASS: original single E1 reused, exactly ${storyRequests}/2 E2 requests`)
   }
-} catch (error) {
-  failed = true
-  console.error(`ACCEPTANCE FAIL: ${error?.message || 'unknown'}`)
-} finally {
-  for (const branch of branches) {
-    if (!branch.cleanupArmed) continue
+} catch (err) { failed = true; console.error(`ACCEPTANCE FAIL: ${err?.message || 'unknown'}`) }
+finally {
+  for (const branch of branches) if (branch.cleanupArmed) {
     try {
-      const deletion = (await state(branch, 'delete_profile_data')).payload
-      assert(deletion?.ok === true, `Delete failed ${branch.label}`)
-      const after = (await state(branch, 'load_current')).payload
-      assert(after.snapshot === null, `Profile still loads after deletion ${branch.label}`)
-      console.log(`CLEANUP PASS ${branch.label}: deletion acknowledged, load_current=null`)
-    } catch (error) {
-      failed = true
-      console.error(`CLEANUP FAIL ${branch.label}: ${error?.message || 'unknown'}`)
-    }
+      const deletion = (await state(branch,'delete_profile_data')).body
+      assert(deletion?.ok === true && deletion.deleted === true, `Deletion failed ${branch.label}`)
+      assert((await state(branch,'load_current')).body.snapshot === null, `Residual snapshot ${branch.label}`)
+      console.log(`CLEANUP PASS ${branch.label}: profile + credential deleted; snapshot null`)
+    } catch (err) { failed = true; console.error(`CLEANUP FAIL ${branch.label}: ${err?.message || 'unknown'}`) }
   }
-  console.log(`FINAL requests=${storyRequests}/3 status=${failed ? 'FAIL' : 'TECHNICAL_PASS'}; operator must verify runtime AI OFF`)
+  console.log(`FINAL remaining E2 calls=${storyRequests}/2 ${failed ? 'FAIL' : 'TECHNICAL_PASS'}; operator must verify AI OFF`)
   if (failed) process.exitCode = 1
 }
