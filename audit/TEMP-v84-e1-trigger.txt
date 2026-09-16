@@ -1,0 +1,1 @@
+Provider-free dry preflight only. The runner must prepare one E1 payload and make zero HTTP requests.
