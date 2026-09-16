@@ -400,6 +400,29 @@ export const choiceMenuScaffoldingNeedsRewrite = (language: string, text: string
   return (patterns[language] ?? []).some((pattern) => pattern.test(tail))
 }
 
+export const episodeTwoUnresolvedDecisionNeedsRewrite = (
+  context: Pick<NormalizedStoryContext, 'episodeIndex' | 'ageGroup' | 'storyMode' | 'storyMood' | 'language'>,
+  text: string,
+): boolean => {
+  if (!isFiveToSevenBedtimeSeries(context as NormalizedStoryContext) || context.episodeIndex !== 2) return false
+  const tail = paragraphs(text).slice(-3).join(' ').replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()
+  const patterns: Record<string, RegExp[]> = {
+    ru: [
+      /(?:геро[йя]|\{\{hero\}\})[\s\S]{0,160}(?:выбер|выбира|решит|решать|решени)[\s\S]{0,120}(?:ждал|ждали|ждёт|ждут|ожидал|ожидали)/iu,
+      /(?:какое|какой|какую|куда|где)[^?]{0,140}(?:лучше|подойд|выбрать|выбер|постав|повес|размест)[^?]{0,80}\?/iu,
+    ],
+    uz: [
+      /(?:qahramon|\{\{hero\}\})[\s\S]{0,160}(?:tanla|qaror)[\p{L}\p{M}-]*[\s\S]{0,120}(?:kut|kutil)[\p{L}\p{M}-]*/iu,
+      /(?:qaysi|qayerga|qayerda)[^?]{0,140}(?:yaxshi|ma'qul|mos|tanla|qo'y|os|joy)[\p{L}\p{M}'-]*[^?]{0,80}\?/iu,
+    ],
+    kz: [
+      /(?:кейіпкер|\{\{hero\}\})[\s\S]{0,160}(?:таңда|шеш)[\p{L}\p{M}-]*[\s\S]{0,120}(?:күт|күтіп)[\p{L}\p{M}-]*/iu,
+      /(?:қайсы|қайда)[^?]{0,140}(?:жақсы|лайық|таңда|қой|іл|орналастыр)[\p{L}\p{M}-]*[^?]{0,80}\?/iu,
+    ],
+  }
+  return (patterns[context.language] ?? []).some((pattern) => pattern.test(tail))
+}
+
 export const branchingPreviewNeedsRewrite = (language: string, text: string): boolean => {
   const normalized = ` ${text.replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()} `
   if (language === 'ru') return /\sили\s/iu.test(normalized)
@@ -508,6 +531,7 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
 
   if (storyRepeatsChoiceMenu(context, value)) errors.push('story_repeats_choice_menu')
   if (context.episodeIndex === 1 && typeof value.story_text === 'string' && choiceMenuScaffoldingNeedsRewrite(context.language, value.story_text)) errors.push('story_choice_menu_scaffolding')
+  if (context.episodeIndex === 2 && typeof value.story_text === 'string' && episodeTwoUnresolvedDecisionNeedsRewrite(context, value.story_text)) errors.push('episode_2_unresolved_decision')
 
   if (typeof value.nextEpisodePreview !== 'string') errors.push('invalid_preview')
   if (context.storyMode === 'series' && context.episodeIndex === 1 && !value.nextEpisodePreview.trim()) errors.push('missing_preview')
