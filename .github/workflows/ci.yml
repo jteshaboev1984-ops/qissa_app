@@ -118,6 +118,9 @@ jobs:
       - name: Validate editorial prompt guidance and baseline evidence
         run: node scripts/check-story-editorial-guidance.mjs
 
+      - name: Validate provider-free live evidence and independent E2 context
+        run: node scripts/check-story-live-evidence.mjs
+
       - name: Typecheck Story AI Edge Function
         run: npm run typecheck:story-ai
 
