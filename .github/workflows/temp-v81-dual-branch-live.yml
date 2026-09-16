@@ -35,4 +35,4 @@ jobs:
           QISSA_AUDIT_BASE_SHA: 1f59ef09128122ec0ccd430566a8a516be925fbf
         run: node scripts/temp-v81-dual-branch-live.mjs
 
-# DISARMED: this initial commit does not match the one-shot job guard.
+# ARMED ONLY FOR THE EXACT ONE-TIME COMMIT MESSAGE ABOVE.
