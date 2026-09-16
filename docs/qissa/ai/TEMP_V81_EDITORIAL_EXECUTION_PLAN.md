@@ -1,63 +1,57 @@
 # TEMPORARY EXECUTION PLAN — QISSA editorial v81
 
-**Status: IN PROGRESS — NOT FAMILY-BETA GO.** Created 2026-09-16. User asked for a persistent plan across chat limits and deletion **only after every acceptance criterion is genuinely met**. START ANY RESUMED CHAT BY READING THIS FILE. Update status with exact evidence. Keep permanent editorial rubric, reviews and regression scripts; delete this temporary file later in a reviewed cleanup PR, NEVER while the plan remains unfinished.
+**Status: IN PROGRESS / FAMILY-BETA AI NO-GO.** User requested a durable plan across chat limits; DELETE THIS TEMPORARY FILE ONLY AFTER ALL ACCEPTANCE CRITERIA ARE GENUINELY MET and permanent evidence retained, in a reviewed cleanup PR. START EVERY RESUMED CHAT BY READING THIS FILE AND the latest evidence in `docs/qissa/ai/reviews/`. Never falsely mark a failed run as a PASS or automatically repeat paid AI calls.
 
-## Current checkpoint — 2026-09-16
-- Editorial work branch: `work/editorial-quality-v81-plan`, draft PR [#186](https://github.com/jteshaboev1984-ops/qissa_app/pull/186). Merged protective main into this branch with commit `d43798c859aac48133803888a2956b09a7eaca3e`; review shows exactly 7 editorial files versus main, both CI checks wired. Official [QISSA CI #386](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35080515440) GREEN and [Story Core #222](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35080515441) GREEN on this merge commit. This PLAN UPDATE creates a newer head: reverify checks on final head, not the old commit.
-- Independent safety prerequisite [PR #187](https://github.com/jteshaboev1984-ops/qissa_app/pull/187) merged after [QISSA CI #385](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35080044950) GREEN and [Story Core #221](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35080044831) GREEN. Current `main` SHA `cb483ddfc7e76dc368d825f8987a47a1e3d38396`; production `story-generate` Edge Function version **81 ACTIVE**, exact SHA import verified. Runtime `story_ai_enabled=false` verified after deployment. No paid provider requests in this safety/editorial work. Editorial PR #186 is NOT merged or deployed.
-- New fail-closed provider admission lease: `runtime-lease.ts` denies new AI requests 180 seconds after `qissa_runtime_flags.updated_at` (future timestamp >30s, invalid/missing timestamp, expired lease all deny). Both entrypoints check through `usage.ts` before accounting/provider. Operator MUST set `updated_at=clock_timestamp()` when granting short ON window, MUST reset Boolean OFF in `finally`; expiry does NOT abort in-flight requests or physically clear stored enabled Boolean. Full runbook `docs/qissa/ai/10_STORY_AI_RUNTIME_LEASE_RUNBOOK.md`. Tests passed in CI; no paid end-to-end lease expiration test has occurred.
+## Most recent checkpoint: 2026-09-16 (read this first)
 
-## Baseline / nonnegotiable interpretation
-- v80 merge `c96d2e9bbf5191bdb91e5fbbb98e572f923c9c38`; v79 E1 and both choice cards/bridges from workflow run `35061371574`: E1 255→357 words after repair, workflow later failed `installationAuth` (not story). v80 selected-A E2 continuation run `35062412722`: E2 280→367 words after repair, technical GREEN. E1 was reused across builds, not a single-build complete E1→A/B E2 test. B has NO real E2.
-- Permanent `09_FAMILY_BETA_EDITORIAL_SCORECARD.md`: 12 criteria scored 0–2, >=20/24 for EACH actual whole session, no hard fail or required-dimension 0, both branches checked. `check-story-editorial-scorecard.mjs` and new guidance test verify docs/prompt wiring only, do NOT grade any provider output. Provisional internal Malika review 14/24, Momentum=0, ITERATE, **not** independent approval. Evidence at `docs/qissa/ai/reviews/2026-09-16_malika_uz_v79-e1_v80-e2_baseline.md`.
-- Never trade away child safety, privacy consent, immutable hero/name/canon, selection-only branch memory, immediate resolution bridge, no Episode-2 phantom choice, fallback, installation auth or cost guard. No direct main edits, broad paid provider/TTS calls, secret transfers, unbounded runtime ON, new schema or paid Quality Agent by default. Distinguish debug provider counters from actual invoice costs.
+- Editorial [PR #186](https://github.com/jteshaboev1984-ops/qissa_app/pull/186) **MERGED**, main SHA `1f59ef09128122ec0ccd430566a8a516be925fbf`; production `story-generate` Edge Function **v82 ACTIVE**, importing exact main SHA; `verify_jwt=true`. Full official editorial [QISSA CI #388](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35080950252) and [Story Core #224](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35080950253) GREEN on PR head. Prompt guidance and permanent scorecard are deployed; this does not establish literary quality.
+- Independent safety [PR #187](https://github.com/jteshaboev1984-ops/qissa_app/pull/187) merged first; 180-second **server-side admission lease** enforced via `runtime-lease.ts`/`usage.ts` before provider. OFF, malformed/missing/future/expired permission denies NEW provider requests; it does not cancel admitted in-flight requests or change the DB Boolean to OFF. Operator must set `enabled=false` explicitly after testing. Runbook: `docs/qissa/ai/10_STORY_AI_RUNTIME_LEASE_RUNBOOK.md`.
+- The user authorized exactly **one new UZ age 5–7 Malika cozy_forest bedtime-series E1 and one E2 per branch A/B**, no TTS or escalation. **THIS AUTHORIZED SCOPE IS EXHAUSTED**: 3 provider-eligible generation claims occurred. E1 succeeded (260→357 words, text-length repair). First runner failed only on its own invalid assumption `choice_id=a/b` instead of real `choice_song_circle` / `choice_song_echo`. E1 was reloaded verbatim for literary fields from its authenticated original Actions logs in provider-free preflight. E1 was then persisted independently with both actual branch choices, but BOTH E2 provider requests returned `safe-fallback` with `generation-or-safety-failed`; neither authentic E2 was produced. NO additional paid attempts without **new** user authorization; do not imply that permission to investigate offline authorizes another paid run.
+- Detailed permanent evidence: `docs/qissa/ai/reviews/2026-09-16_v81_single_e1_dual_e2_live_attempt.md` (currently in pending evidence PR, merge after checks); real original E1 [run #35083106909](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35083106909), provider-free log restoration [run #35083547583](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35083547583) GREEN, failed dual-E2 [run #35083675997](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35083675997). Production daily claim counter 9→10→12, not exact provider HTTP usage or bill. Distinct branch E1+choice persistence verified. Post-test `child_profiles=0`, `installation_credentials=0` for both synthetic installations, each `load_current=null`, all temporary audit script/workflow deleted and compare audit branch vs main has zero file diff. **Story AI authoritative OFF at 10:13:39.362516 UTC, rechecked OFF at 10:14:14 UTC.**
+- Root-cause boundary: fallback is confirmed, but harness failed to capture actual `X-QISSA-Generation-Failure-Class` and `X-QISSA-Generation-Failure-Trace`. Branch B metadata diagnostic 2 provider calls, no narrator-model-used, no repair; A diagnostic 4 calls, narrator Luna, text-length repair. Do not assume a specific Architect, Narrator, Safety or repair cause absent headers/logs. Keep any next work provider-free unless separately authorized. An additional source-evidence limitation: previous run did not log E1's complete raw JSON envelope, only exact title/story/choices/state patch; the persisted envelope was reconstructed for each test installation (literary fields unchanged), so this was not one uninterrupted UI session.
 
-## Expert decisions ACCEPT
-- Small meaningful causal change/attempt/discovery/reaction after setup; preserve gentle bedtime tone.
-- Fictional protagonist shows own desire/reaction/initiative and consequential action; do not infer real child's personality.
-- Pay off explicit story promises and obstacles within the TWO-part bedtime session. Tonight's local goal closes; tomorrow seeds belong to future sessions only.
-- Earned, visible concrete humor; fix actual species/nickname inconsistency. An incidental nut need not recur; a missing required ribbon must be resolved or not set up.
-- A/B must give visibly distinct downstream events and relevant canon, not merely different JSON strings. Review both actual E2 outcomes from SAME E1.
-- Record real story-specific 12 scores, evidence, reviewer identity/independence, 2–4 notes, hard fail and verdict. Measure initial/final word count/repair without making target-length misses automatic hard fails. Treat structural repetition as a hypothesis to test, not claimed retention data.
+## Expert decisions: ACCEPT
+- Real causal scene changes, child-scale attempt/discovery/reaction after setup, while keeping calm bedtime tone without gratuitous danger.
+- Fictional hero has a desire/reaction and initiative; never infer personality of real child.
+- Resolve explicit setup and local plot promise within the existing TWO-part session; an event promised tomorrow is distinct from today's completed goal.
+- Concrete earned humor; fix genuine species/name inconsistency contextually. Incidental nut need not return; explicit necessary missing ribbon must resolve or not be set up.
+- A/B have visibly distinct scenes, meaningful consequences and memory; different labels/JSON keys alone cannot qualify them.
+- Honest *real-output* editorial scores and evidence, both branches, independent native Uzbek editor and parent/child read-aloud assessment, 2–4 notes. Track initial/final words and repair, do not hard-fail on soft word target. Structural repetition is risk hypothesis, not proven retention data.
 
-## ADAPT / REJECT for now
-- Use existing central_goal, beats, resolution_goal and memory first; no duplicative mandatory core_problem, climax_event, hero trait schema or extra providers until evidence requires them.
-- Causal events include interpersonal changes; no rigid two-physical-actions quota. A hero mistake is optional. Refrains optional, not obligatory three repetitions. Two parts only; no third episode, compulsory homework, or new E2 child decision.
-- Sentence length as diagnostic, not fixed 8–10-word cutoff for Uzbek. No automatic abstract-noun/loanword denylist or regex pretending to measure humor. A longer story alone does not guarantee story quality.
+## ADAPT or REJECT
+- Use existing `central_goal`, `beats`, `resolution_goal` and canon first; no redundant mandatory new `core_problem`, `climax_event`, hero-trait fields or always-paid Quality Agent without evidence.
+- Causal events may be relational or discoveries; no hard quota of physical actions. Hero mistake and refrain optional, no compulsory triple refrain. No third episode, mandatory homework or pseudo E2 decision.
+- Sentence length diagnostic only for Uzbek, no fixed 8–10 words hard reject, naive abstract-noun regex or broad loanword blacklist. More length does not itself imply quality.
+- Keep Safety evaluation separate from literary editorial gate and preserve current privacy, fallback and identity controls.
 
-## P0-A baseline evidence and process
-- [x] Preserve original E1/A E2 logs with version differences and missing B clearly noted.
-- [x] Save provisional 14/24 ITERATE internal review and permanent evidence template `docs/qissa/ai/reviews/README.md`.
-- [x] Add static evidence/prompt-wiring regression without claiming it judges actual literary quality.
-- [ ] Obtain **independent native Uzbek editor and parent/child read-aloud assessment** on new real outputs. Do not invent external approval.
+## P0-A — baseline and independent editorial evidence
+- [x] Preserve v79 E1 / v80 selected A E2 logs with versions distinguished; earlier Malika provisional self-review **14/24, ITERATE**, Momentum=0 at `docs/qissa/ai/reviews/2026-09-16_malika_uz_v79-e1_v80-e2_baseline.md`; does not qualify for family beta.
+- [x] Permanent human rubric `docs/qissa/ai/09_FAMILY_BETA_EDITORIAL_SCORECARD.md` is 12 criteria scored 0–2, >=20/24 **for each full real session**, no hard fail or required dimension 0. Review evidence template `docs/qissa/ai/reviews/README.md`. Static CI checks rubric and prompt wiring, NOT literary content.
+- [x] Record new v81 attempt honestly, including one full real E1 and two fallback E2, missing failure header data, and no session score.
+- [ ] Obtain an independent native Uzbek editor and parent/child read-aloud review on **actual complete E1→A/B E2** outputs before family-beta GO. These outputs do not yet exist for v81.
 
-## P0-B editorial patch (draft PR #186, not deployed)
-- [x] Use existing blueprint JSON; add pure `editorial-guidance.ts` focused on observable action, protagonist initiative, setup/payoff, concrete humor, distinct A/B consequences and no repeated bridge or pseudo-choice.
-- [x] Wire through Architect and Narrator calls in `split-openai.ts`; no new AI request, safety policy, retry or JSON schema change.
-- [x] Add `scripts/check-story-editorial-guidance.mjs` to CI; preserve and integrate runtime lease CI test in shared workflow.
-- [x] Safety integration resolved via merge commit `d43798c...`; diff contains only seven editorial files; official CI #386 and Story Core #222 GREEN on that commit.
-- [ ] Refresh final head + official checks after each edit; inspect final diff. Only then make PR ready/merge deliberately and deploy exact main SHA with runtime OFF.
+## P0-B — editorial prompt patch
+- [x] Add `editorial-guidance.ts` for hero agency, real causal progress, setup/payoff, concrete humor, branch differentiation and no bridge replay/phantom choice.
+- [x] Wire prompts in Architect + Narrator `split-openai.ts`, no extra model call, schema, safety or retry change. Wire `check-story-editorial-guidance.mjs` into official CI alongside runtime lease regression.
+- [x] PR #186 merged, exact SHA deployed, AI OFF. Official CI #388 and Story Core #224 GREEN on editorial head; actual v81 E1 newly generated, but it needed length repair and full branch continuity remains unqualified.
 
-## P1 controlled paid dual-branch qualification — NOT YET STARTED
-- [x] Independent time-bound runtime permission implemented, PR #187 merged, deployed production version 81 with AI OFF; operator runbook documents limits. No live expiry test yet.
-- [ ] Agree explicit paid scope/provider-call budget and approved harness. Guarantee `finally` OFF and test cleanup; lease is a backstop, not complete lifecycle cleanup. Never enable solely to await chat replies.
-- [ ] After merged editorial SHA/deploy, generate **ONE NEW E1, two A/B choice bridges, two E2** from same E1 in isolated installation contexts, reusing E1 for B. No TTS, no escalation, no broad matrix; confirm actual billing separately if needed.
-- [ ] Both branches: safety, name identity, selection-only canon, non-repeated resolution, no E2 phantom choice, actual local payoff, persistence/reload, cleanup of test profile and credential, eventual confirmed AI OFF.
-- [ ] Independently evaluate both whole sessions on 12 editorial dimensions; each >=20/24, no hard fail, native Uzbek language reviewed, honest PASS/ITERATE/REJECT and release decision. No fabricated reviewer.
-- [ ] Capture exact runs/SHAs, initial/final words, repair attempts, provider work, retention of no real test-data residue.
+## P1 — controlled live dual-branch qualification: ATTEMPTED, FAILED, SCOPE EXHAUSTED
+- [x] Obtain original user approval for 1 E1+2 E2; short runtime grant, no TTS/escalation. Auth and separate synthetic installations fixed; E1 top-level `state_patch` applied via actual product Memory Agent before per-choice patch. Two distinct E1+choice states persisted/reloaded. Three total requests issued; no retries.
+- [x] Return DB AI OFF; check exactly zero test profiles/credentials; remove temporary script and workflow (audit branch zero diff against main). Full links and results retained in permanent evidence file.
+- [ ] Investigate the exact E2 fallback failures **without any new provider requests**. Capture in future audit tooling ALL non-secret `X-QISSA-Generation-Failure-Class`, `X-QISSA-Generation-Failure-Trace`, and validation metrics; current trace not stored, so don't invent an exact cause. Improve offline validation of story continuation inputs and real dynamic IDs. Record initial/final text and safe diagnostic metadata if a separately authorized new test occurs.
+- [ ] A/B each return actual `openai-structured` E2 rather than safe-fallback, preserve selected-only canon, hero identity, no bridge replay/phantom decision; persist/reload and clean BOTH synthetic branches. Current condition FAILED and must not be marked complete based on the two fallback outputs.
+- [ ] Independent editor/parent review of BOTH completed child-visible sessions with >=20/24 each, no hard fail and appropriate Uzbek language. No internal fabricated approval.
 
-## P2 broader qualification — NOT YET STARTED
-- [ ] Explicitly approve a wider RU/UZ age/world matrix and any costs; 20 samples per language/age is a proposal, not approved spend.
-- [ ] Review multi-session structural repetition, actual memory payoff, calibrated Uzbek read-aloud/sentence length evidence. Do not claim retention results without real users.
-- [ ] Consider structural signature/new schema or paid quality model only if repeated observed problems and ROI justify.
+## P2 — broader qualification (NOT STARTED; requires separate scope/spend)
+- [ ] Approve RU/UZ age/world sample matrix costs explicitly (expert's 20 stories per language-age is unapproved suggestion), monitor structure repetition over long series and genuine memory payoff.
+- [ ] Evaluate natural Uzbek read-aloud/sentence diagnostics with native reviewers; no arbitrary hard grammar regex. Add schema/structure signature or paid Quality Agent only after measured evidence and cost case.
 
-## Final acceptance and deletion
-- [ ] Production exact editorial SHA, official CI and Story Core GREEN, reviewed clean diff, temporary workflow/helper cleanup.
-- [ ] Runtime OFF by trusted DB check; lease deployed; safe short live window and `finally` OFF confirmed; no unapproved providers.
-- [ ] Same-E1 A/B evidence, full safety/privacy/continuity/persistence/cleanup and both real sessions independently editorial-qualified (>=20/24). Explicitly mark other combinations NOT qualified.
-- [ ] Store permanent reviews, evidence and final GO/NO-GO with all limitations. **ONLY THEN remove this file in a reviewed cleanup PR**; keep scorecard, scripts and review evidence.
+## Final release gate AND deletion rule
+- [ ] Main and exact production version match; official CI/Story Core GREEN; temp workflows/helpers removed; independent AI lease and explicit OFF verified; positive launch emergency limits considered separately from development accounting-only mode.
+- [ ] Same-E1 real A/B complete technical acceptance, consent, safety, identity, two choices, branch-canon, persistence and cleanup; both independent literary reviews >=20/24 and no hard fail; specify untested combinations as unqualified.
+- [ ] Permanent logs/reviews/release GO evidence saved and reviewed. Only once **all** complete, delete this TEMP plan in a reviewed cleanup PR; keep permanent rubric, checks and evidence.
 
-## Execution log
-- 2026-09-16: baseline and editorial prompt guidance developed in draft PR #186; initial CI #382/Story Core #218 GREEN, then #383/#219 GREEN after doc-only update.
-- 2026-09-16: protected runtime lease developed separately. First QISSA CI #384 failed on old static cost-guard assumption; explicit OFF handling restored, then CI #385 / Story Core #221 GREEN. PR #187 merged `cb483dd...`; Edge Function v81 deployed and exact import/AI OFF verified. No paid AI calls.
-- 2026-09-16: integrated safety main into editorial branch, retaining both CI checks. Combined CI #386 and Story Core #222 GREEN on merge commit `d43798c...`; editorial PR remains draft/unmerged. No paid AI calls.
+## Execution log (append on each meaningful step)
+- 2026-09-16: baseline E1/A E2 review 14/24 provisional; PR #186 editorial guidance work CI GREEN. PR #187 lease fix merged, Edge v81 deployed OFF; CI #385 and Story Core #221 GREEN.
+- 2026-09-16: editorial PR #186 merged after CI #388 / Story Core #224 GREEN; deployed main `1f59ef09128122ec0ccd430566a8a516be925fbf` as Edge v82 with AI OFF.
+- 2026-09-16: new live E1 #35083106909 valid provider story, harness choice ID bug stopped before persistence. Provider-free E1 restoration #35083547583 GREEN. Continuation #35083675997 persisted both E1 choices but BOTH E2 returned safe-fallback. Exactly three paid-eligible generation claims total; no more user-authorized paid calls. AI OFF, synthetic profiles/credentials removed, temporary script/workflow deleted. Editorial release remains NO-GO. Pending evidence PR to merge the permanent record and this checkpoint.
