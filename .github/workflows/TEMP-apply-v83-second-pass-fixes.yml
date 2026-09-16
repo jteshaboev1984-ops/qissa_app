@@ -1,0 +1,35 @@
+name: TEMP apply v83 second-pass contract fixes
+on:
+  push:
+    branches:
+      - fix/v83-e1-choice-scaffolding-repair
+    paths:
+      - audit/TEMP-apply-v83-second-pass-fixes-trigger.txt
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.event.head_commit.message == 'APPLY PROVIDER FREE SECOND PASS FIXES'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/v83-e1-choice-scaffolding-repair
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Apply exact source/test patch
+        run: node scripts/TEMP-apply-v83-second-pass-fixes.mjs
+      - name: Verify affected contracts before commit
+        run: npm run check:story-ai-split && npm run check:story-ai && npm run typecheck:story-ai
+      - name: Commit verified C7-C9 changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add supabase/functions/story-generate/story-architecture.ts scripts/check-story-cross-layer-contracts.mjs
+          git commit -m 'Align remaining Story Architect cross-layer contracts'
+          git push origin HEAD:fix/v83-e1-choice-scaffolding-repair
+# One-shot source fixer. No provider keys, no model calls, no database access.
