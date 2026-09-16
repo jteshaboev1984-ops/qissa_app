@@ -16,7 +16,7 @@ const baseline = readFileSync('docs/qissa/ai/reviews/2026-09-16_malika_uz_v79-e1
 
 for (const [label, content, phrases] of [
   ['Architect E1', architectE1, ['one concrete child-scale desire', 'something actually changes', 'Give {{HERO}} a specific fictional want', 'visibly different child actions', 'Resolve neither choice before']],
-  ['Architect E2', architectE2, ['one concrete child-scale desire', 'Episode 2 begins AFTER', 'finish tonight', 'Do not repeat Episode 1', 'no required refrain']],
+  ['Architect E2', architectE2, ['one concrete child-scale desire', 'Episode 2 begins AFTER', 'finish tonight', 'Do not repeat Episode 1', 'No required refrain']],
   ['Narrator E1', narratorE1, ['immutable blueprint remains authoritative', 'Show an earned gentle joke', 'immediate choice bridges', 'branch-neutral']],
   ['Narrator E2', narratorE2, ['immutable blueprint remains authoritative', 'selected resolution_text has already been read', 'Never ask the child', 'calm closing image']],
 ]) {
@@ -26,7 +26,7 @@ check(!has(architectE2, 'Both safe choices pursue'), 'E2 must not include new-ch
 check(!has(narratorE2, 'immediate choice bridges must show two'), 'E2 must not include E1 choice-building guidance')
 check(has(split, 'storyArchitectEditorialGuidance(context)'), 'Architect must actually receive editorial guidance')
 check(has(split, 'storyNarratorEditorialGuidance(context)'), 'Narrator must actually receive editorial guidance')
-check(has(split, "'qissa_story_blueprint'" ) && has(split, "'qissa_story_narration'"), 'Existing structured JSON contracts must remain wired')
+check(has(split, "'qissa_story_blueprint'") && has(split, "'qissa_story_narration'"), 'Existing structured JSON contracts must remain wired')
 check(has(split, 'storyBlueprintSchema') && has(split, 'storyNarrationSchema'), 'Cannot bypass existing blueprint/narration schemas')
 check(has(scorecard, 'at least 20/24') && has(scorecard, 'Choice-pair review'), 'Permanent human editorial gate must remain')
 check(has(baseline, 'ITERATE — NOT family-beta qualified') && has(baseline, 'Branch-pair qualification: **INCOMPLETE**'), 'Baseline must not be labeled editorially qualified')
