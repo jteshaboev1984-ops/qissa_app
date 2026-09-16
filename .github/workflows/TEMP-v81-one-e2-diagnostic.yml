@@ -1,4 +1,4 @@
-name: TEMP v81 one-E2 diagnostic (one paid request maximum)
+name: TEMP v81 separate E2(B) diagnostic (one paid request maximum)
 
 on:
   push:
@@ -13,12 +13,12 @@ permissions:
   actions: read
 
 concurrency:
-  group: qissa-v81-e2-one-diagnostic-20260916
+  group: qissa-v81-e2-b-diagnostic-20260916
   cancel-in-progress: false
 
 jobs:
   diagnostic:
-    if: github.event.head_commit.message == 'PREFLIGHT ONE E2 DIAGNOSTIC' || github.event.head_commit.message == 'RUN APPROVED ONE E2 DIAGNOSTIC ONCE'
+    if: github.event.head_commit.message == 'PREFLIGHT ONE E2 B DIAGNOSTIC' || github.event.head_commit.message == 'RUN APPROVED ONE E2 B ONCE'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
@@ -28,12 +28,12 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Verify historic E1 and diagnose ONE E2(A) if explicitly triggered
+      - name: Verify genuine E1 and probe only E2(B), conditional one-shot
         env:
           GH_READ_TOKEN: ${{ github.token }}
           QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
           QISSA_AUDIT_STORY_SHA: 1f59ef09128122ec0ccd430566a8a516be925fbf
-          QISSA_DIAGNOSTIC_PREFLIGHT: ${{ github.event.head_commit.message == 'PREFLIGHT ONE E2 DIAGNOSTIC' }}
-        run: node scripts/TEMP-v81-single-e2-diagnostic.mjs
+          QISSA_DIAGNOSTIC_PREFLIGHT: ${{ github.event.head_commit.message == 'PREFLIGHT ONE E2 B DIAGNOSTIC' }}
+        run: node scripts/TEMP-v81-single-e2-b.mjs
 
-# The trigger accepts ONE precise paid commit message. Remove file and workflow after this test.
+# First probe A is finished and cannot be re-run by this workflow. Delete workflow and scripts after B.
