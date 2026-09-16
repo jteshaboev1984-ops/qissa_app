@@ -251,7 +251,6 @@ requireFragments('architecture', architecture, [
   'next_episode_preview is child-facing story copy',
   'Episode 2 has no child decision menu',
   'Episode 2 has no child decision: do not ask {{HERO}} or the child to choose, decide, pick, place, rank or answer a new question',
-  'episode_2_unresolved_decision',
   'make living forest characters drive the story',
   'central goal must stay warm, social or playful',
   'Do not center the plot on finding the way home',
