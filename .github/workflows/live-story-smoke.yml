@@ -1,33 +1,25 @@
-name: Manual Live Story Smoke
+name: Temporary v79 Uzbek Live Acceptance
 
-# This workflow intentionally never runs on push or pull_request.
-# Normal development and CI use deterministic local Story Core checks so
-# development does not create AI-provider usage or cost. Run this workflow
-# manually only when validating the deployed Edge Function.
 on:
-  workflow_dispatch:
-    inputs:
-      expected_source:
-        description: Expected X-QISSA-Generation-Source from the deployed function
-        required: true
-        default: "safe-fallback"
-        type: choice
-        options:
-          - safe-fallback
-          - openai-structured
+  push:
+    branches:
+      - audit/v79-uz-live-acceptance
+    paths:
+      - .github/v79-live-trigger
 
 permissions:
   contents: read
 
 concurrency:
-  group: live-story-smoke-${{ github.ref }}
+  group: v79-uz-live-acceptance
   cancel-in-progress: true
 
 jobs:
   smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Checkout repository
+      - name: Checkout audit branch
         uses: actions/checkout@v7
 
       - name: Setup Node.js
@@ -39,9 +31,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Invoke deployed story-generate
+      - name: Run isolated UZ 5-7 Malika E1-choice-E2 acceptance
         env:
           QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
-          QISSA_EXPECTED_GENERATION_SOURCE: ${{ github.event.inputs.expected_source }}
-          QISSA_STORY_ENDPOINT: https://phwakdpxxyncyslvnqht.supabase.co/functions/v1/story-generate
-        run: npm run smoke:story-live
+        run: node scripts/temp-v79-uz-live-acceptance.mjs
