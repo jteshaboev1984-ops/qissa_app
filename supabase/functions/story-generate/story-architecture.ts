@@ -9,7 +9,7 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { hasSingleLanguageMismatch } from './language.ts'
-import { branchingPreviewNeedsRewrite, genericHeroAliasNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, genericHeroAliasNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
 
 export type StoryBlueprintChoice = {
   choice_id: string
@@ -387,6 +387,7 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
     errors.push('invalid_blueprint_beats')
   }
   if (typeof value.decision_point !== 'string') errors.push('invalid_decision_point')
+  else if (context.episodeIndex === 1 && choiceMenuScaffoldingNeedsRewrite(context.language, value.decision_point)) errors.push('blueprint_choice_menu_scaffolding')
   if (!patchIsValid(value.state_patch)) errors.push('invalid_blueprint_state_patch')
   else {
     // last_event may describe a supporting-character-only event. Identity safety is enforced
@@ -411,15 +412,15 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
       if (typeof typed.text !== 'string' || typed.text.trim().length < 4) errors.push('invalid_blueprint_choice_text')
       if (typeof typed.effect_summary !== 'string' || typed.effect_summary.trim().length < 5) errors.push('invalid_blueprint_effect_summary')
       if (typeof typed.resolution_goal !== 'string' || typed.resolution_goal.trim().length < 5) errors.push('invalid_blueprint_resolution_goal')
-      if (typeof typed.tomorrow_seed !== 'string') errors.push('invalid_blueprint_tomorrow_seed')
-      if (typeof typed.choice_icon !== 'string' || typed.choice_icon.length > 8) errors.push('invalid_blueprint_choice_icon')
+      if (typeof typed.tomorrow_seed !== 'string' || typed.tomorrow_seed.length < 8) errors.push('invalid_blueprint_tomorrow_seed')
+      if (typeof typed.choice_icon !== 'string' || !typed.choice_icon.trim() || typed.choice_icon.length > 8) errors.push('invalid_blueprint_choice_icon')
       if (!patchIsValid(typed.state_patch)) errors.push('invalid_blueprint_choice_patch')
       else {
         if (typed.state_patch.canon_updates.length > 4) errors.push('blueprint_choice_state_too_large')
         if (duplicateEntryKeys(typed.state_patch.canon_updates)) errors.push('duplicate_blueprint_choice_canon_keys')
         if (!patchHasStableMemoryKeys(context, typed.state_patch)) errors.push('unstable_blueprint_choice_memory_key')
       }
-      if (!Array.isArray(typed.value_alignment) || typed.value_alignment.some((item) => !positiveValues.has(item as PositiveValue))) {
+      if (!Array.isArray(typed.value_alignment) || typed.value_alignment.length === 0 || typed.value_alignment.some((item) => !positiveValues.has(item as PositiveValue))) {
         errors.push('invalid_blueprint_value_alignment')
       }
       if (textContainsHeroToken(typed.text)) errors.push('blueprint_choice_text_contains_hero_token')
@@ -636,6 +637,7 @@ export const narrationToCandidate = (
   blueprint: StoryBlueprint,
   narration: StoryNarration,
 ): StoryCandidate => {
+  if (narration.choice_resolutions.length !== blueprint.choices.length) throw new Error('narration_resolution_contract_mismatch')
   const resolutionById = new Map(narration.choice_resolutions.map((item) => [item.choice_id, item.resolution_text]))
   const expectedIds = new Set(blueprint.choices.map((choice) => choice.choice_id))
   if (resolutionById.size !== expectedIds.size || [...resolutionById.keys()].some((id) => !expectedIds.has(id))) {

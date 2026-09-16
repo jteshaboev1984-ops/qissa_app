@@ -534,10 +534,10 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   if (context.episodeIndex === 2 && typeof value.story_text === 'string' && episodeTwoUnresolvedDecisionNeedsRewrite(context, value.story_text)) errors.push('episode_2_unresolved_decision')
 
   if (typeof value.nextEpisodePreview !== 'string') errors.push('invalid_preview')
-  if (context.storyMode === 'series' && context.episodeIndex === 1 && !value.nextEpisodePreview.trim()) errors.push('missing_preview')
+  if (context.storyMode === 'series' && context.episodeIndex === 1 && typeof value.nextEpisodePreview === 'string' && !value.nextEpisodePreview.trim()) errors.push('missing_preview')
   if (typeof value.nextEpisodePreview === 'string' && technicalPreviewLanguageNeedsRewrite(context.language, value.nextEpisodePreview)) errors.push('technical_preview_language')
   if (context.episodeIndex === 1 && typeof value.nextEpisodePreview === 'string' && branchingPreviewNeedsRewrite(context.language, value.nextEpisodePreview)) errors.push('branching_preview_language')
-  if ((context.storyMode === 'one_time' || context.episodeIndex === 2) && value.nextEpisodePreview.trim()) errors.push('unexpected_preview')
+  if ((context.storyMode === 'one_time' || context.episodeIndex === 2) && typeof value.nextEpisodePreview === 'string' && value.nextEpisodePreview.trim()) errors.push('unexpected_preview')
   return [...new Set(errors)]
 }
 
