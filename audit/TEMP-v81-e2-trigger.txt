@@ -1,1 +1,1 @@
-One-shot, user-approved E2(A) diagnostic following preflight run 35089264517. One story-generate request; no E1 regeneration, no retry, no TTS, no escalation. Remove after run.
+One-shot user-approved E2(B) after B preflight run 35089635976 and A success 35089384717. Exactly one B request, zero retries, no E1, no TTS/escalation. Delete workflow and temporary scripts immediately after result.
