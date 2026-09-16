@@ -1,10 +1,11 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { evaluateStoryAiRuntimeLease, type RuntimeLeaseDecision } from './runtime-lease.ts'
 
 // During active Story AI tuning, zero means accounting-only: provider-eligible
 // requests are still counted atomically, but no per-installation or project-wide
-// daily throttle is enforced. The service-role runtime flag remains the provider
-// kill switch and stays OFF outside deliberate acceptance windows. Restore
-// positive emergency ceilings intentionally before external closed beta/launch.
+// daily throttle is enforced. The service-role runtime flag plus short-lived
+// issuance timestamp form the provider kill switch. Restore positive emergency
+// ceilings intentionally before external closed beta/launch.
 const DEVELOPMENT_ACCOUNTING_ONLY_LIMIT = 0
 const DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_ONLY_LIMIT
 const GLOBAL_DAILY_STORY_GENERATION_LIMIT = DEVELOPMENT_ACCOUNTING_ONLY_LIMIT
@@ -18,9 +19,9 @@ export type GenerationClaim = {
   globalLimit: number
 }
 
-export type StoryAiRuntimeState = {
-  enabled: boolean
-  reason: 'runtime-enabled' | 'runtime-disabled' | 'runtime-config-unavailable' | 'runtime-config-check-failed'
+export type StoryAiRuntimeState = RuntimeLeaseDecision | {
+  enabled: false
+  reason: 'runtime-config-unavailable' | 'runtime-config-check-failed'
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -54,7 +55,7 @@ export const readStoryAiRuntimeState = async (): Promise<StoryAiRuntimeState> =>
 
   const { data, error } = await admin
     .from('qissa_runtime_flags')
-    .select('enabled')
+    .select('enabled, updated_at')
     .eq('flag', 'story_ai_enabled')
     .maybeSingle()
 
@@ -63,11 +64,12 @@ export const readStoryAiRuntimeState = async (): Promise<StoryAiRuntimeState> =>
     return { enabled: false, reason: 'runtime-config-check-failed' }
   }
 
+  // Keep OFF unconditionally denied; a fresh timestamp cannot enable a false flag.
   if (!isRecord(data) || data.enabled !== true) {
     return { enabled: false, reason: 'runtime-disabled' }
   }
 
-  return { enabled: true, reason: 'runtime-enabled' }
+  return evaluateStoryAiRuntimeLease(data, Date.now())
 }
 
 export const claimStoryGeneration = async (installationId: string): Promise<GenerationClaim> => {
@@ -90,12 +92,10 @@ export const claimStoryGeneration = async (installationId: string): Promise<Gene
     reason: typeof data.reason === 'string' ? data.reason : 'unknown',
     used: typeof data.used === 'number' && Number.isFinite(data.used) ? data.used : 0,
     limit: typeof data.limit === 'number' && Number.isFinite(data.limit)
-      ? data.limit
-      : DAILY_STORY_GENERATION_LIMIT,
+      ? data.limit : DAILY_STORY_GENERATION_LIMIT,
     globalUsed: typeof data.global_used === 'number' && Number.isFinite(data.global_used) ? data.global_used : 0,
     globalLimit: typeof data.global_limit === 'number' && Number.isFinite(data.global_limit)
-      ? data.global_limit
-      : GLOBAL_DAILY_STORY_GENERATION_LIMIT,
+      ? data.global_limit : GLOBAL_DAILY_STORY_GENERATION_LIMIT,
   }
 }
 
