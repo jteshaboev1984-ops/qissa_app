@@ -107,6 +107,18 @@ const providerFailureClass = (reason: string): string => {
   return 'provider-error'
 }
 
+const repairContractFailureCodes = new Set([
+  'openai_text_repair_story_structure',
+  'openai_invalid_full_text_repair_rewrite',
+  'openai_invalid_text_repair_expansion',
+  'openai_invalid_text_repair_vocabulary',
+  'openai_invalid_text_repair_choice',
+  'openai_incomplete_text_repair_choices',
+])
+
+const repairContractFailureDetail = (reason: string): string | null =>
+  repairContractFailureCodes.has(reason) ? reason.replace(/^openai_/u, '') : null
+
 const hasRuleViolation = (flags: SafetyFlags): boolean => Object.values(flags).some(Boolean)
 
 const ruleFailure = (flags: SafetyFlags): SafetyResult => ({
@@ -331,8 +343,9 @@ Deno.serve(async (request: Request) => {
       }
     } catch (error) {
       const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
-      lastFailureClass = providerFailureClass(reason)
-      trace.push(`${repairRetryUsed ? 'repair-retry' : 'repair'}:${lastFailureClass}`)
+      const repairContractDetail = repairContractFailureDetail(reason)
+      lastFailureClass = repairContractDetail ? 'repair-contract' : providerFailureClass(reason)
+      trace.push(`${repairRetryUsed ? 'repair-retry' : 'repair'}:${lastFailureClass}${repairContractDetail ? `:${repairContractDetail}` : ''}`)
       return safeFallback(context, origin, 'generation-or-safety-failed', {
         ...runtimeProviderMetadata,
         ...claimMetadata(claim),

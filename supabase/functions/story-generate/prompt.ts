@@ -349,41 +349,50 @@ export const storyOutputSchema = {
 } as const
 
 
-export const textLengthRepairOutputSchema = {
-  type: 'object',
-  additionalProperties: false,
-  required: ['title_rewrite', 'story_rewrite', 'story_expansion', 'choice_resolutions', 'vocabulary_rewrite'],
-  properties: {
-    title_rewrite: { type: ['string', 'null'] },
-    story_rewrite: { type: ['string', 'null'] },
-    story_expansion: { type: ['string', 'null'] },
-    choice_resolutions: {
-      type: 'array',
-      items: {
-        type: 'object',
-        additionalProperties: false,
-        required: ['choice_id', 'resolution_text'],
-        properties: {
-          choice_id: { type: 'string' },
-          resolution_text: { type: 'string' },
+export const buildTextLengthRepairOutputSchema = (
+  context: NormalizedStoryContext,
+  validationErrors: string[],
+) => {
+  const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors)
+  const insertionOnly = validationErrors.includes('story_too_short') && !fullStoryRewrite
+  const vocabularyItemSchema = {
+    type: 'object',
+    additionalProperties: false,
+    required: ['word', 'translation', 'example'],
+    properties: {
+      word: { type: 'string' },
+      translation: { type: 'string' },
+      example: { type: 'string' },
+    },
+  } as const
+
+  return {
+    type: 'object',
+    additionalProperties: false,
+    required: ['title_rewrite', 'story_rewrite', 'story_expansion', 'choice_resolutions', 'vocabulary_rewrite'],
+    properties: {
+      title_rewrite: { type: fullStoryRewrite ? 'string' : 'null' },
+      story_rewrite: { type: fullStoryRewrite ? 'string' : 'null' },
+      story_expansion: { type: insertionOnly ? 'string' : 'null' },
+      choice_resolutions: {
+        type: 'array',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['choice_id', 'resolution_text'],
+          properties: {
+            choice_id: { type: 'string' },
+            resolution_text: { type: 'string' },
+          },
         },
       },
-    },
-    vocabulary_rewrite: {
-      type: 'array',
-      items: {
-        type: 'object',
-        additionalProperties: false,
-        required: ['word', 'translation', 'example'],
-        properties: {
-          word: { type: 'string' },
-          translation: { type: 'string' },
-          example: { type: 'string' },
-        },
+      vocabulary_rewrite: {
+        type: 'array',
+        items: vocabularyItemSchema,
       },
     },
-  },
-} as const
+  } as const
+}
 
 export const safetyOutputSchema = {
   type: 'object',

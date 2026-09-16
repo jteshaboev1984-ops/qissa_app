@@ -339,8 +339,13 @@ requireFragments('split safety session contract', repairProvider, [
   'sustained panic, threatening pursuit, abandonment, trapping, serious injury',
 ])
 
+requireFragments('Episode 2 text repair routing', repairPrompt, [
+  'codaTooShort',
+  'codaTooLong',
+  'textRepairRequiresFullStoryRewrite',
+  'buildTextLengthRepairOutputSchema',
+])
 requireFragments('Episode 2 text repair provider', repairProvider, [
-  'codaLengthFailure',
   'fullStoryRewrite',
   'openai_invalid_full_text_repair_rewrite',
 ])
@@ -358,6 +363,13 @@ requireFragments('scaling architecture doc', scalingDoc, [
   'segment_index',
   'compact active memory',
   'old story prose remains archived outside the prompt',
+])
+
+requireFragments('repair contract observability', orchestrator, [
+  'repairContractFailureCodes',
+  'repairContractFailureDetail',
+  "lastFailureClass = repairContractDetail ? 'repair-contract' : providerFailureClass(reason)",
+  'repair-contract',
 ])
 
 if (failures.length > 0) {
