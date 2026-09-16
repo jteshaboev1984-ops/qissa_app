@@ -1,1 +1,0 @@
-Trigger the provider-free second-pass source contract audit only. No provider, secrets, or database use.
