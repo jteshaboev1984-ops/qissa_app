@@ -20,9 +20,24 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - name: Provider-free dry preflight (no HTTP)
+      - name: Provider-free dry payload preflight (zero Story AI HTTP)
         if: github.event.head_commit.message == 'RUN V85 E1 DRY PREFLIGHT'
         run: node scripts/TEMP-v85-e1-once.mjs
+      - name: Dry verify remote branch HEAD against trigger
+        if: github.event.head_commit.message == 'RUN V85 E1 DRY PREFLIGHT'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict'
+          const branch = encodeURIComponent('audit/v85-e1-once-20260916')
+          const response = await fetch(`https://api.github.com/repos/jteshaboev1984-ops/qissa_app/branches/${branch}`, {
+            headers: { authorization: `Bearer ${process.env.GITHUB_TOKEN}`, accept: 'application/vnd.github+json' },
+          })
+          assert.equal(response.status, 200, 'branch lookup must succeed before live run')
+          assert.equal((await response.json()).commit.sha, process.env.GITHUB_SHA, 'remote HEAD must match checkout')
+          console.log('V85_REMOTE_HEAD_GATE_PASS; GitHub metadata only, no Story AI/provider HTTP')
+          NODE
       - name: Live just-in-time runtime gate
         if: github.event.head_commit.message == 'RUN V85 E1 LIVE ONCE'
         run: |
