@@ -30,7 +30,7 @@ if split_check.count(anchor) != 1:
 regression = r"""requireLanguageGuard(unsafeBlueprintErrors.includes('blueprint_rule_safety'), 'deterministic safety present in Architect output must fail before the paid Narrator stage')
 
 const heroNeutralStateContext = {
-  language: 'uz', ageGroup: '5-7', episodeIndex: 1, storyMode: 'series', storyMood: 'bedtime',
+  language: 'uz', heroType: 'girl_hero', ageGroup: '5-7', episodeIndex: 1, storyMode: 'series', storyMood: 'bedtime',
   isFinalSeriesSession: false, recurringCharacters: [], canonState: {}, relationshipState: {},
 }
 const heroNeutralStateBlueprint = {
