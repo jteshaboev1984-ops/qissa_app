@@ -10,7 +10,7 @@ import { buildSafeFallback } from './fallback.ts'
 import { adjudicateStoryFear, evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { clearAdjudicatedNonSevereViolence, combineSafety, moderationNeedsFearAdjudication, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
-import { enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
+import { enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintHeroReferences, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
 import { childVisibleStorySafetyText } from './story-safety-projection.ts'
 import { isTextRepairCorrectionEligible, isTextRepairEligibleFailure } from './repair-routing.ts'
 import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
@@ -219,6 +219,7 @@ Deno.serve(async (request: Request) => {
   const normalizedBlueprint = normalizeStoryBlueprintMemoryKeys(context, blueprint)
   blueprint = normalizedBlueprint.blueprint
   blueprintKeysNormalized = normalizedBlueprint.normalizedCount
+  blueprint = normalizeStoryBlueprintHeroReferences(blueprint).blueprint
   const blueprintErrors = validateStoryBlueprint(context, blueprint)
   if (blueprintErrors.length > 0) {
     lastFailureClass = 'blueprint-validation'
