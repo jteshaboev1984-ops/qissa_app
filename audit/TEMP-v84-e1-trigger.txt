@@ -1,1 +1,1 @@
-Provider-free dry preflight only. The runner must prepare one E1 payload and make zero HTTP requests.
+Exactly one authorized production E1 request. Stop on fallback. Never rerun this historical live commit.
