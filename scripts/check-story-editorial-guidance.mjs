@@ -13,12 +13,13 @@ const narratorE2 = storyNarratorEditorialGuidance(e2)
 const split = readFileSync('supabase/functions/story-generate/split-openai.ts', 'utf8')
 const scorecard = readFileSync('docs/qissa/ai/09_FAMILY_BETA_EDITORIAL_SCORECARD.md', 'utf8')
 const baseline = readFileSync('docs/qissa/ai/reviews/2026-09-16_malika_uz_v79-e1_v80-e2_baseline.md', 'utf8')
+const newEvidence = readFileSync('docs/qissa/ai/reviews/2026-09-16_v81_e2_ab_diagnostic_success.md', 'utf8')
 
 for (const [label, content, phrases] of [
-  ['Architect E1', architectE1, ['one concrete child-scale desire', 'something actually changes', 'Give {{HERO}} a specific fictional want', 'visibly different child actions', 'Resolve neither choice before']],
-  ['Architect E2', architectE2, ['one concrete child-scale desire', 'Episode 2 begins AFTER', 'finish tonight', 'Do not repeat Episode 1', 'No required refrain']],
-  ['Narrator E1', narratorE1, ['immutable blueprint remains authoritative', 'Show an earned gentle joke', 'immediate choice bridges', 'branch-neutral']],
-  ['Narrator E2', narratorE2, ['immutable blueprint remains authoritative', 'selected resolution_text has already been read', 'Never ask the child', 'calm closing image']],
+  ['Architect E1', architectE1, ['one concrete child-scale desire', 'something actually changes', 'Give {{HERO}} a specific fictional want', 'visibly different child actions', 'Resolve neither choice before', 'interchangeable group performance']],
+  ['Architect E2', architectE2, ['one concrete child-scale desire', 'Episode 2 begins AFTER', 'finish tonight', 'Do not repeat Episode 1', 'No required refrain', 'particular action and method as binding canon', 'would not simply fit the unselected branch', 'Durable state_patch values', 'hero_trait should be null', 'unfinished phrase']],
+  ['Narrator E1', narratorE1, ['immutable blueprint remains authoritative', 'Show an earned gentle joke', 'immediate choice bridges', 'branch-neutral', 'qo‘shiqqa', 'Tikanning']],
+  ['Narrator E2', narratorE2, ['immutable blueprint remains authoritative', 'selected resolution_text has already been read', 'Never ask the child', 'calm closing image', 'an echo game needs calls and replies', 'undifferentiated simultaneous chorus']],
 ]) {
   for (const phrase of phrases) check(has(content, phrase), `${label} missing ${phrase}`)
 }
@@ -35,10 +36,15 @@ check(scoreRows.length === 12, `Baseline must contain twelve separate dimensions
 const total = scoreRows.reduce((sum, row) => sum + Number(row.match(/\| (\d)(?: \(provisional\))? \|/)?.[1] ?? Number.NaN), 0)
 check(total === 14, `Baseline math changed: expected 14/24, got ${total}`)
 check(has(baseline, '35061371574') && has(baseline, '35062412722'), 'Baseline must link to both actual runs')
+for (const marker of ['35089384717', '35089754120', '12 → 13 → 14', 'NOT QUALIFIED', 'full original HTTP response envelope', 'no synthetic child profile']) {
+  check(has(newEvidence.toLowerCase(), marker.toLowerCase()), `A/B evidence must preserve ${marker}`)
+}
+check(has(newEvidence, 'exact causes of the earlier') && has(newEvidence, 'remain UNKNOWN'), 'Later successful E2 is not retrospective diagnosis of earlier failures')
+check(has(newEvidence, 'No new E1 calls') && has(newEvidence, 'NO-GO'), 'Economical test cannot be relabeled a qualified full-session acceptance')
 
 if (errors.length) {
   console.error('Story editorial guidance and evidence contract FAILED:')
   for (const error of errors) console.error(`- ${error}`)
   process.exit(1)
 }
-console.log('Story editorial guidance and honest baseline evidence contract passed (12 dimensions; 14/24 provisional ITERATE).')
+console.log('Story editorial guidance and honest baseline/A-B evidence contract passed (12 dimensions; baseline 14/24 ITERATE; both diagnostic E2 real but unqualified).')
