@@ -1,1 +1,0 @@
-Trigger the provider-free C10-C11 source audit only. No provider, secrets, database writes, or deployment.

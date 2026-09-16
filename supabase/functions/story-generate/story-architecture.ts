@@ -9,7 +9,7 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { hasSingleLanguageMismatch } from './language.ts'
-import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, genericHeroAliasNeedsRewrite, russianHeroTokenNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, genericHeroAliasNeedsRewrite, russianHeroTokenNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, textRepeatsStructuredChoiceMenu, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
 
 export type StoryBlueprintChoice = {
   choice_id: string
@@ -388,7 +388,7 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
     errors.push('invalid_blueprint_beats')
   }
   if (typeof value.decision_point !== 'string') errors.push('invalid_decision_point')
-  else if (context.episodeIndex === 1 && choiceMenuScaffoldingNeedsRewrite(context.language, value.decision_point)) errors.push('blueprint_choice_menu_scaffolding')
+  else if (context.episodeIndex === 1 && (choiceMenuScaffoldingNeedsRewrite(context.language, value.decision_point) || textRepeatsStructuredChoiceMenu(value.decision_point, value.choices))) errors.push('blueprint_choice_menu_scaffolding')
   if (!patchIsValid(value.state_patch)) errors.push('invalid_blueprint_state_patch')
   else {
     // last_event may describe a supporting-character-only event. Identity safety is enforced

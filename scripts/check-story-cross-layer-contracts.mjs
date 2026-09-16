@@ -129,4 +129,18 @@ ruBlueprint.choices = [
 ]
 assert.ok(validateStoryBlueprint(ruContext, ruBlueprint).includes('blueprint_russian_hero_requires_rewrite'), 'C9 immutable RU token grammar reached Narrator/Repair')
 
-console.log('Cross-layer story contracts GREEN: C1–C9, including effect-summary alignment, one-time preview parity and immutable RU hero grammar; zero provider calls.')
+
+// C10: one_time is always a single E1 interaction, even if stale series-shaped state carries episodeCount/history.
+const staleOneTimeContext = normalizeStoryRequest({
+  selections: { ageGroup: '5-7', language: 'uz', heroType: 'custom', customHeroName: 'Malika', stylePackId: 'cozy_forest', storyMode: 'one_time', storyMood: 'bedtime' },
+  seriesState: { id: 'one-time-stale-contract', mainCharacter: 'Malika', recurringCharacters: [], lastEpisodeSummary: '', activeArc: '', relationshipState: {}, canonState: {}, choiceHistory: [{ choice_id: 'old', choice_text: 'Old', effect_summary: 'Old', resolution_text: 'Old', tomorrow_seed: 'Old' }], episodeCount: 1 },
+})
+assert.ok(staleOneTimeContext && staleOneTimeContext.episodeIndex === 1 && staleOneTimeContext.isContinuation === false, 'C10 stale one_time state created Episode 2')
+
+// C11: Architect must reject a decision point that itself repeats both structured choice labels.
+const directMenu = structuredClone(blueprint)
+directMenu.decision_point = 'Barglardan rasm yasash yoki birgalikda qo‘shiq aytish?'
+assert.ok(validateStoryBlueprint(context, directMenu).includes('blueprint_choice_menu_scaffolding'), 'C11 direct structured menu reached paid Narrator')
+assert.deepEqual(validateStoryBlueprint(context, blueprint), [], 'C11 neutral decision point falsely rejected')
+
+console.log('Cross-layer story contracts GREEN: C1–C11, including one-time episode identity and upstream direct-menu overlap rejection; zero provider calls.')
