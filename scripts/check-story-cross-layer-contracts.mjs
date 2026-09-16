@@ -87,4 +87,46 @@ for (const preview of [null, undefined, 123]) {
   invalid.nextEpisodePreview = preview
   assert.ok(validateCandidate(context, invalid).includes('invalid_preview'), 'C5 malformed preview not classified')
 }
-console.log('Cross-layer story contracts GREEN: C1–C5, standalone/mixed repair, insertion, pre-Narrator validation, exact bridge IDs, neutral decision and malformed preview; zero provider calls.')
+
+// C7: direct-copy effect_summary must satisfy the downstream candidate threshold before Narrator spend.
+const shortEffect = structuredClone(blueprint)
+shortEffect.choices[0].effect_summary = '1234567'
+assert.ok(validateStoryBlueprint(context, shortEffect).includes('invalid_blueprint_effect_summary'), 'C7 short effect_summary reached Narrator')
+
+// C8: one_time E1 is self-contained and must keep nextEpisodePreview empty at both layers.
+const oneTimeContext = normalizeStoryRequest({
+  selections: { ageGroup: '5-7', language: 'uz', heroType: 'custom', customHeroName: 'Malika', stylePackId: 'cozy_forest', storyMode: 'one_time', storyMood: 'bedtime' },
+  seriesState: { id: 'one-time-contract', mainCharacter: 'Malika', recurringCharacters: [], lastEpisodeSummary: '', activeArc: '', relationshipState: {}, canonState: {}, choiceHistory: [], episodeCount: 0 },
+})
+assert.ok(oneTimeContext && oneTimeContext.episodeIndex === 1)
+const oneTimeBlueprint = structuredClone(blueprint)
+oneTimeBlueprint.next_episode_preview = ''
+const oneTimeBlueprintErrors = validateStoryBlueprint(oneTimeContext, oneTimeBlueprint)
+assert.ok(!oneTimeBlueprintErrors.includes('missing_blueprint_preview') && !oneTimeBlueprintErrors.includes('unexpected_blueprint_preview'), 'C8 empty one_time preview rejected')
+const oneTimeBadPreview = structuredClone(oneTimeBlueprint)
+oneTimeBadPreview.next_episode_preview = 'Bu hikoya davom etadi.'
+assert.ok(validateStoryBlueprint(oneTimeContext, oneTimeBadPreview).includes('unexpected_blueprint_preview'), 'C8 non-empty one_time preview admitted upstream')
+const oneTimeCandidate = { ...candidate, nextEpisodePreview: '' }
+const oneTimeCandidateErrors = validateCandidate(oneTimeContext, oneTimeCandidate)
+assert.ok(!oneTimeCandidateErrors.includes('missing_preview') && !oneTimeCandidateErrors.includes('unexpected_preview'), 'C8 downstream one_time preview contract disagrees')
+
+// C9: immutable Russian blueprint fields must reject raw-token grammar Repair cannot change.
+const ruContext = normalizeStoryRequest({
+  selections: { ageGroup: '5-7', language: 'ru', heroType: 'girl_hero', stylePackId: 'cozy_forest', storyMode: 'series', storyMood: 'bedtime' },
+  seriesState: { id: 'ru-contract', recurringCharacters: [], lastEpisodeSummary: '', activeArc: '', relationshipState: {}, canonState: {}, choiceHistory: [], episodeCount: 0 },
+})
+assert.ok(ruContext)
+const ruBlueprint = structuredClone(blueprint)
+ruBlueprint.central_goal = 'Подготовить подарок для друга'
+ruBlueprint.setting_anchor = 'уютный лес'
+ruBlueprint.beats = ['{{HERO}} говорит с другом', 'Друг показывает подарок', '{{HERO}} слушает идею', 'Друг ждёт ответа']
+ruBlueprint.decision_point = 'Что сделать дальше?'
+ruBlueprint.next_episode_preview = 'История о подарке продолжится.'
+ruBlueprint.state_patch = { ...patch('Друг ждёт подарок.'), open_arc: 'Подарок для друга' }
+ruBlueprint.choices = [
+  { choice_id: 'a', text: 'Сделать рисунок', effect_summary: 'Друг подходит к {{HERO}}.', resolution_goal: '{{HERO}} заканчивает рисунок.', tomorrow_seed: 'Друг покажет рисунок.', choice_icon: '🎁', state_patch: { ...patch('Рисунок готов.'), open_arc: 'Подарок для друга' }, value_alignment: ['kindness'] },
+  { choice_id: 'b', text: 'Спеть песню', effect_summary: '{{HERO}} поёт песню.', resolution_goal: '{{HERO}} заканчивает песню.', tomorrow_seed: 'Друг вспомнит песню.', choice_icon: '🎵', state_patch: { ...patch('Песня прозвучала.'), open_arc: 'Подарок для друга' }, value_alignment: ['friendship'] },
+]
+assert.ok(validateStoryBlueprint(ruContext, ruBlueprint).includes('blueprint_russian_hero_requires_rewrite'), 'C9 immutable RU token grammar reached Narrator/Repair')
+
+console.log('Cross-layer story contracts GREEN: C1–C9, including effect-summary alignment, one-time preview parity and immutable RU hero grammar; zero provider calls.')
