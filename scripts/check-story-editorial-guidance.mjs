@@ -1,5 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { storyArchitectEditorialGuidance, storyNarratorEditorialGuidance } from '../supabase/functions/story-generate/editorial-guidance.ts'
+import { choiceMenuScaffoldingNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
+import { textRepairRequiresFullStoryRewrite } from '../supabase/functions/story-generate/repair-routing.ts'
 
 const errors = []
 const check = (condition, message) => { if (!condition) errors.push(message) }
@@ -14,11 +16,12 @@ const split = readFileSync('supabase/functions/story-generate/split-openai.ts', 
 const scorecard = readFileSync('docs/qissa/ai/09_FAMILY_BETA_EDITORIAL_SCORECARD.md', 'utf8')
 const baseline = readFileSync('docs/qissa/ai/reviews/2026-09-16_malika_uz_v79-e1_v80-e2_baseline.md', 'utf8')
 const newEvidence = readFileSync('docs/qissa/ai/reviews/2026-09-16_v81_e2_ab_diagnostic_success.md', 'utf8')
+const failedE1 = readFileSync('docs/qissa/ai/reviews/2026-09-16_v83_e1_validation_failure.md', 'utf8')
 
 for (const [label, content, phrases] of [
-  ['Architect E1', architectE1, ['one concrete child-scale desire', 'something actually changes', 'Give {{HERO}} a specific fictional want', 'visibly different child actions', 'Resolve neither choice before', 'interchangeable group performance']],
+  ['Architect E1', architectE1, ['one concrete child-scale desire', 'something actually changes', 'Give {{HERO}} a specific fictional want', 'visibly different child actions', 'Resolve neither choice before', 'interchangeable group performance', 'ONE neutral decision cue', 'structured choice cards alone']],
   ['Architect E2', architectE2, ['one concrete child-scale desire', 'Episode 2 begins AFTER', 'finish tonight', 'Do not repeat Episode 1', 'No required refrain', 'particular action and method as binding canon', 'would not simply fit the unselected branch', 'Durable state_patch values', 'hero_trait should be null', 'unfinished phrase']],
-  ['Narrator E1', narratorE1, ['immutable blueprint remains authoritative', 'Show an earned gentle joke', 'immediate choice bridges', 'branch-neutral', 'qo‘shiqqa', 'Tikanning']],
+  ['Narrator E1', narratorE1, ['immutable blueprint remains authoritative', 'Show an earned gentle joke', 'choice bridge', 'branch', 'qo‘shiqqa', 'Tikanning', '350-390-word story_text', 'hard minimum 320', 'count only words in story_text', 'ONE neutral', 'structured choice cards', 'mumkin ... yoki ... mumkin', '30-45 meaningful words']],
   ['Narrator E2', narratorE2, ['immutable blueprint remains authoritative', 'selected resolution_text has already been read', 'Never ask the child', 'calm closing image', 'an echo game needs calls and replies', 'undifferentiated simultaneous chorus']],
 ]) {
   for (const phrase of phrases) check(has(content, phrase), `${label} missing ${phrase}`)
@@ -41,10 +44,17 @@ for (const marker of ['35089384717', '35089754120', '12 → 13 → 14', 'NOT QUA
 }
 check(has(newEvidence, 'exact causes of the earlier') && has(newEvidence, 'remain UNKNOWN'), 'Later successful E2 is not retrospective diagnosis of earlier failures')
 check(has(newEvidence, 'No new E1 calls') && has(newEvidence, 'NO-GO'), 'Economical test cannot be relabeled a qualified full-session acceptance')
+for (const marker of ['35092551269', '104782056567', '14→15', 'story_words=273', '361', '278', 'story_choice_menu_scaffolding', 'provider-calls=4', 'NO-GO']) {
+  check(has(failedE1, marker), `E1 rejection evidence must retain ${marker}`)
+}
+check(choiceMenuScaffoldingNeedsRewrite('uz', 'Do‘stlar xohlaganini aytishi mumkin. Yoki boshqacha aytishi ham mumkin.'), 'Visible alternative-menu boilerplate must still be rejected')
+check(!choiceMenuScaffoldingNeedsRewrite('uz', 'Malika nima qilishini o‘yladi.'), 'One neutral E1 decision cue must remain valid')
+check(textRepairRequiresFullStoryRewrite(e1, ['story_choice_menu_scaffolding']), 'Standalone scaffolding must be fully rewritten, never merely length-expanded')
+check(textRepairRequiresFullStoryRewrite(e1, ['story_too_short', 'choice_resolution_too_short', 'story_choice_menu_scaffolding']), 'Actual v83 three-error combination must route to full rewrite')
 
 if (errors.length) {
   console.error('Story editorial guidance and evidence contract FAILED:')
   for (const error of errors) console.error(`- ${error}`)
   process.exit(1)
 }
-console.log('Story editorial guidance and honest baseline/A-B evidence contract passed (12 dimensions; baseline 14/24 ITERATE; both diagnostic E2 real but unqualified).')
+console.log('Story editorial guidance / v83 rejected E1 evidence contract passed; no claim of real quality improvement or external editorial approval.')
