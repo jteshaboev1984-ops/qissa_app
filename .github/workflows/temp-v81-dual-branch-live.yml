@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: qissa-v81-dual-branch-one-shot
@@ -16,9 +17,9 @@ concurrency:
 
 jobs:
   acceptance:
-    if: github.event.head_commit.message == 'RUN APPROVED V81 ONE E1 TWO E2'
+    if: github.event.head_commit.message == 'PREFLIGHT V81 E1 LOG RESTORE'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 4
     steps:
       - name: Checkout exact audit branch
         uses: actions/checkout@v7
@@ -29,10 +30,11 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Execute exactly one E1 and two independent E2 requests
+      - name: Provider-free check of authentic E1 log restoration
         env:
-          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+          GH_READ_TOKEN: ${{ github.token }}
           QISSA_AUDIT_BASE_SHA: 1f59ef09128122ec0ccd430566a8a516be925fbf
+          QISSA_PREFLIGHT_ONLY: 'true'
         run: node scripts/temp-v81-dual-branch-live.mjs
 
-# ARMED ONLY FOR THE EXACT ONE-TIME COMMIT MESSAGE ABOVE.
+# DISARMED FOR PAID GENERATION. This preflight has no Supabase key and exits after E1 verification.
