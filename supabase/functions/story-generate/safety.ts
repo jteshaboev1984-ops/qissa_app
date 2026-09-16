@@ -256,6 +256,45 @@ export const uzbekChildLanguageNeedsRewrite = (
     : []),
 ])
 
+const genericHeroRoleAliasPattern = (
+  language: NormalizedStoryContext['language'],
+  heroType: NormalizedStoryContext['heroType'],
+): RegExp | null => {
+  const aliases: Partial<Record<NormalizedStoryContext['language'], Partial<Record<NormalizedStoryContext['heroType'], string>>>> = {
+    ru: {
+      girl_hero: 'девочк(?:а|и|е|у|ой|ою)',
+      boy_hero: 'мальчик(?:а|у|ом|е|и)?',
+    },
+    uz: {
+      girl_hero: 'qizaloq(?:ning|ni|ga|da|dan)?',
+      boy_hero: "o'g'il\\s+bola(?:ning|ni|ga|da|dan)?",
+    },
+    kz: {
+      girl_hero: 'қыз(?:дың|ға|ды|да|дан|бен)?',
+      boy_hero: 'ұл(?:дың|ға|ды|да|дан|мен)?',
+    },
+  }
+  const alias = aliases[language]?.[heroType]
+  return alias
+    ? new RegExp(`(?<![\\p{L}\\p{M}\\p{N}_])(?:${alias})(?![\\p{L}\\p{M}\\p{N}_])`, 'iu')
+    : null
+}
+
+export const genericHeroAliasNeedsRewrite = (
+  context: Pick<NormalizedStoryContext, 'language' | 'heroType'>,
+  values: Array<string | null | undefined>,
+): boolean => {
+  const pattern = genericHeroRoleAliasPattern(context.language, context.heroType)
+  if (!pattern) return false
+  const text = values
+    .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+    .join(' ')
+    .replace(/[\u2018\u2019\u02BB`]/g, "'")
+    .toLocaleLowerCase()
+  if (!text.includes('{{hero}}') && !text.includes('qissa_hero')) return false
+  return pattern.test(text)
+}
+
 const unicodeWordStart = '(?<![\\p{L}\\p{N}_])'
 const unicodeWordEnd = '(?![\\p{L}\\p{N}_])'
 
@@ -389,6 +428,7 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
     errors.push('visible_safety_language')
   }
   if (uzbekChildLanguageNeedsRewrite(context, value)) errors.push('uzbek_child_language_requires_rewrite')
+  if (genericHeroAliasNeedsRewrite(context, candidateLanguageValues(value))) errors.push('generic_hero_alias_requires_rewrite')
 
   if (context.language === 'ru') {
     const choiceText = Array.isArray(value.choices)

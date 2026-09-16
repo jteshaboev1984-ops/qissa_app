@@ -9,7 +9,7 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { hasSingleLanguageMismatch } from './language.ts'
-import { branchingPreviewNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
+import { branchingPreviewNeedsRewrite, genericHeroAliasNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
 
 export type StoryBlueprintChoice = {
   choice_id: string
@@ -351,6 +351,7 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   const errors: string[] = []
 
   const naturalLanguageBlueprint = blueprintNaturalLanguageValues(value)
+  if (genericHeroAliasNeedsRewrite(context, naturalLanguageBlueprint)) errors.push('blueprint_generic_hero_alias_requires_rewrite')
   if (hasSingleLanguageMismatch(context.language, naturalLanguageBlueprint, context.recurringCharacters)) errors.push('blueprint_language_mismatch')
   if (Object.values(scanRuleBasedSafetyValues(context, naturalLanguageBlueprint)).some(Boolean)) errors.push('blueprint_rule_safety')
   const childVisibleBlueprint = blueprintChildVisibleValues(value)
@@ -371,6 +372,8 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   if (typeof value.decision_point !== 'string') errors.push('invalid_decision_point')
   if (!patchIsValid(value.state_patch)) errors.push('invalid_blueprint_state_patch')
   else {
+    if (!textContainsHeroToken(value.state_patch.last_event)) errors.push('blueprint_state_missing_hero_token')
+    if (typeof value.state_patch.new_friend === 'string' && (textContainsHeroToken(value.state_patch.new_friend) || genericHeroAliasNeedsRewrite(context, ['{{HERO}}', value.state_patch.new_friend]))) errors.push('blueprint_new_friend_is_hero')
     if (value.state_patch.canon_updates.length > 8) errors.push('blueprint_state_too_large')
     if (duplicateEntryKeys(value.state_patch.canon_updates)) errors.push('duplicate_blueprint_canon_keys')
     if (!patchHasStableMemoryKeys(context, value.state_patch)) errors.push('unstable_blueprint_memory_key')
@@ -400,12 +403,13 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
       if (!Array.isArray(typed.value_alignment) || typed.value_alignment.some((item) => !positiveValues.has(item as PositiveValue))) {
         errors.push('invalid_blueprint_value_alignment')
       }
-      if (
-        textContainsHeroToken(typed.text) ||
-        textContainsHeroToken(typed.effect_summary) ||
-        textContainsHeroToken(typed.resolution_goal) ||
-        textContainsHeroToken(typed.tomorrow_seed)
-      ) errors.push('blueprint_choice_contains_hero_token')
+      if (textContainsHeroToken(typed.text)) errors.push('blueprint_choice_text_contains_hero_token')
+      if (!textContainsHeroToken(typed.effect_summary)) errors.push('blueprint_choice_effect_missing_hero_token')
+      if (!textContainsHeroToken(typed.resolution_goal)) errors.push('blueprint_choice_resolution_goal_missing_hero_token')
+      if (patchIsValid(typed.state_patch)) {
+        if (!textContainsHeroToken(typed.state_patch.last_event)) errors.push('blueprint_choice_state_missing_hero_token')
+        if (typeof typed.state_patch.new_friend === 'string' && (textContainsHeroToken(typed.state_patch.new_friend) || genericHeroAliasNeedsRewrite(context, ['{{HERO}}', typed.state_patch.new_friend]))) errors.push('blueprint_choice_new_friend_is_hero')
+      }
     }
   }
 
@@ -434,13 +438,15 @@ const memoryPayload = (context: NormalizedStoryContext) => ({
 })
 
 export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
+  const latestChoice = context.choiceHistory[context.choiceHistory.length - 1] ?? null
   const system = [
     'You are QISSA Story Architect. Plan a children bedtime story; do not write finished prose.',
     'Return only data matching the supplied JSON schema.',
     'The architecture is the source of truth for canon, branch consequences and memory. The Narrator will be forbidden from changing these facts.',
+    'The protagonist identity token is literal {{HERO}}. Whenever any non-choice-display blueprint text refers to the protagonist, use {{HERO}} rather than a generic role label. Never call the protagonist qizaloq, o\'g\'il bola, девочка, мальчик, қыз or ұл, and never create a second unnamed child using that same generic label.',
     'Use exactly one central goal, question or gentle problem. Avoid a second unrelated problem.',
     context.stylePackId === 'cozy_forest'
-      ? 'For cozy_forest, make living forest characters drive the story. Prefer friendly animals, birds, insects or other clearly living forest residents with a small desire, relationship, funny misunderstanding, discovery or need for help. Streams, stones, leaves, weather and paths may support the scene, but should not become the main protagonist or a maintenance task by themselves. Avoid plots centered on clearing water, repairing a path, moving debris or fixing nature unless that action directly serves a living character goal. For ages 5-7 bedtime, the central goal must stay warm, social or playful. Do not center the plot on finding the way home, washed-away signs, choosing a route in darkness, being lost, separation, pursuit, injury, rescue from danger, or weather damage.'
+      ? 'For cozy_forest, make living forest characters drive the story. Prefer friendly animals, birds, insects or other clearly living forest residents with a small desire, relationship, funny misunderstanding, discovery or need for help. Streams, stones, leaves, weather and paths may support the scene, but should not become the main protagonist or a maintenance task by themselves. Avoid plots centered on clearing water, repairing a path, moving debris or fixing nature unless that action directly serves a living character goal. After setup, make most causal beats about a living character acting, speaking, reacting, joking, trying, helping or changing a relationship. Do not spend consecutive beats on the trajectory, target, positioning or repeated mechanics of one leaf, stone, path or other prop. For ages 5-7 bedtime, the central goal must stay warm, social or playful. Do not center the plot on finding the way home, washed-away signs, choosing a route in darkness, being lost, separation, pursuit, injury, rescue from danger, or weather damage.'
       : 'Make the central story problem emotionally legible to a child through a character desire, relationship, discovery or playful goal rather than an abstract process.',
     'Treat compact memory as authoritative. Never invent a past event that is absent from memory and never import consequences from an unselected branch.',
     'Existing recurring-character names are canonical identity labels. Preserve them exactly as supplied by memory even if the requested language changed since an earlier session. Never translate, transliterate or rename an existing recurring character. The selected language governs only names and nicknames of newly introduced supporting characters and new place labels.',
@@ -456,18 +462,18 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     'When Episode 1 starts a later bedtime session in an existing series, use remembered canon, relationships and prior consequences as continuity callbacks, then introduce one fresh child-scale goal for tonight. Do not replay or reopen a problem that the previous bedtime session already solved.',
     'A serialized QISSA story has at most 10 bedtime sessions. Sessions 1-6 may establish or develop one gentle long-running arc while still resolving each night local goal. Sessions 7-8 must increasingly pay off existing clues and relationships and must not introduce a new major unresolved arc. Session 9 is penultimate: resolve secondary threads and position the existing central arc for its finale without adding sequel bait. Session 10 is the finale: resolve the current goal plus every meaningful unresolved thread carried in active_arc or compact canon, close the active arc, and end without a cliffhanger, future quest, mystery tease or promise of session 11.',
     'In final session Episode 2, state_patch.open_arc must be null to mark the serialized arc closed. The ending may leave the world emotionally open for imagination, but it must not leave a pending plot obligation.',
-    'For Episode 2, continue immediately after the already-confirmed resolution bridge in the same bedtime session and same evening unless the established scene itself uses another same-session time. Never jump to tomorrow, morning or the next day. The latest confirmed choice tomorrow_seed belongs to a future bedtime session and must not become an Episode 2 opening beat. Use 4-7 causal beats, solve the original story goal and end with a calm bedtime coda. Return zero choices.',
+    'For Episode 2, the confirmed resolution_text in memory has ALREADY been shown to the child before this segment starts. Continue from the result of that bridge; never present its action as newly invented, newly discovered, newly decided or performed for the first time again. Continue immediately in the same bedtime session and same evening unless the established scene itself uses another same-session time. Never jump to tomorrow, morning or the next day. The latest confirmed choice tomorrow_seed belongs to a future bedtime session and must not become an Episode 2 opening beat. Use 4-7 causal beats, solve the original story goal and end with a calm bedtime coda. Return zero choices.',
     'Keep the plan concise. It is internal production state, not child-facing prose.',
     'All natural-language blueprint values, including effect summaries, state values, arc text and preview text, must be in the requested story language. Memory keys are machine identifiers and are the only exception.',
     context.ageGroup === '5-7'
       ? 'For ages 5-7, build the plan around concrete everyday words and situations a young child can immediately picture. Avoid literary, abstract, technical, procedural or adult vocabulary when a simpler child-level word exists.'
       : 'Match concepts and vocabulary to the requested age.',
     context.language === 'uz' && context.ageGroup === '5-7'
-      ? 'For Uzbek ages 5-7, prefer common natural Uzbek words, short direct phrases and child-familiar speech. Any NEW ordinary supporting-character name or nickname must use Uzbek Latin spelling, sound natural when read aloud in Uzbek children stories, and be easy for a 5-7-year-old to hear and remember. Avoid unexplained imported-sounding names. Avoid bookish, formal, bureaucratic, scientific or translation-like wording merely to sound poetic. Prefer xursand and rahmat over formal abstract wording. Avoid words such as ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat and hissa when a simple child-level phrase can say the same thing.'
+      ? 'For Uzbek ages 5-7, prefer common natural Uzbek words, short direct phrases and child-familiar speech. Any NEW ordinary supporting-character name or nickname must use Uzbek Latin spelling, sound natural when read aloud in Uzbek children stories, and be easy for a 5-7-year-old to hear and remember. Avoid unexplained imported-sounding names. Avoid bookish, formal, bureaucratic, scientific or translation-like wording merely to sound poetic. Prefer xursand and rahmat over formal abstract wording. When equally accurate, prefer uyaldi over xijolat bo\'ldi, a direct concrete action over dadilroq or qulay payt, and shu kunni eslatdi over an abstract esdalikdek tuyuldi sentence. Avoid words such as ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat and hissa when a simple child-level phrase can say the same thing.'
       : 'Use native age-appropriate phrasing in the requested language.',
     'New canon and relationship keys must be stable lowercase ASCII semantic identifiers using letters, digits, underscore, dot or hyphen. Reuse an existing memory key exactly when updating an existing fact instead of creating a synonym.',
     context.episodeIndex === 1
-      ? 'Choice display text must be in the requested story language. Do not use the {{HERO}} token in architect output; phrase choices without the hero name.'
+      ? 'Choice display text must be in the requested story language. Do not use {{HERO}} inside choice.text; phrase that display label as an action. In effect_summary, resolution_goal, state_patch values and any other blueprint text that refers to the protagonist, use the literal {{HERO}} token and never a generic child role label.'
       : 'Do not create, describe, compare or preview any new child choice in Episode 2. The already-confirmed choice is memory, not a new decision point.',
     context.episodeIndex === 1
       ? 'next_episode_preview is child-facing story copy and must be branch-neutral: it has to remain true after either choice. Never mention confirmation, selection mechanics, an episode, segment, pipeline, story branch, or both alternatives joined by or/yoki/немесе. Write one natural in-world sentence about the same story continuing after the immediate chosen action.'
@@ -491,7 +497,8 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     age_group: context.ageGroup,
     hero: {
       type: context.heroType,
-      note: 'Plan actions physically and socially appropriate for this hero type without inferring gender stereotypes or inventing child identity facts.',
+      identity_token: '{{HERO}}',
+      note: 'Plan actions physically and socially appropriate for this hero type without inferring gender stereotypes or inventing child identity facts. Use identity_token whenever blueprint prose refers to this protagonist.',
     },
     style_pack: context.stylePackId,
     story_mode: context.storyMode,
@@ -501,6 +508,12 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     series_sessions_remaining_after_tonight: context.seriesSessionsRemaining,
     final_series_session: context.isFinalSeriesSession,
     segment: context.episodeIndex,
+    confirmed_choice_bridge: context.episodeIndex === 2 && latestChoice ? {
+      choice_text: latestChoice.choice_text,
+      effect_summary: latestChoice.effect_summary,
+      resolution_text: latestChoice.resolution_text,
+      instruction: 'This bridge already happened before segment 2. Start after its consequence; do not replay it.',
+    } : null,
     memory: memoryPayload(context),
     output_contract: {
       plan_version: 'split-v1',
@@ -531,6 +544,7 @@ export const buildNarratorPrompts = (
   blueprint: StoryBlueprint,
   retryReason = '',
 ) => {
+  const latestChoice = context.choiceHistory[context.choiceHistory.length - 1] ?? null
   const [minimumWords, maximumWords] = hardStoryWordRange(context)
   const target = context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime'
     ? context.episodeIndex === 1 ? '380-420' : '430-490'
@@ -553,15 +567,15 @@ export const buildNarratorPrompts = (
       ? 'Use concrete child-level vocabulary. Prefer familiar words a 5-7-year-old can understand from context, mostly short sentences, and clear verbs. Do not choose rare literary synonyms, abstract nouns or adult-sounding wording just for beauty.'
       : 'Keep vocabulary appropriate for the requested age.',
     context.language === 'uz' && context.ageGroup === '5-7'
-      ? 'Write warm natural Uzbek for a young Uzbek-speaking child in Latin script. Prefer common spoken-and-read vocabulary and simple sentence structure; avoid Russian calques, formal written Uzbek and uncommon poetic words. Do not use ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat or hissa when simpler child-level wording is available. Prefer xursand, rahmat, jim, bir oz to‘xtadi and other concrete everyday phrasing.'
+      ? 'Write warm natural Uzbek for a young Uzbek-speaking child in Latin script. Prefer common spoken-and-read vocabulary and simple sentence structure; avoid Russian calques, formal written Uzbek and uncommon poetic words. Do not use ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat or hissa when simpler child-level wording is available. Prefer xursand, rahmat, jim, bir oz to‘xtadi and other concrete everyday phrasing. When equally accurate, prefer uyaldi over xijolat bo‘ldi, show courage through a concrete action instead of dadilroq, and say shu kunni eslatdi instead of abstract esdalikdek tuyuldi wording.'
       : 'Write naturally in the requested language.',
     context.stylePackId === 'cozy_forest'
-      ? 'Keep the forest socially alive: let 2-3 memorable living forest characters act, speak, react, joke or help. Nature can be beautiful and responsive scenery, but do not make a stream, stone pile, path or weather pattern the main child-facing subject when a living-character story can carry the same value.'
+      ? 'Keep the forest socially alive: let 2-3 memorable living forest characters act, speak, react, joke or help. Nature can be beautiful and responsive scenery, but do not make a stream, stone pile, path, leaf game mechanic or weather pattern the main child-facing subject when a living-character story can carry the same value. Do not spend consecutive paragraphs explaining how the same prop rolls, moves, is positioned, clears a route or reaches a target; move back to character interaction and feeling through visible action.'
       : 'Let characters, action and relationships carry the child-facing story.',
     'Use the literal token {{HERO}} for the hero name. Never invent a real child name.',
     'For Russian, use {{HERO}} only in grammatically invariant positions, preferably nominative subject or direct address. Never put it after a preposition and never attach gendered past-tense agreement directly to the token.',
     'For Episode 1, end story_text at the blueprint decision point before either branch happens. End with one neutral decision cue or question. Never restate, list, paraphrase, preview, or name either choice action inside story_text; the two actions belong only in the structured choices supplied by the blueprint.',
-    'For Episode 2, begin immediately after the confirmed choice resolution already happened, in the same bedtime session. Do not replay that action and do not jump to tomorrow, morning or the next day. Treat any tomorrow_seed in memory as a deferred future-session hook, not as Episode 2 material. Resolve the same central goal and finish calmly without a cliffhanger. Use only the already-established living cast from the immutable blueprint and memory; do not add a new animal, bird, insect, named helper, nickname or plural helper group, and do not replace one established character with a generic group.',
+    'For Episode 2, the exact confirmed_choice_bridge.resolution_text has already been displayed before this prose begins. Start from its result. Do not narrate that action as newly invented, newly discovered, newly decided or performed for the first time again, and do not copy or paraphrase the bridge as an opening beat. Stay in the same bedtime session; do not jump to tomorrow, morning or the next day. Treat any tomorrow_seed in memory as a deferred future-session hook, not as Episode 2 material. Resolve the same central goal and finish calmly without a cliffhanger. Use only the already-established living cast from the immutable blueprint and memory; do not add a new animal, bird, insect, named helper, nickname, unnamed second child or plural helper group, and do not replace one established character with a generic group.',
     'If this is final series session 10, make the prose feel like a true finale: pay off remembered clues and relationships that matter, settle the active serialized arc, avoid sequel bait, and finish with emotional closure. Do not invent a new unresolved question in the final paragraphs.',
     'Follow the blueprint beat order. Every one or two short paragraphs should contain action, dialogue, discovery, reaction, attempt, humor or cause-and-effect. Use distinct causal beats; do not repeat inspection, planning, caution or agreement as separate beats when the situation has not changed.',
     'Do not turn bedtime prose into a safety checklist or adult supervision lesson. One concrete cautious action is enough when needed; then move the story forward.',
@@ -585,6 +599,12 @@ export const buildNarratorPrompts = (
     hard_story_word_range: { minimum: minimumWords, maximum: maximumWords },
     target_story_words: target,
     paragraph_budget: paragraphBudget,
+    confirmed_choice_bridge: context.episodeIndex === 2 && latestChoice ? {
+      choice_text: latestChoice.choice_text,
+      effect_summary: latestChoice.effect_summary,
+      resolution_text: latestChoice.resolution_text,
+      instruction: 'Already consumed before this narration begins. Continue after it; never replay it.',
+    } : null,
     counting_scope: 'Whitespace-separated words in story_text only.',
     immutable_blueprint: blueprint,
     retry_feedback: retryReason,

@@ -588,17 +588,17 @@ export const buildTextLengthRepairPrompts = (
     'Do not resolve either choice inside the expansion or rewrite. The final decision point and existing choices must remain valid.',
     'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions, no missing ids and no extras.',
     'For each repaired resolution_text, preserve the same selected action and the exact durable consequence already represented by its effect_summary and immutable_state_patch. Only adjust wording and useful immediate action/reaction to reach the target length.',
-    'The hero name remains the literal token {{HERO}}. Never invent or expose a real child name. If validation_errors includes missing_hero_token, the repaired story_rewrite or story_expansion must naturally contain {{HERO}} as the in-world protagonist so the final story_text contains the token. In Russian, use {{HERO}} only as a nominative subject or direct address and use grammatically invariant phrasing such as present-tense action; never put the token after a preposition or directly before a gendered past-tense verb.',
+    'The hero name remains the literal token {{HERO}}. Never invent or expose a real child name. If validation_errors includes missing_hero_token, the repaired story_rewrite or story_expansion must naturally contain {{HERO}} as the in-world protagonist so the final story_text contains the token. If validation_errors includes generic_hero_alias_requires_rewrite, remove the duplicate generic role label and use only {{HERO}} for that protagonist; do not turn qizaloq, o\'g\'il bola, девочка, мальчик, қыз or ұл into a second child. In Russian, use {{HERO}} only as a nominative subject or direct address and use grammatically invariant phrasing such as present-tense action; never put the token after a preposition or directly before a gendered past-tense verb.',
     'For Episode 1 resolution repair, keep the selected consequence in the same evening immediately after the choice. Do not move it to tomorrow or the next morning; tomorrow_seed is future-session metadata only.',
     'If retry_feedback is non-empty, the previous text repair failed deterministic validation. Rebuild the requested repair fields from the original immutable candidate and correct every listed repair-output failure. Do not preserve faulty wording from the rejected repair.',
     context.language === 'uz'
-      ? 'For Uzbek repair prose, use natural Uzbek Latin script. Do not introduce Cyrillic text. Existing recurring-character identity labels supplied by immutable context remain unchanged. For ages 5-7 use simple everyday Uzbek and avoid ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat and hissa when a simpler child-level phrase exists.'
+      ? 'For Uzbek repair prose, use natural Uzbek Latin script. Do not introduce Cyrillic text. Existing recurring-character identity labels supplied by immutable context remain unchanged. For ages 5-7 use simple everyday Uzbek and avoid ritm, pauza, sincap, mox, paporotnik, kapyushon, spiral, tantanali, chorraha, naqadar, minnatdorlik, mamnun, sukunat and hissa when a simpler child-level phrase exists. When equally accurate, prefer uyaldi over xijolat bo\'ldi, a direct concrete action over dadilroq or qulay payt, and shu kunni eslatdi over an abstract esdalikdek tuyuldi sentence.'
       : 'Keep repair prose strictly in the requested language while preserving established character identity labels.',
     'Write only in the requested language and preserve bedtime tone and age fit.',
   ].join(' ')
 
   const user = JSON.stringify({
-    task: 'Repair only deterministic text-length violations in the existing candidate.',
+    task: 'Repair only deterministic prose, identity, language or text-length violations in the existing candidate.',
     language: languageNames[context.language],
     validation_errors: validationErrors,
     repair_plan: {

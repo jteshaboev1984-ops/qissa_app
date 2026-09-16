@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import { hasSingleLanguageMismatch } from '../supabase/functions/story-generate/language.ts'
 import { buildArchitectPrompts, enforceStoryBlueprintContextContract, validateStoryBlueprint } from '../supabase/functions/story-generate/story-architecture.ts'
 import { normalizeStoryBlueprintMemoryKeys } from '../supabase/functions/story-generate/story-architecture.ts'
-import { normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
+import { finalPatchFromCandidate, normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
 import { isTextRepairEligibleFailure, textRepairRequiresFullStoryRewrite, textRepairableValidationErrors, textRepairShouldRepairAllChoiceResolutions } from '../supabase/functions/story-generate/repair-routing.ts'
 
 const architecture = fs.readFileSync('supabase/functions/story-generate/story-architecture.ts', 'utf8')
@@ -42,6 +42,7 @@ const repairRouteContext = { episodeIndex: 1 }
 for (const errors of [
   ['story_too_short'],
   ['story_too_short', 'missing_hero_token'],
+  ['story_too_short', 'generic_hero_alias_requires_rewrite'],
   ['story_too_short', 'uzbek_child_language_requires_rewrite'],
   ['story_too_short', 'story_language_mismatch'],
   ['story_too_short', 'visible_safety_language'],
@@ -57,6 +58,7 @@ for (const errors of [
   requireLanguageGuard(isTextRepairEligibleFailure(errors), `repair routing must cover mixed narration errors: ${errors.join(',')}`)
 }
 requireLanguageGuard(textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_short', 'uzbek_child_language_requires_rewrite']), 'existing Uzbek language defects plus short text must use a full rewrite, not insertion')
+requireLanguageGuard(textRepairRequiresFullStoryRewrite(repairRouteContext, ['generic_hero_alias_requires_rewrite']), 'duplicate generic hero identity must use a full rewrite so the second pseudo-character cannot survive')
 requireLanguageGuard(!textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_short']), 'pure Episode 1 short text should keep the cheaper insertion repair')
 requireLanguageGuard(textRepairRequiresFullStoryRewrite(repairRouteContext, ['story_too_long']), 'Episode 1 story_too_long must use full rewrite because insertion cannot shorten prose')
 requireLanguageGuard(textRepairShouldRepairAllChoiceResolutions(['invalid_resolution_text']), 'malformed resolution text must target the structured choice resolution rather than no-op repair')
@@ -96,6 +98,14 @@ const normalizedRelationshipKeys = memoryKeyRegression.state_patch.relationship_
 requireLanguageGuard(normalizedCanonKeys.every((key) => key !== 'canon' && /^canon_[a-z0-9]+$/u.test(key)), 'Cyrillic canon keys must hash to stable unique ASCII identifiers')
 requireLanguageGuard(new Set(normalizedCanonKeys).size === normalizedCanonKeys.length, 'distinct Cyrillic canon keys must not collapse to the same identifier')
 requireLanguageGuard(normalizedRelationshipKeys.every((key) => key !== 'rel' && /^rel_[a-z0-9]+$/u.test(key)), 'Cyrillic relationship keys must hash to stable ASCII identifiers')
+
+const resolvedHeroPatch = finalPatchFromCandidate({
+  last_event: '{{HERO}} To‘pchaga yordam berdi.', new_friend: 'To‘pcha', hero_trait: 'mehribon', open_arc: '{{HERO}} va To‘pchaning do‘stligi',
+  relationship_updates: [{ key: 'topcha', value: 'To‘pcha {{HERO}}ga ishonadi.' }],
+  canon_updates: [{ key: 'topcha_game', value: '{{HERO}} To‘pchaning o‘yinini biladi.' }],
+}, 'Malika')
+requireLanguageGuard(resolvedHeroPatch.last_event === 'Malika To‘pchaga yordam berdi.', 'persisted state must resolve {{HERO}} to the canonical series hero name')
+requireLanguageGuard(resolvedHeroPatch.relationship_updates?.topcha.includes('Malika') === true && !resolvedHeroPatch.relationship_updates?.topcha.includes('{{HERO}}'), 'persisted relationship memory must not leak the raw hero token')
 
 
 const switchedLanguageContext = normalizeStoryRequest({
@@ -155,7 +165,7 @@ requireFragments('architecture', architecture, [
   'existingCanon.has(entry.key)',
   'existingRelationships.has(entry.key)',
   'never import consequences from an unselected branch.',
-  'For Episode 2, continue immediately after the already-confirmed resolution bridge',
+  'For Episode 2, the confirmed resolution_text in memory has ALREADY been shown to the child before this segment starts.',
   "target_story_words: target",
   'paragraph_budget: paragraphBudget',
   "errors.push('blueprint_language_mismatch')",
@@ -370,6 +380,22 @@ requireFragments('repair contract observability', orchestrator, [
   'repairContractFailureDetail',
   "lastFailureClass = repairContractDetail ? 'repair-contract' : providerFailureClass(reason)",
   'repair-contract',
+])
+
+requireFragments('hero identity continuity v76', architecture, [
+  'The protagonist identity token is literal {{HERO}}',
+  "errors.push('blueprint_state_missing_hero_token')",
+  "errors.push('blueprint_choice_effect_missing_hero_token')",
+  "errors.push('blueprint_choice_resolution_goal_missing_hero_token')",
+  "identity_token: '{{HERO}}'",
+  'confirmed_choice_bridge',
+  'has ALREADY been shown to the child before this segment starts',
+  'Already consumed before this narration begins',
+  'Do not spend consecutive beats on the trajectory, target, positioning or repeated mechanics',
+])
+requireFragments('hero identity candidate repair v76', safety + repairRouting + repairPrompt, [
+  'genericHeroAliasNeedsRewrite',
+  'generic_hero_alias_requires_rewrite',
 ])
 
 if (failures.length > 0) {
