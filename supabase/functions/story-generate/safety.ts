@@ -375,19 +375,24 @@ const significantChoiceWords = (text: string): Set<string> => new Set(
     .filter((word) => !choiceMenuStopWords.has(word)),
 )
 
-export const storyRepeatsChoiceMenu = (context: NormalizedStoryContext, candidate: StoryCandidate): boolean => {
-  if (context.episodeIndex !== 1 || !Array.isArray(candidate.choices) || candidate.choices.length < 2 || typeof candidate.story_text !== 'string') return false
-  const finalParagraph = paragraphs(candidate.story_text).at(-1) ?? ''
+export const textRepeatsStructuredChoiceMenu = (text: string, choices: unknown): boolean => {
+  if (!Array.isArray(choices) || choices.length < 2) return false
+  const finalParagraph = paragraphs(text).at(-1) ?? ''
   const finalWords = significantChoiceWords(finalParagraph)
   if (finalWords.size < 4) return false
 
-  return candidate.choices.every((choice) => {
+  return choices.every((choice) => {
     if (!isRecord(choice) || typeof choice.text !== 'string') return false
     const choiceWords = significantChoiceWords(choice.text)
     if (choiceWords.size < 3) return false
     const overlap = [...choiceWords].filter((word) => finalWords.has(word)).length
     return overlap >= Math.max(3, Math.ceil(choiceWords.size * 0.35))
   })
+}
+
+export const storyRepeatsChoiceMenu = (context: NormalizedStoryContext, candidate: StoryCandidate): boolean => {
+  if (context.episodeIndex !== 1 || typeof candidate.story_text !== 'string') return false
+  return textRepeatsStructuredChoiceMenu(candidate.story_text, candidate.choices)
 }
 
 export const choiceMenuScaffoldingNeedsRewrite = (language: string, text: string): boolean => {
@@ -534,10 +539,10 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   if (context.episodeIndex === 2 && typeof value.story_text === 'string' && episodeTwoUnresolvedDecisionNeedsRewrite(context, value.story_text)) errors.push('episode_2_unresolved_decision')
 
   if (typeof value.nextEpisodePreview !== 'string') errors.push('invalid_preview')
-  if (context.storyMode === 'series' && context.episodeIndex === 1 && !value.nextEpisodePreview.trim()) errors.push('missing_preview')
+  if (context.storyMode === 'series' && context.episodeIndex === 1 && typeof value.nextEpisodePreview === 'string' && !value.nextEpisodePreview.trim()) errors.push('missing_preview')
   if (typeof value.nextEpisodePreview === 'string' && technicalPreviewLanguageNeedsRewrite(context.language, value.nextEpisodePreview)) errors.push('technical_preview_language')
   if (context.episodeIndex === 1 && typeof value.nextEpisodePreview === 'string' && branchingPreviewNeedsRewrite(context.language, value.nextEpisodePreview)) errors.push('branching_preview_language')
-  if ((context.storyMode === 'one_time' || context.episodeIndex === 2) && value.nextEpisodePreview.trim()) errors.push('unexpected_preview')
+  if ((context.storyMode === 'one_time' || context.episodeIndex === 2) && typeof value.nextEpisodePreview === 'string' && value.nextEpisodePreview.trim()) errors.push('unexpected_preview')
   return [...new Set(errors)]
 }
 

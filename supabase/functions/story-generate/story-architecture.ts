@@ -9,7 +9,7 @@ import {
   type StoryCandidate,
 } from './contracts.ts'
 import { hasSingleLanguageMismatch } from './language.ts'
-import { branchingPreviewNeedsRewrite, genericHeroAliasNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, genericHeroAliasNeedsRewrite, russianHeroTokenNeedsRewrite, scanRuleBasedSafetyValues, technicalPreviewLanguageNeedsRewrite, textRepeatsStructuredChoiceMenu, uzbekYoungChildValuesNeedRewrite, visibleSafetyLanguageNeedsRewrite } from './safety.ts'
 
 export type StoryBlueprintChoice = {
   choice_id: string
@@ -369,6 +369,7 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
 
   const naturalLanguageBlueprint = blueprintNaturalLanguageValues(value)
   if (genericHeroAliasNeedsRewrite(context, naturalLanguageBlueprint)) errors.push('blueprint_generic_hero_alias_requires_rewrite')
+  if (context.language === 'ru' && russianHeroTokenNeedsRewrite(naturalLanguageBlueprint.join(' '), context.heroType)) errors.push('blueprint_russian_hero_requires_rewrite')
   if (hasSingleLanguageMismatch(context.language, naturalLanguageBlueprint, context.recurringCharacters)) errors.push('blueprint_language_mismatch')
   if (Object.values(scanRuleBasedSafetyValues(context, naturalLanguageBlueprint)).some(Boolean)) errors.push('blueprint_rule_safety')
   const childVisibleBlueprint = blueprintChildVisibleValues(value)
@@ -387,6 +388,7 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
     errors.push('invalid_blueprint_beats')
   }
   if (typeof value.decision_point !== 'string') errors.push('invalid_decision_point')
+  else if (context.episodeIndex === 1 && (choiceMenuScaffoldingNeedsRewrite(context.language, value.decision_point) || textRepeatsStructuredChoiceMenu(value.decision_point, value.choices))) errors.push('blueprint_choice_menu_scaffolding')
   if (!patchIsValid(value.state_patch)) errors.push('invalid_blueprint_state_patch')
   else {
     // last_event may describe a supporting-character-only event. Identity safety is enforced
@@ -409,17 +411,17 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
       if (typeof typed.choice_id !== 'string' || !typed.choice_id.trim() || ids.has(typed.choice_id)) errors.push('invalid_blueprint_choice_id')
       else ids.add(typed.choice_id)
       if (typeof typed.text !== 'string' || typed.text.trim().length < 4) errors.push('invalid_blueprint_choice_text')
-      if (typeof typed.effect_summary !== 'string' || typed.effect_summary.trim().length < 5) errors.push('invalid_blueprint_effect_summary')
+      if (typeof typed.effect_summary !== 'string' || typed.effect_summary.trim().length < 8) errors.push('invalid_blueprint_effect_summary')
       if (typeof typed.resolution_goal !== 'string' || typed.resolution_goal.trim().length < 5) errors.push('invalid_blueprint_resolution_goal')
-      if (typeof typed.tomorrow_seed !== 'string') errors.push('invalid_blueprint_tomorrow_seed')
-      if (typeof typed.choice_icon !== 'string' || typed.choice_icon.length > 8) errors.push('invalid_blueprint_choice_icon')
+      if (typeof typed.tomorrow_seed !== 'string' || typed.tomorrow_seed.length < 8) errors.push('invalid_blueprint_tomorrow_seed')
+      if (typeof typed.choice_icon !== 'string' || !typed.choice_icon.trim() || typed.choice_icon.length > 8) errors.push('invalid_blueprint_choice_icon')
       if (!patchIsValid(typed.state_patch)) errors.push('invalid_blueprint_choice_patch')
       else {
         if (typed.state_patch.canon_updates.length > 4) errors.push('blueprint_choice_state_too_large')
         if (duplicateEntryKeys(typed.state_patch.canon_updates)) errors.push('duplicate_blueprint_choice_canon_keys')
         if (!patchHasStableMemoryKeys(context, typed.state_patch)) errors.push('unstable_blueprint_choice_memory_key')
       }
-      if (!Array.isArray(typed.value_alignment) || typed.value_alignment.some((item) => !positiveValues.has(item as PositiveValue))) {
+      if (!Array.isArray(typed.value_alignment) || typed.value_alignment.length === 0 || typed.value_alignment.some((item) => !positiveValues.has(item as PositiveValue))) {
         errors.push('invalid_blueprint_value_alignment')
       }
       if (textContainsHeroToken(typed.text)) errors.push('blueprint_choice_text_contains_hero_token')
@@ -437,7 +439,11 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
 
   if (context.episodeIndex === 1) {
     if (!value.decision_point?.trim()) errors.push('missing_blueprint_decision_point')
-    if (typeof value.next_episode_preview !== 'string' || !value.next_episode_preview.trim()) errors.push('missing_blueprint_preview')
+    if (context.storyMode === 'series') {
+      if (typeof value.next_episode_preview !== 'string' || !value.next_episode_preview.trim()) errors.push('missing_blueprint_preview')
+    } else if (typeof value.next_episode_preview === 'string' && value.next_episode_preview.trim()) {
+      errors.push('unexpected_blueprint_preview')
+    }
   } else {
     if (value.decision_point?.trim()) errors.push('continuation_blueprint_has_decision_point')
     if (value.next_episode_preview?.trim()) errors.push('continuation_blueprint_has_preview')
@@ -493,9 +499,9 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
     context.episodeIndex === 1
       ? 'Choice display text must be in the requested story language. Do not use {{HERO}} inside choice.text; phrase that display label as an action. In effect_summary, resolution_goal, state_patch values and any other blueprint text that refers to the protagonist, use the literal {{HERO}} token and never a generic child role label.'
       : 'Do not create, describe, compare or preview any new child choice in Episode 2. The already-confirmed choice is memory, not a new decision point.',
-    context.episodeIndex === 1
+    context.storyMode === 'series' && context.episodeIndex === 1
       ? 'next_episode_preview is child-facing story copy and must be branch-neutral: it has to remain true after either choice. Never mention confirmation, selection mechanics, an episode, segment, pipeline, story branch, or both alternatives joined by or/yoki/немесе. Write one natural in-world sentence about the same story continuing after the immediate chosen action.'
-      : 'For Episode 2 next_episode_preview must be exactly an empty string. Do not promise another segment or repeat the selected choice.',
+      : 'For one-time stories and Episode 2, next_episode_preview must be exactly an empty string. Do not promise another segment or repeat the selected choice.',
     'Avoid politics, religious persuasion, stereotypes, humiliation, conditional love, adult themes, graphic violence and unresolved frightening danger.',
   ].join(' ')
 
@@ -540,7 +546,7 @@ export const buildArchitectPrompts = (context: NormalizedStoryContext) => {
       episode_1_choices: context.episodeIndex === 1 ? 2 : 0,
       choices: context.episodeIndex === 1 ? 'exactly 2' : 'exactly 0',
       decision_point: context.episodeIndex === 1 ? 'one non-empty child decision point' : 'empty string',
-      next_episode_preview: context.episodeIndex === 1 ? 'one branch-neutral in-world sentence' : 'empty string',
+      next_episode_preview: context.storyMode === 'series' && context.episodeIndex === 1 ? 'one branch-neutral in-world sentence' : 'empty string',
       continuity_callbacks: '0-3 relevant remembered facts or relationships, maximum 5',
     },
   })
@@ -636,6 +642,7 @@ export const narrationToCandidate = (
   blueprint: StoryBlueprint,
   narration: StoryNarration,
 ): StoryCandidate => {
+  if (narration.choice_resolutions.length !== blueprint.choices.length) throw new Error('narration_resolution_contract_mismatch')
   const resolutionById = new Map(narration.choice_resolutions.map((item) => [item.choice_id, item.resolution_text]))
   const expectedIds = new Set(blueprint.choices.map((choice) => choice.choice_id))
   if (resolutionById.size !== expectedIds.size || [...resolutionById.keys()].some((id) => !expectedIds.has(id))) {

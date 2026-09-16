@@ -356,7 +356,7 @@ export const normalizeStoryRequest = (input: unknown): NormalizedStoryContext | 
   const sessionEpisodeCount = typeof seriesState.episodeCount === 'number' && Number.isFinite(seriesState.episodeCount)
     ? Math.max(0, Math.floor(seriesState.episodeCount))
     : 0
-  const isContinuation = sessionEpisodeCount > 0 || (!explicitSessionIdentity && choiceHistory.length > 0)
+  const isContinuation = storyMode === 'series' && (sessionEpisodeCount > 0 || (!explicitSessionIdentity && choiceHistory.length > 0))
   const recurringCharacters = Array.isArray(seriesState.recurringCharacters)
     ? seriesState.recurringCharacters
         .map((item) => redactHeroName(compactText(item, 48), heroName))
