@@ -1,1 +1,1 @@
-Apply the already-audited C7-C9 source/test changes only. No providers or database access.
+Apply the already-audited C7-C9 source/test changes only. No providers, secrets, or database access. Retry after fixing patch-script quoting.
