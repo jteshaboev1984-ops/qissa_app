@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, choiceResolutionDefersToFutureSession, clearAdjudicatedNonSevereViolence, moderationNeedsFearAdjudication, newFriendIsAtomic, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, uzbekChildLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
+import { branchingPreviewNeedsRewrite, choiceMenuScaffoldingNeedsRewrite, choiceResolutionDefersToFutureSession, clearAdjudicatedNonSevereViolence, genericHeroAliasNeedsRewrite, moderationNeedsFearAdjudication, newFriendIsAtomic, russianHeroTokenNeedsRewrite, scanRuleBasedSafety, storyRepeatsChoiceMenu, technicalPreviewLanguageNeedsRewrite, uzbekChildLanguageNeedsRewrite, visibleSafetyLanguageNeedsRewrite } from '../supabase/functions/story-generate/safety.ts'
 
 const base = 'supabase/functions/story-generate'
 const index = readFileSync(`${base}/index.ts`, 'utf8')
@@ -160,6 +160,19 @@ const realUzFearScan = scanRuleBasedSafety(uzRuleContext, {
   choices: [],
 })
 requireRegression(realUzFearScan.excessive_fear, 'real Uzbek blood/fear language must remain blocked')
+
+requireRegression(
+  genericHeroAliasNeedsRewrite({ language: 'uz', heroType: 'girl_hero' }, ['{{HERO}} To‘pcha bilan o‘ynadi. Qizaloq yana kelib qoldi.']),
+  'Uzbek girl hero plus a second generic qizaloq label must be rewritten as an identity ambiguity',
+)
+requireRegression(
+  !genericHeroAliasNeedsRewrite({ language: 'uz', heroType: 'girl_hero' }, ['{{HERO}} To‘pcha va Lola bilan o‘ynadi.']),
+  'named supporting characters must not be mistaken for the hero merely because the story is Uzbek',
+)
+requireRegression(
+  genericHeroAliasNeedsRewrite({ language: 'ru', heroType: 'boy_hero' }, ['{{HERO}} вошёл. Мальчик снова начал то же действие.']),
+  'Russian boy hero plus a duplicate generic мальчик label must be rewritten',
+)
 
 const moderationConflictContext = { ageGroup: '5-7', storyMode: 'series', storyMood: 'bedtime' }
 const clearSafetyFlags = { discrimination: false, humiliation: false, religious_push: false, political_push: false, gender_stereotype: false, nationality_stereotype: false, conditional_love: false, bedtime_overstimulation: false, adult_theme: false, excessive_fear: false }
@@ -370,8 +383,8 @@ requireText('input normalization', contracts, [
   'value.slice(-6)',
   "replaceAll('{{HERO}}', heroName)",
   'if (!isRecord(selections) || !isRecord(seriesState)) return null',
-  'const entriesToRecord = (entries: unknown)',
-  'export const finalPatchFromCandidate = (patch: unknown)',
+  "const entriesToRecord = (entries: unknown, heroName = '')",
+  "export const finalPatchFromCandidate = (patch: unknown, heroName = '')",
   'export const compactStoryText',
   'const compactMemoryText = (value: unknown, maxLength: number)',
   ".join('\\n\\n')",

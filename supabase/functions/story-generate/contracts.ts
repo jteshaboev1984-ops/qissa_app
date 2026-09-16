@@ -409,27 +409,31 @@ const compactMemoryText = (value: unknown, maxLength: number): string => {
   return (boundary >= Math.floor(maxLength * 0.6) ? clipped.slice(0, boundary) : normalized.slice(0, maxLength)).trim()
 }
 
-const entriesToRecord = (entries: unknown): Record<string, string> => {
+const resolveHeroTokenForMemory = (value: string, heroName: string): string => heroName
+  ? value.replaceAll('{{HERO}}', heroName).replaceAll('QISSA_HERO', heroName)
+  : value
+
+const entriesToRecord = (entries: unknown, heroName = ''): Record<string, string> => {
   if (!Array.isArray(entries)) return {}
   const result: Record<string, string> = {}
   for (const item of entries.slice(0, 12)) {
     if (!isRecord(item)) continue
     const key = compactText(item.key, 48)
-    const value = compactMemoryText(item.value, 120)
+    const value = compactMemoryText(resolveHeroTokenForMemory(typeof item.value === 'string' ? item.value : '', heroName), 120)
     if (key && value) result[key] = value
   }
   return result
 }
 
-export const finalPatchFromCandidate = (patch: unknown): FinalStatePatch => {
+export const finalPatchFromCandidate = (patch: unknown, heroName = ''): FinalStatePatch => {
   if (!isRecord(patch)) return {}
   const result: FinalStatePatch = {}
-  const lastEvent = compactMemoryText(patch.last_event, 96)
-  const newFriend = compactMemoryText(patch.new_friend, 64)
-  const heroTrait = compactMemoryText(patch.hero_trait, 64)
-  const openArc = patch.open_arc === null ? null : compactMemoryText(patch.open_arc, 120)
-  const relationshipUpdates = entriesToRecord(patch.relationship_updates)
-  const canonUpdates = entriesToRecord(patch.canon_updates)
+  const lastEvent = compactMemoryText(resolveHeroTokenForMemory(typeof patch.last_event === 'string' ? patch.last_event : '', heroName), 96)
+  const newFriend = compactMemoryText(resolveHeroTokenForMemory(typeof patch.new_friend === 'string' ? patch.new_friend : '', heroName), 64)
+  const heroTrait = compactMemoryText(resolveHeroTokenForMemory(typeof patch.hero_trait === 'string' ? patch.hero_trait : '', heroName), 64)
+  const openArc = patch.open_arc === null ? null : compactMemoryText(resolveHeroTokenForMemory(typeof patch.open_arc === 'string' ? patch.open_arc : '', heroName), 120)
+  const relationshipUpdates = entriesToRecord(patch.relationship_updates, heroName)
+  const canonUpdates = entriesToRecord(patch.canon_updates, heroName)
 
   if (lastEvent) result.last_event = lastEvent
   if (newFriend) result.new_friend = newFriend
@@ -463,12 +467,12 @@ export const buildFinalEpisode = (
     resolution_text: replaceHeroToken(compactText(choice.resolution_text, 400), context.heroName),
     tomorrow_seed: replaceHeroToken(compactText(choice.tomorrow_seed, 400), context.heroName),
     choice_icon: compactText(choice.choice_icon, 8) || '✨',
-    state_patch: finalPatchFromCandidate(choice.state_patch),
+    state_patch: finalPatchFromCandidate(choice.state_patch, context.heroName),
     value_alignment: (Array.isArray(choice.value_alignment) ? choice.value_alignment : [])
       .filter((value): value is PositiveValue => positiveValues.has(value as PositiveValue))
       .slice(0, 3),
   })),
-  state_patch: finalPatchFromCandidate(candidate.state_patch),
+  state_patch: finalPatchFromCandidate(candidate.state_patch, context.heroName),
   vocabulary: context.language === 'ru'
     ? (Array.isArray(candidate.vocabulary) ? candidate.vocabulary : []).slice(0, 3).map((item) => ({
         word: compactText(item.word, 48),
