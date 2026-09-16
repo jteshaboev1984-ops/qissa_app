@@ -1,0 +1,1 @@
+One-shot offline repair prompt correction; no provider, Supabase or TTS operations.
