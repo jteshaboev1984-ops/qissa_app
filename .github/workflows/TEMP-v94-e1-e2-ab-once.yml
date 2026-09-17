@@ -1,0 +1,38 @@
+name: TEMP v94 single E1 and independent E2 A B
+on:
+  push:
+    branches: ["audit/v94-e1-e2-ab-single-session-20260917"]
+    paths: ["audit/TEMP-v94-ab-trigger.txt"]
+permissions:
+  contents: read
+concurrency:
+  group: qissa-v94-e1-e2-ab-once-20260917
+  cancel-in-progress: false
+jobs:
+  audit:
+    if: github.run_attempt == 1 && (github.event.head_commit.message == 'RUN V94 AB DRY ONLY' || github.event.head_commit.message == 'RUN V94 AB LIVE EXACTLY ONCE')
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Provider-free dry E1 A/B full-memory and safety checks
+        if: github.event.head_commit.message == 'RUN V94 AB DRY ONLY'
+        run: |
+          node scripts/check-story-live-evidence.mjs
+          node scripts/check-story-memory-event-integrity.mjs
+          node scripts/check-story-runtime-lease.mjs
+          node scripts/check-story-repair-retry-budget.mjs
+          node scripts/check-story-language-diagnostics.mjs
+          node scripts/check-story-latency-budget.mjs
+          node scripts/TEMP-v94-e1-e2-ab-once.mjs
+      - name: EXACTLY one E1 followed by at most E2 A/B; no rerun or raw story logs
+        if: github.event.head_commit.message == 'RUN V94 AB LIVE EXACTLY ONCE'
+        env:
+          QISSA_LIVE: '1'
+          GITHUB_TOKEN: ${{ github.token }}
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/TEMP-v94-e1-e2-ab-once.mjs
+# Delete workflow, runner and trigger after consumed test.
