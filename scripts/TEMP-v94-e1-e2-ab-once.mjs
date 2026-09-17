@@ -63,7 +63,7 @@ function branchFromE1(fullEnvelope, chosen, branchIndex) {
 }
 
 const fakePatch = { last_event:'Malika do‘stlari bilan qo‘shiqni tugatdi.',new_friend:null,hero_trait:null,open_arc:'Do‘stlar birga kuylashni o‘rganmoqda',relationship_updates:{},canon_updates:{} }
-const fakeChoice = n => ({ choice_id:`dynamic-choice-${n}`,text:`Tanlov ${n}`,effect_summary:'Malika do‘stiga yordam berdi.',resolution_text:'Malika qo‘shiqni boshladi. Do‘stlari kelib uni tingladi. Ular ohista kuyga qo‘shildilar. Barchasi birga quvondi.',tomorrow_seed:'Yangi qo‘shiq',state_patch:{...fakePatch,last_event:`Malika ${n} tanlovini yakunladi.`,canon_updates:{choice:n}} })
+const fakeChoice = n => ({ choice_id:`dynamic-choice-${n}`,text:`Tanlov ${n}`,effect_summary:'Malika do‘stiga yordam berdi.',resolution_text:'Malika qo‘shiqni boshladi. Do‘stlari kelib uni tingladi. Ular ohista kuyga qo‘shildilar. Barchasi birga quvondi. Qush ham shoxda mayin sayradi. Malika hammani tinglab, birgalikda kuylash ularga yoqqanini ko‘rdi.',tomorrow_seed:'Yangi qo‘shiq',state_patch:{...fakePatch,last_event:`Malika ${n} tanlovini yakunladi.`,canon_updates:{choice:n}} })
 const mockInitial = createInitialSeriesState(selections)
 const mockEpisode = { episode_id:'ep-1-cozy_forest',series_id:mockInitial.id,generationSource:'openai-structured',story_text:'Malika do‘stlari bilan qo‘shiq kuyladi. '.repeat(70),state_patch:fakePatch,vocabulary:[],safety_self_check:{approved:true,required_action:'publish'},choices:[fakeChoice(1),fakeChoice(2)] }
 const mockChoices = checkEpisodeOne(mockEpisode,mockInitial)
