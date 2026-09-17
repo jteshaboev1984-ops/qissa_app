@@ -383,18 +383,45 @@ const significantChoiceWords = (text: string): Set<string> => new Set(
     .filter((word) => !choiceMenuStopWords.has(word)),
 )
 
+const choiceWordEquivalent = (left: string, right: string): boolean => {
+  if (left === right) return true
+  const minimumLength = Math.min(left.length, right.length)
+  if (minimumLength < 6) return false
+  let commonPrefix = 0
+  while (commonPrefix < minimumLength && left[commonPrefix] === right[commonPrefix]) commonPrefix += 1
+  return commonPrefix >= 6 && commonPrefix / minimumLength >= 0.7
+}
+
+const setHasEquivalentChoiceWord = (words: Set<string>, target: string): boolean =>
+  [...words].some((word) => choiceWordEquivalent(word, target))
+
 export const textRepeatsStructuredChoiceMenu = (text: string, choices: unknown): boolean => {
   if (!Array.isArray(choices) || choices.length < 2) return false
   const finalParagraph = paragraphs(text).at(-1) ?? ''
   const finalWords = significantChoiceWords(finalParagraph)
   if (finalWords.size < 4) return false
 
-  return choices.every((choice) => {
+  const choiceWordSets: Set<string>[] = []
+  for (const choice of choices) {
     if (!isRecord(choice) || typeof choice.text !== 'string') return false
-    const choiceWords = significantChoiceWords(choice.text)
-    if (choiceWords.size < 3) return false
-    const overlap = [...choiceWords].filter((word) => finalWords.has(word)).length
-    return overlap >= Math.max(3, Math.ceil(choiceWords.size * 0.35))
+    const words = significantChoiceWords(choice.text)
+    if (words.size < 3) return false
+    choiceWordSets.push(words)
+  }
+
+  // Shared names/context say only that the question is about the same scene. Reject only when
+  // the decision point covers the words that distinguish every structured branch. A conservative
+  // prefix equivalence tolerates common inflectional endings (e.g. yasashni/yasashmi) without
+  // turning arbitrary substring matches into evidence.
+  const distinctWordSets = choiceWordSets.map((words, index) => new Set(
+    [...words].filter((word) => !choiceWordSets.some((otherWords, otherIndex) =>
+      otherIndex !== index && setHasEquivalentChoiceWord(otherWords, word))),
+  ))
+  if (distinctWordSets.some((words) => words.size === 0)) return false
+
+  return distinctWordSets.every((words) => {
+    const covered = [...words].filter((word) => setHasEquivalentChoiceWord(finalWords, word)).length
+    return covered >= Math.max(1, Math.ceil(words.size * 0.5))
   })
 }
 
@@ -404,13 +431,39 @@ export const storyRepeatsChoiceMenu = (context: NormalizedStoryContext, candidat
 }
 
 export const choiceMenuScaffoldingNeedsRewrite = (language: string, text: string): boolean => {
-  const tail = paragraphs(text).slice(-4).join(' ').replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()
-  const patterns: Record<string, RegExp[]> = {
-    ru: [/можно[\s\S]{0,260}(?:а\s+можно|или\s+можно)/iu],
-    uz: [/mumkin[\s\S]{0,260}(?:yoki[\s\S]{0,100}mumkin|yana[\s\S]{0,100}mumkin)/iu],
-    kz: [/болады[\s\S]{0,260}(?:немесе[\s\S]{0,100}болады|тағы[\s\S]{0,100}болады)/iu],
+  const normalized = paragraphs(text).slice(-4).join('\n').replace(/[\u2018\u2019\u02BB`]/g, "'").toLocaleLowerCase()
+  // Choice-menu scaffolding is a sentence-level construction. Never synthesize it from
+  // separate questions/statements merely because two common modal words occur nearby.
+  const sentences = normalized.split(/(?<=[.!?])\s+|\n+/u).map((item) => item.trim()).filter(Boolean)
+  const sameSentencePatterns: Record<string, RegExp[]> = {
+    ru: [/(?<![\p{L}\p{M}\p{N}_])можно(?![\p{L}\p{M}\p{N}_])[\s\S]{0,180}(?:(?:а|или)\s+)(?<![\p{L}\p{M}\p{N}_])можно(?![\p{L}\p{M}\p{N}_])/iu],
+    uz: [/(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])[\s\S]{0,180}(?:(?:yoki|yana)[\s\S]{0,80})(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])/iu],
+    kz: [/(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])[\s\S]{0,180}(?:(?:немесе|тағы)[\s\S]{0,80})(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])/iu],
   }
-  return (patterns[language] ?? []).some((pattern) => pattern.test(tail))
+  if (sentences.some((sentence) => (sameSentencePatterns[language] ?? []).some((pattern) => pattern.test(sentence)))) return true
+
+  // A preceding modal only forms a cross-sentence choice menu when a later sentence
+  // explicitly announces an alternative. One brief narrative beat may intervene.
+  const modalPattern: Record<string, RegExp> = {
+    ru: /(?<![\p{L}\p{M}\p{N}_])можно(?![\p{L}\p{M}\p{N}_])/iu,
+    uz: /(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])/iu,
+    kz: /(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])/iu,
+  }
+  const explicitContinuation: Record<string, RegExp> = {
+    ru: /^[\s«„“”"'—-]*(?:а|или)\s+можно(?![\p{L}\p{M}\p{N}_])/iu,
+    uz: /^[\s«„“”"'—-]*(?:yana|yoki)(?![\p{L}\p{M}\p{N}_])[\s\S]{0,100}(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])/iu,
+    kz: /^[\s«„“”"'—-]*(?:тағы|немесе)(?![\p{L}\p{M}\p{N}_])[\s\S]{0,100}(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])/iu,
+  }
+  const modal = modalPattern[language]
+  const continuation = explicitContinuation[language]
+  if (!modal || !continuation) return false
+  return sentences.some((sentence, index) => {
+    if (!continuation.test(sentence)) return false
+    if (index > 0 && modal.test(sentences[index - 1])) return true
+    const intervening = sentences[index - 1] ?? ''
+    return index > 1 && intervening.length <= 80 && !intervening.includes('?') &&
+      !modal.test(intervening) && modal.test(sentences[index - 2])
+  })
 }
 
 export const episodeTwoUnresolvedDecisionNeedsRewrite = (
