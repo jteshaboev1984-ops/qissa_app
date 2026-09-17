@@ -24,9 +24,10 @@ const newBlock = `export const choiceMenuScaffoldingNeedsRewrite = (language: st
   }
   if (sentences.some((sentence) => (sameSentencePatterns[language] ?? []).some((pattern) => pattern.test(sentence)))) return true
 
-  // Separate sentences count as a menu only when the second sentence explicitly announces
-  // another option. This preserves “Можно A. А можно B.” while allowing ordinary reasoning
-  // such as “Как помочь можно? Возможно ... или ... можно было.”
+  // Separate sentences count as a menu only when the later sentence explicitly announces
+  // another option. Look back at most two sentences so a tiny narrative beat between explicit
+  // alternatives ("Можно A. Потом подумал. А можно B.") remains blocked without treating
+  // ordinary nearby modal sentences as one menu.
   const modalPattern: Record<string, RegExp> = {
     ru: /(?<![\\p{L}\\p{M}\\p{N}_])можно(?![\\p{L}\\p{M}\\p{N}_])/iu,
     uz: /(?<![\\p{L}\\p{M}\\p{N}_])mumkin(?![\\p{L}\\p{M}\\p{N}_])/iu,
@@ -40,7 +41,10 @@ const newBlock = `export const choiceMenuScaffoldingNeedsRewrite = (language: st
   const modal = modalPattern[language]
   const continuation = explicitContinuation[language]
   if (!modal || !continuation) return false
-  return sentences.some((sentence, index) => index > 0 && modal.test(sentences[index - 1]) && continuation.test(sentence))
+  return sentences.some((sentence, index) => {
+    if (index === 0 || !continuation.test(sentence)) return false
+    return sentences.slice(Math.max(0, index - 2), index).some((previous) => modal.test(previous))
+  })
 }
 `
 if (source.split(oldBlock).length !== 2) throw new Error('exact sentence-local choice menu block not found once')
