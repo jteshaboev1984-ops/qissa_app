@@ -9,6 +9,7 @@ import {
 import { buildSafeFallback } from './fallback.ts'
 import { adjudicateStoryFear, evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { clearAdjudicatedNonSevereViolence, combineSafety, moderationNeedsFearAdjudication, scanRuleBasedSafety, validateCandidate } from './safety.ts'
+import { candidateLanguageMismatchFieldCodes } from './language-diagnostics.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
 import { hasSafetyBudget, stageTimeoutMs, STORY_REQUEST_BUDGET_MS, STORY_SAFETY_RESERVE_MS } from './latency-budget.ts'
 import { blueprintRuleSafetyCategories, enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintHeroReferences, normalizeStoryBlueprintMemoryKeys, repairBlueprintDecisionPoint, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
@@ -137,10 +138,17 @@ const candidateTextForModeration = (candidate: StoryCandidate) => childVisibleSt
 
 const wordCount = (text: string): number => text.trim().split(/\s+/u).filter(Boolean).length
 
-const candidateValidationMetrics = (candidate: StoryCandidate): string[] => [
-  `story_words=${wordCount(candidate.story_text)}`,
-  ...candidate.choices.map((choice, index) => `choice_${index + 1}_resolution_words=${wordCount(choice.resolution_text)}`),
-]
+const candidateValidationMetrics = (
+  context: NonNullable<ReturnType<typeof normalizeStoryRequest>>,
+  candidate: StoryCandidate,
+): string[] => {
+  const languageFields = candidateLanguageMismatchFieldCodes(context, candidate)
+  return [
+    `story_words=${wordCount(candidate.story_text)}`,
+    ...candidate.choices.map((choice, index) => `choice_${index + 1}_resolution_words=${wordCount(choice.resolution_text)}`),
+    ...(languageFields.length > 0 ? [`language_fields=${languageFields.join('+')}`] : []),
+  ]
+}
 
 const compactFailureTrace = (items: string[]): string => items.join('>').slice(0, 480)
 
@@ -313,7 +321,7 @@ Deno.serve(async (request: Request) => {
 
   let validationErrors = validateCandidate(context, candidate)
   if (validationErrors.length > 0) {
-    trace.push(`narrator-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
+    trace.push(`narrator-validation:${validationErrors.join(',')}[${candidateValidationMetrics(context, candidate).join(',')}]`)
   }
 
   // v74: every known Narrator-owned deterministic defect goes straight to the bounded repair agent.
@@ -356,7 +364,7 @@ Deno.serve(async (request: Request) => {
       validationErrors = validateCandidate(context, candidate)
       if (validationErrors.length > 0) {
         lastFailureClass = 'validation'
-        trace.push(`repair-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
+        trace.push(`repair-validation:${validationErrors.join(',')}[${candidateValidationMetrics(context, candidate).join(',')}]`)
       }
 
       const repairRetryTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, STORY_SAFETY_RESERVE_MS)
@@ -365,7 +373,7 @@ Deno.serve(async (request: Request) => {
         repairRetryUsed = true
         const repairRetryFeedback = [
           `Previous text repair failed deterministic validation: ${validationErrors.join(', ')}.`,
-          `Rejected repair metrics: ${candidateValidationMetrics(candidate).join(', ')}.`,
+          `Rejected repair metrics: ${candidateValidationMetrics(context, candidate).join(', ')}.`,
           'Rebuild the repair from the ORIGINAL immutable candidate, not from the rejected repaired text.',
           'Keep every existing plot beat, character identity, choice, state patch and branch consequence unchanged.',
           context.language === 'uz'
@@ -386,7 +394,7 @@ Deno.serve(async (request: Request) => {
         validationErrors = validateCandidate(context, candidate)
         if (validationErrors.length > 0) {
           lastFailureClass = 'validation'
-          trace.push(`repair-retry-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
+          trace.push(`repair-retry-validation:${validationErrors.join(',')}[${candidateValidationMetrics(context, candidate).join(',')}]`)
         }
       } else if (validationErrors.length > 0 && isTextRepairCorrectionEligible(validationErrors)) {
         trace.push('repair-retry:skipped-time-budget')
@@ -423,7 +431,7 @@ Deno.serve(async (request: Request) => {
       validationErrors = validateCandidate(context, candidate)
       if (validationErrors.length > 0) {
         lastFailureClass = 'validation'
-        trace.push(`escalation-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
+        trace.push(`escalation-validation:${validationErrors.join(',')}[${candidateValidationMetrics(context, candidate).join(',')}]`)
       }
     } catch (error) {
       const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
