@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { scanRuleBasedSafety, scanRuleBasedSafetyValues } from '../supabase/functions/story-generate/safety.ts'
-import { blueprintRuleSafetyCategories, validateStoryBlueprint } from '../supabase/functions/story-generate/story-architecture.ts'
 
 // Synthetic examples only: the rejected 2026-09-17 Architect blueprint was NOT recorded.
 // All checks run offline; never call an AI provider, Supabase or HTTP.
@@ -35,6 +34,9 @@ assert.equal(prose('Yo‘lda qon bor edi.').excessive_fear, true,
 assert.equal(prose('Do‘stlar birga yordam berdi.').excessive_fear, false,
   'ordinary Uzbek help remains allowed')
 
+// Import the *new* diagnostic only after pre-existing false positives have been tested.
+// On unpatched production code the first assertion above must fail before this import.
+const { blueprintRuleSafetyCategories, validateStoryBlueprint } = await import('../supabase/functions/story-generate/story-architecture.ts')
 const patch = { last_event: 'Momiq uchun sovg‘a tayyorlanadi.', new_friend: 'Momiq', hero_trait: null,
   open_arc: 'Momiqning sovg‘asi', relationship_updates: [], canon_updates: [] }
 const clean = {
