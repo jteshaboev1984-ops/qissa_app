@@ -1,0 +1,23 @@
+# QISSA v86: one-shot E1 stopped by Architect blueprint safety
+
+**Observed:** 2026-09-17 UTC. **Release status:** family-beta Story AI **NO-GO**. This follows [the v85 E1 / v86 memory checkpoint](2026-09-16_v85_e1_live_v86_memory_fix_checkpoint.md).
+
+## Exact live evidence and safety boundaries
+
+- Source verified before test: `main=e9a62d886886006f435d13d2ba43365f002129a8`; production `story-generate` **v86 ACTIVE**, `verify_jwt=true`, pinned to reviewed functional SHA `fe4c02e13356b9103dc1b97e26801e7cad61f1d7`. No production deployment or code change occurred during this audit.
+- Fresh isolated branch `audit/v86-e1-once-20260917` had one temporary read-only workflow, one temporary script and a single trigger. Provider-free dry [run 35182537821](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35182537821), job `105077615422`, SUCCESS: synthetic Uzbek 5–7 E1 payload, existing v86 memory-boundary regression and remote branch HEAD gate. Zero Story AI HTTP/provider calls in dry run.
+- Live [run 35182584885](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/35182584885), job `105077758645`, used the exact new E1 trigger once. A temporary service-role flag lease was issued at **04:38:02 UTC** only after run entered its 75-second pre-request stage; one POST was admitted at approximately 04:38:57 UTC. Production AI was explicitly reverted **OFF at 04:39:03 UTC**, independently rechecked OFF at 04:39:27 and 04:40:13. The 2026-09-17 admission count advanced **0→1** and remained 1. Yesterday's 2026-09-16 count (17) is a separate daily row, not today's result.
+- HTTP **200** contained `generation-source=safe-fallback`, `fallback-reason=generation-or-safety-failed`, runtime `enabled` for this admitted request, pipeline `split-v1`, `failure-class=blueprint-validation`, `failure-trace=blueprint-validation:blueprint_rule_safety`, diagnostic `provider-calls=1`, Architect model `gpt-5.6-luna`; no Narrator, Repair, Sol escalation, TTS, E2 A or E2 B request. One diagnostic provider call is not an invoice or verified cost.
+- The response body is **the deterministic fallback story** (`Momiqning uyqu oldi sovg‘asi`), with `generationSource=safe-fallback` and `required_action=fallback`. This is NOT a new successful Luna story and MUST NOT be used as evidence that the v86 memory truncation fix works on real Architect output. The one-shot harness deliberately failed at its source assertion and was not retried. The full fallback response and header evidence are in the immutable job logs.
+- After capturing the result, the temporary trigger, script and workflow were deleted from the audit branch. GitHub compare from base `e9a62d886886006f435d13d2ba43365f002129a8` to audit cleanup head `8200ee7f0d007c05f0fae888aafd702c03ec78f3` reported **zero changed files**. Nothing from that branch was merged to main. No story-state synchronization or synthetic profile persistence was requested; only the normal admission counter was written by the story endpoint. No secrets, schema, RLS, provider selection, or customer content were modified.
+
+## What the failure proves, and what it cannot prove
+
+`story-architecture.ts` rejects the blueprint when any rule-based safety category matches a natural-language blueprint field; `split-index.ts` fails closed before paying for narration. This exact refusal happened. It does **not** establish whether the Architect produced genuinely unsafe wording or whether a broad rule triggered on harmless Uzbek. Raw Architect output and matched safety category were not logged. The fallback prose is deterministic and cannot be reverse-engineered to infer the rejected blueprint. Do **not** weaken or bypass safety from this generic error, and do not claim a root-cause category.
+
+## Economical next gate
+
+1. Keep AI OFF and preserve this safety failure as the current live checkpoint. Do not rerun paid E1 or launch E2 using this fallback or the v85 E1 with truncated memory.
+2. Provider-free examine rule-based scanning, especially field boundaries and category classification. If warranted, separately design privacy-preserving category-only internal diagnostic evidence with regression tests; do not log raw child stories, relax safety, or add paid calls just to guess the category.
+3. A fresh v86+ live E1 can be considered only after evidence narrows the diagnosis and a newly bounded one-shot scope is approved. It must return genuine `openai-structured`, complete top/A/B event memory, meaningful child choice and acceptable natural Uzbek before A/B continuation.
+4. Full real-session scorecard, independent native Uzbek review, parent/child read-aloud and both A/B E2 branches remain unfulfilled. **Family-beta Story AI NO-GO.**
