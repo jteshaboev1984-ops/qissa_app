@@ -1,0 +1,59 @@
+name: TEMP apply blueprint safety boundary fix
+on:
+  push:
+    branches:
+      - fix/blueprint-safety-boundaries-20260917
+    paths:
+      - audit/TEMP-blueprint-safety-trigger.txt
+permissions:
+  contents: write
+concurrency:
+  group: qissa-blueprint-safety-patch-once-20260917
+  cancel-in-progress: false
+jobs:
+  patch:
+    if: github.event.head_commit.message == 'APPLY BLUEPRINT SAFETY FIX ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/blueprint-safety-boundaries-20260917
+          persist-credentials: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Validate one-shot HEAD and trigger
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict'
+          import { readFileSync } from 'node:fs'
+          assert.equal(process.env.GITHUB_REF, 'refs/heads/fix/blueprint-safety-boundaries-20260917')
+          assert.equal(readFileSync('audit/TEMP-blueprint-safety-trigger.txt','utf8').trim(), 'APPLY-ONCE-20260917')
+          const response = await fetch('https://api.github.com/repos/jteshaboev1984-ops/qissa_app/branches/fix%2Fblueprint-safety-boundaries-20260917', { headers: { authorization: `Bearer ${process.env.GH_TOKEN}`, accept: 'application/vnd.github+json' } })
+          assert.equal(response.status, 200)
+          assert.equal((await response.json()).commit.sha, process.env.GITHUB_SHA, 'stale workflow cannot write')
+          console.log('PATCH_GATE_PASS: exact live branch HEAD; no AI/provider/database calls')
+          NODE
+      - name: Patch only three reviewed source files
+        run: node scripts/TEMP-apply-blueprint-safety-fix.mjs
+      - name: Offline safety and regression suite
+        run: |
+          node scripts/check-blueprint-safety-boundaries.mjs
+          npm run check:story-ai
+          npm run check:story-ai-split
+          git diff --check
+      - name: Typecheck before commit
+        run: |
+          npm ci
+          npm run typecheck:story-ai
+      - name: Commit scoped patch on audit PR branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add supabase/functions/story-generate/safety.ts supabase/functions/story-generate/story-architecture.ts supabase/functions/story-generate/split-index.ts
+          git diff --cached --check
+          git commit -m 'fix: isolate blueprint safety fields and classify rule-only failures'
+          git push origin HEAD:refs/heads/fix/blueprint-safety-boundaries-20260917
