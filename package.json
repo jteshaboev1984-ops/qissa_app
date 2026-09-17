@@ -29,7 +29,7 @@
     "check:installation-auth": "node scripts/check-installation-auth-boundary.mjs",
     "check:secret-hygiene": "node scripts/check-repository-secret-hygiene.mjs",
     "check:mobile-ux": "node scripts/check-mobile-ux-contract.mjs",
-    "check:story-ai": "node scripts/check-story-ai-safety.mjs && node scripts/check-story-safety-verdict.mjs",
+    "check:story-ai": "node scripts/check-story-ai-safety.mjs && node scripts/check-story-safety-verdict.mjs && node scripts/check-story-humiliation-adjudication.mjs",
     "check:story-ai-split": "node scripts/check-story-ai-split.mjs && node scripts/check-story-cross-layer-contracts.mjs && node scripts/check-story-resolution-only-repair.mjs && node scripts/check-story-prechoice-causality.mjs && node scripts/check-story-memory-event-integrity.mjs && node scripts/check-blueprint-safety-boundaries.mjs && node scripts/check-choice-menu-diagnostics.mjs && node scripts/check-choice-menu-predicate-precision.mjs && node scripts/check-blueprint-decision-repair.mjs && node scripts/check-story-latency-budget.mjs && node scripts/check-story-repair-choice-completeness.mjs && node scripts/check-story-language-diagnostics.mjs && node scripts/check-story-repair-retry-word-budget.mjs && node scripts/check-story-humiliation-evidence.mjs && node scripts/check-story-synthetic-diagnostics.mjs",
     "check:backend-contracts": "node scripts/check-backend-contracts.mjs",
     "check:backend-access": "node scripts/check-backend-access-boundary.mjs",

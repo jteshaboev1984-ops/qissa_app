@@ -4,6 +4,7 @@ import type { NormalizedStoryContext } from './contracts.ts'
 import { storyLocalizationSystem } from './localization.ts'
 import { safetyEvaluationConsistencyErrors } from './safety-verdict.ts'
 import { fearAdjudicationConsistencyErrors, fearAdjudicationOutputSchema, type FearAdjudication } from './fear-adjudication.ts'
+import { humiliationAdjudicationConsistencyErrors, humiliationAdjudicationOutputSchema, type HumiliationAdjudication } from './humiliation-adjudication.ts'
 import { childVisibleStorySafetyProjection, childVisibleStorySafetyText } from './story-safety-projection.ts'
 import { textRepairRequiresFullStoryRewrite } from './repair-routing.ts'
 
@@ -276,6 +277,30 @@ const requestSafetyEvaluation = async (
   )
 }
 
+const requestHumiliationAdjudication = async (
+  apiKey: string,
+  model: string,
+  candidateJson: string,
+): Promise<HumiliationAdjudication> => requestStructured<HumiliationAdjudication>(
+  apiKey,
+  model,
+  'qissa_humiliation_adjudication',
+  humiliationAdjudicationOutputSchema,
+  [
+    'You are the narrow child humiliation adjudicator for QISSA.',
+    'Classify ONLY whether the exact child-visible material contains clear targeted interpersonal humiliation.',
+    'humiliation=true only for targeted mockery, demeaning name-calling, public shaming, belittling, coercive shame, or comparable clear treatment that lowers a character’s dignity.',
+    'Shyness, looking down, touching paws or hands together, blushing, a quiet voice, an ordinary mistake, supportive correction, self-conscious body language, or harmless shared laughter that is not directed at a character is NOT humiliation by itself.',
+    'If humiliation is present, choose the matching category and copy one short exact excerpt from the supplied child-visible text into evidence. Do not paraphrase or invent evidence.',
+    'If no clear humiliation is directly supported, return humiliation=false, category=none, evidence as an empty string.',
+    'Do not classify fear, violence, bedtime stimulation or any other safety category here.',
+  ].join(' '),
+  candidateJson,
+  8_000,
+  260,
+  'low',
+)
+
 const requestFearAdjudication = async (
   apiKey: string,
   model: string,
@@ -316,6 +341,15 @@ export const adjudicateStoryFear = async (
   return adjudication
 }
 
+const needsIsolatedHumiliationConfirmation = (
+  context: NormalizedStoryContext,
+  evaluation: SafetyEvaluation,
+): boolean => {
+  if (!(context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime')) return false
+  if (evaluation.flags.humiliation !== true) return false
+  return Object.entries(evaluation.flags).every(([flag, value]) => flag === 'humiliation' || value !== true)
+}
+
 const needsInteractiveFearConfirmation = (
   context: NormalizedStoryContext,
   evaluation: SafetyEvaluation,
@@ -350,6 +384,33 @@ export const evaluateStorySafety = async (
     const correctedErrors = safetyEvaluationConsistencyErrors(corrected)
     if (correctedErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
     evaluation = corrected
+  }
+
+  if (needsIsolatedHumiliationConfirmation(context, evaluation)) {
+    const adjudication = await requestHumiliationAdjudication(apiKey, model, candidateJson)
+    const adjudicationErrors = humiliationAdjudicationConsistencyErrors(adjudication, childVisibleStorySafetyText(candidate))
+    if (adjudicationErrors.length > 0) throw new Error('openai_humiliation_adjudication_inconsistent')
+
+    if (adjudication.humiliation) {
+      evaluation = {
+        ...evaluation,
+        notes: [
+          `humiliation_adjudication:${adjudication.category}`,
+          `humiliation_evidence:${adjudication.evidence}`,
+        ],
+      }
+    } else {
+      const cleared: SafetyEvaluation = {
+        approved: true,
+        risk_level: 'low',
+        flags: { ...evaluation.flags, humiliation: false },
+        required_action: 'publish',
+        notes: ['isolated humiliation was not confirmed by narrow humiliation adjudication'],
+      }
+      const clearedErrors = safetyEvaluationConsistencyErrors(cleared)
+      if (clearedErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
+      evaluation = cleared
+    }
   }
 
   if (!needsInteractiveFearConfirmation(context, evaluation)) return evaluation
