@@ -73,7 +73,7 @@ assert.equal(narratorPayload.paragraph_budget.target_paragraphs, '8-10')
 const short = structuredClone(base)
 short.story_text = Array(250).fill('Momiq').join(' ') + ' {{HERO}}.'
 assert.ok(validateCandidate(context, short).includes('story_too_short'), 'v91-pattern subminimum Narrator must be rejected')
-const repairSchema = buildTextLengthRepairOutputSchema(context, ['story_language_mismatch', 'story_too_short'])
+const repairSchema = buildTextLengthRepairOutputSchema(context, ['story_language_mismatch', 'story_too_short'], short)
 assert.equal(repairSchema.properties.story_rewrite.type, 'string')
 assert.equal(repairSchema.properties.choice_resolutions.type, 'object')
 console.log('Provider-free story language attribution, privacy, immutable validation and v91 word-budget contracts GREEN.')
