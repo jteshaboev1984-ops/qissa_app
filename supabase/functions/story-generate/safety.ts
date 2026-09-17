@@ -35,9 +35,12 @@ export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: 
 
   flags.political_push = includesAny(text, [
     'голосуй за', 'политическая партия', 'наш лидер всегда прав',
-    'ovoz ber', 'siyosiy partiya', 'bizning rahbar doim haq',
+    'siyosiy partiya', 'bizning rahbar doim haq',
     'дауыс бер', 'саяси партия', 'біздің көшбасшы әрқашан дұрыс',
   ])
+  // Uzbek past-tense "ovoz berdi" can mean a bird or child made a sound;
+  // match voting imperatives as whole forms, never prefixes of descriptive verbs.
+  flags.political_push ||= /(?<![\p{L}\p{M}\p{N}_])ovoz\s+ber(?:ing(?:lar)?)?(?![\p{L}\p{M}\p{N}_])/u.test(text)
   flags.religious_push = includesAny(text, [
     'единственная правильная религия', 'ты обязан верить',
     "yagona to'g'ri din", 'ishonishing shart',
@@ -93,14 +96,19 @@ export const scanRuleBasedSafety = (context: NormalizedStoryContext, candidate: 
 export const scanRuleBasedSafetyValues = (
   context: NormalizedStoryContext,
   values: Array<string | null | undefined>,
-): SafetyFlags => scanRuleBasedSafety(context, {
-  title: '',
-  story_text: values.filter((value): value is string => typeof value === 'string' && value.trim().length > 0).join(' '),
-  choices: [],
-  state_patch: { last_event: '', new_friend: null, hero_trait: null, open_arc: null, relationship_updates: [], canon_updates: [] },
-  vocabulary: [],
-  nextEpisodePreview: '',
-})
+): SafetyFlags => mergeFlags(...values
+  // Field boundaries are semantic boundaries: never synthesize forbidden phrases
+  // by concatenating the end of one independent blueprint value with another.
+  .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+  .map((value) => scanRuleBasedSafety(context, {
+    title: '',
+    story_text: value,
+    choices: [],
+    state_patch: { last_event: '', new_friend: null, hero_trait: null, open_arc: null, relationship_updates: [], canon_updates: [] },
+    vocabulary: [],
+    nextEpisodePreview: '',
+  })),
+)
 
 export const newFriendIsAtomic = (value: unknown): boolean => {
   if (value === null) return true

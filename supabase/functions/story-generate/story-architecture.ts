@@ -362,6 +362,12 @@ export const enforceStoryBlueprintContextContract = (
   ? { ...blueprint, choices: [], decision_point: '', next_episode_preview: '' }
   : blueprint
 
+// Return fixed category identifiers only; never expose generated blueprint prose.
+export const blueprintRuleSafetyCategories = (context: NormalizedStoryContext, blueprint: StoryBlueprint): string[] =>
+  Object.entries(scanRuleBasedSafetyValues(context, blueprintNaturalLanguageValues(blueprint)))
+    .filter(([, matched]) => matched)
+    .map(([category]) => category)
+
 export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprint: unknown): string[] => {
   if (!isRecord(blueprint)) return ['blueprint_not_object']
   const value = blueprint as unknown as StoryBlueprint
@@ -371,7 +377,7 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   if (genericHeroAliasNeedsRewrite(context, naturalLanguageBlueprint)) errors.push('blueprint_generic_hero_alias_requires_rewrite')
   if (context.language === 'ru' && russianHeroTokenNeedsRewrite(naturalLanguageBlueprint.join(' '), context.heroType)) errors.push('blueprint_russian_hero_requires_rewrite')
   if (hasSingleLanguageMismatch(context.language, naturalLanguageBlueprint, context.recurringCharacters)) errors.push('blueprint_language_mismatch')
-  if (Object.values(scanRuleBasedSafetyValues(context, naturalLanguageBlueprint)).some(Boolean)) errors.push('blueprint_rule_safety')
+  if (blueprintRuleSafetyCategories(context, value).length > 0) errors.push('blueprint_rule_safety')
   const childVisibleBlueprint = blueprintChildVisibleValues(value)
   if (visibleSafetyLanguageNeedsRewrite(context.language, childVisibleBlueprint.join(' '))) errors.push('blueprint_visible_safety_language')
   if (uzbekYoungChildValuesNeedRewrite(context, childVisibleBlueprint)) errors.push('blueprint_uzbek_child_language_requires_rewrite')
