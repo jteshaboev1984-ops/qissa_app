@@ -352,9 +352,13 @@ export const storyOutputSchema = {
 export const buildTextLengthRepairOutputSchema = (
   context: NormalizedStoryContext,
   validationErrors: string[],
+  candidate: StoryCandidate,
 ) => {
   const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors)
   const insertionOnly = validationErrors.includes('story_too_short') && !fullStoryRewrite
+  const expectedChoices = context.episodeIndex === 1 ? 2 : 0
+  if (candidate.choices.length !== expectedChoices) throw new Error('repair_invalid_choice_count')
+  const resolutionTargets = new Set(repairChoiceResolutionTargets(context, candidate, validationErrors))
   const vocabularyItemSchema = {
     type: 'object',
     additionalProperties: false,
@@ -374,16 +378,15 @@ export const buildTextLengthRepairOutputSchema = (
       title_rewrite: { type: fullStoryRewrite ? 'string' : 'null' },
       story_rewrite: { type: fullStoryRewrite ? 'string' : 'null' },
       story_expansion: { type: insertionOnly ? 'string' : 'null' },
+      // Fixed required slots are supported by strict structured outputs. Unlike an
+      // unconstrained array they cannot silently omit or duplicate a branch.
       choice_resolutions: {
-        type: 'array',
-        items: {
-          type: 'object',
-          additionalProperties: false,
-          required: ['choice_id', 'resolution_text'],
-          properties: {
-            choice_id: { type: 'string' },
-            resolution_text: { type: 'string' },
-          },
+        type: 'object',
+        additionalProperties: false,
+        required: ['choice_1', 'choice_2'],
+        properties: {
+          choice_1: { type: candidate.choices[0] && resolutionTargets.has(candidate.choices[0].choice_id) ? 'string' : 'null' },
+          choice_2: { type: candidate.choices[1] && resolutionTargets.has(candidate.choices[1].choice_id) ? 'string' : 'null' },
         },
       },
       vocabulary_rewrite: {
@@ -523,6 +526,20 @@ const choiceNeedsResolutionLengthRepair = (
   return resolutionText.length > 360 || words < 25 || words > 60
 }
 
+// One target selection shared by JSON schema, Repair prompt and server merger.
+// Branch order is immutable: choice_1 always means candidate.choices[0].
+export const repairChoiceResolutionTargets = (
+  context: NormalizedStoryContext,
+  candidate: StoryCandidate,
+  validationErrors: string[],
+): string[] => {
+  const rewriteAll = textRepairShouldRepairAllChoiceResolutions(validationErrors) ||
+    validationErrors.includes('choice_resolution_defers_to_future_session')
+  return candidate.choices
+    .filter((choice) => rewriteAll || choiceNeedsResolutionLengthRepair(context, choice.resolution_text))
+    .map((choice) => choice.choice_id)
+}
+
 export const buildTextLengthRepairPrompts = (
   context: NormalizedStoryContext,
   candidate: StoryCandidate,
@@ -541,7 +558,7 @@ export const buildTextLengthRepairPrompts = (
     context.storyMood === 'bedtime' &&
     context.episodeIndex === 2
   const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors)
-  const repairAllChoiceResolutions = textRepairShouldRepairAllChoiceResolutions(validationErrors) || validationErrors.includes('choice_resolution_defers_to_future_session')
+  const resolutionTargetIds = new Set(repairChoiceResolutionTargets(context, candidate, validationErrors))
   const bedtimeEpisodeOne = context.ageGroup === '5-7' &&
     context.storyMode === 'series' &&
     context.storyMood === 'bedtime' &&
@@ -556,8 +573,8 @@ export const buildTextLengthRepairPrompts = (
     Math.min(maximumStoryWords - currentStoryWords - 10, desiredGrowth + 20),
   )
   const resolutionTargets = candidate.choices
-    .filter((choice) => repairAllChoiceResolutions || choiceNeedsResolutionLengthRepair(context, choice.resolution_text))
-    .map((choice) => ({
+    .map((choice, index) => ({
+      slot: `choice_${index + 1}`,
       choice_id: choice.choice_id,
       current_resolution_text: choice.resolution_text,
       current_words: storyWordCount(choice.resolution_text),
@@ -569,6 +586,7 @@ export const buildTextLengthRepairPrompts = (
       tomorrow_seed: choice.tomorrow_seed,
       immutable_state_patch: choice.state_patch,
     }))
+    .filter((choice) => resolutionTargetIds.has(choice.choice_id))
   const storyParagraphs = candidate.story_text.trim().split(/\n\s*\n/u).map((item) => item.trim()).filter(Boolean)
   const paragraphBeforeChoiceSetup = storyParagraphs.length >= 2 ? storyParagraphs[storyParagraphs.length - 2] : ''
   const finalChoiceSetupParagraph = storyParagraphs[storyParagraphs.length - 1] ?? ''
@@ -590,7 +608,7 @@ export const buildTextLengthRepairPrompts = (
     'The expansion may deepen only existing branch-neutral setup, dialogue, reactions, attempts, gentle humor and cause-and-effect. Do not introduce a new durable object, clue, relationship, location, mechanism state, branch consequence, canon fact, problem or mission.',
     'For an Episode 1 insertion, structured choices are FUTURE material. Treat every choice.text, effect_summary, resolution_text and branch state_patch as forbidden content before the decision. Do not rehearse, begin, partially perform, prepare the distinctive mechanics of, or show the result/payoff of either choice. The inserted passage must remain equally true after either choice is selected.',
     'Do not resolve either choice inside the expansion or rewrite. The final decision point and existing choices must remain valid.',
-    'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions, no missing ids and no extras.',
+    'choice_resolutions is an object with required choice_1 and choice_2 slots. repair_plan.choice_resolutions lists the slot-to-choice_id mapping. Write one non-empty resolution_text string in each targeted slot, and null in each untargeted slot (both null for Episode 2). Never omit a slot, swap the branches or change a choice_id.',
     'For each repaired resolution_text, preserve the same selected action and the exact durable consequence already represented by its effect_summary and immutable_state_patch. Only adjust wording and useful immediate action/reaction to reach the target length.',
     'The hero name remains the literal token {{HERO}}. Never invent or expose a real child name. If validation_errors includes missing_hero_token, the repaired story_rewrite or story_expansion must naturally contain {{HERO}} as the in-world protagonist so the final story_text contains the token. If validation_errors includes generic_hero_alias_requires_rewrite, remove the duplicate generic role label and use only {{HERO}} for that protagonist; do not turn qizaloq, o\'g\'il bola, девочка, мальчик, қыз or ұл into a second child. In Russian, use {{HERO}} only as a nominative subject or direct address and use grammatically invariant phrasing such as present-tense action; never put the token after a preposition or directly before a gendered past-tense verb.',
     'For Episode 1 resolution repair, keep the selected consequence in the same evening immediately after the choice. Do not move it to tomorrow or the next morning; tomorrow_seed is future-session metadata only.',

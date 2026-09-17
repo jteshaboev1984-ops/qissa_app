@@ -1,11 +1,11 @@
 import type { CandidateVocabulary, SafetyEvaluation, StoryCandidate } from './contracts.ts'
-import { buildSafetyPrompts, buildStoryPrompts, buildTextLengthRepairOutputSchema, buildTextLengthRepairPrompts, safetyOutputSchema, storyOutputSchema } from './prompt.ts'
+import { buildSafetyPrompts, buildStoryPrompts, buildTextLengthRepairOutputSchema, buildTextLengthRepairPrompts, repairChoiceResolutionTargets, safetyOutputSchema, storyOutputSchema } from './prompt.ts'
 import type { NormalizedStoryContext } from './contracts.ts'
 import { storyLocalizationSystem } from './localization.ts'
 import { safetyEvaluationConsistencyErrors } from './safety-verdict.ts'
 import { fearAdjudicationConsistencyErrors, fearAdjudicationOutputSchema, type FearAdjudication } from './fear-adjudication.ts'
 import { childVisibleStorySafetyProjection, childVisibleStorySafetyText } from './story-safety-projection.ts'
-import { textRepairRequiresFullStoryRewrite, textRepairShouldRepairAllChoiceResolutions } from './repair-routing.ts'
+import { textRepairRequiresFullStoryRewrite } from './repair-routing.ts'
 
 const RESPONSES_URL = 'https://api.openai.com/v1/responses'
 const MODERATIONS_URL = 'https://api.openai.com/v1/moderations'
@@ -136,24 +136,14 @@ type TextLengthRepair = {
   title_rewrite: string | null
   story_rewrite: string | null
   story_expansion: string | null
-  choice_resolutions: Array<{ choice_id: string; resolution_text: string }>
+  choice_resolutions: { choice_1: string | null; choice_2: string | null }
   vocabulary_rewrite: CandidateVocabulary[]
 }
-
-const repairWordCount = (text: string): number => text.trim().split(/\s+/u).filter(Boolean).length
 
 const insertStoryExpansionBeforeFinalParagraph = (storyText: string, expansion: string): string => {
   const paragraphs = storyText.trim().split(/\n\s*\n/u).map((item) => item.trim()).filter(Boolean)
   if (paragraphs.length < 2) throw new Error('openai_text_repair_story_structure')
   return [...paragraphs.slice(0, -1), expansion.trim(), paragraphs[paragraphs.length - 1]].join('\n\n')
-}
-
-const needsChoiceResolutionRepair = (context: NormalizedStoryContext, resolutionText: string): boolean => {
-  if (!(context.ageGroup === '5-7' && context.storyMode === 'series' && context.storyMood === 'bedtime' && context.episodeIndex === 1)) {
-    return false
-  }
-  const words = repairWordCount(resolutionText)
-  return resolutionText.length > 360 || words < 25 || words > 60
 }
 
 export const repairStoryCandidateTextLengths = async (
@@ -171,7 +161,7 @@ export const repairStoryCandidateTextLengths = async (
     apiKey,
     model,
     'qissa_text_length_repair',
-    buildTextLengthRepairOutputSchema(context, validationErrors),
+    buildTextLengthRepairOutputSchema(context, validationErrors, candidate),
     localizedSystem,
     prompts.user,
     timeoutMs,
@@ -181,7 +171,6 @@ export const repairStoryCandidateTextLengths = async (
 
   const storyTooShort = validationErrors.includes('story_too_short')
   const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors)
-  const repairAllChoiceResolutions = textRepairShouldRepairAllChoiceResolutions(validationErrors) || validationErrors.includes('choice_resolution_defers_to_future_session')
   if (fullStoryRewrite && (typeof repair.title_rewrite !== 'string' || !repair.title_rewrite.trim() || typeof repair.story_rewrite !== 'string' || !repair.story_rewrite.trim())) {
     throw new Error('openai_invalid_full_text_repair_rewrite')
   }
@@ -192,19 +181,25 @@ export const repairStoryCandidateTextLengths = async (
     throw new Error('openai_invalid_text_repair_vocabulary')
   }
 
-  const targetChoiceIds = new Set(
-    candidate.choices
-      .filter((choice) => repairAllChoiceResolutions || needsChoiceResolutionRepair(context, choice.resolution_text))
-      .map((choice) => choice.choice_id),
-  )
-  const repairedByChoiceId = new Map<string, string>()
-  for (const item of repair.choice_resolutions) {
-    if (!targetChoiceIds.has(item.choice_id)) continue
-    if (repairedByChoiceId.has(item.choice_id) || !item.resolution_text.trim()) {
-      throw new Error('openai_invalid_text_repair_choice')
-    }
-    repairedByChoiceId.set(item.choice_id, item.resolution_text)
+  const targetChoiceIds = new Set(repairChoiceResolutionTargets(context, candidate, validationErrors))
+  const slots = repair.choice_resolutions
+  if (!slots || typeof slots !== 'object' || Array.isArray(slots) ||
+    Object.keys(slots).sort().join(',') !== 'choice_1,choice_2') {
+    throw new Error('openai_invalid_text_repair_choice_slots')
   }
+  const repairedByChoiceId = new Map<string, string>()
+  for (const [index, choice] of candidate.choices.entries()) {
+    if (index >= 2) throw new Error('openai_invalid_text_repair_choice_slots')
+    const text = index === 0 ? slots.choice_1 : slots.choice_2
+    if (targetChoiceIds.has(choice.choice_id)) {
+      if (typeof text !== 'string' || !text.trim()) throw new Error('openai_incomplete_text_repair_choices')
+      repairedByChoiceId.set(choice.choice_id, text)
+    } else if (text !== null) {
+      throw new Error('openai_unexpected_text_repair_choice')
+    }
+  }
+  if (candidate.choices.length < 2 && slots.choice_2 !== null) throw new Error('openai_unexpected_text_repair_choice')
+  if (candidate.choices.length === 0 && slots.choice_1 !== null) throw new Error('openai_unexpected_text_repair_choice')
   if (repairedByChoiceId.size !== targetChoiceIds.size) throw new Error('openai_incomplete_text_repair_choices')
 
   return {
