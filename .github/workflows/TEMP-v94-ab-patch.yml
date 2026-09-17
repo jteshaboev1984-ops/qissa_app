@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v7
-      - name: Apply two exact bounded fixes and verify
+      - name: Apply exact bounded source fix and verify
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -20,18 +20,12 @@ jobs:
           txt = source.read_text()
           old = "story_text:'Malika do‘stlari bilan qo‘shiq kuyladi. '.repeat(56)"
           assert txt.count(old) == 1
-          txt = txt.replace(old, "story_text:'Malika do‘stlari bilan qo‘shiq kuyladi. '.repeat(70)")
-          source.write_text(txt)
-          workflow = Path('.github/workflows/TEMP-v94-e1-e2-ab-once.yml')
-          txt = workflow.read_text()
-          old = 'node scripts/check-story-repair-retry-budget.mjs'
-          assert txt.count(old) == 1
-          workflow.write_text(txt.replace(old, 'node scripts/check-story-repair-retry-word-budget.mjs'))
-          print('Two bounded provider-free source fixes verified')
+          source.write_text(txt.replace(old, "story_text:'Malika do‘stlari bilan qo‘shiq kuyladi. '.repeat(70)"))
+          print('One bounded provider-free source fix verified')
           PY
           git config user.name github-actions
           git config user.email github-actions@users.noreply.github.com
-          git add scripts/TEMP-v94-e1-e2-ab-once.mjs .github/workflows/TEMP-v94-e1-e2-ab-once.yml
+          git add scripts/TEMP-v94-e1-e2-ab-once.mjs
           git diff --cached --check
-          git commit -m 'audit: fix synthetic word count and check path before preflight'
+          git commit -m 'audit: fix synthetic word count before preflight'
           git push origin HEAD:audit/v94-e1-e2-ab-single-session-20260917
