@@ -565,7 +565,12 @@ export const buildTextLengthRepairPrompts = (
     context.episodeIndex === 1
   const rewriteTargetMinimum = bedtimeEpisodeOne ? 350 : bedtimeEpisodeTwo ? 400 : Math.min(maximumStoryWords - 10, minimumStoryWords + 40)
   const rewriteTargetMaximum = bedtimeEpisodeOne ? 390 : bedtimeEpisodeTwo ? 470 : Math.max(rewriteTargetMinimum, maximumStoryWords - 20)
-  const desiredExpandedTotal = Math.min(maximumStoryWords - 25, minimumStoryWords + 45)
+  // v94: only a verified underlength Repair RETRY gets extra length headroom.
+  // Feedback comes from our own deterministic validator, never from child-provided text.
+  const previousRepairWordsMatch = /Rejected repair metrics: story_words=(\d{1,4})(?:,|\.)/u.exec(retryFeedback)
+  const previousRepairWords = previousRepairWordsMatch ? Number(previousRepairWordsMatch[1]) : null
+  const repeatedUnderlength = storyTooShort && !fullStoryRewrite && previousRepairWords !== null && previousRepairWords < minimumStoryWords
+  const desiredExpandedTotal = Math.min(maximumStoryWords - 25, minimumStoryWords + (repeatedUnderlength ? 80 : 45))
   const desiredGrowth = Math.max(0, desiredExpandedTotal - currentStoryWords)
   const expansionMinimum = Math.max(25, desiredGrowth - 20)
   const expansionMaximum = Math.max(
@@ -600,6 +605,9 @@ export const buildTextLengthRepairPrompts = (
       : storyTooShort
         ? 'For a pure Episode 1 story_too_short failure, do NOT rewrite the existing story. Return title_rewrite as null and story_rewrite as null; write only story_expansion: one coherent passage that the server will insert immediately before the existing final choice-setup paragraph. The original story remains verbatim, so the expansion must continue naturally from the preceding paragraph and lead naturally into the existing final paragraph.'
         : 'For a choice-resolution-only repair, return title_rewrite, story_rewrite and story_expansion as null. Return only the exact choice_resolutions listed in repair_plan; do not insert into, rewrite or otherwise alter story_text.',
+    repeatedUnderlength
+      ? `The previous Repair returned only ${previousRepairWords} story_text words, below the hard minimum ${minimumStoryWords}. Count words separated by whitespace in NEW story_expansion itself. Write at least ${expansionMinimum} and aim ${expansionMinimum}-${expansionMaximum} NEW words before returning the response; the server inserts this passage into the original story. Develop only existing pre-choice character actions, dialogue and reactions without padding, repeating scenes, performing a choice or inventing another problem.`
+      : '',
     'For story_too_long, return story_expansion as null and use the full title/story rewrite path to shorten the story into the requested range without deleting causal beats.',
     'When full-story rewrite is required, return title_rewrite as a child-facing title in the requested language that describes the same story. Do not rename established characters.',
     'When full-story rewrite is required, also return a complete replacement vocabulary_rewrite: exactly 2-3 grounded Russian-to-English items for Russian, and an empty array for Uzbek or Kazakh. For a pure insertion-only or choice-resolution-only repair, vocabulary_rewrite must be an empty array.',
@@ -632,6 +640,10 @@ export const buildTextLengthRepairPrompts = (
             hard_maximum_story_words: maximumStoryWords,
             desired_total_after_insertion: desiredExpandedTotal,
             target_additional_words: `${expansionMinimum}-${expansionMaximum}`,
+            absolute_minimum_additional_words: Math.max(0, minimumStoryWords - currentStoryWords),
+            retry_previous_story_words: repeatedUnderlength ? previousRepairWords : null,
+            retry_remaining_deficit_words: repeatedUnderlength && previousRepairWords !== null ? minimumStoryWords - previousRepairWords : null,
+            counting_scope: 'Count whitespace-delimited words only inside NEW story_expansion. Metadata, choice resolutions, state patches and vocabulary do not count toward story_text.',
             insertion_point: 'Immediately before the existing final story paragraph.',
             paragraph_before_insertion: paragraphBeforeChoiceSetup,
             existing_final_choice_setup_paragraph: finalChoiceSetupParagraph,
