@@ -17,6 +17,7 @@ import { blueprintRuleSafetyCategories, enforceStoryBlueprintContextContract, na
 import { childVisibleStorySafetyText } from './story-safety-projection.ts'
 import { isTextRepairCorrectionEligible, isTextRepairEligibleFailure } from './repair-routing.ts'
 import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
+import { SYNTHETIC_DIAGNOSTIC_HEADER, claimSyntheticDiagnostic, newSyntheticCapture, persistSyntheticCapture, recordSyntheticStage, type SyntheticCapture } from './synthetic-diagnostics.ts'
 
 const PRIVACY_CONSENT_VERSION = '2026-06-25-v1'
 const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
@@ -153,7 +154,7 @@ const candidateValidationMetrics = (
 
 const compactFailureTrace = (items: string[]): string => items.join('>').slice(0, 480)
 
-Deno.serve(async (request: Request) => {
+const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture): Promise<Response> => {
   const requestStartedAt = Date.now()
   const deadlineAt = requestStartedAt + STORY_REQUEST_BUDGET_MS
   const origin = request.headers.get('origin')
@@ -188,6 +189,14 @@ Deno.serve(async (request: Request) => {
   const installationId = installationIdFromInput(input)
   if (!installationId) {
     return safeFallback(context, origin, 'rate-limit-identity-missing', runtimeProviderMetadata)
+  }
+
+  // A diagnostic request is operator-armed, strictly synthetic and single-use.
+  // Reject it BEFORE accounting/provider calls if authorization or schema fails.
+  if (request.headers.has(SYNTHETIC_DIAGNOSTIC_HEADER)) {
+    if (!await claimSyntheticDiagnostic(request, context, input, installationId, diagnostic)) {
+      return json({ error: 'synthetic_diagnostic_not_authorized' }, 403, origin, runtimeProviderMetadata)
+    }
   }
 
   const claim = await claimStoryGeneration(installationId)
@@ -234,6 +243,7 @@ Deno.serve(async (request: Request) => {
   try {
     providerCalls += 1
     blueprint = await generateStoryBlueprint(openAiApiKey, architectModel, context, architectTimeoutMs)
+    recordSyntheticStage(diagnostic, 'architect_raw', blueprint)
   } catch (error) {
     architectElapsedMs = Date.now() - architectCallStartedAt
     const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
@@ -266,6 +276,7 @@ Deno.serve(async (request: Request) => {
       blueprintErrors = validateStoryBlueprint(context, blueprint)
     }
   }
+  recordSyntheticStage(diagnostic, 'architect_validation', { blueprint, errors: blueprintErrors })
   if (blueprintErrors.length > 0) {
     lastFailureClass = 'blueprint-validation'
     trace.push(`blueprint-validation:${blueprintErrors.join(',')}`)
@@ -288,6 +299,7 @@ Deno.serve(async (request: Request) => {
     providerCalls += 1
     const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, '', narrationTimeoutMs)
     candidate = narrationToCandidate(context, blueprint, narration)
+    recordSyntheticStage(diagnostic, 'narrator_initial', candidate)
     initialStoryWords = wordCount(candidate.story_text)
   } catch (error) {
     const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
@@ -321,6 +333,7 @@ Deno.serve(async (request: Request) => {
   }
 
   let validationErrors = validateCandidate(context, candidate)
+  recordSyntheticStage(diagnostic, 'narrator_validation', { errors: validationErrors })
   if (validationErrors.length > 0) {
     trace.push(`narrator-validation:${validationErrors.join(',')}[${candidateValidationMetrics(context, candidate).join(',')}]`)
   }
@@ -362,6 +375,7 @@ Deno.serve(async (request: Request) => {
         repairTimeoutMs,
       )
       repairUsed = true
+      recordSyntheticStage(diagnostic, 'repair_first', candidate)
       validationErrors = validateCandidate(context, candidate)
       if (validationErrors.length > 0) {
         lastFailureClass = 'validation'
@@ -392,6 +406,7 @@ Deno.serve(async (request: Request) => {
           repairRetryFeedback,
           repairRetryTimeoutMs,
         )
+        recordSyntheticStage(diagnostic, 'repair_retry', candidate)
         validationErrors = validateCandidate(context, candidate)
         if (validationErrors.length > 0) {
           lastFailureClass = 'validation'
@@ -428,6 +443,7 @@ Deno.serve(async (request: Request) => {
       const retryFeedback = `Luna narration still failed deterministic validation after bounded correction: ${validationErrors.join(', ')}. Keep the immutable blueprint exactly unchanged and correct only the narration.`
       const narration = await generateStoryNarration(openAiApiKey, escalationModel, context, blueprint, retryFeedback, escalationTimeoutMs)
       candidate = narrationToCandidate(context, blueprint, narration)
+      recordSyntheticStage(diagnostic, 'escalation', candidate)
       escalationUsed = true
       validationErrors = validateCandidate(context, candidate)
       if (validationErrors.length > 0) {
@@ -497,6 +513,10 @@ Deno.serve(async (request: Request) => {
     }
     const safety = combineSafety(ruleFlags, evaluation, moderationForSafety)
     const humiliationEvidenceField = locateHumiliationEvidence(candidate, evaluation)
+    recordSyntheticStage(diagnostic, 'semantic_verdict', {
+      evaluation, moderation, combined: safety, rule_flags: ruleFlags,
+      humiliation_evidence_field: humiliationEvidenceField,
+    })
     if (!safety.approved) {
       lastFailureClass = 'semantic-safety'
       const flags = Object.entries(safety.flags).filter(([, value]) => value).map(([key]) => key)
@@ -567,4 +587,16 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Provider-Calls': String(providerCalls),
     })
   }
+}
+
+// Single per-request wrapper: persist a synthetic transcript at MOST ONCE, after
+// the normal response has been determined. Never put transcript in HTTP or logs.
+Deno.serve(async (request: Request) => {
+  const diagnostic = newSyntheticCapture()
+  const response = await handleStoryRequest(request, diagnostic)
+  if (!diagnostic.captureId) return response
+  const stored = await persistSyntheticCapture(diagnostic, response)
+  const headers = new Headers(response.headers)
+  headers.set('X-QISSA-Synthetic-Diagnostic', stored ? 'stored' : 'unavailable')
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers })
 })
