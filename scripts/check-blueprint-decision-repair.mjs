@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
 import { normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
 import { repairBlueprintDecisionPoint, validateStoryBlueprint } from '../supabase/functions/story-generate/story-architecture.ts'
 
@@ -40,11 +41,15 @@ const episode2 = { ...context, episodeIndex: 2 }
 const episode2Attempt = repairBlueprintDecisionPoint(episode2, blueprint, menuErrors)
 assert.equal(episode2Attempt.repaired, false, 'Episode 2 has no decision-point repair path')
 
-for (const [language, expected] of [['ru', '{{HERO}} что делать дальше?'], ['kz', '{{HERO}} енді не істейді?']]) {
+for (const [language, expected] of [['ru', 'Что {{HERO}} сделает дальше?'], ['kz', '{{HERO}} енді не істейді?']]) {
   const localizedContext = { ...context, language }
   const localized = repairBlueprintDecisionPoint(localizedContext, blueprint, ['blueprint_choice_menu_repeats_cards'])
   assert.equal(localized.repaired, true)
   assert.equal(localized.blueprint.decision_point, expected)
 }
 
-console.log('Blueprint decision-point deterministic repair contract PASS: only isolated E1 choice-menu defects receive a localized neutral question; plot, choices and state remain immutable; zero provider/HTTP/database calls.')
+const orchestrator = fs.readFileSync('supabase/functions/story-generate/split-index.ts', 'utf8')
+assert.ok(orchestrator.includes('repairBlueprintDecisionPoint(context, blueprint, blueprintErrors)'), 'orchestrator must apply the local repair before blueprint fallback')
+assert.ok(orchestrator.includes("'X-QISSA-Blueprint-Decision-Repair': blueprintDecisionPointRepaired ? 'template' : 'none'"), 'repair outcome must be observable')
+
+console.log('Blueprint decision-point deterministic repair contract PASS: only isolated E1 choice-menu defects receive a localized neutral question; plot, choices and state remain immutable; orchestration is wired before fallback; zero provider/HTTP/database calls.')
