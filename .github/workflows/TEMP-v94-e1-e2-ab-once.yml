@@ -24,7 +24,7 @@ jobs:
           node scripts/check-story-live-evidence.mjs
           node scripts/check-story-memory-event-integrity.mjs
           node scripts/check-story-runtime-lease.mjs
-          node scripts/check-story-repair-retry-budget.mjs
+          node scripts/check-story-repair-retry-word-budget.mjs
           node scripts/check-story-language-diagnostics.mjs
           node scripts/check-story-latency-budget.mjs
           node scripts/TEMP-v94-e1-e2-ab-once.mjs
