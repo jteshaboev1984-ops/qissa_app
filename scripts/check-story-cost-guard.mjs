@@ -8,6 +8,7 @@ const storyIndex = read('supabase/functions/story-generate/index.ts')
 const splitStoryIndex = read('supabase/functions/story-generate/split-index.ts')
 const provider = read('supabase/functions/story-generate/openai.ts')
 const splitProvider = read('supabase/functions/story-generate/split-openai.ts')
+const latencyBudget = read('supabase/functions/story-generate/latency-budget.ts')
 const usage = read('supabase/functions/story-generate/usage.ts')
 const pagesWorkflow = read('.github/workflows/deploy-pages.yml')
 const envExample = read('.env.example')
@@ -76,12 +77,22 @@ requireCondition(
     /MAX_TIMEOUT_MS = 140_000/.test(remoteClient) &&
     /VITE_QISSA_STORY_TIMEOUT_MS:\s*130000/.test(pagesWorkflow) &&
     /VITE_QISSA_STORY_TIMEOUT_MS=130000/.test(envExample) &&
-    /'qissa_story_blueprint'[\s\S]*18_000[\s\S]*1800[\s\S]*'none'/.test(splitProvider) &&
-    /'qissa_story_narration'[\s\S]*30_000[\s\S]*3200[\s\S]*'none'/.test(splitProvider) &&
-    /'qissa_text_length_repair'[\s\S]*30_000[\s\S]*3000[\s\S]*'none'/.test(provider) &&
+    /'qissa_story_blueprint'[\s\S]*timeoutMs[\s\S]*1800[\s\S]*'none'/.test(splitProvider) &&
+    /'qissa_story_narration'[\s\S]*timeoutMs[\s\S]*3200[\s\S]*'none'/.test(splitProvider) &&
+    /'qissa_text_length_repair'[\s\S]*timeoutMs[\s\S]*3000[\s\S]*'none'/.test(provider) &&
     /timeoutMs = 12_000/.test(provider) &&
     /firstErrors\.join\(','\)[\s\S]*8_000/.test(provider),
-  'Browser timeout must cover the bounded 18s architect + 30s narrator + 30s narrator retry + 30s repair + 12s primary safety + 8s consistency-only safety retry envelope (128s) without exceeding the 150s hosted Edge Function ceiling.',
+  'Browser timeout must cover the explicit 124s server deadline, not a misleading fixed sum of optional stage ceilings.',
+)
+
+requireCondition(
+  /STORY_REQUEST_BUDGET_MS = 124_000/.test(latencyBudget) &&
+    /STORY_SAFETY_RESERVE_MS = 38_000/.test(latencyBudget) &&
+    /hasSafetyBudget/.test(latencyBudget) &&
+    /hasSafetyBudget/.test(splitStoryIndex) &&
+    /stageTimeoutMs/.test(splitStoryIndex) &&
+    /generation-time-budget/.test(splitStoryIndex),
+  'Architect time must be borrowed only inside a shared deadline with a mandatory safety reserve and fail-closed budget exhaustion.',
 )
 
 requireCondition(
@@ -211,4 +222,4 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-console.log('Story AI tuning accounting check passed: runtime gate remains fail-closed, provider-eligible calls are counted without a daily throttle, timeouts including the bounded safety-only consistency retry are aligned, and provider failures do not trigger blind paid retries.')
+console.log('Story AI tuning accounting check passed: runtime gate remains fail-closed, provider-eligible calls are counted without a daily throttle, timeouts are controlled by an absolute request deadline and a mandatory safety reserve, and provider failures do not trigger blind paid retries.')
