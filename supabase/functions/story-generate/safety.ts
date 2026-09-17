@@ -435,12 +435,35 @@ export const choiceMenuScaffoldingNeedsRewrite = (language: string, text: string
   // Choice-menu scaffolding is a sentence-level construction. Never synthesize it from
   // separate questions/statements merely because two common modal words occur nearby.
   const sentences = normalized.split(/(?<=[.!?])\s+|\n+/u).map((item) => item.trim()).filter(Boolean)
-  const patterns: Record<string, RegExp[]> = {
+  const sameSentencePatterns: Record<string, RegExp[]> = {
     ru: [/(?<![\p{L}\p{M}\p{N}_])можно(?![\p{L}\p{M}\p{N}_])[\s\S]{0,180}(?:(?:а|или)\s+)(?<![\p{L}\p{M}\p{N}_])можно(?![\p{L}\p{M}\p{N}_])/iu],
     uz: [/(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])[\s\S]{0,180}(?:(?:yoki|yana)[\s\S]{0,80})(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])/iu],
     kz: [/(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])[\s\S]{0,180}(?:(?:немесе|тағы)[\s\S]{0,80})(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])/iu],
   }
-  return sentences.some((sentence) => (patterns[language] ?? []).some((pattern) => pattern.test(sentence)))
+  if (sentences.some((sentence) => (sameSentencePatterns[language] ?? []).some((pattern) => pattern.test(sentence)))) return true
+
+  // A preceding modal only forms a cross-sentence choice menu when a later sentence
+  // explicitly announces an alternative. One brief narrative beat may intervene.
+  const modalPattern: Record<string, RegExp> = {
+    ru: /(?<![\p{L}\p{M}\p{N}_])можно(?![\p{L}\p{M}\p{N}_])/iu,
+    uz: /(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])/iu,
+    kz: /(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])/iu,
+  }
+  const explicitContinuation: Record<string, RegExp> = {
+    ru: /^[\s«„“”"'—-]*а\s+можно(?![\p{L}\p{M}\p{N}_])/iu,
+    uz: /^[\s«„“”"'—-]*yana(?![\p{L}\p{M}\p{N}_])[\s\S]{0,100}(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])/iu,
+    kz: /^[\s«„“”"'—-]*тағы(?![\p{L}\p{M}\p{N}_])[\s\S]{0,100}(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])/iu,
+  }
+  const modal = modalPattern[language]
+  const continuation = explicitContinuation[language]
+  if (!modal || !continuation) return false
+  return sentences.some((sentence, index) => {
+    if (!continuation.test(sentence)) return false
+    if (index > 0 && modal.test(sentences[index - 1])) return true
+    const intervening = sentences[index - 1] ?? ''
+    return index > 1 && intervening.length <= 80 && !intervening.includes('?') &&
+      !modal.test(intervening) && modal.test(sentences[index - 2])
+  })
 }
 
 export const episodeTwoUnresolvedDecisionNeedsRewrite = (
