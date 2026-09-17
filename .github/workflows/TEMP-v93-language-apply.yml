@@ -1,0 +1,40 @@
+name: TEMP v93 language diagnostics patch once
+on:
+  push:
+    branches: ["fix/v93-language-field-diagnostics"]
+    paths: ["audit/TEMP-v93-language-trigger.txt"]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'AUDIT APPLY V93 LANGUAGE PATCH ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Guard exact starting SHA
+        run: test "$(git ls-remote origin refs/heads/fix/v93-language-field-diagnostics | cut -f1)" = "$GITHUB_SHA"
+      - name: Patch only the approved diagnostic wiring and restore package metadata
+        run: python audit/TEMP-v93-language-patch.py
+      - name: Full provider-free Story AI contracts and typecheck
+        run: |
+          npm ci
+          npm run check:story-ai-split
+          npm run check:story-ai
+          npm run check:story-cost-guard
+          npm run typecheck:story-ai
+      - name: Commit only two reviewed changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add supabase/functions/story-generate/split-index.ts package.json
+          git diff --cached --check
+          git commit -m 'diagnostics: identify story-language failure fields without story content'
+          git push origin HEAD:fix/v93-language-field-diagnostics
+# Delete workflow, patch and trigger prior to merging. Never calls any provider or DB.
