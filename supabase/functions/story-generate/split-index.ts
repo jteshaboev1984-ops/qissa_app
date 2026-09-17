@@ -10,7 +10,7 @@ import { buildSafeFallback } from './fallback.ts'
 import { adjudicateStoryFear, evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { clearAdjudicatedNonSevereViolence, combineSafety, moderationNeedsFearAdjudication, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
-import { blueprintRuleSafetyCategories, enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintHeroReferences, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
+import { blueprintRuleSafetyCategories, enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintHeroReferences, normalizeStoryBlueprintMemoryKeys, repairBlueprintDecisionPoint, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
 import { childVisibleStorySafetyText } from './story-safety-projection.ts'
 import { isTextRepairCorrectionEligible, isTextRepairEligibleFailure } from './repair-routing.ts'
 import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
@@ -189,6 +189,7 @@ Deno.serve(async (request: Request) => {
   const trace: string[] = []
   let blueprint: StoryBlueprint
   let blueprintKeysNormalized = 0
+  let blueprintDecisionPointRepaired = false
   let candidate: StoryCandidate | null = null
   let narratorModelUsed = narratorModel
   let repairUsed = false
@@ -220,7 +221,16 @@ Deno.serve(async (request: Request) => {
   blueprint = normalizedBlueprint.blueprint
   blueprintKeysNormalized = normalizedBlueprint.normalizedCount
   blueprint = normalizeStoryBlueprintHeroReferences(blueprint).blueprint
-  const blueprintErrors = validateStoryBlueprint(context, blueprint)
+  let blueprintErrors = validateStoryBlueprint(context, blueprint)
+  if (blueprintErrors.length > 0) {
+    const decisionRepair = repairBlueprintDecisionPoint(context, blueprint, blueprintErrors)
+    if (decisionRepair.repaired) {
+      blueprint = decisionRepair.blueprint
+      blueprintDecisionPointRepaired = true
+      trace.push('blueprint-repair:decision-point-template')
+      blueprintErrors = validateStoryBlueprint(context, blueprint)
+    }
+  }
   if (blueprintErrors.length > 0) {
     lastFailureClass = 'blueprint-validation'
     trace.push(`blueprint-validation:${blueprintErrors.join(',')}`)
@@ -360,6 +370,7 @@ Deno.serve(async (request: Request) => {
         'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
         'X-QISSA-Provider-Calls': String(providerCalls),
         'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
+        'X-QISSA-Blueprint-Decision-Repair': blueprintDecisionPointRepaired ? 'template' : 'none',
       })
     }
   }
@@ -486,6 +497,7 @@ Deno.serve(async (request: Request) => {
         'X-QISSA-Initial-Story-Words': String(initialStoryWords),
         'X-QISSA-Final-Story-Words': String(wordCount(candidate.story_text)),
         'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
+        'X-QISSA-Blueprint-Decision-Repair': blueprintDecisionPointRepaired ? 'template' : 'none',
       },
     )
   } catch (error) {
