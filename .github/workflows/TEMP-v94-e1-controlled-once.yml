@@ -1,0 +1,39 @@
+name: TEMP v94 E1 controlled one shot
+on:
+  push:
+    branches: ["audit/v94-e1-controlled-once-20260917"]
+    paths: ["audit/TEMP-v94-e1-trigger.txt"]
+permissions:
+  contents: read
+concurrency:
+  group: qissa-v94-e1-controlled-20260917
+  cancel-in-progress: false
+jobs:
+  e1:
+    if: github.run_attempt == 1 && (github.event.head_commit.message == 'RUN V94 DRY EXACTLY ONCE' || github.event.head_commit.message == 'RUN V94 LIVE EXACTLY ONCE')
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Provider-free synthetic preflight and scoped regression
+        if: github.event.head_commit.message == 'RUN V94 DRY EXACTLY ONCE'
+        run: |
+          node scripts/check-story-repair-retry-word-budget.mjs
+          node scripts/check-story-language-diagnostics.mjs
+          node scripts/check-story-repair-choice-completeness.mjs
+          node scripts/check-story-latency-budget.mjs
+          node scripts/check-blueprint-safety-boundaries.mjs
+          node scripts/check-blueprint-decision-repair.mjs
+          node scripts/check-story-memory-event-integrity.mjs
+          node scripts/TEMP-v94-e1-controlled-once.mjs
+      - name: One synthetic production E1 POST without retries or raw story logs
+        if: github.event.head_commit.message == 'RUN V94 LIVE EXACTLY ONCE'
+        env:
+          QISSA_LIVE: '1'
+          GITHUB_TOKEN: ${{ github.token }}
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/TEMP-v94-e1-controlled-once.mjs
+# Delete workflow, runner and trigger after the single live attempt. Do not dispatch or rerun manually.
