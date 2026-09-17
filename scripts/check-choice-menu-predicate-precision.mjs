@@ -13,8 +13,12 @@ const metaCases = [
     text: 'Barglardan rasm yasash mumkin yoki yong‘oqlardan bezak qilish mumkin.',
   },
   {
-    label: 'UZ explicit alternatives across sentences', language: 'uz', expected: true,
+    label: 'UZ explicit Yana alternatives across sentences', language: 'uz', expected: true,
     text: 'Barglardan rasm yasash mumkin. Yana yong‘oqlardan bezak qilish mumkin.',
+  },
+  {
+    label: 'UZ explicit Yoki alternatives across sentences', language: 'uz', expected: true,
+    text: 'Do‘stlar xohlaganini aytishi mumkin. Yoki boshqacha aytishi ham mumkin.',
   },
   {
     label: 'RU natural possibility across sentence boundaries', language: 'ru', expected: false,
@@ -25,8 +29,16 @@ const metaCases = [
     text: 'Можно сделать рисунок, или можно спеть песню.',
   },
   {
-    label: 'RU explicit alternatives across sentences', language: 'ru', expected: true,
+    label: 'RU explicit А alternatives across sentences', language: 'ru', expected: true,
     text: 'Можно начать с веточек. А можно сначала обратиться к Степашке.',
+  },
+  {
+    label: 'RU explicit Или alternatives across sentences', language: 'ru', expected: true,
+    text: 'Можно сделать рисунок. Или можно спеть песню.',
+  },
+  {
+    label: 'RU brief narrative beat between explicit alternatives', language: 'ru', expected: true,
+    text: 'Ёжка прошептал: «Можно начать с веточек». Потом подумал. «А можно сначала обратиться к Степашке». Алиса посмотрела на ручей.',
   },
   {
     label: 'KZ natural possibility across sentence boundaries', language: 'kz', expected: false,
@@ -37,8 +49,12 @@ const metaCases = [
     text: 'Сурет салуға болады немесе ән айтуға болады.',
   },
   {
-    label: 'KZ explicit alternatives across sentences', language: 'kz', expected: true,
+    label: 'KZ explicit Тағы alternatives across sentences', language: 'kz', expected: true,
     text: 'Сурет салуға болады. Тағы ән айтуға болады.',
+  },
+  {
+    label: 'KZ explicit Немесе alternatives across sentences', language: 'kz', expected: true,
+    text: 'Сурет салуға болады. Немесе ән айтуға болады.',
   },
 ]
 for (const item of metaCases) {
