@@ -1,4 +1,5 @@
 import { randomBytes, randomUUID } from 'node:crypto'
+import { isDeepStrictEqual } from 'node:util'
 import { readFileSync } from 'node:fs'
 import { applyChoiceToSeriesState, applyEpisodeToSeriesState, createInitialSeriesState } from '../src/lib/memoryAgent.ts'
 import { normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
@@ -71,6 +72,7 @@ const mockJson = JSON.stringify({episode:mockEpisode})
 const mockBranches = mockChoices.map((c,i)=>branchFromE1(mockJson,c,i+1))
 check(mockBranches[0].afterChoice.canonState.choice !== mockBranches[1].afterChoice.canonState.choice, 'dry_cross_branch_canon')
 check(JSON.stringify(JSON.parse(mockJson).episode) === JSON.stringify(mockEpisode), 'dry_immutable_e1')
+check(isDeepStrictEqual({a:1,b:{x:2,y:3}},{b:{y:3,x:2},a:1}), 'dry_jsonb_key_order')
 check(storyPosts === 0 && identities.length === 0, 'dry_provider_or_state_access')
 if (!live) {
   console.log('V94_AB_DRY_GREEN: exact one-E1 two-dynamic-branch contexts, full in-memory envelope, no POST or persistence; main=' + expectedMain + '; deployed=' + deployedSha)
@@ -151,7 +153,7 @@ try {
     check(confirmed.ok===true,'choice_confirmation_failed')
     const loaded=await statePost(identity,{action:'load_current'},'load_e1')
     check(loaded.snapshot?.episode?.story_text===item.episode.story_text,'e1_persisted_prose_mismatch')
-    check(JSON.stringify(loaded.snapshot.episode.choices)===JSON.stringify(item.episode.choices),'e1_persisted_choices_mismatch')
+    check(isDeepStrictEqual(loaded.snapshot.episode.choices,item.episode.choices),'e1_persisted_choices_mismatch')
     check(loaded.snapshot.seriesState.choiceHistory?.length===1 && loaded.snapshot.seriesState.choiceHistory[0].choice_id===item.chosen.choice_id,'saved_choice_mismatch')
     check(loaded.snapshot.seriesState.choiceHistory[0].resolution_text===item.chosen.resolution_text,'saved_bridge_mismatch')
     item.afterChoice=loaded.snapshot.seriesState
