@@ -163,6 +163,7 @@ export const repairStoryCandidateTextLengths = async (
   candidate: StoryCandidate,
   validationErrors: string[],
   retryFeedback = '',
+  timeoutMs = 30_000,
 ): Promise<StoryCandidate> => {
   const prompts = buildTextLengthRepairPrompts(context, candidate, validationErrors, retryFeedback)
   const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
@@ -173,7 +174,7 @@ export const repairStoryCandidateTextLengths = async (
     buildTextLengthRepairOutputSchema(context, validationErrors),
     localizedSystem,
     prompts.user,
-    30_000,
+    timeoutMs,
     3000,
     'none',
   )

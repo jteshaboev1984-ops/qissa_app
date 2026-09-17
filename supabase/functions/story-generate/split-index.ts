@@ -10,6 +10,7 @@ import { buildSafeFallback } from './fallback.ts'
 import { adjudicateStoryFear, evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { clearAdjudicatedNonSevereViolence, combineSafety, moderationNeedsFearAdjudication, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
+import { hasSafetyBudget, stageTimeoutMs, STORY_REQUEST_BUDGET_MS, STORY_SAFETY_RESERVE_MS } from './latency-budget.ts'
 import { blueprintRuleSafetyCategories, enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintHeroReferences, normalizeStoryBlueprintMemoryKeys, repairBlueprintDecisionPoint, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
 import { childVisibleStorySafetyText } from './story-safety-projection.ts'
 import { isTextRepairCorrectionEligible, isTextRepairEligibleFailure } from './repair-routing.ts'
@@ -144,6 +145,8 @@ const candidateValidationMetrics = (candidate: StoryCandidate): string[] => [
 const compactFailureTrace = (items: string[]): string => items.join('>').slice(0, 480)
 
 Deno.serve(async (request: Request) => {
+  const requestStartedAt = Date.now()
+  const deadlineAt = requestStartedAt + STORY_REQUEST_BUDGET_MS
   const origin = request.headers.get('origin')
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(origin) })
   if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, origin)
@@ -199,11 +202,31 @@ Deno.serve(async (request: Request) => {
   let providerCalls = 0
   let initialStoryWords = 0
   let lastFailureClass = 'unknown'
+  let architectElapsedMs = 0
+  // Full Narrator plus worst mandatory safety path must remain possible after Architect.
+  const architectTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, 30_000 + STORY_SAFETY_RESERVE_MS)
+  const budgetFallback = (stage: string): Response => {
+    lastFailureClass = 'time-budget'
+    trace.push(`${stage}:time-budget`)
+    return safeFallback(context, origin, 'generation-time-budget', {
+      ...runtimeProviderMetadata,
+      ...claimMetadata(claim),
+      'X-QISSA-Generation-Failure-Class': lastFailureClass,
+      'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
+      'X-QISSA-Provider-Calls': String(providerCalls),
+      'X-QISSA-Architect-Elapsed-Ms': String(architectElapsedMs),
+      'X-QISSA-Architect-Timeout-Ms': String(architectTimeoutMs ?? 0),
+      'X-QISSA-Blueprint-Decision-Repair': blueprintDecisionPointRepaired ? 'template' : 'none',
+    })
+  }
+  if (architectTimeoutMs === null) return budgetFallback('architect')
+  const architectCallStartedAt = Date.now()
 
   try {
     providerCalls += 1
-    blueprint = await generateStoryBlueprint(openAiApiKey, architectModel, context)
+    blueprint = await generateStoryBlueprint(openAiApiKey, architectModel, context, architectTimeoutMs)
   } catch (error) {
+    architectElapsedMs = Date.now() - architectCallStartedAt
     const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
     lastFailureClass = providerFailureClass(reason)
     trace.push(`architect:${lastFailureClass}`)
@@ -213,8 +236,11 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Provider-Calls': String(providerCalls),
+      'X-QISSA-Architect-Elapsed-Ms': String(architectElapsedMs),
+      'X-QISSA-Architect-Timeout-Ms': String(architectTimeoutMs),
     })
   }
+  architectElapsedMs = Date.now() - architectCallStartedAt
 
   blueprint = enforceStoryBlueprintContextContract(context, blueprint)
   const normalizedBlueprint = normalizeStoryBlueprintMemoryKeys(context, blueprint)
@@ -247,9 +273,11 @@ Deno.serve(async (request: Request) => {
     })
   }
 
+  const narrationTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, STORY_SAFETY_RESERVE_MS)
+  if (narrationTimeoutMs === null) return budgetFallback('narrator')
   try {
     providerCalls += 1
-    const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint)
+    const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, '', narrationTimeoutMs)
     candidate = narrationToCandidate(context, blueprint, narration)
     initialStoryWords = wordCount(candidate.story_text)
   } catch (error) {
@@ -311,6 +339,8 @@ Deno.serve(async (request: Request) => {
   if (validationErrors.length > 0 && isTextRepairEligibleFailure(validationErrors)) {
     const repairBaseCandidate = candidate
     const repairBaseErrors = [...validationErrors]
+    const repairTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, STORY_SAFETY_RESERVE_MS)
+    if (repairTimeoutMs === null) return budgetFallback('repair')
     try {
       providerCalls += 1
       candidate = await repairStoryCandidateTextLengths(
@@ -319,6 +349,8 @@ Deno.serve(async (request: Request) => {
         context,
         repairBaseCandidate,
         repairBaseErrors,
+        '',
+        repairTimeoutMs,
       )
       repairUsed = true
       validationErrors = validateCandidate(context, candidate)
@@ -327,7 +359,8 @@ Deno.serve(async (request: Request) => {
         trace.push(`repair-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
       }
 
-      if (validationErrors.length > 0 && isTextRepairCorrectionEligible(validationErrors)) {
+      const repairRetryTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, STORY_SAFETY_RESERVE_MS)
+      if (validationErrors.length > 0 && isTextRepairCorrectionEligible(validationErrors) && repairRetryTimeoutMs !== null) {
         providerCalls += 1
         repairRetryUsed = true
         const repairRetryFeedback = [
@@ -348,12 +381,15 @@ Deno.serve(async (request: Request) => {
           repairBaseCandidate,
           repairBaseErrors,
           repairRetryFeedback,
+          repairRetryTimeoutMs,
         )
         validationErrors = validateCandidate(context, candidate)
         if (validationErrors.length > 0) {
           lastFailureClass = 'validation'
           trace.push(`repair-retry-validation:${validationErrors.join(',')}[${candidateValidationMetrics(candidate).join(',')}]`)
         }
+      } else if (validationErrors.length > 0 && isTextRepairCorrectionEligible(validationErrors)) {
+        trace.push('repair-retry:skipped-time-budget')
       }
     } catch (error) {
       const reason = error instanceof Error ? error.message.slice(0, 240) : 'provider_error'
@@ -375,12 +411,13 @@ Deno.serve(async (request: Request) => {
     }
   }
 
-  if (validationErrors.length > 0 && escalationModel && escalationModel !== narratorModel) {
+  const escalationTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, STORY_SAFETY_RESERVE_MS)
+  if (validationErrors.length > 0 && escalationModel && escalationModel !== narratorModel && escalationTimeoutMs !== null) {
     try {
       providerCalls += 1
       narratorModelUsed = escalationModel
       const retryFeedback = `Luna narration still failed deterministic validation after bounded correction: ${validationErrors.join(', ')}. Keep the immutable blueprint exactly unchanged and correct only the narration.`
-      const narration = await generateStoryNarration(openAiApiKey, escalationModel, context, blueprint, retryFeedback)
+      const narration = await generateStoryNarration(openAiApiKey, escalationModel, context, blueprint, retryFeedback, escalationTimeoutMs)
       candidate = narrationToCandidate(context, blueprint, narration)
       escalationUsed = true
       validationErrors = validateCandidate(context, candidate)
@@ -432,6 +469,7 @@ Deno.serve(async (request: Request) => {
     })
   }
 
+  if (!hasSafetyBudget(deadlineAt, Date.now())) return budgetFallback('safety')
   try {
     providerCalls += 1
     const [evaluation, moderation] = await Promise.all([
@@ -489,6 +527,8 @@ Deno.serve(async (request: Request) => {
         ...runtimeProviderMetadata,
         ...claimMetadata(claim),
         'X-QISSA-Generation-Source': 'openai-structured',
+        'X-QISSA-Architect-Elapsed-Ms': String(architectElapsedMs),
+        'X-QISSA-Architect-Timeout-Ms': String(architectTimeoutMs),
         'X-QISSA-Generation-Repair': repairUsed ? 'text-length' : 'none',
       'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
         'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',

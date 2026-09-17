@@ -111,6 +111,7 @@ export const generateStoryBlueprint = async (
   apiKey: string,
   model: string,
   context: NormalizedStoryContext,
+  timeoutMs = 30_000,
 ): Promise<StoryBlueprint> => {
   const prompts = buildArchitectPrompts(context)
   const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)} ${storyArchitectEditorialGuidance(context)}`
@@ -121,7 +122,7 @@ export const generateStoryBlueprint = async (
     storyBlueprintSchema,
     localizedSystem,
     prompts.user,
-    18_000,
+    timeoutMs,
     1800,
     'none',
   )
@@ -133,6 +134,7 @@ export const generateStoryNarration = async (
   context: NormalizedStoryContext,
   blueprint: StoryBlueprint,
   retryReason = '',
+  timeoutMs = 30_000,
 ): Promise<StoryNarration> => {
   const prompts = buildNarratorPrompts(context, blueprint, retryReason)
   const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)} ${storyNarratorEditorialGuidance(context)}`
@@ -143,7 +145,7 @@ export const generateStoryNarration = async (
     storyNarrationSchema,
     localizedSystem,
     prompts.user,
-    30_000,
+    timeoutMs,
     3200,
     'none',
   )
