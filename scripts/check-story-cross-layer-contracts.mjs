@@ -40,7 +40,7 @@ for (const errors of [
   ['story_too_short', 'uzbek_child_language_requires_rewrite'],
 ]) {
   assert.equal(textRepairRequiresFullStoryRewrite(context, errors), true)
-  const schema = buildTextLengthRepairOutputSchema(context, errors)
+  const schema = buildTextLengthRepairOutputSchema(context, errors, candidate)
   const prompt = buildTextLengthRepairPrompts(context, candidate, errors)
   assert.equal(schema.properties.story_rewrite.type, 'string')
   assert.equal(schema.properties.story_expansion.type, 'null')
@@ -51,7 +51,7 @@ for (const errors of [
 }
 const lengthOnly = ['story_too_short']
 assert.equal(textRepairRequiresFullStoryRewrite(context, lengthOnly), false)
-assert.equal(buildTextLengthRepairOutputSchema(context, lengthOnly).properties.story_expansion.type, 'string')
+assert.equal(buildTextLengthRepairOutputSchema(context, lengthOnly, candidate).properties.story_expansion.type, 'string')
 assert.ok(JSON.parse(buildTextLengthRepairPrompts(context, candidate, lengthOnly).user).repair_plan.story_expansion)
 
 // C2: reject unrepairable Architect-owned defects BEFORE invoking a paid Narrator.

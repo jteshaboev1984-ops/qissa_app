@@ -17,7 +17,7 @@ const candidate = {
 }
 const errors = ['choice_resolution_too_short']
 assert.equal(textRepairRequiresFullStoryRewrite(context, errors), false)
-const schema = buildTextLengthRepairOutputSchema(context, errors)
+const schema = buildTextLengthRepairOutputSchema(context, errors, candidate)
 assert.equal(schema.properties.title_rewrite.type, 'null')
 assert.equal(schema.properties.story_rewrite.type, 'null')
 assert.equal(schema.properties.story_expansion.type, 'null')

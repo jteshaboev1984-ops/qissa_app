@@ -358,7 +358,7 @@ requireText('story prompts', prompts, [
   'target_additional_words',
   'desired_total_after_insertion',
   'existing_final_choice_setup_paragraph',
-  'choice_resolutions must contain exactly the choice_ids listed in repair_plan.choice_resolutions',
+  'choice_resolutions is an object with required choice_1 and choice_2 slots',
   'Every other field of the existing candidate is immutable',
   'Do not introduce a new durable object, clue, relationship, location, mechanism state, branch consequence, canon fact, problem or mission',
   'maximum_characters: 320',
