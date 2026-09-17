@@ -362,6 +362,31 @@ export const enforceStoryBlueprintContextContract = (
   ? { ...blueprint, choices: [], decision_point: '', next_episode_preview: '' }
   : blueprint
 
+const blueprintDecisionPointRepairErrors = new Set([
+  'blueprint_choice_menu_meta_phrasing',
+  'blueprint_choice_menu_repeats_cards',
+])
+
+export const repairBlueprintDecisionPoint = (
+  context: Pick<NormalizedStoryContext, 'episodeIndex' | 'language'>,
+  blueprint: StoryBlueprint,
+  errors: string[],
+): { blueprint: StoryBlueprint; repaired: boolean } => {
+  if (context.episodeIndex !== 1 || errors.length === 0 || errors.some((error) => !blueprintDecisionPointRepairErrors.has(error))) {
+    return { blueprint, repaired: false }
+  }
+
+  const neutralDecisionPoint: Record<NormalizedStoryContext['language'], string> = {
+    ru: 'Что {{HERO}} сделает дальше?',
+    uz: '{{HERO}} endi nima qiladi?',
+    kz: '{{HERO}} енді не істейді?',
+  }
+  return {
+    blueprint: { ...blueprint, decision_point: neutralDecisionPoint[context.language] },
+    repaired: true,
+  }
+}
+
 // Return fixed category identifiers only; never expose generated blueprint prose.
 export const blueprintRuleSafetyCategories = (context: NormalizedStoryContext, blueprint: StoryBlueprint): string[] =>
   Object.entries(scanRuleBasedSafetyValues(context, blueprintNaturalLanguageValues(blueprint)))
