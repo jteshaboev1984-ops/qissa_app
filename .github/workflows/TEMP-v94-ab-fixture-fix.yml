@@ -1,0 +1,32 @@
+name: TEMP v94 AB fixture correction
+on:
+  push:
+    branches: ["audit/v94-e1-e2-ab-single-session-20260917"]
+    paths: ["audit/TEMP-v94-ab-fixture-fix.txt"]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'FIX V94 AB DRY FIXTURE ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v7
+      - name: Correct only synthetic choice bridge length
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/TEMP-v94-e1-e2-ab-once.mjs')
+          txt = p.read_text()
+          old = "resolution_text:'Malika qo‘shiqni boshladi. Do‘stlari kelib uni tingladi. Ular ohista kuyga qo‘shildilar. Barchasi birga quvondi.'"
+          new = "resolution_text:'Malika qo‘shiqni boshladi. Do‘stlari kelib uni tingladi. Ular ohista kuyga qo‘shildilar. Barchasi birga quvondi. Qush ham shoxda mayin sayradi. Malika hammani tinglab, birgalikda kuylash ularga yoqqanini ko‘rdi.'"
+          assert txt.count(old) == 1
+          p.write_text(txt.replace(old,new))
+          print('Synthetic-only bridge expanded; validator unchanged')
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add scripts/TEMP-v94-e1-e2-ab-once.mjs
+          git diff --cached --check
+          git commit -m 'audit: correct synthetic bridge fixture to valid length'
+          git push origin HEAD:audit/v94-e1-e2-ab-single-session-20260917
