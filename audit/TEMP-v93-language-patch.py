@@ -32,4 +32,11 @@ if pkg.count(old) != 1:
 pkg = pkg.replace(old, '"@types/react": "^18.3.7"')
 package.write_text(pkg, encoding='utf-8')
 
-print('V93_SAFE_PATCH_COMPLETE: 1 import, 1 metrics function, 5 calls, package dependency restored; no external provider.')
+regression = Path('scripts/check-story-language-diagnostics.mjs')
+code = regression.read_text(encoding='utf-8')
+old_call = "buildTextLengthRepairOutputSchema(context, ['story_language_mismatch', 'story_too_short'])"
+if code.count(old_call) != 1:
+    raise SystemExit('PATCH_GUARD_FAILED candidate-scoped v92 schema test')
+regression.write_text(code.replace(old_call, "buildTextLengthRepairOutputSchema(context, ['story_language_mismatch', 'story_too_short'], short)"), encoding='utf-8')
+
+print('V93_SAFE_PATCH_COMPLETE: import, metrics, 5 calls, package restored, schema test corrected; no external provider.')
