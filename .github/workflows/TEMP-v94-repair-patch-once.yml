@@ -1,0 +1,40 @@
+name: TEMP v94 repair patch once
+on:
+  push:
+    branches: ["fix/v94-e1-short-repair-budget"]
+    paths: ["audit/TEMP-v94-repair-trigger.txt"]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'AUDIT APPLY V94 RETRY PATCH ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Guard exact branch HEAD
+        run: test "$(git ls-remote origin refs/heads/fix/v94-e1-short-repair-budget | cut -f1)" = "$GITHUB_SHA"
+      - name: Apply exact bounded prompt-only source patch
+        run: python audit/TEMP-v94-repair-patch.py
+      - name: Full provider-free regression, safety and Edge typecheck
+        run: |
+          npm ci
+          npm run check:story-ai-split
+          npm run check:story-ai
+          npm run check:story-cost-guard
+          npm run typecheck:story-ai
+      - name: Commit only source fix after green
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add supabase/functions/story-generate/prompt.ts
+          git diff --cached --check
+          git commit -m 'repair: budget longer E1 insertion only after proven underlength retry'
+          git push origin HEAD:fix/v94-e1-short-repair-budget
+# Remove this workflow, the patch script and trigger before any PR merge. Never calls providers.
