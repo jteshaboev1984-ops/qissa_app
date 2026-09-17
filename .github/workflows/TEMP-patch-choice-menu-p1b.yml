@@ -1,0 +1,32 @@
+name: TEMP patch choice menu P1b
+on:
+  push:
+    branches: ["fix/v88-choice-menu-predicate-precision"]
+    paths: ["audit/TEMP-patch-choice-menu-p1b.txt"]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/v88-choice-menu-predicate-precision
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Apply branch-distinct overlap patch
+        run: node scripts/TEMP-patch-choice-menu-overlap.mjs
+      - name: Provider-free regression
+        run: npm run check:story-ai-split
+      - name: Typecheck Story AI
+        run: npm run typecheck:story-ai
+      - name: Commit source patch only
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add supabase/functions/story-generate/safety.ts
+          git diff --cached --check
+          git commit -m "fix: compare branch-distinct choice-menu wording"
+          git push origin HEAD:fix/v88-choice-menu-predicate-precision
