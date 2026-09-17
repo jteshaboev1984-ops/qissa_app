@@ -1,0 +1,30 @@
+name: TEMP patch choice menu P1
+on:
+  push:
+    branches: ["fix/v88-choice-menu-predicate-precision"]
+    paths: ["audit/TEMP-patch-choice-menu-p1.txt"]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/v88-choice-menu-predicate-precision
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Apply sentence-local meta predicate patch
+        run: node scripts/TEMP-patch-choice-menu-meta.mjs
+      - name: Commit source patch before regression
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add supabase/functions/story-generate/safety.ts
+          git diff --cached --check
+          git commit -m "fix: keep choice-menu meta detection within sentence boundaries"
+          git push origin HEAD:fix/v88-choice-menu-predicate-precision
+      - name: Provider-free regression after first precision fix
+        run: npm run check:story-ai-split
