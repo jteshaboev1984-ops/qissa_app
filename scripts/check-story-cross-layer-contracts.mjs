@@ -75,10 +75,10 @@ for (const rows of [
 }
 assert.equal(narrationToCandidate(context, blueprint, narration).choices[1].resolution_text, narration.choice_resolutions[1].resolution_text)
 
-// C4: upstream rejects its own choice-menu scaffolding; neutral question stays allowed.
+// C4: upstream rejects its own meta choice-menu scaffolding; neutral question stays allowed.
 const badMenu = structuredClone(blueprint)
 badMenu.decision_point = 'Buni qilish mumkin, yoki boshqacha qilish mumkin?'
-assert.ok(validateStoryBlueprint(context, badMenu).includes('blueprint_choice_menu_scaffolding'), 'C4 immutable menu evades Architect')
+assert.ok(validateStoryBlueprint(context, badMenu).includes('blueprint_choice_menu_meta_phrasing'), 'C4 immutable menu evades Architect')
 assert.deepEqual(validateStoryBlueprint(context, blueprint), [], 'C4 neutral decision falsely rejected')
 
 // C5: malformed preview returns structured validation errors, never throws.
@@ -140,7 +140,7 @@ assert.ok(staleOneTimeContext && staleOneTimeContext.episodeIndex === 1 && stale
 // C11: Architect must reject a decision point that itself repeats both structured choice labels.
 const directMenu = structuredClone(blueprint)
 directMenu.decision_point = 'Barglardan rasm yasash yoki birgalikda qo‘shiq aytish?'
-assert.ok(validateStoryBlueprint(context, directMenu).includes('blueprint_choice_menu_scaffolding'), 'C11 direct structured menu reached paid Narrator')
+assert.ok(validateStoryBlueprint(context, directMenu).includes('blueprint_choice_menu_repeats_cards'), 'C11 direct structured menu reached paid Narrator')
 assert.deepEqual(validateStoryBlueprint(context, blueprint), [], 'C11 neutral decision point falsely rejected')
 
 console.log('Cross-layer story contracts GREEN: C1–C11, including one-time episode identity and upstream direct-menu overlap rejection; zero provider calls.')
