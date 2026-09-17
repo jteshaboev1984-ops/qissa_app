@@ -219,6 +219,12 @@ export const repairStoryCandidateTextLengths = async (
   }
 }
 
+const humiliationEvidenceInstruction = [
+  'Humiliation is targeted mockery, belittling, shaming or demeaning treatment of a character, including narrator framing and branch outcomes. A harmless shared laugh, surprise or an ordinary mistake alone is not evidence of humiliation; laughter directed at a character to shame or ridicule them is.',
+  'If humiliation=true, notes MUST contain exactly one item beginning humiliation_evidence: followed by an exact 8-160 character excerpt from ONE child-visible field that supports the flag. Copy the excerpt verbatim, never paraphrase, invent, or concatenate across story and choices.',
+  'If you cannot identify a supporting excerpt but still consider the case uncertain, keep the conservative flag and set humiliation_evidence:UNAVAILABLE. This is a missing-evidence marker, not supporting evidence. If humiliation=false, include no humiliation_evidence item.',
+].join(' ')
+
 const safetyVerdictContract = [
   'The safety flags are exhaustive for this classifier and the structured verdict must be internally consistent.',
   'If every flag is false, approved MUST be true, risk_level MUST be low, and required_action MUST be publish.',
@@ -262,7 +268,7 @@ const requestSafetyEvaluation = async (
     model,
     'qissa_safety_evaluation',
     safetyOutputSchema,
-    `${prompts.system} ${safetyVerdictContract} ${safetySessionContract(context)}${retryInstruction}`,
+    `${prompts.system} ${safetyVerdictContract} ${humiliationEvidenceInstruction} ${safetySessionContract(context)}${retryInstruction}`,
     prompts.user,
     timeoutMs,
     700,
