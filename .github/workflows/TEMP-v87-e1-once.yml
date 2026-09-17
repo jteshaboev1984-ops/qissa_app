@@ -1,0 +1,55 @@
+name: TEMP v87 one-shot E1 audit
+on:
+  push:
+    branches:
+      - audit/v87-e1-once-20260917
+    paths:
+      - audit/TEMP-v87-e1-trigger.txt
+permissions:
+  contents: read
+concurrency:
+  group: qissa-v87-one-shot-e1-20260917
+  cancel-in-progress: false
+jobs:
+  e1:
+    if: github.event.head_commit.message == 'RUN V87 E1 DRY PREFLIGHT' || github.event.head_commit.message == 'RUN V87 E1 LIVE ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Provider-free regressions and payload validation
+        if: github.event.head_commit.message == 'RUN V87 E1 DRY PREFLIGHT'
+        run: |
+          node scripts/check-story-memory-event-integrity.mjs
+          node scripts/check-blueprint-safety-boundaries.mjs
+          node scripts/TEMP-v87-e1-once.mjs
+      - name: Verify remote audit HEAD in dry mode
+        if: github.event.head_commit.message == 'RUN V87 E1 DRY PREFLIGHT'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict'
+          const response = await fetch('https://api.github.com/repos/jteshaboev1984-ops/qissa_app/branches/audit%2Fv87-e1-once-20260917', {
+            headers: { authorization: `Bearer ${process.env.GITHUB_TOKEN}`, accept: 'application/vnd.github+json' },
+          })
+          assert.equal(response.status, 200)
+          assert.equal((await response.json()).commit.sha, process.env.GITHUB_SHA)
+          console.log('V87_DRY_HEAD_PASS: no Story AI request')
+          NODE
+      - name: Stage manual admission permit
+        if: github.event.head_commit.message == 'RUN V87 E1 LIVE ONCE'
+        run: |
+          echo 'ONE E1 AFTER 75s; operator check OFF and claims then issue short lease intentionally.'
+          sleep 75
+      - name: Exactly one synthetic E1, no request retry
+        if: github.event.head_commit.message == 'RUN V87 E1 LIVE ONCE'
+        env:
+          QISSA_LIVE: '1'
+          GITHUB_TOKEN: ${{ github.token }}
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/TEMP-v87-e1-once.mjs
+# Historical paid runs must not be rerun; remove workflow/trigger/script after evidence.
