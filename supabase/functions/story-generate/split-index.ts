@@ -10,7 +10,7 @@ import { buildSafeFallback } from './fallback.ts'
 import { adjudicateStoryFear, evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { clearAdjudicatedNonSevereViolence, combineSafety, moderationNeedsFearAdjudication, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
-import { enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintHeroReferences, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
+import { blueprintRuleSafetyCategories, enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintHeroReferences, normalizeStoryBlueprintMemoryKeys, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
 import { childVisibleStorySafetyText } from './story-safety-projection.ts'
 import { isTextRepairCorrectionEligible, isTextRepairEligibleFailure } from './repair-routing.ts'
 import { claimStoryGeneration, isInstallationId, readStoryAiRuntimeState, type GenerationClaim } from './usage.ts'
@@ -231,6 +231,9 @@ Deno.serve(async (request: Request) => {
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
+      ...(blueprintErrors.includes('blueprint_rule_safety') ? {
+        'X-QISSA-Blueprint-Safety-Categories': blueprintRuleSafetyCategories(context, blueprint).join(','),
+      } : {}),
     })
   }
 
