@@ -13,6 +13,10 @@ const metaCases = [
     text: 'Barglardan rasm yasash mumkin yoki yong‘oqlardan bezak qilish mumkin.',
   },
   {
+    label: 'UZ explicit alternatives across sentences', language: 'uz', expected: true,
+    text: 'Barglardan rasm yasash mumkin. Yana yong‘oqlardan bezak qilish mumkin.',
+  },
+  {
     label: 'RU natural possibility across sentence boundaries', language: 'ru', expected: false,
     text: 'Малика задумалась. Как можно помочь друзьям? Может быть, они найдут другой путь, или можно немного подождать.',
   },
@@ -21,12 +25,20 @@ const metaCases = [
     text: 'Можно сделать рисунок, или можно спеть песню.',
   },
   {
+    label: 'RU explicit alternatives across sentences', language: 'ru', expected: true,
+    text: 'Можно начать с веточек. А можно сначала обратиться к Степашке.',
+  },
+  {
     label: 'KZ natural possibility across sentence boundaries', language: 'kz', expected: false,
     text: 'Малика ойланып қалды. Достарына қалай көмектесуге болады? Басқа жол іздеуге немесе тағы күтуге болады.',
   },
   {
     label: 'KZ explicit two-option scaffolding in one sentence', language: 'kz', expected: true,
     text: 'Сурет салуға болады немесе ән айтуға болады.',
+  },
+  {
+    label: 'KZ explicit alternatives across sentences', language: 'kz', expected: true,
+    text: 'Сурет салуға болады. Тағы ән айтуға болады.',
   },
 ]
 for (const item of metaCases) {
@@ -47,6 +59,11 @@ assert.equal(
   true,
   'a decision point that names the branch-distinguishing actions must still be rejected',
 )
+assert.equal(
+  textRepeatsStructuredChoiceMenu('Rangli bayroqchalar yasash haqida nima deydi?', choices),
+  false,
+  'mentioning only one branch must not be misclassified as repeating both cards',
+)
 
 const unrelated = [
   { text: 'Barglardan rasm yasash' },
@@ -57,4 +74,4 @@ assert.equal(textRepeatsStructuredChoiceMenu('Endi qahramon nima qiladi?', unrel
 assert.equal(textRepeatsStructuredChoiceMenu('Barglardan rasm yasash yoki mayin qo‘shiq aytish?', unrelated), true,
   'direct restatement of compact cards must remain rejected')
 
-console.log('Choice-menu predicate precision corpus PASS: sentence boundaries and branch-distinct overlap behave as intended; zero provider/HTTP/database calls.')
+console.log('Choice-menu predicate precision corpus PASS: natural cross-sentence reasoning stays allowed, explicit alternative scaffolding remains blocked, and branch-distinct overlap tolerates ordinary suffix changes; zero provider/HTTP/database calls.')
