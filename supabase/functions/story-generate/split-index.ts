@@ -10,6 +10,7 @@ import { buildSafeFallback } from './fallback.ts'
 import { adjudicateStoryFear, evaluateStorySafety, moderateStoryText, repairStoryCandidateTextLengths } from './openai.ts'
 import { clearAdjudicatedNonSevereViolence, combineSafety, moderationNeedsFearAdjudication, scanRuleBasedSafety, validateCandidate } from './safety.ts'
 import { candidateLanguageMismatchFieldCodes } from './language-diagnostics.ts'
+import { locateHumiliationEvidence } from './humiliation-evidence.ts'
 import { generateStoryBlueprint, generateStoryNarration } from './split-openai.ts'
 import { hasSafetyBudget, stageTimeoutMs, STORY_REQUEST_BUDGET_MS, STORY_SAFETY_RESERVE_MS } from './latency-budget.ts'
 import { blueprintRuleSafetyCategories, enforceStoryBlueprintContextContract, narrationToCandidate, normalizeStoryBlueprintHeroReferences, normalizeStoryBlueprintMemoryKeys, repairBlueprintDecisionPoint, validateStoryBlueprint, type StoryBlueprint } from './story-architecture.ts'
@@ -495,6 +496,7 @@ Deno.serve(async (request: Request) => {
       }
     }
     const safety = combineSafety(ruleFlags, evaluation, moderationForSafety)
+    const humiliationEvidenceField = locateHumiliationEvidence(candidate, evaluation)
     if (!safety.approved) {
       lastFailureClass = 'semantic-safety'
       const flags = Object.entries(safety.flags).filter(([, value]) => value).map(([key]) => key)
@@ -510,7 +512,7 @@ Deno.serve(async (request: Request) => {
           ? `mod=${moderationCategories.join(',') || 'flagged'}`
           : 'mod=clear',
       ].join(';')
-      trace.push(`semantic-safety:${flags.join(',') || safety.required_action}${fearDetail ? `:${fearDetail}` : ''}[${sourceDetail}]`)
+      trace.push(`semantic-safety:${flags.join(',') || safety.required_action}${fearDetail ? `:${fearDetail}` : ''}[${sourceDetail}${evaluation.flags.humiliation ? `;humiliation_evidence=${humiliationEvidenceField}` : ''}]`)
       return safeFallback(context, origin, 'generation-or-safety-failed', {
         ...runtimeProviderMetadata,
         ...claimMetadata(claim),
