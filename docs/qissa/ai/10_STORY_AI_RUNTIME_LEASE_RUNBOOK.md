@@ -24,6 +24,12 @@ This protects against an abandoned AI-ON state after a chat timeout or an interr
 4. **In a `finally`/always-run cleanup step**, immediately set `enabled=false, updated_at=clock_timestamp()` and verify OFF authoritatively. Remove test profile and installation credential using approved authenticated APIs, and delete temporary triggers/scripts.
 5. Log exact deployment SHA, provider-model headers/counters (not invoices), run ID, editor scores and observed rollback/cleanup. If the test or its cleanup fails, treat release as NO-GO; expiry only limits additional admitted requests.
 
+### Avoid operator/runner timing races (2026-09-17 v93 lesson)
+
+A fixed workflow `sleep` is not a dependable synchronization mechanism. In the [v93 audit](reviews/2026-09-17_v93_e1_lease_race_checkpoint.md), the single POST arrived eight seconds before the operator enabled AI; the provider gate correctly returned `runtime-disabled` and no model work occurred. **Never wait until the final few seconds of a sleeping runner step to authorize it.** Chat/tool latency is unpredictable.
+
+For any separately authorized future one-shot test, fully complete provider-free preflight and confirm the deployed SHA while OFF. Prepare a verified immutable single-request trigger, then issue the fresh lease, read back ON and its timestamp, and **immediately dispatch** the one-shot live trigger with no long sleep. If GitHub startup consumes the 180-second lease, let the request fail closed; do not automatically renew or rerun. Observe the claim counter and set OFF promptly after admission, or immediately on a failure; verify OFF and the claim delta regardless of outcome. Record provider-call counts separately from admission claims. This sequencing changes operator procedure only; it does not relax safety or justify extra paid attempts.
+
 ## Regression and release controls
 
 `node scripts/check-story-runtime-lease.mjs` tests pure gate behavior at lease boundaries, missing/invalid/future timestamps, and that both story entrypoints read the gate before accounting/provider calls. Official CI runs it on PRs. No SQL migration or new provider request is needed. Deployment is separate from merge; the feature is ineffective until the updated `usage.ts` is actually deployed to the production Edge Function. With production flag currently OFF, deployment should not activate AI.
