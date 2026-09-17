@@ -1,0 +1,40 @@
+name: TEMP apply v91 story latency budget
+on:
+  push:
+    branches: ["fix/v91-story-latency-budget"]
+    paths: ["audit/TEMP-v91-trigger.txt"]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'AUDIT APPLY V91 SOURCE ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Confirm precise event HEAD; prevent stale writes
+        run: |
+          test "$(git ls-remote origin refs/heads/fix/v91-story-latency-budget | cut -f1)" = "$GITHUB_SHA"
+      - name: Apply scoped provider-free source patch
+        run: python audit/TEMP-v91-patch.py
+      - name: Verify cost, latency, other Story AI contracts, typecheck
+        run: |
+          npm run check:story-cost-guard
+          npm run check:story-ai-split
+          npm run check:story-ai
+          npm run typecheck:story-ai
+      - name: Commit only functional files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add supabase/functions/story-generate/split-openai.ts supabase/functions/story-generate/openai.ts supabase/functions/story-generate/split-index.ts scripts/check-story-cost-guard.mjs
+          git diff --cached --check
+          git commit -m 'fix: allocate generation stages within absolute deadline and safety reserve'
+          git push origin HEAD:fix/v91-story-latency-budget
+# Delete this temporary workflow, trigger, and patch script from PR branch before merging.
