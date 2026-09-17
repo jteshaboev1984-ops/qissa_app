@@ -450,9 +450,9 @@ export const choiceMenuScaffoldingNeedsRewrite = (language: string, text: string
     kz: /(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])/iu,
   }
   const explicitContinuation: Record<string, RegExp> = {
-    ru: /^[\s«„“”"'—-]*а\s+можно(?![\p{L}\p{M}\p{N}_])/iu,
-    uz: /^[\s«„“”"'—-]*yana(?![\p{L}\p{M}\p{N}_])[\s\S]{0,100}(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])/iu,
-    kz: /^[\s«„“”"'—-]*тағы(?![\p{L}\p{M}\p{N}_])[\s\S]{0,100}(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])/iu,
+    ru: /^[\s«„“”"'—-]*(?:а|или)\s+можно(?![\p{L}\p{M}\p{N}_])/iu,
+    uz: /^[\s«„“”"'—-]*(?:yana|yoki)(?![\p{L}\p{M}\p{N}_])[\s\S]{0,100}(?<![\p{L}\p{M}\p{N}_])mumkin(?![\p{L}\p{M}\p{N}_])/iu,
+    kz: /^[\s«„“”"'—-]*(?:тағы|немесе)(?![\p{L}\p{M}\p{N}_])[\s\S]{0,100}(?<![\p{L}\p{M}\p{N}_])болады(?![\p{L}\p{M}\p{N}_])/iu,
   }
   const modal = modalPattern[language]
   const continuation = explicitContinuation[language]
