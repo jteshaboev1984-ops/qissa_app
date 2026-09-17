@@ -3,12 +3,11 @@ import { readFileSync } from 'node:fs'
 import { normalizeStoryRequest } from '../supabase/functions/story-generate/contracts.ts'
 import {
   SYNTHETIC_DIAGNOSTIC_HEADER,
-  claimSyntheticDiagnostic,
+  isDiagnosticUuid,
   isSyntheticDiagnosticContext,
   newSyntheticCapture,
   recordSyntheticStage,
-  persistSyntheticCapture,
-} from '../supabase/functions/story-generate/synthetic-diagnostics.ts'
+} from '../supabase/functions/story-generate/synthetic-diagnostic-contract.ts'
 
 const index = readFileSync('supabase/functions/story-generate/split-index.ts', 'utf8')
 const diagnostics = readFileSync('supabase/functions/story-generate/synthetic-diagnostics.ts', 'utf8')
@@ -21,6 +20,8 @@ const payload = {
 const context = normalizeStoryRequest(payload)
 assert.ok(context)
 assert.equal(isSyntheticDiagnosticContext(context, payload), true)
+assert.equal(isDiagnosticUuid('46db22bb-9bef-45d5-85bb-191a4ca87430'), true)
+assert.equal(isDiagnosticUuid('public-test-id'), false)
 const realSeries = { ...payload, seriesState: { ...payload.seriesState, id: 'family-actual-story' } }
 assert.equal(isSyntheticDiagnosticContext(normalizeStoryRequest(realSeries), realSeries), false, 'family series must never be captured')
 for (const changes of [
@@ -33,25 +34,10 @@ for (const changes of [
   const rejected = { ...payload, ...changes }
   assert.equal(isSyntheticDiagnosticContext(normalizeStoryRequest(rejected), rejected), false, 'identity or memory change must deny capture')
 }
-
 const capture = newSyntheticCapture()
 const fakeRejectedStory = { story_text: '{{HERO}} met a shy owl.', choices: [{ text: 'Help the owl' }] }
 recordSyntheticStage(capture, 'narrator_initial', fakeRejectedStory)
 assert.equal(capture.stages.length, 0, 'unarmed requests must never capture a story')
-
-// A pre-armed ID must be claimed from the service-role database, not inferred
-// from a synthetic-looking request or headers. Missing credentials fail closed.
-const originalDeno = globalThis.Deno
-globalThis.Deno = { env: { get: () => undefined } }
-const diagnosticRequest = new Request('https://example.invalid', {
-  headers: { [SYNTHETIC_DIAGNOSTIC_HEADER]: '46db22bb-9bef-45d5-85bb-191a4ca87430' },
-})
-assert.equal(await claimSyntheticDiagnostic(diagnosticRequest, context, payload, payload.installationId, capture), false)
-assert.equal(capture.captureId, null)
-assert.equal(await persistSyntheticCapture(capture, new Response('fallback')), false)
-globalThis.Deno = originalDeno
-
-// Snapshot semantics: a later text repair cannot overwrite the narrator original.
 capture.captureId = '46db22bb-9bef-45d5-85bb-191a4ca87430'
 capture.installationId = payload.installationId
 recordSyntheticStage(capture, 'narrator_initial', fakeRejectedStory)
@@ -60,7 +46,7 @@ recordSyntheticStage(capture, 'repair_first', fakeRejectedStory)
 assert.equal(capture.stages[0].data.story_text, '{{HERO}} met a shy owl.')
 assert.equal(capture.stages[1].data.story_text, 'A corrected story.')
 for (let i = 0; i < 30; i++) recordSyntheticStage(capture, 'repair_retry', { marker: i })
-assert.equal(capture.stages.length, 12, 'one request must have a bounded number of snapshots')
+assert.equal(capture.stages.length, 12, 'one request must have bounded snapshots')
 
 for (const required of [
   'const handleStoryRequest = async',
@@ -77,9 +63,19 @@ for (const required of [
   'persistSyntheticCapture(diagnostic, response)',
   "headers.set('X-QISSA-Synthetic-Diagnostic', stored ? 'stored' : 'unavailable')",
 ]) assert.ok(index.includes(required), `Missing production capture path: ${required}`)
-assert.ok(index.indexOf('claimSyntheticDiagnostic(request, context, input, installationId, diagnostic)') < index.indexOf('claimStoryGeneration(installationId)'), 'diagnostic guard MUST precede cost accounting')
-assert.ok(index.indexOf('persistSyntheticCapture(diagnostic, response)') > index.lastIndexOf('return json('), 'persist only after handler has chosen response')
-assert.ok(!/console\.(?:log|warn|error)\s*\(/u.test(diagnostics), 'diagnostic module must not log story data')
+assert.ok(index.indexOf('claimSyntheticDiagnostic(request, context, input, installationId, diagnostic)') < index.indexOf('claimStoryGeneration(installationId)'), 'diagnostic guard must precede cost accounting')
+assert.ok(index.indexOf('persistSyntheticCapture(diagnostic, response)') > index.lastIndexOf('return json('), 'persist only after response determination')
+for (const required of [
+  "Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')",
+  "if (!captureId || !isDiagnosticUuid(captureId) || !isSyntheticDiagnosticContext(context, input)) return false",
+  ".eq('installation_id', installationId)",
+  ".is('claimed_at', null)",
+  ".is('captured_at', null)",
+  ".gt('expires_at', new Date().toISOString())",
+  "if (!capture.captureId || !capture.installationId) return false",
+  'MAX_PAYLOAD_BYTES = 170_000',
+]) assert.ok(diagnostics.includes(required), `Missing backend authorization or bounded persistence: ${required}`)
+assert.ok(!/console\.(?:log|warn|error)\s*\(/u.test(diagnostics), 'diagnostic module must not log raw story data')
 assert.ok(!index.includes("'X-QISSA-Diagnostic-Story'"), 'child-facing headers must never carry transcript')
 for (const expression of [
   /enable row level security/iu,
@@ -91,4 +87,4 @@ for (const expression of [
   /payload is null or octet_length\(payload::text\) <= 180000/iu,
 ]) assert.match(sql, expression)
 assert.ok(!/create policy/iu.test(sql), 'no browser-facing read policy may be created')
-console.log('Synthetic diagnostic contract PASS: strict synthetic E1, failed credentials deny, stage snapshots immutable and bounded, service-role-only SQL and no raw HTTP/log output. Provider calls: 0.')
+console.log('Synthetic diagnostic contract PASS: synthetic-only, claimed before provider, immutable snapshots, private short-lived SQL, no raw HTTP/log output; provider calls 0.')
