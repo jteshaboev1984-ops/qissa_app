@@ -1,0 +1,36 @@
+name: TEMP v102 provider-free exact patch
+on:
+  push:
+    branches: ["fix/v102-architect-incomplete-diagnostics-budget-20260918"]
+    paths: ["audit/TEMP-v102-trigger.txt"]
+permissions:
+  contents: write
+concurrency:
+  group: qissa-v102-source-patch-once-20260918
+  cancel-in-progress: false
+jobs:
+  patch:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'APPLY V102 PROVIDER-FREE EXACT PATCH ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Modify only five reviewed files by exact original anchors
+        run: node scripts/TEMP-v102-safe-patch.mjs
+      - name: Provider-free diagnostics and existing core regressions
+        run: |
+          node scripts/check-story-provider-incomplete.mjs
+          node scripts/check-story-cost-guard.mjs
+          node scripts/check-story-ai-split.mjs
+      - name: Commit reviewed code modifications to isolated branch
+        run: |
+          git config user.name 'qissa-ci-patch'
+          git config user.email 'qissa-ci-patch@users.noreply.github.com'
+          git add -- supabase/functions/story-generate/split-openai.ts supabase/functions/story-generate/split-index.ts scripts/check-story-cost-guard.mjs scripts/check-story-ai-split.mjs package.json
+          git diff --cached --check
+          git commit -m 'fix: bound Architect output and expose fixed incomplete categories'
+          git push origin HEAD:refs/heads/fix/v102-architect-incomplete-diagnostics-budget-20260918
+# Never merge this temporary workflow. Delete it, patch script and trigger before PR.
