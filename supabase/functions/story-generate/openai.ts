@@ -39,17 +39,20 @@ const postJson = async (
   apiKey: string,
   body: unknown,
   timeoutMs: number,
+  onRequestAttempt?: () => void,
 ): Promise<unknown> => {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
   try {
+    const serializedBody = JSON.stringify(body)
+    onRequestAttempt?.()
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
       },
-      body: JSON.stringify(body),
+      body: serializedBody,
       signal: controller.signal,
     })
     if (!response.ok) {
@@ -75,6 +78,7 @@ const requestStructured = async <T>(
   timeoutMs: number,
   maxOutputTokens: number,
   reasoningEffort: ReasoningEffort,
+  onRequestAttempt?: () => void,
 ): Promise<T> => {
   const payload = await postJson(RESPONSES_URL, apiKey, {
     model,
@@ -93,7 +97,7 @@ const requestStructured = async <T>(
         schema,
       },
     },
-  }, timeoutMs)
+  }, timeoutMs, onRequestAttempt)
 
   const status = payload && typeof payload === 'object' ? (payload as { status?: unknown }).status : null
   if (status === 'failed') {
@@ -116,6 +120,7 @@ export const generateStoryCandidate = async (
   model: string,
   context: NormalizedStoryContext,
   retryReason: string,
+  onRequestAttempt?: () => void,
 ): Promise<StoryCandidate> => {
   const prompts = buildStoryPrompts(context, retryReason)
   const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
@@ -129,6 +134,7 @@ export const generateStoryCandidate = async (
     30_000,
     4000,
     'none',
+    onRequestAttempt,
   )
 }
 
@@ -155,6 +161,7 @@ export const repairStoryCandidateTextLengths = async (
   validationErrors: string[],
   retryFeedback = '',
   timeoutMs = 30_000,
+  onRequestAttempt?: () => void,
 ): Promise<StoryCandidate> => {
   const prompts = buildTextLengthRepairPrompts(context, candidate, validationErrors, retryFeedback)
   const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)}`
@@ -168,6 +175,7 @@ export const repairStoryCandidateTextLengths = async (
     timeoutMs,
     3000,
     'none',
+    onRequestAttempt,
   )
 
   const storyTooShort = validationErrors.includes('story_too_short')
@@ -259,6 +267,7 @@ const requestSafetyEvaluation = async (
   candidateJson: string,
   additionalInstruction = '',
   timeoutMs = 12_000,
+  onRequestAttempt?: () => void,
 ): Promise<SafetyEvaluation> => {
   const prompts = buildSafetyPrompts(context, candidateJson)
   const retryInstruction = additionalInstruction.trim()
@@ -274,6 +283,7 @@ const requestSafetyEvaluation = async (
     timeoutMs,
     700,
     'none',
+    onRequestAttempt,
   )
 }
 
@@ -281,6 +291,7 @@ const requestHumiliationAdjudication = async (
   apiKey: string,
   model: string,
   candidateJson: string,
+  onRequestAttempt?: () => void,
 ): Promise<HumiliationAdjudication> => requestStructured<HumiliationAdjudication>(
   apiKey,
   model,
@@ -299,12 +310,14 @@ const requestHumiliationAdjudication = async (
   8_000,
   260,
   'low',
+  onRequestAttempt,
 )
 
 const requestFearAdjudication = async (
   apiKey: string,
   model: string,
   candidateJson: string,
+  onRequestAttempt?: () => void,
 ): Promise<FearAdjudication> => requestStructured<FearAdjudication>(
   apiKey,
   model,
@@ -323,18 +336,21 @@ const requestFearAdjudication = async (
   8_000,
   260,
   'low',
+  onRequestAttempt,
 )
 
 export const adjudicateStoryFear = async (
   apiKey: string,
   model: string,
   candidate: StoryCandidate,
+  onRequestAttempt?: () => void,
 ): Promise<FearAdjudication> => {
   const childVisibleText = childVisibleStorySafetyText(candidate)
   const adjudication = await requestFearAdjudication(
     apiKey,
     model,
     JSON.stringify(childVisibleStorySafetyProjection(candidate)),
+    onRequestAttempt,
   )
   const adjudicationErrors = fearAdjudicationConsistencyErrors(adjudication, childVisibleText)
   if (adjudicationErrors.length > 0) throw new Error('openai_fear_adjudication_inconsistent')
@@ -364,9 +380,10 @@ export const evaluateStorySafety = async (
   model: string,
   context: NormalizedStoryContext,
   candidate: StoryCandidate,
+  onRequestAttempt?: () => void,
 ): Promise<SafetyEvaluation> => {
   const candidateJson = JSON.stringify(childVisibleStorySafetyProjection(candidate))
-  const first = await requestSafetyEvaluation(apiKey, model, context, candidateJson)
+  const first = await requestSafetyEvaluation(apiKey, model, context, candidateJson, '', 12_000, onRequestAttempt)
   const firstErrors = safetyEvaluationConsistencyErrors(first)
   let evaluation = first
 
@@ -380,6 +397,7 @@ export const evaluateStorySafety = async (
       candidateJson,
       `Previous structured verdict was internally inconsistent: ${firstErrors.join(',')}. Re-evaluate the exact same story from scratch and obey the verdict consistency contract.`,
       8_000,
+      onRequestAttempt,
     )
     const correctedErrors = safetyEvaluationConsistencyErrors(corrected)
     if (correctedErrors.length > 0) throw new Error('openai_safety_evaluation_inconsistent')
@@ -387,7 +405,7 @@ export const evaluateStorySafety = async (
   }
 
   if (needsIsolatedHumiliationConfirmation(context, evaluation)) {
-    const adjudication = await requestHumiliationAdjudication(apiKey, model, candidateJson)
+    const adjudication = await requestHumiliationAdjudication(apiKey, model, candidateJson, onRequestAttempt)
     const adjudicationErrors = humiliationAdjudicationConsistencyErrors(adjudication, childVisibleStorySafetyText(candidate))
     if (adjudicationErrors.length > 0) throw new Error('openai_humiliation_adjudication_inconsistent')
 
@@ -419,7 +437,7 @@ export const evaluateStorySafety = async (
   // rejected ONLY for excessive_fear, one bounded narrow adjudicator checks for direct evidence
   // of the severe fear categories. It may clear only that isolated flag; malformed or unsupported
   // adjudication fails closed and every other safety flag remains untouched.
-  const adjudication = await requestFearAdjudication(apiKey, model, candidateJson)
+  const adjudication = await requestFearAdjudication(apiKey, model, candidateJson, onRequestAttempt)
   const adjudicationErrors = fearAdjudicationConsistencyErrors(adjudication, childVisibleStorySafetyText(candidate))
   if (adjudicationErrors.length > 0) throw new Error('openai_fear_adjudication_inconsistent')
   if (adjudication.excessive_fear) {
@@ -446,11 +464,11 @@ export type ModerationResult = {
   categories: Record<string, boolean>
 }
 
-export const moderateStoryText = async (apiKey: string, text: string): Promise<ModerationResult> => {
+export const moderateStoryText = async (apiKey: string, text: string, onRequestAttempt?: () => void): Promise<ModerationResult> => {
   const payload = await postJson(MODERATIONS_URL, apiKey, {
     model: 'omni-moderation-latest',
     input: text,
-  }, 7_000)
+  }, 7_000, onRequestAttempt)
 
   const results = payload && typeof payload === 'object' ? (payload as { results?: unknown }).results : null
   const first = Array.isArray(results) ? results[0] : null

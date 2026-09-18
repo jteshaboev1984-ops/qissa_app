@@ -218,6 +218,8 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
   let narratorRetryUsed = false
   let escalationUsed = false
   let providerCalls = 0
+  // Request-local observer: one increment immediately before each actual OpenAI HTTP fetch.
+  const onRequestAttempt = () => { providerCalls += 1 }
   let initialStoryWords = 0
   let lastFailureClass = 'unknown'
   let architectElapsedMs = 0
@@ -231,6 +233,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
+      'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Architect-Elapsed-Ms': String(architectElapsedMs),
       'X-QISSA-Architect-Timeout-Ms': String(architectTimeoutMs ?? 0),
@@ -241,8 +244,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
   const architectCallStartedAt = Date.now()
 
   try {
-    providerCalls += 1
-    blueprint = await generateStoryBlueprint(openAiApiKey, architectModel, context, architectTimeoutMs)
+    blueprint = await generateStoryBlueprint(openAiApiKey, architectModel, context, architectTimeoutMs, onRequestAttempt)
     recordSyntheticStage(diagnostic, 'architect_raw', blueprint)
   } catch (error) {
     architectElapsedMs = Date.now() - architectCallStartedAt
@@ -254,6 +256,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
+      'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Architect-Elapsed-Ms': String(architectElapsedMs),
       'X-QISSA-Architect-Timeout-Ms': String(architectTimeoutMs),
@@ -285,6 +288,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
+      'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
       ...(blueprintErrors.includes('blueprint_rule_safety') ? {
@@ -296,8 +300,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
   const narrationTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, STORY_SAFETY_RESERVE_MS)
   if (narrationTimeoutMs === null) return budgetFallback('narrator')
   try {
-    providerCalls += 1
-    const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, '', narrationTimeoutMs)
+    const narration = await generateStoryNarration(openAiApiKey, narratorModel, context, blueprint, '', narrationTimeoutMs, onRequestAttempt)
     candidate = narrationToCandidate(context, blueprint, narration)
     recordSyntheticStage(diagnostic, 'narrator_initial', candidate)
     initialStoryWords = wordCount(candidate.story_text)
@@ -310,6 +313,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       ...claimMetadata(claim),
       'X-QISSA-Generation-Failure-Class': lastFailureClass,
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
+      'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
     })
@@ -327,6 +331,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       'X-QISSA-Generation-Failure-Trace': compactFailureTrace(trace),
       'X-QISSA-Generation-Repair': 'none',
       'X-QISSA-Narrator-Retry-Used': 'false',
+      'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
     })
@@ -353,6 +358,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       'X-QISSA-Narrator-Retry-Used': 'false',
       'X-QISSA-Escalation-Used': 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,
+      'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
     })
@@ -364,7 +370,6 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
     const repairTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, STORY_SAFETY_RESERVE_MS)
     if (repairTimeoutMs === null) return budgetFallback('repair')
     try {
-      providerCalls += 1
       candidate = await repairStoryCandidateTextLengths(
         openAiApiKey,
         narratorModel,
@@ -373,6 +378,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
         repairBaseErrors,
         '',
         repairTimeoutMs,
+        onRequestAttempt,
       )
       repairUsed = true
       recordSyntheticStage(diagnostic, 'repair_first', candidate)
@@ -384,7 +390,6 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
 
       const repairRetryTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, STORY_SAFETY_RESERVE_MS)
       if (validationErrors.length > 0 && isTextRepairCorrectionEligible(validationErrors) && repairRetryTimeoutMs !== null) {
-        providerCalls += 1
         repairRetryUsed = true
         const repairRetryFeedback = [
           `Previous text repair failed deterministic validation: ${validationErrors.join(', ')}.`,
@@ -405,6 +410,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
           repairBaseErrors,
           repairRetryFeedback,
           repairRetryTimeoutMs,
+          onRequestAttempt,
         )
         recordSyntheticStage(diagnostic, 'repair_retry', candidate)
         validationErrors = validateCandidate(context, candidate)
@@ -428,7 +434,8 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
         'X-QISSA-Generation-Repair': 'text-length',
         'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
         'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
-        'X-QISSA-Provider-Calls': String(providerCalls),
+        'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
+      'X-QISSA-Provider-Calls': String(providerCalls),
         'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
         'X-QISSA-Blueprint-Decision-Repair': blueprintDecisionPointRepaired ? 'template' : 'none',
       })
@@ -438,10 +445,9 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
   const escalationTimeoutMs = stageTimeoutMs(deadlineAt, Date.now(), 30_000, STORY_SAFETY_RESERVE_MS)
   if (validationErrors.length > 0 && escalationModel && escalationModel !== narratorModel && escalationTimeoutMs !== null) {
     try {
-      providerCalls += 1
       narratorModelUsed = escalationModel
       const retryFeedback = `Luna narration still failed deterministic validation after bounded correction: ${validationErrors.join(', ')}. Keep the immutable blueprint exactly unchanged and correct only the narration.`
-      const narration = await generateStoryNarration(openAiApiKey, escalationModel, context, blueprint, retryFeedback, escalationTimeoutMs)
+      const narration = await generateStoryNarration(openAiApiKey, escalationModel, context, blueprint, retryFeedback, escalationTimeoutMs, onRequestAttempt)
       candidate = narrationToCandidate(context, blueprint, narration)
       recordSyntheticStage(diagnostic, 'escalation', candidate)
       escalationUsed = true
@@ -470,6 +476,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
       'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,
+      'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
     })
@@ -490,22 +497,27 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
       'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,
+      'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
     })
   }
 
   if (!hasSafetyBudget(deadlineAt, Date.now())) return budgetFallback('safety')
   try {
-    providerCalls += 1
-    const [evaluation, moderation] = await Promise.all([
-      evaluateStorySafety(openAiApiKey, safetyModel, context, candidate),
-      moderateStoryText(openAiApiKey, candidateTextForModeration(candidate)),
+    // Both requests already started. Await BOTH so nested safety corrections are counted
+    // before returning even if moderation rejects earlier. Verdicts still fail closed.
+    const [evaluationOutcome, moderationOutcome] = await Promise.allSettled([
+      evaluateStorySafety(openAiApiKey, safetyModel, context, candidate, onRequestAttempt),
+      moderateStoryText(openAiApiKey, candidateTextForModeration(candidate), onRequestAttempt),
     ])
+    if (evaluationOutcome.status === 'rejected') throw evaluationOutcome.reason
+    if (moderationOutcome.status === 'rejected') throw moderationOutcome.reason
+    const evaluation = evaluationOutcome.value
+    const moderation = moderationOutcome.value
     let moderationForSafety = moderation
     let moderationFearDetail = ''
     if (moderationNeedsFearAdjudication(context, ruleFlags, evaluation, moderation)) {
-      providerCalls += 1
-      const adjudication = await adjudicateStoryFear(openAiApiKey, safetyModel, candidate)
+      const adjudication = await adjudicateStoryFear(openAiApiKey, safetyModel, candidate, onRequestAttempt)
       moderationFearDetail = `moderation_fear_adjudication:${adjudication.category}`
       if (!adjudication.excessive_fear) {
         moderationForSafety = clearAdjudicatedNonSevereViolence(moderation)
@@ -542,7 +554,8 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
         'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
         'X-QISSA-Narrator-Model-Used': narratorModelUsed,
-        'X-QISSA-Provider-Calls': String(providerCalls),
+        'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
+      'X-QISSA-Provider-Calls': String(providerCalls),
         'X-QISSA-Initial-Story-Words': String(initialStoryWords),
         'X-QISSA-Final-Story-Words': String(wordCount(candidate.story_text)),
       })
@@ -563,7 +576,8 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       'X-QISSA-Repair-Retry-Used': repairRetryUsed ? 'true' : 'false',
         'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
         'X-QISSA-Narrator-Model-Used': narratorModelUsed,
-        'X-QISSA-Provider-Calls': String(providerCalls),
+        'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
+      'X-QISSA-Provider-Calls': String(providerCalls),
         'X-QISSA-Initial-Story-Words': String(initialStoryWords),
         'X-QISSA-Final-Story-Words': String(wordCount(candidate.story_text)),
         'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
@@ -584,6 +598,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       'X-QISSA-Narrator-Retry-Used': narratorRetryUsed ? 'true' : 'false',
       'X-QISSA-Escalation-Used': escalationUsed ? 'true' : 'false',
       'X-QISSA-Narrator-Model-Used': narratorModelUsed,
+      'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
     })
   }
