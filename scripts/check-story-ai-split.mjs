@@ -320,7 +320,7 @@ requireFragments('split provider', provider, [
   'generateStoryNarration',
   "'qissa_story_blueprint'",
   "'qissa_story_narration'",
-  '1800',
+  '2400',
   '3200',
   "'none'",
 ])

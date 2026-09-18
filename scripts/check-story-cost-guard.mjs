@@ -77,7 +77,7 @@ requireCondition(
     /MAX_TIMEOUT_MS = 140_000/.test(remoteClient) &&
     /VITE_QISSA_STORY_TIMEOUT_MS:\s*130000/.test(pagesWorkflow) &&
     /VITE_QISSA_STORY_TIMEOUT_MS=130000/.test(envExample) &&
-    /'qissa_story_blueprint'[\s\S]*timeoutMs[\s\S]*1800[\s\S]*'none'/.test(splitProvider) &&
+    /'qissa_story_blueprint'[\s\S]*timeoutMs[\s\S]*2400[\s\S]*'none'/.test(splitProvider) &&
     /'qissa_story_narration'[\s\S]*timeoutMs[\s\S]*3200[\s\S]*'none'/.test(splitProvider) &&
     /'qissa_text_length_repair'[\s\S]*timeoutMs[\s\S]*3000[\s\S]*'none'/.test(provider) &&
     /timeoutMs = 12_000/.test(provider) &&

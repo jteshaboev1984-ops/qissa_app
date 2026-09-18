@@ -70,6 +70,17 @@ const postJson = async (apiKey: string, body: unknown, timeoutMs: number, onRequ
   }
 }
 
+// Fixed categories only: provider prose, errors, identifiers, and partial JSON never enter headers.
+export const structuredResponseIncompleteReason = (payload: unknown): 'max-output-tokens' | 'content-filter' | 'other' => {
+  if (!payload || typeof payload !== 'object') return 'other'
+  const details = (payload as { incomplete_details?: unknown }).incomplete_details
+  if (!details || typeof details !== 'object') return 'other'
+  const reason = (details as { reason?: unknown }).reason
+  if (reason === 'max_output_tokens' || reason === 'max_tokens') return 'max-output-tokens'
+  if (reason === 'content_filter') return 'content-filter'
+  return 'other'
+}
+
 const requestStructured = async <T>(
   apiKey: string,
   model: string,
@@ -113,7 +124,7 @@ const requestStructured = async <T>(
         : 'unknown_failed_status'
     throw new Error(`openai_response_failed:${message.slice(0, 240)}`)
   }
-  if (status === 'incomplete') throw new Error('openai_incomplete_response')
+  if (status === 'incomplete') throw new Error(`openai_incomplete_response:${structuredResponseIncompleteReason(payload)}`)
   return JSON.parse(extractOutputText(payload)) as T
 }
 
@@ -134,7 +145,8 @@ export const generateStoryBlueprint = async (
     localizedSystem,
     prompts.user,
     timeoutMs,
-    1800,
+    // Bounded headroom hypothesis for E1's two complete choice patches. Not a proven root-cause fix.
+    2400,
     'none',
     onRequestAttempt,
   )
