@@ -1,0 +1,30 @@
+name: TEMP apply five-cent guard patch (provider-free)
+on:
+  push:
+    branches: ["fix/strict-five-cent-story-test-budget-20260918"]
+    paths: ["audit/TEMP-budget-patch-trigger.txt"]
+permissions:
+  contents: write
+concurrency:
+  group: qissa-temporary-budget-patch-20260918
+  cancel-in-progress: false
+jobs:
+  patch:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'APPLY FIVE CENT BUDGET PATCH ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: node scripts/TEMP-apply-five-cent-guard.mjs
+      - run: node scripts/check-story-test-spend-budget.mjs
+      - name: Commit reviewable source diff only
+        run: |
+          git add supabase/functions/story-generate/openai.ts supabase/functions/story-generate/split-openai.ts supabase/functions/story-generate/split-index.ts .github/workflows/ci.yml
+          git -c user.name='qissa-budget-bot' -c user.email='qissa-budget-bot@users.noreply.github.com' commit -m 'feat: enforce a per-generation five-cent ceiling at all OpenAI HTTP boundaries'
+          git push origin HEAD:fix/strict-five-cent-story-test-budget-20260918
+# Delete this entire workflow and patcher after the single provider-free patch and before merging.
