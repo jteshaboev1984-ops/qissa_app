@@ -1,1 +1,1 @@
-Provider-free code patch trigger, single use 2026-09-18. No credentials or AI calls.
+Provider-free patch trigger (second corrected attempt); no workflow modifications or paid requests.
