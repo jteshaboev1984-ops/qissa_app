@@ -28,8 +28,4 @@ assert.equal(index.split('  const onRequestAttempt = () => { providerCalls += 1 
 index = index.replace('  const onRequestAttempt = () => { providerCalls += 1 }',
   '  const onRequestAttempt = Object.assign(() => { providerCalls += 1 }, createFiveCentStoryTestBudget())')
 writeFileSync(indexPath, index)
-
-patch('.github/workflows/ci.yml',
-  '      - name: Validate Story AI cost guard\n        run: npm run check:story-cost-guard\n',
-  '      - name: Validate Story AI cost guard\n        run: npm run check:story-cost-guard\n\n      - name: Validate 5-cent per-story budget and fail-closed reservations\n        run: node scripts/check-story-test-spend-budget.mjs\n')
-console.log('Budget patch applied deterministically to both outgoing HTTP boundaries, split orchestrator and CI; zero provider requests.')
+console.log('Budget patch applied deterministically to both outgoing HTTP boundaries and split orchestrator; zero provider requests; no workflow changes.')
