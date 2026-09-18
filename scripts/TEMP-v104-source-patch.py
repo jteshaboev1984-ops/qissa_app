@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""One-use audited source-only patch on isolated branch. Never accesses API keys or story transcripts."""
+"""One-use audited source-only patch on isolated branch. No provider calls."""
 from pathlib import Path
 import subprocess
 
 branch = 'fix/v104-blueprint-causality-offline-20260918'
 assert subprocess.check_output(['git', 'branch', '--show-current'], text=True).strip() == branch
-assert Path('audit/TEMP-v104-trigger.txt').read_text().strip() == 'APPLY-V104-PROVIDER-FREE-ONCE-20260918'
+assert Path('audit/TEMP-v104-trigger.txt').read_text().strip() == 'APPLY-V104-PROVIDER-FREE-ONCE-20260918-R2'
 
 def replace_once(path: str, old: str, new: str):
     p = Path(path)
@@ -35,4 +35,7 @@ replace_once(architecture,
 replace_once('package.json',
     'node scripts/check-story-provider-incomplete.mjs && node scripts/check-story-debut-cast-and-severe-repair.mjs',
     'node scripts/check-story-provider-incomplete.mjs && node scripts/check-story-debut-cast-and-severe-repair.mjs && node scripts/check-story-blueprint-repeat-gate.mjs')
-print('V104 SOURCE PATCH PASS: 4 exact anchors, 3 existing files, no provider or DB mutation.')
+replace_once('scripts/check-story-ai-split.mjs',
+    "  'central goal must stay warm, social or playful',",
+    "  'a warm, non-threatening mystery, playful discovery or social goal is acceptable',")
+print('V104 SOURCE PATCH PASS: 5 exact anchors, 4 existing files, no provider or DB mutation.')
