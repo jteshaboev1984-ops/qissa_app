@@ -27,8 +27,8 @@ jobs:
           git diff --check
       - name: Commit only approved source files after GREEN
         run: |
-          git add supabase/functions/story-generate/story-architecture.ts package.json
+          git add supabase/functions/story-generate/story-architecture.ts package.json scripts/check-story-ai-split.mjs
           git diff --cached --name-only
-          git -c user.name='qissa-offline-patch' -c user.email='qissa-offline-patch@users.noreply.github.com' commit -m 'fix: reject exact repeated E1 plan beats and align forest cast genre'
+          git -c user.name='qissa-offline-patch' -c user.email='qissa-offline-patch@users.noreply.github.com' commit -m 'fix: reject duplicate E1 plan beats and align forest cast genre'
           git push origin HEAD:fix/v104-blueprint-causality-offline-20260918
 # Remove workflow, patcher and one-time trigger from branch before PR review.
