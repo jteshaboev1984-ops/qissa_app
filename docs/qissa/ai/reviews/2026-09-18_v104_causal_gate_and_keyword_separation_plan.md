@@ -1,0 +1,17 @@
+# v104 offline investigation: causal blueprint before further spend (2026-09-18)
+
+## Evidence and limits
+The owner rejects the real v103 Uzbek E1 as an editorial sample. Its initial Narrator output was 284 whitespace words; the final 359-word full rewrite repeats the singer's attempts and a hedgehog dropping a leaf, leaves the heroine largely observing, and presents two choices with converging immediate payoffs. Only final prose and counts survived in the private review response, NOT the raw Architect blueprint, first Narrator text, or first Repair text. **The responsible stage and semantic root cause cannot yet be established.** Prompt assertions and technical success are not editorial proof.
+
+`validateStoryBlueprint` currently checks the `beats` array length (4–8) and string size (>=6), not causal progression. First implement a deliberately narrow deterministic gate for an EXACT repeated E1 blueprint beat under Unicode/case/whitespace/punctuation normalization. It should not block an ordinary refrain, callbacks with changed consequences, E2 or normal story prose. It will not detect semantic paraphrases or certify that a story is interesting. Do not add another OpenAI request, automatic retry, new schema field or new price estimate.
+
+## Remove contradictory creative constraints
+Architect's cozy-forest prompt overemphasizes animals' social needs and its Narrator prompt calls for 2–3 memorable living characters even though v103 debut guidance limits new named companions to one. Align to a heroine and one active companion when useful; incidental animals are optional and need a reason to change the central situation. A warm, non-threatening discovery/mystery can be as legitimate as a social or playful goal. A shy singer with a chorus must not emerge as a mechanical default. These are editorial hypotheses, NOT measured improvements.
+
+## Next evidence collection needs a separate bounded approval
+The backend already supports service-role-armed one-use synthetic diagnostic capture (`architect_raw`, `narrator_initial`, `repair_first`), with protected schema and explicit DELETE/zero-row verification. A future *separately approved* one-shot E1 should use that mechanism to compare the source blueprint to the first Narrator and Repair, without publishing private prose/IDs in GitHub commits or logs. No actual intermediate trace exists for v103; never reconstruct one from the final tale. Keep Story AI OFF now; E2/TTS and paid retries stay blocked; family beta NO-GO.
+
+## Separate keyword idea (issue #232)
+Owner's optional pre-story curated keywords are an independent product track: consider one screen, 1–3 optional parent-selected cues (setting, unusual find, central goal), plus a prominent `Surprise me` default. No mandatory questionnaire or child free-text. Chosen words should guide ONE causal problem, not become a checklist of repeated props. Proposed forest/key/mystery was an illustration, not an approved production plot; its key-to-signpost ending needs editorial revision. Obtain owner decision on exact choices, copy, optionality, translations and safe allowlist before changing API contract/UI/canon. Do not add these inputs to the baseline v104 literary experiment or silently enable AI.
+
+Acceptance: reviewed exact diff, QISSA CI + Story Core green, no runtime/secret/provider/DB modifications for this offline patch. This structural gate cannot establish age-appropriate Uzbek literary quality, meaningful branching or beta GO.
