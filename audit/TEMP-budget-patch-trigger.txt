@@ -1,0 +1,1 @@
+Provider-free code patch trigger, single use 2026-09-18. No credentials or AI calls.
