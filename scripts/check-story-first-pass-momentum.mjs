@@ -24,7 +24,7 @@ assert.match(architect, /something actually changes/, 'Architect must plan causa
 assert.match(guidance, /observable change/, 'Narrator must realize causal beats rather than repeat waiting')
 assert.match(guidance, /waiting or reassurance/, 'E1 prose must avoid redundant waiting/reassurance')
 assert.match(repair, /each inserted paragraph must contain an observable change/, 'Repair must add causal content')
-assert.match(repair, /do not repeat waiting or reassurance/, 'Repair must not pad the same emotional beat')
+assert.match(repair, /do not repeat waiting or reassurance/i, 'Repair must not pad the same emotional beat')
 assert.match(repair, /Do not introduce a new durable object, clue, relationship, location, mechanism state, branch consequence, canon fact, problem or mission/, 'Repair must keep canon immutable')
 assert.match(repair, /Every pre-choice insertion must remain equally true/, 'Repair must preserve independent branches')
 console.log('E1 first-pass/Repair prompt consistency passed (provider-free; not proof of generated quality).')
