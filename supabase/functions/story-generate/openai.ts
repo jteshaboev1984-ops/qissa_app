@@ -186,7 +186,7 @@ export const repairStoryCandidateTextLengths = async (
   )
 
   const storyTooShort = validationErrors.includes('story_too_short')
-  const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors)
+  const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors, candidate.story_text.trim().split(/\s+/u).filter(Boolean).length)
   if (fullStoryRewrite && (typeof repair.title_rewrite !== 'string' || !repair.title_rewrite.trim() || typeof repair.story_rewrite !== 'string' || !repair.story_rewrite.trim())) {
     throw new Error('openai_invalid_full_text_repair_rewrite')
   }

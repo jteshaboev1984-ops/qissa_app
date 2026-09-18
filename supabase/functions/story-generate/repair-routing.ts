@@ -63,11 +63,18 @@ export const isTextRepairEligibleFailure = (errors: string[]): boolean => allRep
 export const isTextRepairCorrectionEligible = (errors: string[]): boolean => allRepairable(errors)
 
 export const textRepairRequiresFullStoryRewrite = (
-  context: Pick<NormalizedStoryContext, 'episodeIndex'>,
+  context: Pick<NormalizedStoryContext, 'episodeIndex'> & Partial<Pick<NormalizedStoryContext, 'ageGroup' | 'storyMode' | 'storyMood'>>,
   errors: string[],
+  storyWords?: number,
 ): boolean => {
   if (errors.some((error) => fullStoryRewriteErrors.has(error))) return true
-  // Short Episode 1 can use bounded insertion. Long prose must always be rewritten; insertion cannot shorten it.
+  // Severe initial E1 deficits have repeatedly produced filler when insertion preserves
+  // a weak original. Rewrite the whole EXISTING plot instead, without adding canon.
+  if (context.episodeIndex === 1 && context.ageGroup === '5-7' &&
+    context.storyMode === 'series' && context.storyMood === 'bedtime' &&
+    errors.includes('story_too_short') && typeof storyWords === 'number' &&
+    Number.isFinite(storyWords) && storyWords < 300) return true
+  // Moderate short Episode 1 can use bounded insertion. Long prose must always be rewritten; insertion cannot shorten it.
   if (errors.includes('story_too_long')) return true
   if (context.episodeIndex === 2 && errors.some((error) =>
     error === 'story_too_short' ||

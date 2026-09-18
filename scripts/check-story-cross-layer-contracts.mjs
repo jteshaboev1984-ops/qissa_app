@@ -50,9 +50,15 @@ for (const errors of [
   assert.ok(plan.story_rewrite && plan.story_expansion === null, `C1 inconsistent repair_plan: ${errors}`)
 }
 const lengthOnly = ['story_too_short']
-assert.equal(textRepairRequiresFullStoryRewrite(context, lengthOnly), false)
-assert.equal(buildTextLengthRepairOutputSchema(context, lengthOnly, candidate).properties.story_expansion.type, 'string')
-assert.ok(JSON.parse(buildTextLengthRepairPrompts(context, candidate, lengthOnly).user).repair_plan.story_expansion)
+const originalWordCount = candidate.story_text.trim().split(/\s+/u).filter(Boolean).length
+assert.equal(textRepairRequiresFullStoryRewrite(context, lengthOnly, originalWordCount), true, 'severely short synthetic story requires full rewrite')
+assert.equal(buildTextLengthRepairOutputSchema(context, lengthOnly, candidate).properties.story_rewrite.type, 'string')
+assert.equal(buildTextLengthRepairOutputSchema(context, lengthOnly, candidate).properties.story_expansion.type, 'null')
+assert.ok(JSON.parse(buildTextLengthRepairPrompts(context, candidate, lengthOnly).user).repair_plan.story_rewrite)
+const moderateCandidate = { ...candidate, story_text: Array(310).fill('voqea').join(' ') }
+assert.equal(textRepairRequiresFullStoryRewrite(context, lengthOnly, 310), false, 'moderate shortfall retains insertion')
+assert.equal(buildTextLengthRepairOutputSchema(context, lengthOnly, moderateCandidate).properties.story_expansion.type, 'string')
+assert.ok(JSON.parse(buildTextLengthRepairPrompts(context, moderateCandidate, lengthOnly).user).repair_plan.story_expansion)
 
 // C2: reject unrepairable Architect-owned defects BEFORE invoking a paid Narrator.
 for (const [name, mutate, expected] of [
