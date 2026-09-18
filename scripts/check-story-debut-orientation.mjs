@@ -26,7 +26,7 @@ for (const fragment of [
   'who {{HERO}} is',
   'why the hero is here',
   'first mention',
-  'Do not invent a permanent home',
+  'do not invent a permanent home',
   'attempt, result, new information, adjustment',
   'does NOT count as a plot beat',
   'Do not pad to 380-420 words',
