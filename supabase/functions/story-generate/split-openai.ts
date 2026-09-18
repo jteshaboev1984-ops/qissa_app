@@ -1,3 +1,4 @@
+import type { StoryTestBudgetObserver } from './test-spend-budget.ts'
 import type { NormalizedStoryContext } from './contracts.ts'
 import {
   buildArchitectPrompts,
@@ -38,8 +39,11 @@ const extractOutputText = (payload: unknown): string => {
 const postJson = async (apiKey: string, body: unknown, timeoutMs: number, onRequestAttempt?: () => void): Promise<unknown> => {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+  const observer = onRequestAttempt as unknown as Partial<StoryTestBudgetObserver> | undefined
+  let budgetReservation: number | null | undefined
   try {
     const serializedBody = JSON.stringify(body)
+    budgetReservation = observer?.reserve?.(RESPONSES_URL, body, serializedBody)
     onRequestAttempt?.()
     const response = await fetch(RESPONSES_URL, {
       method: 'POST',
@@ -54,8 +58,11 @@ const postJson = async (apiKey: string, body: unknown, timeoutMs: number, onRequ
       const details = (await response.text()).trim().slice(0, 300)
       throw new Error(`openai_http_${response.status}${details ? `:${details}` : ''}`)
     }
-    return response.json()
+    const payload = await response.json()
+    observer?.settle?.(budgetReservation ?? null, payload)
+    return payload
   } catch (error) {
+    observer?.uncertain?.(budgetReservation ?? null)
     if (error instanceof DOMException && error.name === 'AbortError') throw new Error('openai_timeout')
     throw error
   } finally {

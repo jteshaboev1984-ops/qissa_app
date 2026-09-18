@@ -1,3 +1,4 @@
+import { createFiveCentStoryTestBudget } from './test-spend-budget.ts'
 import {
   buildFinalEpisode,
   isRecord,
@@ -219,7 +220,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
   let escalationUsed = false
   let providerCalls = 0
   // Request-local observer: one increment immediately before each actual OpenAI HTTP fetch.
-  const onRequestAttempt = () => { providerCalls += 1 }
+  const onRequestAttempt = Object.assign(() => { providerCalls += 1 }, createFiveCentStoryTestBudget())
   let initialStoryWords = 0
   let lastFailureClass = 'unknown'
   let architectElapsedMs = 0
