@@ -354,7 +354,7 @@ export const buildTextLengthRepairOutputSchema = (
   validationErrors: string[],
   candidate: StoryCandidate,
 ) => {
-  const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors)
+  const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors, storyWordCount(candidate.story_text))
   const insertionOnly = validationErrors.includes('story_too_short') && !fullStoryRewrite
   const expectedChoices = context.episodeIndex === 1 ? 2 : 0
   if (candidate.choices.length !== expectedChoices) throw new Error('repair_invalid_choice_count')
@@ -557,7 +557,7 @@ export const buildTextLengthRepairPrompts = (
     context.storyMode === 'series' &&
     context.storyMood === 'bedtime' &&
     context.episodeIndex === 2
-  const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors)
+  const fullStoryRewrite = textRepairRequiresFullStoryRewrite(context, validationErrors, storyWordCount(candidate.story_text))
   const resolutionTargetIds = new Set(repairChoiceResolutionTargets(context, candidate, validationErrors))
   const bedtimeEpisodeOne = context.ageGroup === '5-7' &&
     context.storyMode === 'series' &&
@@ -601,15 +601,15 @@ export const buildTextLengthRepairPrompts = (
     'Return only data matching the supplied JSON schema.',
     'Repair only text fields explicitly listed in repair_plan. Every other field of the existing candidate is immutable and will be preserved by the server.',
     fullStoryRewrite
-      ? 'A deterministic prose or language defect is already present in the Narrator output, so rewrite the full title and story_text from the immutable candidate while preserving the exact same Architect-owned plot, characters, choices, canon, relationships and branch consequences. Return story_expansion as null. For Episode 2, solve the same original goal and keep the final paragraph a real 60-120 word sleepy coda. For Episode 1, stop at the same neutral decision point without replaying or naming either structured choice inside story_text.'
+      ? 'A severe first-story length deficit or deterministic prose/language defect requires rewriting the full title and story_text from the immutable candidate while preserving the exact same Architect-owned plot, characters, choices, canon, relationships and branch consequences. Return story_expansion as null. For Episode 2, solve the same original goal and keep the final paragraph a real 60-120 word sleepy coda. For Episode 1, stop at the same neutral decision point without replaying or naming either structured choice inside story_text.'
       : storyTooShort
-        ? 'For a pure Episode 1 story_too_short failure, do NOT rewrite the existing story. Return title_rewrite as null and story_rewrite as null; write only story_expansion: one coherent passage that the server will insert immediately before the existing final choice-setup paragraph. The original story remains verbatim, so the expansion must continue naturally from the preceding paragraph and lead naturally into the existing final paragraph.'
+        ? 'For a MODERATE Episode 1 story_too_short failure only, do NOT rewrite the existing story. Return title_rewrite as null and story_rewrite as null; write only story_expansion: one coherent passage that the server will insert immediately before the existing final choice-setup paragraph. The original story remains verbatim, so the expansion must continue naturally from the preceding paragraph and lead naturally into the existing final paragraph.'
         : 'For a choice-resolution-only repair, return title_rewrite, story_rewrite and story_expansion as null. Return only the exact choice_resolutions listed in repair_plan; do not insert into, rewrite or otherwise alter story_text.',
     repeatedUnderlength
       ? `The previous Repair returned only ${previousRepairWords} story_text words, below the hard minimum ${minimumStoryWords}. Count words separated by whitespace in NEW story_expansion itself. Write at least ${expansionMinimum} and aim ${expansionMinimum}-${expansionMaximum} NEW words before returning the response; the server inserts this passage into the original story. Develop only existing pre-choice character actions, dialogue and reactions without padding, repeating scenes, performing a choice or inventing another problem.`
       : '',
     'For story_too_long, return story_expansion as null and use the full title/story rewrite path to shorten the story into the requested range without deleting causal beats.',
-    'When full-story rewrite is required, return title_rewrite as a child-facing title in the requested language that describes the same story. Do not rename established characters.',
+    'When full-story rewrite is required, return title_rewrite as a child-facing title in the requested language that describes the same story. Do not rename established characters. If the original Episode 1 is severely short, use existing licensed beats as a connected attempt, result, new information and adjustment; rewrite neighboring paragraphs for causality instead of inserting a repetitive prop scene. Do not add a new durable clue, character, premise or choice result.',
     'When full-story rewrite is required, also return a complete replacement vocabulary_rewrite: exactly 2-3 grounded Russian-to-English items for Russian, and an empty array for Uzbek or Kazakh. For a pure insertion-only or choice-resolution-only repair, vocabulary_rewrite must be an empty array.',
     'If full-story rewrite takes precedence according to repair_plan, always return a complete non-null story_rewrite and title_rewrite, with story_expansion null, even if there is no story-length or bedtime-coda failure. Otherwise, for a pure insertion return only story_expansion. Only when neither rewriting nor insertion is required may both story_rewrite and story_expansion be null.',
     'When rewriting Episode 2, do not invent a new problem, location, character, durable object, clue, relationship or branch consequence. confirmed_choice_bridge.resolution_text has already been shown to the child. The rewritten opening must start AFTER that visible bridge with a genuinely new reaction, consequence, exchange or next action. Do not copy, paraphrase, enlarge, restage, slow down, or replay any bridge action, object placement, joke, reaction or payoff, even if the wording changes. Use dialogue, reactions, humor and concrete action licensed by the candidate only after that boundary, then lower energy into closure. Episode 2 has no child decision: remove any new invitation for {{HERO}} or the child to choose, decide, pick, place, rank or answer; remove any characters waiting for that decision; resolve the remaining action inside the prose before the bedtime coda.',
