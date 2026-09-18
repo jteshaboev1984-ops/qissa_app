@@ -107,9 +107,15 @@ const claimMetadata = (claim: GenerationClaim): Record<string, string> => ({
 const providerFailureClass = (reason: string): string => {
   if (reason === 'openai_timeout') return 'provider-timeout'
   if (reason.startsWith('openai_http_')) return 'provider-http'
-  if (reason === 'openai_incomplete_response') return 'provider-incomplete'
+  if (reason === 'openai_incomplete_response' || reason.startsWith('openai_incomplete_response:')) return 'provider-incomplete'
   if (reason.startsWith('openai_response_failed:')) return 'provider-failed'
   return 'provider-error'
+}
+
+// Only report one of three fixed values, never provider response content.
+const providerIncompleteReason = (reason: string): string => {
+  const value = reason.slice('openai_incomplete_response:'.length)
+  return value === 'max-output-tokens' || value === 'content-filter' ? value : 'other'
 }
 
 const repairContractFailureCodes = new Set([
@@ -261,6 +267,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Architect-Elapsed-Ms': String(architectElapsedMs),
       'X-QISSA-Architect-Timeout-Ms': String(architectTimeoutMs),
+      'X-QISSA-Provider-Incomplete-Reason': lastFailureClass === 'provider-incomplete' ? providerIncompleteReason(reason) : 'none',
     })
   }
   architectElapsedMs = Date.now() - architectCallStartedAt
@@ -317,6 +324,7 @@ const handleStoryRequest = async (request: Request, diagnostic: SyntheticCapture
       'X-QISSA-OpenAI-Request-Attempts': String(providerCalls),
       'X-QISSA-Provider-Calls': String(providerCalls),
       'X-QISSA-Blueprint-Keys-Normalized': String(blueprintKeysNormalized),
+      'X-QISSA-Provider-Incomplete-Reason': lastFailureClass === 'provider-incomplete' ? providerIncompleteReason(reason) : 'none',
     })
   }
 
