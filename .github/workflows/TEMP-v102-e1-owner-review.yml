@@ -1,0 +1,44 @@
+name: TEMP v102 encrypted owner E1 review
+on:
+  push:
+    branches: ["audit/v102-one-e1-owner-review-20260918"]
+    paths: ["audit/TEMP-v102-trigger.txt"]
+permissions:
+  contents: read
+concurrency:
+  group: qissa-v102-e1-once-20260918
+  cancel-in-progress: false
+jobs:
+  one_e1:
+    if: github.run_attempt == 1 && (github.event.head_commit.message == 'RUN V102 DRY EXACTLY ONCE' || github.event.head_commit.message == 'RUN V102 LIVE EXACTLY ONCE')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Provider-free preflight, fixed reasons, five-cent guard and encryption
+        if: github.event.head_commit.message == 'RUN V102 DRY EXACTLY ONCE'
+        env:
+          QISSA_LIVE: '0'
+        run: |
+          node scripts/check-story-test-spend-budget.mjs
+          node scripts/check-story-provider-incomplete.mjs
+          node scripts/TEMP-v102-e1-owner-review.mjs
+      - name: Exactly one synthetic E1 POST, encrypted evidence, no retry
+        if: github.event.head_commit.message == 'RUN V102 LIVE EXACTLY ONCE'
+        env:
+          QISSA_LIVE: '1'
+          GITHUB_TOKEN: ${{ github.token }}
+          QISSA_SUPABASE_ANON_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
+        run: node scripts/TEMP-v102-e1-owner-review.mjs
+      - name: Upload encrypted evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qissa-v102-e1-encrypted-review
+          path: audit/TEMP-v102-result.enc.json
+          if-no-files-found: ignore
+          retention-days: 1
+# Disposable push-only trigger; remove workflow/runner/public key/trigger after use.
