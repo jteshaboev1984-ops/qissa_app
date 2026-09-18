@@ -46,5 +46,5 @@ modify('supabase/functions/story-generate/split-index.ts', old => {
 })
 modify('scripts/check-story-cost-guard.mjs', old => replaceOnce(old, "*1800[\\s\\S]*'none'", "*2400[\\s\\S]*'none'", 'cost guard cap assertion'))
 modify('scripts/check-story-ai-split.mjs', old => replaceOnce(old, "  '1800',", "  '2400',", 'split cap assertion'))
-modify('package.json', old => replaceOnce(old, "&& node scripts/check-openai-request-attempts.mjs\"", "&& node scripts/check-openai-request-attempts.mjs && node scripts/check-story-provider-incomplete.mjs\"", 'register new provider-free test'))
+modify('package.json', old => replaceOnce(old, "&& node scripts/check-story-debut-orientation.mjs\"", "&& node scripts/check-story-debut-orientation.mjs && node scripts/check-story-provider-incomplete.mjs\"", 'register new provider-free test'))
 console.log('V102_SAFE_PATCH_PASS:', changed.join(', '), 'only exact source anchors changed; no paid/network work.')
