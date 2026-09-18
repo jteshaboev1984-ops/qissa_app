@@ -1,0 +1,41 @@
+name: TEMP v103 provider-free story patch
+on:
+  push:
+    branches: ["fix/v103-story-character-and-severe-repair-20260918"]
+    paths: ["audit/TEMP-v103-trigger.txt"]
+permissions:
+  contents: write
+concurrency:
+  group: qissa-v103-source-patch-once-20260918
+  cancel-in-progress: false
+jobs:
+  patch:
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'APPLY V103 OFFLINE PATCH ONCE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Apply exact patch to reviewed source files only
+        run: |
+          node --check scripts/TEMP-v103-exact-source-patch.mjs
+          node scripts/TEMP-v103-exact-source-patch.mjs
+      - name: Provider-free regression and budget safety
+        run: |
+          node scripts/check-story-debut-cast-and-severe-repair.mjs
+          node scripts/check-story-cross-layer-contracts.mjs
+          node scripts/check-story-repair-retry-word-budget.mjs
+          npm run check:story-ai-split
+          npm run check:story-cost-guard
+          node scripts/check-story-editorial-guidance.mjs
+      - name: Commit only source and permanent regression files
+        run: |
+          git config user.name 'qissa-ci-patch'
+          git config user.email 'qissa-ci-patch@users.noreply.github.com'
+          git add -- package.json scripts/check-story-cross-layer-contracts.mjs scripts/check-story-repair-retry-word-budget.mjs supabase/functions/story-generate/editorial-guidance.ts supabase/functions/story-generate/openai.ts supabase/functions/story-generate/prompt.ts supabase/functions/story-generate/repair-routing.ts
+          git diff --cached --check
+          git commit -m 'fix: distinctive debut cast and causal severe-underlength rewrite'
+          git push origin HEAD:refs/heads/fix/v103-story-character-and-severe-repair-20260918
+# Delete this temporary workflow, trigger, and patcher BEFORE PR review/merge.
