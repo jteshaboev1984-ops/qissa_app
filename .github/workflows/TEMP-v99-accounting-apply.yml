@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   apply:
-    if: github.run_attempt == 1 && github.event.head_commit.message == 'APPLY V99 ACCOUNTING ONCE'
+    if: github.run_attempt == 1 && github.event.head_commit.message == 'APPLY V99 ACCOUNTING RETRY ONCE'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -23,6 +23,7 @@ jobs:
         run: |
           npm ci
           python3 scripts/TEMP-v99-accounting-patch.py
+          node scripts/check-openai-request-attempts.mjs
           npm run check:story-ai-split
           npm run typecheck:story-ai
           git config user.name github-actions
