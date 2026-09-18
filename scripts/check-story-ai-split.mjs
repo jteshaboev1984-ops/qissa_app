@@ -252,7 +252,7 @@ requireFragments('architecture', architecture, [
   'Episode 2 has no child decision menu',
   'Episode 2 has no child decision: do not ask {{HERO}} or the child to choose, decide, pick, place, rank or answer a new question',
   'make living forest characters drive the story',
-  'central goal must stay warm, social or playful',
+  'a warm, non-threatening mystery, playful discovery or social goal is acceptable',
   'Do not center the plot on finding the way home',
   'For Uzbek ages 5-7, prefer common natural Uzbek words',
   'Avoid words such as ritm, pauza, sincap, mox',
