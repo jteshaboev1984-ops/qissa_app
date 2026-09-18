@@ -9,6 +9,7 @@ export const STORY_EVIDENCE_HEADERS = Object.freeze([
   'x-qissa-narrator-model-used',
   'x-qissa-safety-model',
   'x-qissa-escalation-used',
+  'x-qissa-openai-request-attempts',
   'x-qissa-provider-calls',
   'x-qissa-initial-story-words',
   'x-qissa-final-story-words',

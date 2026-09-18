@@ -10,7 +10,8 @@ const headers = new Headers({
   'X-QISSA-Fallback-Reason': 'generation-or-safety-failed',
   'X-QISSA-Generation-Failure-Class': 'validation',
   'X-QISSA-Generation-Failure-Trace': 'synthetic-validation:story_too_short[story_words=280]',
-  'X-QISSA-Provider-Calls': '4',
+  'X-QISSA-OpenAI-Request-Attempts': '5',
+  'X-QISSA-Provider-Calls': '5',
   'X-QISSA-Generation-Repair': 'text-length',
   authorization: 'DO_NOT_RECORD',
   apikey: 'DO_NOT_RECORD',
@@ -18,7 +19,8 @@ const headers = new Headers({
 const evidence = collectStoryLiveEvidence(headers)
 assert.equal(evidence.metadata['x-qissa-generation-failure-class'], 'validation')
 assert.match(evidence.metadata['x-qissa-generation-failure-trace'], /story_too_short/u)
-assert.equal(evidence.metadata['x-qissa-provider-calls'], '4')
+assert.equal(evidence.metadata['x-qissa-openai-request-attempts'], '5', 'Capture canonical v99 HTTP attempt count')
+assert.equal(evidence.metadata['x-qissa-provider-calls'], '5', 'Preserve corrected compatibility alias')
 assert.equal(evidence.metadata['authorization'], undefined)
 assert.equal(evidence.metadata['apikey'], undefined)
 assert.deepEqual(evidence.diagnosticErrors, [])
@@ -28,11 +30,13 @@ const missing = collectStoryLiveEvidence(new Headers({
   'x-qissa-fallback-reason': 'generation-or-safety-failed',
 }))
 assert.equal(missing.diagnosticErrors.length, 2, 'Missing failure metadata must never be silently treated as sufficient evidence')
+assert.equal(missing.metadata['x-qissa-openai-request-attempts'], null, 'Missing attempt count is unknown, not measured zero')
 assert.throws(() => requireUsableStoryResponse(missing), /Missing required server diagnostic/u)
 const approved = collectStoryLiveEvidence(new Headers({ 'x-qissa-generation-source': 'openai-structured' }))
 assert.doesNotThrow(() => requireUsableStoryResponse(approved))
 const off = collectStoryLiveEvidence(new Headers({ 'x-qissa-generation-source': 'safe-fallback', 'x-qissa-fallback-reason': 'runtime-disabled' }))
 assert.deepEqual(off.diagnosticErrors, [], 'Deliberately disabled runtime is not a generation failure')
+assert.equal(off.metadata['x-qissa-openai-request-attempts'], null, 'Pre-admission OFF must not be misreported as a measured HTTP count')
 assert.throws(() => requireUsableStoryResponse(off), /safe-fallback/u)
 
 const selections = { ageGroup: '5-7', language: 'uz', heroType: 'custom', customHeroName: 'Malika', stylePackId: 'cozy_forest', storyMode: 'series', storyMood: 'bedtime' }
