@@ -35,17 +35,19 @@ const extractOutputText = (payload: unknown): string => {
   throw new Error('openai_missing_output_text')
 }
 
-const postJson = async (apiKey: string, body: unknown, timeoutMs: number): Promise<unknown> => {
+const postJson = async (apiKey: string, body: unknown, timeoutMs: number, onRequestAttempt?: () => void): Promise<unknown> => {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
   try {
+    const serializedBody = JSON.stringify(body)
+    onRequestAttempt?.()
     const response = await fetch(RESPONSES_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
       },
-      body: JSON.stringify(body),
+      body: serializedBody,
       signal: controller.signal,
     })
     if (!response.ok) {
@@ -71,6 +73,7 @@ const requestStructured = async <T>(
   timeoutMs: number,
   maxOutputTokens: number,
   reasoningEffort: ReasoningEffort = 'none',
+  onRequestAttempt?: () => void,
 ): Promise<T> => {
   const payload = await postJson(apiKey, {
     model,
@@ -89,7 +92,7 @@ const requestStructured = async <T>(
         schema,
       },
     },
-  }, timeoutMs)
+  }, timeoutMs, onRequestAttempt)
 
   const status = payload && typeof payload === 'object' ? (payload as { status?: unknown }).status : null
   if (status === 'failed') {
@@ -112,6 +115,7 @@ export const generateStoryBlueprint = async (
   model: string,
   context: NormalizedStoryContext,
   timeoutMs = 30_000,
+  onRequestAttempt?: () => void,
 ): Promise<StoryBlueprint> => {
   const prompts = buildArchitectPrompts(context)
   const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)} ${storyArchitectEditorialGuidance(context)}`
@@ -125,6 +129,7 @@ export const generateStoryBlueprint = async (
     timeoutMs,
     1800,
     'none',
+    onRequestAttempt,
   )
 }
 
@@ -135,6 +140,7 @@ export const generateStoryNarration = async (
   blueprint: StoryBlueprint,
   retryReason = '',
   timeoutMs = 30_000,
+  onRequestAttempt?: () => void,
 ): Promise<StoryNarration> => {
   const prompts = buildNarratorPrompts(context, blueprint, retryReason)
   const localizedSystem = `${prompts.system} ${storyLocalizationSystem(context)} ${storyNarratorEditorialGuidance(context)}`
@@ -148,5 +154,6 @@ export const generateStoryNarration = async (
     timeoutMs,
     3200,
     'none',
+    onRequestAttempt,
   )
 }
