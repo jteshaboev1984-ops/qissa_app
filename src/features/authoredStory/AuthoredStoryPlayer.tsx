@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { authoredStoryPersistence } from '../../lib/authoredStoryPersistence'
+import { resolveAuthoredStoryAssetUrl } from '../../data/authoredStoryAssets'
 import {
   advanceAuthoredStory,
   buildAuthoredNarrativeBlocks,
@@ -40,10 +41,12 @@ function StoryImage({
   alt: string
   showPlaceholder: boolean
 }) {
-  if (asset.runtime_url) {
+  const resolvedUrl = resolveAuthoredStoryAssetUrl(asset.asset_id, asset.runtime_url)
+
+  if (resolvedUrl) {
     return (
       <img
-        src={asset.runtime_url}
+        src={resolvedUrl}
         alt={alt}
         className="w-full rounded-[1.75rem] border border-[#eadfc9] object-cover shadow-[0_18px_44px_-34px_rgba(60,45,20,.65)]"
         loading="lazy"
