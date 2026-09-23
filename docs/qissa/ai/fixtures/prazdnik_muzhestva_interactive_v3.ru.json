@@ -12,7 +12,6 @@
   "story_mode": "series",
   "story_mood": "kind_adventure",
   "style_pack_id": "silk_road",
-  "master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
   "baseline_choice_path": [
     "p3_jump_ditch",
     "p4_marker_then_book",
@@ -50,21 +49,27 @@
           "anchor_key": "after_capital_orientation",
           "kind": "shared",
           "scene_key": "capital_festival_establish",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p1_img_01_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P1-IMG-02",
           "anchor_key": "after_final_two_named",
           "kind": "shared",
           "scene_key": "finalists_and_king",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p1_img_02_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P1-IMG-03",
           "anchor_key": "after_road_book_dialogue",
           "kind": "shared",
           "scene_key": "horses_and_road_books",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p1_img_03_v1",
+          "runtime_url": null
         }
       ]
     },
@@ -86,14 +91,18 @@
           "anchor_key": "after_departure_start",
           "kind": "shared",
           "scene_key": "departure_from_capital",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p2_img_01_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P2-IMG-02",
           "anchor_key": "after_samira_lie",
           "kind": "shared",
           "scene_key": "fallen_tree_and_lie",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p2_img_02_v1",
+          "runtime_url": null
         }
       ]
     },
@@ -129,7 +138,9 @@
               "kind": "choice",
               "scene_key": "p3_jump_ditch",
               "status": "planned",
-              "behavior": "show_as_choice_card_then_expand_if_selected"
+              "behavior": "show_as_choice_card_then_expand_if_selected",
+              "asset_id": "seven_roads_story1_p3_jump_ditch_v1",
+              "runtime_url": null
             }
           },
           {
@@ -151,7 +162,9 @@
               "kind": "choice",
               "scene_key": "p3_precise_control",
               "status": "planned",
-              "behavior": "show_as_choice_card_then_expand_if_selected"
+              "behavior": "show_as_choice_card_then_expand_if_selected",
+              "asset_id": "seven_roads_story1_p3_precise_control_v1",
+              "runtime_url": null
             }
           }
         ],
@@ -170,14 +183,18 @@
           "anchor_key": "after_bandit_mark_seen",
           "kind": "shared",
           "scene_key": "forest_bandit_mark",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p3_img_01_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P3-IMG-02",
           "anchor_key": "after_temur_book_lost",
           "kind": "shared",
           "scene_key": "rope_cut_and_lost_book",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p3_img_02_v1",
+          "runtime_url": null
         }
       ]
     },
@@ -214,7 +231,9 @@
               "kind": "choice",
               "scene_key": "p4_marker_then_book",
               "status": "planned",
-              "behavior": "show_as_choice_card_then_expand_if_selected"
+              "behavior": "show_as_choice_card_then_expand_if_selected",
+              "asset_id": "seven_roads_story1_p4_marker_then_book_v1",
+              "runtime_url": null
             }
           },
           {
@@ -237,7 +256,9 @@
               "kind": "choice",
               "scene_key": "p4_search_then_marker",
               "status": "planned",
-              "behavior": "show_as_choice_card_then_expand_if_selected"
+              "behavior": "show_as_choice_card_then_expand_if_selected",
+              "asset_id": "seven_roads_story1_p4_search_then_marker_v1",
+              "runtime_url": null
             }
           }
         ],
@@ -256,7 +277,9 @@
           "anchor_key": "after_bulut_stops_at_ford",
           "kind": "shared",
           "scene_key": "flooded_ford",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p4_img_01_v1",
+          "runtime_url": null
         }
       ]
     },
@@ -291,7 +314,9 @@
               "kind": "choice",
               "scene_key": "p5_leave_immediately",
               "status": "planned",
-              "behavior": "show_as_choice_card_then_expand_if_selected"
+              "behavior": "show_as_choice_card_then_expand_if_selected",
+              "asset_id": "seven_roads_story1_p5_leave_immediately_v1",
+              "runtime_url": null
             }
           },
           {
@@ -311,7 +336,9 @@
               "kind": "choice",
               "scene_key": "p5_wait_until_visible",
               "status": "planned",
-              "behavior": "show_as_choice_card_then_expand_if_selected"
+              "behavior": "show_as_choice_card_then_expand_if_selected",
+              "asset_id": "seven_roads_story1_p5_wait_until_visible_v1",
+              "runtime_url": null
             }
           }
         ],
@@ -330,14 +357,18 @@
           "anchor_key": "after_zaran_description",
           "kind": "shared",
           "scene_key": "first_sight_of_zaran",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p5_img_01_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P5-IMG-02",
           "anchor_key": "after_bandit_report_recognized",
           "kind": "shared",
           "scene_key": "temur_reports_bandits",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p5_img_02_v1",
+          "runtime_url": null
         }
       ]
     },
@@ -378,7 +409,9 @@
               "kind": "choice",
               "scene_key": "p6_verify_book",
               "status": "planned",
-              "behavior": "show_as_choice_card_then_expand_if_selected"
+              "behavior": "show_as_choice_card_then_expand_if_selected",
+              "asset_id": "seven_roads_story1_p6_verify_book_v1",
+              "runtime_url": null
             }
           },
           {
@@ -404,7 +437,9 @@
               "kind": "choice",
               "scene_key": "p6_second_chance",
               "status": "planned",
-              "behavior": "show_as_choice_card_then_expand_if_selected"
+              "behavior": "show_as_choice_card_then_expand_if_selected",
+              "asset_id": "seven_roads_story1_p6_second_chance_v1",
+              "runtime_url": null
             }
           }
         ],
@@ -422,21 +457,27 @@
           "anchor_key": "after_samira_decides_to_warn",
           "kind": "shared",
           "scene_key": "landslide_warning_decision",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p6_img_01_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P6-IMG-02",
           "anchor_key": "during_rescue",
           "kind": "shared",
           "scene_key": "landslide_rescue",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p6_img_02_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P6-IMG-03",
           "anchor_key": "after_temur_says_still_angry",
           "kind": "shared",
           "scene_key": "confession_aftermath",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p6_img_03_v1",
+          "runtime_url": null
         }
       ]
     },
@@ -460,35 +501,45 @@
           "anchor_key": "after_replies_handed_to_king",
           "kind": "shared",
           "scene_key": "return_and_sealed_replies",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p7_img_01_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P7-IMG-02",
           "anchor_key": "after_bandit_report_reaches_captain",
           "kind": "shared",
           "scene_key": "bandit_report_at_palace",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p7_img_02_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P7-IMG-03",
           "anchor_key": "after_two_knights_announced",
           "kind": "shared",
           "scene_key": "knighting",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p7_img_03_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P7-IMG-04A",
           "anchor_key": "after_bulut_food_joke",
           "kind": "shared",
           "scene_key": "celebration_humor",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p7_img_04a_v1",
+          "runtime_url": null
         },
         {
           "slot_id": "P7-IMG-04B",
           "anchor_key": "before_final_other_story_line",
           "kind": "shared",
           "scene_key": "final_bandit_hook",
-          "status": "planned"
+          "status": "planned",
+          "asset_id": "seven_roads_story1_p7_img_04b_v1",
+          "runtime_url": null
         }
       ]
     }
@@ -496,12 +547,28 @@
   "illustration_plan": {
     "plan_version": "v3-illustrated-1",
     "plan_ref": "docs/qissa/ai/reviews/2026-09-23_prazdnik_muzhestva_v3_illustration_map.md",
-    "master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
     "planned_asset_count": 27,
     "shared_asset_count": 18,
     "choice_asset_count": 8,
     "cover_asset_count": 1,
     "visible_assets_per_playthrough": 23,
-    "rule": "Render shared images at narrative anchors. Render both choice images as cards; after selection keep/expand only the selected image with its resolution_text."
+    "rule": "Render shared images at narrative anchors. Render both choice images as cards; after selection keep/expand only the selected image with its resolution_text.",
+    "master_style_id": "seven_roads_painterly_v1",
+    "editorial_master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
+    "runtime_asset_storage": "pending_app_storage"
+  },
+  "master_style_id": "seven_roads_painterly_v1",
+  "editorial_master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
+  "cover_illustration": {
+    "asset_id": "seven_roads_story1_cover_v1",
+    "runtime_url": null,
+    "status": "planned",
+    "editorial_reference_ids": [
+      "char_temur_v1",
+      "char_samira_v1",
+      "horse_shamol_v1",
+      "horse_bulut_v1",
+      "loc_capital_festival_square_v1"
+    ]
   }
 }
