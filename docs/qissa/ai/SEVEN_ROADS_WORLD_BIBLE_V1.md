@@ -1,9 +1,9 @@
 # Королевство семи дорог — World Bible V1
 
-> Status: canonical companion to owner-approved story V1 «Праздник мужества»  
+> Status: canonical story-continuity companion to owner-approved story V1 «Праздник мужества»  
 > Date: 2026-09-23  
-> Scope: story continuity + visual continuity for future stories and illustrations  
-> Rule: hard canon below must not change silently. If a canon detail is changed, create a new canon version and record the change.
+> Scope: story continuity + **provisional visual design draft** for future stories and illustrations  
+> Rule: HARD CANON must not change silently. Visual design details remain DRAFT until the owner sees and approves generated reference images; only then may they be promoted to locked visual canon.
 
 ## 1. Why this file exists
 
@@ -152,7 +152,7 @@ Do not later rewrite these facts as if:
 
 **Relationship with Shamol after Story 1:** strong trust formed through the forest escape.
 
-## Temur — VISUAL CANON V1
+## Temur — VISUAL DRAFT V1 — pending image approval
 
 Use this exact base design for recurring illustrations unless a later canon version explicitly changes it:
 
@@ -208,7 +208,7 @@ Use this exact base design for recurring illustrations unless a later canon vers
 
 **Relationship with Bulut after Story 1:** calm, familiar partnership; Bulut is attentive and has his own comic personality.
 
-## Samira — VISUAL CANON V1
+## Samira — VISUAL DRAFT V1 — pending image approval
 
 - approximate age: 12;
 - Central Asian girl;
@@ -247,7 +247,7 @@ Use this exact base design for recurring illustrations unless a later canon vers
 - brave enough to follow Temur through the forest escape;
 - the bond with Temur strengthens visibly during Story 1.
 
-## Shamol — VISUAL CANON V1
+## Shamol — VISUAL DRAFT V1 — pending image approval
 
 - young horse;
 - dark bay, reading almost black at a distance;
@@ -276,7 +276,7 @@ The white forehead star is a locked identifier. Never remove it, enlarge it into
 - refuses to step into the unsafe river;
 - stays above when Samira falls and neighs loudly.
 
-## Bulut — VISUAL CANON V1
+## Bulut — VISUAL DRAFT V1 — pending image approval
 
 - young horse;
 - light dapple-gray coat;
@@ -301,7 +301,7 @@ Do not make Bulut pure white in one image and dark gray in another. His base is 
 - receives and opens the sealed replies;
 - by the end of Story 1 knows about the bandit sign.
 
-## The King — VISUAL CANON V1
+## The King — VISUAL DRAFT V1 — pending image approval
 
 - Central Asian man, approximately late 40s;
 - composed rather than intimidating;
@@ -321,7 +321,7 @@ Do not make Bulut pure white in one image and dark gray in another. His base is 
 - takes Temur's remembered sign seriously;
 - the bandit investigation becomes adult responsibility.
 
-## Captain — VISUAL CANON V1
+## Captain — VISUAL DRAFT V1 — pending image approval
 
 - Central Asian man, approximately 40s;
 - practical military bearing;
@@ -340,7 +340,7 @@ Do not make Bulut pure white in one image and dark gray in another. His base is 
 - brings in the local guard captain;
 - sends the bandit information to the king.
 
-## Ruler of Lugovoy — VISUAL CANON V1
+## Ruler of Lugovoy — VISUAL DRAFT V1 — pending image approval
 
 - older adult, approximately 50s;
 - practical civic ruler rather than monarch;
@@ -372,7 +372,7 @@ No canon answer yet for:
 
 Do not invent these as established history until a future story decides them.
 
-## Bandit sign — HARD + VISUAL CANON V1
+## Bandit sign — HARD shape concept + VISUAL DRAFT V1 pending image approval
 
 **Asset ID:** `symbol_bandits_v1`
 
@@ -662,7 +662,7 @@ Temur's sabre scene should visually show him cutting the rope, not attacking a b
 
 ### J. Art style lock
 
-The final illustration style itself is **OPEN / NOT YET CANON**.
+The approved master style reference is **QISSA_MASTER_REFERENCE_user_selected.png**, previously selected by the owner. Working style label: **seven_roads_painterly_v1**. The master image is the authoritative style reference; descriptive text is secondary.
 
 Before producing a full set of final story illustrations:
 1. choose one approved master style;
@@ -699,7 +699,7 @@ Use stable IDs in future prompts, manifests and database records:
 - `loc_lugovoy_river_crossing_v1`
 - `loc_return_landslide_v1`
 
-If a visual design is intentionally redesigned, create `_v2`; never silently overwrite what `_v1` means.
+These IDs are provisional until the owner approves the actual reference images. After approval, lock the approved image under the same ID/version. If an approved visual design is later intentionally redesigned, create `_v2`; never silently overwrite what `_v1` means.
 
 ---
 
