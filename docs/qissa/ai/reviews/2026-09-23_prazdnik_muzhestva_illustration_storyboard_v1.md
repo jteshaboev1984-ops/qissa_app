@@ -113,15 +113,24 @@ The same reference assets must be supplied for recurring entities whenever the i
 
 ---
 
-## Illustration 7 — Escape from the bandits
+## Illustration 7 — Escape from the bandits / lost road book
 
-**Story moment:** Temur cuts the rope and Shamol bursts through.
+**Story moment:** Temur cuts the rope and Shamol bursts through; during the chase Temur's road book falls from his satchel.
 
-**Composition:** dynamic chase. Temur uses sabre **on the rope**, not on a person. Bandits remain behind/at distance.
+**Composition:** dynamic chase. Temur uses sabre **on the rope**, not on a person. Bandits remain behind/at distance. If the frame includes the book loss, show the small brown road book caught between the exposed roots of a **large forked oak** immediately beyond the cut rope.
 
 **Reference:** `03_eastern_forest_escape_approved.png`
 
-**State transition:** Temur's right sleeve/forearm becomes torn and dusty during/after this sequence.
+**Strict geography:** the lost book is:
+- in the Eastern Forest;
+- on the narrow escape trail;
+- just after the cut rope;
+- between roots of a large forked oak;
+- before the later ditch jump.
+
+**State transition:** Temur's right sleeve/forearm becomes torn and dusty during/after this sequence; from this point forward he no longer carries his road book.
+
+**Future-world hook:** the lost book remains physically in the forest after Story 1 unless a later story explicitly moves/retrieves it.
 
 **Safety:** no wounds, blood or weapon strike on a human.
 
@@ -200,18 +209,21 @@ The same reference assets must be supplied for recurring entities whenever the i
 
 ---
 
-## Illustration 13 — The confession
+## Illustration 13 — The confession and damaged trust
 
-**Story moment:** after rescue, Samira admits the first lie.
+**Story moment:** after rescue, Samira admits the first lie; shortly afterward she suggests another route and Temur asks to verify the road book himself.
 
-**Composition:** quieter road-post / roadside scene; horses nearby; children facing each other with emotional distance but no melodrama.
+**Composition option A:** quieter road-post / roadside confession; horses nearby; children facing each other with emotional distance but no melodrama.
+
+**Composition option B:** Samira holds the open road book toward Temur; Temur reads the route himself before agreeing to follow it.
 
 **Key emotional state:**
 - Samira = remorseful but direct;
 - Temur = hurt/angry but not cruel;
+- trust is visibly reduced but not destroyed;
 - not reconciled into instant cheerful friendship yet.
 
-**Useful dialogue moment:** «Я всё равно рад, что ты жива. Но сердиться ещё буду.»
+**Useful dialogue beats:** «Я всё равно рад, что ты жива. Но сердиться ещё буду.» / «Покажи.»
 
 ---
 
@@ -274,7 +286,7 @@ Before image generation verify:
 4. Does Shamol still have the same small white forehead star?
 5. Is Bulut still light dapple gray with no white blaze?
 6. Are outfit/tack color families unchanged?
-7. Are letter case / road book / sabre designs unchanged?
+7. Are letter case / road book / sabre designs unchanged, and is Temur's road book absent after the forest loss?
 8. Is the bandit mark geometry exact?
 9. Does the location match its approved architecture/geography?
 10. Does the child age remain around 12?
