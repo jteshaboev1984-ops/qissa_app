@@ -54,6 +54,26 @@ Warm painterly children's adventure-book illustration in the exact approved QISS
 - no forehead star or blaze;
 - burgundy tack/saddle blanket.
 
+**King — `char_king_seven_roads_v1`**
+- Central Asian man, late 40s;
+- dark hair with some gray, neat graying beard;
+- deep-blue robe/chapan;
+- simple gold circlet with seven small raised points;
+- dignified and warm, not an armored warlord.
+
+**Royal guard captain — `char_royal_guard_captain_v1`**
+- man in his 40s;
+- dark-green guard coat;
+- practical leather belt and sword;
+- silver Seven Roads badge;
+- disciplined civic/royal guard appearance.
+
+**Ruler of Zaran — `char_zaran_ruler_v1`**
+- man in his 50s;
+- ochre/brown civic robe;
+- local civic headwear, never a royal crown;
+- calm administrative authority, visually belonging to Zaran rather than the capital court.
+
 ### World continuity
 
 - capital: warm pale stone/plaster, arches, carved wood, restrained turquoise tile accents, broad courtyards, blue domes; no Gothic/European castle language.
