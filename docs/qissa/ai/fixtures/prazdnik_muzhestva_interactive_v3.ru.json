@@ -555,7 +555,8 @@
     "rule": "Render shared images at narrative anchors. Render both choice images as cards; after selection keep/expand only the selected image with its resolution_text.",
     "master_style_id": "seven_roads_painterly_v1",
     "editorial_master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
-    "runtime_asset_storage": "pending_app_storage"
+    "runtime_asset_storage": "pending_app_storage",
+    "production_prompt_pack_ref": "docs/qissa/ai/reviews/2026-09-23_prazdnik_muzhestva_v3_production_prompts.md"
   },
   "master_style_id": "seven_roads_painterly_v1",
   "editorial_master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
