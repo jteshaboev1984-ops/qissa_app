@@ -87,6 +87,16 @@ Preview is available only when:
 
 When disabled, the current generated-story flow is untouched.
 
+### Branch-safe narration
+`src/features/authoredStory/narration.ts`
+
+The narration builder returns only:
+- the current part's common story text;
+- the confirmed selected `resolution_text`, never both branches;
+- the common continuation after the merge.
+
+Before a choice is confirmed, narration stops before branch resolution/continuation. This is the adapter boundary for future authored TTS.
+
 ### Asset resolver
 Final images are addressed by stable `asset_id`.
 
@@ -125,13 +135,15 @@ The check is now part of `.github/workflows/ci.yml`.
 
 - QISSA CI #629: success after authored engine/player core.
 - QISSA CI #631: success after preview-route integration.
+- QISSA CI #634: success after asset resolver/checkpoint.
+- QISSA CI #635: success after branch-safe narration builder.
 
 ## Intentionally not implemented yet
 
 - preview flag is not enabled in production;
 - final 27 illustration files are not registered;
 - no authored-story remote/cloud progress sync yet;
-- authored TTS/listening flow not yet connected;
+- authored TTS/listening playback UI/provider is not yet connected; branch-safe narration text assembly is implemented;
 - authored story is not yet exposed through normal Home/Library UI;
 - no production rollout;
 - 10–12 age taxonomy remains a separate product decision.
