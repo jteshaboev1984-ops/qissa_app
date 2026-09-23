@@ -445,7 +445,7 @@ Do not render it as a giant atlas, modern printed guidebook, glowing magic book 
 
 ## Return letters from Zaran
 
-**Asset ID:** `prop_lugovoy_reply_v1`
+**Asset ID:** `prop_zaran_reply_v1`
 
 - cream parchment;
 - local ruler's seal distinct from the royal red seal;
@@ -685,12 +685,12 @@ Use stable IDs in future prompts, manifests and database records:
 - `horse_bulut_v1`
 - `char_king_seven_roads_v1`
 - `char_royal_guard_captain_v1`
-- `char_lugovoy_ruler_v1`
+- `char_zaran_ruler_v1`
 - `symbol_bandits_v1`
 - `prop_road_book_v1`
 - `prop_royal_letter_v1`
 - `prop_letter_case_v1`
-- `prop_lugovoy_reply_v1`
+- `prop_zaran_reply_v1`
 - `prop_temur_sabre_v1`
 - `loc_capital_festival_square_v1`
 - `loc_royal_stable_v1`
@@ -771,10 +771,21 @@ Do not permanently invent these yet:
 - true meaning/origin of the bandit sign;
 - whether the bandits are connected to a larger enemy;
 - exact future status of Temur and Samira as royal knights;
-- fixed illustration rendering style;
-- exact number of illustrations per story.
+- default illustration count for future stories (Story 1 Interactive V3 has its own approved production target).
 
 These should be decided when they become necessary, then added to the canon deliberately.
+
+---
+
+## Story 1 Interactive V3 illustration status
+
+For «Праздник мужества» Interactive V3 specifically:
+- rendering style is already **APPROVED VISUAL CANON V1**: `seven_roads_painterly_v1`;
+- the current production illustration map targets **27 assets total**: 1 cover, 18 shared narrative illustrations and 8 choice illustrations;
+- this count is Story-1-specific and does not establish a mandatory count for future stories;
+- the authoritative placement/count source is `2026-09-23_prazdnik_muzhestva_v3_illustration_map.md`.
+
+The six saved approved images are visual/reference canon. They are not automatically assumed to be the final production illustration for every slot unless the slot explicitly reuses one.
 
 ---
 
