@@ -1,4 +1,5 @@
 import { createInitialSeriesState } from './memoryAgent'
+import { authoredStoryPersistence } from './authoredStoryPersistence'
 import type { Episode, Language, OnboardingSelections, ReaderPreferences, SeriesState } from '../types/qissa'
 
 export type AppScreen = 'welcome' | 'onboarding' | 'home' | 'story'
@@ -267,6 +268,7 @@ const clearAllLocalData = () => {
   } catch {
     // Ignore local storage failures during privacy deletion.
   }
+  authoredStoryPersistence.clearAll()
 }
 
 const clearAllQissaStorage = () => {
