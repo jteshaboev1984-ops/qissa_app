@@ -17,7 +17,7 @@ const getStorage = (): Storage | null => {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
 
-const isProgress = (
+export const isAuthoredStoryProgress = (
   value: unknown,
   story: Pick<AuthoredStoryPackage, 'story_id' | 'story_version'>,
 ): value is AuthoredStoryProgress => {
@@ -46,7 +46,7 @@ const load = (
     const raw = storage.getItem(storageKey(story))
     if (!raw) return null
     const parsed: unknown = JSON.parse(raw)
-    return isProgress(parsed, story) ? parsed : null
+    return isAuthoredStoryProgress(parsed, story) ? parsed : null
   } catch {
     return null
   }
