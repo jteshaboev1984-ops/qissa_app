@@ -1,6 +1,6 @@
 # «Праздник мужества» — Illustration Storyboard V1
 
-> Status: production storyboard based on owner-approved Story V1, working Story V2 and approved Seven Roads visual canon V1.  
+> Status: canonical scene/continuity storyboard. For Interactive V3, exact image placement and asset count are superseded by `2026-09-23_prazdnik_muzhestva_v3_illustration_map.md`.  
 > Date: 2026-09-23  
 > Master style: `QISSA_MASTER_REFERENCE_user_selected.png` / `seven_roads_painterly_v1`
 
@@ -297,9 +297,15 @@ Before image generation verify:
 
 # Production recommendation
 
-For the final illustrated story, use:
-- 1 cover;
-- 10–12 full/large story illustrations selected from the 17 storyboard beats;
-- smaller spot illustrations only where they add character/humor.
+This storyboard remains the source for **scene meaning and continuity**, not the final Interactive V3 image count.
 
-Do **not** generate all final illustrations independently from prose-only prompts. Generate them from the approved reference set + this storyboard + exact story-state data.
+For Interactive V3 use the authoritative placement plan:
+`2026-09-23_prazdnik_muzhestva_v3_illustration_map.md`
+
+Current Interactive V3 target:
+- 1 cover;
+- 18 shared narrative illustrations;
+- 8 choice illustrations;
+- 27 assets total.
+
+Do **not** generate final illustrations independently from prose-only prompts. Generate them from the approved reference set + this storyboard + the V3 illustration map + exact story-state data.
