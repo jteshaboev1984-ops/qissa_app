@@ -51,7 +51,9 @@
           "scene_key": "capital_festival_establish",
           "status": "planned",
           "asset_id": "seven_roads_story1_p1_img_01_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Столица Королевства семи дорог лежала в широкой долине между горами. Над светлыми городскими стенами поднимались башни и голубые купола, а перед дворцом раскинулась большая площадь. От городских ворот в разные стороны уходили семь больших дорог — каждая в свою часть королевства."
         },
         {
           "slot_id": "P1-IMG-02",
@@ -60,7 +62,9 @@
           "scene_key": "finalists_and_king",
           "status": "planned",
           "asset_id": "seven_roads_story1_p1_img_02_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Темур и Самира."
         },
         {
           "slot_id": "P1-IMG-03",
@@ -69,7 +73,9 @@
           "scene_key": "horses_and_road_books",
           "status": "planned",
           "asset_id": "seven_roads_story1_p1_img_03_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Кажется, соперница ему досталась непростая."
         }
       ]
     },
@@ -93,7 +99,9 @@
           "scene_key": "departure_from_capital",
           "status": "planned",
           "asset_id": "seven_roads_story1_p2_img_01_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Булут почти сразу пошёл рядом."
         },
         {
           "slot_id": "P2-IMG-02",
@@ -102,7 +110,9 @@
           "scene_key": "fallen_tree_and_lie",
           "status": "planned",
           "asset_id": "seven_roads_story1_p2_img_02_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "С виду тропа не казалась закрытой. Ни камней поперёк дороги, ни поваленных деревьев он не заметил."
         }
       ]
     },
@@ -185,7 +195,9 @@
           "scene_key": "forest_bandit_mark",
           "status": "planned",
           "asset_id": "seven_roads_story1_p3_img_01_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Запоминать необычные вещи он умел хорошо."
         },
         {
           "slot_id": "P3-IMG-02",
@@ -194,7 +206,9 @@
           "scene_key": "rope_cut_and_lost_book",
           "status": "planned",
           "asset_id": "seven_roads_story1_p3_img_02_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Он успел обернуться и увидел свою дорожную книгу. Она скользнула с тропы и застряла между толстыми корнями большого раздвоенного дуба — сразу за тем местом, где он перерубил верёвку."
         }
       ]
     },
@@ -279,7 +293,9 @@
           "scene_key": "flooded_ford",
           "status": "planned",
           "asset_id": "seven_roads_story1_p4_img_01_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "И остановился."
         }
       ]
     },
@@ -359,7 +375,9 @@
           "scene_key": "first_sight_of_zaran",
           "status": "planned",
           "asset_id": "seven_roads_story1_p5_img_01_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "После шумной столицы он казался спокойным и просторным."
         },
         {
           "slot_id": "P5-IMG-02",
@@ -368,7 +386,9 @@
           "scene_key": "temur_reports_bandits",
           "status": "planned",
           "asset_id": "seven_roads_story1_p5_img_02_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "post_choice_text",
+          "after_text": "— Несколько путников уже рассказывали о людях с такой отметкой, — сказал он. — До сих пор мы не знали, связаны ли эти нападения между собой."
         }
       ]
     },
@@ -459,7 +479,9 @@
           "scene_key": "landslide_warning_decision",
           "status": "planned",
           "asset_id": "seven_roads_story1_p6_img_01_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "— Оставайся здесь."
         },
         {
           "slot_id": "P6-IMG-02",
@@ -468,7 +490,9 @@
           "scene_key": "landslide_rescue",
           "status": "planned",
           "asset_id": "seven_roads_story1_p6_img_02_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Вскоре её подняли наверх."
         },
         {
           "slot_id": "P6-IMG-03",
@@ -477,7 +501,9 @@
           "scene_key": "confession_aftermath",
           "status": "planned",
           "asset_id": "seven_roads_story1_p6_img_03_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "— Я всё равно рад, что ты жива. Но сердиться ещё буду."
         }
       ]
     },
@@ -503,7 +529,9 @@
           "scene_key": "return_and_sealed_replies",
           "status": "planned",
           "asset_id": "seven_roads_story1_p7_img_01_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Обе печати правителя Зарана были целы."
         },
         {
           "slot_id": "P7-IMG-02",
@@ -512,7 +540,9 @@
           "scene_key": "bandit_report_at_palace",
           "status": "planned",
           "asset_id": "seven_roads_story1_p7_img_02_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "— Узнаю."
         },
         {
           "slot_id": "P7-IMG-03",
@@ -521,7 +551,9 @@
           "scene_key": "knighting",
           "status": "planned",
           "asset_id": "seven_roads_story1_p7_img_03_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "— А достойных стать юными королевскими рыцарями сегодня оказалось двое."
         },
         {
           "slot_id": "P7-IMG-04A",
@@ -530,7 +562,9 @@
           "scene_key": "celebration_humor",
           "status": "planned",
           "asset_id": "seven_roads_story1_p7_img_04a_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Булут невинно поднял голову."
         },
         {
           "slot_id": "P7-IMG-04B",
@@ -539,7 +573,9 @@
           "scene_key": "final_bandit_hook",
           "status": "planned",
           "asset_id": "seven_roads_story1_p7_img_04b_v1",
-          "runtime_url": null
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "И теперь его знали во дворце."
         }
       ]
     }
