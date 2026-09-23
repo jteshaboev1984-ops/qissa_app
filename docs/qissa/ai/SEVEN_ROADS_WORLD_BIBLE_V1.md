@@ -1,9 +1,9 @@
 # Королевство семи дорог — World Bible V1
 
-> Status: canonical story-continuity companion to owner-approved story V1 «Праздник мужества»  
+> Status: canonical companion to owner-approved Story V1 «Праздник мужества»  
 > Date: 2026-09-23  
-> Scope: story continuity + **provisional visual design draft** for future stories and illustrations  
-> Rule: HARD CANON must not change silently. Visual design details remain DRAFT until the owner sees and approves generated reference images; only then may they be promoted to locked visual canon.
+> Scope: story continuity + **owner-approved visual canon V1** for future stories and illustrations  
+> Rule: HARD CANON and APPROVED VISUAL CANON must not change silently. Future intentional redesigns require a new version and an explicit canon delta.
 
 ## 1. Why this file exists
 
@@ -152,7 +152,7 @@ Do not later rewrite these facts as if:
 
 **Relationship with Shamol after Story 1:** strong trust formed through the forest escape.
 
-## Temur — VISUAL DRAFT V1 — pending image approval
+## Temur — APPROVED VISUAL CANON V1
 
 Use this exact base design for recurring illustrations unless a later canon version explicitly changes it:
 
@@ -208,7 +208,7 @@ Use this exact base design for recurring illustrations unless a later canon vers
 
 **Relationship with Bulut after Story 1:** calm, familiar partnership; Bulut is attentive and has his own comic personality.
 
-## Samira — VISUAL DRAFT V1 — pending image approval
+## Samira — APPROVED VISUAL CANON V1
 
 - approximate age: 12;
 - Central Asian girl;
@@ -247,7 +247,7 @@ Use this exact base design for recurring illustrations unless a later canon vers
 - brave enough to follow Temur through the forest escape;
 - the bond with Temur strengthens visibly during Story 1.
 
-## Shamol — VISUAL DRAFT V1 — pending image approval
+## Shamol — APPROVED VISUAL CANON V1
 
 - young horse;
 - dark bay, reading almost black at a distance;
@@ -276,7 +276,7 @@ The white forehead star is a locked identifier. Never remove it, enlarge it into
 - refuses to step into the unsafe river;
 - stays above when Samira falls and neighs loudly.
 
-## Bulut — VISUAL DRAFT V1 — pending image approval
+## Bulut — APPROVED VISUAL CANON V1
 
 - young horse;
 - light dapple-gray coat;
@@ -301,7 +301,7 @@ Do not make Bulut pure white in one image and dark gray in another. His base is 
 - receives and opens the sealed replies;
 - by the end of Story 1 knows about the bandit sign.
 
-## The King — VISUAL DRAFT V1 — pending image approval
+## The King — APPROVED VISUAL CANON V1
 
 - Central Asian man, approximately late 40s;
 - composed rather than intimidating;
@@ -321,7 +321,7 @@ Do not make Bulut pure white in one image and dark gray in another. His base is 
 - takes Temur's remembered sign seriously;
 - the bandit investigation becomes adult responsibility.
 
-## Captain — VISUAL DRAFT V1 — pending image approval
+## Captain — APPROVED VISUAL CANON V1
 
 - Central Asian man, approximately 40s;
 - practical military bearing;
@@ -340,7 +340,7 @@ Do not make Bulut pure white in one image and dark gray in another. His base is 
 - brings in the local guard captain;
 - sends the bandit information to the king.
 
-## Ruler of Zaran — VISUAL DRAFT V1 — pending image approval
+## Ruler of Zaran — APPROVED VISUAL CANON V1
 
 - older adult, approximately 50s;
 - practical civic ruler rather than monarch;
@@ -372,7 +372,7 @@ No canon answer yet for:
 
 Do not invent these as established history until a future story decides them.
 
-## Bandit sign — HARD shape concept + VISUAL DRAFT V1 pending image approval
+## Bandit sign — HARD + APPROVED VISUAL CANON V1
 
 **Asset ID:** `symbol_bandits_v1`
 
@@ -699,7 +699,7 @@ Use stable IDs in future prompts, manifests and database records:
 - `loc_zaran_river_crossing_v1`
 - `loc_return_landslide_v1`
 
-These IDs are provisional until the owner approves the actual reference images. After approval, lock the approved image under the same ID/version. If an approved visual design is later intentionally redesigned, create `_v2`; never silently overwrite what `_v1` means.
+These IDs now refer to the owner-approved V1 visual designs. If a visual design is intentionally redesigned later, create `_v2`; never silently overwrite what `_v1` means.
 
 ---
 
@@ -826,3 +826,53 @@ Suggested literary description for Story V2:
 > После шумной столицы Заран казался спокойным и просторным.
 
 This description is a **draft for Story V2**, not a retroactive change to the frozen V1 file.
+
+
+---
+
+# 17. Owner-approved image reference set — 2026-09-23
+
+The owner reviewed the generated reference images and approved the overall character, horse, environment and rendering direction.
+
+Persistent reference folder:
+`/QISSA/visual_refs/seven_roads_v1/`
+
+Approved files:
+- `QISSA_MASTER_REFERENCE_user_selected.png` — master style reference selected earlier by the owner.
+- `01_heroes_horses_approved.png` — primary appearance reference for Temur, Samira, Shamol and Bulut.
+- `02_capital_festival_approved.png` — capital / Festival of Courage atmosphere and architectural language.
+- `03_eastern_forest_escape_approved.png` — Eastern Forest atmosphere, Temur + Shamol action language, bandit-sign usage.
+- `04_zaran_arrival_approved.png` — Zaran's golden-warm civic architecture and landscape language.
+- `05_landslide_rescue_approved.png` — return-road terrain, landslide scale and post-incident character continuity.
+
+## What the approval locks
+
+The approval locks:
+- the painterly illustrated storybook rendering language;
+- Central Asian / Silk Road fantasy art direction;
+- Temur's and Samira's broad face/hair/age/outfit identities;
+- Shamol's and Bulut's coat identities and visual contrast;
+- turquoise/blue family for Temur and Shamol tack;
+- burgundy/red family for Samira and Bulut tack;
+- warm pale-stone + turquoise-accent architectural family for the kingdom;
+- Zaran's golden-beige / sunlit visual identity;
+- the Eastern Forest's dense mature-tree visual family;
+- the landslide-road geography and overall mountain/valley language.
+
+## What the approval does NOT automatically lock
+
+Image-generation incidental details are not canon unless separately stated in this Bible. In particular:
+- random one-off symbols on background banners;
+- exact crowd faces;
+- exact number of towers/windows;
+- exact flower placement;
+- accidental jewelry or ornamental variations;
+- any text rendered inside the generated image;
+- mirrored decorative details that conflict with written canon;
+- a decorative headpiece reading as a royal crown.
+
+For Samira, the approved visual may include a narrow decorative embroidered headband. It is **not** a royal crown or princess tiara.
+
+For Temur, the approved cap is a practical embroidered Central Asian-style riding cap and can remain part of `char_temur_v1`.
+
+The written canon takes priority over accidental generated-image artifacts.
