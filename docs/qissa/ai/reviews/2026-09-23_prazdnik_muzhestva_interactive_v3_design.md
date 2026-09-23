@@ -357,6 +357,35 @@ The Architect can then generate the same structure:
 
 Keep `split-v1` available during migration/fallback.
 
+## 13A. Age / safety contract boundary
+
+Interactive V3 is **not** a drop-in replacement for the current generated `split-v1` contract.
+
+Current generic choice guidance was written primarily for the 5–7 bedtime MVP and includes a "no high-stakes danger" rule. Story 1 is editorially aimed at **8–12**, and the current app can represent the **8–9** slice through `age_group = 8-9` + `story_mood = kind_adventure`.
+
+Choice 1 occurs during an active escape from bandits. The selectable actions themselves are nonviolent riding/escape actions, but the surrounding scene is intentionally more intense than the existing 5–7 bedtime choice contract.
+
+Therefore:
+- do not route this authored story through the existing 5–7/generated-choice assumptions;
+- qualify it as authored `8-9 / kind_adventure` content;
+- keep the current `split-v1` safeguards unchanged for existing generated stories;
+- add a separate authored multi-choice safety/editorial qualification before enabling V3 in the app;
+- if QISSA later supports ages 10–12 explicitly, extend the product age taxonomy deliberately rather than silently mapping those users to 8–9.
+
+This is a product-contract boundary, not permission to increase violence. Existing Story-1 rules remain: no gore, no weapon strike on a person, Temur escapes instead of fighting, and adults perform the dangerous rescue work.
+
+## 13B. Editorial reference assets vs runtime assets
+
+The approved master/scene images currently live in the user's persistent QISSA Library folder and are authoritative **editorial references**.
+
+Those Library paths are not app production URLs.
+
+V3 content uses stable `asset_id` values. Before runtime integration, each final production image must be uploaded to app-controlled storage (for example Supabase Storage/CDN) and the asset registry must resolve `asset_id → runtime URL`.
+
+Do not hard-code ChatGPT Library paths into the app.
+
+---
+
 ## 14. Required deterministic acceptance matrix
 
 Four binary decisions = 16 paths.
