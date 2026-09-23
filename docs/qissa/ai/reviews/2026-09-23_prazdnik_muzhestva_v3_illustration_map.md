@@ -416,10 +416,10 @@ Keep important faces/actions away from edges so one source image can support res
 
 # Final asset count
 
-Baseline production:
+Approved Interactive V3 production target:
 - Cover: 1
-- Shared: 17
+- Shared: 18
 - Choice A/B: 8
-- **Total: 26 assets**
+- **Total: 27 assets**
 
 The approved Interactive V3 target is **27 assets**. On one playthrough the child sees **23 visual moments** (cover + 18 shared images + 4 selected choice images). Separating the warm celebration from the mysterious final hook gives the ending better rhythm.
