@@ -60,7 +60,7 @@ The following events are HARD CANON.
 4. The selection includes running, archery and preparing a horse for travel.
 5. Temur and Samira become the two young royal couriers for the final challenge.
 6. Both receive identical sealed royal letters.
-7. Both must ride to the same city — Lugovoy — give the letter to its ruler, receive a separate sealed reply and return it to the king.
+7. Both must ride to the same city — Zaran — give the letter to its ruler, receive a separate sealed reply and return it to the king.
 8. The stated rule is that the winner is the one who first **honestly** completes the mission and returns the reply.
 9. Temur receives Shamol; Samira receives Bulut.
 10. Both receive a road book.
@@ -78,13 +78,13 @@ The following events are HARD CANON.
 22. After the escape Temur and Shamol have established real mutual trust.
 23. Samira reaches a river after the previous night's rain.
 24. She uses the road book to recognize that the lower ford is unsafe and finds the old stone crossing upstream.
-25. Samira reaches Lugovoy first.
-26. The ruler of Lugovoy records that Samira arrived first and that her royal seal was intact.
-27. Temur reaches Lugovoy later.
+25. Samira reaches Zaran first.
+26. The ruler of Zaran records that Samira arrived first and that her royal seal was intact.
+27. Temur reaches Zaran later.
 28. Temur tells the ruler and city guard about the forest bandits and reproduces their sign from memory.
-29. Lugovoy's guard says other travelers have previously mentioned people carrying the same mark, but the attacks had not yet been clearly connected.
+29. Zaran's guard says other travelers have previously mentioned people carrying the same mark, but the attacks had not yet been clearly connected.
 30. The ruler includes this information in Temur's sealed reply to the king.
-31. Samira leaves Lugovoy first and expects to win.
+31. Samira leaves Zaran first and expects to win.
 32. On the return route she discovers a rain-damaged landslide/road collapse hidden beyond a bend.
 33. She realizes Temur may approach too fast to see the danger.
 34. Samira gives up the chance to preserve her lead and stays to warn him.
@@ -100,11 +100,11 @@ The following events are HARD CANON.
 44. Temur answers: «Тогда я бы всё равно знал, что уехал.»
 45. They return to the capital almost together.
 46. Both reply seals are intact.
-47. The king reads Samira's reply first and confirms that she reached Lugovoy first.
+47. The king reads Samira's reply first and confirms that she reached Zaran first.
 48. Temur's reply alerts the crown to the bandit pattern and sign.
 49. Samira tells the full truth about the first fork herself.
 50. The king makes clear that the Festival tests more than speed.
-51. Samira is the first courier to reach Lugovoy.
+51. Samira is the first courier to reach Zaran.
 52. Both Temur and Samira are judged worthy to become young royal knights.
 53. The bandit problem is **not solved** in Story 1.
 54. By the end of Story 1 the king and captain of the royal guard know the bandits' sign.
@@ -176,13 +176,13 @@ Use this exact base design for recurring illustrations unless a later canon vers
 - no heavy armor;
 - no European knight plate armor.
 
-**Story 1 damage continuity:** after the forest escape, his **right sleeve/forearm area is visibly torn and dusty**. This remains visible in Lugovoy, on the return road and at the final ceremony until he changes clothes after the story.
+**Story 1 damage continuity:** after the forest escape, his **right sleeve/forearm area is visibly torn and dusty**. This remains visible in Zaran, on the return road and at the final ceremony until he changes clothes after the story.
 
 ---
 
 ## Samira — HARD CANON
 
-**Role:** one of the two young royal couriers in Story 1; reaches Lugovoy first; becomes a young royal knight.
+**Role:** one of the two young royal couriers in Story 1; reaches Zaran first; becomes a young royal knight.
 
 **Origin:** the south of the kingdom.
 
@@ -332,7 +332,7 @@ Do not make Bulut pure white in one image and dark gray in another. His base is 
 
 ---
 
-## Ruler of Lugovoy — HARD CANON
+## Ruler of Zaran — HARD CANON
 
 - receives each courier separately;
 - records arrival order and intact seals;
@@ -340,7 +340,7 @@ Do not make Bulut pure white in one image and dark gray in another. His base is 
 - brings in the local guard captain;
 - sends the bandit information to the king.
 
-## Ruler of Lugovoy — VISUAL DRAFT V1 — pending image approval
+## Ruler of Zaran — VISUAL DRAFT V1 — pending image approval
 
 - older adult, approximately 50s;
 - practical civic ruler rather than monarch;
@@ -360,7 +360,7 @@ Do not make Bulut pure white in one image and dark gray in another. His base is 
 - attempt to take Temur's horse and bag;
 - are not defeated or captured in Story 1;
 - other travelers have mentioned people with the same mark;
-- the crown and Lugovoy authorities now suspect connected attacks.
+- the crown and Zaran authorities now suspect connected attacks.
 
 No canon answer yet for:
 - exact number of bandits in the wider group;
@@ -386,7 +386,7 @@ Exact form:
 Known appearances in Story 1:
 1. carved into tree bark in the Eastern Forest;
 2. marked on a bandit's leather bag;
-3. reproduced by Temur for the ruler of Lugovoy;
+3. reproduced by Temur for the ruler of Zaran;
 4. reproduced again for the king/royal guard.
 
 Never:
@@ -432,7 +432,7 @@ Do not render it as a giant atlas, modern printed guidebook, glowing magic book 
 - rolled/folded to fit a small leather case;
 - red wax seal;
 - same royal seal design on both;
-- seal intact until the ruler of Lugovoy opens it.
+- seal intact until the ruler of Zaran opens it.
 
 ## Leather letter cases
 
@@ -443,7 +443,7 @@ Do not render it as a giant atlas, modern printed guidebook, glowing magic book 
 - one carried by each child;
 - visually identical except normal wear.
 
-## Return letters from Lugovoy
+## Return letters from Zaran
 
 **Asset ID:** `prop_lugovoy_reply_v1`
 
@@ -502,9 +502,9 @@ For Story 1, do not redraw the square as a completely different city between ope
 - ditch appears on the escape path;
 - no enchanted glow or fantasy monsters established.
 
-## Lugovoy
+## Zaran
 
-**Asset ID:** `loc_lugovoy_v1`
+**Asset ID:** `loc_zaran_v1`
 
 - walled provincial city;
 - greener, more open visual feeling than the capital;
@@ -515,7 +515,7 @@ For Story 1, do not redraw the square as a completely different city between ope
 
 ## River crossing
 
-**Asset ID:** `loc_lugovoy_river_crossing_v1`
+**Asset ID:** `loc_zaran_river_crossing_v1`
 
 - lower ford made dangerous by recent rain;
 - water muddy and fast;
@@ -638,7 +638,7 @@ The same location must retain major anchors across images:
 - city gate;
 - road direction;
 - tree/forest visual family;
-- Lugovoy gate/civic hall.
+- Zaran gate/civic hall.
 
 Camera angle may change. Architecture identity may not.
 
@@ -695,8 +695,8 @@ Use stable IDs in future prompts, manifests and database records:
 - `loc_capital_festival_square_v1`
 - `loc_royal_stable_v1`
 - `loc_eastern_forest_v1`
-- `loc_lugovoy_v1`
-- `loc_lugovoy_river_crossing_v1`
+- `loc_zaran_v1`
+- `loc_zaran_river_crossing_v1`
 - `loc_return_landslide_v1`
 
 These IDs are provisional until the owner approves the actual reference images. After approval, lock the approved image under the same ID/version. If an approved visual design is later intentionally redesigned, create `_v2`; never silently overwrite what `_v1` means.
@@ -737,7 +737,7 @@ For image generation, track the story state rather than only the scene text.
 - flooded ford + stone marker + upstream stone crossing;
 - road book visible if scene requires it.
 
-## State S5 — Lugovoy
+## State S5 — Zaran
 - Samira clean and arrives first;
 - Temur later arrives with torn/dusty sleeve;
 - same city gate/civic hall in both arrival illustrations.
@@ -788,3 +788,41 @@ Before generating an illustration, load:
 3. the approved reference assets for every recurring character/horse/prop/location in the image.
 
 A future story may **develop** a character or reveal new facts. It must not silently contradict established facts.
+
+
+---
+
+# 16. Canon update — Zaran
+
+**Decision:** the first named city of the world is **Заран (Zaran)**.
+
+The frozen owner-approved Story V1 may still contain the earlier working name «Луговой»; do not silently rewrite that preserved snapshot. All subsequent story versions, world canon, illustrations and future stories must use **Заран**.
+
+## Name / visual meaning
+
+The root **«зар»** should be felt visually as a warm gold / precious-light motif, but not as a literal city made of gold.
+
+Recurring Zaran visual language:
+- warm golden-beige stone and plaster in sunlight;
+- restrained brass / bronze / muted-gold accents on gates and civic details;
+- sunlit wheat or dry-gold grasses around greener cultivated land;
+- warm late-afternoon glow that can make the city seem to “hold” light;
+- turquoise/blue accents may appear sparingly as contrast, consistent with the Seven Roads world.
+
+Avoid:
+- covering every surface in shiny gold;
+- palace-like luxury that makes Zaran look richer than the capital;
+- generic European castle towers;
+- turning «зар» into a magical glow unless magic is later introduced into canon.
+
+Suggested literary description for Story V2:
+
+> За последним холмом открылся Заран.
+>
+> Город стоял среди широких полей, и под солнцем его светлые стены казались почти золотистыми. Отсюда и начиналось то самое ощущение «зара»: не блеск золота, а тёплый цвет камня, сухих трав и вечернего света.
+>
+> Над главными воротами поднимались две невысокие башни. За стенами виднелись сады, плоские крыши домов и высокая башня городской ратуши. На воротах и деревянных балконах поблёскивали небольшие медные детали.
+>
+> После шумной столицы Заран казался спокойным и просторным.
+
+This description is a **draft for Story V2**, not a retroactive change to the frozen V1 file.
