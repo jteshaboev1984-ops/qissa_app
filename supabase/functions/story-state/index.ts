@@ -11,7 +11,7 @@ const AUDIO_BUCKET = 'story-audio'
 const MAX_SERIES_SESSIONS = 10
 
 type StoryStateRequest = {
-  action?: 'sync_generated' | 'confirm_choice' | 'save_preferences' | 'reset_current' | 'load_current' | 'list_library' | 'delete_profile_data'
+  action?: 'sync_generated' | 'confirm_choice' | 'save_preferences' | 'reset_current' | 'load_current' | 'list_library' | 'delete_profile_data' | 'save_authored_progress' | 'load_authored_progress' | 'clear_authored_progress'
   installationId?: string
   installationAuth?: string
   selections?: {
@@ -59,6 +59,14 @@ type StoryStateRequest = {
   }
   episodeId?: string
   choiceId?: string
+  storyId?: string
+  storyVersion?: string
+  authoredProgress?: JsonRecord & {
+    story_id?: string
+    story_version?: string
+    current_part_index?: number
+    completed?: boolean
+  }
   readerPreferences?: JsonRecord
   privacyConsent?: JsonRecord
 }
@@ -334,6 +342,104 @@ async function confirmChoice(input: StoryStateRequest, origin: string | null) {
     .eq('id', session.id)
 
   if (updateError) return fail('session_choice_update_failed', 500, origin)
+  return json({ ok: true }, 200, origin)
+}
+
+const isValidAuthoredStoryKey = (value: unknown, maxLength: number): value is string =>
+  typeof value === 'string' && value.trim().length > 0 && value.trim().length <= maxLength
+
+async function saveAuthoredProgress(input: StoryStateRequest, origin: string | null) {
+  const { installationId, storyId, storyVersion, authoredProgress } = input
+  if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
+  if (
+    !isValidAuthoredStoryKey(storyId, 120) ||
+    !isValidAuthoredStoryKey(storyVersion, 80) ||
+    !isRecord(authoredProgress) ||
+    authoredProgress.story_id !== storyId ||
+    authoredProgress.story_version !== storyVersion ||
+    typeof authoredProgress.current_part_index !== 'number' ||
+    !Number.isInteger(authoredProgress.current_part_index) ||
+    authoredProgress.current_part_index < 0 ||
+    typeof authoredProgress.completed !== 'boolean'
+  ) {
+    return fail('invalid_authored_progress', 422, origin)
+  }
+
+  const { data: profile, error: profileError } = await findProfile(installationId)
+  if (profileError) return fail('profile_load_failed', 500, origin)
+  if (!profile) return fail('profile_not_found', 404, origin)
+
+  const { error } = await admin
+    .from('authored_story_progress')
+    .upsert({
+      child_profile_id: profile.id,
+      story_id: storyId,
+      story_version: storyVersion,
+      progress_payload: authoredProgress,
+      current_part_index: authoredProgress.current_part_index,
+      completed: authoredProgress.completed,
+    }, { onConflict: 'child_profile_id,story_id,story_version' })
+
+  if (error) {
+    console.error('authored story progress save failed', error)
+    return fail('authored_progress_save_failed', 500, origin)
+  }
+
+  return json({ ok: true }, 200, origin)
+}
+
+async function loadAuthoredProgress(input: StoryStateRequest, origin: string | null) {
+  const { installationId, storyId, storyVersion } = input
+  if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
+  if (!isValidAuthoredStoryKey(storyId, 120) || !isValidAuthoredStoryKey(storyVersion, 80)) {
+    return fail('invalid_authored_story_identity', 422, origin)
+  }
+
+  const { data: profile, error: profileError } = await findProfile(installationId)
+  if (profileError) return fail('profile_load_failed', 500, origin)
+  if (!profile) return json({ progress: null }, 200, origin)
+
+  const { data, error } = await admin
+    .from('authored_story_progress')
+    .select('progress_payload')
+    .eq('child_profile_id', profile.id)
+    .eq('story_id', storyId)
+    .eq('story_version', storyVersion)
+    .maybeSingle()
+
+  if (error) {
+    console.error('authored story progress load failed', error)
+    return fail('authored_progress_load_failed', 500, origin)
+  }
+
+  return json({
+    progress: data && isRecord(data.progress_payload) ? data.progress_payload : null,
+  }, 200, origin)
+}
+
+async function clearAuthoredProgress(input: StoryStateRequest, origin: string | null) {
+  const { installationId, storyId, storyVersion } = input
+  if (!isUuid(installationId)) return fail('invalid_installation_id', 422, origin)
+  if (!isValidAuthoredStoryKey(storyId, 120) || !isValidAuthoredStoryKey(storyVersion, 80)) {
+    return fail('invalid_authored_story_identity', 422, origin)
+  }
+
+  const { data: profile, error: profileError } = await findProfile(installationId)
+  if (profileError) return fail('profile_load_failed', 500, origin)
+  if (!profile) return json({ ok: true, skipped: true }, 200, origin)
+
+  const { error } = await admin
+    .from('authored_story_progress')
+    .delete()
+    .eq('child_profile_id', profile.id)
+    .eq('story_id', storyId)
+    .eq('story_version', storyVersion)
+
+  if (error) {
+    console.error('authored story progress clear failed', error)
+    return fail('authored_progress_clear_failed', 500, origin)
+  }
+
   return json({ ok: true }, 200, origin)
 }
 
@@ -622,6 +728,9 @@ Deno.serve(async (request: Request) => {
     'delete_profile_data',
     'load_current',
     'list_library',
+    'save_authored_progress',
+    'load_authored_progress',
+    'clear_authored_progress',
   ])
   if (!input.action || !supportedActions.has(input.action)) return fail('unsupported_action', 400, origin)
 
@@ -629,7 +738,7 @@ Deno.serve(async (request: Request) => {
     ? 'create'
     : input.action === 'reset_current'
       ? 'allow-missing-profile'
-      : input.action === 'load_current' || input.action === 'list_library' || input.action === 'delete_profile_data'
+      : input.action === 'load_current' || input.action === 'list_library' || input.action === 'delete_profile_data' || input.action === 'load_authored_progress' || input.action === 'clear_authored_progress'
         ? 'allow-empty'
         : 'required'
 
@@ -646,6 +755,9 @@ Deno.serve(async (request: Request) => {
   if (input.action === 'reset_current') return resetCurrent(input, origin)
   if (input.action === 'load_current') return loadCurrent(input, origin)
   if (input.action === 'list_library') return listLibrary(input, origin)
+  if (input.action === 'save_authored_progress') return saveAuthoredProgress(input, origin)
+  if (input.action === 'load_authored_progress') return loadAuthoredProgress(input, origin)
+  if (input.action === 'clear_authored_progress') return clearAuthoredProgress(input, origin)
   if (input.action === 'delete_profile_data') {
     const response = await deleteProfileData(input, origin)
     if (response.ok) {
