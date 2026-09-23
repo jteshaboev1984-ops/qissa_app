@@ -876,3 +876,47 @@ For Samira, the approved visual may include a narrow decorative embroidered head
 For Temur, the approved cap is a practical embroidered Central Asian-style riding cap and can remain part of `char_temur_v1`.
 
 The written canon takes priority over accidental generated-image artifacts.
+
+
+---
+
+# 18. Canon delta from Story V2 editorial pass — 2026-09-23
+
+These details are now canonical for future story continuity once Story V2 is promoted:
+
+## Temur's lost road book
+
+**Object:** Temur's personal road book from the Festival of Courage.
+
+**Status after Story 1:** LOST / UNRESOLVED.
+
+**Exact loss location:**
+- Eastern Forest;
+- during the escape from the bandits;
+- on the narrow escape trail immediately after the rope barrier Temur cuts with his sabre;
+- the book falls from his satchel and lodges between the exposed roots of a **large forked oak**;
+- this is **before** Shamol's later jump across the ditch.
+
+**Important:** Temur sees where it falls but cannot safely turn back because the bandits are still pursuing him.
+
+**Future-story rule:** the book may be recovered, discovered by another character, or found by the bandits in a later story, but none of those outcomes is canon yet. Do not silently return the book to Temur between stories.
+
+## First-fork behavior
+
+Temur does not blindly accept Samira's claim. He notices that the upper path does not visibly look blocked, but chooses to trust Samira because she is the one who studied the road book.
+
+Immediately after accepting her answer, Temur rides off quickly **before Samira has put her book away or prepared to start**, reinforcing his impulsive/fast-moving character.
+
+## Trust state after Samira's confession
+
+After Samira confesses the lie, Temur does not instantly restore full trust.
+
+When Samira later proposes another route from the road book, Temur pauses, asks to see the book himself, verifies the entry, and only then agrees.
+
+This is the first visible consequence of the broken trust.
+
+**Relationship state remains:** respect and trust are rebuilding, not fully restored.
+
+## King speech direction
+
+The king's final speech should remain substantial enough to feel ceremonial, but should be grounded in the children's concrete actions rather than a long abstract checklist of virtues.
