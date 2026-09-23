@@ -42,7 +42,7 @@ On one actual playthrough the child sees:
 - 17 shared illustrations
 - 4 selected choice illustrations
 
-**21 illustrated moments** across the full story.
+**22 illustrated moments** across the full story.
 
 That is appropriate for the current ~3,000-word V3: roughly one visual beat every 140–170 words, with denser imagery in action-heavy sections.
 
@@ -426,4 +426,4 @@ If final hook is split into celebration + mystery:
 - Shared becomes 18
 - **Total: 27 assets**
 
-Recommended final target: **27 assets**, because separating the warm celebration from the mysterious final hook gives the ending better rhythm.
+Recommended final target: **27 assets**. On one playthrough the child sees **23 visual moments** (cover + 18 shared images + 4 selected choice images). Separating the warm celebration from the mysterious final hook gives the ending better rhythm.
