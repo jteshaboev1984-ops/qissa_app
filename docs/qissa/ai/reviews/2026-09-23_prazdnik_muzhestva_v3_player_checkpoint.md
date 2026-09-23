@@ -137,12 +137,31 @@ The check is now part of `.github/workflows/ci.yml`.
 - QISSA CI #631: success after preview-route integration.
 - QISSA CI #634: success after asset resolver/checkpoint.
 - QISSA CI #635: success after branch-safe narration builder.
+- QISSA CI #645: success after isolated authored-progress backend preparation.
+
+### Remote authored-progress backend preparation
+
+Prepared in the branch, **not deployed**:
+- additive table migration `20260923_000017_add_authored_story_progress.sql`;
+- isolated `authored_story_progress` table with `ON DELETE CASCADE`;
+- RLS enabled and browser grants revoked;
+- Story State actions:
+  - `save_authored_progress`;
+  - `load_authored_progress`;
+  - `clear_authored_progress`;
+- frontend client methods in `storyStateService`;
+- API-contract documentation;
+- CI contract check `check:authored-progress-backend`.
+
+This intentionally does **not** reinterpret or modify the existing generated `story_sessions/story_choice_events` semantics.
+
+Remote authored sync is not enabled in the player yet. Deployment and durable outbox/retry behavior should be added only after preview QA.
 
 ## Intentionally not implemented yet
 
 - preview flag is not enabled in production;
 - final 27 illustration files are not registered;
-- no authored-story remote/cloud progress sync yet;
+- authored remote-progress backend is prepared in code/migration but not deployed or wired into the player yet;
 - authored TTS/listening playback UI/provider is not yet connected; branch-safe narration text assembly is implemented;
 - authored story is not yet exposed through normal Home/Library UI;
 - no production rollout;
