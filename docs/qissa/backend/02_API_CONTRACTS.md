@@ -307,3 +307,110 @@ interface UpdateReaderPreferencesResponse {
 ```
 
 Validation: validate the complete reader preference shape and verify profile ownership.
+
+
+---
+
+## Authored multi-choice story progress
+
+This contract is additive and separate from generated Story AI `split-v1` sessions.
+
+The current generated-story endpoints and tables must not be reinterpreted to support authored V3.
+
+### Shared payload
+
+```ts
+interface AuthoredStoryProgressPayload {
+  story_id: string
+  story_version: string
+  current_part_index: number
+  selected_choices: Record<string, string>
+  shown_resolution_decisions: string[]
+  choice_history: Array<{
+    decision_id: string
+    part_id: string
+    choice_id: string
+    choice_text: string
+    effect_summary: string
+    selected_at: string
+  }>
+  memory: {
+    lastEvent: string
+    canonState: Record<string, string>
+    relationshipState: Record<string, string>
+  }
+  completed: boolean
+  updated_at: string
+}
+```
+
+### `save_authored_progress`
+
+Request:
+```ts
+{
+  action: 'save_authored_progress'
+  storyId: string
+  storyVersion: string
+  authoredProgress: AuthoredStoryProgressPayload
+}
+```
+
+Rules:
+- installation authorization is required;
+- a child profile must already exist;
+- `storyId/storyVersion` must match the progress payload;
+- current part index must be a non-negative integer;
+- the server stores the whole progress payload atomically;
+- upsert key is `(child_profile_id, story_id, story_version)`.
+
+Response:
+```ts
+{ ok: true }
+```
+
+### `load_authored_progress`
+
+Request:
+```ts
+{
+  action: 'load_authored_progress'
+  storyId: string
+  storyVersion: string
+}
+```
+
+If no profile or no saved progress exists:
+```ts
+{ progress: null }
+```
+
+Otherwise:
+```ts
+{ progress: AuthoredStoryProgressPayload }
+```
+
+### `clear_authored_progress`
+
+Request:
+```ts
+{
+  action: 'clear_authored_progress'
+  storyId: string
+  storyVersion: string
+}
+```
+
+Deletes only that authored-story progress row.
+
+Response:
+```ts
+{ ok: true }
+```
+
+### Privacy
+
+`authored_story_progress.child_profile_id` uses `ON DELETE CASCADE`.
+Deleting the child profile therefore removes authored progress together with the rest of the profile-scoped data.
+
+The public browser must never receive service-role credentials or write the table directly.
