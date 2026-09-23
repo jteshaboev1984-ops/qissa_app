@@ -32,17 +32,17 @@ This avoids creating extra post-choice art while still making the child’s choi
 ### Total production set
 
 - 1 cover
-- 17 shared story illustrations
+- 18 shared story illustrations
 - 8 choice illustrations (2 × 4 choices)
 
-**Total assets: 26.**
+**Total assets: 27.**
 
 On one actual playthrough the child sees:
 - 1 cover
-- 17 shared illustrations
+- 18 shared illustrations
 - 4 selected choice illustrations
 
-**22 illustrated moments** across the full story.
+**23 illustrated moments** across the full story.
 
 That is appropriate for the current ~3,000-word V3: roughly one visual beat every 140–170 words, with denser imagery in action-heavy sections.
 
@@ -422,8 +422,4 @@ Baseline production:
 - Choice A/B: 8
 - **Total: 26 assets**
 
-If final hook is split into celebration + mystery:
-- Shared becomes 18
-- **Total: 27 assets**
-
-Recommended final target: **27 assets**. On one playthrough the child sees **23 visual moments** (cover + 18 shared images + 4 selected choice images). Separating the warm celebration from the mysterious final hook gives the ending better rhythm.
+The approved Interactive V3 target is **27 assets**. On one playthrough the child sees **23 visual moments** (cover + 18 shared images + 4 selected choice images). Separating the warm celebration from the mysterious final hook gives the ending better rhythm.
