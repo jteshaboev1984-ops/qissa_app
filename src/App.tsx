@@ -151,6 +151,7 @@ function App() {
   const [privacyConsentAccepted, setPrivacyConsentAccepted] = useState(hydrated.privacyConsentAccepted)
   const [onboardingMode, setOnboardingMode] = useState<OnboardingMode>('first_launch')
   const [appTab, setAppTab] = useState<AppTab>('home')
+  const [authoredStoryOpen, setAuthoredStoryOpen] = useState(false)
   const [archiveItems, setArchiveItems] = useState<StoryArchiveItem[]>(() => storyArchive.load())
   const [generationStatus, setGenerationStatus] = useState<GenerationStatus>('idle')
   const [generationError, setGenerationError] = useState(false)
@@ -477,6 +478,19 @@ function App() {
     )
   }
 
+  if (authoredStoryOpen) {
+    return (
+      <div className="relative min-h-screen text-[#1f241d]">
+        <div className="mx-auto max-w-[430px] px-4 py-5 sm:px-6">
+          <AuthoredStoryPlayer
+            story={prazdnikMuzhestvaV3}
+            onBack={() => setAuthoredStoryOpen(false)}
+          />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative min-h-screen text-[#1f241d]">
       <div className={`mx-auto max-w-[430px] px-4 py-5 sm:px-6 ${screen === 'home' && selections ? 'pb-32' : ''}`}>
@@ -528,6 +542,7 @@ function App() {
             onResetStory={handleResetStory}
             onEditSetup={() => handleOpenOnboarding('edit_setup')}
             onCreateNewStorySetup={handleOpenNewStorySetup}
+            onOpenAuthoredStory={() => setAuthoredStoryOpen(true)}
           />
         )}
 
@@ -545,6 +560,7 @@ function App() {
             onStartNextSeriesSession={handleStartNextSeriesSession}
             onOpenArchivedStory={handleOpenArchivedStory}
             onCreateStory={handleStartStory}
+            onOpenAuthoredStory={() => setAuthoredStoryOpen(true)}
           />
         )}
 
