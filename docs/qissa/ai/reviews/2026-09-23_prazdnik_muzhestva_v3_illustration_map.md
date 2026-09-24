@@ -316,13 +316,13 @@ That is appropriate for the current ~3,000-word V3: roughly one visual beat ever
 
 ---
 
-## P7-IMG-02 — The bandit report reaches the crown
+## P7-IMG-02 — Temur finishes the bandit report
 
-**Insert after:** king gives Temur’s longer reply to the captain / Temur describes the mark.
+**Insert after:** Temur confirms to the captain that he would recognize the mark again.
 
-**Scene:** king + captain + Temur; paper or reply includes exact crescent/slash drawing; Samira nearby listening.
+**Scene:** open capital palace square; Temur finishes his report to the king and captain while Samira stands nearby listening. Do not make the crescent/slash drawing a separate visual reveal here.
 
-**Purpose:** connect Story 1 to future bandit arc.
+**Purpose:** close Temur's report and make the transition to the king asking Samira about her road feel continuous. The explicit paper/sign mystery beat is reserved for P7-IMG-04B.
 
 ---
 
