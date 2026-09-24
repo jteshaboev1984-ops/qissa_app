@@ -109,7 +109,7 @@ No modern technology, firearms, cars, electric lights, contemporary clothing, Eu
 **Story state:** S0  
 **Primary references:** heroes/horses + capital
 
-**Production prompt:** Temur on Shamol and Samira on Bulut at the edge of the capital Festival of Courage square, both facing toward an open road leading into distant mountains. Palace, seven long festival banners, warm pale-stone Central Asian fantasy architecture and blue domes behind them; crowd suggested but not dominant. Energetic adventure and rivalry, not yet friendship. No spoilers of bandits, landslide or final knighting.
+**Production prompt:** Temur on Shamol and Samira on Bulut at the edge of the capital Festival of Courage square, both facing toward an open road leading into distant mountains. Palace, seven long festival banners, warm pale-stone Central Asian fantasy architecture and blue domes behind them; crowd suggested but not dominant. Energetic adventure and rivalry, not yet friendship. No spoilers of bandits, landslide or final bahadur ceremony.
 
 **Must preserve/show:** both hero identities exact; both horses exact; clean travel clothes; road/adventure feeling
 
@@ -141,7 +141,7 @@ No modern technology, firearms, cars, electric lights, contemporary clothing, Eu
 
 **Must preserve/show:** Temur teal; Samira burgundy; king deep-blue robe/simple circlet
 
-**Do not introduce:** no hugging, cheerful best-friend pose or knighting
+**Do not introduce:** no hugging, cheerful best-friend pose or bahadur ceremony
 
 ---
 
