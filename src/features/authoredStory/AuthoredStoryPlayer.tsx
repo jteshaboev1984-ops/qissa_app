@@ -32,6 +32,24 @@ const renderInline = (text: string): ReactNode[] =>
     return <Fragment key={index}>{chunk}</Fragment>
   })
 
+const readerPartProgress = (
+  story: AuthoredStoryPackage,
+  internalPartNumber: number,
+): { current: number; total: number } => {
+  if (
+    story.story_id === 'seven_roads_prazdnik_muzhestva' &&
+    story.story_version === 'interactive-v3' &&
+    story.parts.length === 7
+  ) {
+    return {
+      current: internalPartNumber <= 2 ? 1 : internalPartNumber - 1,
+      total: 6,
+    }
+  }
+
+  return { current: internalPartNumber, total: story.parts.length }
+}
+
 function StoryImage({
   asset,
   alt,
@@ -159,6 +177,7 @@ export function AuthoredStoryPlayer({
   }
 
   const currentPartNumber = progress.current_part_index + 1
+  const readerProgress = readerPartProgress(story, currentPartNumber)
   const canContinue = canAdvanceAuthoredStory(story, progress)
   const currentDecisionChoiceId = part.decision
     ? progress.selected_choices[part.decision.decision_id] ?? null
@@ -198,7 +217,7 @@ export function AuthoredStoryPlayer({
             </button>
           ) : <span />}
           <span className="q-label rounded-full border border-[#eadfc9] bg-[#fff8e9] px-3 py-1.5">
-            Часть {currentPartNumber} из {story.parts.length}
+            Часть {readerProgress.current} из {readerProgress.total}
           </span>
         </div>
 
@@ -226,7 +245,7 @@ export function AuthoredStoryPlayer({
         <div className="h-2 overflow-hidden rounded-full bg-[#efe4cf]">
           <div
             className="h-full rounded-full bg-[#d4af37] transition-all"
-            style={{ width: `${(currentPartNumber / story.parts.length) * 100}%` }}
+            style={{ width: `${(readerProgress.current / readerProgress.total) * 100}%` }}
           />
         </div>
       </header>
@@ -298,7 +317,17 @@ export function AuthoredStoryPlayer({
           />
 
           <article className="q-card p-6 text-[1.12rem] leading-8 text-[#2b2b22]">
-            <p>{renderInline(selectedChoice.resolution_text)}</p>
+            <div className="space-y-5">
+              {selectedChoice.resolution_text
+                .split(/\n\n+/)
+                .map((paragraph) => paragraph.trim())
+                .filter(Boolean)
+                .map((paragraph, index) => (
+                  <p key={`resolution-${index}`} className="whitespace-pre-wrap">
+                    {renderInline(paragraph)}
+                  </p>
+                ))}
+            </div>
           </article>
         </>
       ) : null}
