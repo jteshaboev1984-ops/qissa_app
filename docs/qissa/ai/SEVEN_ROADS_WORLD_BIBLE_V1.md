@@ -192,7 +192,7 @@ Use this exact base design for recurring illustrations unless a later canon vers
 
 ## Samira — HARD CANON
 
-**Role:** one of the two young royal couriers in Story 1; reaches Zaran first; becomes a young royal knight.
+**Role:** one of the two young royal couriers in Story 1; reaches Zaran first; becomes a **бахадур царства** (bahadur of the realm).
 
 **Origin:** the south of the kingdom.
 
