@@ -143,7 +143,7 @@ All branches must converge to:
 - adults perform the rope rescue;
 - Samira voluntarily confesses;
 - both replies reach the king intact;
-- both become young royal knights;
+- both become **юные бахадуры царства**;
 - the bandit arc remains open.
 
 Only four branch-memory facts differ:
