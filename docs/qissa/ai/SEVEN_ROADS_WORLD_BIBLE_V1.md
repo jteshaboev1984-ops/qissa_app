@@ -105,10 +105,20 @@ The following events are HARD CANON.
 49. Samira tells the full truth about the first fork herself.
 50. The king makes clear that the Festival tests more than speed.
 51. Samira is the first courier to reach Zaran.
-52. Both Temur and Samira are judged worthy to become young royal knights.
+52. Both Temur and Samira are judged worthy to become **юные бахадуры царства** (young bahadurs of the realm).
 53. The bandit problem is **not solved** in Story 1.
 54. By the end of Story 1 the king and captain of the royal guard know the bandits' sign.
 55. The bandits and their sign are an unresolved hook for later stories.
+
+### Story 1 title / ceremony canon
+
+- Official title after Story 1: **юные бахадуры царства**; singular: **бахадур царства**.
+- This supersedes the earlier working phrase “young royal knight” in post-V1 canon and app-facing Story 1 text. The frozen owner-approved V1 snapshot remains historical and is not silently rewritten.
+- Temur and Samira remain **standing** side by side for the ceremony.
+- There is no kneeling and the ruler does not touch their shoulders with a blade.
+- A senior warrior/captain brings two broad ceremonial belts with metal buckles and two sabres in scabbards.
+- The belts are worn over the existing travel clothes; the ruler presents each sheathed sabre **hilt-first**.
+- The final ceremony image should show the children upright with the belts and sheathed sabres, with the capital square, realm banners, Shamol and Bulut, and townspeople behind them.
 
 Do not later rewrite these facts as if:
 - Temur won the race outright;
@@ -126,7 +136,7 @@ Do not later rewrite these facts as if:
 
 ## Temur — HARD CANON
 
-**Role:** one of the two young royal couriers in Story 1; becomes a young royal knight.
+**Role:** one of the two young royal couriers in Story 1; becomes a **бахадур царства** (bahadur of the realm).
 
 **Origin:** a small town in the east of the kingdom.
 
@@ -182,7 +192,7 @@ Use this exact base design for recurring illustrations unless a later canon vers
 
 ## Samira — HARD CANON
 
-**Role:** one of the two young royal couriers in Story 1; reaches Zaran first; becomes a young royal knight.
+**Role:** one of the two young royal couriers in Story 1; reaches Zaran first; becomes a **бахадур царства** (bahadur of the realm).
 
 **Origin:** the south of the kingdom.
 
@@ -710,7 +720,7 @@ For image generation, track the story state rather than only the scene text.
 ## State S0 — Festival / selection
 - Temur clean, teal outfit;
 - Samira clean, burgundy outfit;
-- no bonded-knight status yet;
+- no bahadur status yet;
 - Shamol/Bulut introduced;
 - letters not yet carried during selection.
 
@@ -747,11 +757,13 @@ For image generation, track the story state rather than only the scene text.
 - Temur remains torn/dusty;
 - both horses keep same tack and markings.
 
-## State S7 — Return / knighting
+## State S7 — Return / bahadur ceremony
 - Temur still carries forest wear;
 - Samira still carries landslide mud unless the story explicitly gives time to change, which V1 does not;
 - both are still visually the same children;
-- ceremonial sabres are separate from Temur's travel sabre if both are visible.
+- Temur and Samira remain standing during the ceremony; no kneeling and no blade-to-shoulder gesture;
+- each receives a broad ceremonial belt with a metal buckle and a sheathed sabre presented hilt-first;
+- the ceremonial sabre is separate from Temur's travel sabre if both are visible.
 
 ---
 
@@ -770,7 +782,6 @@ Do not permanently invent these yet:
 - bandit hideout;
 - true meaning/origin of the bandit sign;
 - whether the bandits are connected to a larger enemy;
-- exact future status of Temur and Samira as royal knights;
 - default illustration count for future stories (Story 1 Interactive V3 has its own approved production target).
 
 These should be decided when they become necessary, then added to the canon deliberately.

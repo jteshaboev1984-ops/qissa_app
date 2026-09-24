@@ -56,7 +56,7 @@ That is appropriate for the current ~3,000-word V3: roughly one visual beat ever
 
 **Scene:** Temur on Shamol and Samira on Bulut at the edge of the capital festival square; palace and Seven Roads banners behind; road opening toward distant mountains.
 
-**Do not spoil:** bandits, landslide, two-knight ending.
+**Do not spoil:** bandits, landslide, final bahadur ceremony.
 
 **References:** approved heroes/horses sheet + capital reference.
 
@@ -326,13 +326,13 @@ That is appropriate for the current ~3,000-word V3: roughly one visual beat ever
 
 ---
 
-## P7-IMG-03 — Two ceremonial sabres / knighting
+## P7-IMG-03 — Young bahadurs ceremony
 
-**Insert after:** «А достойных стать юными королевскими рыцарями сегодня оказалось двое.»
+**Insert after:** «Так Темур и Самира стали юными бахадурами царства.»
 
-**Scene:** both kneeling; king performs knighting; same travel clothes and damage, no adult armor transformation.
+**Scene:** Temur and Samira stand upright side by side in the open capital square, still in the same travel-worn clothes, now wearing broad ceremonial belts with metal buckles and ceremonial sabres in scabbards. The ruler has presented the sheathed sabres hilt-first; captain/senior warrior nearby if composition allows. No kneeling and no blade-to-shoulder gesture.
 
-**Purpose:** emotional payoff.
+**Purpose:** emotional payoff and a distinctive ceremony belonging to the Seven Roads world rather than European knighting.
 
 ---
 

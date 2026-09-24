@@ -17,7 +17,7 @@ The same reference assets must be supplied for recurring entities whenever the i
 
 ## Cover — Festival of Courage
 
-**Purpose:** communicate adventure, friendship/rivalry, horses and the Seven Roads world without spoiling the bandits or final knighting.
+**Purpose:** communicate adventure, friendship/rivalry, horses and the Seven Roads world without spoiling the bandits or final bahadur ceremony.
 
 **Scene:** Temur on Shamol and Samira on Bulut at the edge of the capital square, palace and seven festival banners behind them, seven roads implied beyond the city.
 
@@ -41,7 +41,7 @@ The same reference assets must be supplied for recurring entities whenever the i
 **Narrative job:** establish the kingdom's scale and visual language before focusing on the two heroes.
 
 **Do not show yet:**
-- knighting sabres;
+- bahadur ceremonial belts or sabres;
 - bandit sign;
 - damaged clothing.
 
@@ -252,13 +252,13 @@ The same reference assets must be supplied for recurring entities whenever the i
 
 ---
 
-## Illustration 16 — Two young knights
+## Illustration 16 — Two young bahadurs of the realm
 
-**Story moment:** both kneel, king knights them with ceremonial sabres.
+**Story moment:** the standing bahadur ceremony has just been completed.
 
-**Composition:** formal but warm; crowd behind; no adult war-armor transformation.
+**Composition:** Temur and Samira stand upright side by side in the capital square. Their original travel-worn clothes remain visible beneath broad ceremonial belts with metal buckles; ceremonial sabres stay in scabbards at the belts. The ruler and captain/senior warrior remain part of the ceremonial context, with crowd, realm banners, Shamol and Bulut behind if framing allows.
 
-**Important:** they are still the same children in the same journey outfits, with visible travel wear.
+**Important:** no kneeling, no blade-to-shoulder gesture, no European knighting pose, and no adult war-armor transformation. They are still the same children in the same journey outfits.
 
 **Humor option in secondary action:** Bulut noticing food near the festive table.
 
