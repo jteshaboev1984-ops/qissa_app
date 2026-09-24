@@ -235,7 +235,7 @@ export function HomeScreen({
 
       {storyStatus === 'not_started' ? renderSetupSummary() : null}
       {renderStoryState()}
-      {language === 'ru' ? <FeaturedAuthoredStoryCard onOpen={onOpenAuthoredStory} /> : null}
+      {language === 'ru' && selections.ageGroup === '8-9' ? <FeaturedAuthoredStoryCard onOpen={onOpenAuthoredStory} /> : null}
       {storyStatus !== 'not_started' ? renderSetupSummary() : null}
 
       {storyStatus !== 'not_started' && !isTomorrowMemoryState ? (
