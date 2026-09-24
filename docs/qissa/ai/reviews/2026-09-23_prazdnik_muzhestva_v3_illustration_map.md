@@ -56,7 +56,7 @@ That is appropriate for the current ~3,000-word V3: roughly one visual beat ever
 
 **Scene:** Temur on Shamol and Samira on Bulut at the edge of the capital festival square; palace and Seven Roads banners behind; road opening toward distant mountains.
 
-**Do not spoil:** bandits, landslide, two-knight ending.
+**Do not spoil:** bandits, landslide, final bahadur ceremony.
 
 **References:** approved heroes/horses sheet + capital reference.
 
