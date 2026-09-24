@@ -421,7 +421,7 @@ No modern technology, firearms, cars, electric lights, contemporary clothing, Eu
 
 **Must preserve/show:** two reply cases; damage continuity; both horses exact
 
-**Do not introduce:** no clean costume reset; no knighting yet
+**Do not introduce:** no clean costume reset; no bahadur ceremony yet
 
 ---
 
@@ -439,17 +439,17 @@ No modern technology, firearms, cars, electric lights, contemporary clothing, Eu
 
 ---
 
-# P7-IMG-03 — Two young knights
+# P7-IMG-03 — Two young bahadurs of the realm
 
 **Asset ID:** `seven_roads_story1_p7_img_03_v1`  
 **Story state:** S7  
-**Primary references:** heroes + king + capital
+**Primary references:** heroes + king + captain + capital
 
-**Production prompt:** Ceremonial knighting in the capital square. Temur and Samira kneel as the king uses ceremonial sabres to knight them both. They remain the same around-12-year-old children in their travel outfits with visible journey wear; they do not transform into armored adults. Crowd celebrates behind, horses nearby if composition allows.
+**Production prompt:** Distinctive Seven Roads bahadur ceremony in the open capital square. Temur and Samira remain standing side by side as the ceremony finishes. Both are the same around-12-year-old children in their travel-worn teal and burgundy outfits, now wearing broad ceremonial belts with metal buckles over those clothes and carrying ceremonial sabres in scabbards. The ruler has presented the sheathed sabres hilt-first; the captain/senior warrior may stand nearby. The final composition should read as a local Central Asian/Silk Road-inspired rite of responsibility, not European knighting. Realm banners, townspeople, Shamol and Bulut can appear behind them if composition allows.
 
-**Must preserve/show:** two children knighted; two ceremonial sabres implied/present; king exact
+**Must preserve/show:** both children standing upright; broad ceremonial belts; sheathed sabres; travel-wear continuity; exact hero identities; king/captain/capital continuity
 
-**Do not introduce:** no adult armor; no crowns on children; no costume reset
+**Do not introduce:** no kneeling; no blade touching a shoulder; no European knighting pose; no adult armor; no crowns on children; no costume reset; no duplicate visible travel-and-ceremonial sabres on Temur
 
 ---
 
@@ -459,7 +459,7 @@ No modern technology, firearms, cars, electric lights, contemporary clothing, Eu
 **Story state:** S7  
 **Primary references:** heroes/horses + capital
 
-**Production prompt:** Warm festival celebration after the knighting. Temur laughs as Bulut stretches mischievously toward food at a festive table; Samira turns toward Bulut in mock exasperation. Shamol reacts to ringing bells with annoyed ears. The mood is earned, warm and playful; journey wear remains visible.
+**Production prompt:** Warm festival celebration after the bahadur ceremony. Temur laughs as Bulut stretches mischievously toward food at a festive table; Samira turns toward Bulut in mock exasperation. Shamol reacts to ringing bells with annoyed ears. The mood is earned, warm and playful; journey wear remains visible.
 
 **Must preserve/show:** Bulut food joke; Shamol bell reaction; relaxed Temur/Samira
 
