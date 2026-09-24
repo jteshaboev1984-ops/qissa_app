@@ -10,7 +10,7 @@ export function FeaturedAuthoredStoryCard({ onOpen }: { onOpen: () => void }) {
   )
 
   const actionLabel = progress?.completed
-    ? 'Перечитать'
+    ? 'Открыть сказку'
     : progress && progress.current_part_index > 0
       ? 'Продолжить'
       : 'Читать сказку'
@@ -33,7 +33,7 @@ export function FeaturedAuthoredStoryCard({ onOpen }: { onOpen: () => void }) {
             {prazdnikMuzhestvaV3.title}
           </h3>
           <p className="text-sm leading-6 text-[#5f5848]">
-            Приключение Темура и Самиры · 6 частей · 4 выбора
+            Для 8–9 лет · приключение Темура и Самиры · 6 частей · 4 выбора
           </p>
         </div>
 
