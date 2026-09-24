@@ -83,7 +83,7 @@ Landslide; Samira chooses on her own to stay and warn Temur; fall; adult rescue;
 **Choice 4:** after confession, how Temur handles renewed trust when Samira proposes the route.
 
 ### Part 7 — «Возвращение»
-Return to capital, replies opened, truth told, king’s decision, knighting, humor, unresolved bandit-symbol hook.
+Return to capital, replies opened, truth told, king’s decision, standing bahadur ceremony with ceremonial belts and sheathed sabres, humor, unresolved bandit-symbol hook.
 
 **Choice:** none.
 
@@ -223,7 +223,7 @@ These must never be turned into choices in this story:
 - Temur gets competent adults and ropes for the rescue.
 - Samira voluntarily confesses her lie.
 - both deliver intact replies.
-- the King knights both.
+- the King names both children **юные бахадуры царства** through the standing belt-and-sheathed-sabre ceremony.
 - bandit-sign arc remains unresolved.
 
 These authored beats carry the characters’ moral agency. The child’s choices must enrich them, not replace them.
@@ -399,7 +399,7 @@ All 16 must end with these invariant facts:
 - Samira warned Temur about landslide.
 - Samira confessed.
 - both returned with valid replies.
-- both became young knights.
+- both became **юные бахадуры царства**.
 - bandit arc remains open.
 
 Only these branch memories vary:
