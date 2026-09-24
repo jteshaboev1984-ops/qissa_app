@@ -4,6 +4,36 @@
 > Purpose: prevent visual drift and repeated composition contamination.
 > Rule: rejected generations are never references. Approved production illustrations are continuity checks only unless the owner explicitly promotes one to a reference.
 
+## Clean generation reference pack
+
+Use these files as the direct generation inputs. They are pixel crops derived only from owner-approved references and deliberately remove unrelated characters/actions that were contaminating later generations.
+
+Folder:
+`/QISSA/visual_refs/seven_roads_v1/clean/`
+
+### Style / environment
+- `00_style_texture_architecture_v1.png` — style texture + Seven Roads architectural language; no hero composition.
+- `10_capital_architecture_v1.png` — capital architecture only; do not use the old full festival scene as a direct generation reference.
+- `11_forest_tree_mark_v1.png` — Eastern Forest tree/ground/sign reference without Temur's damaged-sleeve chase pose.
+- `12_zaran_architecture_v1.png` — Zaran architecture only, without Samira/Bulut arrival pose.
+- `13_landslide_terrain_v1.png` — landslide terrain only, without the rescue/action pose.
+
+### Identity
+- `20_temur_identity_v1.png`
+- `21_samira_identity_v1.png`
+- `22_shamol_identity_v1.png`
+- `23_bulut_identity_v1.png`
+
+### Important correction
+
+The old full-scene references remain approved **story/world references**, but they are no longer direct generation inputs because they encode scene state:
+- `02_capital_festival_approved.png` biases toward riders/festival composition.
+- `03_eastern_forest_escape_approved.png` shows Temur after action with a damaged sleeve.
+- `04_zaran_arrival_approved.png` biases toward Samira/Bulut arrival composition.
+- `05_landslide_rescue_approved.png` encodes landslide/action/damage state.
+
+For new scenes, use the clean pack above plus only the identities actually present in the target scene.
+
 ## Authoritative reference hierarchy
 
 ### STYLE — always required
