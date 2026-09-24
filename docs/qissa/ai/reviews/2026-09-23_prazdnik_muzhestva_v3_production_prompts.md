@@ -425,17 +425,17 @@ No modern technology, firearms, cars, electric lights, contemporary clothing, Eu
 
 ---
 
-# P7-IMG-02 — Bandit report reaches the crown
+# P7-IMG-02 — Temur finishes the bandit report
 
 **Asset ID:** `seven_roads_story1_p7_img_02_v1`  
 **Story state:** S7  
-**Primary references:** Temur + king/captain
+**Primary references:** Temur/Samira + king/captain + capital
 
-**Production prompt:** Palace square/civic moment after the king reads Temur's longer reply. King in deep-blue robe and royal guard captain in dark green study a paper bearing the exact crescent-and-slash sign while Temur explains what he saw. Samira can stand nearby listening. Mood shifts from ceremony to serious attention.
+**Production prompt:** Open palace-square civic moment as Temur finishes explaining the Eastern Forest attack to the king and royal guard captain. Temur, still in travel-worn clothing, speaks while the king listens from the palace steps and the captain stands nearby in dark green; Samira remains beside Temur, listening and waiting for her turn. Keep the scene grounded in the bright capital square and use it as a visual handoff from Temur's report to the king turning toward Samira.
 
-**Must preserve/show:** exact symbol; captain silver Seven Roads badge; Temur travel wear
+**Must preserve/show:** Temur reporting; Samira present; king and captain exact; open capital-square continuity; Temur/Samira travel wear
 
-**Do not introduce:** no revealed bandit identity; no war council
+**Do not introduce:** no separate large bandit-symbol sheet or reveal; no duplication of P7-IMG-04B; no revealed bandit identity; no war council; no throne-room reset
 
 ---
 
