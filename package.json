@@ -44,7 +44,9 @@
     "audit:all": "npm audit --audit-level=high",
     "check:bedtime-session": "node scripts/check-bedtime-session-polish.mjs",
     "check:cosmos-bedtime": "node scripts/check-cosmos-bedtime.mjs",
-    "check:story-library": "node scripts/check-story-library-persistence.mjs"
+    "check:story-library": "node scripts/check-story-library-persistence.mjs",
+    "check:authored-v3": "node scripts/check-authored-story-v3.mjs",
+    "check:authored-progress-backend": "node scripts/check-authored-progress-backend.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

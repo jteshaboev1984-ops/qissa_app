@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { OnboardingFlow } from './features/onboarding/OnboardingFlow'
+import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
 import { applyChoiceToSeriesState, applyEpisodeToSeriesState, canStartNextSeriesSession, createInitialSeriesState, createNextSeriesSessionState, MAX_SERIES_SESSIONS, seriesSessionIndex } from './lib/memoryAgent'
 import { t } from './lib/i18n'
 import { rotateInstallationId } from './lib/installationIdentity'
@@ -13,6 +14,7 @@ import { LibraryScreen } from './screens/LibraryScreen'
 import { ParentScreen } from './screens/ParentScreen'
 import { AppBottomNav, type AppTab } from './components/AppBottomNav'
 import { StoryScreen } from './screens/StoryScreen'
+import { prazdnikMuzhestvaV3 } from './data/authoredStories'
 import { WelcomeScreen } from './screens/WelcomeScreen'
 import type {
   Episode,
@@ -453,6 +455,27 @@ function App() {
   const generationErrorMessage = generationError ? currentGenerationCopy.error : null
   const canChangeLanguage = screen === 'onboarding' || (screen === 'welcome' && !selections)
   const languageBadge = language === 'uz' ? 'UZ · Beta' : language === 'kz' ? 'KZ · internal' : 'RU'
+  const authoredPreviewRequested =
+    import.meta.env.VITE_QISSA_AUTHORED_V3_PREVIEW === 'true' &&
+    new URLSearchParams(window.location.search).get('authoredStory') === 'prazdnik-muzhestva'
+
+  if (authoredPreviewRequested) {
+    return (
+      <div className="relative min-h-screen text-[#1f241d]">
+        <div className="mx-auto max-w-[430px] px-4 py-5 sm:px-6">
+          <AuthoredStoryPlayer
+            story={prazdnikMuzhestvaV3}
+            showMissingAssetPlaceholders
+            onBack={() => {
+              const url = new URL(window.location.href)
+              url.searchParams.delete('authoredStory')
+              window.location.assign(url.toString())
+            }}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="relative min-h-screen text-[#1f241d]">
