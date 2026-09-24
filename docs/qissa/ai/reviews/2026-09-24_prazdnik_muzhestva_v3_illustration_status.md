@@ -29,7 +29,7 @@ The six files in `/QISSA/visual_refs/seven_roads_v1/` remain visual references. 
 | P6-CHOICE-B | `seven_roads_story1_p6_second_chance_v1` | APPROVED + SAVED |
 | P7-IMG-01 | `seven_roads_story1_p7_img_01_v1` | APPROVED + SAVED |
 | P7-IMG-02 | `seven_roads_story1_p7_img_02_v1` | APPROVED + SAVED |
-| P7-IMG-03 | `seven_roads_story1_p7_img_03_v1` | APPROVED + SAVED |
+| P7-IMG-03 | `seven_roads_story1_p7_img_03_v1` | REPLACEMENT REQUIRED — old kneeling/knighting image superseded by approved standing bahadur ceremony; do not use old image in final runtime |
 | P7-IMG-04A | `seven_roads_story1_p7_img_04a_v1` | APPROVED + SAVED |
 | P7-IMG-04B | `seven_roads_story1_p7_img_04b_v1` | APPROVED + SAVED |
 
