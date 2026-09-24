@@ -7,8 +7,8 @@
 ## Summary
 
 - Planned assets: **27**
-- Accepted and saved production assets: **15**
-- Still missing / not accepted: **12**
+- Accepted and saved production assets: **16**
+- Still missing / not accepted: **11**
 
 The six files in `/QISSA/visual_refs/seven_roads_v1/` remain visual references. They do not automatically count as final production slots unless separately accepted for that exact slot.
 
@@ -31,6 +31,7 @@ The six files in `/QISSA/visual_refs/seven_roads_v1/` remain visual references. 
 | P7-IMG-02 | `seven_roads_story1_p7_img_02_v1` | APPROVED + SAVED |
 | P7-IMG-03 | `seven_roads_story1_p7_img_03_v1` | APPROVED + SAVED |
 | P7-IMG-04A | `seven_roads_story1_p7_img_04a_v1` | APPROVED + SAVED |
+| P7-IMG-04B | `seven_roads_story1_p7_img_04b_v1` | APPROVED + SAVED |
 
 ## Still missing / not approved
 
@@ -47,7 +48,6 @@ The six files in `/QISSA/visual_refs/seven_roads_v1/` remain visual references. 
 | P5-CHOICE-A | `seven_roads_story1_p5_leave_immediately_v1` | leave Zaran immediately | MISSING |
 | P5-CHOICE-B | `seven_roads_story1_p5_wait_until_visible_v1` | wait until Temur visible far away | MISSING |
 | P6-CHOICE-A | `seven_roads_story1_p6_verify_book_v1` | Temur personally checks Samira's road book | repeated wrong generations; MISSING |
-| P7-IMG-04B | `seven_roads_story1_p7_img_04b_v1` | final bandit-sign hook | MISSING |
 
 ## Rejected outputs that must NOT be reused as references
 
