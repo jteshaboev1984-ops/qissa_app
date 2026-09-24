@@ -1,3 +1,4 @@
+import { FeaturedAuthoredStoryCard } from '../components/FeaturedAuthoredStoryCard'
 import { StoryArchiveShelf } from '../components/StoryArchiveShelf'
 import { StylePackCover } from '../components/StylePackCover'
 import { stylePacks } from '../data/stylePacks'
@@ -85,6 +86,7 @@ export function LibraryScreen({
   onStartNextSeriesSession,
   onOpenArchivedStory,
   onCreateStory,
+  onOpenAuthoredStory,
 }: {
   language: Language
   selections: OnboardingSelections
@@ -98,6 +100,7 @@ export function LibraryScreen({
   onStartNextSeriesSession: () => void
   onOpenArchivedStory: (item: StoryArchiveItem) => void
   onCreateStory: () => void
+  onOpenAuthoredStory: () => void
 }) {
   const pack = stylePacks.find((p) => p.id === selections.stylePackId) ?? stylePacks[0]
   const status = deriveStoryStatus(selections, seriesState, episode)
@@ -117,6 +120,8 @@ export function LibraryScreen({
           <p className="q-label mb-2">{t(language, 'nav.library')}</p>
           <h2 className="q-heading text-3xl font-bold leading-tight">{archiveItems.length > 0 ? t(language, 'nav.library') : t(language, 'library.empty_title')}</h2>
         </div>
+
+        {language === 'ru' ? <FeaturedAuthoredStoryCard onOpen={onOpenAuthoredStory} /> : null}
 
         <div className="q-card overflow-hidden p-0">
           <StylePackCover stylePack={pack} variant="hero" title={pack.title[language]} subtitle={archiveItems.length > 0 ? t(language, 'home.start_new_story') : t(language, 'library.empty_title')} />
@@ -167,6 +172,8 @@ export function LibraryScreen({
         <p className="q-label mb-2">{t(language, 'nav.library')}</p>
         <h2 className="q-heading text-3xl font-bold leading-tight">{labels.currentEpisode}</h2>
       </div>
+
+      {language === 'ru' ? <FeaturedAuthoredStoryCard onOpen={onOpenAuthoredStory} /> : null}
 
       <article className="q-card overflow-hidden p-0">
         <StylePackCover stylePack={pack} variant="hero" title={episode.title} subtitle={`${pack.title[language]} · ${labels.episode} ${seriesEpisodeNumber}${selections.storyMode === 'series' ? ` / ${MAX_SERIES_SESSIONS}` : ''}`} />
