@@ -5,6 +5,7 @@ const root = process.cwd()
 const docsFixturePath = path.join(root, 'docs/qissa/ai/fixtures/prazdnik_muzhestva_interactive_v3.ru.json')
 const runtimeFixturePath = path.join(root, 'src/data/authored/prazdnikMuzhestvaV3.ru.json')
 const v2Path = path.join(root, 'docs/qissa/ai/reviews/2026-09-23_prazdnik_muzhestva_working_v2.md')
+const assetRegistryPath = path.join(root, 'src/data/authoredStoryAssets.ts')
 
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'))
 const fail = (message) => {
@@ -36,6 +37,43 @@ if (sharedSlots.length !== 18) fail(`expected 18 shared image slots, got ${share
 if (choiceArts.length !== 8) fail(`expected 8 choice images, got ${choiceArts.length}`)
 if (assetIds.length !== 27) fail(`expected 27 total assets, got ${assetIds.length}`)
 if (new Set(assetIds).size !== assetIds.length) fail('asset ids must be unique')
+
+const assetRegistrySource = fs.readFileSync(assetRegistryPath, 'utf8')
+const registeredAssetIds = new Set(
+  [...assetRegistrySource.matchAll(/^\s*"([^"]+)":\s*"https?:\/\//gmu)].map((match) => match[1]),
+)
+
+for (const assetId of assetIds) {
+  if (!registeredAssetIds.has(assetId)) fail(`asset registry missing ${assetId}`)
+}
+
+if (registeredAssetIds.size !== assetIds.length) {
+  fail(`expected exactly ${assetIds.length} registered Story-1 assets, got ${registeredAssetIds.size}`)
+}
+
+const allStoryText = story.parts.map((part) => part.story_text).join('\n\n')
+const staleCeremonyPhrases = [
+  'юными королевскими рыцарями',
+  'Темур и Самира опустились на одно колено',
+  'Король коснулся саблей плеча Самиры',
+]
+
+for (const phrase of staleCeremonyPhrases) {
+  if (allStoryText.includes(phrase)) fail(`stale ceremony phrase remains: ${phrase}`)
+}
+
+if (!allStoryText.includes('Так Темур и Самира стали юными бахадурами царства.')) {
+  fail('approved bahadur ceremony ending is missing')
+}
+
+if (story.required_final_invariants.temur_and_samira_named_young_bahadurs !== 'true') {
+  fail('bahadur final invariant is missing')
+}
+
+const bahadurImageSlot = sharedSlots.find((slot) => slot.asset_id === 'seven_roads_story1_p7_img_03_v1')
+if (bahadurImageSlot?.after_text !== 'Так Темур и Самира стали юными бахадурами царства.') {
+  fail('P7-IMG-03 is not anchored after the completed bahadur ceremony')
+}
 
 const paragraphsOf = (text) =>
   text.split(/\n\n+/).map((paragraph) => paragraph.trim()).filter(Boolean)
@@ -145,5 +183,6 @@ if (!process.exitCode) {
   console.log('[authored-v3] PASS')
   console.log(`[authored-v3] ${story.parts.length} parts · ${decisions.length} decisions · ${combinations} paths`)
   console.log(`[authored-v3] ${assetIds.length} assets · ${sharedSlots.length} shared · ${choiceArts.length} choice images`)
+  console.log('[authored-v3] asset registry is complete and bahadur ceremony canon is current')
   console.log('[authored-v3] baseline reconstructs V2 and all image anchors are exact')
 }

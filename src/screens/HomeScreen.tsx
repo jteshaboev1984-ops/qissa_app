@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { FeaturedAuthoredStoryCard } from '../components/FeaturedAuthoredStoryCard'
 import { StylePackCover } from '../components/StylePackCover'
 import { stylePacks } from '../data/stylePacks'
 import { t } from '../lib/i18n'
@@ -20,6 +21,7 @@ interface HomeScreenProps {
   onResetStory: () => void
   onEditSetup: () => void
   onCreateNewStorySetup: () => void
+  onOpenAuthoredStory: () => void
 }
 
 const ageKeyByGroup = {
@@ -57,6 +59,7 @@ export function HomeScreen({
   onResetStory,
   onEditSetup,
   onCreateNewStorySetup,
+  onOpenAuthoredStory,
 }: HomeScreenProps) {
   const [showDetails, setShowDetails] = useState(false)
   const world = stylePacks.find((pack) => pack.id === selections.stylePackId) ?? stylePacks[0]
@@ -232,6 +235,7 @@ export function HomeScreen({
 
       {storyStatus === 'not_started' ? renderSetupSummary() : null}
       {renderStoryState()}
+      {language === 'ru' && selections.ageGroup === '8-9' ? <FeaturedAuthoredStoryCard onOpen={onOpenAuthoredStory} /> : null}
       {storyStatus !== 'not_started' ? renderSetupSummary() : null}
 
       {storyStatus !== 'not_started' && !isTomorrowMemoryState ? (
