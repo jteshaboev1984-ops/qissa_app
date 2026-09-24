@@ -143,6 +143,7 @@ jobs:
           VITE_QISSA_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.QISSA_SUPABASE_ANON_KEY }}
           VITE_QISSA_STORY_TIMEOUT_MS: 130000
           VITE_QISSA_STORY_FALLBACK_TO_LOCAL: false
+          VITE_QISSA_AUTHORED_V3_PREVIEW: true
         run: npm run build
 
       - name: Upload Pages artifact
