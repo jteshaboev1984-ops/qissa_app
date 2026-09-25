@@ -1,19 +1,26 @@
 import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import type { PublishedSeason } from '../features/publishedStories/types'
+import {
+  getSevenRoadsCopy,
+  type SevenRoadsLanguage,
+} from '../features/publishedStories/sevenRoadsCopy'
 import { sevenRoadsStory1ReadingState } from '../features/publishedStories/sevenRoadsProgress'
 
 export function SeasonOverview({
+  language,
   season,
   onBack,
   onRead,
 }: {
+  language: SevenRoadsLanguage
   season: PublishedSeason
   onBack: () => void
   onRead: (episodeNumber?: number) => void
 }) {
   if (!season.story || season.status !== 'published') return null
 
+  const copy = getSevenRoadsCopy(language)
   const progress = authoredStoryPersistence.load(season.story)
   const reading = sevenRoadsStory1ReadingState(progress)
   const coverUrl = resolveAuthoredStoryAssetUrl(
@@ -23,10 +30,10 @@ export function SeasonOverview({
 
   const primaryLabel =
     reading.state === 'new'
-      ? 'Начать сезон'
+      ? copy.startSeason
       : reading.state === 'completed'
-        ? 'Открыть итог сезона'
-        : 'Продолжить'
+        ? copy.openSeasonResult
+        : copy.continue
 
   return (
     <main className="mx-auto min-h-[100dvh] max-w-[430px] bg-[#efe2cb] text-[#2d332f]">
@@ -43,7 +50,7 @@ export function SeasonOverview({
               className="rounded-full border border-white/28 bg-black/20 px-4 py-2.5 text-xs font-bold text-white/95 backdrop-blur-md active:scale-[0.98]"
               onClick={onBack}
             >
-              ← Сезоны
+              ← {copy.seasons}
             </button>
           </div>
 
@@ -51,7 +58,7 @@ export function SeasonOverview({
 
           <div>
             <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
-              Сезон {season.number}
+              {copy.season} {season.number}
             </p>
             <h1 className="mt-2 font-serif text-[2.35rem] font-bold leading-[1.02] tracking-[-0.035em] text-white drop-shadow">
               {season.title}
@@ -69,13 +76,13 @@ export function SeasonOverview({
 
       <section className="relative z-10 rounded-t-[2rem] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 sm:px-5">
         <div className="px-1">
-          <p className="q-label mb-1">Путь сезона</p>
-          <h2 className="q-heading text-2xl font-bold">6 серий</h2>
+          <p className="q-label mb-1">{copy.openSeasonPath}</p>
+          <h2 className="q-heading text-2xl font-bold">{copy.sixEpisodes}</h2>
           <p className="mt-1 text-sm leading-6 text-[#6c6252]">
-            Первый путь Темура и Самиры по Королевству семи дорог. Решения ребёнка сохраняются и смогут проявиться в следующих сезонах.
+            {copy.seasonDescription}
           </p>
           <p className="mt-2 text-xs leading-5 text-[#817662]">
-            Пройденные серии можно открыть снова. Новые серии открываются по порядку.
+            {copy.seasonReplayHint}
           </p>
         </div>
 
@@ -109,19 +116,19 @@ export function SeasonOverview({
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#817662]">
-                    Серия {episode.number}
+                    {copy.episode} {episode.number}
                   </p>
                   <p className="font-bold leading-6 text-[#342f25]">{episode.title}</p>
                 </div>
                 <span className="flex-none text-xs font-semibold text-[#817662]">
                   {completed
-                    ? 'Открыть ›'
+                    ? copy.open
                     : current
                       ? reading.state === 'new'
-                        ? 'Начать ›'
-                        : 'Продолжить ›'
+                        ? copy.begin
+                        : copy.continueArrow
                       : locked
-                        ? 'Впереди'
+                        ? copy.ahead
                         : ''}
                 </span>
               </div>
