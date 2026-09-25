@@ -52,7 +52,6 @@ if (episodeMatches.length !== 6) {
 
 requireText('public shell', shell, 'Сезон 1')
 requireText('public shell', shell, 'Скоро')
-requireText('public shell', shell, 'Следующая дорога')
 requireText('public shell', shell, 'sevenRoadsUiAssets.home')
 requireText('public shell', shell, 'sevenRoadsUiAssets.library')
 requireText('public shell', shell, 'sevenRoadsUiAssets.futureSeasonPlaceholder')
