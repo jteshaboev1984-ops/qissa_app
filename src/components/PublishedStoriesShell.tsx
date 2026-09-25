@@ -191,11 +191,11 @@ export function PublishedStoriesShell({
               <>
                 <p className="q-label">{language === 'uz' ? 'Galereya' : 'Галерея'}</p>
                 <h2 className="q-heading mt-1 text-2xl font-bold">
-                  {language === 'uz' ? 'Lavha hali yashirin' : 'Сцена ещё скрыта'}
+                  {language === 'uz' ? 'Lavha hali ochilmagan' : 'Сцена ещё скрыта'}
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? `U ${notice.episodeNumber}-qismda bu sahna o‘qish davomida paydo bo‘lgandan keyin ochiladi. Shunda Galereya syujetni oldindan ko‘rsatmaydi.`
+                    ? `Bu lavha ${notice.episodeNumber}-qismdagi ushbu sahna o‘qish paytida ko‘ringach ochiladi. Shunda galereya syujetni oldindan ko‘rsatmaydi.`
                     : `Она откроется после того, как эта сцена появится во время чтения серии ${notice.episodeNumber}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
