@@ -4,15 +4,21 @@
 
 @layer base {
   :root {
-    --q-surface: #fcf9f2;
-    --q-card: #fffdf7;
-    --q-card-soft: #f7f2e8;
-    --q-ink: #1f241d;
-    --q-muted: #5f5848;
-    --q-gold: #d4af37;
-    --q-gold-dark: #735c00;
-    --q-turquoise: #35666b;
-    --q-border: #e7ddc8;
+    --q-surface: #efe1c7;
+    --q-surface-deep: #e5d0aa;
+    --q-card: #fffaf0;
+    --q-card-soft: #f5ead7;
+    --q-ink: #2d332f;
+    --q-muted: #6a5f4d;
+    --q-teal: #1f6670;
+    --q-teal-dark: #174d57;
+    --q-teal-soft: #dceced;
+    --q-gold: #c99638;
+    --q-gold-soft: #ead3a0;
+    --q-gold-dark: #72511f;
+    --q-blue: #3f8799;
+    --q-border: #d5bd8e;
+    --q-stone: #f4e8d2;
   }
 
   html {
@@ -22,12 +28,12 @@
   body {
     min-height: 100vh;
     min-height: 100dvh;
-    background:
-      radial-gradient(circle at 12% 8%, rgba(212, 175, 55, 0.11), transparent 26%),
-      radial-gradient(circle at 88% 18%, rgba(53, 102, 107, 0.09), transparent 26%),
-      linear-gradient(180deg, #fcf9f2 0%, #f7f1e6 100%);
     color: var(--q-ink);
     font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(255, 250, 236, 0.95), transparent 34%),
+      radial-gradient(circle at 88% 14%, rgba(63, 135, 153, 0.11), transparent 28%),
+      linear-gradient(180deg, #f4ead7 0%, #ecddc0 52%, #e5d0aa 100%);
   }
 
   #root {
@@ -45,33 +51,114 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    opacity: 0.42;
+    opacity: 0.2;
+    background-image:
+      linear-gradient(45deg, transparent 46%, rgba(108, 80, 35, 0.08) 47%, rgba(108, 80, 35, 0.08) 53%, transparent 54%),
+      linear-gradient(-45deg, transparent 46%, rgba(108, 80, 35, 0.05) 47%, rgba(108, 80, 35, 0.05) 53%, transparent 54%);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,.6), transparent 78%);
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.2;
     mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitchTiles'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   }
 
   ::selection {
-    background: rgba(185, 235, 242, 0.8);
+    background: rgba(63, 135, 153, 0.22);
     color: var(--q-ink);
   }
 }
 
 @layer components {
   .q-soft-shadow {
-    box-shadow: 0 18px 55px -34px rgba(115, 92, 0, 0.62);
+    box-shadow: 0 20px 55px -34px rgba(74, 49, 13, 0.62);
   }
 
   .q-card {
-    @apply rounded-[2rem] border border-[#eadfc9] bg-[#fffdf7]/95 shadow-[0_18px_55px_-32px_rgba(115,92,0,0.45)];
+    @apply border bg-[#fffaf0]/95 shadow-[0_20px_55px_-36px_rgba(74,49,13,0.55)];
+    border-color: var(--q-border);
+    border-radius: 1.5rem;
   }
 
   .q-card-soft {
-    @apply rounded-[1.75rem] border border-[#eadfc9] bg-[#f8f2e7]/80;
+    @apply border bg-[#f5ead7]/88;
+    border-color: rgba(188, 157, 99, 0.42);
+    border-radius: 1.35rem;
+  }
+
+  .q-world-panel {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(234, 211, 160, 0.72);
+    border-radius: 1.75rem;
+    color: #fff9ec;
+    background:
+      radial-gradient(circle at 82% 18%, rgba(255,255,255,.12), transparent 24%),
+      linear-gradient(145deg, #2a7a84 0%, #1f6670 46%, #174d57 100%);
+    box-shadow: 0 24px 62px -38px rgba(26, 66, 72, 0.9);
+  }
+
+  .q-world-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.17;
+    background-image:
+      linear-gradient(45deg, transparent 44%, #f0d79e 45%, #f0d79e 48%, transparent 49%),
+      linear-gradient(-45deg, transparent 44%, #f0d79e 45%, #f0d79e 48%, transparent 49%);
+    background-size: 34px 34px;
+  }
+
+  .q-stone-panel {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(185, 148, 84, 0.45);
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 8% 0%, rgba(255,255,255,.75), transparent 32%),
+      linear-gradient(180deg, #fbf2e2 0%, #f1dfc0 100%);
+    box-shadow: 0 18px 46px -36px rgba(74, 49, 13, 0.65);
+  }
+
+  .q-arch-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(185, 148, 84, 0.48);
+    border-radius: 5rem 5rem 1.5rem 1.5rem / 3.2rem 3.2rem 1.5rem 1.5rem;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,250,240,.97)),
+      #fffaf0;
+    box-shadow: 0 18px 48px -38px rgba(74, 49, 13, 0.6);
+  }
+
+  .q-ornament-rule {
+    height: 1px;
+    position: relative;
+    background: linear-gradient(90deg, transparent, rgba(201,150,56,.75) 20%, rgba(201,150,56,.75) 80%, transparent);
+  }
+
+  .q-ornament-rule::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border: 1px solid var(--q-gold);
+    background: var(--q-card);
   }
 
   .q-heading {
     font-family: Georgia, "Times New Roman", serif;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.03em;
     color: var(--q-ink);
   }
 
@@ -81,26 +168,39 @@
   }
 
   .q-label {
-    @apply text-xs font-semibold uppercase tracking-[0.16em];
-    color: #7d704e;
+    @apply text-[0.7rem] font-semibold uppercase tracking-[0.16em];
+    color: #876834;
   }
 
   .q-primary {
-    @apply rounded-full px-5 py-3.5 text-sm font-bold text-[#2b2100] shadow-[0_10px_28px_-14px_rgba(115,92,0,0.7)] transition active:scale-[0.98];
-    background: linear-gradient(180deg, #f0cd58 0%, #d4a929 100%);
+    @apply rounded-full px-5 py-3.5 text-sm font-bold text-[#fff9ed] shadow-[0_12px_30px_-16px_rgba(23,77,87,0.9)] transition active:scale-[0.98];
+    border: 1px solid rgba(234, 211, 160, 0.5);
+    background: linear-gradient(180deg, #2a7a84 0%, #1d5d67 100%);
+  }
+
+  .q-primary:hover {
+    background: linear-gradient(180deg, #328791 0%, #225f69 100%);
   }
 
   .q-secondary {
-    @apply rounded-full border border-[#d7ccb4] bg-white/80 px-5 py-3 text-sm font-semibold text-[#2c2a21] transition hover:bg-white active:scale-[0.98];
+    @apply rounded-full border bg-[#fffaf0]/88 px-5 py-3 text-sm font-semibold transition hover:bg-white active:scale-[0.98];
+    border-color: rgba(185, 148, 84, 0.52);
+    color: #493d2c;
   }
 
   .q-tertiary {
-    @apply rounded-full px-4 py-2 text-sm font-semibold text-[#735c00] transition hover:bg-[#f3ead6];
+    @apply rounded-full px-4 py-2 text-sm font-semibold transition active:scale-[0.98];
+    color: var(--q-teal-dark);
+  }
+
+  .q-badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-bold;
+    border: 1px solid rgba(201, 150, 56, 0.32);
+    color: #6a4d1f;
+    background: rgba(236, 214, 167, 0.38);
   }
 }
 
-/* Mobile browser chrome changes the visible viewport while a story is being read.
-   Prefer the dynamic viewport when supported so controls do not slip under it. */
 .min-h-screen {
   min-height: 100vh;
   min-height: 100dvh;
@@ -112,7 +212,6 @@
   min-height: 44px;
 }
 
-/* Child-facing controls keep a forgiving touch target without inflating desktop UI. */
 @media (pointer: coarse) {
   button,
   select,
