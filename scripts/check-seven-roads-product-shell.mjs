@@ -9,6 +9,7 @@ const consent = readFileSync('src/lib/publishedStoriesConsent.ts', 'utf8')
 const welcome = readFileSync('src/components/PublishedStoriesWelcome.tsx', 'utf8')
 const player = readFileSync('src/features/authoredStory/AuthoredStoryPlayer.tsx', 'utf8')
 const readingPosition = readFileSync('src/lib/authoredReadingPosition.ts', 'utf8')
+const uiAssets = readFileSync('src/data/sevenRoadsUiAssets.ts', 'utf8')
 
 const failures = []
 const requireText = (label, source, text) => {
@@ -49,13 +50,19 @@ if (episodeMatches.length !== 6) {
 requireText('public shell', shell, 'Сезон 1')
 requireText('public shell', shell, 'Скоро')
 requireText('public shell', shell, 'Следующая дорога')
+requireText('public shell', shell, 'sevenRoadsUiAssets.home')
+requireText('public shell', shell, 'sevenRoadsUiAssets.library')
+requireText('public shell', shell, 'sevenRoadsUiAssets.futureSeasonPlaceholder')
+requireText('public shell', shell, "find((season) => season.status === 'coming_soon')")
 requireText('season overview', overview, 'Путь сезона')
+requireText('season overview', overview, 'resolveAuthoredStoryAssetUrl')
 requireText('season overview', overview, '6 серий')
 
 requireText('family consent', consent, 'progressStorageAccepted')
 forbidText('family consent', consent, 'aiProcessingAccepted')
 requireText('first-run flow', welcome, 'Аккаунт, email и пароль сейчас не нужны')
 requireText('first-run flow', welcome, 'прогресс чтения и решения ребёнка')
+requireText('first-run flow', welcome, 'sevenRoadsUiAssets.welcome')
 
 for (const text of [
   'storyStateService',
@@ -63,14 +70,6 @@ for (const text of [
   'closedBetaMigration',
   'migratePersistedStoryIntoClosedBetaScope',
 ]) forbidText('Seven Roads bootstrap', main, text)
-
-for (const text of [
-  'resolveAuthoredStoryAssetUrl',
-  'coverUrl',
-]) {
-  forbidText('character-free public shell', shell, text)
-  forbidText('character-free season overview', overview, text)
-}
 
 requireText('reader', player, 'Серия {readerProgress.current} из {readerProgress.total}')
 requireText('reader', player, 'Сезон {seasonNumber} завершён')
@@ -87,6 +86,13 @@ requireText('Seven Roads App', app, 'onFinishForToday')
 requireText('Seven Roads App', app, "setView('shell')")
 requireText('reading position persistence', readingPosition, 'scroll_y')
 requireText('reading position persistence', readingPosition, 'part_index')
+
+for (const asset of [
+  'seven_roads_welcome_world_v1.webp',
+  'seven_roads_home_approach_v1.webp',
+  'seven_roads_library_hall_v1.webp',
+  'seven_roads_future_season_placeholder_v1.webp',
+]) requireText('approved UI asset registry', uiAssets, asset)
 
 if (failures.length > 0) {
   console.error('Seven Roads product shell check failed:')
