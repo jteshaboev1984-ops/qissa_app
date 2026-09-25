@@ -231,7 +231,7 @@ export function AuthoredStoryPlayer({
           <p className="q-label mb-2">QISSA · {story.title}</p>
           <h2 className="q-heading text-3xl font-bold">Сказка завершена</h2>
           <p className="mt-3 text-sm leading-6 text-[#625846]">
-            Все четыре решения сохранены. Их можно использовать как память мира в следующих историях.
+            QISSA запомнила четыре решения. В следующих историях они смогут влиять на то, кто первым предложит решение, что герои проверят и насколько легко Темур и Самира будут доверять друг другу.
           </p>
           <div className="mt-5 grid gap-2.5">
             <button className="q-primary w-full" onClick={restartStory}>
@@ -323,7 +323,12 @@ export function AuthoredStoryPlayer({
       {part.decision && !selectedChoice ? (
         <section className="rounded-[2rem] border border-[#eadfc9] bg-[#fffdf7] p-5 shadow-[0_18px_44px_-34px_rgba(115,92,0,.65)]">
           <p className="q-label mb-2">Твой выбор</p>
-          <h3 className="q-heading mb-4 text-2xl font-bold leading-tight">{part.decision.prompt}</h3>
+          <h3 className="q-heading mb-2 text-2xl font-bold leading-tight">{part.decision.prompt}</h3>
+          {progress.choice_history.length === 0 ? (
+            <p className="mb-4 text-sm leading-6 text-[#6b6251]">
+              QISSA запомнит решение. В следующих сказках оно может повлиять на привычки героев и их отношения.
+            </p>
+          ) : null}
 
           <div className="grid gap-3">
             {part.decision.choices.map((choice) => {
