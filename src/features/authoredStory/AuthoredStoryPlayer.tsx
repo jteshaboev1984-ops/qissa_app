@@ -306,11 +306,24 @@ export function AuthoredStoryPlayer({
     : null
 
   if (progress.completed) {
+    const completionCoverUrl = resolveAuthoredStoryAssetUrl(
+      story.cover_illustration.asset_id,
+      story.cover_illustration.runtime_url,
+    )
+
     return (
-      <section className="space-y-5 pb-10">
-        <div className="q-world-panel p-6 text-center">
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#ead3a0]">QISSA · Сезон {seasonNumber} · {story.title}</p>
-          <h2 className="mt-2 font-serif text-3xl font-bold text-[#fff9ec]">Сезон {seasonNumber} завершён</h2>
+      <section
+        className="relative min-h-[calc(100dvh-2.5rem)] overflow-hidden rounded-[1.85rem] bg-[#17383d] bg-cover bg-center text-center text-white"
+        style={completionCoverUrl ? { backgroundImage: `url("${completionCoverUrl}")` } : undefined}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/32 to-[#102327]/96" />
+        <div className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-end p-5">
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#ead3a0]">
+            QISSA · Сезон {seasonNumber} · {story.title}
+          </p>
+          <h2 className="mt-2 font-serif text-3xl font-bold text-[#fff9ec]">
+            Сезон {seasonNumber} завершён
+          </h2>
           {completionSummary ? (
             <p className="mt-3 text-base font-semibold leading-7 text-[#f8f1e4]">
               {completionSummary}
@@ -319,22 +332,33 @@ export function AuthoredStoryPlayer({
           <p className="mt-3 text-sm leading-6 text-[#eaf3f1]">
             QISSA запомнила четыре решения. В следующих сезонах они смогут влиять на то, кто первым предложит решение, что герои проверят и насколько легко Темур и Самира будут доверять друг другу.
           </p>
-          <div className="mt-4 rounded-[1.4rem] border border-[#ead3a0]/35 bg-[#fff9ec]/10 px-4 py-3">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#ead3a0]">Сезон {seasonNumber + 1}</p>
+          <div className="mt-4 rounded-[1.4rem] border border-[#ead3a0]/35 bg-black/20 px-4 py-3 backdrop-blur-md">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#ead3a0]">
+              Сезон {seasonNumber + 1}
+            </p>
             <p className="mt-1 font-bold text-[#fff9ec]">Следующий сезон — скоро</p>
           </div>
           <div className="mt-5 grid gap-2.5">
             {onFinishForToday ? (
-              <button className="w-full rounded-full border border-[#ead3a0] bg-[#ead3a0] px-5 py-3.5 text-sm font-bold text-[#24434a]" onClick={onFinishForToday}>
+              <button
+                className="w-full rounded-full border border-[#ead3a0] bg-[#ead3a0] px-5 py-3.5 text-sm font-bold text-[#24434a]"
+                onClick={onFinishForToday}
+              >
                 Завершить на сегодня
               </button>
             ) : null}
             {onBack ? (
-              <button className="w-full rounded-full border border-[#ead3a0]/55 bg-white/10 px-5 py-3 text-sm font-semibold text-[#fff9ec]" onClick={onBack}>
+              <button
+                className="w-full rounded-full border border-white/35 bg-black/20 px-5 py-3 text-sm font-semibold text-[#fff9ec] backdrop-blur-md"
+                onClick={onBack}
+              >
                 На главную
               </button>
             ) : null}
-            <button className="w-full rounded-full px-5 py-3 text-sm font-semibold text-[#ead3a0]" onClick={restartStory}>
+            <button
+              className="w-full rounded-full px-5 py-3 text-sm font-semibold text-[#ead3a0]"
+              onClick={restartStory}
+            >
               Пройти сезон заново
             </button>
           </div>
