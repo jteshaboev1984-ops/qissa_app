@@ -66,6 +66,10 @@ function App() {
             episodeTitles={episodeTitles}
             completionSummary="Темур и Самира стали юными бахадурами царства."
             onBack={() => setView('season')}
+            onFinishForToday={() => {
+              setTab('home')
+              setView('shell')
+            }}
           />
         </div>
       </div>
