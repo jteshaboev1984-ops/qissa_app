@@ -1,10 +1,17 @@
 import { useState } from 'react'
-import { sevenRoadsSeason1, sevenRoadsSeasons } from '../data/sevenRoadsSeasons'
+import { getSevenRoadsSeason1, getSevenRoadsSeasons } from '../data/sevenRoadsSeasons'
 import { sevenRoadsUiAssets } from '../data/sevenRoadsUiAssets'
 import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import { authoredIllustrationDiscovery } from '../lib/authoredIllustrationDiscovery'
-import { sevenRoadsStory1ReadingState } from '../features/publishedStories/sevenRoadsProgress'
+import {
+  getSevenRoadsCopy,
+  type SevenRoadsLanguage,
+} from '../features/publishedStories/sevenRoadsCopy'
+import {
+  sevenRoadsStory1EpisodeNumber,
+  sevenRoadsStory1ReadingState,
+} from '../features/publishedStories/sevenRoadsProgress'
 
 export type PublishedStoriesTab = 'home' | 'library'
 type LibraryView = 'seasons' | 'gallery'
@@ -13,21 +20,27 @@ type LibraryNotice =
   | { kind: 'locked-art'; episodeNumber: number }
 
 export function PublishedStoriesShell({
+  language,
   tab,
   onTab,
   onOpenSeason,
   onContinueStory,
   onOpenSettings,
 }: {
+  language: SevenRoadsLanguage
   tab: PublishedStoriesTab
   onTab: (tab: PublishedStoriesTab) => void
   onOpenSeason: () => void
   onContinueStory: () => void
   onOpenSettings: () => void
 }) {
+  const copy = getSevenRoadsCopy(language)
+  const sevenRoadsSeason1 = getSevenRoadsSeason1(language)
+  const sevenRoadsSeasons = getSevenRoadsSeasons(language)
   const story = sevenRoadsSeason1.story
   const progress = story ? authoredStoryPersistence.load(story) : null
   const reading = sevenRoadsStory1ReadingState(progress)
+
   const [libraryView, setLibraryView] = useState<LibraryView>('seasons')
   const [selectedGallerySeason, setSelectedGallerySeason] = useState(sevenRoadsSeason1.number)
   const [galleryLightbox, setGalleryLightbox] = useState<{ url: string; alt: string } | null>(null)
@@ -43,12 +56,23 @@ export function PublishedStoriesShell({
   const currentEpisodeTitle =
     sevenRoadsSeason1.episodes[reading.currentEpisode - 1]?.title ?? sevenRoadsSeason1.title
 
+  const selectedGallerySeasonData = sevenRoadsSeasons.find(
+    (season) => season.number === selectedGallerySeason,
+  )
+  const selectedGalleryStory = selectedGallerySeasonData?.story ?? null
+  const selectedGalleryProgress = selectedGalleryStory
+    ? authoredStoryPersistence.load(selectedGalleryStory)
+    : null
+
   const galleryEpisodes =
-    story && selectedGallerySeason === sevenRoadsSeason1.number
+    selectedGalleryStory && selectedGallerySeasonData
       ? authoredIllustrationDiscovery.buildGalleryEpisodes(
-          story,
-          sevenRoadsSeason1.episodes.map((episode) => episode.title),
-          progress,
+          selectedGalleryStory,
+          selectedGallerySeasonData.episodes.map((episode) => episode.title),
+          selectedGalleryProgress,
+          selectedGallerySeasonData.number === 1
+            ? sevenRoadsStory1EpisodeNumber
+            : undefined,
         )
       : []
 
@@ -63,36 +87,38 @@ export function PublishedStoriesShell({
   const homeAction = (() => {
     if (reading.state === 'new') {
       return {
-        eyebrow: 'Начать историю',
+        eyebrow: language === 'uz' ? 'Hikoyani boshlash' : 'Начать историю',
         title: sevenRoadsSeason1.title,
-        subtitle: 'Сезон 1 · серия 1',
+        subtitle: `${copy.season} 1 · ${copy.episodeLower} 1`,
         action: onOpenSeason,
       }
     }
 
     if (reading.state === 'completed') {
       return {
-        eyebrow: 'Сезон завершён',
+        eyebrow: language === 'uz' ? 'Mavsum yakunlandi' : 'Сезон завершён',
         title: sevenRoadsSeason1.title,
-        subtitle: 'Посмотреть итог',
+        subtitle: language === 'uz' ? 'Yakunini ko‘rish' : 'Посмотреть итог',
         action: onContinueStory,
       }
     }
 
     return {
-      eyebrow: 'Продолжить',
+      eyebrow: copy.continue,
       title: currentEpisodeTitle,
-      subtitle: `Сезон 1 · серия ${reading.currentEpisode} из 6`,
+      subtitle: `${copy.season} 1 · ${copy.episodeLower} ${reading.currentEpisode} / 6`,
       action: onContinueStory,
     }
   })()
 
   const seasonProgressLabel =
     reading.state === 'completed'
-      ? 'Завершён'
+      ? copy.completed
       : reading.state === 'in_progress'
-        ? `Серия ${reading.currentEpisode} из 6`
-        : 'Не начат'
+        ? `${copy.episode} ${reading.currentEpisode} / 6`
+        : language === 'uz'
+          ? 'Boshlanmagan'
+          : 'Не начат'
 
   const closeNotice = () => setNotice(null)
 
@@ -115,7 +141,7 @@ export function PublishedStoriesShell({
           type="button"
           className="fixed inset-0 z-[100] flex cursor-zoom-out items-center justify-center bg-black/95 p-3"
           onClick={() => setGalleryLightbox(null)}
-          aria-label="Закрыть иллюстрацию"
+          aria-label={language === 'uz' ? 'Illyustratsiyani yopish' : 'Закрыть иллюстрацию'}
         >
           <img
             src={galleryLightbox.url}
@@ -139,27 +165,35 @@ export function PublishedStoriesShell({
           >
             {notice.kind === 'coming-season' ? (
               <>
-                <p className="q-label">Следующая дорога</p>
+                <p className="q-label">
+                  {language === 'uz' ? 'Keyingi yo‘l' : 'Следующая дорога'}
+                </p>
                 <h2 className="q-heading mt-1 text-2xl font-bold">
-                  Сезон {notice.seasonNumber} готовится
+                  {language === 'uz'
+                    ? `${notice.seasonNumber}-mavsum tayyorlanmoqda`
+                    : `Сезон ${notice.seasonNumber} готовится`}
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
-                  Мы уже готовим продолжение. Когда сезон будет готов, здесь появятся его
-                  обложка, серии и собственная галерея.
+                  {language === 'uz'
+                    ? 'Davomini tayyorlayapmiz. Mavsum tayyor bo‘lganda bu yerda uning muqovasi, qismlari va alohida galereyasi paydo bo‘ladi.'
+                    : 'Мы уже готовим продолжение. Когда сезон будет готов, здесь появятся его обложка, серии и собственная галерея.'}
                 </p>
                 <button type="button" className="q-primary mt-5 w-full" onClick={closeNotice}>
-                  Понятно
+                  {language === 'uz' ? 'Tushunarli' : 'Понятно'}
                 </button>
               </>
             ) : (
               <>
-                <p className="q-label">Галерея</p>
+                <p className="q-label">{language === 'uz' ? 'Galereya' : 'Галерея'}</p>
                 <h2 className="q-heading mt-1 text-2xl font-bold">
-                  Иллюстрация ещё скрыта
+                  {language === 'uz'
+                    ? 'Illyustratsiya hali yashirin'
+                    : 'Иллюстрация ещё скрыта'}
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
-                  Она откроется после того, как эта сцена появится во время чтения серии{' '}
-                  {notice.episodeNumber}. Так Галерея не показывает сюжет заранее.
+                  {language === 'uz'
+                    ? `U ${notice.episodeNumber}-qismda bu sahna o‘qish davomida paydo bo‘lgandan keyin ochiladi. Shunda Galereya syujetni oldindan ko‘rsatmaydi.`
+                    : `Она откроется после того, как эта сцена появится во время чтения серии ${notice.episodeNumber}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
                   {reading.state === 'in_progress' ? (
@@ -171,11 +205,11 @@ export function PublishedStoriesShell({
                         onContinueStory()
                       }}
                     >
-                      Продолжить чтение
+                      {language === 'uz' ? 'O‘qishni davom ettirish' : 'Продолжить чтение'}
                     </button>
                   ) : null}
                   <button type="button" className="q-secondary w-full" onClick={closeNotice}>
-                    Закрыть
+                    {copy.close}
                   </button>
                 </div>
               </>
@@ -191,24 +225,17 @@ export function PublishedStoriesShell({
               QISSA
             </p>
             <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#efd9aa]">
-              Королевство семи дорог
+              {copy.worldTitle}
             </p>
           </div>
           <button
             type="button"
             onClick={onOpenSettings}
             className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-black/20 text-white/95 backdrop-blur-md transition active:scale-[0.96]"
-            aria-label="Настройки"
-            title="Настройки"
+            aria-label={copy.settings}
+            title={copy.settings}
           >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              aria-hidden="true"
-            >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
               <circle cx="12" cy="12" r="3.1" />
               <path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1-2.9 2.9-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21H10v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-2.9-2.9.1-.1A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-1.5-1H3v-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1 2.9-2.9.1.1A1.6 1.6 0 0 0 9 4.6a1.6 1.6 0 0 0 1-1.5V3h4v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 2.9 2.9-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.1v4h-.1a1.6 1.6 0 0 0-1.5 1Z" />
             </svg>
@@ -245,13 +272,15 @@ export function PublishedStoriesShell({
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="flex h-[40dvh] min-h-[300px] flex-none flex-col justify-end pb-4">
               <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
-                Хранилище историй
+                {language === 'uz' ? 'Hikoyalar xazinasi' : 'Хранилище историй'}
               </p>
               <h1 className="mt-1 font-serif text-[2.45rem] font-bold leading-none text-[#fffaf0] drop-shadow">
-                Библиотека
+                {copy.library}
               </h1>
               <p className="mt-3 max-w-[350px] text-sm leading-6 text-[#f4ecdf]">
-                Истории, сезоны и иллюстрации твоего пути.
+                {language === 'uz'
+                  ? 'Sening yo‘lingdagi hikoyalar, mavsumlar va illyustratsiyalar.'
+                  : 'Истории, сезоны и иллюстрации твоего пути.'}
               </p>
             </div>
 
@@ -267,7 +296,7 @@ export function PublishedStoriesShell({
                     }`}
                     onClick={() => setLibraryView('seasons')}
                   >
-                    Сезоны
+                    {copy.seasons}
                   </button>
                   <button
                     type="button"
@@ -278,7 +307,7 @@ export function PublishedStoriesShell({
                     }`}
                     onClick={() => setLibraryView('gallery')}
                   >
-                    Галерея
+                    {language === 'uz' ? 'Galereya' : 'Галерея'}
                   </button>
                 </div>
               </div>
@@ -287,14 +316,14 @@ export function PublishedStoriesShell({
                 {libraryView === 'seasons' ? (
                   <div className="space-y-3">
                     <div className="px-1">
-                      <p className="q-label">Королевство семи дорог</p>
-                      <h2 className="q-heading mt-1 text-2xl font-bold">Сезоны</h2>
+                      <p className="q-label">{copy.worldTitle}</p>
+                      <h2 className="q-heading mt-1 text-2xl font-bold">{copy.seasons}</h2>
                     </div>
 
                     <button
                       type="button"
                       onClick={onOpenSeason}
-                      className="relative min-h-52 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] active:scale-[0.99]"
+                      className="relative min-h-52 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] transition active:scale-[0.99]"
                     >
                       {seasonCover ? (
                         <img
@@ -308,7 +337,7 @@ export function PublishedStoriesShell({
                       <div className="absolute inset-x-0 bottom-0 p-4">
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                            Сезон 1
+                            {copy.season} 1
                           </p>
                           <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
                             {seasonProgressLabel}
@@ -340,12 +369,12 @@ export function PublishedStoriesShell({
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
                           <div className="absolute inset-x-0 bottom-0 p-4">
                             <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                              Сезон {season.number}
+                              {copy.season} {season.number}
                             </p>
                             <div className="mt-1 flex items-end justify-between gap-3">
-                              <h3 className="font-serif text-2xl font-bold text-white">Скоро</h3>
+                              <h3 className="font-serif text-2xl font-bold text-white">{copy.soon}</h3>
                               <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
-                                Готовим
+                                {language === 'uz' ? 'Tayyorlanmoqda' : 'Готовим'}
                               </span>
                             </div>
                           </div>
@@ -355,8 +384,12 @@ export function PublishedStoriesShell({
                 ) : (
                   <div className="space-y-5">
                     <div className="px-1">
-                      <p className="q-label">Галерея сезона</p>
-                      <h2 className="q-heading mt-1 text-2xl font-bold">Открытые иллюстрации</h2>
+                      <p className="q-label">
+                        {language === 'uz' ? 'Mavsum galereyasi' : 'Галерея сезона'}
+                      </p>
+                      <h2 className="q-heading mt-1 text-2xl font-bold">
+                        {language === 'uz' ? 'Ochilgan illyustratsiyalar' : 'Открытые иллюстрации'}
+                      </h2>
                     </div>
 
                     <div className="-mx-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -383,10 +416,10 @@ export function PublishedStoriesShell({
                               }}
                             >
                               <p className="text-[0.6rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
-                                Сезон {season.number}
+                                {copy.season} {season.number}
                               </p>
                               <p className="mt-1 max-w-[112px] truncate text-sm font-bold text-[#342f25]">
-                                {published ? season.title : 'Скоро'}
+                                {published ? season.title : copy.soon}
                               </p>
                             </button>
                           )
@@ -397,16 +430,14 @@ export function PublishedStoriesShell({
                     <div className="flex items-end justify-between gap-4 px-1">
                       <div>
                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
-                          Сезон {selectedGallerySeason}
+                          {copy.season} {selectedGallerySeason}
                         </p>
                         <h3 className="mt-1 font-serif text-lg font-bold text-[#2d332f]">
-                          {selectedGallerySeason === sevenRoadsSeason1.number
-                            ? sevenRoadsSeason1.title
-                            : 'Скоро'}
+                          {selectedGallerySeasonData?.title ?? copy.soon}
                         </h3>
                       </div>
                       <p className="text-xs font-bold text-[#756a56]">
-                        {unlockedGalleryItems} из {totalGalleryItems}
+                        {unlockedGalleryItems} / {totalGalleryItems}
                       </p>
                     </div>
 
@@ -415,14 +446,14 @@ export function PublishedStoriesShell({
                         <div className="mb-2.5 flex items-end justify-between gap-3 px-1">
                           <div>
                             <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
-                              Серия {episode.episodeNumber}
+                              {copy.episode} {episode.episodeNumber}
                             </p>
                             <h3 className="font-serif text-lg font-bold leading-tight text-[#2d332f]">
                               {episode.title}
                             </h3>
                           </div>
                           <p className="text-xs font-semibold text-[#756a56]">
-                            {episode.unlockedCount} из {episode.items.length}
+                            {episode.unlockedCount} / {episode.items.length}
                           </p>
                         </div>
 
@@ -462,7 +493,11 @@ export function PublishedStoriesShell({
                                     episodeNumber: episode.episodeNumber,
                                   })
                                 }
-                                aria-label={`Иллюстрация серии ${episode.episodeNumber} ещё не открыта`}
+                                aria-label={
+                                  language === 'uz'
+                                    ? `${episode.episodeNumber}-qism illyustratsiyasi hali ochilmagan`
+                                    : `Иллюстрация серии ${episode.episodeNumber} ещё не открыта`
+                                }
                               >
                                 <img
                                   src={sevenRoadsUiAssets.futureSeasonPlaceholder}
@@ -473,7 +508,7 @@ export function PublishedStoriesShell({
                                 <div className="absolute inset-0 bg-[#10282d]/60" />
                                 <div className="absolute inset-0 flex items-center justify-center">
                                   <div className="rounded-full border border-[#efd7a7]/60 bg-black/25 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-[#fff4dc] backdrop-blur-sm">
-                                    Не открыто
+                                    {language === 'uz' ? 'Ochilmagan' : 'Не открыто'}
                                   </div>
                                 </div>
                               </button>
@@ -506,7 +541,7 @@ export function PublishedStoriesShell({
             onClick={() => onTab('home')}
             aria-current={tab === 'home' ? 'page' : undefined}
           >
-            Главная
+            {copy.home}
           </button>
           <button
             type="button"
@@ -518,7 +553,7 @@ export function PublishedStoriesShell({
             onClick={() => onTab('library')}
             aria-current={tab === 'library' ? 'page' : undefined}
           >
-            Библиотека
+            {copy.library}
           </button>
         </div>
       </nav>
