@@ -414,6 +414,7 @@ export function AuthoredStoryPlayer({
     : null
   const readerTheme = getReaderTheme(readerPreferences)
   const readerTextStyle = getReaderTextStyle(readerPreferences)
+  const replayEpisodeEnd = historicalReplay && (isReaderEpisodeBoundary || part.is_final)
 
   if (progress.completed) {
     const completionCoverUrl = resolveAuthoredStoryAssetUrl(
@@ -524,9 +525,8 @@ export function AuthoredStoryPlayer({
         ref={topRef}
         className={`min-h-[100dvh] space-y-5 pb-10 transition-colors ${readerTheme.page}`}
       >
-      <header className="space-y-3">
         <div
-          className={`sticky top-0 z-30 -mx-2 flex items-center justify-between gap-2 border-b px-2 py-2 backdrop-blur-xl ${readerTheme.toolbar}`}
+          className={`sticky top-0 z-40 -mx-2 flex items-center justify-between gap-2 border-b px-2 py-2 backdrop-blur-xl ${readerTheme.toolbar}`}
         >
           {onBack ? (
             <button
@@ -551,6 +551,7 @@ export function AuthoredStoryPlayer({
           </div>
         </div>
 
+      <header className="space-y-3">
         {currentPartNumber === 1 ? (
           <StoryImage
             asset={{
@@ -691,7 +692,21 @@ export function AuthoredStoryPlayer({
       ) : null}
 
       {(!part.decision || selectedChoice) ? (
-        isReaderEpisodeBoundary ? (
+        replayEpisodeEnd ? (
+          <section className="q-stone-panel space-y-4 p-5 text-center">
+            <div>
+              <p className="q-label mb-1">Пройденная серия</p>
+              <p className="text-sm leading-6 text-[#625846]">
+                Вы открыли эту серию повторно. Текущий прогресс сезона и сохранённые решения не изменились.
+              </p>
+            </div>
+            {onBack ? (
+              <button className="q-primary w-full" onClick={onBack}>
+                Вернуться к пути сезона
+              </button>
+            ) : null}
+          </section>
+        ) : isReaderEpisodeBoundary ? (
           <section className="q-stone-panel space-y-4 p-5 text-center">
             <div>
               <p className="q-label mb-1">Серия {readerProgress.current} завершена</p>
