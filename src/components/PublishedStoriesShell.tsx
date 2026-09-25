@@ -106,7 +106,7 @@ export function PublishedStoriesShell({
         className={`absolute inset-0 z-0 ${
           tab === 'home'
             ? 'bg-gradient-to-b from-[#0f2528]/10 via-[#0f2528]/10 to-[#0b2226]/80'
-            : 'bg-gradient-to-b from-[#12252a]/10 via-transparent to-[#172421]/42'
+            : 'bg-gradient-to-b from-[#12252a]/10 via-transparent to-[#172421]/40'
         }`}
       />
 
@@ -255,8 +255,8 @@ export function PublishedStoriesShell({
               </p>
             </div>
 
-            <section className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-[2rem] border-t border-[#ead8b7]/75 bg-[#f8efdf]/88 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5">
-              <div className="relative z-30 flex-none border-b border-[#d9c49a]/65 bg-[#fff9ed]/94 px-4 pb-3 pt-4 backdrop-blur-xl sm:px-5">
+            <section className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-[2rem] border-t border-[#ead8b7]/75 bg-[#f8efdf]/90 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5">
+              <div className="relative z-30 flex-none border-b border-[#d9c49a]/60 bg-[#fff9ed]/95 px-4 pb-3 pt-4 backdrop-blur-xl sm:px-5">
                 <div className="grid grid-cols-2 gap-1 rounded-[1.25rem] border border-[#d7bf92]/80 bg-[#f4ead8]/90 p-1">
                   <button
                     type="button"
@@ -344,7 +344,7 @@ export function PublishedStoriesShell({
                             </p>
                             <div className="mt-1 flex items-end justify-between gap-3">
                               <h3 className="font-serif text-2xl font-bold text-white">Скоро</h3>
-                              <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/88 backdrop-blur">
+                              <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
                                 Готовим
                               </span>
                             </div>
@@ -372,7 +372,7 @@ export function PublishedStoriesShell({
                               className={`min-w-[132px] rounded-[1.2rem] border px-3 py-3 text-left transition active:scale-[0.98] ${
                                 selected
                                   ? 'border-[#1f6670] bg-[#e1eee9] shadow-[0_10px_26px_-22px_rgba(31,102,112,.75)]'
-                                  : 'border-[#d8c39a] bg-[#fff9ed]/82'
+                                  : 'border-[#d8c39a] bg-[#fff9ed]/80'
                               }`}
                               onClick={() => {
                                 if (!published) {
@@ -470,7 +470,7 @@ export function PublishedStoriesShell({
                                   className="absolute inset-0 h-full w-full object-cover"
                                   loading="lazy"
                                 />
-                                <div className="absolute inset-0 bg-[#10282d]/58" />
+                                <div className="absolute inset-0 bg-[#10282d]/60" />
                                 <div className="absolute inset-0 flex items-center justify-center">
                                   <div className="rounded-full border border-[#efd7a7]/60 bg-black/25 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-[#fff4dc] backdrop-blur-sm">
                                     Не открыто
