@@ -4,7 +4,6 @@ import type {
   AuthoredStoryPackage,
   AuthoredStoryProgress,
 } from '../features/authoredStory/types'
-import { sevenRoadsStory1EpisodeNumber } from '../features/publishedStories/sevenRoadsProgress'
 
 const KEY_PREFIX = 'qissa:v1:authoredIllustrationDiscovery'
 
@@ -138,6 +137,7 @@ const buildGalleryEpisodes = (
   story: AuthoredStoryPackage,
   episodeTitles: string[],
   progress: AuthoredStoryProgress | null,
+  episodeNumberForPart: (partIndex: number) => number = (partIndex) => partIndex + 1,
 ): SevenRoadsGalleryEpisode[] => {
   const seenIds = seedFromProgress(story, progress)
   const groups = new Map<number, SevenRoadsGalleryItem[]>()
@@ -149,7 +149,7 @@ const buildGalleryEpisodes = (
   }
 
   story.parts.forEach((part, partIndex) => {
-    const episodeNumber = sevenRoadsStory1EpisodeNumber(partIndex)
+    const episodeNumber = episodeNumberForPart(partIndex)
     const storyTextSlots = part.image_slots.filter((slot) => slot.phase === 'story_text')
     const postChoiceSlots = part.image_slots.filter((slot) => slot.phase === 'post_choice_text')
 
