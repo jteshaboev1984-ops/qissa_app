@@ -41,6 +41,12 @@ function App() {
             seasonNumber={sevenRoadsSeason1.number}
             episodeTitles={episodeTitles}
             completionSummary="Темур и Самира стали юными бахадурами царства."
+            readerPreferences={readerPreferences}
+            onReaderPreferencesChange={(patch) => {
+              const next = { ...readerPreferences, ...patch }
+              setReaderPreferences(next)
+              sevenRoadsReaderPreferences.save(next)
+            }}
             showMissingAssetPlaceholders
             onBack={() => {
               const url = new URL(window.location.href)
