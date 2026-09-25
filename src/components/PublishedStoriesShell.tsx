@@ -19,6 +19,9 @@ type LibraryNotice =
   | { kind: 'coming-season'; seasonNumber: number }
   | { kind: 'locked-art'; episodeNumber: number }
 
+const seasonRomanNumeral = (number: number) =>
+  ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'][number - 1] ?? String(number)
+
 export function PublishedStoriesShell({
   language,
   tab,
@@ -81,6 +84,8 @@ export function PublishedStoriesShell({
     (sum, episode) => sum + episode.unlockedCount,
     0,
   )
+  const galleryProgressPercent =
+    totalGalleryItems > 0 ? Math.round((unlockedGalleryItems / totalGalleryItems) * 100) : 0
 
   const backgroundUrl = tab === 'home' ? sevenRoadsUiAssets.home : sevenRoadsUiAssets.library
 
@@ -132,7 +137,7 @@ export function PublishedStoriesShell({
         className={`absolute inset-0 z-0 ${
           tab === 'home'
             ? 'bg-gradient-to-b from-[#0f2528]/10 via-[#0f2528]/10 to-[#0b2226]/80'
-            : 'bg-gradient-to-b from-[#12252a]/10 via-transparent to-[#172421]/40'
+            : 'bg-gradient-to-b from-[#12252a]/10 via-transparent to-[#0d2024]/72'
         }`}
       />
 
@@ -141,7 +146,7 @@ export function PublishedStoriesShell({
           type="button"
           className="fixed inset-0 z-[100] flex cursor-zoom-out items-center justify-center bg-black/95 p-3"
           onClick={() => setGalleryLightbox(null)}
-          aria-label={language === 'uz' ? 'Illyustratsiyani yopish' : 'Закрыть иллюстрацию'}
+          aria-label={language === 'uz' ? 'Lavhani yopish' : 'Закрыть сцену'}
         >
           <img
             src={galleryLightbox.url}
@@ -186,9 +191,7 @@ export function PublishedStoriesShell({
               <>
                 <p className="q-label">{language === 'uz' ? 'Galereya' : 'Галерея'}</p>
                 <h2 className="q-heading mt-1 text-2xl font-bold">
-                  {language === 'uz'
-                    ? 'Illyustratsiya hali yashirin'
-                    : 'Иллюстрация ещё скрыта'}
+                  {language === 'uz' ? 'Lavha hali yashirin' : 'Сцена ещё скрыта'}
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
@@ -279,20 +282,20 @@ export function PublishedStoriesShell({
               </h1>
               <p className="mt-3 max-w-[350px] text-sm leading-6 text-[#f4ecdf]">
                 {language === 'uz'
-                  ? 'Sening yo‘lingdagi hikoyalar, mavsumlar va illyustratsiyalar.'
-                  : 'Истории, сезоны и иллюстрации твоего пути.'}
+                  ? 'Sening yo‘lingdagi hikoyalar, mavsumlar va lavhalar.'
+                  : 'Истории, сезоны и сцены твоего пути.'}
               </p>
             </div>
 
             <section className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-[2rem] border-t border-[#ead8b7]/75 bg-[#f8efdf]/90 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5">
               <div className="relative z-30 flex-none border-b border-[#d9c49a]/60 bg-[#fff9ed]/95 px-4 pb-3 pt-4 backdrop-blur-xl sm:px-5">
-                <div className="grid grid-cols-2 gap-1 rounded-[1.25rem] border border-[#d7bf92]/80 bg-[#f4ead8]/90 p-1">
+                <div className="grid grid-cols-2 border-b border-[#d8c39a]/75">
                   <button
                     type="button"
-                    className={`rounded-[1rem] px-4 py-3 text-sm font-bold transition ${
+                    className={`border-b-2 px-3 pb-3 pt-1 text-sm font-bold transition ${
                       libraryView === 'seasons'
-                        ? 'bg-[#1f6670] text-[#fffaf0]'
-                        : 'text-[#665d49]'
+                        ? 'border-[#1f6670] text-[#244c52]'
+                        : 'border-transparent text-[#786d58]'
                     }`}
                     onClick={() => setLibraryView('seasons')}
                   >
@@ -300,10 +303,10 @@ export function PublishedStoriesShell({
                   </button>
                   <button
                     type="button"
-                    className={`rounded-[1rem] px-4 py-3 text-sm font-bold transition ${
+                    className={`border-b-2 px-3 pb-3 pt-1 text-sm font-bold transition ${
                       libraryView === 'gallery'
-                        ? 'bg-[#1f6670] text-[#fffaf0]'
-                        : 'text-[#665d49]'
+                        ? 'border-[#1f6670] text-[#244c52]'
+                        : 'border-transparent text-[#786d58]'
                     }`}
                     onClick={() => setLibraryView('gallery')}
                   >
@@ -384,11 +387,8 @@ export function PublishedStoriesShell({
                 ) : (
                   <div className="space-y-5">
                     <div className="px-1">
-                      <p className="q-label">
-                        {language === 'uz' ? 'Mavsum galereyasi' : 'Галерея сезона'}
-                      </p>
-                      <h2 className="q-heading mt-1 text-2xl font-bold">
-                        {language === 'uz' ? 'Ochilgan illyustratsiyalar' : 'Открытые иллюстрации'}
+                      <h2 className="q-heading text-2xl font-bold">
+                        {language === 'uz' ? 'Hikoya lavhalari' : 'Сцены сказки'}
                       </h2>
                     </div>
 
@@ -402,10 +402,10 @@ export function PublishedStoriesShell({
                             <button
                               key={season.id}
                               type="button"
-                              className={`min-w-[132px] rounded-[1.2rem] border px-3 py-3 text-left transition active:scale-[0.98] ${
+                              className={`relative min-h-[112px] min-w-[148px] overflow-hidden rounded-[0.9rem] border px-3.5 py-3 text-left transition active:scale-[0.98] ${
                                 selected
-                                  ? 'border-[#1f6670] bg-[#e1eee9] shadow-[0_10px_26px_-22px_rgba(31,102,112,.75)]'
-                                  : 'border-[#d8c39a] bg-[#fff9ed]/80'
+                                  ? 'border-[#1f6670] bg-[#eef5f1] shadow-[0_12px_28px_-22px_rgba(31,102,112,.7)]'
+                                  : 'border-[#cfb57f] bg-[#fffaf0]/95 shadow-[0_12px_28px_-24px_rgba(74,49,13,.55)]'
                               }`}
                               onClick={() => {
                                 if (!published) {
@@ -415,30 +415,46 @@ export function PublishedStoriesShell({
                                 setSelectedGallerySeason(season.number)
                               }}
                             >
-                              <p className="text-[0.6rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
-                                {copy.season} {season.number}
-                              </p>
-                              <p className="mt-1 max-w-[112px] truncate text-sm font-bold text-[#342f25]">
-                                {published ? season.title : copy.soon}
-                              </p>
+                              <span
+                                className={`pointer-events-none absolute inset-[5px] rounded-[0.62rem] border ${
+                                  selected ? 'border-[#1f6670]/35' : 'border-[#c7a96d]/45'
+                                }`}
+                                aria-hidden="true"
+                              />
+                              <div className="relative flex min-h-[84px] flex-col">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-serif text-lg font-bold text-[#72582f]">
+                                    {seasonRomanNumeral(season.number)}
+                                  </span>
+                                  <span className="text-[0.68rem] text-[#a17e43]" aria-hidden="true">
+                                    ✦
+                                  </span>
+                                </div>
+                                <p className="mt-auto max-w-[120px] pt-3 font-serif text-[0.95rem] font-bold leading-[1.16] text-[#342f25]">
+                                  {published ? season.title : copy.soon}
+                                </p>
+                              </div>
                             </button>
                           )
                         })}
                       </div>
                     </div>
 
-                    <div className="flex items-end justify-between gap-4 px-1">
-                      <div>
-                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
-                          {copy.season} {selectedGallerySeason}
-                        </p>
-                        <h3 className="mt-1 font-serif text-lg font-bold text-[#2d332f]">
+                    <div className="px-1">
+                      <div className="flex items-end justify-between gap-4">
+                        <h3 className="min-w-0 font-serif text-lg font-bold leading-tight text-[#2d332f]">
                           {selectedGallerySeasonData?.title ?? copy.soon}
                         </h3>
+                        <p className="flex-none text-xs font-bold text-[#756a56]">
+                          {unlockedGalleryItems} / {totalGalleryItems}
+                        </p>
                       </div>
-                      <p className="text-xs font-bold text-[#756a56]">
-                        {unlockedGalleryItems} / {totalGalleryItems}
-                      </p>
+                      <div className="mt-2 h-px overflow-hidden bg-[#d8c39a]/80" aria-hidden="true">
+                        <div
+                          className="h-full bg-[#1f6670]"
+                          style={{ width: `${galleryProgressPercent}%` }}
+                        />
+                      </div>
                     </div>
 
                     {galleryEpisodes.map((episode) => (
@@ -495,8 +511,8 @@ export function PublishedStoriesShell({
                                 }
                                 aria-label={
                                   language === 'uz'
-                                    ? `${episode.episodeNumber}-qism illyustratsiyasi hali ochilmagan`
-                                    : `Иллюстрация серии ${episode.episodeNumber} ещё не открыта`
+                                    ? `${episode.episodeNumber}-qism lavhasi hali ochilmagan`
+                                    : `Сцена серии ${episode.episodeNumber} ещё не открыта`
                                 }
                               >
                                 <img
@@ -526,14 +542,14 @@ export function PublishedStoriesShell({
       </div>
 
       <nav
-        className="absolute inset-x-4 z-50 mx-auto max-w-[398px] rounded-full border border-white/25 bg-[#0f2c31]/80 p-2 shadow-[0_18px_45px_-26px_rgba(0,0,0,.8)] backdrop-blur-xl"
+        className="absolute inset-x-4 z-50 mx-auto max-w-[398px] rounded-full border border-white/25 bg-[#0f2c31]/80 p-1.5 shadow-[0_18px_45px_-26px_rgba(0,0,0,.8)] backdrop-blur-xl"
         style={{ bottom: 'max(1rem, env(safe-area-inset-bottom))' }}
         aria-label="QISSA"
       >
         <div className="grid grid-cols-2 gap-1.5">
           <button
             type="button"
-            className={`min-h-11 rounded-full px-3 py-2.5 text-xs font-bold transition ${
+            className={`min-h-10 rounded-full px-3 py-2 text-xs font-bold transition ${
               tab === 'home'
                 ? 'bg-[#ecd09a] text-[#243c40]'
                 : 'text-white/80 hover:bg-white/10'
@@ -545,7 +561,7 @@ export function PublishedStoriesShell({
           </button>
           <button
             type="button"
-            className={`min-h-11 rounded-full px-3 py-2.5 text-xs font-bold transition ${
+            className={`min-h-10 rounded-full px-3 py-2 text-xs font-bold transition ${
               tab === 'library'
                 ? 'bg-[#ecd09a] text-[#243c40]'
                 : 'text-white/80 hover:bg-white/10'
