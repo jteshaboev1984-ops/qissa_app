@@ -11,11 +11,13 @@ export function PublishedStoriesShell({
   onTab,
   onOpenSeason,
   onContinueStory,
+  onOpenSettings,
 }: {
   tab: PublishedStoriesTab
   onTab: (tab: PublishedStoriesTab) => void
   onOpenSeason: () => void
   onContinueStory: () => void
+  onOpenSettings: () => void
 }) {
   const story = sevenRoadsSeason1.story
   const progress = story ? authoredStoryPersistence.load(story) : null
@@ -34,6 +36,9 @@ export function PublishedStoriesShell({
       : reading.state === 'in_progress'
         ? `Серия ${reading.currentEpisode} из 6`
         : 'Новый сезон'
+
+  const currentEpisodeTitle =
+    sevenRoadsSeason1.episodes[reading.currentEpisode - 1]?.title ?? sevenRoadsSeason1.title
 
   return (
     <div
@@ -58,9 +63,18 @@ export function PublishedStoriesShell({
               Королевство семи дорог
             </p>
           </div>
-          <span className="rounded-full border border-white/25 bg-black/15 px-3 py-1.5 text-[0.66rem] font-bold uppercase tracking-[0.1em] text-white/90 backdrop-blur-md">
-            {tab === 'home' ? 'Главная' : 'Библиотека'}
-          </span>
+          <button
+            type="button"
+            onClick={onOpenSettings}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-black/18 text-white/95 backdrop-blur-md transition active:scale-[0.96]"
+            aria-label="Настройки"
+            title="Настройки"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+              <circle cx="12" cy="12" r="3.1" />
+              <path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1-2.9 2.9-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21H10v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1-2.9-2.9.1-.1A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-1.5-1H3v-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1 2.9-2.9.1.1A1.6 1.6 0 0 0 9 4.6a1.6 1.6 0 0 0 1-1.5V3h4v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1 2.9 2.9-.1.1a1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1h.1v4h-.1a1.6 1.6 0 0 0-1.5 1Z" />
+            </svg>
+          </button>
         </header>
 
         {tab === 'home' ? (
@@ -75,12 +89,12 @@ export function PublishedStoriesShell({
                   className="w-full rounded-[1.55rem] border border-white/20 bg-[#102b2f]/74 p-4 text-left shadow-[0_18px_45px_-28px_rgba(0,0,0,.85)] backdrop-blur-xl transition active:scale-[0.99]"
                 >
                   <p className="text-[0.64rem] font-bold uppercase tracking-[0.14em] text-[#efd6a0]">
-                    Продолжить путь
+                    Продолжить
                   </p>
                   <div className="mt-2 flex items-end justify-between gap-4">
                     <div>
                       <h1 className="font-serif text-2xl font-bold leading-tight text-[#fffaf0]">
-                        {sevenRoadsSeason1.title}
+                        {currentEpisodeTitle}
                       </h1>
                       <p className="mt-1 text-sm text-[#f1e9db]">
                         Сезон 1 · серия {reading.currentEpisode} из 6
@@ -156,7 +170,7 @@ export function PublishedStoriesShell({
           <>
             <div className="flex-1" />
 
-            <section className="rounded-[1.7rem] border border-[#e7d5b1]/35 bg-[#fffaf0]/93 p-4 text-[#2d332f] shadow-[0_24px_55px_-34px_rgba(0,0,0,.9)] backdrop-blur-xl">
+            <section className="rounded-[1.7rem] border border-[#e7d5b1] bg-[#fffaf0] p-4 text-[#2d332f] shadow-[0_24px_55px_-34px_rgba(0,0,0,.9)]">
               <div className="mb-3">
                 <p className="q-label">Коллекция</p>
                 <h1 className="q-heading mt-1 text-2xl font-bold">Королевство семи дорог</h1>
