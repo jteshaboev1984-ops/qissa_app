@@ -138,7 +138,7 @@ Do not later rewrite these facts as if:
 
 **Role:** one of the two young royal couriers in Story 1; becomes a **бахадур царства** (bahadur of the realm).
 
-**Origin:** a small town in the east of the kingdom.
+**Origin:** **Aras**, a small city in the east of the kingdom.
 
 **Established personality:**
 - quick;
@@ -194,7 +194,7 @@ Use this exact base design for recurring illustrations unless a later canon vers
 
 **Role:** one of the two young royal couriers in Story 1; reaches Zaran first; becomes a **бахадур царства** (bahadur of the realm).
 
-**Origin:** the south of the kingdom.
+**Origin:** **Sarvan**, a city in the south of the kingdom.
 
 **Established personality:**
 - observant;
@@ -473,6 +473,19 @@ Do not render it as a giant atlas, modern printed guidebook, glowing magic book 
 - brass-toned guard;
 - not oversized;
 - used in Story 1 to cut the blocking rope, not to wound a person.
+
+---
+
+# 8A. Seven city / road flags — HARD CANON
+
+The capital displays **all seven flags of the Seven Roads / seven road-cities together** during the Festival of Courage. The capital does not currently own one separate flag from this set.
+
+Locked assignments:
+- **Zaran — sun**;
+- **Aras — camel**;
+- **Sarvan — tree**.
+
+The remaining four flag symbols stay reserved until their cities are deliberately introduced. Do not assign them permanently in later stories or illustrations without an explicit canon update.
 
 ---
 
@@ -775,7 +788,7 @@ Do not permanently invent these yet:
 - names of Temur's or Samira's families;
 - exact family backgrounds;
 - exact map geometry of all Seven Roads;
-- names and functions of the other six major destinations;
+- names and functions of the remaining four road-cities not yet introduced;
 - history of the kingdom;
 - whether the world contains magic;
 - bandit leader;
@@ -942,3 +955,18 @@ This is the first visible consequence of the broken trust.
 ## King speech direction
 
 The king's final speech should remain substantial enough to feel ceremonial, but should be grounded in the children's concrete actions rather than a long abstract checklist of virtues.
+
+---
+
+# 19. Canon delta — Story 2 continuity / 2026-09-25
+
+Story 2 establishes and retroactively names the already-described home cities of the two Story 1 heroes without changing the events of Story 1:
+
+- Temur's eastern home city is **Aras**.
+- Samira's southern home city is **Sarvan**.
+- The first destination remains **Zaran**.
+- The seven festival flags are the seven road-city flags shown together in the capital.
+- Locked symbols: **Zaran = sun**, **Aras = camel**, **Sarvan = tree**; the other four remain reserved.
+- Story 1's Festival trials in running, archery and horse preparation remain hard canon and establish that both Temur and Samira are strong archers before Story 2.
+- Story 1's post-journey title remains **юные бахадуры царства** and the standing belt-and-sheathed-sabre ceremony remains authoritative.
+
