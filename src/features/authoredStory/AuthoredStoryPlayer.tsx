@@ -364,6 +364,8 @@ export function AuthoredStoryPlayer({
   const currentDecisionChoiceId = part.decision
     ? progress.selected_choices[part.decision.decision_id] ?? null
     : null
+  const readerTheme = getReaderTheme(readerPreferences)
+  const readerTextStyle = getReaderTextStyle(readerPreferences)
 
   if (progress.completed) {
     const completionCoverUrl = resolveAuthoredStoryAssetUrl(
@@ -429,6 +431,29 @@ export function AuthoredStoryPlayer({
 
   return (
     <>
+      {showReaderSettings ? (
+        <div
+          className="fixed inset-0 z-[90] flex items-end bg-black/45 p-3 backdrop-blur-[1px]"
+          role="presentation"
+          onClick={() => setShowReaderSettings(false)}
+        >
+          <div
+            className="mx-auto w-full max-w-[430px]"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Настройки чтения"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <ReaderSettingsPanel
+              language="ru"
+              preferences={readerPreferences}
+              onChange={onReaderPreferencesChange}
+              onClose={() => setShowReaderSettings(false)}
+            />
+          </div>
+        </div>
+      ) : null}
+
       {lightbox ? (
         <button
           type="button"
@@ -447,17 +472,35 @@ export function AuthoredStoryPlayer({
         </button>
       ) : null}
 
-      <section ref={topRef} className="space-y-5 pb-10">
+      <section
+        ref={topRef}
+        className={`min-h-[100dvh] space-y-5 pb-10 transition-colors ${readerTheme.page}`}
+      >
       <header className="space-y-3">
-        <div className="flex items-center justify-between gap-3">
+        <div
+          className={`sticky top-0 z-30 -mx-2 flex items-center justify-between gap-2 border-b px-2 py-2 backdrop-blur-xl ${readerTheme.toolbar}`}
+        >
           {onBack ? (
-            <button className="q-secondary px-4 py-2 text-xs" onClick={closeReader}>
+            <button
+              className="rounded-full border border-current/15 px-3.5 py-2 text-xs font-bold"
+              onClick={closeReader}
+            >
               Закрыть
             </button>
           ) : <span />}
-          <span className="q-badge">
-            Серия {readerProgress.current} из {readerProgress.total}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full border border-current/15 px-3 py-1.5 text-xs font-bold">
+              Серия {readerProgress.current} из {readerProgress.total}
+            </span>
+            <button
+              type="button"
+              className="flex h-10 min-w-10 items-center justify-center rounded-full border border-current/15 px-3 text-sm font-bold"
+              onClick={() => setShowReaderSettings(true)}
+              aria-label="Настройки чтения"
+            >
+              Aa
+            </button>
+          </div>
         </div>
 
         {currentPartNumber === 1 ? (
@@ -479,8 +522,12 @@ export function AuthoredStoryPlayer({
         ) : null}
 
         <div>
-          <p className="q-label mb-1">{story.title}</p>
-          <h2 className="q-heading text-3xl font-bold leading-tight">{readerEpisodeTitle}</h2>
+          <p className={`mb-1 text-[0.7rem] font-semibold uppercase tracking-[0.16em] ${readerTheme.label}`}>
+            {story.title}
+          </p>
+          <h2 className={`font-serif text-3xl font-bold leading-tight ${readerTheme.text}`}>
+            {readerEpisodeTitle}
+          </h2>
         </div>
 
         <div className="h-1.5 overflow-hidden rounded-full bg-[#d9c8aa]">
@@ -491,7 +538,7 @@ export function AuthoredStoryPlayer({
         </div>
       </header>
 
-      <article className="q-card p-6 text-[1.12rem] leading-8 text-[#2b2b22]">
+      <article className={`px-1 py-1 ${readerTheme.text}`} style={readerTextStyle}>
         <StoryBlocks
           blocks={storyBlocks}
           showMissingAssetPlaceholders={showMissingAssetPlaceholders}
@@ -569,7 +616,7 @@ export function AuthoredStoryPlayer({
             onOpen={openImage}
           />
 
-          <article className="q-card p-6 text-[1.12rem] leading-8 text-[#2b2b22]">
+          <article className={`px-1 py-1 ${readerTheme.text}`} style={readerTextStyle}>
             <div className="space-y-5">
               {selectedChoice.resolution_text
                 .split(/\n\n+/)
@@ -586,7 +633,7 @@ export function AuthoredStoryPlayer({
       ) : null}
 
       {(!part.decision || selectedChoice) && postChoiceBlocks.length > 0 ? (
-        <article className="q-card p-6 text-[1.12rem] leading-8 text-[#2b2b22]">
+        <article className={`px-1 py-1 ${readerTheme.text}`} style={readerTextStyle}>
           <StoryBlocks
             blocks={postChoiceBlocks}
             showMissingAssetPlaceholders={showMissingAssetPlaceholders}
