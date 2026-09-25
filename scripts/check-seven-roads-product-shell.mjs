@@ -8,6 +8,7 @@ const overview = readFileSync('src/components/SeasonOverview.tsx', 'utf8')
 const consent = readFileSync('src/lib/publishedStoriesConsent.ts', 'utf8')
 const welcome = readFileSync('src/components/PublishedStoriesWelcome.tsx', 'utf8')
 const player = readFileSync('src/features/authoredStory/AuthoredStoryPlayer.tsx', 'utf8')
+const readingPosition = readFileSync('src/lib/authoredReadingPosition.ts', 'utf8')
 
 const failures = []
 const requireText = (label, source, text) => {
@@ -79,7 +80,13 @@ requireText('reader', player, 'Завершить на сегодня')
 requireText('reader', player, 'Серия {readerProgress.current} завершена')
 requireText('reader', player, 'Следующая серия')
 requireText('reader', player, 'Завершить сезон')
+requireText('reader', player, 'Закрыть')
+requireText('reader', player, 'authoredReadingPosition.save')
+requireText('reader', player, 'authoredReadingPosition.clear')
 requireText('Seven Roads App', app, 'onFinishForToday')
+requireText('Seven Roads App', app, "setView('shell')")
+requireText('reading position persistence', readingPosition, 'scroll_y')
+requireText('reading position persistence', readingPosition, 'part_index')
 
 if (failures.length > 0) {
   console.error('Seven Roads product shell check failed:')
