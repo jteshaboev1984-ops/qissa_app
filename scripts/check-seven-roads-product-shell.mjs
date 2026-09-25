@@ -10,6 +10,8 @@ const welcome = readFileSync('src/components/PublishedStoriesWelcome.tsx', 'utf8
 const player = readFileSync('src/features/authoredStory/AuthoredStoryPlayer.tsx', 'utf8')
 const readingPosition = readFileSync('src/lib/authoredReadingPosition.ts', 'utf8')
 const uiAssets = readFileSync('src/data/sevenRoadsUiAssets.ts', 'utf8')
+const settings = readFileSync('src/components/SevenRoadsSettingsScreen.tsx', 'utf8')
+const readerPreferences = readFileSync('src/lib/sevenRoadsReaderPreferences.ts', 'utf8')
 
 const failures = []
 const requireText = (label, source, text) => {
@@ -24,7 +26,7 @@ for (const text of [
   'PublishedStoriesShell',
   'SeasonOverview',
   'publishedStoriesConsent',
-  "type SevenRoadsView = 'shell' | 'season' | 'story'",
+  "type SevenRoadsView = 'shell' | 'season' | 'story' | 'settings'",
 ]) requireText('Seven Roads App', app, text)
 
 for (const text of [
@@ -54,6 +56,8 @@ requireText('public shell', shell, 'sevenRoadsUiAssets.home')
 requireText('public shell', shell, 'sevenRoadsUiAssets.library')
 requireText('public shell', shell, 'sevenRoadsUiAssets.futureSeasonPlaceholder')
 requireText('public shell', shell, "find((season) => season.status === 'coming_soon')")
+requireText('public shell', shell, 'onOpenSettings')
+requireText('public shell', shell, 'aria-label="Настройки"')
 requireText('season overview', overview, 'Путь сезона')
 requireText('season overview', overview, 'resolveAuthoredStoryAssetUrl')
 requireText('season overview', overview, '6 серий')
@@ -82,8 +86,16 @@ requireText('reader', player, 'Завершить сезон')
 requireText('reader', player, 'Закрыть')
 requireText('reader', player, 'authoredReadingPosition.save')
 requireText('reader', player, 'authoredReadingPosition.clear')
+requireText('reader', player, 'Настройки чтения')
+requireText('reader', player, '>Aa<')
+requireText('reader', player, 'getReaderTextStyle')
 requireText('Seven Roads App', app, 'onFinishForToday')
 requireText('Seven Roads App', app, "setView('shell')")
+requireText('Seven Roads App', app, "setView('settings')")
+requireText('Seven Roads settings', settings, 'Настройки')
+requireText('Seven Roads settings', settings, 'Сбросить прогресс сезона')
+requireText('Seven Roads settings', settings, 'ReaderSettingsPanel')
+requireText('Seven Roads reader preferences', readerPreferences, 'sevenRoadsReaderPreferences')
 requireText('reading position persistence', readingPosition, 'scroll_y')
 requireText('reading position persistence', readingPosition, 'part_index')
 
