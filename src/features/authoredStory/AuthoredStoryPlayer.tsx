@@ -4,6 +4,7 @@ import { authoredStoryPersistence } from '../../lib/authoredStoryPersistence'
 import { authoredReadingPosition } from '../../lib/authoredReadingPosition'
 import { authoredIllustrationDiscovery } from '../../lib/authoredIllustrationDiscovery'
 import { resolveAuthoredStoryAssetUrl } from '../../data/authoredStoryAssets'
+import { getSevenRoadsCopy, type SevenRoadsLanguage } from '../publishedStories/sevenRoadsCopy'
 import {
   advanceAuthoredStory,
   buildAuthoredNarrativeBlocks,
@@ -132,6 +133,7 @@ function StoryImage({
   showTapHint = false,
   onSeen,
   discoverable = true,
+  language,
 }: {
   asset: AuthoredStoryImageSlot | AuthoredStoryChoiceIllustration
   alt: string
@@ -140,7 +142,9 @@ function StoryImage({
   showTapHint?: boolean
   onSeen?: (assetId: string) => void
   discoverable?: boolean
+  language: SevenRoadsLanguage
 }) {
+  const copy = getSevenRoadsCopy(language)
   const resolvedUrl = resolveAuthoredStoryAssetUrl(asset.asset_id, asset.runtime_url)
   const containerRef = useRef<HTMLDivElement | null>(null)
 
@@ -171,7 +175,7 @@ function StoryImage({
           type="button"
           className="block w-full cursor-zoom-in rounded-[1.75rem] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37] focus-visible:ring-offset-2"
           onClick={() => onOpen?.(resolvedUrl, alt)}
-          aria-label={`Открыть иллюстрацию на весь экран: ${alt}`}
+          aria-label={`${copy.openFullscreen}: ${alt}`}
         >
           <img
             src={resolvedUrl}
@@ -182,7 +186,7 @@ function StoryImage({
         </button>
         {showTapHint ? (
           <p className="px-2 text-center text-xs leading-5 text-[#7a705f]">
-            Нажмите на иллюстрацию, чтобы рассмотреть её на весь экран. Коснитесь экрана ещё раз, чтобы вернуться.
+            {copy.imageTapHint}
           </p>
         ) : null}
       </div>
@@ -193,7 +197,7 @@ function StoryImage({
 
   return (
     <div className="rounded-[1.75rem] border border-dashed border-[#d8c7a9] bg-[#f8f1e4] px-5 py-10 text-center">
-      <p className="q-label mb-2">Illustration pending</p>
+      <p className="q-label mb-2">{copy.illustrationPending}</p>
       <p className="text-xs text-[#756a56]">{asset.asset_id}</p>
     </div>
   )
@@ -204,11 +208,13 @@ const StoryBlocks = ({
   showMissingAssetPlaceholders,
   onOpenImage,
   onImageSeen,
+  language,
 }: {
   blocks: ReturnType<typeof buildAuthoredNarrativeBlocks>
   showMissingAssetPlaceholders: boolean
   onOpenImage: (url: string, alt: string) => void
   onImageSeen: (assetId: string) => void
+  language: SevenRoadsLanguage
 }) => (
   <div className="space-y-5">
     {blocks.map((block, index) => {
@@ -221,6 +227,7 @@ const StoryBlocks = ({
             showPlaceholder={showMissingAssetPlaceholders}
             onOpen={onOpenImage}
             onSeen={onImageSeen}
+            language={language}
           />
         )
       }
@@ -246,6 +253,9 @@ export function AuthoredStoryPlayer({
   readerPreferences,
   onReaderPreferencesChange,
 }: AuthoredStoryPlayerProps) {
+  const language: SevenRoadsLanguage = story.language === 'uz' ? 'uz' : 'ru'
+  const copy = getSevenRoadsCopy(language)
+
   const persistedProgress = useMemo(() => {
     const saved = authoredStoryPersistence.load(story)
     if (saved && saved.current_part_index < story.parts.length) return saved
@@ -463,10 +473,10 @@ export function AuthoredStoryPlayer({
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/32 to-[#102327]/96" />
         <div className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-end p-5">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#ead3a0]">
-            QISSA · Сезон {seasonNumber} · {story.title}
+            QISSA · {copy.season} {seasonNumber} · {story.title}
           </p>
           <h2 className="mt-2 font-serif text-3xl font-bold text-[#fff9ec]">
-            Сезон {seasonNumber} завершён
+            {copy.season} {seasonNumber} {copy.seasonCompleted}
           </h2>
           {completionSummary ? (
             <p className="mt-3 text-base font-semibold leading-7 text-[#f8f1e4]">
@@ -474,13 +484,13 @@ export function AuthoredStoryPlayer({
             </p>
           ) : null}
           <p className="mt-3 text-sm leading-6 text-[#eaf3f1]">
-            QISSA запомнила четыре решения. В следующих сезонах они смогут влиять на то, кто первым предложит решение, что герои проверят и насколько легко Темур и Самира будут доверять друг другу.
+            {copy.completionMemory}
           </p>
           <div className="mt-4 rounded-[1.4rem] border border-[#ead3a0]/35 bg-black/20 px-4 py-3 backdrop-blur-md">
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#ead3a0]">
-              Сезон {seasonNumber + 1}
+              {copy.season} {seasonNumber + 1}
             </p>
-            <p className="mt-1 font-bold text-[#fff9ec]">Следующий сезон — скоро</p>
+            <p className="mt-1 font-bold text-[#fff9ec]">{copy.nextSeasonSoon}</p>
           </div>
           <div className="mt-5 grid gap-2.5">
             {onFinishForToday ? (
@@ -488,7 +498,7 @@ export function AuthoredStoryPlayer({
                 className="w-full rounded-full border border-[#ead3a0] bg-[#ead3a0] px-5 py-3.5 text-sm font-bold text-[#24434a]"
                 onClick={onFinishForToday}
               >
-                Завершить на сегодня
+                {copy.finishToday}
               </button>
             ) : null}
             {onBack ? (
@@ -496,14 +506,14 @@ export function AuthoredStoryPlayer({
                 className="w-full rounded-full border border-white/35 bg-black/20 px-5 py-3 text-sm font-semibold text-[#fff9ec] backdrop-blur-md"
                 onClick={onBack}
               >
-                На главную
+                {copy.backHome}
               </button>
             ) : null}
             <button
               className="w-full rounded-full px-5 py-3 text-sm font-semibold text-[#ead3a0]"
               onClick={restartStory}
             >
-              Пройти сезон заново
+              {copy.replaySeason}
             </button>
           </div>
         </div>
@@ -523,11 +533,11 @@ export function AuthoredStoryPlayer({
             className="mx-auto w-full max-w-[430px]"
             role="dialog"
             aria-modal="true"
-            aria-label="Настройки чтения"
+            aria-label={copy.readerSettings}
             onClick={(event) => event.stopPropagation()}
           >
             <ReaderSettingsPanel
-              language="ru"
+              language={language}
               preferences={readerPreferences}
               onChange={onReaderPreferencesChange}
               onClose={() => setShowReaderSettings(false)}
@@ -541,7 +551,7 @@ export function AuthoredStoryPlayer({
           type="button"
           className="fixed inset-0 z-[100] flex h-[100dvh] w-screen cursor-zoom-out items-center justify-center bg-black/95 p-3 sm:p-6"
           onClick={() => setLightbox(null)}
-          aria-label="Закрыть полноэкранную иллюстрацию"
+          aria-label={copy.closeFullscreen}
         >
           <img
             src={lightbox.url}
@@ -549,7 +559,7 @@ export function AuthoredStoryPlayer({
             className="max-h-full max-w-full object-contain"
           />
           <span className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-4 py-2 text-xs font-semibold text-white/85">
-            Коснитесь экрана, чтобы вернуться
+            {copy.tapToReturn}
           </span>
         </button>
       ) : null}
@@ -566,18 +576,18 @@ export function AuthoredStoryPlayer({
               className="rounded-full border border-current/15 px-3.5 py-2 text-xs font-bold"
               onClick={closeReader}
             >
-              Закрыть
+              {copy.close}
             </button>
           ) : <span />}
           <div className="flex items-center gap-2">
             <span className="rounded-full border border-current/15 px-3 py-1.5 text-xs font-bold">
-              Серия {readerProgress.current} из {readerProgress.total}
+              {copy.episode} {readerProgress.current} / {readerProgress.total}
             </span>
             <button
               type="button"
               className="flex h-10 min-w-10 items-center justify-center rounded-full border border-current/15 px-3 text-sm font-bold"
               onClick={() => setShowReaderSettings(true)}
-              aria-label="Настройки чтения"
+              aria-label={copy.readerSettings}
             >
               Aa
             </button>
@@ -601,6 +611,7 @@ export function AuthoredStoryPlayer({
             onOpen={openImage}
             showTapHint
             discoverable={false}
+            language={language}
           />
         ) : null}
 
@@ -627,16 +638,17 @@ export function AuthoredStoryPlayer({
           showMissingAssetPlaceholders={showMissingAssetPlaceholders}
           onOpenImage={openImage}
           onImageSeen={markImageSeen}
+        language={language}
         />
       </article>
 
       {part.decision && !selectedChoice ? (
         <section className="q-stone-panel p-5">
-          <p className="q-label mb-2">Твой выбор</p>
+          <p className="q-label mb-2">{copy.yourChoice}</p>
           <h3 className="q-heading mb-2 text-2xl font-bold leading-tight">{part.decision.prompt}</h3>
           {progress.choice_history.length === 0 ? (
             <p className="mb-4 text-sm leading-6 text-[#6b6251]">
-              QISSA запомнит решение. В следующих сказках оно может повлиять на привычки героев и их отношения.
+              {copy.choiceMemoryHint}
             </p>
           ) : null}
 
@@ -658,6 +670,7 @@ export function AuthoredStoryPlayer({
                     showPlaceholder={showMissingAssetPlaceholders}
                     onOpen={openImage}
                     onSeen={markImageSeen}
+                    language={language}
                   />
                   <button
                     type="button"
@@ -681,7 +694,7 @@ export function AuthoredStoryPlayer({
 
           {previewChoiceId ? (
             <button className="q-primary mt-4 w-full" onClick={confirmChoice}>
-              Подтвердить выбор
+              {copy.confirmChoice}
             </button>
           ) : null}
         </section>
@@ -690,7 +703,7 @@ export function AuthoredStoryPlayer({
       {selectedChoice && currentDecisionChoiceId ? (
         <>
           <section className="rounded-[1.5rem] border border-[#9bbdb8] bg-[#e5f0ed] p-5">
-            <p className="q-label mb-2 text-[#35666b]">Выбор сохранён</p>
+            <p className="q-label mb-2 text-[#35666b]">{copy.choiceSaved}</p>
             <p className="font-bold leading-6 text-[#243c3b]">{selectedChoice.text}</p>
           </section>
 
@@ -700,6 +713,7 @@ export function AuthoredStoryPlayer({
             showPlaceholder={showMissingAssetPlaceholders}
             onOpen={openImage}
             onSeen={markImageSeen}
+            language={language}
           />
 
           <article className={`px-1 py-1 ${readerTheme.text}`} style={readerTextStyle}>
@@ -725,6 +739,7 @@ export function AuthoredStoryPlayer({
             showMissingAssetPlaceholders={showMissingAssetPlaceholders}
             onOpenImage={openImage}
             onImageSeen={markImageSeen}
+          language={language}
           />
         </article>
       ) : null}
@@ -733,23 +748,25 @@ export function AuthoredStoryPlayer({
         replayEpisodeEnd ? (
           <section className="q-stone-panel space-y-4 p-5 text-center">
             <div>
-              <p className="q-label mb-1">Пройденная серия</p>
+              <p className="q-label mb-1">{copy.replayedEpisode}</p>
               <p className="text-sm leading-6 text-[#625846]">
-                Вы открыли эту серию повторно. Текущий прогресс сезона и сохранённые решения не изменились.
+                {copy.replayedEpisodeBody}
               </p>
             </div>
             {onBack ? (
               <button className="q-primary w-full" onClick={onBack}>
-                Вернуться к пути сезона
+                {copy.returnToSeason}
               </button>
             ) : null}
           </section>
         ) : isReaderEpisodeBoundary ? (
           <section className="q-stone-panel space-y-4 p-5 text-center">
             <div>
-              <p className="q-label mb-1">Серия {readerProgress.current} завершена</p>
+              <p className="q-label mb-1">
+                {copy.episode} {readerProgress.current} {language === 'uz' ? 'yakunlandi' : 'завершена'}
+              </p>
               <p className="text-sm leading-6 text-[#625846]">
-                Можно продолжить путь сейчас или остановиться здесь. Прогресс уже сохранён.
+                {copy.episodeFinishedBody}
               </p>
             </div>
             <div className="grid gap-2.5">
@@ -758,7 +775,7 @@ export function AuthoredStoryPlayer({
                 onClick={continueStory}
                 disabled={!canContinue}
               >
-                Следующая серия
+                {copy.nextEpisode}
               </button>
               {onFinishForToday ? (
                 <button
@@ -766,7 +783,7 @@ export function AuthoredStoryPlayer({
                   onClick={finishForToday}
                   disabled={!canContinue}
                 >
-                  Завершить на сегодня
+                  {copy.finishToday}
                 </button>
               ) : null}
             </div>
@@ -777,7 +794,7 @@ export function AuthoredStoryPlayer({
             onClick={continueStory}
             disabled={!canContinue}
           >
-            {part.is_final ? 'Завершить сезон' : 'Продолжить'}
+            {part.is_final ? copy.finishSeason : copy.continue}
           </button>
         )
       ) : null}
