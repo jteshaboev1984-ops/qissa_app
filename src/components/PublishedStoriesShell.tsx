@@ -19,9 +19,6 @@ type LibraryNotice =
   | { kind: 'coming-season'; seasonNumber: number }
   | { kind: 'locked-art'; episodeNumber: number }
 
-const seasonRomanNumeral = (number: number) =>
-  ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'][number - 1] ?? String(number)
-
 export function PublishedStoriesShell({
   language,
   tab,
@@ -45,7 +42,7 @@ export function PublishedStoriesShell({
   const reading = sevenRoadsStory1ReadingState(progress)
 
   const [libraryView, setLibraryView] = useState<LibraryView>('seasons')
-  const [selectedGallerySeason, setSelectedGallerySeason] = useState(sevenRoadsSeason1.number)
+  const [expandedGallerySeason, setExpandedGallerySeason] = useState<number | null>(null)
   const [galleryLightbox, setGalleryLightbox] = useState<{ url: string; alt: string } | null>(null)
   const [notice, setNotice] = useState<LibraryNotice | null>(null)
 
@@ -59,33 +56,25 @@ export function PublishedStoriesShell({
   const currentEpisodeTitle =
     sevenRoadsSeason1.episodes[reading.currentEpisode - 1]?.title ?? sevenRoadsSeason1.title
 
-  const selectedGallerySeasonData = sevenRoadsSeasons.find(
-    (season) => season.number === selectedGallerySeason,
-  )
-  const selectedGalleryStory = selectedGallerySeasonData?.story ?? null
-  const selectedGalleryProgress = selectedGalleryStory
-    ? authoredStoryPersistence.load(selectedGalleryStory)
-    : null
+  const buildSeasonGallery = (season: (typeof sevenRoadsSeasons)[number]) => {
+    if (season.status !== 'published' || !season.story) {
+      return { episodes: [], totalItems: 0, unlockedItems: 0 }
+    }
 
-  const galleryEpisodes =
-    selectedGalleryStory && selectedGallerySeasonData
-      ? authoredIllustrationDiscovery.buildGalleryEpisodes(
-          selectedGalleryStory,
-          selectedGallerySeasonData.episodes.map((episode) => episode.title),
-          selectedGalleryProgress,
-          selectedGallerySeasonData.number === 1
-            ? sevenRoadsStory1EpisodeNumber
-            : undefined,
-        )
-      : []
+    const seasonProgress = authoredStoryPersistence.load(season.story)
+    const episodes = authoredIllustrationDiscovery.buildGalleryEpisodes(
+      season.story,
+      season.episodes.map((episode) => episode.title),
+      seasonProgress,
+      season.number === 1 ? sevenRoadsStory1EpisodeNumber : undefined,
+    )
 
-  const totalGalleryItems = galleryEpisodes.reduce((sum, episode) => sum + episode.items.length, 0)
-  const unlockedGalleryItems = galleryEpisodes.reduce(
-    (sum, episode) => sum + episode.unlockedCount,
-    0,
-  )
-  const galleryProgressPercent =
-    totalGalleryItems > 0 ? Math.round((unlockedGalleryItems / totalGalleryItems) * 100) : 0
+    return {
+      episodes,
+      totalItems: episodes.reduce((sum, episode) => sum + episode.items.length, 0),
+      unlockedItems: episodes.reduce((sum, episode) => sum + episode.unlockedCount, 0),
+    }
+  }
 
   const backgroundUrl = tab === 'home' ? sevenRoadsUiAssets.home : sevenRoadsUiAssets.library
 
