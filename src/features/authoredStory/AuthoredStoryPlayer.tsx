@@ -209,12 +209,14 @@ const StoryBlocks = ({
   onOpenImage,
   onImageSeen,
   language,
+  episodeNumber,
 }: {
   blocks: ReturnType<typeof buildAuthoredNarrativeBlocks>
   showMissingAssetPlaceholders: boolean
   onOpenImage: (url: string, alt: string) => void
   onImageSeen: (assetId: string) => void
   language: SevenRoadsLanguage
+  episodeNumber: number
 }) => (
   <div className="space-y-5">
     {blocks.map((block, index) => {
@@ -223,7 +225,7 @@ const StoryBlocks = ({
           <StoryImage
             key={block.slot.slot_id}
             asset={block.slot}
-            alt={block.slot.scene_key}
+            alt={language === 'uz' ? `${episodeNumber}-qism lavhasi` : `Сцена серии ${episodeNumber}`}
             showPlaceholder={showMissingAssetPlaceholders}
             onOpen={onOpenImage}
             onSeen={onImageSeen}
@@ -638,7 +640,8 @@ export function AuthoredStoryPlayer({
           showMissingAssetPlaceholders={showMissingAssetPlaceholders}
           onOpenImage={openImage}
           onImageSeen={markImageSeen}
-        language={language}
+          language={language}
+          episodeNumber={readerProgress.current}
         />
       </article>
 
@@ -739,7 +742,8 @@ export function AuthoredStoryPlayer({
             showMissingAssetPlaceholders={showMissingAssetPlaceholders}
             onOpenImage={openImage}
             onImageSeen={markImageSeen}
-          language={language}
+            language={language}
+            episodeNumber={readerProgress.current}
           />
         </article>
       ) : null}
