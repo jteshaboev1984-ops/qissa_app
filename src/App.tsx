@@ -65,7 +65,10 @@ function App() {
             seasonNumber={sevenRoadsSeason1.number}
             episodeTitles={episodeTitles}
             completionSummary="Темур и Самира стали юными бахадурами царства."
-            onBack={() => setView('season')}
+            onBack={() => {
+              setTab('home')
+              setView('shell')
+            }}
             onFinishForToday={() => {
               setTab('home')
               setView('shell')
