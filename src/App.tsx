@@ -1,21 +1,27 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { PublishedStoriesShell, type PublishedStoriesTab } from './components/PublishedStoriesShell'
 import { PublishedStoriesWelcome } from './components/PublishedStoriesWelcome'
 import { SeasonOverview } from './components/SeasonOverview'
 import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
-import { sevenRoadsSeason1 } from './data/sevenRoadsSeasons'
+import { getSevenRoadsSeason1 } from './data/sevenRoadsSeasons'
 import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
+import { getSevenRoadsCopy } from './features/publishedStories/sevenRoadsCopy'
 import { publishedStoriesConsent } from './lib/publishedStoriesConsent'
 import { authoredStoryPersistence } from './lib/authoredStoryPersistence'
 import { authoredReadingPosition } from './lib/authoredReadingPosition'
+import { sevenRoadsLanguagePreference } from './lib/sevenRoadsLanguagePreference'
 import { sevenRoadsReaderPreferences } from './lib/sevenRoadsReaderPreferences'
 import type { ReaderPreferences } from './types/qissa'
 
 type SevenRoadsView = 'shell' | 'season' | 'story' | 'settings'
 
 function App() {
-  const story = sevenRoadsSeason1.story
+  const [language, setLanguage] = useState(() => sevenRoadsLanguagePreference.load())
+  const season = useMemo(() => getSevenRoadsSeason1(language), [language])
+  const story = season.story
   if (!story) throw new Error('Published Seven Roads Season 1 must have a story package.')
+
+  const copy = getSevenRoadsCopy(language)
 
   const [consentAccepted, setConsentAccepted] = useState(
     () => Boolean(publishedStoriesConsent.load()),
@@ -31,7 +37,12 @@ function App() {
     import.meta.env.VITE_QISSA_AUTHORED_V3_PREVIEW === 'true' &&
     new URLSearchParams(window.location.search).get('authoredStory') === 'prazdnik-muzhestva'
 
-  const episodeTitles = sevenRoadsSeason1.episodes.map((episode) => episode.title)
+  const episodeTitles = season.episodes.map((episode) => episode.title)
+
+  const changeLanguage = (nextLanguage: typeof language) => {
+    setLanguage(nextLanguage)
+    sevenRoadsLanguagePreference.save(nextLanguage)
+  }
 
   if (authoredPreviewRequested) {
     return (
@@ -39,9 +50,9 @@ function App() {
         <div className="mx-auto max-w-[430px] px-4 py-5 sm:px-6">
           <AuthoredStoryPlayer
             story={story}
-            seasonNumber={sevenRoadsSeason1.number}
+            seasonNumber={season.number}
             episodeTitles={episodeTitles}
-            completionSummary="Темур и Самира стали юными бахадурами царства."
+            completionSummary={copy.completionSummary}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
               const next = { ...readerPreferences, ...patch }
@@ -63,6 +74,8 @@ function App() {
   if (!consentAccepted) {
     return (
       <PublishedStoriesWelcome
+        language={language}
+        onLanguageChange={changeLanguage}
         onComplete={() => {
           publishedStoriesConsent.accept()
           setConsentAccepted(true)
@@ -77,9 +90,9 @@ function App() {
         <div className="mx-auto max-w-[430px] px-4 py-5 sm:px-6">
           <AuthoredStoryPlayer
             story={story}
-            seasonNumber={sevenRoadsSeason1.number}
+            seasonNumber={season.number}
             episodeTitles={episodeTitles}
-            completionSummary="Темур и Самира стали юными бахадурами царства."
+            completionSummary={copy.completionSummary}
             initialEpisodeNumber={requestedEpisodeNumber ?? undefined}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
@@ -111,6 +124,8 @@ function App() {
   if (view === 'settings') {
     return (
       <SevenRoadsSettingsScreen
+        language={language}
+        onLanguageChange={changeLanguage}
         preferences={readerPreferences}
         onPreferencesChange={(patch) => {
           const next = { ...readerPreferences, ...patch }
@@ -131,7 +146,8 @@ function App() {
   if (view === 'season') {
     return (
       <SeasonOverview
-        season={sevenRoadsSeason1}
+        language={language}
+        season={season}
         onBack={() => {
           setRequestedEpisodeNumber(null)
           setView('shell')
@@ -146,6 +162,7 @@ function App() {
 
   return (
     <PublishedStoriesShell
+      language={language}
       tab={tab}
       onTab={setTab}
       onOpenSeason={() => {
