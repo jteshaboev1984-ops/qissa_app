@@ -2,6 +2,7 @@ import { Fragment, type CSSProperties, type ReactNode, useEffect, useMemo, useRe
 import { ReaderSettingsPanel } from '../../components/ReaderSettingsPanel'
 import { authoredStoryPersistence } from '../../lib/authoredStoryPersistence'
 import { authoredReadingPosition } from '../../lib/authoredReadingPosition'
+import { authoredIllustrationDiscovery } from '../../lib/authoredIllustrationDiscovery'
 import { resolveAuthoredStoryAssetUrl } from '../../data/authoredStoryAssets'
 import {
   advanceAuthoredStory,
@@ -129,18 +130,43 @@ function StoryImage({
   showPlaceholder,
   onOpen,
   showTapHint = false,
+  onSeen,
+  discoverable = true,
 }: {
   asset: AuthoredStoryImageSlot | AuthoredStoryChoiceIllustration
   alt: string
   showPlaceholder: boolean
   onOpen?: (url: string, alt: string) => void
   showTapHint?: boolean
+  onSeen?: (assetId: string) => void
+  discoverable?: boolean
 }) {
   const resolvedUrl = resolveAuthoredStoryAssetUrl(asset.asset_id, asset.runtime_url)
+  const containerRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!resolvedUrl || !discoverable || !onSeen || !containerRef.current) return
+
+    const target = containerRef.current
+    let seen = false
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0]
+        if (!entry || !entry.isIntersecting || entry.intersectionRatio < 0.25 || seen) return
+        seen = true
+        onSeen(asset.asset_id)
+        observer.disconnect()
+      },
+      { threshold: [0.25, 0.5] },
+    )
+
+    observer.observe(target)
+    return () => observer.disconnect()
+  }, [asset.asset_id, discoverable, onSeen, resolvedUrl])
 
   if (resolvedUrl) {
     return (
-      <div className="space-y-2">
+      <div ref={containerRef} className="space-y-2">
         <button
           type="button"
           className="block w-full cursor-zoom-in rounded-[1.75rem] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37] focus-visible:ring-offset-2"
@@ -177,10 +203,12 @@ const StoryBlocks = ({
   blocks,
   showMissingAssetPlaceholders,
   onOpenImage,
+  onImageSeen,
 }: {
   blocks: ReturnType<typeof buildAuthoredNarrativeBlocks>
   showMissingAssetPlaceholders: boolean
   onOpenImage: (url: string, alt: string) => void
+  onImageSeen: (assetId: string) => void
 }) => (
   <div className="space-y-5">
     {blocks.map((block, index) => {
@@ -192,6 +220,7 @@ const StoryBlocks = ({
             alt={block.slot.scene_key}
             showPlaceholder={showMissingAssetPlaceholders}
             onOpen={onOpenImage}
+            onSeen={onImageSeen}
           />
         )
       }
@@ -398,6 +427,10 @@ export function AuthoredStoryPlayer({
 
   const openImage = (url: string, alt: string) => setLightbox({ url, alt })
 
+  const markImageSeen = (assetId: string) => {
+    authoredIllustrationDiscovery.markSeen(story, assetId)
+  }
+
   const currentPartNumber = progress.current_part_index + 1
   const readerProgress = readerPartProgress(story, currentPartNumber)
   const readerEpisodeTitle = episodeTitles?.[readerProgress.current - 1] ?? part.title
@@ -567,6 +600,7 @@ export function AuthoredStoryPlayer({
             showPlaceholder={showMissingAssetPlaceholders}
             onOpen={openImage}
             showTapHint
+            discoverable={false}
           />
         ) : null}
 
@@ -592,6 +626,7 @@ export function AuthoredStoryPlayer({
           blocks={storyBlocks}
           showMissingAssetPlaceholders={showMissingAssetPlaceholders}
           onOpenImage={openImage}
+          onImageSeen={markImageSeen}
         />
       </article>
 
@@ -622,6 +657,7 @@ export function AuthoredStoryPlayer({
                     alt={choice.text}
                     showPlaceholder={showMissingAssetPlaceholders}
                     onOpen={openImage}
+                    onSeen={markImageSeen}
                   />
                   <button
                     type="button"
@@ -663,6 +699,7 @@ export function AuthoredStoryPlayer({
             alt={selectedChoice.text}
             showPlaceholder={showMissingAssetPlaceholders}
             onOpen={openImage}
+            onSeen={markImageSeen}
           />
 
           <article className={`px-1 py-1 ${readerTheme.text}`} style={readerTextStyle}>
@@ -687,6 +724,7 @@ export function AuthoredStoryPlayer({
             blocks={postChoiceBlocks}
             showMissingAssetPlaceholders={showMissingAssetPlaceholders}
             onOpenImage={openImage}
+            onImageSeen={markImageSeen}
           />
         </article>
       ) : null}
