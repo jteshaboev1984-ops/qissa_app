@@ -1,0 +1,69 @@
+import { readFileSync } from 'node:fs'
+
+const app = readFileSync('src/App.tsx', 'utf8')
+const seasons = readFileSync('src/data/sevenRoadsSeasons.ts', 'utf8')
+const shell = readFileSync('src/components/PublishedStoriesShell.tsx', 'utf8')
+const overview = readFileSync('src/components/SeasonOverview.tsx', 'utf8')
+const consent = readFileSync('src/lib/publishedStoriesConsent.ts', 'utf8')
+const welcome = readFileSync('src/components/PublishedStoriesWelcome.tsx', 'utf8')
+const player = readFileSync('src/features/authoredStory/AuthoredStoryPlayer.tsx', 'utf8')
+
+const failures = []
+const requireText = (label, source, text) => {
+  if (!source.includes(text)) failures.push(`${label} is missing: ${text}`)
+}
+const forbidText = (label, source, text) => {
+  if (source.includes(text)) failures.push(`${label} must not contain: ${text}`)
+}
+
+for (const text of [
+  'PublishedStoriesWelcome',
+  'PublishedStoriesShell',
+  'SeasonOverview',
+  'publishedStoriesConsent',
+  "type SevenRoadsView = 'shell' | 'season' | 'story'",
+]) requireText('Seven Roads App', app, text)
+
+for (const text of [
+  'storyService',
+  'OnboardingFlow',
+  'HomeScreen',
+  'LibraryScreen',
+  'ParentScreen',
+  'StoryScreen',
+  'privacyConsent',
+]) forbidText('Seven Roads App', app, text)
+
+requireText('season data', seasons, "id: 'seven-roads-season-1'")
+requireText('season data', seasons, "status: 'published'")
+requireText('season data', seasons, "id: 'seven-roads-season-2'")
+requireText('season data', seasons, "status: 'coming_soon'")
+
+const episodeMatches = seasons.match(/\{ number: [1-6], title:/gu) ?? []
+if (episodeMatches.length !== 6) {
+  failures.push(`Season 1 must expose exactly 6 reader episodes, got ${episodeMatches.length}`)
+}
+
+requireText('public shell', shell, 'Сезон 1')
+requireText('public shell', shell, 'Скоро')
+requireText('public shell', shell, 'Следующая дорога скоро откроется')
+requireText('season overview', overview, 'Серии сезона')
+requireText('season overview', overview, '6 серий')
+
+requireText('family consent', consent, 'progressStorageAccepted')
+forbidText('family consent', consent, 'aiProcessingAccepted')
+requireText('first-run flow', welcome, 'Аккаунт, email и пароль сейчас не нужны')
+requireText('first-run flow', welcome, 'прогресс чтения и решения ребёнка')
+
+requireText('reader', player, 'Серия {readerProgress.current} из {readerProgress.total}')
+requireText('reader', player, 'Сезон {seasonNumber} завершён')
+requireText('reader', player, 'Следующий сезон — скоро')
+requireText('reader', player, 'Коснитесь экрана, чтобы вернуться')
+
+if (failures.length > 0) {
+  console.error('Seven Roads product shell check failed:')
+  failures.forEach((failure) => console.error(`- ${failure}`))
+  process.exit(1)
+}
+
+console.log('Seven Roads product shell check passed.')
