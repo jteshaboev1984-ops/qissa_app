@@ -245,6 +245,10 @@ export function AuthoredStoryPlayer({
           <p className="mt-3 text-sm leading-6 text-[#625846]">
             QISSA запомнила четыре решения. В следующих сезонах они смогут влиять на то, кто первым предложит решение, что герои проверят и насколько легко Темур и Самира будут доверять друг другу.
           </p>
+          <div className="mt-4 rounded-[1.4rem] border border-dashed border-[#d8c7a9] bg-[#f8f1e4] px-4 py-3">
+            <p className="q-label mb-1">Сезон {seasonNumber + 1}</p>
+            <p className="font-bold text-[#433c30]">Следующий сезон — скоро</p>
+          </div>
           <div className="mt-5 grid gap-2.5">
             <button className="q-primary w-full" onClick={restartStory}>
               Пройти сезон заново
