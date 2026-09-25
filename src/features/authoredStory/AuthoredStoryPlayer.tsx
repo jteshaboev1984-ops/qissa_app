@@ -329,9 +329,8 @@ export function AuthoredStoryPlayer({
             {part.decision.choices.map((choice) => {
               const active = previewChoiceId === choice.choice_id
               return (
-                <button
+                <div
                   key={choice.choice_id}
-                  onClick={() => setPreviewChoiceId(choice.choice_id)}
                   className={`overflow-hidden rounded-[1.6rem] border text-left transition-all ${
                     active
                       ? 'border-[#d4af37] bg-[#fff7d8] shadow-[0_18px_40px_-28px_rgba(115,92,0,.75)]'
@@ -344,7 +343,12 @@ export function AuthoredStoryPlayer({
                     showPlaceholder={showMissingAssetPlaceholders}
                     onOpen={openImage}
                   />
-                  <div className="flex items-start gap-3 p-4">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewChoiceId(choice.choice_id)}
+                    className="flex w-full items-start gap-3 p-4 text-left"
+                    aria-pressed={active}
+                  >
                     <span className={`mt-0.5 inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border text-xs font-bold ${
                       active
                         ? 'border-[#d4af37] bg-[#d4af37] text-[#24261f]'
@@ -353,8 +357,8 @@ export function AuthoredStoryPlayer({
                       {active ? '✓' : ''}
                     </span>
                     <span className="font-bold leading-6 text-[#24261f]">{choice.text}</span>
-                  </div>
-                </button>
+                  </button>
+                </div>
               )
             })}
           </div>
