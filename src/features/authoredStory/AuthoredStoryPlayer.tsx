@@ -4,7 +4,14 @@ import { authoredStoryPersistence } from '../../lib/authoredStoryPersistence'
 import { authoredReadingPosition } from '../../lib/authoredReadingPosition'
 import { authoredIllustrationDiscovery } from '../../lib/authoredIllustrationDiscovery'
 import { resolveAuthoredStoryAssetUrl } from '../../data/authoredStoryAssets'
-import { getSevenRoadsCopy, type SevenRoadsLanguage } from '../publishedStories/sevenRoadsCopy'
+import {
+  formatSevenRoadsEpisodeCompleted,
+  formatSevenRoadsEpisodeProgress,
+  formatSevenRoadsSeasonCompleted,
+  formatSevenRoadsSeasonLabel,
+  getSevenRoadsCopy,
+  type SevenRoadsLanguage,
+} from '../publishedStories/sevenRoadsCopy'
 import {
   advanceAuthoredStory,
   buildAuthoredNarrativeBlocks,
@@ -475,10 +482,10 @@ export function AuthoredStoryPlayer({
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/32 to-[#102327]/96" />
         <div className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-end p-5">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#ead3a0]">
-            QISSA · {copy.season} {seasonNumber} · {story.title}
+            QISSA · {formatSevenRoadsSeasonLabel(language, seasonNumber)} · {story.title}
           </p>
           <h2 className="mt-2 font-serif text-3xl font-bold text-[#fff9ec]">
-            {copy.season} {seasonNumber} {copy.seasonCompleted}
+            {formatSevenRoadsSeasonCompleted(language, seasonNumber)}
           </h2>
           {completionSummary ? (
             <p className="mt-3 text-base font-semibold leading-7 text-[#f8f1e4]">
@@ -583,7 +590,7 @@ export function AuthoredStoryPlayer({
           ) : <span />}
           <div className="flex items-center gap-2">
             <span className="rounded-full border border-current/15 px-3 py-1.5 text-xs font-bold">
-              {copy.episode} {readerProgress.current} / {readerProgress.total}
+              {formatSevenRoadsEpisodeProgress(language, readerProgress.current, readerProgress.total)}
             </span>
             <button
               type="button"
@@ -767,7 +774,7 @@ export function AuthoredStoryPlayer({
           <section className="q-stone-panel space-y-4 p-5 text-center">
             <div>
               <p className="q-label mb-1">
-                {copy.episode} {readerProgress.current} {language === 'uz' ? 'yakunlandi' : 'завершена'}
+                {formatSevenRoadsEpisodeCompleted(language, readerProgress.current)}
               </p>
               <p className="text-sm leading-6 text-[#625846]">
                 {copy.episodeFinishedBody}
