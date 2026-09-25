@@ -89,14 +89,14 @@ export function PublishedStoriesShell({
   return (
     <div className="relative mx-auto min-h-[100dvh] max-w-[430px] overflow-x-hidden text-white">
       <div
-        className="fixed inset-y-0 left-1/2 -z-20 w-full max-w-[430px] -translate-x-1/2 bg-cover bg-center"
+        className="fixed inset-y-0 left-1/2 z-0 w-full max-w-[430px] -translate-x-1/2 bg-cover bg-center"
         style={{ backgroundImage: `url("${backgroundUrl}")` }}
       />
       <div
-        className={`fixed inset-y-0 left-1/2 -z-10 w-full max-w-[430px] -translate-x-1/2 ${
+        className={`fixed inset-y-0 left-1/2 z-0 w-full max-w-[430px] -translate-x-1/2 ${
           tab === 'home'
-            ? 'bg-gradient-to-b from-[#0f2528]/8 via-[#0f2528]/10 to-[#0b2226]/80'
-            : 'bg-gradient-to-b from-[#12252a]/8 via-transparent to-[#172421]/52'
+            ? 'bg-gradient-to-b from-[#0f2528]/10 via-[#0f2528]/10 to-[#0b2226]/80'
+            : 'bg-gradient-to-b from-[#12252a]/10 via-transparent to-[#172421]/50'
         }`}
       />
 
@@ -134,7 +134,7 @@ export function PublishedStoriesShell({
           <button
             type="button"
             onClick={onOpenSettings}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-black/18 text-white/95 backdrop-blur-md transition active:scale-[0.96]"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-black/20 text-white/95 backdrop-blur-md transition active:scale-[0.96]"
             aria-label="Настройки"
             title="Настройки"
           >
@@ -151,7 +151,7 @@ export function PublishedStoriesShell({
             <button
               type="button"
               onClick={homeAction.action}
-              className="w-full rounded-[1.65rem] border border-[#efd59b]/48 bg-[#102b2f]/74 p-5 text-left shadow-[0_22px_50px_-28px_rgba(0,0,0,.9)] backdrop-blur-xl transition active:scale-[0.99]"
+              className="w-full rounded-[1.65rem] border border-[#efd59b]/50 bg-[#102b2f]/75 p-5 text-left shadow-[0_22px_50px_-28px_rgba(0,0,0,.9)] backdrop-blur-xl transition active:scale-[0.99]"
             >
               <p className="text-[0.64rem] font-bold uppercase tracking-[0.14em] text-[#efd6a0]">
                 {homeAction.eyebrow}
@@ -183,8 +183,8 @@ export function PublishedStoriesShell({
               </p>
             </div>
 
-            <section className="-mx-4 min-h-[58dvh] rounded-t-[2rem] border-t border-[#ead8b7]/75 bg-[#f8efdf]/88 px-4 pb-8 pt-4 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5 sm:px-5">
-              <div className="sticky top-0 z-30 -mx-1 rounded-[1.3rem] border border-[#d7bf92]/80 bg-[#fff9ed]/92 p-1 shadow-[0_12px_32px_-28px_rgba(74,49,13,.7)] backdrop-blur-xl">
+            <section className="-mx-4 min-h-[58dvh] rounded-t-[2rem] border-t border-[#ead8b7]/75 bg-[#f8efdf]/90 px-4 pb-8 pt-4 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5 sm:px-5">
+              <div className="sticky top-0 z-30 -mx-1 rounded-[1.3rem] border border-[#d7bf92]/80 bg-[#fff9ed]/95 p-1 shadow-[0_12px_32px_-28px_rgba(74,49,13,.7)] backdrop-blur-xl">
                 <div className="grid grid-cols-2 gap-1">
                   <button
                     type="button"
@@ -231,7 +231,7 @@ export function PublishedStoriesShell({
                         loading="lazy"
                       />
                     ) : null}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/24 to-black/5" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/5" />
                     <div className="absolute inset-x-0 bottom-0 p-4">
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
@@ -255,7 +255,7 @@ export function PublishedStoriesShell({
                         className="absolute inset-0 h-full w-full object-cover"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-black/28 to-black/8" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
                       <div className="absolute inset-x-0 bottom-0 p-4">
                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
                           Сезон {futureSeason.number}
@@ -321,7 +321,7 @@ export function PublishedStoriesShell({
                           return (
                             <div
                               key={item.key}
-                              className="flex aspect-[4/3] items-center justify-center rounded-[1.2rem] border border-dashed border-[#cdb98f] bg-[#e8dcc8]/72"
+                              className="flex aspect-[4/3] items-center justify-center rounded-[1.2rem] border border-dashed border-[#cdb98f] bg-[#e8dcc8]/70"
                               aria-label="Иллюстрация ещё не открыта"
                             >
                               <div className="text-center text-[#897b64]">
@@ -346,7 +346,7 @@ export function PublishedStoriesShell({
       </div>
 
       <nav
-        className="fixed z-40 mx-auto max-w-[398px] rounded-full border border-white/25 bg-[#0f2c31]/82 p-2 shadow-[0_18px_45px_-26px_rgba(0,0,0,.8)] backdrop-blur-xl"
+        className="fixed z-40 mx-auto max-w-[398px] rounded-full border border-white/25 bg-[#0f2c31]/80 p-2 shadow-[0_18px_45px_-26px_rgba(0,0,0,.8)] backdrop-blur-xl"
         style={{
           left: 'max(1rem, env(safe-area-inset-left))',
           right: 'max(1rem, env(safe-area-inset-right))',
@@ -360,7 +360,7 @@ export function PublishedStoriesShell({
             className={`min-h-11 rounded-full px-3 py-2.5 text-xs font-bold transition ${
               tab === 'home'
                 ? 'bg-[#ecd09a] text-[#243c40]'
-                : 'text-white/82 hover:bg-white/10'
+                : 'text-white/80 hover:bg-white/10'
             }`}
             onClick={() => onTab('home')}
             aria-current={tab === 'home' ? 'page' : undefined}
@@ -372,7 +372,7 @@ export function PublishedStoriesShell({
             className={`min-h-11 rounded-full px-3 py-2.5 text-xs font-bold transition ${
               tab === 'library'
                 ? 'bg-[#ecd09a] text-[#243c40]'
-                : 'text-white/82 hover:bg-white/10'
+                : 'text-white/80 hover:bg-white/10'
             }`}
             onClick={() => onTab('library')}
             aria-current={tab === 'library' ? 'page' : undefined}
