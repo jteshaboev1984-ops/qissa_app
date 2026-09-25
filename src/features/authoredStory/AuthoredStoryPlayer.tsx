@@ -1,4 +1,5 @@
-import { Fragment, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { ReaderSettingsPanel } from '../../components/ReaderSettingsPanel'
 import { authoredStoryPersistence } from '../../lib/authoredStoryPersistence'
 import { authoredReadingPosition } from '../../lib/authoredReadingPosition'
 import { resolveAuthoredStoryAssetUrl } from '../../data/authoredStoryAssets'
@@ -18,6 +19,7 @@ import type {
   AuthoredStoryPackage,
   AuthoredStoryProgress,
 } from './types'
+import type { ReaderPreferences } from '../../types/qissa'
 
 interface AuthoredStoryPlayerProps {
   story: AuthoredStoryPackage
@@ -27,6 +29,61 @@ interface AuthoredStoryPlayerProps {
   episodeTitles?: string[]
   completionSummary?: string
   onFinishForToday?: () => void
+  readerPreferences: ReaderPreferences
+  onReaderPreferencesChange: (patch: Partial<ReaderPreferences>) => void
+}
+
+const getReaderTextStyle = (preferences: ReaderPreferences): CSSProperties => ({
+  fontSize:
+    preferences.textSize === 'small'
+      ? '1rem'
+      : preferences.textSize === 'medium'
+        ? '1.08rem'
+        : preferences.textSize === 'large'
+          ? '1.22rem'
+          : '1.36rem',
+  lineHeight:
+    preferences.lineSpacing === 'normal'
+      ? 1.62
+      : preferences.lineSpacing === 'relaxed'
+        ? 1.78
+        : 1.94,
+  fontFamily:
+    preferences.fontMode === 'soft'
+      ? 'Georgia, "Trebuchet MS", sans-serif'
+      : preferences.fontMode === 'dyslexia_friendly'
+        ? 'Verdana, Arial, sans-serif'
+        : 'Georgia, "Times New Roman", serif',
+})
+
+const getReaderTheme = (preferences: ReaderPreferences) => {
+  if (preferences.theme === 'night') {
+    return {
+      page: 'bg-[#151d25] text-[#f4ead8]',
+      toolbar: 'bg-[#151d25]/92 border-white/10',
+      text: 'text-[#f4ead8]',
+      muted: 'text-[#c9c0af]',
+      label: 'text-[#d8b972]',
+    }
+  }
+
+  if (preferences.theme === 'light') {
+    return {
+      page: 'bg-[#fffdf8] text-[#24261f]',
+      toolbar: 'bg-[#fffdf8]/94 border-[#e5dccb]',
+      text: 'text-[#24261f]',
+      muted: 'text-[#665d49]',
+      label: 'text-[#876834]',
+    }
+  }
+
+  return {
+    page: 'bg-[#f8efdf] text-[#2b2b22]',
+    toolbar: 'bg-[#f8efdf]/94 border-[#ddccb0]',
+    text: 'text-[#2b2b22]',
+    muted: 'text-[#665d49]',
+    label: 'text-[#876834]',
+  }
 }
 
 const renderInline = (text: string): ReactNode[] =>
@@ -145,6 +202,8 @@ export function AuthoredStoryPlayer({
   episodeTitles,
   completionSummary,
   onFinishForToday,
+  readerPreferences,
+  onReaderPreferencesChange,
 }: AuthoredStoryPlayerProps) {
   const initialProgress = useMemo(() => {
     const saved = authoredStoryPersistence.load(story)
@@ -155,6 +214,7 @@ export function AuthoredStoryPlayer({
   const [progress, setProgress] = useState<AuthoredStoryProgress>(initialProgress)
   const [previewChoiceId, setPreviewChoiceId] = useState<string | null>(null)
   const [lightbox, setLightbox] = useState<{ url: string; alt: string } | null>(null)
+  const [showReaderSettings, setShowReaderSettings] = useState(false)
   const topRef = useRef<HTMLDivElement | null>(null)
   const restoredPartRef = useRef<number | null>(null)
 
