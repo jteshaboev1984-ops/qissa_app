@@ -87,7 +87,7 @@
   }
 
   .q-card-soft {
-    @apply border bg-[#f5ead7]/88;
+    @apply border bg-[#f5ead7]/90;
     border-color: rgba(188, 157, 99, 0.42);
     border-radius: 1.35rem;
   }
@@ -183,7 +183,7 @@
   }
 
   .q-secondary {
-    @apply rounded-full border bg-[#fffaf0]/88 px-5 py-3 text-sm font-semibold transition hover:bg-white active:scale-[0.98];
+    @apply rounded-full border bg-[#fffaf0]/90 px-5 py-3 text-sm font-semibold transition hover:bg-white active:scale-[0.98];
     border-color: rgba(185, 148, 84, 0.52);
     color: #493d2c;
   }
