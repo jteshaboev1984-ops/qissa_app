@@ -54,21 +54,39 @@ function StoryImage({
   asset,
   alt,
   showPlaceholder,
+  onOpen,
+  showTapHint = false,
 }: {
   asset: AuthoredStoryImageSlot | AuthoredStoryChoiceIllustration
   alt: string
   showPlaceholder: boolean
+  onOpen?: (url: string, alt: string) => void
+  showTapHint?: boolean
 }) {
   const resolvedUrl = resolveAuthoredStoryAssetUrl(asset.asset_id, asset.runtime_url)
 
   if (resolvedUrl) {
     return (
-      <img
-        src={resolvedUrl}
-        alt={alt}
-        className="w-full rounded-[1.75rem] border border-[#eadfc9] object-cover shadow-[0_18px_44px_-34px_rgba(60,45,20,.65)]"
-        loading="lazy"
-      />
+      <div className="space-y-2">
+        <button
+          type="button"
+          className="block w-full cursor-zoom-in rounded-[1.75rem] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37] focus-visible:ring-offset-2"
+          onClick={() => onOpen?.(resolvedUrl, alt)}
+          aria-label={`Открыть иллюстрацию на весь экран: ${alt}`}
+        >
+          <img
+            src={resolvedUrl}
+            alt={alt}
+            className="w-full rounded-[1.75rem] border border-[#eadfc9] object-cover shadow-[0_18px_44px_-34px_rgba(60,45,20,.65)]"
+            loading="lazy"
+          />
+        </button>
+        {showTapHint ? (
+          <p className="px-2 text-center text-xs leading-5 text-[#7a705f]">
+            Нажмите на иллюстрацию, чтобы рассмотреть её на весь экран. Коснитесь экрана ещё раз, чтобы вернуться.
+          </p>
+        ) : null}
+      </div>
     )
   }
 
@@ -85,9 +103,11 @@ function StoryImage({
 const StoryBlocks = ({
   blocks,
   showMissingAssetPlaceholders,
+  onOpenImage,
 }: {
   blocks: ReturnType<typeof buildAuthoredNarrativeBlocks>
   showMissingAssetPlaceholders: boolean
+  onOpenImage: (url: string, alt: string) => void
 }) => (
   <div className="space-y-5">
     {blocks.map((block, index) => {
@@ -98,6 +118,7 @@ const StoryBlocks = ({
             asset={block.slot}
             alt={block.slot.scene_key}
             showPlaceholder={showMissingAssetPlaceholders}
+            onOpen={onOpenImage}
           />
         )
       }
@@ -124,6 +145,7 @@ export function AuthoredStoryPlayer({
 
   const [progress, setProgress] = useState<AuthoredStoryProgress>(initialProgress)
   const [previewChoiceId, setPreviewChoiceId] = useState<string | null>(null)
+  const [lightbox, setLightbox] = useState<{ url: string; alt: string } | null>(null)
   const topRef = useRef<HTMLDivElement | null>(null)
 
   const part = getCurrentAuthoredStoryPart(story, progress)
@@ -144,6 +166,23 @@ export function AuthoredStoryPlayer({
   useEffect(() => {
     setPreviewChoiceId(selectedChoice?.choice_id ?? null)
   }, [part.part_id, selectedChoice?.choice_id])
+
+  useEffect(() => {
+    if (!lightbox) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setLightbox(null)
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = previousOverflow
+    }
+  }, [lightbox])
 
   const updateProgress = (next: AuthoredStoryProgress) => {
     setProgress(next)
@@ -175,6 +214,8 @@ export function AuthoredStoryPlayer({
     setPreviewChoiceId(null)
     updateProgress(fresh)
   }
+
+  const openImage = (url: string, alt: string) => setLightbox({ url, alt })
 
   const currentPartNumber = progress.current_part_index + 1
   const readerProgress = readerPartProgress(story, currentPartNumber)
@@ -208,7 +249,26 @@ export function AuthoredStoryPlayer({
   }
 
   return (
-    <section ref={topRef} className="space-y-5 pb-10">
+    <>
+      {lightbox ? (
+        <button
+          type="button"
+          className="fixed inset-0 z-[100] flex h-[100dvh] w-screen cursor-zoom-out items-center justify-center bg-black/95 p-3 sm:p-6"
+          onClick={() => setLightbox(null)}
+          aria-label="Закрыть полноэкранную иллюстрацию"
+        >
+          <img
+            src={lightbox.url}
+            alt={lightbox.alt}
+            className="max-h-full max-w-full object-contain"
+          />
+          <span className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-4 py-2 text-xs font-semibold text-white/85">
+            Коснитесь экрана, чтобы вернуться
+          </span>
+        </button>
+      ) : null}
+
+      <section ref={topRef} className="space-y-5 pb-10">
       <header className="space-y-3">
         <div className="flex items-center justify-between gap-3">
           {onBack ? (
@@ -234,6 +294,8 @@ export function AuthoredStoryPlayer({
             }}
             alt={story.title}
             showPlaceholder={showMissingAssetPlaceholders}
+            onOpen={openImage}
+            showTapHint
           />
         ) : null}
 
@@ -254,6 +316,7 @@ export function AuthoredStoryPlayer({
         <StoryBlocks
           blocks={storyBlocks}
           showMissingAssetPlaceholders={showMissingAssetPlaceholders}
+          onOpenImage={openImage}
         />
       </article>
 
@@ -279,6 +342,7 @@ export function AuthoredStoryPlayer({
                     asset={choice.illustration}
                     alt={choice.text}
                     showPlaceholder={showMissingAssetPlaceholders}
+                    onOpen={openImage}
                   />
                   <div className="flex items-start gap-3 p-4">
                     <span className={`mt-0.5 inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border text-xs font-bold ${
@@ -314,6 +378,7 @@ export function AuthoredStoryPlayer({
             asset={selectedChoice.illustration}
             alt={selectedChoice.text}
             showPlaceholder={showMissingAssetPlaceholders}
+            onOpen={openImage}
           />
 
           <article className="q-card p-6 text-[1.12rem] leading-8 text-[#2b2b22]">
@@ -337,6 +402,7 @@ export function AuthoredStoryPlayer({
           <StoryBlocks
             blocks={postChoiceBlocks}
             showMissingAssetPlaceholders={showMissingAssetPlaceholders}
+            onOpenImage={openImage}
           />
         </article>
       ) : null}
@@ -350,6 +416,7 @@ export function AuthoredStoryPlayer({
           {part.is_final ? 'Завершить сказку' : 'Продолжить'}
         </button>
       ) : null}
-    </section>
+      </section>
+    </>
   )
 }
