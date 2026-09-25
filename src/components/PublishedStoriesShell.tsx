@@ -405,7 +405,7 @@ export function PublishedStoriesShell({
                                 onClick={() => {
                                   setExpandedGallerySeason(expanded ? null : season.number)
                                   setExpandedGalleryEpisode(null)
-                                }
+                                }}
                                 aria-expanded={expanded}
                                 aria-controls={panelId}
                               >
