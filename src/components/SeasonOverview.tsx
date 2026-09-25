@@ -31,7 +31,7 @@ export function SeasonOverview({
   return (
     <main className="mx-auto min-h-[100dvh] max-w-[430px] bg-[#efe2cb] text-[#2d332f]">
       <section
-        className="sticky top-0 z-0 flex h-[68dvh] min-h-[520px] max-h-[720px] flex-col bg-[#17383d] bg-cover bg-center text-white"
+        className="sticky top-0 z-30 flex h-[68dvh] min-h-[520px] max-h-[720px] flex-col bg-[#17383d] bg-cover bg-center text-white"
         style={coverUrl ? { backgroundImage: `url("${coverUrl}")` } : undefined}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/5 to-[#102327]/94" />
@@ -56,9 +56,6 @@ export function SeasonOverview({
             <h1 className="mt-2 font-serif text-[2.35rem] font-bold leading-[1.02] tracking-[-0.035em] text-white drop-shadow">
               {season.title}
             </h1>
-            <p className="mt-3 text-sm leading-6 text-white/88">
-              6 серий · 4 решения
-            </p>
             <button
               type="button"
               className="mt-5 w-full rounded-full border border-[#f0d7a0]/80 bg-[#ecd09a] px-5 py-4 text-sm font-extrabold text-[#263f42] shadow-[0_16px_40px_-22px_rgba(0,0,0,.9)] transition active:scale-[0.98]"
@@ -70,7 +67,7 @@ export function SeasonOverview({
         </div>
       </section>
 
-      <section className="relative z-10 -mt-6 rounded-t-[2rem] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 shadow-[0_-22px_55px_-38px_rgba(0,0,0,.55)] sm:px-5">
+      <section className="relative z-10 rounded-t-[2rem] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 sm:px-5">
         <div className="px-1">
           <p className="q-label mb-1">Путь сезона</p>
           <h2 className="q-heading text-2xl font-bold">6 серий</h2>
