@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { OnboardingFlow } from './features/onboarding/OnboardingFlow'
 import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
+import { PublishedStoriesShell } from './components/PublishedStoriesShell'
 import { applyChoiceToSeriesState, applyEpisodeToSeriesState, canStartNextSeriesSession, createInitialSeriesState, createNextSeriesSessionState, MAX_SERIES_SESSIONS, seriesSessionIndex } from './lib/memoryAgent'
 import { t } from './lib/i18n'
 import { rotateInstallationId } from './lib/installationIdentity'
@@ -488,6 +489,18 @@ function App() {
           />
         </div>
       </div>
+    )
+  }
+
+  const showLegacyGeneratedStoryUi = false
+
+  if (!showLegacyGeneratedStoryUi) {
+    return (
+      <PublishedStoriesShell
+        tab={appTab === 'library' ? 'library' : 'home'}
+        onTab={(tab) => setAppTab(tab)}
+        onOpenStory={() => setAuthoredStoryOpen(true)}
+      />
     )
   }
 

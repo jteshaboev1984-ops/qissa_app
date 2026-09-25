@@ -9,9 +9,21 @@ export function FeaturedAuthoredStoryCard({ onOpen }: { onOpen: () => void }) {
     prazdnikMuzhestvaV3.cover_illustration.runtime_url,
   )
 
+  const readerPart = progress
+    ? progress.current_part_index <= 1
+      ? 1
+      : Math.min(6, progress.current_part_index)
+    : 1
+
+  const statusLabel = progress?.completed
+    ? 'Завершена'
+    : progress && (progress.current_part_index > 0 || progress.choice_history.length > 0)
+      ? `Часть ${readerPart} из 6`
+      : 'Новая сказка'
+
   const actionLabel = progress?.completed
     ? 'Открыть сказку'
-    : progress && progress.current_part_index > 0
+    : progress && (progress.current_part_index > 0 || progress.choice_history.length > 0)
       ? 'Продолжить'
       : 'Читать сказку'
 
@@ -28,7 +40,12 @@ export function FeaturedAuthoredStoryCard({ onOpen }: { onOpen: () => void }) {
 
       <div className="space-y-4 p-5">
         <div className="space-y-2">
-          <p className="q-label">QISSA · Авторская история</p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="q-label">QISSA · Авторская история</p>
+            <span className="rounded-full bg-[#f4ead8] px-3 py-1 text-xs font-bold text-[#735c00]">
+              {statusLabel}
+            </span>
+          </div>
           <h3 className="q-heading text-2xl font-bold leading-tight">
             {prazdnikMuzhestvaV3.title}
           </h3>
