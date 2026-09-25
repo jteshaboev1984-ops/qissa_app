@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - product/seven-roads
   workflow_dispatch:
 
 permissions:
