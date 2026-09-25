@@ -288,7 +288,7 @@ export function PublishedStoriesShell({
             </div>
 
             <section className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-[2rem] border-t border-[#ead8b7]/75 bg-[#f8efdf]/90 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5">
-              <div className="relative z-30 flex-none border-b border-[#d9c49a]/60 bg-[#fff9ed]/95 px-4 pb-3 pt-4 backdrop-blur-xl sm:px-5">
+              <div className="relative z-30 flex-none bg-[#fff9ed]/95 px-4 pt-4 backdrop-blur-xl sm:px-5">
                 <div className="grid grid-cols-2 border-b border-[#d8c39a]/75">
                   <button
                     type="button"
@@ -402,7 +402,7 @@ export function PublishedStoriesShell({
                             <button
                               key={season.id}
                               type="button"
-                              className={`relative min-h-[112px] min-w-[148px] overflow-hidden rounded-[0.9rem] border px-3.5 py-3 text-left transition active:scale-[0.98] ${
+                              className={`relative min-h-[112px] min-w-[160px] overflow-hidden rounded-[0.9rem] border px-3.5 py-3 text-left transition active:scale-[0.98] ${
                                 selected
                                   ? 'border-[#1f6670] bg-[#eef5f1] shadow-[0_12px_28px_-22px_rgba(31,102,112,.7)]'
                                   : 'border-[#cfb57f] bg-[#fffaf0]/95 shadow-[0_12px_28px_-24px_rgba(74,49,13,.55)]'
@@ -430,7 +430,7 @@ export function PublishedStoriesShell({
                                     ✦
                                   </span>
                                 </div>
-                                <p className="mt-auto max-w-[120px] pt-3 font-serif text-[0.95rem] font-bold leading-[1.16] text-[#342f25]">
+                                <p className="mt-auto max-w-[136px] pt-3 font-serif text-[0.95rem] font-bold leading-[1.16] text-[#342f25]">
                                   {published ? season.title : copy.soon}
                                 </p>
                               </div>
