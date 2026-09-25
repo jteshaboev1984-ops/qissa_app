@@ -25,6 +25,7 @@ interface AuthoredStoryPlayerProps {
   seasonNumber?: number
   episodeTitles?: string[]
   completionSummary?: string
+  onFinishForToday?: () => void
 }
 
 const renderInline = (text: string): ReactNode[] =>
@@ -142,6 +143,7 @@ export function AuthoredStoryPlayer({
   seasonNumber = 1,
   episodeTitles,
   completionSummary,
+  onFinishForToday,
 }: AuthoredStoryPlayerProps) {
   const initialProgress = useMemo(() => {
     const saved = authoredStoryPersistence.load(story)
@@ -221,12 +223,26 @@ export function AuthoredStoryPlayer({
     updateProgress(fresh)
   }
 
+  const finishForToday = () => {
+    if (!onFinishForToday || !canAdvanceAuthoredStory(story, progress)) return
+    const next = advanceAuthoredStory(story, progress)
+    updateProgress(next)
+    onFinishForToday()
+  }
+
   const openImage = (url: string, alt: string) => setLightbox({ url, alt })
 
   const currentPartNumber = progress.current_part_index + 1
   const readerProgress = readerPartProgress(story, currentPartNumber)
   const readerEpisodeTitle = episodeTitles?.[readerProgress.current - 1] ?? part.title
   const canContinue = canAdvanceAuthoredStory(story, progress)
+  const nextReaderProgress =
+    !part.is_final && currentPartNumber < story.parts.length
+      ? readerPartProgress(story, currentPartNumber + 1)
+      : null
+  const isReaderEpisodeBoundary = Boolean(
+    nextReaderProgress && nextReaderProgress.current > readerProgress.current,
+  )
   const currentDecisionChoiceId = part.decision
     ? progress.selected_choices[part.decision.decision_id] ?? null
     : null
@@ -234,30 +250,35 @@ export function AuthoredStoryPlayer({
   if (progress.completed) {
     return (
       <section className="space-y-5 pb-10">
-        <div className="q-card p-6 text-center">
-          <p className="q-label mb-2">QISSA · Сезон {seasonNumber} · {story.title}</p>
-          <h2 className="q-heading text-3xl font-bold">Сезон {seasonNumber} завершён</h2>
+        <div className="q-world-panel p-6 text-center">
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#ead3a0]">QISSA · Сезон {seasonNumber} · {story.title}</p>
+          <h2 className="mt-2 font-serif text-3xl font-bold text-[#fff9ec]">Сезон {seasonNumber} завершён</h2>
           {completionSummary ? (
-            <p className="mt-3 text-base font-semibold leading-7 text-[#433c30]">
+            <p className="mt-3 text-base font-semibold leading-7 text-[#f8f1e4]">
               {completionSummary}
             </p>
           ) : null}
-          <p className="mt-3 text-sm leading-6 text-[#625846]">
+          <p className="mt-3 text-sm leading-6 text-[#eaf3f1]">
             QISSA запомнила четыре решения. В следующих сезонах они смогут влиять на то, кто первым предложит решение, что герои проверят и насколько легко Темур и Самира будут доверять друг другу.
           </p>
-          <div className="mt-4 rounded-[1.4rem] border border-dashed border-[#d8c7a9] bg-[#f8f1e4] px-4 py-3">
-            <p className="q-label mb-1">Сезон {seasonNumber + 1}</p>
-            <p className="font-bold text-[#433c30]">Следующий сезон — скоро</p>
+          <div className="mt-4 rounded-[1.4rem] border border-[#ead3a0]/35 bg-[#fff9ec]/10 px-4 py-3">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#ead3a0]">Сезон {seasonNumber + 1}</p>
+            <p className="mt-1 font-bold text-[#fff9ec]">Следующий сезон — скоро</p>
           </div>
           <div className="mt-5 grid gap-2.5">
-            <button className="q-primary w-full" onClick={restartStory}>
-              Пройти сезон заново
-            </button>
+            {onFinishForToday ? (
+              <button className="w-full rounded-full border border-[#ead3a0] bg-[#ead3a0] px-5 py-3.5 text-sm font-bold text-[#24434a]" onClick={onFinishForToday}>
+                Завершить на сегодня
+              </button>
+            ) : null}
             {onBack ? (
-              <button className="q-secondary w-full" onClick={onBack}>
+              <button className="w-full rounded-full border border-[#ead3a0]/55 bg-white/10 px-5 py-3 text-sm font-semibold text-[#fff9ec]" onClick={onBack}>
                 Вернуться к сезонам
               </button>
             ) : null}
+            <button className="w-full rounded-full px-5 py-3 text-sm font-semibold text-[#ead3a0]" onClick={restartStory}>
+              Пройти сезон заново
+            </button>
           </div>
         </div>
       </section>
@@ -292,7 +313,7 @@ export function AuthoredStoryPlayer({
               Назад
             </button>
           ) : <span />}
-          <span className="q-label rounded-full border border-[#eadfc9] bg-[#fff8e9] px-3 py-1.5">
+          <span className="q-badge">
             Серия {readerProgress.current} из {readerProgress.total}
           </span>
         </div>
@@ -320,9 +341,9 @@ export function AuthoredStoryPlayer({
           <h2 className="q-heading text-3xl font-bold leading-tight">{readerEpisodeTitle}</h2>
         </div>
 
-        <div className="h-2 overflow-hidden rounded-full bg-[#efe4cf]">
+        <div className="h-1.5 overflow-hidden rounded-full bg-[#d9c8aa]">
           <div
-            className="h-full rounded-full bg-[#d4af37] transition-all"
+            className="h-full rounded-full bg-[#1f6670] transition-all"
             style={{ width: `${(readerProgress.current / readerProgress.total) * 100}%` }}
           />
         </div>
@@ -337,7 +358,7 @@ export function AuthoredStoryPlayer({
       </article>
 
       {part.decision && !selectedChoice ? (
-        <section className="rounded-[2rem] border border-[#eadfc9] bg-[#fffdf7] p-5 shadow-[0_18px_44px_-34px_rgba(115,92,0,.65)]">
+        <section className="q-stone-panel p-5">
           <p className="q-label mb-2">Твой выбор</p>
           <h3 className="q-heading mb-2 text-2xl font-bold leading-tight">{part.decision.prompt}</h3>
           {progress.choice_history.length === 0 ? (
@@ -354,8 +375,8 @@ export function AuthoredStoryPlayer({
                   key={choice.choice_id}
                   className={`overflow-hidden rounded-[1.6rem] border text-left transition-all ${
                     active
-                      ? 'border-[#d4af37] bg-[#fff7d8] shadow-[0_18px_40px_-28px_rgba(115,92,0,.75)]'
-                      : 'border-[#eadfc9] bg-white'
+                      ? 'border-[#1f6670] bg-[#e9f2ef] shadow-[0_18px_40px_-28px_rgba(31,102,112,.55)]'
+                      : 'border-[#d8c39a] bg-[#fffaf0]'
                   }`}
                 >
                   <StoryImage
@@ -372,8 +393,8 @@ export function AuthoredStoryPlayer({
                   >
                     <span className={`mt-0.5 inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border text-xs font-bold ${
                       active
-                        ? 'border-[#d4af37] bg-[#d4af37] text-[#24261f]'
-                        : 'border-[#eadfc9] bg-white text-[#746a55]'
+                        ? 'border-[#1f6670] bg-[#1f6670] text-[#fff9ec]'
+                        : 'border-[#d8c39a] bg-[#fffaf0] text-[#746a55]'
                     }`}>
                       {active ? '✓' : ''}
                     </span>
@@ -394,8 +415,8 @@ export function AuthoredStoryPlayer({
 
       {selectedChoice && currentDecisionChoiceId ? (
         <>
-          <section className="rounded-[1.75rem] border border-[#b9d9d4] bg-[#edf8f6] p-5">
-            <p className="q-label mb-2 text-[#35666b]">QISSA запомнила выбор ✨</p>
+          <section className="rounded-[1.5rem] border border-[#9bbdb8] bg-[#e5f0ed] p-5">
+            <p className="q-label mb-2 text-[#35666b]">Выбор сохранён</p>
             <p className="font-bold leading-6 text-[#243c3b]">{selectedChoice.text}</p>
           </section>
 
@@ -433,13 +454,42 @@ export function AuthoredStoryPlayer({
       ) : null}
 
       {(!part.decision || selectedChoice) ? (
-        <button
-          className="q-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={continueStory}
-          disabled={!canContinue}
-        >
-          {part.is_final ? 'Завершить сказку' : 'Продолжить'}
-        </button>
+        isReaderEpisodeBoundary ? (
+          <section className="q-stone-panel space-y-4 p-5 text-center">
+            <div>
+              <p className="q-label mb-1">Серия {readerProgress.current} завершена</p>
+              <p className="text-sm leading-6 text-[#625846]">
+                Можно продолжить путь сейчас или остановиться здесь. Прогресс уже сохранён.
+              </p>
+            </div>
+            <div className="grid gap-2.5">
+              <button
+                className="q-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={continueStory}
+                disabled={!canContinue}
+              >
+                Следующая серия
+              </button>
+              {onFinishForToday ? (
+                <button
+                  className="q-secondary w-full disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={finishForToday}
+                  disabled={!canContinue}
+                >
+                  Завершить на сегодня
+                </button>
+              ) : null}
+            </div>
+          </section>
+        ) : (
+          <button
+            className="q-primary w-full disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={continueStory}
+            disabled={!canContinue}
+          >
+            {part.is_final ? 'Завершить сезон' : 'Продолжить'}
+          </button>
+        )
       ) : null}
       </section>
     </>
