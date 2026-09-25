@@ -497,7 +497,7 @@ export function AuthoredStoryPlayer({
           </p>
           <div className="mt-4 rounded-[1.4rem] border border-[#ead3a0]/35 bg-black/20 px-4 py-3 backdrop-blur-md">
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#ead3a0]">
-              {copy.season} {seasonNumber + 1}
+              {formatSevenRoadsSeasonLabel(language, seasonNumber + 1)}
             </p>
             <p className="mt-1 font-bold text-[#fff9ec]">{copy.nextSeasonSoon}</p>
           </div>
