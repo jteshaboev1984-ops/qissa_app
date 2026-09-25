@@ -46,3 +46,16 @@ Do not use `main` as the working branch for either product line.
 Season cards, library cards and future world cards currently use functional product scaffolding only.
 
 Final card art direction, hierarchy, motion, badges and multi-world visual system are a separate design task and must not block the season/navigation architecture.
+
+
+## 5. Release branches
+
+Repository auto-delete removes a PR head branch after merge.
+
+Therefore, **never** open the release PR to `main` directly from `product/seven-roads`.
+
+Release flow:
+1. create a temporary `release/seven-roads-...` branch from the tested `product/seven-roads` head;
+2. open the PR from that temporary release branch to `main`;
+3. let GitHub auto-delete only the temporary release branch after merge;
+4. keep `product/seven-roads` as the permanent development line.
