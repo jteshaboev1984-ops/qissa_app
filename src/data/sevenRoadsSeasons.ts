@@ -1,33 +1,71 @@
-import { prazdnikMuzhestvaV3 } from './authoredStories'
+import { prazdnikMuzhestvaV3ByLanguage } from './authoredStories'
 import type { PublishedSeason } from '../features/publishedStories/types'
+import {
+  getSevenRoadsCopy,
+  type SevenRoadsLanguage,
+} from '../features/publishedStories/sevenRoadsCopy'
 
-export const sevenRoadsSeason1: PublishedSeason = {
-  id: 'seven-roads-season-1',
-  worldId: 'seven_roads',
-  worldTitle: 'Королевство семи дорог',
-  number: 1,
-  title: 'Праздник мужества',
-  status: 'published',
-  story: prazdnikMuzhestvaV3,
-  episodes: [
-    { number: 1, title: 'Праздник мужества' },
-    { number: 2, title: 'Восточный лес' },
-    { number: 3, title: 'Дорога Самиры' },
-    { number: 4, title: 'Заран' },
-    { number: 5, title: 'Обратная дорога' },
-    { number: 6, title: 'Возвращение' },
+const episodeTitles: Record<SevenRoadsLanguage, string[]> = {
+  ru: [
+    'Праздник мужества',
+    'Восточный лес',
+    'Дорога Самиры',
+    'Заран',
+    'Обратная дорога',
+    'Возвращение',
+  ],
+  uz: [
+    'Jasorat bayrami',
+    'Sharqiy o‘rmon',
+    'Samiraning yo‘li',
+    'Zaran',
+    'Qaytish yo‘li',
+    'Qaytish',
   ],
 }
 
-export const sevenRoadsSeason2: PublishedSeason = {
+export const getSevenRoadsSeason1 = (
+  language: SevenRoadsLanguage,
+): PublishedSeason => {
+  const copy = getSevenRoadsCopy(language)
+  const story = prazdnikMuzhestvaV3ByLanguage[language]
+
+  return {
+    id: 'seven-roads-season-1',
+    worldId: 'seven_roads',
+    worldTitle: copy.worldTitle,
+    number: 1,
+    title: story.title,
+    status: 'published',
+    story,
+    episodes: episodeTitles[language].map((title, index) => ({
+      number: index + 1,
+      title,
+    })),
+  }
+}
+
+export const getSevenRoadsSeason2 = (
+  language: SevenRoadsLanguage,
+): PublishedSeason => ({
   id: 'seven-roads-season-2',
   worldId: 'seven_roads',
-  worldTitle: 'Королевство семи дорог',
+  worldTitle: getSevenRoadsCopy(language).worldTitle,
   number: 2,
   title: null,
   status: 'coming_soon',
   story: null,
   episodes: [],
-}
+})
 
-export const sevenRoadsSeasons = [sevenRoadsSeason1, sevenRoadsSeason2] as const
+export const getSevenRoadsSeasons = (
+  language: SevenRoadsLanguage,
+): PublishedSeason[] => [
+  getSevenRoadsSeason1(language),
+  getSevenRoadsSeason2(language),
+]
+
+// Russian aliases remain available for older internal checks and previews.
+export const sevenRoadsSeason1 = getSevenRoadsSeason1('ru')
+export const sevenRoadsSeason2 = getSevenRoadsSeason2('ru')
+export const sevenRoadsSeasons = getSevenRoadsSeasons('ru')

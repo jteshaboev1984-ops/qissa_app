@@ -1,27 +1,36 @@
 import { useState } from 'react'
-import { sevenRoadsSeason1, sevenRoadsSeasons } from '../data/sevenRoadsSeasons'
+import { getSevenRoadsSeason1, getSevenRoadsSeasons } from '../data/sevenRoadsSeasons'
 import { sevenRoadsUiAssets } from '../data/sevenRoadsUiAssets'
 import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import { authoredIllustrationDiscovery } from '../lib/authoredIllustrationDiscovery'
+import {
+  getSevenRoadsCopy,
+  type SevenRoadsLanguage,
+} from '../features/publishedStories/sevenRoadsCopy'
 import { sevenRoadsStory1ReadingState } from '../features/publishedStories/sevenRoadsProgress'
 
 export type PublishedStoriesTab = 'home' | 'library'
 type LibraryView = 'seasons' | 'gallery'
 
 export function PublishedStoriesShell({
+  language,
   tab,
   onTab,
   onOpenSeason,
   onContinueStory,
   onOpenSettings,
 }: {
+  language: SevenRoadsLanguage
   tab: PublishedStoriesTab
   onTab: (tab: PublishedStoriesTab) => void
   onOpenSeason: () => void
   onContinueStory: () => void
   onOpenSettings: () => void
 }) {
+  const copy = getSevenRoadsCopy(language)
+  const sevenRoadsSeason1 = getSevenRoadsSeason1(language)
+  const sevenRoadsSeasons = getSevenRoadsSeasons(language)
   const story = sevenRoadsSeason1.story
   const progress = story ? authoredStoryPersistence.load(story) : null
   const reading = sevenRoadsStory1ReadingState(progress)
@@ -55,36 +64,41 @@ export function PublishedStoriesShell({
   const homeAction = (() => {
     if (reading.state === 'new') {
       return {
-        eyebrow: 'Начать историю',
+        eyebrow: language === 'uz' ? 'Hikoyani boshlash' : 'Начать историю',
         title: sevenRoadsSeason1.title,
-        subtitle: 'Сезон 1 · серия 1',
+        subtitle:
+          language === 'uz'
+            ? `${copy.season} 1 · ${copy.episodeLower} 1`
+            : `${copy.season} 1 · ${copy.episodeLower} 1`,
         action: onOpenSeason,
       }
     }
 
     if (reading.state === 'completed') {
       return {
-        eyebrow: 'Сезон завершён',
+        eyebrow: language === 'uz' ? 'Mavsum yakunlandi' : 'Сезон завершён',
         title: sevenRoadsSeason1.title,
-        subtitle: 'Посмотреть итог',
+        subtitle: language === 'uz' ? 'Yakunini ko‘rish' : 'Посмотреть итог',
         action: onContinueStory,
       }
     }
 
     return {
-      eyebrow: 'Продолжить',
+      eyebrow: copy.continue,
       title: currentEpisodeTitle,
-      subtitle: `Сезон 1 · серия ${reading.currentEpisode} из 6`,
+      subtitle: `${copy.season} 1 · ${copy.episodeLower} ${reading.currentEpisode} / 6`,
       action: onContinueStory,
     }
   })()
 
   const seasonProgressLabel =
     reading.state === 'completed'
-      ? 'Завершён'
+      ? copy.completed
       : reading.state === 'in_progress'
-        ? `Серия ${reading.currentEpisode} из 6`
-        : 'Не начат'
+        ? `${copy.episode} ${reading.currentEpisode} / 6`
+        : language === 'uz'
+          ? 'Boshlanmagan'
+          : 'Не начат'
 
   return (
     <div className="relative mx-auto min-h-[100dvh] max-w-[430px] overflow-x-hidden text-white">
@@ -105,7 +119,7 @@ export function PublishedStoriesShell({
           type="button"
           className="fixed inset-0 z-[100] flex cursor-zoom-out items-center justify-center bg-black/95 p-3"
           onClick={() => setGalleryLightbox(null)}
-          aria-label="Закрыть иллюстрацию"
+          aria-label={language === 'uz' ? 'Illyustratsiyani yopish' : 'Закрыть иллюстрацию'}
         >
           <img
             src={galleryLightbox.url}
@@ -128,15 +142,15 @@ export function PublishedStoriesShell({
               QISSA
             </p>
             <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#efd9aa]">
-              Королевство семи дорог
+              {copy.worldTitle}
             </p>
           </div>
           <button
             type="button"
             onClick={onOpenSettings}
             className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-black/20 text-white/95 backdrop-blur-md transition active:scale-[0.96]"
-            aria-label="Настройки"
-            title="Настройки"
+            aria-label={copy.settings}
+            title={copy.settings}
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
               <circle cx="12" cy="12" r="3.1" />
@@ -173,13 +187,15 @@ export function PublishedStoriesShell({
           <>
             <div className="flex min-h-[34dvh] flex-col justify-end pb-5 pt-8">
               <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
-                Хранилище историй
+                {language === 'uz' ? 'Hikoyalar xazinasi' : 'Хранилище историй'}
               </p>
               <h1 className="mt-1 font-serif text-[2.45rem] font-bold leading-none text-[#fffaf0] drop-shadow">
-                Библиотека
+                {copy.library}
               </h1>
               <p className="mt-3 max-w-[350px] text-sm leading-6 text-[#f4ecdf]">
-                Истории, сезоны и иллюстрации твоего пути.
+                {language === 'uz'
+                  ? 'Sening yo‘lingdagi hikoyalar, mavsumlar va illyustratsiyalar.'
+                  : 'Истории, сезоны и иллюстрации твоего пути.'}
               </p>
             </div>
 
@@ -195,7 +211,7 @@ export function PublishedStoriesShell({
                     }`}
                     onClick={() => setLibraryView('seasons')}
                   >
-                    Сезоны
+                    {copy.seasons}
                   </button>
                   <button
                     type="button"
@@ -206,7 +222,7 @@ export function PublishedStoriesShell({
                     }`}
                     onClick={() => setLibraryView('gallery')}
                   >
-                    Галерея
+                    {language === 'uz' ? 'Galereya' : 'Галерея'}
                   </button>
                 </div>
               </div>
@@ -214,8 +230,8 @@ export function PublishedStoriesShell({
               {libraryView === 'seasons' ? (
                 <div className="mt-5 space-y-3">
                   <div className="px-1">
-                    <p className="q-label">Королевство семи дорог</p>
-                    <h2 className="q-heading mt-1 text-2xl font-bold">Сезоны</h2>
+                    <p className="q-label">{copy.worldTitle}</p>
+                    <h2 className="q-heading mt-1 text-2xl font-bold">{copy.seasons}</h2>
                   </div>
 
                   <button
@@ -235,7 +251,7 @@ export function PublishedStoriesShell({
                     <div className="absolute inset-x-0 bottom-0 p-4">
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                          Сезон 1
+                          {copy.season} 1
                         </p>
                         <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
                           {seasonProgressLabel}
@@ -258,9 +274,9 @@ export function PublishedStoriesShell({
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
                       <div className="absolute inset-x-0 bottom-0 p-4">
                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                          Сезон {futureSeason.number}
+                          {copy.season} {futureSeason.number}
                         </p>
-                        <h3 className="mt-1 font-serif text-2xl font-bold text-white">Скоро</h3>
+                        <h3 className="mt-1 font-serif text-2xl font-bold text-white">{copy.soon}</h3>
                       </div>
                     </div>
                   ) : null}
@@ -269,11 +285,15 @@ export function PublishedStoriesShell({
                 <div className="mt-5 space-y-6">
                   <div className="flex items-end justify-between gap-4 px-1">
                     <div>
-                      <p className="q-label">Открыто по мере чтения</p>
-                      <h2 className="q-heading mt-1 text-2xl font-bold">Галерея</h2>
+                      <p className="q-label">
+                        {language === 'uz' ? 'O‘qish davomida ochiladi' : 'Открыто по мере чтения'}
+                      </p>
+                      <h2 className="q-heading mt-1 text-2xl font-bold">
+                        {language === 'uz' ? 'Galereya' : 'Галерея'}
+                      </h2>
                     </div>
                     <p className="text-xs font-bold text-[#756a56]">
-                      {unlockedGalleryItems} из {totalGalleryItems}
+                      {unlockedGalleryItems} / {totalGalleryItems}
                     </p>
                   </div>
 
@@ -282,14 +302,14 @@ export function PublishedStoriesShell({
                       <div className="mb-2.5 flex items-end justify-between gap-3 px-1">
                         <div>
                           <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
-                            Серия {episode.episodeNumber}
+                            {copy.episode} {episode.episodeNumber}
                           </p>
                           <h3 className="font-serif text-lg font-bold leading-tight text-[#2d332f]">
                             {episode.title}
                           </h3>
                         </div>
                         <p className="text-xs font-semibold text-[#756a56]">
-                          {episode.unlockedCount} из {episode.items.length}
+                          {episode.unlockedCount} / {episode.items.length}
                         </p>
                       </div>
 
@@ -322,14 +342,18 @@ export function PublishedStoriesShell({
                             <div
                               key={item.key}
                               className="flex aspect-[4/3] items-center justify-center rounded-[1.2rem] border border-dashed border-[#cdb98f] bg-[#e8dcc8]/70"
-                              aria-label="Иллюстрация ещё не открыта"
+                              aria-label={
+                                language === 'uz'
+                                  ? 'Illyustratsiya hali ochilmagan'
+                                  : 'Иллюстрация ещё не открыта'
+                              }
                             >
                               <div className="text-center text-[#897b64]">
                                 <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full border border-[#bca77d] bg-[#f4ead7]/75 text-base">
                                   ◇
                                 </div>
                                 <p className="mt-2 text-[0.62rem] font-bold uppercase tracking-[0.08em]">
-                                  Не открыто
+                                  {language === 'uz' ? 'Ochilmagan' : 'Не открыто'}
                                 </p>
                               </div>
                             </div>
@@ -365,7 +389,7 @@ export function PublishedStoriesShell({
             onClick={() => onTab('home')}
             aria-current={tab === 'home' ? 'page' : undefined}
           >
-            Главная
+            {copy.home}
           </button>
           <button
             type="button"
@@ -377,7 +401,7 @@ export function PublishedStoriesShell({
             onClick={() => onTab('library')}
             aria-current={tab === 'library' ? 'page' : undefined}
           >
-            Библиотека
+            {copy.library}
           </button>
         </div>
       </nav>

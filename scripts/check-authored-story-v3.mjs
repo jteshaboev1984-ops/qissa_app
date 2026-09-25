@@ -4,6 +4,7 @@ import path from 'node:path'
 const root = process.cwd()
 const docsFixturePath = path.join(root, 'docs/qissa/ai/fixtures/prazdnik_muzhestva_interactive_v3.ru.json')
 const runtimeFixturePath = path.join(root, 'src/data/authored/prazdnikMuzhestvaV3.ru.json')
+const uzOverlayPath = path.join(root, 'src/data/authored/prazdnikMuzhestvaV3.uz.json')
 const v2Path = path.join(root, 'docs/qissa/ai/reviews/2026-09-23_prazdnik_muzhestva_working_v2.md')
 const assetRegistryPath = path.join(root, 'src/data/authoredStoryAssets.ts')
 
@@ -15,6 +16,7 @@ const fail = (message) => {
 
 const docsStory = readJson(docsFixturePath)
 const runtimeStory = readJson(runtimeFixturePath)
+const uzOverlay = readJson(uzOverlayPath)
 
 if (JSON.stringify(docsStory) !== JSON.stringify(runtimeStory)) {
   fail('runtime authored story package drifted from the approved docs fixture')
@@ -77,6 +79,127 @@ if (bahadurImageSlot?.after_text !== 'Так Темур и Самира стал
 
 const paragraphsOf = (text) =>
   text.split(/\n\n+/).map((paragraph) => paragraph.trim()).filter(Boolean)
+
+if (uzOverlay.story_id !== story.story_id) fail('Uzbek overlay story_id must match Russian canon')
+if (uzOverlay.story_version !== story.story_version) fail('Uzbek overlay story_version must match Russian canon')
+if (uzOverlay.language !== 'uz') fail('Uzbek overlay language must be uz')
+if (uzOverlay.title !== 'Jasorat bayrami') fail('Uzbek Season 1 title must be Jasorat bayrami')
+if (uzOverlay.parts?.length !== story.parts.length) {
+  fail(`Uzbek overlay must contain ${story.parts.length} parts, got ${uzOverlay.parts?.length ?? 0}`)
+}
+
+const localizedCorpus = []
+
+for (const basePart of story.parts) {
+  const localizedPart = uzOverlay.parts?.find((part) => part.part_id === basePart.part_id)
+  if (!localizedPart) {
+    fail(`Uzbek overlay missing part ${basePart.part_id}`)
+    continue
+  }
+
+  for (const [field, value] of [
+    ['title', localizedPart.title],
+    ['story_text', localizedPart.story_text],
+  ]) {
+    if (typeof value !== 'string' || !value.trim()) {
+      fail(`${basePart.part_id}: Uzbek ${field} is empty`)
+    }
+  }
+
+  localizedCorpus.push(
+    localizedPart.title,
+    localizedPart.story_text,
+    localizedPart.post_choice_text ?? '',
+  )
+
+  const expectedAnchorIds = new Set((basePart.image_slots ?? []).map((slot) => slot.slot_id))
+  const localizedAnchorIds = new Set(Object.keys(localizedPart.image_anchor_texts ?? {}))
+
+  for (const slotId of expectedAnchorIds) {
+    if (!localizedAnchorIds.has(slotId)) {
+      fail(`${basePart.part_id}: Uzbek overlay missing image anchor ${slotId}`)
+    }
+  }
+  for (const slotId of localizedAnchorIds) {
+    if (!expectedAnchorIds.has(slotId)) {
+      fail(`${basePart.part_id}: Uzbek overlay has unknown image anchor ${slotId}`)
+    }
+  }
+
+  for (const slot of basePart.image_slots ?? []) {
+    const anchor = localizedPart.image_anchor_texts?.[slot.slot_id]
+    if (!anchor) continue
+    const phaseText =
+      slot.phase === 'story_text'
+        ? localizedPart.story_text
+        : localizedPart.post_choice_text ?? ''
+    const count = paragraphsOf(phaseText).filter((paragraph) => paragraph === anchor.trim()).length
+    if (count !== 1) {
+      fail(`${slot.slot_id}: Uzbek image anchor must occur once in ${slot.phase}, got ${count}`)
+    }
+  }
+
+  if (!basePart.decision) {
+    if (localizedPart.decision) {
+      fail(`${basePart.part_id}: Uzbek overlay must not invent a decision`)
+    }
+    continue
+  }
+
+  if (localizedPart.decision?.decision_id !== basePart.decision.decision_id) {
+    fail(`${basePart.part_id}: Uzbek decision id mismatch`)
+    continue
+  }
+
+  localizedCorpus.push(localizedPart.decision.prompt ?? '')
+
+  for (const baseChoice of basePart.decision.choices) {
+    const localizedChoice = localizedPart.decision.choices?.find(
+      (choice) => choice.choice_id === baseChoice.choice_id,
+    )
+    if (!localizedChoice) {
+      fail(`${basePart.part_id}: Uzbek overlay missing choice ${baseChoice.choice_id}`)
+      continue
+    }
+
+    for (const [field, value] of [
+      ['text', localizedChoice.text],
+      ['effect_summary', localizedChoice.effect_summary],
+      ['resolution_text', localizedChoice.resolution_text],
+      ['last_event', localizedChoice.last_event],
+    ]) {
+      if (typeof value !== 'string' || !value.trim()) {
+        fail(`${baseChoice.choice_id}: Uzbek ${field} is empty`)
+      } else {
+        localizedCorpus.push(value)
+      }
+    }
+  }
+}
+
+const uzText = localizedCorpus.join('\n\n')
+if (/[А-Яа-яЁё]/u.test(uzText)) {
+  fail('Uzbek authored text contains Cyrillic characters')
+}
+
+for (const term of [
+  'Yetti yo‘l qirolligi',
+  'Jasorat bayrami',
+  'Temur',
+  'Samira',
+  'Aras',
+  'Sarvan',
+  'Zaran',
+  'Shamol',
+  'Bulut',
+  'bahodir',
+]) {
+  if (!uzText.includes(term)) fail(`Uzbek authored text is missing canonical term: ${term}`)
+}
+
+if (!uzText.includes('Shu tariqa Temur va Samira qirollikning yosh bahodirlariga aylanishdi.')) {
+  fail('Uzbek authored text is missing the approved bahodir ceremony ending')
+}
 
 for (const part of story.parts) {
   const phases = {
@@ -185,4 +308,5 @@ if (!process.exitCode) {
   console.log(`[authored-v3] ${assetIds.length} assets · ${sharedSlots.length} shared · ${choiceArts.length} choice images`)
   console.log('[authored-v3] asset registry is complete and bahadur ceremony canon is current')
   console.log('[authored-v3] baseline reconstructs V2 and all image anchors are exact')
+  console.log('[authored-v3] Uzbek localization preserves part/choice ids and exact image anchors')
 }

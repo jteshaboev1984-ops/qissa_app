@@ -1,19 +1,30 @@
 import { useState } from 'react'
 import { ReaderSettingsPanel } from './ReaderSettingsPanel'
+import {
+  getSevenRoadsCopy,
+  sevenRoadsLanguageName,
+  sevenRoadsLanguages,
+  type SevenRoadsLanguage,
+} from '../features/publishedStories/sevenRoadsCopy'
 import type { ReaderPreferences } from '../types/qissa'
 
 export function SevenRoadsSettingsScreen({
+  language,
+  onLanguageChange,
   preferences,
   onPreferencesChange,
   onBack,
   onResetSeason,
 }: {
+  language: SevenRoadsLanguage
+  onLanguageChange: (language: SevenRoadsLanguage) => void
   preferences: ReaderPreferences
   onPreferencesChange: (patch: Partial<ReaderPreferences>) => void
   onBack: () => void
   onResetSeason: () => void
 }) {
   const [confirmReset, setConfirmReset] = useState(false)
+  const copy = getSevenRoadsCopy(language)
 
   return (
     <main className="mx-auto min-h-[100dvh] max-w-[430px] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] text-[#2d332f] sm:px-5">
@@ -23,28 +34,54 @@ export function SevenRoadsSettingsScreen({
           className="q-secondary px-4 py-2.5 text-xs"
           onClick={onBack}
         >
-          ← Назад
+          ← {copy.back}
         </button>
         <p className="q-label">QISSA</p>
       </header>
 
       <section>
-        <p className="q-label mb-2">Для взрослого</p>
-        <h1 className="q-heading text-3xl font-bold leading-tight">Настройки</h1>
+        <p className="q-label mb-2">{copy.adultLabel}</p>
+        <h1 className="q-heading text-3xl font-bold leading-tight">{copy.settings}</h1>
         <p className="mt-2 text-sm leading-6 text-[#675e4f]">
-          Здесь меняется только комфорт чтения и локальный прогресс. Сюжет и сохранённые решения не меняются без отдельного подтверждения.
+          {copy.settingsIntro}
         </p>
       </section>
 
       <section className="mt-5 q-card p-4">
-        <div className="mb-4">
-          <p className="q-label mb-1">Чтение</p>
+        <div>
+          <p className="q-label mb-1">{copy.storyLanguage}</p>
           <p className="text-sm leading-6 text-[#675e4f]">
-            Эти параметры применяются ко всем сериям Seven Roads на этом устройстве.
+            {copy.storyLanguageHint}
+          </p>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          {sevenRoadsLanguages.map((option) => (
+            <button
+              key={option}
+              type="button"
+              className={`rounded-full border px-4 py-3 text-sm font-bold transition active:scale-[0.98] ${
+                language === option
+                  ? 'border-[#1f6670] bg-[#1f6670] text-white'
+                  : 'border-[#d8c39a] bg-white/80 text-[#5f5848]'
+              }`}
+              onClick={() => onLanguageChange(option)}
+              aria-pressed={language === option}
+            >
+              {sevenRoadsLanguageName[option]}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-4 q-card p-4">
+        <div className="mb-4">
+          <p className="q-label mb-1">{copy.reading}</p>
+          <p className="text-sm leading-6 text-[#675e4f]">
+            {copy.readingHint}
           </p>
         </div>
         <ReaderSettingsPanel
-          language="ru"
+          language={language}
           preferences={preferences}
           onChange={onPreferencesChange}
           onClose={() => {}}
@@ -53,18 +90,18 @@ export function SevenRoadsSettingsScreen({
       </section>
 
       <section className="mt-4 q-card p-5">
-        <p className="q-label mb-2">Данные на устройстве</p>
-        <h2 className="q-heading text-2xl font-bold">Прогресс и решения</h2>
+        <p className="q-label mb-2">{copy.deviceData}</p>
+        <h2 className="q-heading text-2xl font-bold">{copy.progressAndChoices}</h2>
         <p className="mt-2 text-sm leading-6 text-[#675e4f]">
-          Сейчас QISSA хранит прогресс чтения, позицию в тексте и выборы локально на этом устройстве. Аккаунт и облачная синхронизация пока не используются.
+          {copy.deviceDataBody}
         </p>
       </section>
 
       <section className="mt-4 rounded-[1.5rem] border border-[#d8b9a9] bg-[#fff7f1] p-5">
-        <p className="q-label mb-2 text-[#8a5a44]">Сезон 1</p>
-        <h2 className="q-heading text-2xl font-bold">Начать сезон заново</h2>
+        <p className="q-label mb-2 text-[#8a5a44]">{copy.season} 1</p>
+        <h2 className="q-heading text-2xl font-bold">{copy.restartSeason}</h2>
         <p className="mt-2 text-sm leading-6 text-[#75594a]">
-          Это удалит текущий прогресс чтения и четыре сделанных выбора для первого сезона на этом устройстве.
+          {copy.restartSeasonBody}
         </p>
 
         {confirmReset ? (
@@ -74,14 +111,14 @@ export function SevenRoadsSettingsScreen({
               className="rounded-full bg-[#a64d3e] px-5 py-3 text-sm font-bold text-white"
               onClick={onResetSeason}
             >
-              Да, начать заново
+              {copy.restartConfirm}
             </button>
             <button
               type="button"
               className="q-secondary w-full"
               onClick={() => setConfirmReset(false)}
             >
-              Отмена
+              {copy.cancel}
             </button>
           </div>
         ) : (
@@ -90,7 +127,7 @@ export function SevenRoadsSettingsScreen({
             className="mt-4 rounded-full border border-[#b97765] px-5 py-3 text-sm font-bold text-[#974936]"
             onClick={() => setConfirmReset(true)}
           >
-            Сбросить прогресс сезона
+            {copy.resetSeason}
           </button>
         )}
       </section>
