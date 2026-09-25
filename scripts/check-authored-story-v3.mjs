@@ -201,6 +201,32 @@ if (!uzText.includes('Shu tariqa Temur va Samira qirollikning yosh bahodirlariga
   fail('Uzbek authored text is missing the approved bahodir ceremony ending')
 }
 
+const forbiddenUzbekProofreadPhrases = [
+  'tuyqlar',
+  'tuyog‘ tovushlari',
+  'ranggi',
+  'Tosh belgini kitobdan tekshirish',
+  'Butun turgan qizil muhr',
+  'butun muhr bilan',
+  'ajratuvchi belgisi',
+  'boshini yo‘qotmaslik',
+  'Men buning uchun ketayotganim yo‘q edi',
+]
+
+for (const phrase of forbiddenUzbekProofreadPhrases) {
+  if (uzText.includes(phrase)) fail(`Uzbek proofread regression remains: ${phrase}`)
+}
+
+for (const phrase of [
+  'tuyoq tovushlari',
+  'tuyoqlar',
+  'Toshdagi belgini kitobdan tekshirish',
+  'toshlarning iliq asal rangi',
+  'o‘zingni yo‘qotmaslik kerak',
+]) {
+  if (!uzText.includes(phrase)) fail(`Uzbek proofread canonical phrase is missing: ${phrase}`)
+}
+
 for (const part of story.parts) {
   const phases = {
     story_text: paragraphsOf(part.story_text),
