@@ -22,6 +22,9 @@ interface AuthoredStoryPlayerProps {
   story: AuthoredStoryPackage
   onBack?: () => void
   showMissingAssetPlaceholders?: boolean
+  seasonNumber?: number
+  episodeTitles?: string[]
+  completionSummary?: string
 }
 
 const renderInline = (text: string): ReactNode[] =>
@@ -136,6 +139,9 @@ export function AuthoredStoryPlayer({
   story,
   onBack,
   showMissingAssetPlaceholders = false,
+  seasonNumber = 1,
+  episodeTitles,
+  completionSummary,
 }: AuthoredStoryPlayerProps) {
   const initialProgress = useMemo(() => {
     const saved = authoredStoryPersistence.load(story)
@@ -219,6 +225,7 @@ export function AuthoredStoryPlayer({
 
   const currentPartNumber = progress.current_part_index + 1
   const readerProgress = readerPartProgress(story, currentPartNumber)
+  const readerEpisodeTitle = episodeTitles?.[readerProgress.current - 1] ?? part.title
   const canContinue = canAdvanceAuthoredStory(story, progress)
   const currentDecisionChoiceId = part.decision
     ? progress.selected_choices[part.decision.decision_id] ?? null
@@ -228,18 +235,27 @@ export function AuthoredStoryPlayer({
     return (
       <section className="space-y-5 pb-10">
         <div className="q-card p-6 text-center">
-          <p className="q-label mb-2">QISSA · {story.title}</p>
-          <h2 className="q-heading text-3xl font-bold">Сказка завершена</h2>
+          <p className="q-label mb-2">QISSA · Сезон {seasonNumber} · {story.title}</p>
+          <h2 className="q-heading text-3xl font-bold">Сезон {seasonNumber} завершён</h2>
+          {completionSummary ? (
+            <p className="mt-3 text-base font-semibold leading-7 text-[#433c30]">
+              {completionSummary}
+            </p>
+          ) : null}
           <p className="mt-3 text-sm leading-6 text-[#625846]">
-            QISSA запомнила четыре решения. В следующих историях они смогут влиять на то, кто первым предложит решение, что герои проверят и насколько легко Темур и Самира будут доверять друг другу.
+            QISSA запомнила четыре решения. В следующих сезонах они смогут влиять на то, кто первым предложит решение, что герои проверят и насколько легко Темур и Самира будут доверять друг другу.
           </p>
+          <div className="mt-4 rounded-[1.4rem] border border-dashed border-[#d8c7a9] bg-[#f8f1e4] px-4 py-3">
+            <p className="q-label mb-1">Сезон {seasonNumber + 1}</p>
+            <p className="font-bold text-[#433c30]">Следующий сезон — скоро</p>
+          </div>
           <div className="mt-5 grid gap-2.5">
             <button className="q-primary w-full" onClick={restartStory}>
-              Прочитать заново
+              Пройти сезон заново
             </button>
             {onBack ? (
               <button className="q-secondary w-full" onClick={onBack}>
-                Вернуться
+                Вернуться к сезонам
               </button>
             ) : null}
           </div>
@@ -277,7 +293,7 @@ export function AuthoredStoryPlayer({
             </button>
           ) : <span />}
           <span className="q-label rounded-full border border-[#eadfc9] bg-[#fff8e9] px-3 py-1.5">
-            Часть {readerProgress.current} из {readerProgress.total}
+            Серия {readerProgress.current} из {readerProgress.total}
           </span>
         </div>
 
@@ -301,7 +317,7 @@ export function AuthoredStoryPlayer({
 
         <div>
           <p className="q-label mb-1">{story.title}</p>
-          <h2 className="q-heading text-3xl font-bold leading-tight">{part.title}</h2>
+          <h2 className="q-heading text-3xl font-bold leading-tight">{readerEpisodeTitle}</h2>
         </div>
 
         <div className="h-2 overflow-hidden rounded-full bg-[#efe4cf]">
