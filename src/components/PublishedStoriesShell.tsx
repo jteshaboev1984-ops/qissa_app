@@ -112,11 +112,12 @@ export function PublishedStoriesShell({
                   Сезоны
                 </p>
 
-                <div className="mt-2 grid grid-cols-[1.2fr_.8fr] gap-2.5">
+                <div className="mt-2 rounded-[1.65rem] border border-[#efd59b]/40 bg-black/15 p-2.5 shadow-[0_20px_50px_-32px_rgba(0,0,0,.9)] backdrop-blur-[2px]">
+                  <div className="grid grid-cols-[1.2fr_.8fr] gap-2.5">
                   <button
                     type="button"
                     onClick={onOpenSeason}
-                    className="relative min-h-44 overflow-hidden rounded-[1.45rem] border border-white/20 bg-[#17383d] text-left shadow-[0_20px_45px_-30px_rgba(0,0,0,.9)] active:scale-[0.99]"
+                    className="relative min-h-44 overflow-hidden rounded-[1.45rem] border border-[#efd59b]/90 bg-[#17383d] text-left shadow-[0_0_0_1px_rgba(239,213,155,.18),0_20px_45px_-25px_rgba(236,208,154,.55)] transition active:scale-[0.99]"
                   >
                     {seasonCover ? (
                       <img
@@ -128,13 +129,10 @@ export function PublishedStoriesShell({
                     ) : null}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/28 to-black/5" />
                     <div className="absolute inset-x-0 bottom-0 p-3.5">
-                      <div className="mb-1 flex items-center justify-between gap-2">
+                      <div className="mb-1">
                         <p className="text-[0.61rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
                           Сезон 1
                         </p>
-                        <span className="rounded-full bg-black/35 px-2 py-1 text-[0.56rem] font-bold text-white/90 backdrop-blur">
-                          {seasonStatus}
-                        </span>
                       </div>
                       <h2 className="font-serif text-lg font-bold leading-tight text-white">
                         {sevenRoadsSeason1.title}
@@ -162,6 +160,7 @@ export function PublishedStoriesShell({
                       </div>
                     </div>
                   ) : null}
+                  </div>
                 </div>
               </div>
             </section>

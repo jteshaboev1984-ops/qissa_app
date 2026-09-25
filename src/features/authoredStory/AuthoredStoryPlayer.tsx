@@ -29,6 +29,7 @@ interface AuthoredStoryPlayerProps {
   episodeTitles?: string[]
   completionSummary?: string
   onFinishForToday?: () => void
+  initialEpisodeNumber?: number
   readerPreferences: ReaderPreferences
   onReaderPreferencesChange: (patch: Partial<ReaderPreferences>) => void
 }
@@ -110,6 +111,16 @@ const readerPartProgress = (
   }
 
   return { current: internalPartNumber, total: story.parts.length }
+}
+
+const firstPartIndexForEpisode = (
+  story: AuthoredStoryPackage,
+  episodeNumber: number,
+): number | null => {
+  for (let index = 0; index < story.parts.length; index += 1) {
+    if (readerPartProgress(story, index + 1).current === episodeNumber) return index
+  }
+  return null
 }
 
 function StoryImage({
@@ -202,14 +213,44 @@ export function AuthoredStoryPlayer({
   episodeTitles,
   completionSummary,
   onFinishForToday,
+  initialEpisodeNumber,
   readerPreferences,
   onReaderPreferencesChange,
 }: AuthoredStoryPlayerProps) {
-  const initialProgress = useMemo(() => {
+  const persistedProgress = useMemo(() => {
     const saved = authoredStoryPersistence.load(story)
     if (saved && saved.current_part_index < story.parts.length) return saved
     return createInitialAuthoredStoryProgress(story)
   }, [story])
+
+  const requestedPartIndex = useMemo(
+    () =>
+      initialEpisodeNumber == null
+        ? null
+        : firstPartIndexForEpisode(story, initialEpisodeNumber),
+    [story, initialEpisodeNumber],
+  )
+
+  const persistedEpisode = readerPartProgress(
+    story,
+    persistedProgress.current_part_index + 1,
+  ).current
+
+  const historicalReplay = Boolean(
+    initialEpisodeNumber != null &&
+      requestedPartIndex != null &&
+      (persistedProgress.completed || initialEpisodeNumber < persistedEpisode),
+  )
+
+  const initialProgress = useMemo<AuthoredStoryProgress>(() => {
+    if (!historicalReplay || requestedPartIndex == null) return persistedProgress
+    return {
+      ...persistedProgress,
+      current_part_index: requestedPartIndex,
+      completed: false,
+      updated_at: new Date().toISOString(),
+    }
+  }, [historicalReplay, persistedProgress, requestedPartIndex])
 
   const [progress, setProgress] = useState<AuthoredStoryProgress>(initialProgress)
   const [previewChoiceId, setPreviewChoiceId] = useState<string | null>(null)
@@ -230,10 +271,13 @@ export function AuthoredStoryPlayer({
   )
 
   useEffect(() => {
+    if (historicalReplay) return
     authoredStoryPersistence.save(story, progress)
-  }, [story, progress])
+  }, [story, progress, historicalReplay])
 
   useEffect(() => {
+    if (historicalReplay) return
+
     const saved = authoredReadingPosition.load(story)
     if (!saved || saved.part_index !== progress.current_part_index) return
     if (restoredPartRef.current === progress.current_part_index) return
@@ -250,9 +294,11 @@ export function AuthoredStoryPlayer({
 
     const retry = window.setTimeout(restore, 350)
     return () => window.clearTimeout(retry)
-  }, [story, progress.current_part_index])
+  }, [story, progress.current_part_index, historicalReplay])
 
   useEffect(() => {
+    if (historicalReplay) return
+
     let frame = 0
 
     const persistPosition = () => {
@@ -276,7 +322,7 @@ export function AuthoredStoryPlayer({
       if (frame) window.cancelAnimationFrame(frame)
       persistPosition()
     }
-  }, [story, progress.current_part_index])
+  }, [story, progress.current_part_index, historicalReplay])
 
   useEffect(() => {
     setPreviewChoiceId(selectedChoice?.choice_id ?? null)
@@ -301,7 +347,7 @@ export function AuthoredStoryPlayer({
 
   const updateProgress = (next: AuthoredStoryProgress) => {
     setProgress(next)
-    authoredStoryPersistence.save(story, next)
+    if (!historicalReplay) authoredStoryPersistence.save(story, next)
   }
 
   const confirmChoice = () => {
@@ -314,7 +360,7 @@ export function AuthoredStoryPlayer({
   const continueStory = () => {
     if (!canAdvanceAuthoredStory(story, progress)) return
     const next = advanceAuthoredStory(story, progress)
-    authoredReadingPosition.clear(story)
+    if (!historicalReplay) authoredReadingPosition.clear(story)
     restoredPartRef.current = null
     updateProgress(next)
 
@@ -344,7 +390,9 @@ export function AuthoredStoryPlayer({
   }
 
   const closeReader = () => {
-    authoredReadingPosition.save(story, progress.current_part_index, window.scrollY)
+    if (!historicalReplay) {
+      authoredReadingPosition.save(story, progress.current_part_index, window.scrollY)
+    }
     onBack?.()
   }
 
@@ -366,6 +414,7 @@ export function AuthoredStoryPlayer({
     : null
   const readerTheme = getReaderTheme(readerPreferences)
   const readerTextStyle = getReaderTextStyle(readerPreferences)
+  const replayEpisodeEnd = historicalReplay && (isReaderEpisodeBoundary || part.is_final)
 
   if (progress.completed) {
     const completionCoverUrl = resolveAuthoredStoryAssetUrl(
@@ -476,9 +525,8 @@ export function AuthoredStoryPlayer({
         ref={topRef}
         className={`min-h-[100dvh] space-y-5 pb-10 transition-colors ${readerTheme.page}`}
       >
-      <header className="space-y-3">
         <div
-          className={`sticky top-0 z-30 -mx-2 flex items-center justify-between gap-2 border-b px-2 py-2 backdrop-blur-xl ${readerTheme.toolbar}`}
+          className={`sticky top-0 z-40 -mx-2 flex items-center justify-between gap-2 border-b px-2 py-2 backdrop-blur-xl ${readerTheme.toolbar}`}
         >
           {onBack ? (
             <button
@@ -503,6 +551,7 @@ export function AuthoredStoryPlayer({
           </div>
         </div>
 
+      <header className="space-y-3">
         {currentPartNumber === 1 ? (
           <StoryImage
             asset={{
@@ -643,7 +692,21 @@ export function AuthoredStoryPlayer({
       ) : null}
 
       {(!part.decision || selectedChoice) ? (
-        isReaderEpisodeBoundary ? (
+        replayEpisodeEnd ? (
+          <section className="q-stone-panel space-y-4 p-5 text-center">
+            <div>
+              <p className="q-label mb-1">Пройденная серия</p>
+              <p className="text-sm leading-6 text-[#625846]">
+                Вы открыли эту серию повторно. Текущий прогресс сезона и сохранённые решения не изменились.
+              </p>
+            </div>
+            {onBack ? (
+              <button className="q-primary w-full" onClick={onBack}>
+                Вернуться к пути сезона
+              </button>
+            ) : null}
+          </section>
+        ) : isReaderEpisodeBoundary ? (
           <section className="q-stone-panel space-y-4 p-5 text-center">
             <div>
               <p className="q-label mb-1">Серия {readerProgress.current} завершена</p>
