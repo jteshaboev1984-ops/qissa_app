@@ -22,6 +22,7 @@ function App() {
   )
   const [tab, setTab] = useState<PublishedStoriesTab>('home')
   const [view, setView] = useState<SevenRoadsView>('shell')
+  const [requestedEpisodeNumber, setRequestedEpisodeNumber] = useState<number | null>(null)
   const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(
     () => sevenRoadsReaderPreferences.load(),
   )
@@ -79,6 +80,7 @@ function App() {
             seasonNumber={sevenRoadsSeason1.number}
             episodeTitles={episodeTitles}
             completionSummary="Темур и Самира стали юными бахадурами царства."
+            initialEpisodeNumber={requestedEpisodeNumber ?? undefined}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
               const next = { ...readerPreferences, ...patch }
@@ -86,10 +88,17 @@ function App() {
               sevenRoadsReaderPreferences.save(next)
             }}
             onBack={() => {
+              const returnToSeason = requestedEpisodeNumber != null
+              setRequestedEpisodeNumber(null)
+              if (returnToSeason) {
+                setView('season')
+                return
+              }
               setTab('home')
               setView('shell')
             }}
             onFinishForToday={() => {
+              setRequestedEpisodeNumber(null)
               setTab('home')
               setView('shell')
             }}
@@ -123,8 +132,14 @@ function App() {
     return (
       <SeasonOverview
         season={sevenRoadsSeason1}
-        onBack={() => setView('shell')}
-        onRead={() => setView('story')}
+        onBack={() => {
+          setRequestedEpisodeNumber(null)
+          setView('shell')
+        }}
+        onRead={(episodeNumber) => {
+          setRequestedEpisodeNumber(episodeNumber ?? null)
+          setView('story')
+        }}
       />
     )
   }
@@ -133,8 +148,14 @@ function App() {
     <PublishedStoriesShell
       tab={tab}
       onTab={setTab}
-      onOpenSeason={() => setView('season')}
-      onContinueStory={() => setView('story')}
+      onOpenSeason={() => {
+        setRequestedEpisodeNumber(null)
+        setView('season')
+      }}
+      onContinueStory={() => {
+        setRequestedEpisodeNumber(null)
+        setView('story')
+      }}
       onOpenSettings={() => setView('settings')}
     />
   )
