@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 
 const app = readFileSync('src/App.tsx', 'utf8')
+const main = readFileSync('src/main.tsx', 'utf8')
 const seasons = readFileSync('src/data/sevenRoadsSeasons.ts', 'utf8')
 const shell = readFileSync('src/components/PublishedStoriesShell.tsx', 'utf8')
 const overview = readFileSync('src/components/SeasonOverview.tsx', 'utf8')
@@ -46,8 +47,8 @@ if (episodeMatches.length !== 6) {
 
 requireText('public shell', shell, 'Сезон 1')
 requireText('public shell', shell, 'Скоро')
-requireText('public shell', shell, 'Следующая дорога скоро откроется')
-requireText('season overview', overview, 'Серии сезона')
+requireText('public shell', shell, 'Следующая дорога')
+requireText('season overview', overview, 'Путь сезона')
 requireText('season overview', overview, '6 серий')
 
 requireText('family consent', consent, 'progressStorageAccepted')
@@ -55,10 +56,30 @@ forbidText('family consent', consent, 'aiProcessingAccepted')
 requireText('first-run flow', welcome, 'Аккаунт, email и пароль сейчас не нужны')
 requireText('first-run flow', welcome, 'прогресс чтения и решения ребёнка')
 
+for (const text of [
+  'storyStateService',
+  'localPersistence',
+  'closedBetaMigration',
+  'migratePersistedStoryIntoClosedBetaScope',
+]) forbidText('Seven Roads bootstrap', main, text)
+
+for (const text of [
+  'resolveAuthoredStoryAssetUrl',
+  'coverUrl',
+]) {
+  forbidText('character-free public shell', shell, text)
+  forbidText('character-free season overview', overview, text)
+}
+
 requireText('reader', player, 'Серия {readerProgress.current} из {readerProgress.total}')
 requireText('reader', player, 'Сезон {seasonNumber} завершён')
 requireText('reader', player, 'Следующий сезон — скоро')
 requireText('reader', player, 'Коснитесь экрана, чтобы вернуться')
+requireText('reader', player, 'Завершить на сегодня')
+requireText('reader', player, 'Серия {readerProgress.current} завершена')
+requireText('reader', player, 'Следующая серия')
+requireText('reader', player, 'Завершить сезон')
+requireText('Seven Roads App', app, 'onFinishForToday')
 
 if (failures.length > 0) {
   console.error('Seven Roads product shell check failed:')

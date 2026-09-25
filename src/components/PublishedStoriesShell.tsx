@@ -1,7 +1,7 @@
-import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { sevenRoadsSeason1, sevenRoadsSeason2 } from '../data/sevenRoadsSeasons'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import { sevenRoadsStory1ReadingState } from '../features/publishedStories/sevenRoadsProgress'
+import { SevenRoadsMark } from './SevenRoadsMark'
 
 export type PublishedStoriesTab = 'home' | 'library'
 
@@ -19,9 +19,6 @@ export function PublishedStoriesShell({
   const story = sevenRoadsSeason1.story
   const progress = story ? authoredStoryPersistence.load(story) : null
   const reading = sevenRoadsStory1ReadingState(progress)
-  const coverUrl = story
-    ? resolveAuthoredStoryAssetUrl(story.cover_illustration.asset_id, story.cover_illustration.runtime_url)
-    : null
 
   const seasonStatus =
     reading.state === 'completed'
@@ -31,24 +28,29 @@ export function PublishedStoriesShell({
         : 'Новый сезон'
 
   return (
-    <div className="relative min-h-screen text-[#1f241d]">
+    <div className="relative min-h-screen text-[#2d332f]">
       <div className="mx-auto max-w-[430px] px-4 py-5 pb-28 sm:px-6">
-        <header className="mb-5">
-          <p className="q-label mb-2">QISSA</p>
-          <h1 className="q-heading text-3xl font-bold leading-tight">
-            {tab === 'home' ? 'Дом историй' : 'Библиотека'}
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-[#625846]">
-            {tab === 'home'
-              ? 'Интерактивные сезоны, где решения ребёнка продолжают жить в следующих историях.'
-              : 'Все опубликованные сезоны QISSA и ваш сохранённый прогресс.'}
-          </p>
-        </header>
+        <section className="q-world-panel mb-5 p-5">
+          <div className="relative z-10 flex items-center gap-4">
+            <div className="w-24 flex-none text-[#ead3a0]">
+              <SevenRoadsMark compact />
+            </div>
+            <div>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#ead3a0]">QISSA</p>
+              <h1 className="mt-1 font-serif text-3xl font-bold leading-tight text-[#fff9ec]">
+                {tab === 'home' ? 'Дом историй' : 'Библиотека'}
+              </h1>
+              <p className="mt-2 text-sm leading-6 text-[#eaf3f1]">
+                Королевство семи дорог
+              </p>
+            </div>
+          </div>
+        </section>
 
         {tab === 'home' && reading.state === 'in_progress' ? (
-          <section className="q-card mb-5 space-y-4 p-5">
+          <section className="q-stone-panel mb-5 space-y-4 p-5">
             <div>
-              <p className="q-label mb-1">Продолжить</p>
+              <p className="q-label mb-1">Продолжить путь</p>
               <h2 className="q-heading text-2xl font-bold">{sevenRoadsSeason1.title}</h2>
               <p className="mt-2 text-sm leading-6 text-[#625846]">
                 Сезон 1 · серия {reading.currentEpisode} из 6
@@ -62,63 +64,53 @@ export function PublishedStoriesShell({
 
         <section className="space-y-3">
           <div className="px-1">
-            <p className="q-label mb-1">
-              {tab === 'home' ? 'Сезоны' : sevenRoadsSeason1.worldTitle}
-            </p>
+            <p className="q-label mb-1">{tab === 'home' ? 'Сезоны' : 'Коллекция'}</p>
             <h2 className="q-heading text-2xl font-bold">
-              {tab === 'home' ? 'Королевство семи дорог' : 'Сезоны'}
+              {tab === 'home' ? 'Выберите сезон' : 'Королевство семи дорог'}
             </h2>
           </div>
 
-          <section className="q-card overflow-hidden p-0">
-            {coverUrl ? (
-              <img
-                src={coverUrl}
-                alt={sevenRoadsSeason1.title ?? 'Сезон 1'}
-                className="aspect-[4/3] w-full object-cover"
-                loading="lazy"
-              />
-            ) : null}
-
-            <div className="space-y-4 p-5">
-              <div>
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  <p className="q-label">Сезон 1</p>
-                  <span className="rounded-full bg-[#f4ead8] px-3 py-1 text-xs font-bold text-[#735c00]">
-                    {seasonStatus}
-                  </span>
-                </div>
-                <h3 className="q-heading text-2xl font-bold leading-tight">{sevenRoadsSeason1.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-[#5f5848]">
-                  6 серий · 4 решения · для 8–9 лет
-                </p>
-              </div>
-
-              <button type="button" className="q-primary w-full" onClick={onOpenSeason}>
-                {reading.state === 'new' ? 'Открыть сезон' : 'Смотреть сезон'}
-              </button>
+          <section className="q-arch-card p-5 pt-8">
+            <div className="mx-auto mb-3 w-24 text-[#1f6670]">
+              <SevenRoadsMark compact />
             </div>
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <p className="q-label">Сезон 1</p>
+              <span className="q-badge">{seasonStatus}</span>
+            </div>
+            <h3 className="q-heading text-center text-2xl font-bold leading-tight">{sevenRoadsSeason1.title}</h3>
+            <div className="q-ornament-rule my-4" />
+            <p className="text-center text-sm leading-6 text-[#5f5848]">
+              6 серий · 4 решения · для 8–9 лет
+            </p>
+
+            <button type="button" className="q-primary mt-5 w-full" onClick={onOpenSeason}>
+              {reading.state === 'new' ? 'Открыть сезон' : 'Смотреть сезон'}
+            </button>
           </section>
 
-          <section className="rounded-[1.75rem] border border-dashed border-[#d8c7a9] bg-[#f8f1e4] p-5">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="q-label mb-2">Сезон {sevenRoadsSeason2.number}</p>
-                <h3 className="q-heading text-2xl font-bold">Скоро</h3>
+          <section className="q-stone-panel p-5">
+            <div className="flex items-start gap-4">
+              <div className="w-20 flex-none text-[#8a7859] opacity-70">
+                <SevenRoadsMark compact />
               </div>
-              <span className="rounded-full bg-[#ece4d5] px-3 py-1 text-xs font-bold text-[#756a56]">
-                СКОРО
-              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="q-label">Сезон {sevenRoadsSeason2.number}</p>
+                  <span className="q-badge opacity-75">СКОРО</span>
+                </div>
+                <h3 className="q-heading mt-1 text-2xl font-bold">Следующая дорога</h3>
+                <p className="mt-2 text-sm leading-6 text-[#625846]">
+                  Скоро откроется новый сезон. Решения из первого сезона останутся с миром и героями.
+                </p>
+              </div>
             </div>
-            <p className="mt-3 text-sm leading-6 text-[#625846]">
-              Следующая дорога скоро откроется. Решения из первого сезона останутся с Темуром и Самирой.
-            </p>
           </section>
         </section>
       </div>
 
       <nav
-        className="fixed z-40 mx-auto max-w-[398px] rounded-full border border-[#e4d8c0] bg-[#fffdf7]/92 p-2 shadow-[0_18px_45px_-26px_rgba(49,45,34,0.55)] backdrop-blur-xl"
+        className="fixed z-40 mx-auto max-w-[398px] rounded-full border border-[#cdb483] bg-[#fffaf0]/94 p-2 shadow-[0_18px_45px_-26px_rgba(49,45,34,0.55)] backdrop-blur-xl"
         style={{
           left: 'max(1rem, env(safe-area-inset-left))',
           right: 'max(1rem, env(safe-area-inset-right))',
@@ -130,22 +122,22 @@ export function PublishedStoriesShell({
           <button
             type="button"
             className={`min-h-11 rounded-full px-3 py-2.5 text-xs font-bold transition ${
-              tab === 'home' ? 'bg-[#d4af37] text-[#2b2100]' : 'text-[#665d49] hover:bg-[#f4ead8]'
+              tab === 'home' ? 'bg-[#1f6670] text-[#fff9ec]' : 'text-[#665d49] hover:bg-[#f1e2c7]'
             }`}
             onClick={() => onTab('home')}
             aria-current={tab === 'home' ? 'page' : undefined}
           >
-            ⌂&nbsp;&nbsp;Главная
+            Главная
           </button>
           <button
             type="button"
             className={`min-h-11 rounded-full px-3 py-2.5 text-xs font-bold transition ${
-              tab === 'library' ? 'bg-[#d4af37] text-[#2b2100]' : 'text-[#665d49] hover:bg-[#f4ead8]'
+              tab === 'library' ? 'bg-[#1f6670] text-[#fff9ec]' : 'text-[#665d49] hover:bg-[#f1e2c7]'
             }`}
             onClick={() => onTab('library')}
             aria-current={tab === 'library' ? 'page' : undefined}
           >
-            ☰&nbsp;&nbsp;Библиотека
+            Библиотека
           </button>
         </div>
       </nav>
