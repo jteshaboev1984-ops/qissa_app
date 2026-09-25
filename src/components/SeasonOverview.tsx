@@ -31,12 +31,12 @@ export function SeasonOverview({
   return (
     <main className="mx-auto min-h-[100dvh] max-w-[430px] overflow-hidden bg-[#efe2cb] text-[#2d332f]">
       <section
-        className="relative flex min-h-[72dvh] flex-col bg-[#17383d] bg-cover bg-center text-white"
+        className="relative flex min-h-[64dvh] flex-col bg-[#17383d] bg-cover bg-center text-white"
         style={coverUrl ? { backgroundImage: `url("${coverUrl}")` } : undefined}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/5 to-[#102327]/94" />
 
-        <div className="relative z-10 flex min-h-[72dvh] flex-col px-4 pb-5 pt-[max(1rem,env(safe-area-inset-top))] sm:px-5">
+        <div className="relative z-10 flex min-h-[64dvh] flex-col px-4 pb-5 pt-[max(1rem,env(safe-area-inset-top))] sm:px-5">
           <div>
             <button
               type="button"
@@ -59,10 +59,6 @@ export function SeasonOverview({
             <p className="mt-3 text-sm leading-6 text-white/88">
               6 серий · 4 решения · для 8–9 лет
             </p>
-            <p className="mt-3 max-w-[360px] text-sm leading-6 text-[#f0e9dd]">
-              Первый путь Темура и Самиры по Королевству семи дорог. Решения ребёнка сохраняются и смогут проявиться в следующих сезонах.
-            </p>
-
             <button
               type="button"
               className="mt-5 w-full rounded-full border border-[#f0d7a0]/80 bg-[#ecd09a] px-5 py-4 text-sm font-extrabold text-[#263f42] shadow-[0_16px_40px_-22px_rgba(0,0,0,.9)] transition active:scale-[0.98]"
@@ -79,6 +75,9 @@ export function SeasonOverview({
           <p className="q-label mb-1">Путь сезона</p>
           <h2 className="q-heading text-2xl font-bold">6 серий</h2>
           <p className="mt-1 text-sm leading-6 text-[#6c6252]">
+            Первый путь Темура и Самиры по Королевству семи дорог. Решения ребёнка сохраняются и смогут проявиться в следующих сезонах.
+          </p>
+          <p className="mt-2 text-xs leading-5 text-[#817662]">
             Непройденные серии открываются по порядку.
           </p>
         </div>
@@ -89,12 +88,15 @@ export function SeasonOverview({
             const current = reading.state !== 'completed' && episode.number === reading.currentEpisode
             const locked = reading.state !== 'completed' && episode.number > reading.currentEpisode
 
+            const EpisodeContainer = current ? 'button' : 'div'
+
             return (
-              <div
+              <EpisodeContainer
                 key={episode.number}
-                className={`rounded-[1.35rem] border px-4 py-3.5 shadow-[0_15px_36px_-32px_rgba(74,49,13,.8)] ${
+                {...(current ? { type: 'button' as const, onClick: onRead } : {})}
+                className={`w-full rounded-[1.35rem] border px-4 py-3.5 text-left shadow-[0_15px_36px_-32px_rgba(74,49,13,.8)] ${
                   current
-                    ? 'border-[#1f6670]/55 bg-[#edf5f2]'
+                    ? 'border-[#1f6670]/55 bg-[#edf5f2] transition active:scale-[0.99]'
                     : 'border-[#d8c39a] bg-[#fffaf0]/92'
                 }`}
               >
@@ -128,7 +130,7 @@ export function SeasonOverview({
                           : ''}
                   </span>
                 </div>
-              </div>
+              </EpisodeContainer>
             )
           })}
         </div>
