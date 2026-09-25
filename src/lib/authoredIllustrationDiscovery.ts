@@ -159,7 +159,7 @@ const buildGalleryEpisodes = (
         imageItem(
           episodeNumber,
           slot,
-          `Иллюстрация серии ${episodeNumber}`,
+          story.language === 'uz' ? `${episodeNumber}-qism lavhasi` : `Сцена серии ${episodeNumber}`,
           seenIds,
           `shared:${slot.slot_id}`,
         ),
@@ -173,7 +173,7 @@ const buildGalleryEpisodes = (
           imageItem(
             episodeNumber,
             choice.illustration,
-            `Иллюстрация выбора в серии ${episodeNumber}`,
+            story.language === 'uz' ? `${episodeNumber}-qismdagi tanlov lavhasi` : `Сцена выбора в серии ${episodeNumber}`,
             seenIds,
             `choice:${choice.choice_id}`,
           ),
@@ -187,7 +187,7 @@ const buildGalleryEpisodes = (
         imageItem(
           episodeNumber,
           slot,
-          `Иллюстрация серии ${episodeNumber}`,
+          story.language === 'uz' ? `${episodeNumber}-qism lavhasi` : `Сцена серии ${episodeNumber}`,
           seenIds,
           `shared:${slot.slot_id}`,
         ),
