@@ -104,11 +104,11 @@ const uz = {
   welcomeBody: 'Qismma-qism o‘qi, qahramonlar yo‘lini tanla — hikoya olami tanlovingni keyingi voqealarda ham eslab qoladi.',
   start: 'Boshlash',
   parentLabel: 'Ota-ona uchun',
-  consentTitle: 'Jarayon va sozlamalarni shu qurilmada saqlaymiz',
+  consentTitle: 'Ma’lumotlar shu qurilmada saqlanadi',
   consentBody:
-    'QISSA ushbu qurilmada o‘qish jarayonini, bolaning tanlovlarini, tilni, o‘qish sozlamalarini va ochilgan lavhalarni saqlaydi. Bu o‘qishni o‘sha joydan davom ettirish va keyingi mavsumlarda oldingi tanlovlarni eslab qolish uchun kerak.',
+    'QISSA shu qurilmada qayergacha o‘qilganini, bolaning tanlovlarini, til va o‘qish sozlamalarini hamda ochilgan lavhalarni saqlaydi. Shuning uchun hikoyani keyin o‘sha joydan davom ettirish mumkin, keyingi mavsumlar esa oldingi tanlovlarni eslab qoladi.',
   consentAccountNote:
-    'Hozir akkaunt, email yoki parol kerak emas. Keyinroq ular faqat qurilmalar orasida sinxronlash uchun qo‘shilishi mumkin.',
+    'Hozir akkaunt, email yoki parol kerak emas. Keyinchalik ular faqat qurilmalar o‘rtasida sinxronlash uchun kerak bo‘lishi mumkin.',
   consentCheckbox:
     'Men ota-ona yoki qonuniy vakilman va ushbu ma’lumotlarni shu qurilmada saqlashga roziman.',
   continue: 'Davom etish',
@@ -128,12 +128,12 @@ const uz = {
   nextSeasonLater: 'Yangi yo‘l keyinroq ochiladi.',
   home: 'Bosh sahifa',
   library: 'Kutubxona',
-  openSeasonPath: 'Mavsum yo‘li',
+  openSeasonPath: 'Mavsum qismlari',
   sixEpisodes: '6 qism',
   seasonDescription:
     'Temur va Samiraning Yetti yo‘l qirolligidagi ilk safari. Bolaning tanlovlari saqlanadi va keyingi mavsumlarda voqealarga ta’sir qilishi mumkin.',
   seasonReplayHint:
-    'O‘tilgan qismlarni qayta ochish mumkin. Yangi qismlar navbat bilan ochiladi.',
+    'O‘qilgan qismlarni qayta ochish mumkin. Yangi qismlar navbati bilan ochiladi.',
   startSeason: 'Mavsumni boshlash',
   openSeasonResult: 'Mavsum yakunini ko‘rish',
   open: 'Ochish ›',
@@ -142,19 +142,19 @@ const uz = {
   ahead: 'Oldinda',
   adultLabel: 'Kattalar uchun',
   settingsIntro:
-    'Bu yerda hikoya tili va o‘qish qulayligini o‘zgartirish mumkin. Syujet va saqlangan tanlovlar alohida tasdiqsiz o‘zgarmaydi.',
+    'Bu yerda hikoya tilini va o‘qish sozlamalarini o‘zgartirish mumkin. Syujet va saqlangan tanlovlar faqat alohida tasdiq bilan o‘zgaradi.',
   storyLanguage: 'Hikoya tili',
   storyLanguageHint:
-    'Tilni almashtirish mavsumni qayta boshlamaydi: o‘qish jarayoni va tanlovlar saqlanib qoladi.',
+    'Tilni almashtirsangiz ham, o‘qigan joyingiz va tanlovlaringiz saqlanadi.',
   reading: 'O‘qish',
   readingHint: 'Bu sozlamalar shu qurilmadagi “Yetti yo‘l qirolligi”ning barcha qismlariga qo‘llanadi.',
   deviceData: 'Qurilmadagi ma’lumotlar',
-  progressAndChoices: 'O‘qish jarayoni va tanlovlar',
+  progressAndChoices: 'O‘qilgan joy va tanlovlar',
   deviceDataBody:
-    'Hozir QISSA o‘qish jarayoni, matndagi joy va tanlovlarni faqat shu qurilmada saqlaydi. Akkaunt va bulutli sinxronlash hozircha ishlatilmaydi.',
+    'Hozir QISSA o‘qilgan qismni, matndagi joyni va tanlovlarni faqat shu qurilmada saqlaydi. Akkaunt va bulutli sinxronlash hozircha ishlatilmaydi.',
   restartSeason: 'Mavsumni boshidan boshlash',
   restartSeasonBody:
-    'Bu shu qurilmadagi birinchi mavsumning o‘qish jarayoni va qilingan tanlovlarni o‘chiradi.',
+    'Bu shu qurilmada saqlangan 1-mavsumdagi o‘qilgan joy va tanlovlarni o‘chiradi.',
   restartConfirm: 'Ha, boshidan boshlash',
   cancel: 'Bekor qilish',
   resetSeason: 'Mavsumni boshidan boshlash',
@@ -168,19 +168,19 @@ const uz = {
   tapToReturn: 'Qaytish uchun ekranga teging',
   yourChoice: 'Sening tanloving',
   choiceMemoryHint:
-    'QISSA bu tanlovni eslab qoladi. Keyingi hikoyalarda u qahramonlarning odatlari va o‘zaro munosabatlariga ta’sir qilishi mumkin.',
+    'QISSA bu tanlovni eslab qoladi. Bu tanlov keyingi hikoyalarda qahramonlarning odatlari va o‘zaro munosabatlariga ta’sir qilishi mumkin.',
   confirmChoice: 'Tanlovni tasdiqlash',
   choiceSaved: 'Tanlov saqlandi',
   replayedEpisode: 'Oldin o‘qilgan qism',
   replayedEpisodeBody:
-    'Bu qism qayta ochildi. Mavsumdagi joriy jarayon va saqlangan tanlovlar o‘zgarmadi.',
-  returnToSeason: 'Mavsum yo‘liga qaytish',
+    'Bu qism qayta ochildi. Mavsumdagi o‘qilgan joy va saqlangan tanlovlar o‘zgarmaydi.',
+  returnToSeason: 'Mavsumga qaytish',
   episodeFinishedBody:
-    'Yo‘lni hozir davom ettirish yoki shu yerda to‘xtash mumkin. O‘qish jarayoni allaqachon saqlandi.',
-  nextEpisode: 'Keyingi qism',
-  finishToday: 'Buguncha yakunlash',
-  finishSeason: 'Mavsumni yakunlash',
-  seasonCompleted: 'yakunlandi',
+    'Hozir davom etishing yoki shu yerda to‘xtashing mumkin. O‘qigan joying saqlandi.',
+  nextEpisode: 'Keyingi qismga o‘tish',
+  finishToday: 'Hozircha to‘xtash',
+  finishSeason: 'Mavsumni tugatish',
+  seasonCompleted: 'tugadi',
   completionMemory:
     'QISSA to‘rtta tanlovni eslab qoldi. Keyingi mavsumlarda ular kim birinchi bo‘lib yechim taklif qilishiga, qahramonlar nimani tekshirishiga va Temur bilan Samiraning bir-biriga qanchalik oson ishonishiga ta’sir qilishi mumkin.',
   nextSeasonSoon: 'Keyingi mavsum — tez orada',
@@ -188,6 +188,47 @@ const uz = {
   replaySeason: 'Mavsumni boshidan o‘qish',
   completionSummary: 'Temur va Samira qirollikning yosh bahodirlariga aylanishdi.',
 }
+
+export const formatSevenRoadsSeasonLabel = (
+  language: SevenRoadsLanguage,
+  seasonNumber: number,
+) => language === 'uz' ? `${seasonNumber}-mavsum` : `Сезон ${seasonNumber}`
+
+export const formatSevenRoadsEpisodeLabel = (
+  language: SevenRoadsLanguage,
+  episodeNumber: number,
+) => language === 'uz' ? `${episodeNumber}-qism` : `Серия ${episodeNumber}`
+
+export const formatSevenRoadsEpisodeProgress = (
+  language: SevenRoadsLanguage,
+  episodeNumber: number,
+  total: number,
+) => language === 'uz'
+  ? `${episodeNumber}-qism / ${total}`
+  : `Серия ${episodeNumber} / ${total}`
+
+export const formatSevenRoadsSeasonEpisodeContext = (
+  language: SevenRoadsLanguage,
+  seasonNumber: number,
+  episodeNumber: number,
+  total?: number,
+) => {
+  if (language === 'uz') {
+    return `${seasonNumber}-mavsum · ${episodeNumber}-qism${total ? ` / ${total}` : ''}`
+  }
+
+  return `Сезон ${seasonNumber} · серия ${episodeNumber}${total ? ` / ${total}` : ''}`
+}
+
+export const formatSevenRoadsEpisodeCompleted = (
+  language: SevenRoadsLanguage,
+  episodeNumber: number,
+) => language === 'uz' ? `${episodeNumber}-qism tugadi` : `Серия ${episodeNumber} завершена`
+
+export const formatSevenRoadsSeasonCompleted = (
+  language: SevenRoadsLanguage,
+  seasonNumber: number,
+) => language === 'uz' ? `${seasonNumber}-mavsum tugadi` : `Сезон ${seasonNumber} завершён`
 
 export type SevenRoadsCopy = typeof ru
 

@@ -2,6 +2,8 @@ import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import type { PublishedSeason } from '../features/publishedStories/types'
 import {
+  formatSevenRoadsEpisodeLabel,
+  formatSevenRoadsSeasonLabel,
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
@@ -58,7 +60,7 @@ export function SeasonOverview({
 
           <div>
             <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
-              {copy.season} {season.number}
+              {formatSevenRoadsSeasonLabel(language, season.number)}
             </p>
             <h1 className="mt-2 font-serif text-[2.35rem] font-bold leading-[1.02] tracking-[-0.035em] text-white drop-shadow">
               {season.title}
@@ -116,7 +118,7 @@ export function SeasonOverview({
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#817662]">
-                    {copy.episode} {episode.number}
+                    {formatSevenRoadsEpisodeLabel(language, episode.number)}
                   </p>
                   <p className="font-bold leading-6 text-[#342f25]">{episode.title}</p>
                 </div>
