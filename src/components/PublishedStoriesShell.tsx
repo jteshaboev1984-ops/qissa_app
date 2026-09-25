@@ -5,6 +5,10 @@ import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import { authoredIllustrationDiscovery } from '../lib/authoredIllustrationDiscovery'
 import {
+  formatSevenRoadsEpisodeLabel,
+  formatSevenRoadsEpisodeProgress,
+  formatSevenRoadsSeasonEpisodeContext,
+  formatSevenRoadsSeasonLabel,
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
@@ -84,14 +88,14 @@ export function PublishedStoriesShell({
       return {
         eyebrow: language === 'uz' ? 'Hikoyani boshlash' : 'Начать историю',
         title: sevenRoadsSeason1.title,
-        subtitle: `${copy.season} 1 · ${copy.episodeLower} 1`,
+        subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, 1),
         action: onOpenSeason,
       }
     }
 
     if (reading.state === 'completed') {
       return {
-        eyebrow: language === 'uz' ? 'Mavsum yakunlandi' : 'Сезон завершён',
+        eyebrow: language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён',
         title: sevenRoadsSeason1.title,
         subtitle: language === 'uz' ? 'Yakunini ko‘rish' : 'Посмотреть итог',
         action: onContinueStory,
@@ -101,7 +105,7 @@ export function PublishedStoriesShell({
     return {
       eyebrow: copy.continue,
       title: currentEpisodeTitle,
-      subtitle: `${copy.season} 1 · ${copy.episodeLower} ${reading.currentEpisode} / 6`,
+      subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, reading.currentEpisode, 6),
       action: onContinueStory,
     }
   })()
@@ -110,7 +114,7 @@ export function PublishedStoriesShell({
     reading.state === 'completed'
       ? copy.completed
       : reading.state === 'in_progress'
-        ? `${copy.episode} ${reading.currentEpisode} / 6`
+        ? formatSevenRoadsEpisodeProgress(language, reading.currentEpisode, 6)
         : language === 'uz'
           ? 'Boshlanmagan'
           : 'Не начат'
@@ -185,7 +189,7 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? `Bu lavha ${notice.episodeNumber}-qismdagi ushbu sahna o‘qish paytida ko‘ringach ochiladi. Shunda galereya syujetni oldindan ko‘rsatmaydi.`
+                    ? `Bu lavha ${notice.episodeNumber}-qismdagi shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
                     : `Она откроется после того, как эта сцена появится во время чтения серии ${notice.episodeNumber}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
@@ -330,7 +334,7 @@ export function PublishedStoriesShell({
                       <div className="absolute inset-x-0 bottom-0 p-4">
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                            {copy.season} 1
+                            {formatSevenRoadsSeasonLabel(language, 1)}
                           </p>
                           <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
                             {seasonProgressLabel}
@@ -362,7 +366,7 @@ export function PublishedStoriesShell({
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
                           <div className="absolute inset-x-0 bottom-0 p-4">
                             <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                              {copy.season} {season.number}
+                              {formatSevenRoadsSeasonLabel(language, season.number)}
                             </p>
                             <div className="mt-1 flex items-end justify-between gap-3">
                               <h3 className="font-serif text-2xl font-bold text-white">{copy.soon}</h3>
@@ -485,7 +489,7 @@ export function PublishedStoriesShell({
                                           >
                                             <div className="min-w-0 flex-1">
                                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
-                                                {copy.episode} {episode.episodeNumber}
+                                                {formatSevenRoadsEpisodeLabel(language, episode.episodeNumber)}
                                               </p>
                                               <h4 className="mt-0.5 font-serif text-[1.02rem] font-bold leading-tight text-[#2d332f]">
                                                 {episode.title}
