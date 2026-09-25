@@ -88,7 +88,12 @@ function App() {
               sevenRoadsReaderPreferences.save(next)
             }}
             onBack={() => {
+              const returnToSeason = requestedEpisodeNumber != null
               setRequestedEpisodeNumber(null)
+              if (returnToSeason) {
+                setView('season')
+                return
+              }
               setTab('home')
               setView('shell')
             }}
