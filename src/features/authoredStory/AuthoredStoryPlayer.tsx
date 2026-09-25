@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { authoredStoryPersistence } from '../../lib/authoredStoryPersistence'
+import { authoredReadingPosition } from '../../lib/authoredReadingPosition'
 import { resolveAuthoredStoryAssetUrl } from '../../data/authoredStoryAssets'
 import {
   advanceAuthoredStory,
@@ -155,6 +156,7 @@ export function AuthoredStoryPlayer({
   const [previewChoiceId, setPreviewChoiceId] = useState<string | null>(null)
   const [lightbox, setLightbox] = useState<{ url: string; alt: string } | null>(null)
   const topRef = useRef<HTMLDivElement | null>(null)
+  const restoredPartRef = useRef<number | null>(null)
 
   const part = getCurrentAuthoredStoryPart(story, progress)
   const selectedChoice = getSelectedChoiceForPart(part, progress)
@@ -170,6 +172,51 @@ export function AuthoredStoryPlayer({
   useEffect(() => {
     authoredStoryPersistence.save(story, progress)
   }, [story, progress])
+
+  useEffect(() => {
+    const saved = authoredReadingPosition.load(story)
+    if (!saved || saved.part_index !== progress.current_part_index) return
+    if (restoredPartRef.current === progress.current_part_index) return
+
+    restoredPartRef.current = progress.current_part_index
+
+    const restore = () => {
+      window.scrollTo({ top: saved.scroll_y, behavior: 'auto' })
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(restore)
+    })
+
+    const retry = window.setTimeout(restore, 350)
+    return () => window.clearTimeout(retry)
+  }, [story, progress.current_part_index])
+
+  useEffect(() => {
+    let frame = 0
+
+    const persistPosition = () => {
+      frame = 0
+      authoredReadingPosition.save(story, progress.current_part_index, window.scrollY)
+    }
+
+    const onScroll = () => {
+      if (frame) return
+      frame = window.requestAnimationFrame(persistPosition)
+    }
+
+    const onPageHide = () => persistPosition()
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('pagehide', onPageHide)
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('pagehide', onPageHide)
+      if (frame) window.cancelAnimationFrame(frame)
+      persistPosition()
+    }
+  }, [story, progress.current_part_index])
 
   useEffect(() => {
     setPreviewChoiceId(selectedChoice?.choice_id ?? null)
@@ -207,6 +254,8 @@ export function AuthoredStoryPlayer({
   const continueStory = () => {
     if (!canAdvanceAuthoredStory(story, progress)) return
     const next = advanceAuthoredStory(story, progress)
+    authoredReadingPosition.clear(story)
+    restoredPartRef.current = null
     updateProgress(next)
 
     requestAnimationFrame(() => {
@@ -218,6 +267,8 @@ export function AuthoredStoryPlayer({
 
   const restartStory = () => {
     authoredStoryPersistence.clear(story)
+    authoredReadingPosition.clear(story)
+    restoredPartRef.current = null
     const fresh = createInitialAuthoredStoryProgress(story)
     setPreviewChoiceId(null)
     updateProgress(fresh)
@@ -226,8 +277,15 @@ export function AuthoredStoryPlayer({
   const finishForToday = () => {
     if (!onFinishForToday || !canAdvanceAuthoredStory(story, progress)) return
     const next = advanceAuthoredStory(story, progress)
+    authoredReadingPosition.clear(story)
+    restoredPartRef.current = null
     updateProgress(next)
     onFinishForToday()
+  }
+
+  const closeReader = () => {
+    authoredReadingPosition.save(story, progress.current_part_index, window.scrollY)
+    onBack?.()
   }
 
   const openImage = (url: string, alt: string) => setLightbox({ url, alt })
@@ -273,7 +331,7 @@ export function AuthoredStoryPlayer({
             ) : null}
             {onBack ? (
               <button className="w-full rounded-full border border-[#ead3a0]/55 bg-white/10 px-5 py-3 text-sm font-semibold text-[#fff9ec]" onClick={onBack}>
-                Вернуться к сезонам
+                На главную
               </button>
             ) : null}
             <button className="w-full rounded-full px-5 py-3 text-sm font-semibold text-[#ead3a0]" onClick={restartStory}>
@@ -309,8 +367,8 @@ export function AuthoredStoryPlayer({
       <header className="space-y-3">
         <div className="flex items-center justify-between gap-3">
           {onBack ? (
-            <button className="q-secondary px-4 py-2 text-xs" onClick={onBack}>
-              Назад
+            <button className="q-secondary px-4 py-2 text-xs" onClick={closeReader}>
+              Закрыть
             </button>
           ) : <span />}
           <span className="q-badge">
