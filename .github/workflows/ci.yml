@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - product/seven-roads
   workflow_dispatch:
 
 permissions:
@@ -57,6 +58,9 @@ jobs:
 
       - name: Validate authored multi-choice V3
         run: npm run check:authored-v3
+
+      - name: Validate Seven Roads season product shell
+        run: npm run check:seven-roads-shell
 
       - name: Validate authored progress backend contract
         run: npm run check:authored-progress-backend
