@@ -2,11 +2,16 @@ import { useState } from 'react'
 import { PublishedStoriesShell, type PublishedStoriesTab } from './components/PublishedStoriesShell'
 import { PublishedStoriesWelcome } from './components/PublishedStoriesWelcome'
 import { SeasonOverview } from './components/SeasonOverview'
+import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
 import { sevenRoadsSeason1 } from './data/sevenRoadsSeasons'
 import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
 import { publishedStoriesConsent } from './lib/publishedStoriesConsent'
+import { authoredStoryPersistence } from './lib/authoredStoryPersistence'
+import { authoredReadingPosition } from './lib/authoredReadingPosition'
+import { sevenRoadsReaderPreferences } from './lib/sevenRoadsReaderPreferences'
+import type { ReaderPreferences } from './types/qissa'
 
-type SevenRoadsView = 'shell' | 'season' | 'story'
+type SevenRoadsView = 'shell' | 'season' | 'story' | 'settings'
 
 function App() {
   const story = sevenRoadsSeason1.story
@@ -17,6 +22,9 @@ function App() {
   )
   const [tab, setTab] = useState<PublishedStoriesTab>('home')
   const [view, setView] = useState<SevenRoadsView>('shell')
+  const [readerPreferences, setReaderPreferences] = useState<ReaderPreferences>(
+    () => sevenRoadsReaderPreferences.load(),
+  )
 
   const authoredPreviewRequested =
     import.meta.env.VITE_QISSA_AUTHORED_V3_PREVIEW === 'true' &&
@@ -33,6 +41,12 @@ function App() {
             seasonNumber={sevenRoadsSeason1.number}
             episodeTitles={episodeTitles}
             completionSummary="Темур и Самира стали юными бахадурами царства."
+            readerPreferences={readerPreferences}
+            onReaderPreferencesChange={(patch) => {
+              const next = { ...readerPreferences, ...patch }
+              setReaderPreferences(next)
+              sevenRoadsReaderPreferences.save(next)
+            }}
             showMissingAssetPlaceholders
             onBack={() => {
               const url = new URL(window.location.href)
@@ -65,6 +79,12 @@ function App() {
             seasonNumber={sevenRoadsSeason1.number}
             episodeTitles={episodeTitles}
             completionSummary="Темур и Самира стали юными бахадурами царства."
+            readerPreferences={readerPreferences}
+            onReaderPreferencesChange={(patch) => {
+              const next = { ...readerPreferences, ...patch }
+              setReaderPreferences(next)
+              sevenRoadsReaderPreferences.save(next)
+            }}
             onBack={() => {
               setTab('home')
               setView('shell')
@@ -76,6 +96,26 @@ function App() {
           />
         </div>
       </div>
+    )
+  }
+
+  if (view === 'settings') {
+    return (
+      <SevenRoadsSettingsScreen
+        preferences={readerPreferences}
+        onPreferencesChange={(patch) => {
+          const next = { ...readerPreferences, ...patch }
+          setReaderPreferences(next)
+          sevenRoadsReaderPreferences.save(next)
+        }}
+        onBack={() => setView('shell')}
+        onResetSeason={() => {
+          authoredStoryPersistence.clear(story)
+          authoredReadingPosition.clear(story)
+          setTab('home')
+          setView('shell')
+        }}
+      />
     )
   }
 
@@ -95,6 +135,7 @@ function App() {
       onTab={setTab}
       onOpenSeason={() => setView('season')}
       onContinueStory={() => setView('story')}
+      onOpenSettings={() => setView('settings')}
     />
   )
 }
