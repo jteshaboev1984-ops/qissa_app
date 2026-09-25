@@ -203,6 +203,7 @@ if (!uzText.includes('Shu tariqa Temur va Samira qirollikning yosh bahodirlariga
 
 const forbiddenUzbekProofreadPhrases = [
   'tuyqlar',
+  'Tuyqlar',
   'tuyog‘ tovushlari',
   'ranggi',
   'Tosh belgini kitobdan tekshirish',
@@ -220,6 +221,7 @@ for (const phrase of forbiddenUzbekProofreadPhrases) {
 for (const phrase of [
   'tuyoq tovushlari',
   'tuyoqlar',
+  'Tuyoqlar',
   'Toshdagi belgini kitobdan tekshirish',
   'toshlarning iliq asal rangi',
   'o‘zingni yo‘qotmaslik kerak',
