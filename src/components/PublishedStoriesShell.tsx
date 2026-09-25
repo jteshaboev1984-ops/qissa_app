@@ -381,147 +381,176 @@ export function PublishedStoriesShell({
                       </h2>
                     </div>
 
-                    <div className="-mx-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                      <div className="flex min-w-max gap-2">
-                        {sevenRoadsSeasons.map((season) => {
-                          const selected = selectedGallerySeason === season.number
-                          const published = season.status === 'published' && Boolean(season.story)
+                    <div className="overflow-hidden rounded-[1.15rem] border-y border-[#d8c39a]/80 bg-[#fff9ed]/45">
+                      {sevenRoadsSeasons
+                        .filter((season) => season.status === 'published' && Boolean(season.story))
+                        .map((season) => {
+                          const gallery = buildSeasonGallery(season)
+                          const expanded = expandedGallerySeason === season.number
+                          const progressPercent =
+                            gallery.totalItems > 0
+                              ? Math.round((gallery.unlockedItems / gallery.totalItems) * 100)
+                              : 0
+                          const panelId = `gallery-season-${season.number}`
 
                           return (
-                            <button
+                            <section
                               key={season.id}
-                              type="button"
-                              className={`relative min-h-[112px] min-w-[160px] overflow-hidden rounded-[0.9rem] border px-3.5 py-3 text-left transition active:scale-[0.98] ${
-                                selected
-                                  ? 'border-[#1f6670] bg-[#eef5f1] shadow-[0_12px_28px_-22px_rgba(31,102,112,.7)]'
-                                  : 'border-[#cfb57f] bg-[#fffaf0]/95 shadow-[0_12px_28px_-24px_rgba(74,49,13,.55)]'
-                              }`}
-                              onClick={() => {
-                                if (!published) {
-                                  setNotice({ kind: 'coming-season', seasonNumber: season.number })
-                                  return
-                                }
-                                setSelectedGallerySeason(season.number)
-                              }}
+                              className="border-b border-[#d8c39a]/70 last:border-b-0"
                             >
-                              <span
-                                className={`pointer-events-none absolute inset-[5px] rounded-[0.62rem] border ${
-                                  selected ? 'border-[#1f6670]/35' : 'border-[#c7a96d]/45'
-                                }`}
-                                aria-hidden="true"
-                              />
-                              <div className="relative flex min-h-[84px] flex-col">
-                                <div className="flex items-center justify-between">
-                                  <span className="font-serif text-lg font-bold text-[#72582f]">
-                                    {seasonRomanNumeral(season.number)}
-                                  </span>
-                                  <span className="text-[0.68rem] text-[#a17e43]" aria-hidden="true">
-                                    ✦
-                                  </span>
-                                </div>
-                                <p className="mt-auto max-w-[136px] pt-3 font-serif text-[0.95rem] font-bold leading-[1.16] text-[#342f25]">
-                                  {published ? season.title : copy.soon}
-                                </p>
-                              </div>
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="px-1">
-                      <div className="flex items-end justify-between gap-4">
-                        <h3 className="min-w-0 font-serif text-lg font-bold leading-tight text-[#2d332f]">
-                          {selectedGallerySeasonData?.title ?? copy.soon}
-                        </h3>
-                        <p className="flex-none text-xs font-bold text-[#756a56]">
-                          {unlockedGalleryItems} / {totalGalleryItems}
-                        </p>
-                      </div>
-                      <div className="mt-2 h-px overflow-hidden bg-[#d8c39a]/80" aria-hidden="true">
-                        <div
-                          className="h-full bg-[#1f6670]"
-                          style={{ width: `${galleryProgressPercent}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {galleryEpisodes.map((episode) => (
-                      <section key={episode.episodeNumber}>
-                        <div className="mb-2.5 flex items-end justify-between gap-3 px-1">
-                          <div>
-                            <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
-                              {copy.episode} {episode.episodeNumber}
-                            </p>
-                            <h3 className="font-serif text-lg font-bold leading-tight text-[#2d332f]">
-                              {episode.title}
-                            </h3>
-                          </div>
-                          <p className="text-xs font-semibold text-[#756a56]">
-                            {episode.unlockedCount} / {episode.items.length}
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-2.5">
-                          {episode.items.map((item) => {
-                            const url =
-                              item.unlocked && item.assetId
-                                ? resolveAuthoredStoryAssetUrl(item.assetId, item.runtimeUrl)
-                                : null
-
-                            if (url) {
-                              return (
-                                <button
-                                  key={item.key}
-                                  type="button"
-                                  className="aspect-[4/3] overflow-hidden rounded-[1.2rem] border border-[#d4bc8d] bg-[#e9dcc5] shadow-[0_14px_32px_-26px_rgba(74,49,13,.75)] transition active:scale-[0.98]"
-                                  onClick={() => setGalleryLightbox({ url, alt: item.alt })}
-                                >
-                                  <img
-                                    src={url}
-                                    alt={item.alt}
-                                    className="h-full w-full object-cover"
-                                    loading="lazy"
-                                  />
-                                </button>
-                              )
-                            }
-
-                            return (
                               <button
-                                key={item.key}
                                 type="button"
-                                className="relative aspect-[4/3] overflow-hidden rounded-[1.2rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_14px_32px_-26px_rgba(74,49,13,.7)] transition active:scale-[0.98]"
+                                className="flex min-h-[64px] w-full items-center gap-3 px-3 py-3 text-left transition active:bg-[#efe3cf]/75"
                                 onClick={() =>
-                                  setNotice({
-                                    kind: 'locked-art',
-                                    episodeNumber: episode.episodeNumber,
-                                  })
+                                  setExpandedGallerySeason(expanded ? null : season.number)
                                 }
-                                aria-label={
-                                  language === 'uz'
-                                    ? `${episode.episodeNumber}-qism lavhasi hali ochilmagan`
-                                    : `Сцена серии ${episode.episodeNumber} ещё не открыта`
-                                }
+                                aria-expanded={expanded}
+                                aria-controls={panelId}
                               >
-                                <img
-                                  src={sevenRoadsUiAssets.futureSeasonPlaceholder}
-                                  alt=""
-                                  className="absolute inset-0 h-full w-full object-cover"
-                                  loading="lazy"
-                                />
-                                <div className="absolute inset-0 bg-[#10282d]/60" />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <div className="rounded-full border border-[#efd7a7]/60 bg-black/25 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-[#fff4dc] backdrop-blur-sm">
-                                    {language === 'uz' ? 'Ochilmagan' : 'Не открыто'}
-                                  </div>
+                                <h3 className="min-w-0 flex-1 font-serif text-lg font-bold leading-tight text-[#2d332f]">
+                                  {season.title}
+                                </h3>
+
+                                <div className="flex flex-none items-center gap-2.5">
+                                  <span className="text-xs font-bold tabular-nums text-[#756a56]">
+                                    {gallery.unlockedItems} / {gallery.totalItems}
+                                  </span>
+                                  <span
+                                    className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${
+                                      expanded
+                                        ? 'border-[#1f6670]/55 bg-[#e3efeb] text-[#1f6670]'
+                                        : 'border-[#cdb583] bg-[#fffaf0] text-[#72582f]'
+                                    }`}
+                                    aria-hidden="true"
+                                  >
+                                    <svg
+                                      viewBox="0 0 20 20"
+                                      className={`h-4 w-4 transition-transform duration-200 ${
+                                        expanded ? 'rotate-180' : ''
+                                      }`}
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="1.8"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    >
+                                      <path d="m5 7.5 5 5 5-5" />
+                                    </svg>
+                                  </span>
                                 </div>
                               </button>
-                            )
-                          })}
-                        </div>
-                      </section>
-                    ))}
+
+                              {expanded ? (
+                                <div
+                                  id={panelId}
+                                  className="border-t border-[#d8c39a]/55 px-3 pb-4 pt-3"
+                                  role="region"
+                                  aria-label={season.title ?? copy.seasons}
+                                >
+                                  <div
+                                    className="h-px overflow-hidden bg-[#d8c39a]/80"
+                                    aria-hidden="true"
+                                  >
+                                    <div
+                                      className="h-full bg-[#1f6670]"
+                                      style={{ width: `${progressPercent}%` }}
+                                    />
+                                  </div>
+
+                                  <div className="mt-5 space-y-5">
+                                    {gallery.episodes.map((episode) => (
+                                      <section key={episode.episodeNumber}>
+                                        <div className="mb-2.5 flex items-end justify-between gap-3 px-1">
+                                          <div>
+                                            <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
+                                              {copy.episode} {episode.episodeNumber}
+                                            </p>
+                                            <h4 className="font-serif text-lg font-bold leading-tight text-[#2d332f]">
+                                              {episode.title}
+                                            </h4>
+                                          </div>
+                                          <p className="text-xs font-semibold text-[#756a56]">
+                                            {episode.unlockedCount} / {episode.items.length}
+                                          </p>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-2.5">
+                                          {episode.items.map((item) => {
+                                            const url =
+                                              item.unlocked && item.assetId
+                                                ? resolveAuthoredStoryAssetUrl(
+                                                    item.assetId,
+                                                    item.runtimeUrl,
+                                                  )
+                                                : null
+
+                                            if (url) {
+                                              return (
+                                                <button
+                                                  key={item.key}
+                                                  type="button"
+                                                  className="aspect-[4/3] overflow-hidden rounded-[1.2rem] border border-[#d4bc8d] bg-[#e9dcc5] shadow-[0_14px_32px_-26px_rgba(74,49,13,.75)] transition active:scale-[0.98]"
+                                                  onClick={() =>
+                                                    setGalleryLightbox({
+                                                      url,
+                                                      alt: item.alt,
+                                                    })
+                                                  }
+                                                >
+                                                  <img
+                                                    src={url}
+                                                    alt={item.alt}
+                                                    className="h-full w-full object-cover"
+                                                    loading="lazy"
+                                                  />
+                                                </button>
+                                              )
+                                            }
+
+                                            return (
+                                              <button
+                                                key={item.key}
+                                                type="button"
+                                                className="relative aspect-[4/3] overflow-hidden rounded-[1.2rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_14px_32px_-26px_rgba(74,49,13,.7)] transition active:scale-[0.98]"
+                                                onClick={() =>
+                                                  setNotice({
+                                                    kind: 'locked-art',
+                                                    episodeNumber: episode.episodeNumber,
+                                                  })
+                                                }
+                                                aria-label={
+                                                  language === 'uz'
+                                                    ? `${episode.episodeNumber}-qism lavhasi hali ochilmagan`
+                                                    : `Сцена серии ${episode.episodeNumber} ещё не открыта`
+                                                }
+                                              >
+                                                <img
+                                                  src={sevenRoadsUiAssets.futureSeasonPlaceholder}
+                                                  alt=""
+                                                  className="absolute inset-0 h-full w-full object-cover"
+                                                  loading="lazy"
+                                                />
+                                                <div className="absolute inset-0 bg-[#10282d]/60" />
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                  <div className="rounded-full border border-[#efd7a7]/60 bg-black/25 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-[#fff4dc] backdrop-blur-sm">
+                                                    {language === 'uz'
+                                                      ? 'Ochilmagan'
+                                                      : 'Не открыто'}
+                                                  </div>
+                                                </div>
+                                              </button>
+                                            )
+                                          })}
+                                        </div>
+                                      </section>
+                                    ))}
+                                  </div>
+                                </div>
+                              ) : null}
+                            </section>
+                          )
+                        })}
+                    </div>
                   </div>
                 )}
               </div>
