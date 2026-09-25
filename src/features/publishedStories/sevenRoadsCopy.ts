@@ -69,11 +69,11 @@ const ru = {
   resetSeason: 'Сбросить прогресс сезона',
   close: 'Закрыть',
   readerSettings: 'Настройки чтения',
-  openFullscreen: 'Открыть иллюстрацию на весь экран',
+  openFullscreen: 'Открыть сцену на весь экран',
   imageTapHint:
-    'Нажмите на иллюстрацию, чтобы рассмотреть её на весь экран. Коснитесь экрана ещё раз, чтобы вернуться.',
-  illustrationPending: 'Иллюстрация готовится',
-  closeFullscreen: 'Закрыть полноэкранную иллюстрацию',
+    'Нажмите на сцену, чтобы рассмотреть её на весь экран. Коснитесь экрана ещё раз, чтобы вернуться.',
+  illustrationPending: 'Сцена готовится',
+  closeFullscreen: 'Закрыть сцену',
   tapToReturn: 'Коснитесь экрана, чтобы вернуться',
   yourChoice: 'Твой выбор',
   choiceMemoryHint:
@@ -160,11 +160,11 @@ const uz = {
   resetSeason: 'Mavsum jarayonini tozalash',
   close: 'Yopish',
   readerSettings: 'O‘qish sozlamalari',
-  openFullscreen: 'Illyustratsiyani to‘liq ekranda ochish',
+  openFullscreen: 'Lavhani to‘liq ekranda ochish',
   imageTapHint:
-    'Illyustratsiyani to‘liq ekranda ko‘rish uchun ustiga bosing. Qaytish uchun ekranga yana bir marta teging.',
-  illustrationPending: 'Illyustratsiya tayyorlanmoqda',
-  closeFullscreen: 'To‘liq ekran illyustratsiyasini yopish',
+    'Lavhani to‘liq ekranda ko‘rish uchun ustiga bosing. Qaytish uchun ekranga yana bir marta teging.',
+  illustrationPending: 'Lavha tayyorlanmoqda',
+  closeFullscreen: 'Lavhani yopish',
   tapToReturn: 'Qaytish uchun ekranga teging',
   yourChoice: 'Sening tanloving',
   choiceMemoryHint:
