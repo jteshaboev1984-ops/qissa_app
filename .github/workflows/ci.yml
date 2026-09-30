@@ -41,6 +41,9 @@ jobs:
       - name: Validate authored multi-choice V3
         run: npm run check:authored-v3
 
+      - name: Validate Story 2 V4 authored package
+        run: npm run check:authored-story2
+
       - name: Validate authored progress backend contract
         run: npm run check:authored-progress-backend
 
