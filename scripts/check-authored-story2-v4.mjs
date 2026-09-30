@@ -277,6 +277,49 @@ const visibleImageOrderForChoices = (selectedByDecision) => {
   return ordered
 }
 
+
+const renderedParagraphsForPhase = (part, phase, selectedByDecision) => {
+  const phaseText = phase === 'story_text' ? part.story_text : part.post_choice_text
+  const segmentsByAnchor = new Map()
+
+  for (const segment of part.conditional_segments ?? []) {
+    if (segment.phase !== phase) continue
+    if (selectedByDecision[segment.when.decision_id] !== segment.when.choice_id) continue
+    const existing = segmentsByAnchor.get(segment.after_text) ?? []
+    existing.push(segment)
+    segmentsByAnchor.set(segment.after_text, existing)
+  }
+
+  const rendered = []
+  for (const paragraph of paragraphsOf(phaseText)) {
+    rendered.push(paragraph)
+    for (const segment of segmentsByAnchor.get(paragraph) ?? []) {
+      rendered.push(...paragraphsOf(segment.text))
+    }
+  }
+  return rendered
+}
+
+const renderedTextForChoices = (selectedByDecision) => {
+  const rendered = []
+  for (const part of story.parts) {
+    rendered.push(...renderedParagraphsForPhase(part, 'story_text', selectedByDecision))
+
+    if (part.decision) {
+      const selectedChoiceId = selectedByDecision[part.decision.decision_id]
+      const selectedChoice = part.decision.choices.find(
+        (choice) => choice.choice_id === selectedChoiceId,
+      )
+      if (selectedChoice) {
+        rendered.push(...paragraphsOf(selectedChoice.resolution_text))
+      }
+    }
+
+    rendered.push(...renderedParagraphsForPhase(part, 'post_choice_text', selectedByDecision))
+  }
+  return rendered
+}
+
 const sharedSequencePrefix = [
   'seven_roads_story2_p1_img_01_v1',
   'seven_roads_story2_p1_img_02_v1',
@@ -339,7 +382,37 @@ for (let mask = 0; mask < pathCount; mask += 1) {
     ...sharedSequenceTail,
   ]
   const actualOrder = visibleImageOrderForChoices(selectedByDecision)
+  const renderedParagraphs = renderedTextForChoices(selectedByDecision)
+  const renderedCorpus = renderedParagraphs.join('\n\n')
   const pathLabel = selectedIds.join(' > ')
+
+  const has3aReunion = renderedCorpus.includes(
+    'Перед отъездом я ещё была у старого караванного двора Сарвана,',
+  )
+  const has3bReunion = renderedCorpus.includes(
+    'И ещё я нашла Азима, проводника, который выводил караван из Сарвана,',
+  )
+  const has3aToken = renderedCorpus.includes('Я видела этот знак вчера на воротах.')
+  const has3bToken = renderedCorpus.includes('Да. Я знаю эти ворота.')
+  const has3bWellPayoff = renderedCorpus.includes(
+    'Азим видел Рашида и Барласа у Каменного колодца.',
+  )
+
+  if (choice3 === 'story2_choice_3a_old_sarvan_yard') {
+    if (!has3aReunion || !has3aToken) {
+      fail('path ' + pathLabel + ': Choice 3A deferred payoff text is incomplete')
+    }
+    if (has3bReunion || has3bToken || has3bWellPayoff) {
+      fail('path ' + pathLabel + ': Choice 3B deferred text leaked into Choice 3A path')
+    }
+  } else {
+    if (!has3bReunion || !has3bToken || !has3bWellPayoff) {
+      fail('path ' + pathLabel + ': Choice 3B deferred payoff text is incomplete')
+    }
+    if (has3aReunion || has3aToken) {
+      fail('path ' + pathLabel + ': Choice 3A deferred text leaked into Choice 3B path')
+    }
+  }
 
   if (actualOrder.length !== 26) {
     fail(
@@ -426,5 +499,6 @@ console.log('[story2-v4] 28 approved scene assets · 24 shared · 4 selected-bra
 console.log('[story2-v4] all 28 scene images are locked to exact approved text anchors')
 console.log('[story2-v4] 5 deferred Choice-3 payoff segments')
 console.log('[story2-v4] all 16 paths preserve the exact 26-image reader sequence without branch leaks')
+console.log('[story2-v4] Choice 3 deferred payoff text is present only on the selected path')
 console.log('[story2-v4] critical road-seal canon and app-layout manifest are locked')
 console.log('[story2-v4] Season 2 remains gated as coming_soon')
