@@ -184,6 +184,25 @@ export const advanceAuthoredStory = (
   }
 }
 
+export const buildAuthoredChoiceResolutionBlocks = (
+  choice: AuthoredStoryChoice,
+): AuthoredStoryNarrativeBlock[] => {
+  const paragraphs = paragraphsOf(choice.resolution_text)
+  const illustration =
+    choice.illustration?.behavior === 'show_in_resolution_after_anchor'
+      ? choice.illustration
+      : null
+
+  const blocks: AuthoredStoryNarrativeBlock[] = []
+  for (const paragraph of paragraphs) {
+    blocks.push({ kind: 'text', text: paragraph })
+    if (illustration?.after_text === paragraph) {
+      blocks.push({ kind: 'image', slot: illustration })
+    }
+  }
+  return blocks
+}
+
 export const buildAuthoredNarrativeBlocks = (
   part: AuthoredStoryPart,
   phase: AuthoredStoryPhase,
@@ -302,6 +321,24 @@ export const validateAuthoredStoryPackage = (
             errors.push(`duplicate asset_id: ${choice.illustration.asset_id}`)
           }
           assetIds.add(choice.illustration.asset_id)
+
+          if (choice.illustration.behavior === 'show_in_resolution_after_anchor') {
+            const anchor = choice.illustration.after_text?.trim()
+            if (!anchor) {
+              errors.push(
+                `${choice.choice_id}: show_in_resolution_after_anchor requires after_text`,
+              )
+            } else {
+              const count = paragraphsOf(choice.resolution_text).filter(
+                (paragraph) => paragraph === anchor,
+              ).length
+              if (count !== 1) {
+                errors.push(
+                  `${choice.choice_id}: choice illustration anchor must occur exactly once, got ${count}`,
+                )
+              }
+            }
+          }
         }
       }
       choicesByDecision.set(part.decision.decision_id, decisionChoiceIds)
