@@ -47,7 +47,8 @@
     "check:story-library": "node scripts/check-story-library-persistence.mjs",
     "check:authored-v3": "node scripts/check-authored-story-v3.mjs",
     "check:authored-progress-backend": "node scripts/check-authored-progress-backend.mjs",
-    "check:seven-roads-shell": "node scripts/check-seven-roads-product-shell.mjs"
+    "check:seven-roads-shell": "node scripts/check-seven-roads-product-shell.mjs",
+    "check:authored-story2": "node scripts/check-authored-story2-v4.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
