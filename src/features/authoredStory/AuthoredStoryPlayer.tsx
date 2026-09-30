@@ -14,6 +14,7 @@ import {
 } from '../publishedStories/sevenRoadsCopy'
 import {
   advanceAuthoredStory,
+  buildAuthoredChoiceResolutionBlocks,
   buildAuthoredNarrativeBlocks,
   canAdvanceAuthoredStory,
   createInitialAuthoredStoryProgress,
@@ -316,6 +317,10 @@ export function AuthoredStoryPlayer({
   const postChoiceBlocks = useMemo(
     () => buildAuthoredNarrativeBlocks(part, 'post_choice_text', progress.selected_choices),
     [part, progress.selected_choices],
+  )
+  const selectedResolutionBlocks = useMemo(
+    () => selectedChoice ? buildAuthoredChoiceResolutionBlocks(selectedChoice) : [],
+    [selectedChoice],
   )
 
   useEffect(() => {
@@ -676,7 +681,8 @@ export function AuthoredStoryPlayer({
                 >
                   {choice.illustration &&
                   choice.illustration.behavior !== 'show_after_selection' &&
-                  choice.illustration.behavior !== 'show_after_resolution' ? (
+                  choice.illustration.behavior !== 'show_after_resolution' &&
+                  choice.illustration.behavior !== 'show_in_resolution_after_anchor' ? (
                     <StoryImage
                       asset={choice.illustration}
                       alt={choice.text}
@@ -722,7 +728,8 @@ export function AuthoredStoryPlayer({
           </section>
 
           {selectedChoice.illustration &&
-          selectedChoice.illustration.behavior !== 'show_after_resolution' ? (
+          selectedChoice.illustration.behavior !== 'show_after_resolution' &&
+          selectedChoice.illustration.behavior !== 'show_in_resolution_after_anchor' ? (
             <StoryImage
               asset={selectedChoice.illustration}
               alt={selectedChoice.text}
@@ -734,17 +741,14 @@ export function AuthoredStoryPlayer({
           ) : null}
 
           <article className={`px-1 py-1 ${readerTheme.text}`} style={readerTextStyle}>
-            <div className="space-y-5">
-              {selectedChoice.resolution_text
-                .split(/\n\n+/)
-                .map((paragraph) => paragraph.trim())
-                .filter(Boolean)
-                .map((paragraph, index) => (
-                  <p key={`resolution-${index}`} className="whitespace-pre-wrap">
-                    {renderInline(paragraph)}
-                  </p>
-                ))}
-            </div>
+            <StoryBlocks
+              blocks={selectedResolutionBlocks}
+              showMissingAssetPlaceholders={showMissingAssetPlaceholders}
+              onOpenImage={openImage}
+              onImageSeen={markImageSeen}
+              language={language}
+              episodeNumber={readerProgress.current}
+            />
           </article>
 
           {selectedChoice.illustration &&
