@@ -1,5 +1,6 @@
 import rawPrazdnikMuzhestvaV3 from './authored/prazdnikMuzhestvaV3.ru.json'
 import rawPrazdnikMuzhestvaV3Uz from './authored/prazdnikMuzhestvaV3.uz.json'
+import rawTaynaVostochnogoKaravanaV4 from './authored/taynaVostochnogoKaravanaV4.ru.json'
 import { validateAuthoredStoryPackage } from '../features/authoredStory/engine'
 import {
   localizeAuthoredStoryPackage,
@@ -23,7 +24,12 @@ export const prazdnikMuzhestvaV3ByLanguage = {
   uz: prazdnikMuzhestvaV3Uz,
 } as const
 
-for (const story of Object.values(prazdnikMuzhestvaV3ByLanguage)) {
+export const taynaVostochnogoKaravanaV4Ru = coerce(rawTaynaVostochnogoKaravanaV4)
+
+for (const story of [
+  ...Object.values(prazdnikMuzhestvaV3ByLanguage),
+  taynaVostochnogoKaravanaV4Ru,
+]) {
   const validationErrors = validateAuthoredStoryPackage(story)
   if (validationErrors.length > 0) {
     throw new Error(
