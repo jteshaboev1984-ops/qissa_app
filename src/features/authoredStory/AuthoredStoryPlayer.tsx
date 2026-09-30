@@ -310,12 +310,12 @@ export function AuthoredStoryPlayer({
   const part = getCurrentAuthoredStoryPart(story, progress)
   const selectedChoice = getSelectedChoiceForPart(part, progress)
   const storyBlocks = useMemo(
-    () => buildAuthoredNarrativeBlocks(part, 'story_text'),
-    [part],
+    () => buildAuthoredNarrativeBlocks(part, 'story_text', progress.selected_choices),
+    [part, progress.selected_choices],
   )
   const postChoiceBlocks = useMemo(
-    () => buildAuthoredNarrativeBlocks(part, 'post_choice_text'),
-    [part],
+    () => buildAuthoredNarrativeBlocks(part, 'post_choice_text', progress.selected_choices),
+    [part, progress.selected_choices],
   )
 
   useEffect(() => {
@@ -674,14 +674,16 @@ export function AuthoredStoryPlayer({
                       : 'border-[#d8c39a] bg-[#fffaf0]'
                   }`}
                 >
-                  <StoryImage
-                    asset={choice.illustration}
-                    alt={choice.text}
-                    showPlaceholder={showMissingAssetPlaceholders}
-                    onOpen={openImage}
-                    onSeen={markImageSeen}
-                    language={language}
-                  />
+                  {choice.illustration ? (
+                    <StoryImage
+                      asset={choice.illustration}
+                      alt={choice.text}
+                      showPlaceholder={showMissingAssetPlaceholders}
+                      onOpen={openImage}
+                      onSeen={markImageSeen}
+                      language={language}
+                    />
+                  ) : null}
                   <button
                     type="button"
                     onClick={() => setPreviewChoiceId(choice.choice_id)}
@@ -717,14 +719,16 @@ export function AuthoredStoryPlayer({
             <p className="font-bold leading-6 text-[#243c3b]">{selectedChoice.text}</p>
           </section>
 
-          <StoryImage
-            asset={selectedChoice.illustration}
-            alt={selectedChoice.text}
-            showPlaceholder={showMissingAssetPlaceholders}
-            onOpen={openImage}
-            onSeen={markImageSeen}
-            language={language}
-          />
+          {selectedChoice.illustration ? (
+            <StoryImage
+              asset={selectedChoice.illustration}
+              alt={selectedChoice.text}
+              showPlaceholder={showMissingAssetPlaceholders}
+              onOpen={openImage}
+              onSeen={markImageSeen}
+              language={language}
+            />
+          ) : null}
 
           <article className={`px-1 py-1 ${readerTheme.text}`} style={readerTextStyle}>
             <div className="space-y-5">
