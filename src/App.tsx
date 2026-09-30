@@ -4,6 +4,7 @@ import { PublishedStoriesWelcome } from './components/PublishedStoriesWelcome'
 import { SeasonOverview } from './components/SeasonOverview'
 import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
 import { getSevenRoadsSeason1 } from './data/sevenRoadsSeasons'
+import { taynaVostochnogoKaravanaV4Ru } from './data/authoredStories'
 import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
 import { getSevenRoadsCopy } from './features/publishedStories/sevenRoadsCopy'
 import { publishedStoriesConsent } from './lib/publishedStoriesConsent'
@@ -33,15 +34,44 @@ function App() {
     () => sevenRoadsReaderPreferences.load(),
   )
 
-  const authoredPreviewRequested =
-    import.meta.env.VITE_QISSA_AUTHORED_V3_PREVIEW === 'true' &&
-    new URLSearchParams(window.location.search).get('authoredStory') === 'prazdnik-muzhestva'
+  const authoredPreviewKey =
+    import.meta.env.VITE_QISSA_AUTHORED_V3_PREVIEW === 'true'
+      ? new URLSearchParams(window.location.search).get('authoredStory')
+      : null
+  const authoredPreviewRequested = authoredPreviewKey === 'prazdnik-muzhestva'
+  const story2PreviewRequested = authoredPreviewKey === 'tayna-vostochnogo-karavana'
 
   const episodeTitles = season.episodes.map((episode) => episode.title)
 
   const changeLanguage = (nextLanguage: typeof language) => {
     setLanguage(nextLanguage)
     sevenRoadsLanguagePreference.save(nextLanguage)
+  }
+
+
+  if (story2PreviewRequested) {
+    return (
+      <div className="relative min-h-screen text-[#1f241d]">
+        <div className="mx-auto max-w-[430px] px-4 py-5 sm:px-6">
+          <AuthoredStoryPlayer
+            story={taynaVostochnogoKaravanaV4Ru}
+            seasonNumber={2}
+            readerPreferences={readerPreferences}
+            onReaderPreferencesChange={(patch) => {
+              const next = { ...readerPreferences, ...patch }
+              setReaderPreferences(next)
+              sevenRoadsReaderPreferences.save(next)
+            }}
+            showMissingAssetPlaceholders
+            onBack={() => {
+              const url = new URL(window.location.href)
+              url.searchParams.delete('authoredStory')
+              window.location.assign(url.toString())
+            }}
+          />
+        </div>
+      </div>
+    )
   }
 
   if (authoredPreviewRequested) {
