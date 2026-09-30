@@ -674,7 +674,8 @@ export function AuthoredStoryPlayer({
                       : 'border-[#d8c39a] bg-[#fffaf0]'
                   }`}
                 >
-                  {choice.illustration ? (
+                  {choice.illustration &&
+                  choice.illustration.behavior !== 'show_after_selection' ? (
                     <StoryImage
                       asset={choice.illustration}
                       alt={choice.text}
