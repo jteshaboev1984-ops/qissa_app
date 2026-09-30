@@ -456,8 +456,8 @@
   "runtime_rules": {
     "choice_1_images": "none",
     "choice_2_images": "none",
-    "choice_3_images": "render only as choice options and retain selected option after confirmation",
-    "choice_4_images": "render only as choice options and retain selected option after confirmation",
+    "choice_3_images": "do not preview both branches; render only the selected branch image after confirmation",
+    "choice_4_images": "do not preview both branches; render only the selected branch image after confirmation",
     "deferred_choice_3_payoffs": "must render from saved choice memory; never flatten both branches into common prose",
     "text_image_order": "image appears only after its exact anchor paragraph to avoid clue spoilers",
     "listen_mode": "keep existing style-pack listening mode; Story2 production illustrations are Reading/Gallery assets"
