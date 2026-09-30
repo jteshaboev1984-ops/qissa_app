@@ -23,6 +23,7 @@ export interface AuthoredStoryChoiceIllustration {
   behavior: string
   asset_id: string
   runtime_url: string | null
+  after_text?: string
 }
 
 export interface AuthoredStoryChoice {
@@ -141,4 +142,4 @@ export interface AuthoredStoryProgress {
 
 export type AuthoredStoryNarrativeBlock =
   | { kind: 'text'; text: string }
-  | { kind: 'image'; slot: AuthoredStoryImageSlot }
+  | { kind: 'image'; slot: AuthoredStoryImageSlot | AuthoredStoryChoiceIllustration }
