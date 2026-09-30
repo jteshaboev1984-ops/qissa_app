@@ -32,7 +32,18 @@ export interface AuthoredStoryChoice {
   resolution_text: string
   state_patch: StatePatch
   value_alignment: PositiveValue[]
-  illustration: AuthoredStoryChoiceIllustration
+  illustration: AuthoredStoryChoiceIllustration | null
+}
+
+export interface AuthoredStoryConditionalSegment {
+  segment_id: string
+  phase: AuthoredStoryPhase
+  after_text: string
+  when: {
+    decision_id: string
+    choice_id: string
+  }
+  text: string
 }
 
 export interface AuthoredStoryDecision {
@@ -51,6 +62,7 @@ export interface AuthoredStoryPart {
   visual_state: string
   illustration_refs: string[]
   image_slots: AuthoredStoryImageSlot[]
+  conditional_segments?: AuthoredStoryConditionalSegment[]
   decision: AuthoredStoryDecision | null
   is_final: boolean
 }
