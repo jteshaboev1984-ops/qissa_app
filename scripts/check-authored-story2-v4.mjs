@@ -221,6 +221,159 @@ for (const assetId of manifestAssetIds) {
   if (!sceneAssetIds.has(assetId)) fail(`layout manifest contains unknown scene asset: ${assetId}`)
 }
 
+
+const imageIdsForPhase = (part, phase) => {
+  const byAnchor = new Map()
+  for (const slot of part.image_slots ?? []) {
+    if (slot.phase !== phase) continue
+    const existing = byAnchor.get(slot.after_text) ?? []
+    existing.push(slot.asset_id)
+    byAnchor.set(slot.after_text, existing)
+  }
+
+  const ordered = []
+  const phaseText = phase === 'story_text' ? part.story_text : part.post_choice_text
+  for (const paragraph of paragraphsOf(phaseText)) {
+    ordered.push(...(byAnchor.get(paragraph) ?? []))
+  }
+  return ordered
+}
+
+const visibleImageOrderForChoices = (selectedByDecision) => {
+  const ordered = []
+
+  for (const part of story.parts) {
+    ordered.push(...imageIdsForPhase(part, 'story_text'))
+
+    if (part.decision) {
+      const selectedChoiceId = selectedByDecision[part.decision.decision_id]
+      const selectedChoice = part.decision.choices.find(
+        (choice) => choice.choice_id === selectedChoiceId,
+      )
+      if (!selectedChoice) {
+        fail('missing selected choice for ' + part.decision.decision_id)
+      } else if (selectedChoice.illustration) {
+        const illustration = selectedChoice.illustration
+        if (illustration.behavior !== 'show_in_resolution_after_anchor') {
+          fail(selectedChoice.choice_id + ': unexpected choice illustration behavior')
+        } else {
+          let inserted = false
+          for (const paragraph of paragraphsOf(selectedChoice.resolution_text)) {
+            if (paragraph === illustration.after_text) {
+              ordered.push(illustration.asset_id)
+              inserted = true
+            }
+          }
+          if (!inserted) {
+            fail(selectedChoice.choice_id + ': selected illustration was not inserted')
+          }
+        }
+      }
+    }
+
+    ordered.push(...imageIdsForPhase(part, 'post_choice_text'))
+  }
+
+  return ordered
+}
+
+const sharedSequencePrefix = [
+  'seven_roads_story2_p1_img_01_v1',
+  'seven_roads_story2_p1_img_02_v1',
+  'seven_roads_story2_p2_img_01_v1',
+  'seven_roads_story2_p2_img_02_v1',
+  'seven_roads_story2_p3_img_01_v2',
+  'seven_roads_story2_p3_img_02_v1',
+  'seven_roads_story2_p3_img_03_v1',
+  'seven_roads_story2_p4_img_01_v1',
+  'seven_roads_story2_p4_img_02_v1',
+  'seven_roads_story2_p5_img_01_v1',
+  'seven_roads_story2_p5_img_02_v1',
+  'seven_roads_story2_p6_img_01_v1',
+  'seven_roads_story2_p6_img_02_v1',
+]
+const sharedSequenceMiddle = [
+  'seven_roads_story2_p7_img_01_v1',
+  'seven_roads_story2_p7_img_02_v1',
+  'seven_roads_story2_p7_img_03_v1',
+]
+const sharedSequenceTail = [
+  'seven_roads_story2_p9_img_01_v1',
+  'seven_roads_story2_p9_img_02_v1',
+  'seven_roads_story2_p9_img_03_v1',
+  'seven_roads_story2_p10_img_01_v1',
+  'seven_roads_story2_p10_img_02_v1',
+  'seven_roads_story2_p10_img_03_v1',
+  'seven_roads_story2_p10_img_04_v1',
+  'seven_roads_story2_p10_img_05_v1',
+]
+
+const choicePairs = decisions.map((part) => part.decision.choices)
+const pathCount = 2 ** choicePairs.length
+for (let mask = 0; mask < pathCount; mask += 1) {
+  const selectedByDecision = {}
+  const selectedIds = []
+
+  decisions.forEach((part, decisionIndex) => {
+    const choice = part.decision.choices[(mask >> decisionIndex) & 1]
+    selectedByDecision[part.decision.decision_id] = choice.choice_id
+    selectedIds.push(choice.choice_id)
+  })
+
+  const choice3 = selectedIds.find((id) => id.startsWith('story2_choice_3'))
+  const choice4 = selectedIds.find((id) => id.startsWith('story2_choice_4'))
+  const choice3Asset =
+    choice3 === 'story2_choice_3a_old_sarvan_yard'
+      ? 'seven_roads_story2_p6a_img_03_v1'
+      : 'seven_roads_story2_p6b_img_03_v1'
+  const choice4Asset =
+    choice4 === 'story2_choice_4a_guard_shortcut'
+      ? 'seven_roads_story2_p8a_img_01_v1'
+      : 'seven_roads_story2_p8b_img_01_v1'
+
+  const expectedOrder = [
+    ...sharedSequencePrefix,
+    choice3Asset,
+    ...sharedSequenceMiddle,
+    choice4Asset,
+    ...sharedSequenceTail,
+  ]
+  const actualOrder = visibleImageOrderForChoices(selectedByDecision)
+  const pathLabel = selectedIds.join(' > ')
+
+  if (actualOrder.length !== 26) {
+    fail(
+      'path ' + pathLabel + ': expected 26 visible scene images, got ' + actualOrder.length,
+    )
+  }
+  if (new Set(actualOrder).size !== actualOrder.length) {
+    fail('path ' + pathLabel + ': duplicate visible image detected')
+  }
+  if (JSON.stringify(actualOrder) !== JSON.stringify(expectedOrder)) {
+    fail(
+      'path ' + pathLabel + ': text/image sequence drifted\n' +
+      '  expected: ' + expectedOrder.join(' -> ') + '\n' +
+      '  actual:   ' + actualOrder.join(' -> '),
+    )
+  }
+
+  const forbiddenChoice3Asset =
+    choice3Asset === 'seven_roads_story2_p6a_img_03_v1'
+      ? 'seven_roads_story2_p6b_img_03_v1'
+      : 'seven_roads_story2_p6a_img_03_v1'
+  const forbiddenChoice4Asset =
+    choice4Asset === 'seven_roads_story2_p8a_img_01_v1'
+      ? 'seven_roads_story2_p8b_img_01_v1'
+      : 'seven_roads_story2_p8a_img_01_v1'
+
+  if (actualOrder.includes(forbiddenChoice3Asset)) {
+    fail('path ' + pathLabel + ': unchosen Choice 3 image leaked into reader')
+  }
+  if (actualOrder.includes(forbiddenChoice4Asset)) {
+    fail('path ' + pathLabel + ': unchosen Choice 4 image leaked into reader')
+  }
+}
+
 const corpus = [
   ...story.parts.flatMap((part) => [
     part.story_text,
@@ -272,5 +425,6 @@ console.log('[story2-v4] 10 parts · 4 decisions · 16 choice paths')
 console.log('[story2-v4] 28 approved scene assets · 24 shared · 4 selected-branch')
 console.log('[story2-v4] all 28 scene images are locked to exact approved text anchors')
 console.log('[story2-v4] 5 deferred Choice-3 payoff segments')
+console.log('[story2-v4] all 16 paths preserve the exact 26-image reader sequence without branch leaks')
 console.log('[story2-v4] critical road-seal canon and app-layout manifest are locked')
 console.log('[story2-v4] Season 2 remains gated as coming_soon')
