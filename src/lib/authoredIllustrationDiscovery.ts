@@ -128,15 +128,14 @@ const seedFromProgress = (
       part.decision &&
       progress.selected_choices[part.decision.decision_id]
     ) {
+      // Only art that was actually visible on the choice menu can be inferred as seen.
+      // Selected-only art is unlocked by StoryImage's IntersectionObserver when the
+      // reader really reaches it; do not leak it into the gallery on confirmation.
       part.decision.choices.forEach((choice) => {
         if (choice.illustration && choicePreviewIsVisible(choice.illustration)) {
           ids.add(choice.illustration.asset_id)
         }
       })
-      const selectedChoice = part.decision.choices.find(
-        (choice) => choice.choice_id === progress.selected_choices[part.decision!.decision_id],
-      )
-      if (selectedChoice?.illustration) ids.add(selectedChoice.illustration.asset_id)
     }
   })
 
