@@ -11,6 +11,7 @@ export interface AuthoredStoryLocalizedChoiceText {
   effect_summary: string
   resolution_text: string
   last_event: string
+  illustration_after_text?: string
 }
 
 export interface AuthoredStoryLocalizedDecisionText {
@@ -67,11 +68,44 @@ const localizeChoice = (
 ): AuthoredStoryChoice => {
   const localized = requireLocalizedChoice(decisionText, choice.choice_id)
 
+  const localizedIllustration = choice.illustration
+    ? {
+        ...choice.illustration,
+        after_text:
+          choice.illustration.after_text == null
+            ? undefined
+            : localized.illustration_after_text?.trim(),
+      }
+    : null
+
+  if (
+    choice.illustration?.behavior === 'show_in_resolution_after_anchor' &&
+    !localizedIllustration?.after_text
+  ) {
+    throw new Error(
+      `Missing localized choice illustration anchor: ${choice.choice_id}`,
+    )
+  }
+
+  if (localizedIllustration?.after_text) {
+    const occurrences = localized.resolution_text
+      .split(/\n\n+/)
+      .map((paragraph) => paragraph.trim())
+      .filter((paragraph) => paragraph === localizedIllustration.after_text).length
+
+    if (occurrences !== 1) {
+      throw new Error(
+        `${choice.choice_id}: localized choice illustration anchor must occur exactly once, got ${occurrences}`,
+      )
+    }
+  }
+
   return {
     ...choice,
     text: localized.text,
     effect_summary: localized.effect_summary,
     resolution_text: localized.resolution_text,
+    illustration: localizedIllustration,
     state_patch: {
       ...choice.state_patch,
       last_event: localized.last_event,
