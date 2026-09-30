@@ -1,10 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PublishedStoriesShell, type PublishedStoriesTab } from './components/PublishedStoriesShell'
 import { PublishedStoriesWelcome } from './components/PublishedStoriesWelcome'
 import { SeasonOverview } from './components/SeasonOverview'
 import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
 import { getSevenRoadsSeason1 } from './data/sevenRoadsSeasons'
-import { taynaVostochnogoKaravanaV4Ru } from './data/authoredStories'
 import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
 import { getSevenRoadsCopy } from './features/publishedStories/sevenRoadsCopy'
 import { publishedStoriesConsent } from './lib/publishedStoriesConsent'
@@ -12,6 +11,7 @@ import { authoredStoryPersistence } from './lib/authoredStoryPersistence'
 import { authoredReadingPosition } from './lib/authoredReadingPosition'
 import { sevenRoadsLanguagePreference } from './lib/sevenRoadsLanguagePreference'
 import { sevenRoadsReaderPreferences } from './lib/sevenRoadsReaderPreferences'
+import type { AuthoredStoryPackage } from './features/authoredStory/types'
 import type { ReaderPreferences } from './types/qissa'
 
 type SevenRoadsView = 'shell' | 'season' | 'story' | 'settings'
@@ -40,6 +40,30 @@ function App() {
       : null
   const authoredPreviewRequested = authoredPreviewKey === 'prazdnik-muzhestva'
   const story2PreviewRequested = authoredPreviewKey === 'tayna-vostochnogo-karavana'
+  const [story2PreviewStory, setStory2PreviewStory] = useState<AuthoredStoryPackage | null>(null)
+  const [story2PreviewError, setStory2PreviewError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!story2PreviewRequested) return
+
+    let active = true
+    setStory2PreviewError(null)
+
+    import('./data/story2Preview')
+      .then(({ taynaVostochnogoKaravanaV4Ru }) => {
+        if (active) setStory2PreviewStory(taynaVostochnogoKaravanaV4Ru)
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        setStory2PreviewError(
+          error instanceof Error ? error.message : 'Story 2 preview failed to load.',
+        )
+      })
+
+    return () => {
+      active = false
+    }
+  }, [story2PreviewRequested])
 
   const episodeTitles = season.episodes.map((episode) => episode.title)
 
@@ -50,11 +74,27 @@ function App() {
 
 
   if (story2PreviewRequested) {
+    if (story2PreviewError) {
+      return (
+        <div className="mx-auto max-w-[430px] px-4 py-8 text-sm text-[#6b2d2d]">
+          Story 2 preview error: {story2PreviewError}
+        </div>
+      )
+    }
+
+    if (!story2PreviewStory) {
+      return (
+        <div className="mx-auto max-w-[430px] px-4 py-8 text-sm text-[#665d49]">
+          Loading Story 2 preview…
+        </div>
+      )
+    }
+
     return (
       <div className="relative min-h-screen text-[#1f241d]">
         <div className="mx-auto max-w-[430px] px-4 py-5 sm:px-6">
           <AuthoredStoryPlayer
-            story={taynaVostochnogoKaravanaV4Ru}
+            story={story2PreviewStory}
             seasonNumber={2}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
