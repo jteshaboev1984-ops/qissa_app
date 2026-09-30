@@ -451,7 +451,7 @@
               "kind": "choice",
               "scene_key": "samira_old_sarvan_yard",
               "status": "approved",
-              "behavior": "show_after_selection",
+              "behavior": "show_after_resolution",
               "asset_id": "seven_roads_story2_p6a_img_03_v1",
               "runtime_url": null
             }
@@ -477,7 +477,7 @@
               "kind": "choice",
               "scene_key": "samira_questions_azim",
               "status": "approved",
-              "behavior": "show_after_selection",
+              "behavior": "show_after_resolution",
               "asset_id": "seven_roads_story2_p6b_img_03_v1",
               "runtime_url": null
             }
@@ -527,7 +527,7 @@
               "kind": "choice",
               "scene_key": "nadir_stopped_by_guard_shortcut",
               "status": "approved",
-              "behavior": "show_after_selection",
+              "behavior": "show_after_resolution",
               "asset_id": "seven_roads_story2_p8a_img_01_v1",
               "runtime_url": null
             }
@@ -552,7 +552,7 @@
               "kind": "choice",
               "scene_key": "nadir_guided_to_guards_with_arrows",
               "status": "approved",
-              "behavior": "show_after_selection",
+              "behavior": "show_after_resolution",
               "asset_id": "seven_roads_story2_p8b_img_01_v1",
               "runtime_url": null
             }
@@ -732,7 +732,7 @@
     "choice_asset_count": 4,
     "cover_asset_count": 1,
     "visible_assets_per_playthrough": 27,
-    "rule": "Render shared images only after exact narrative anchors. Choices 1-2 have no art. Choices 3-4 reveal only the selected branch image after confirmation. Deferred Choice-3 payoffs render from saved choice memory.",
+    "rule": "Render shared images only after exact narrative anchors. Choices 1-2 have no art. Choices 3-4 reveal only the selected branch image after that branch resolution text. Deferred Choice-3 payoffs render from saved choice memory.",
     "production_prompt_pack_ref": "Library approved assets under /QISSA/production/seven_roads/story2_v2/approved/"
   },
   "cover_illustration": {
