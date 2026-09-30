@@ -77,7 +77,8 @@ const markSeen = (
 }
 
 const choicePreviewIsVisible = (asset: AuthoredStoryChoiceIllustration): boolean =>
-  asset.behavior !== 'show_after_selection'
+  asset.behavior !== 'show_after_selection' &&
+  asset.behavior !== 'show_after_resolution'
 
 const addPartAssets = (
   ids: Set<string>,
