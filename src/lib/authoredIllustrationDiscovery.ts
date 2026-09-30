@@ -84,7 +84,9 @@ const addPartAssets = (
   part.image_slots.forEach((slot) => ids.add(slot.asset_id))
 
   if (includeChoicePreviews && part.decision) {
-    part.decision.choices.forEach((choice) => ids.add(choice.illustration.asset_id))
+    part.decision.choices.forEach((choice) => {
+      if (choice.illustration) ids.add(choice.illustration.asset_id)
+    })
   }
 }
 
@@ -110,7 +112,9 @@ const seedFromProgress = (
       progress.selected_choices[part.decision.decision_id]
     ) {
       // Confirming a choice means both preview cards were already shown.
-      part.decision.choices.forEach((choice) => ids.add(choice.illustration.asset_id))
+      part.decision.choices.forEach((choice) => {
+        if (choice.illustration) ids.add(choice.illustration.asset_id)
+      })
     }
   })
 
@@ -168,6 +172,7 @@ const buildGalleryEpisodes = (
 
     if (part.decision) {
       part.decision.choices.forEach((choice) => {
+        if (!choice.illustration) return
         push(
           episodeNumber,
           imageItem(
