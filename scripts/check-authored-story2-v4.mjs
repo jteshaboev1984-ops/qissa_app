@@ -75,8 +75,14 @@ for (const part of decisions) {
         fail(`${choice.choice_id}: selected branch illustration is required`)
       } else {
         choiceArts.push(choice.illustration)
-        if (choice.illustration.behavior !== 'show_after_resolution') {
-          fail(`${choice.choice_id}: illustration must use show_after_resolution`)
+        if (choice.illustration.behavior !== 'show_in_resolution_after_anchor') {
+          fail(`${choice.choice_id}: illustration must use show_in_resolution_after_anchor`)
+        }
+        const anchorCount = paragraphsOf(choice.resolution_text).filter(
+          (paragraph) => paragraph === choice.illustration.after_text,
+        ).length
+        if (anchorCount !== 1) {
+          fail(`${choice.choice_id}: branch image anchor must occur exactly once, got ${anchorCount}`)
         }
       }
     }
@@ -85,6 +91,63 @@ for (const part of decisions) {
 
 if (sharedSlots.length !== 24) fail(`expected 24 shared scene images, got ${sharedSlots.length}`)
 if (choiceArts.length !== 4) fail(`expected 4 selected-branch images, got ${choiceArts.length}`)
+
+const expectedSharedAnchors = new Map([
+  ['P1-IMG-01', 'Теперь проходом почти никто не пользовался.'],
+  ['P1-IMG-02', 'Знал мастерскую лукодела у ремесленного ряда. Над дверью там висел круглый щит с тремя старыми стрелами, а в дни большого каравана мастер выставлял готовые луки прямо у входа.'],
+  ['P2-IMG-01', 'К полудню тихий Арас загудел.'],
+  ['P2-IMG-02', 'Молчаливого — Барласом.'],
+  ['P3-IMG-01', 'Когда он поднял её, на красной поверхности остался глубокий рисунок.'],
+  ['P3-IMG-02', '— Эй!'],
+  ['P3-IMG-03', 'Теперь они провели лошадей наружу одну за другой.'],
+  ['P4-IMG-01', 'Барлас быстро сравнил жетоны и кивнул.'],
+  ['P4-IMG-02', '— Конечно, кусается.'],
+  ['P5-IMG-01', 'Капитан поднял маленький отколовшийся кусочек сургуча. На одной стороне виднелись несколько вдавленных линий.'],
+  ['P5-IMG-02', 'Тот самый.'],
+  ['P6-IMG-01', 'Дальше земля становилась твёрже, и след быстро терялся.'],
+  ['P6-IMG-02', '— Эти двое, если верить твоему письму, не отсюда.'],
+  ['P7-IMG-01', 'Последним Самира надела широкий пояс Всадника короля и закрепила на нём церемониальную саблю в ножнах.'],
+  ['P7-IMG-02', '— А потом кто-то другой вошёл.'],
+  ['P7-IMG-03', 'И сразу понял слишком много.'],
+  ['P9-IMG-01', 'Капитан сел напротив.'],
+  ['P9-IMG-02', 'Темур достал металлическую накладку со знаком разбойников и положил рядом с деревянным жетоном.'],
+  ['P9-IMG-03', '— Такой знак был на его воротах.'],
+  ['P10-IMG-01', 'Со стороны разговор выглядел обычным.'],
+  ['P10-IMG-02', 'С ними был старший стражник капитана. При нём находилось запечатанное письмо для начальника стражи Сарвана.'],
+  ['P10-IMG-03', 'Булут пошёл следом.'],
+  ['P10-IMG-04', 'Самира покачала головой.'],
+  ['P10-IMG-05', 'В это же утро восточный караван уходил дальше с Надиром. Где-то среди обычных путников ехали люди капитана, а впереди уже спешил гонец с предупреждением.'],
+])
+
+const expectedChoiceAnchors = new Map([
+  ['P6A-IMG-03', 'На воротах ещё сохранился старый знак двора: две узкие башни по сторонам проезда.'],
+  ['P6B-IMG-03', '— У Каменного колодца. Они уже стояли возле дороги. Две лошади, несколько связок кожи.'],
+  ['P8A-IMG-01', 'Он увидел стражников впереди и резко остановился.'],
+  ['P8B-IMG-01', 'Вторая легла дальше по той же стороне, не давая ему снова взять левее.'],
+])
+
+for (const slot of sharedSlots) {
+  const expected = expectedSharedAnchors.get(slot.slot_id)
+  if (!expected) fail(`unexpected shared image slot: ${slot.slot_id}`)
+  if (slot.after_text !== expected) {
+    fail(`${slot.slot_id}: exact approved anchor drifted`)
+  }
+}
+if (expectedSharedAnchors.size !== sharedSlots.length) {
+  fail(`expected ${expectedSharedAnchors.size} locked shared anchors, got ${sharedSlots.length}`)
+}
+
+for (const art of choiceArts) {
+  const expected = expectedChoiceAnchors.get(art.slot_id)
+  if (!expected) fail(`unexpected selected-branch image slot: ${art.slot_id}`)
+  if (art.after_text !== expected) {
+    fail(`${art.slot_id}: exact approved branch anchor drifted`)
+  }
+}
+if (expectedChoiceAnchors.size !== choiceArts.length) {
+  fail(`expected ${expectedChoiceAnchors.size} locked branch anchors, got ${choiceArts.length}`)
+}
+
 
 const packageAssetIds = [
   story.cover_illustration.asset_id,
@@ -207,6 +270,7 @@ if (errors.length > 0) {
 console.log('[story2-v4] PASS')
 console.log('[story2-v4] 10 parts · 4 decisions · 16 choice paths')
 console.log('[story2-v4] 28 approved scene assets · 24 shared · 4 selected-branch')
+console.log('[story2-v4] all 28 scene images are locked to exact approved text anchors')
 console.log('[story2-v4] 5 deferred Choice-3 payoff segments')
 console.log('[story2-v4] critical road-seal canon and app-layout manifest are locked')
 console.log('[story2-v4] Season 2 remains gated as coming_soon')
