@@ -35,6 +35,7 @@ interface AuthoredStoryPlayerProps {
   story: AuthoredStoryPackage
   onBack?: () => void
   showMissingAssetPlaceholders?: boolean
+  showCover?: boolean
   seasonNumber?: number
   episodeTitles?: string[]
   completionSummary?: string
@@ -255,6 +256,7 @@ export function AuthoredStoryPlayer({
   story,
   onBack,
   showMissingAssetPlaceholders = false,
+  showCover = true,
   seasonNumber = 1,
   episodeTitles,
   completionSummary,
@@ -609,7 +611,7 @@ export function AuthoredStoryPlayer({
         </div>
 
       <header className="space-y-3">
-        {currentPartNumber === 1 ? (
+        {showCover && currentPartNumber === 1 ? (
           <StoryImage
             asset={{
               slot_id: 'cover',
