@@ -675,7 +675,8 @@ export function AuthoredStoryPlayer({
                   }`}
                 >
                   {choice.illustration &&
-                  choice.illustration.behavior !== 'show_after_selection' ? (
+                  choice.illustration.behavior !== 'show_after_selection' &&
+                  choice.illustration.behavior !== 'show_after_resolution' ? (
                     <StoryImage
                       asset={choice.illustration}
                       alt={choice.text}
@@ -720,7 +721,8 @@ export function AuthoredStoryPlayer({
             <p className="font-bold leading-6 text-[#243c3b]">{selectedChoice.text}</p>
           </section>
 
-          {selectedChoice.illustration ? (
+          {selectedChoice.illustration &&
+          selectedChoice.illustration.behavior !== 'show_after_resolution' ? (
             <StoryImage
               asset={selectedChoice.illustration}
               alt={selectedChoice.text}
@@ -744,6 +746,18 @@ export function AuthoredStoryPlayer({
                 ))}
             </div>
           </article>
+
+          {selectedChoice.illustration &&
+          selectedChoice.illustration.behavior === 'show_after_resolution' ? (
+            <StoryImage
+              asset={selectedChoice.illustration}
+              alt={selectedChoice.text}
+              showPlaceholder={showMissingAssetPlaceholders}
+              onOpen={openImage}
+              onSeen={markImageSeen}
+              language={language}
+            />
+          ) : null}
         </>
       ) : null}
 
