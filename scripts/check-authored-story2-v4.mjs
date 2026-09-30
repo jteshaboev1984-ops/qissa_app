@@ -75,8 +75,8 @@ for (const part of decisions) {
         fail(`${choice.choice_id}: selected branch illustration is required`)
       } else {
         choiceArts.push(choice.illustration)
-        if (choice.illustration.behavior !== 'show_after_selection') {
-          fail(`${choice.choice_id}: illustration must use show_after_selection`)
+        if (choice.illustration.behavior !== 'show_after_resolution') {
+          fail(`${choice.choice_id}: illustration must use show_after_resolution`)
         }
       }
     }
