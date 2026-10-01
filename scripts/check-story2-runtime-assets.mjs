@@ -18,7 +18,7 @@ const inventory = JSON.parse(
 const errors = []
 const fail = (message) => errors.push(message)
 
-if (inventory.version !== 'story2-runtime-webp-2') {
+if (inventory.version !== 'story2-runtime-webp-3') {
   fail(`unexpected runtime inventory version: ${inventory.version}`)
 }
 if (inventory.count !== 28) fail(`expected 28 runtime assets, got ${inventory.count}`)
@@ -73,12 +73,8 @@ for (const item of inventory.items ?? []) {
   if (!Number.isInteger(width) || !Number.isInteger(height)) {
     fail(`${assetId}: width/height must be integers`)
   } else {
-    if (width < 1100 || height < 700) {
-      fail(`${assetId}: runtime image is too small for reader use (${width}x${height})`)
-    }
-    const ratio = width / height
-    if (ratio < 1.45 || ratio > 1.55) {
-      fail(`${assetId}: expected ~3:2 landscape ratio, got ${ratio.toFixed(3)}`)
+    if (width !== 1536 || height !== 1024) {
+      fail(`${assetId}: runtime image must be full-resolution 1536x1024, got ${width}x${height}`)
     }
   }
 
@@ -100,19 +96,8 @@ for (const assetId of expectedSceneAssetIds) {
 if (inventory.total_bytes !== totalBytes) {
   fail(`inventory total_bytes=${inventory.total_bytes} but item sum=${totalBytes}`)
 }
-if (inventory.total_bytes !== 9020086) {
+if (inventory.total_bytes !== 9071006) {
   fail(`unexpected locked Story 2 runtime byte total: ${inventory.total_bytes}`)
-}
-
-for (const assetId of [
-  'seven_roads_story2_p3_img_01_v2',
-  'seven_roads_story2_p3_img_02_v1',
-  'seven_roads_story2_p3_img_03_v1',
-]) {
-  const item = inventory.items.find((candidate) => candidate.asset_id === assetId)
-  if (!item || item.width !== 1536 || item.height !== 1024) {
-    fail(`${assetId}: full-resolution P3 runtime asset regression`)
-  }
 }
 
 if (errors.length > 0) {
@@ -122,6 +107,5 @@ if (errors.length > 0) {
 
 console.log('[story2-runtime] PASS')
 console.log('[story2-runtime] 28/28 Story 2 scene assets mapped')
-console.log('[story2-runtime] every runtime image is >=1100x700 and approximately 3:2')
+console.log('[story2-runtime] all 28 runtime images are full-resolution 1536x1024')
 console.log(`[story2-runtime] locked total: ${inventory.total_bytes} bytes`)
-console.log('[story2-runtime] P3 runtime assets are full-resolution 1536x1024')
