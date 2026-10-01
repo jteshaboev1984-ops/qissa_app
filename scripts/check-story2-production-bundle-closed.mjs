@@ -11,6 +11,8 @@ const forbidden = [
   'Тайна восточного каравана',
   'seven_roads_tayna_vostochnogo_karavana',
   'Рашид и Барлас действительно сбежали.',
+  'seven_roads_story2_p1_img_01_v1',
+  'seven-roads/story2_v2/',
 ]
 
 const hits = []
@@ -41,4 +43,4 @@ if (hits.length > 0) {
 }
 
 console.log('[story2-bundle] PASS')
-console.log('[story2-bundle] unpublished Story 2 prose is absent from the production bundle')
+console.log('[story2-bundle] unpublished Story 2 prose and runtime asset routes are absent from the production bundle')
