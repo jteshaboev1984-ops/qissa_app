@@ -22,6 +22,14 @@ const viteEnvSource = fs.readFileSync(
   path.join(root, 'src/vite-env.d.ts'),
   'utf8',
 )
+const appSource = fs.readFileSync(
+  path.join(root, 'src/App.tsx'),
+  'utf8',
+)
+const deployPagesSource = fs.readFileSync(
+  path.join(root, '.github/workflows/deploy-pages.yml'),
+  'utf8',
+)
 
 const errors = []
 const fail = (message) => errors.push(message)
@@ -110,6 +118,26 @@ if (!assetRegistrySource.includes('VITE_QISSA_STORY2_RUNTIME_ASSETS_READY')) {
 if (!viteEnvSource.includes('VITE_QISSA_STORY2_RUNTIME_ASSETS_READY')) {
   fail('vite-env.d.ts is missing the Story 2 runtime readiness flag')
 }
+if (!viteEnvSource.includes('VITE_QISSA_STORY2_PREVIEW')) {
+  fail('vite-env.d.ts is missing the Story 2 preview flag')
+}
+if (!appSource.includes("import.meta.env.VITE_QISSA_STORY2_PREVIEW === 'true'")) {
+  fail('Story 2 preview route must require its dedicated preview flag')
+}
+if (!deployPagesSource.includes('VITE_QISSA_STORY2_PREVIEW: false')) {
+  fail('production Pages must keep Story 2 preview disabled before release')
+}
+if (!deployPagesSource.includes('VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: false')) {
+  fail('production Pages must keep Story 2 runtime assets disabled before release')
+}
+for (const command of [
+  'npm run check:authored-story2',
+  'npm run check:story2-runtime',
+]) {
+  if (!deployPagesSource.includes(command)) {
+    fail(`production Pages build is missing release gate: ${command}`)
+  }
+}
 
 if (inventory.total_bytes !== totalBytes) {
   fail(`inventory total_bytes=${inventory.total_bytes} but item sum=${totalBytes}`)
@@ -127,4 +155,5 @@ console.log('[story2-runtime] PASS')
 console.log('[story2-runtime] 28/28 Story 2 scene assets mapped')
 console.log('[story2-runtime] all 28 runtime images are full-resolution 1536x1024')
 console.log('[story2-runtime] runtime URL registry is complete and remains readiness-gated')
+console.log('[story2-runtime] production Pages keeps Story 2 preview and runtime assets disabled')
 console.log(`[story2-runtime] locked total: ${inventory.total_bytes} bytes`)
