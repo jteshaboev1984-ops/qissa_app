@@ -1,8 +1,8 @@
 {
-  "version": "story2-runtime-webp-2",
+  "version": "story2-runtime-webp-3",
   "source_library_path": "/QISSA/production/seven_roads/story2_v2/runtime_webp/",
   "count": 28,
-  "total_bytes": 9020086,
+  "total_bytes": 9071006,
   "items": [
     {
       "asset_id": "seven_roads_story2_p10_img_01_v1",
@@ -137,10 +137,10 @@
     {
       "asset_id": "seven_roads_story2_p4_img_02_v1",
       "filename": "seven_roads_story2_p4_img_02_v1.webp",
-      "width": 1181,
-      "height": 791,
-      "bytes": 207130,
-      "sha256": "7655c36632f16ebcc71f06a138b20bea83da044e5de5b556e621e26fd3c177bd",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 258050,
+      "sha256": "88b5e04438240a7a82f3787d46a5545fe38566ee3f814b6d2675898c324baa3c",
       "supabase_bucket": "story-images",
       "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p4_img_02_v1.webp"
     },
