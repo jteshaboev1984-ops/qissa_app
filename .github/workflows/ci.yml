@@ -58,3 +58,6 @@ jobs:
 
       - name: Build app
         run: npm run build
+
+      - name: Verify unpublished Story 2 is absent from production bundle
+        run: npm run check:story2-bundle-closed
