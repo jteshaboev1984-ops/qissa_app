@@ -27,10 +27,7 @@ const projectUrl = (
   process.env.QISSA_SUPABASE_URL ??
   'https://phwakdpxxyncyslvnqht.supabase.co'
 ).replace(/\/$/, '')
-const serviceKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ??
-  process.env.SUPABASE_SECRET_KEY ??
-  ''
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
 
 const sha256 = (buffer) =>
   crypto.createHash('sha256').update(buffer).digest('hex')
@@ -152,7 +149,7 @@ if (verifyOnly) {
 
 if (!serviceKey) {
   console.error(
-    '[story2-upload] --apply requires SUPABASE_SERVICE_ROLE_KEY or SUPABASE_SECRET_KEY',
+    '[story2-upload] --apply requires SUPABASE_SERVICE_ROLE_KEY',
   )
   process.exit(2)
 }
