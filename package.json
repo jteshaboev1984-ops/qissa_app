@@ -48,7 +48,8 @@
     "check:authored-v3": "node scripts/check-authored-story-v3.mjs",
     "check:authored-progress-backend": "node scripts/check-authored-progress-backend.mjs",
     "check:seven-roads-shell": "node scripts/check-seven-roads-product-shell.mjs",
-    "check:authored-story2": "node scripts/check-authored-story2-v4.mjs"
+    "check:authored-story2": "node scripts/check-authored-story2-v4.mjs",
+    "check:story2-runtime": "node scripts/check-story2-runtime-assets.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
