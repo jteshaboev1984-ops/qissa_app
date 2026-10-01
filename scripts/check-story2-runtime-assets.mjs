@@ -1,0 +1,127 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
+const root = process.cwd()
+const story = JSON.parse(
+  fs.readFileSync(
+    path.join(root, 'src/data/authored/taynaVostochnogoKaravanaV4.ru.json'),
+    'utf8',
+  ),
+)
+const inventory = JSON.parse(
+  fs.readFileSync(
+    path.join(root, 'docs/qissa/story2/story2_runtime_asset_inventory.json'),
+    'utf8',
+  ),
+)
+
+const errors = []
+const fail = (message) => errors.push(message)
+
+if (inventory.version !== 'story2-runtime-webp-2') {
+  fail(`unexpected runtime inventory version: ${inventory.version}`)
+}
+if (inventory.count !== 28) fail(`expected 28 runtime assets, got ${inventory.count}`)
+if (!Array.isArray(inventory.items) || inventory.items.length !== 28) {
+  fail(`runtime inventory must contain exactly 28 items`)
+}
+
+const expectedSceneAssetIds = new Set([
+  ...story.parts.flatMap((part) => (part.image_slots ?? []).map((slot) => slot.asset_id)),
+  ...story.parts.flatMap((part) =>
+    (part.decision?.choices ?? [])
+      .map((choice) => choice.illustration?.asset_id)
+      .filter(Boolean),
+  ),
+])
+
+if (expectedSceneAssetIds.size !== 28) {
+  fail(`Story 2 package must reference 28 unique scene assets, got ${expectedSceneAssetIds.size}`)
+}
+
+const seen = new Set()
+let totalBytes = 0
+
+for (const item of inventory.items ?? []) {
+  const {
+    asset_id: assetId,
+    filename,
+    width,
+    height,
+    bytes,
+    sha256,
+    supabase_bucket: bucket,
+    supabase_object_path: objectPath,
+  } = item
+
+  if (!expectedSceneAssetIds.has(assetId)) {
+    fail(`runtime inventory contains unknown asset: ${assetId}`)
+  }
+  if (seen.has(assetId)) fail(`duplicate runtime asset: ${assetId}`)
+  seen.add(assetId)
+
+  if (filename !== `${assetId}.webp`) {
+    fail(`${assetId}: filename must be ${assetId}.webp`)
+  }
+  if (bucket !== 'story-images') {
+    fail(`${assetId}: bucket must be story-images`)
+  }
+  if (objectPath !== `seven-roads/story2_v2/${assetId}.webp`) {
+    fail(`${assetId}: unexpected object path ${objectPath}`)
+  }
+
+  if (!Number.isInteger(width) || !Number.isInteger(height)) {
+    fail(`${assetId}: width/height must be integers`)
+  } else {
+    if (width < 1100 || height < 700) {
+      fail(`${assetId}: runtime image is too small for reader use (${width}x${height})`)
+    }
+    const ratio = width / height
+    if (ratio < 1.45 || ratio > 1.55) {
+      fail(`${assetId}: expected ~3:2 landscape ratio, got ${ratio.toFixed(3)}`)
+    }
+  }
+
+  if (!Number.isInteger(bytes) || bytes <= 0) {
+    fail(`${assetId}: invalid byte size`)
+  } else {
+    totalBytes += bytes
+  }
+
+  if (typeof sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(sha256)) {
+    fail(`${assetId}: invalid sha256`)
+  }
+}
+
+for (const assetId of expectedSceneAssetIds) {
+  if (!seen.has(assetId)) fail(`runtime inventory missing Story 2 asset: ${assetId}`)
+}
+
+if (inventory.total_bytes !== totalBytes) {
+  fail(`inventory total_bytes=${inventory.total_bytes} but item sum=${totalBytes}`)
+}
+if (inventory.total_bytes !== 9020086) {
+  fail(`unexpected locked Story 2 runtime byte total: ${inventory.total_bytes}`)
+}
+
+for (const assetId of [
+  'seven_roads_story2_p3_img_01_v2',
+  'seven_roads_story2_p3_img_02_v1',
+  'seven_roads_story2_p3_img_03_v1',
+]) {
+  const item = inventory.items.find((candidate) => candidate.asset_id === assetId)
+  if (!item || item.width !== 1536 || item.height !== 1024) {
+    fail(`${assetId}: full-resolution P3 runtime asset regression`)
+  }
+}
+
+if (errors.length > 0) {
+  errors.forEach((error) => console.error(`[story2-runtime] ${error}`))
+  process.exit(1)
+}
+
+console.log('[story2-runtime] PASS')
+console.log('[story2-runtime] 28/28 Story 2 scene assets mapped')
+console.log('[story2-runtime] every runtime image is >=1100x700 and approximately 3:2')
+console.log(`[story2-runtime] locked total: ${inventory.total_bytes} bytes`)
+console.log('[story2-runtime] P3 runtime assets are full-resolution 1536x1024')
