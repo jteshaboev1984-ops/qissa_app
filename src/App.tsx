@@ -39,7 +39,9 @@ function App() {
       ? new URLSearchParams(window.location.search).get('authoredStory')
       : null
   const authoredPreviewRequested = authoredPreviewKey === 'prazdnik-muzhestva'
-  const story2PreviewRequested = authoredPreviewKey === 'tayna-vostochnogo-karavana'
+  const story2PreviewRequested =
+    import.meta.env.VITE_QISSA_STORY2_PREVIEW === 'true' &&
+    authoredPreviewKey === 'tayna-vostochnogo-karavana'
   const [story2PreviewStory, setStory2PreviewStory] = useState<AuthoredStoryPackage | null>(null)
   const [story2PreviewError, setStory2PreviewError] = useState<string | null>(null)
 
