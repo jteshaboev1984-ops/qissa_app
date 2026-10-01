@@ -14,6 +14,14 @@ const inventory = JSON.parse(
     'utf8',
   ),
 )
+const assetRegistrySource = fs.readFileSync(
+  path.join(root, 'src/data/authoredStoryAssets.ts'),
+  'utf8',
+)
+const viteEnvSource = fs.readFileSync(
+  path.join(root, 'src/vite-env.d.ts'),
+  'utf8',
+)
 
 const errors = []
 const fail = (message) => errors.push(message)
@@ -91,6 +99,16 @@ for (const item of inventory.items ?? []) {
 
 for (const assetId of expectedSceneAssetIds) {
   if (!seen.has(assetId)) fail(`runtime inventory missing Story 2 asset: ${assetId}`)
+  if (!assetRegistrySource.includes(`'${assetId}'`)) {
+    fail(`Story 2 runtime registry is missing asset id: ${assetId}`)
+  }
+}
+
+if (!assetRegistrySource.includes('VITE_QISSA_STORY2_RUNTIME_ASSETS_READY')) {
+  fail('Story 2 runtime assets must remain gated behind the readiness flag')
+}
+if (!viteEnvSource.includes('VITE_QISSA_STORY2_RUNTIME_ASSETS_READY')) {
+  fail('vite-env.d.ts is missing the Story 2 runtime readiness flag')
 }
 
 if (inventory.total_bytes !== totalBytes) {
@@ -108,4 +126,5 @@ if (errors.length > 0) {
 console.log('[story2-runtime] PASS')
 console.log('[story2-runtime] 28/28 Story 2 scene assets mapped')
 console.log('[story2-runtime] all 28 runtime images are full-resolution 1536x1024')
+console.log('[story2-runtime] runtime URL registry is complete and remains readiness-gated')
 console.log(`[story2-runtime] locked total: ${inventory.total_bytes} bytes`)
