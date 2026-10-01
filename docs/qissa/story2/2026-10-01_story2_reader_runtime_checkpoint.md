@@ -54,7 +54,13 @@ During runtime QA, four downsampled assets were corrected from their approved fu
 
 The Library runtime WebP copies for those four assets were overwritten with full-resolution 1536 × 1024 versions.
 
-The older Library JSON inventory may still contain stale metadata. The repository inventory above is the current release-control inventory.
+The older standalone Library JSON inventory may still contain stale metadata. The repository inventory above is the current release-control inventory.
+
+A verified operator bundle containing the exact 28 WebPs plus a fresh v3 inventory is also staged in QISSA Library at:
+
+`/QISSA/production/seven_roads/story2_v2/runtime_webp/story2_runtime_upload_bundle_v3.zip`
+
+The 28 files in that bundle were materialized again and independently checked on 2026-10-01: every file is 1536 × 1024, every byte length/SHA-256 matches the repository v3 inventory, and the aggregate payload is exactly 9,071,006 bytes.
 
 ## Runtime URL gating
 
@@ -99,6 +105,12 @@ Manual workflow:
 
 `.github/workflows/story2-assets-smoke.yml`
 
+Upload operator:
+
+`scripts/upload-story2-runtime-assets.mjs`
+
+The upload operator is dry-run by default. It verifies all local bytes/hashes before any write. `--apply` additionally requires a server-side `SUPABASE_SERVICE_ROLE_KEY`, uploads/upserts the locked WebPs, and verifies every public object after upload. CI only syntax-checks this script; CI never performs the upload.
+
 Script:
 
 `scripts/smoke-story2-assets-live.mjs`
@@ -121,7 +133,7 @@ So the correct release state remains **assets not ready**.
 Latest verified PR CI at this checkpoint:
 
 - workflow: `Seven Roads CI`
-- run: `#745`
+- run: `#749`
 - result: **success**
 
 Passed gates include:
@@ -134,7 +146,8 @@ Passed gates include:
 - Seven Roads product shell;
 - TypeScript;
 - production build;
-- unpublished Story 2 bundle-closure verification.
+- unpublished Story 2 bundle-closure verification;
+- Story 2 Storage uploader syntax guard.
 
 ## Remaining publication blockers
 
