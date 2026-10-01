@@ -68,6 +68,9 @@ jobs:
           VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: false
         run: npm run build
 
+      - name: Verify unpublished Story 2 is absent from production bundle
+        run: npm run check:story2-bundle-closed
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
