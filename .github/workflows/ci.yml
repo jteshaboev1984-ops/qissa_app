@@ -47,6 +47,9 @@ jobs:
       - name: Validate Story 2 runtime asset inventory
         run: npm run check:story2-runtime
 
+      - name: Validate Story 2 Storage uploader syntax
+        run: node --check scripts/upload-story2-runtime-assets.mjs
+
       - name: Validate authored progress backend contract
         run: npm run check:authored-progress-backend
 
