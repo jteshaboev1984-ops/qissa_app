@@ -1,0 +1,152 @@
+# QISSA Story 2 reader/runtime checkpoint — 2026-10-01
+
+## Scope
+
+This checkpoint covers the current integration state for:
+
+- world: `seven_roads`
+- story: `Тайна восточного каравана`
+- story id: `seven_roads_tayna_vostochnogo_karavana`
+- authored version: `interactive-v4-continuity-sync`
+- source of truth: `/QISSA/production/seven_roads/story2_v2/seven_roads_story2_interactive_v4_continuity_sync.md`
+
+Story 2 remains **unpublished**. This work prepares the reader/runtime path without changing the release state.
+
+## Reader ordering contract
+
+The authored package contains 10 internal parts and 4 two-way decisions, producing 16 possible choice paths.
+
+The reader contract is locked as follows:
+
+- 24 shared scene images render only after their exact approved narrative paragraph.
+- Choice 1 and Choice 2 have no branch illustration.
+- Choice 3 and Choice 4 never preview both branch illustrations.
+- After a Choice 3/4 selection, only the selected branch illustration is inserted.
+- Selected branch art is inserted at its exact approved paragraph inside the selected resolution, not before the resolution and not generically after it.
+- Deferred Choice 3 payoff prose renders later from saved choice memory.
+- Unchosen branch prose and unchosen branch art never leak into the active path.
+- A complete playthrough exposes exactly 26 scene images: 24 shared + 1 Choice 3 + 1 Choice 4.
+- Gallery discovery for selected-only branch art occurs only after the reader actually reaches the image.
+
+`scripts/check-authored-story2-v4.mjs` verifies all 16 paths and exact text/image sequence.
+
+## Runtime image inventory
+
+Canonical repository inventory:
+
+`docs/qissa/story2/story2_runtime_asset_inventory.json`
+
+Current locked inventory:
+
+- version: `story2-runtime-webp-3`
+- scene assets: 28
+- required dimensions: 1536 × 1024 for every runtime scene image
+- total bytes: 9,071,006
+- target bucket: `story-images`
+- target prefix: `seven-roads/story2_v2/`
+
+During runtime QA, four downsampled assets were corrected from their approved full-resolution PNG sources:
+
+- `seven_roads_story2_p3_img_01_v2`
+- `seven_roads_story2_p3_img_02_v1`
+- `seven_roads_story2_p3_img_03_v1`
+- `seven_roads_story2_p4_img_02_v1`
+
+The Library runtime WebP copies for those four assets were overwritten with full-resolution 1536 × 1024 versions.
+
+The older Library JSON inventory may still contain stale metadata. The repository inventory above is the current release-control inventory.
+
+## Runtime URL gating
+
+`src/data/authoredStoryAssets.ts` contains the 28 Story 2 asset ids, but runtime URL resolution remains disabled unless:
+
+`VITE_QISSA_STORY2_RUNTIME_ASSETS_READY=true`
+
+This prevents broken public URLs from appearing before Storage upload is complete.
+
+## Preview gating
+
+Story 2 preview is isolated from the published authored-story bundle and lazy-loaded only when requested.
+
+It requires both:
+
+- generic authored preview capability; and
+- `VITE_QISSA_STORY2_PREVIEW=true`.
+
+The production GitHub Pages build explicitly keeps:
+
+- `VITE_QISSA_STORY2_PREVIEW=false`
+- `VITE_QISSA_STORY2_RUNTIME_ASSETS_READY=false`
+
+The Story 2 preview also suppresses the pending/unapproved cover so the first visual shown is approved narrative content.
+
+## Production-bundle closure
+
+`scripts/check-story2-production-bundle-closed.mjs` runs after the production build.
+
+It fails if the default production `dist/` contains:
+
+- Story 2 title/prose markers;
+- Story 2 story id;
+- Story 2 runtime asset ids;
+- Story 2 runtime Storage path prefix.
+
+Therefore a false release flag is not accepted merely as a hidden UI route: unpublished Story 2 content must be absent from the production bundle itself.
+
+## Live Storage smoke
+
+Manual workflow:
+
+`.github/workflows/story2-assets-smoke.yml`
+
+Script:
+
+`scripts/smoke-story2-assets-live.mjs`
+
+Modes:
+
+- `absent`: all 28 public Story 2 objects must be absent.
+- `present`: all 28 public objects must return successfully and match the locked MIME type, byte length, and SHA-256 digest.
+
+Current production Supabase state checked on 2026-10-01:
+
+- bucket: `story-images`
+- prefix: `seven-roads/story2_v2/`
+- Story 2 object count: **0**
+
+So the correct release state remains **assets not ready**.
+
+## CI checkpoint
+
+Latest verified PR CI at this checkpoint:
+
+- workflow: `Seven Roads CI`
+- run: `#745`
+- result: **success**
+
+Passed gates include:
+
+- Story 1 authored validation;
+- Story 2 V4 authored validation;
+- Story 2 runtime inventory validation;
+- backend access boundary;
+- authored progress backend contract;
+- Seven Roads product shell;
+- TypeScript;
+- production build;
+- unpublished Story 2 bundle-closure verification.
+
+## Remaining publication blockers
+
+Do not publish Story 2 until all of the following are complete:
+
+1. Upload all 28 locked WebP assets to the production `story-images/seven-roads/story2_v2/` prefix.
+2. Run the live asset smoke with `expected_state=present` and get 28/28 byte/hash matches.
+3. Turn on Story 2 runtime asset resolution only in the intended preview/staging build and perform a real reader visual smoke.
+4. Verify exact text → illustration ordering on both Choice 3 branches and both Choice 4 branches in the rendered reader.
+5. Add and accept the Uzbek localization overlay before enabling Story 2 in Uzbek.
+6. Resolve the Season 2 multi-story product-shell model before publishing this story as Season 2 story #2.
+7. Approve/host a Story 2 cover if the final product shell requires one.
+8. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
+
+No production release flag should be flipped as part of the current PR.
