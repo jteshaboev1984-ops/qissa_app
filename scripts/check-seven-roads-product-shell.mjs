@@ -233,6 +233,7 @@ requireText('reader', player, 'formatSevenRoadsSeasonCompleted(language, seasonN
 requireText('reader', player, 'formatSevenRoadsStoryCompleted(language, storyNumber)')
 requireText('reader', player, "completionScope === 'story'")
 requireText('reader', player, "readerUnit === 'part'")
+requireText('reader', player, "readerUnit === 'episode' &&")
 requireText('reader', player, '{copy.nextSeasonSoon}')
 requireText('reader', player, '{copy.tapToReturn}')
 requireText('reader', player, '{copy.finishToday}')
