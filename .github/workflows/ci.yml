@@ -53,11 +53,11 @@ jobs:
       - name: Validate Story 2 approved cover
         run: npm run check:story2-cover
 
-      - name: Verify approved Story 2 cover is still gated before runtime upload
+      - name: Verify hosted Story 2 cover bytes and hash
         if: github.head_ref == 'story2-reader-layout'
         env:
           QISSA_SUPABASE_URL: https://phwakdpxxyncyslvnqht.supabase.co
-        run: npm run smoke:story2-cover-live -- absent
+        run: npm run smoke:story2-cover-live -- present
 
       - name: Verify public Story 2 runtime assets on integration branch
         if: github.head_ref == 'story2-reader-layout'
