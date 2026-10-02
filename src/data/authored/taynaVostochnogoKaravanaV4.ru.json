@@ -730,7 +730,7 @@
     "plan_ref": "docs/qissa/story2/story2_v4_layout_manifest.json",
     "master_style_id": "seven_roads_painterly_v1",
     "editorial_master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
-    "runtime_asset_storage": "pending_runtime_hosting",
+    "runtime_asset_storage": "supabase://story-images/seven-roads/story2_v2/",
     "planned_asset_count": 29,
     "shared_asset_count": 24,
     "choice_asset_count": 4,
@@ -742,7 +742,7 @@
   "cover_illustration": {
     "asset_id": "seven_roads_story2_cover_v1",
     "runtime_url": null,
-    "status": "pending",
+    "status": "approved",
     "editorial_reference_ids": [
       "01_heroes_horses_approved.png",
       "S2-REF-01_ARAS_CITY.png",
