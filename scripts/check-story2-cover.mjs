@@ -18,6 +18,10 @@ const assetRegistrySource = fs.readFileSync(
   path.join(root, 'src/data/authoredStoryAssets.ts'),
   'utf8',
 )
+const appSource = fs.readFileSync(
+  path.join(root, 'src/App.tsx'),
+  'utf8',
+)
 
 const errors = []
 const fail = (message) => errors.push(message)
@@ -34,9 +38,18 @@ if (story.cover_illustration.runtime_url !== null) {
 if (!assetRegistrySource.includes("'seven_roads_story2_cover_v1'")) {
   fail('Story 2 cover must be staged in the readiness-gated asset registry')
 }
+if (appSource.includes('showCover={false}')) {
+  fail('Story 2 gated preview must not suppress the approved hosted cover')
+}
+if (!appSource.includes('showCover')) {
+  fail('Story 2 gated preview must explicitly render the approved cover')
+}
 
 if (inventory.version !== 'story2-cover-runtime-webp-1') {
   fail(`unexpected cover inventory version: ${inventory.version}`)
+}
+if (inventory.status !== 'approved_hosted') {
+  fail(`Story 2 cover inventory must be approved_hosted, got ${inventory.status}`)
 }
 if (inventory.asset_id !== story.cover_illustration.asset_id) {
   fail('cover inventory asset_id does not match authored package')
@@ -97,4 +110,4 @@ console.log('[story2-cover] PASS')
 console.log('[story2-cover] approved asset id: seven_roads_story2_cover_v1')
 console.log('[story2-cover] portrait 1024x1536 · exact 2:3')
 console.log(`[story2-cover] locked WebP: ${inventory.bytes} bytes · ${inventory.sha256}`)
-console.log('[story2-cover] runtime route is staged behind the Story 2 readiness flag; public object verification remains a release gate')
+console.log('[story2-cover] hosted cover route is readiness-gated and enabled in the gated Story 2 preview')
