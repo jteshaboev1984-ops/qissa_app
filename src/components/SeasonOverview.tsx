@@ -32,7 +32,7 @@ export function SeasonOverview({
 
   const copy = getSevenRoadsCopy(language)
 
-  if (publishedStories.length > 1) {
+  if (publishedStories.length > 1 || seasonStory.completionScope === 'story') {
     return (
       <main className="mx-auto min-h-[100dvh] max-w-[430px] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] text-[#2d332f] sm:px-5">
         <button
@@ -49,9 +49,13 @@ export function SeasonOverview({
             {season.title ?? copy.worldTitle}
           </h1>
           <p className="mt-3 text-sm leading-6 text-[#6c6252]">
-            {language === 'uz'
-              ? 'Bu mavsum bir nechta alohida hikoyadan iborat. Har bir hikoya o‘z o‘qish joyi va tanlovlarini alohida saqlaydi.'
-              : 'Этот сезон состоит из нескольких отдельных сказок. У каждой сказки свой прогресс чтения и свои сохранённые выборы.'}
+            {publishedStories.length > 1
+              ? language === 'uz'
+                ? 'Bu mavsum bir nechta alohida hikoyadan iborat. Har bir hikoya o‘z o‘qish joyi va tanlovlarini alohida saqlaydi.'
+                : 'Этот сезон состоит из нескольких отдельных сказок. У каждой сказки свой прогресс чтения и свои сохранённые выборы.'
+              : language === 'uz'
+                ? 'Bu mavsumdagi hikoyalar alohida o‘qiladi. Har bir hikoyaning o‘z o‘qish joyi va tanlovlari saqlanadi.'
+                : 'Сказки этого сезона читаются отдельно. У каждой сохраняются свой прогресс и свои выборы.'}
           </p>
         </div>
 
