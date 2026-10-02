@@ -27,6 +27,7 @@ const readingKey =
 const discoveryKey =
   `qissa:v1:authoredIllustrationDiscovery:${storyId}:${storyVersion}`
 const languageKey = 'qissa:v1:sevenRoadsLanguage'
+const coverAsset = story.cover_illustration.asset_id
 
 const choice = (decisionIndex, choiceIndex) =>
   story.parts
@@ -331,6 +332,24 @@ try {
     await waitProgressIndex(partNumber - 1)
   }
 
+  const waitForCover = async (label) => {
+    await waitFor(
+      `(() => {
+        const image = [...document.images].find(
+          (candidate) => candidate.src.includes(${JSON.stringify(coverAsset)})
+        )
+        return Boolean(
+          image &&
+          image.complete &&
+          image.naturalWidth === 1024 &&
+          image.naturalHeight === 1536
+        )
+      })()`,
+      label,
+      20000,
+    )
+  }
+
   const scrollAssetIntoView = async (assetId) => {
     await waitFor(
       `[...document.images].some((img) => img.src.includes(${JSON.stringify(assetId)}))`,
@@ -398,6 +417,7 @@ try {
   await reloadAndWait()
   await waitPart(1)
   await waitProgressIndex(0)
+  await waitForCover('Russian Story 2 cover 1024x1536')
 
   await continueToPart(2)
   await continueToPart(3)
@@ -560,6 +580,16 @@ try {
     'Gallery discovery changed incorrectly during RU→UZ language switch',
   )
 
+  await evaluate(`(() => {
+    localStorage.removeItem(${JSON.stringify(progressKey)})
+    localStorage.removeItem(${JSON.stringify(readingKey)})
+    return true
+  })()`)
+  await reloadAndWait()
+  await waitFor(bodyHas('Sharqiy karvon siri'), 'Uzbek Story 2 fresh title')
+  await waitFor(bodyHas('1-qism / 10'), 'Uzbek Story 2 fresh part 1')
+  await waitForCover('Uzbek Story 2 cover 1024x1536')
+
   assert(
     browserErrors.length === 0,
     `Browser runtime exceptions: ${browserErrors.join(' | ')}`,
@@ -571,6 +601,7 @@ try {
   console.log('[story2-resume-gallery] Choice 3A progress + non-zero reading position survived reload')
   console.log('[story2-resume-gallery] Choice 4B progress survived reload')
   console.log('[story2-resume-gallery] RU→UZ language switch preserved part, choices, and discovery')
+  console.log('[story2-resume-gallery] approved 1024x1536 cover rendered in fresh RU and UZ readers')
   console.log('[story2-resume-gallery] selected-only discovery persisted: ' + [
     chosenChoice3Asset,
     chosenChoice4Asset,
