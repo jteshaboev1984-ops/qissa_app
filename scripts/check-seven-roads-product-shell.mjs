@@ -46,6 +46,8 @@ for (const text of [
   "nextSeason.number === 2",
   "if (!firstStoryProgress?.completed) return",
   "nextStory?.completionScope === 'story' ? 'story' : 'season'",
+  ".flatMap((publishedSeason) => getPublishedSeasonStories(publishedSeason))",
+  "setSelectedSeasonNumber(1)",
 ]) requireText('Seven Roads App', app, text)
 
 for (const text of [
@@ -284,8 +286,9 @@ requireText('Seven Roads settings', settings, 'onLanguageChange(option)')
 requireText('Seven Roads settings', settings, 'language={language}')
 requireText('Seven Roads settings', settings, '{copy.resetSeason}')
 requireText('Seven Roads settings', settings, 'ReaderSettingsPanel')
-requireText('Seven Roads settings Uzbek numbering', settings, 'formatSevenRoadsSeasonLabel(language, 1)')
-forbidText('Seven Roads settings Uzbek number order', settings, '{copy.season} 1')
+requireText('Seven Roads settings', settings, 'Прогресс сказок')
+requireText('Seven Roads settings', settings, 'Hikoyalar jarayoni')
+forbidText('Seven Roads settings', settings, 'formatSevenRoadsSeasonLabel(language, 1)')
 requireText('Seven Roads reader preferences', readerPreferences, 'sevenRoadsReaderPreferences')
 
 requireText('authored progress persistence', authoredPersistence, 'story.story_id')
