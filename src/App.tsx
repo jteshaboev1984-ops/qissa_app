@@ -5,6 +5,7 @@ import { SeasonOverview } from './components/SeasonOverview'
 import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
 import {
   getPrimaryPublishedSeasonStory,
+  getSeasonStoryByNumber,
   getSevenRoadsSeason1,
 } from './data/sevenRoadsSeasons'
 import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
@@ -22,7 +23,12 @@ type SevenRoadsView = 'shell' | 'season' | 'story' | 'settings'
 function App() {
   const [language, setLanguage] = useState(() => sevenRoadsLanguagePreference.load())
   const season = useMemo(() => getSevenRoadsSeason1(language), [language])
-  const seasonStory = getPrimaryPublishedSeasonStory(season)
+  const primarySeasonStory = getPrimaryPublishedSeasonStory(season)
+  const [selectedStoryNumber, setSelectedStoryNumber] = useState(
+    () => primarySeasonStory?.number ?? 1,
+  )
+  const seasonStory =
+    getSeasonStoryByNumber(season, selectedStoryNumber) ?? primarySeasonStory
   const story = seasonStory?.authoredStory
   if (!seasonStory || !story) {
     throw new Error('Published Seven Roads Season 1 must have a published story package.')
@@ -240,7 +246,8 @@ function App() {
           setRequestedEpisodeNumber(null)
           setView('shell')
         }}
-        onRead={(episodeNumber) => {
+        onRead={(storyNumber, episodeNumber) => {
+          setSelectedStoryNumber(storyNumber)
           setRequestedEpisodeNumber(episodeNumber ?? null)
           setView('story')
         }}
@@ -254,6 +261,7 @@ function App() {
       tab={tab}
       onTab={setTab}
       onOpenSeason={() => {
+        setSelectedStoryNumber(primarySeasonStory?.number ?? 1)
         setRequestedEpisodeNumber(null)
         setView('season')
       }}
