@@ -1,4 +1,5 @@
 import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
+import { getPrimaryPublishedSeasonStory } from '../data/sevenRoadsSeasons'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import type { PublishedSeason } from '../features/publishedStories/types'
 import {
@@ -20,14 +21,16 @@ export function SeasonOverview({
   onBack: () => void
   onRead: (episodeNumber?: number) => void
 }) {
-  if (!season.story || season.status !== 'published') return null
+  const seasonStory = getPrimaryPublishedSeasonStory(season)
+  const story = seasonStory?.authoredStory
+  if (!seasonStory || !story || season.status !== 'published') return null
 
   const copy = getSevenRoadsCopy(language)
-  const progress = authoredStoryPersistence.load(season.story)
+  const progress = authoredStoryPersistence.load(story)
   const reading = sevenRoadsStory1ReadingState(progress)
   const coverUrl = resolveAuthoredStoryAssetUrl(
-    season.story.cover_illustration.asset_id,
-    season.story.cover_illustration.runtime_url,
+    story.cover_illustration.asset_id,
+    story.cover_illustration.runtime_url,
   )
 
   const primaryLabel =
@@ -89,7 +92,7 @@ export function SeasonOverview({
         </div>
 
         <div className="mt-4 space-y-2.5">
-          {season.episodes.map((episode) => {
+          {seasonStory.episodes.map((episode) => {
             const completed = reading.state === 'completed' || episode.number < reading.currentEpisode
             const current = reading.state !== 'completed' && episode.number === reading.currentEpisode
             const locked = reading.state !== 'completed' && episode.number > reading.currentEpisode
