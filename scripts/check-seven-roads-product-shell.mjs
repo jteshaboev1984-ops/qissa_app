@@ -43,6 +43,9 @@ for (const text of [
   'getSeasonStoryByNumber(season, selectedStoryNumber)',
   'seasonStory?.authoredStory',
   'onLanguageChange={changeLanguage}',
+  "nextSeason.number === 2",
+  "if (!firstStoryProgress?.completed) return",
+  "nextStory?.completionScope === 'story' ? 'story' : 'season'",
 ]) requireText('Seven Roads App', app, text)
 
 for (const text of [
@@ -95,6 +98,7 @@ requireText('authored localization', authoredLocalization, 'localized image anch
 requireText('authored localization', authoredLocalization, 'last_event: localized.last_event')
 
 requireText('Seven Roads copy', copy, "export type SevenRoadsLanguage = 'ru' | 'uz'")
+requireText('Seven Roads copy', copy, 'formatSevenRoadsPartLabel')
 requireText('Seven Roads copy', copy, "const ru =")
 requireText('Seven Roads copy', copy, "const uz =")
 requireText('Seven Roads copy', copy, "worldTitle: 'Yetti yo‘l qirolligi'")
@@ -172,10 +176,17 @@ requireText('public shell', shell, "Сезон ${notice.seasonNumber} готов
 requireText('public shell', shell, 'Сцена ещё скрыта')
 requireText('public shell', shell, 'Lavha hali ochilmagan')
 forbidText('public shell', shell, 'Lavha hali yashirin')
-requireText('public shell', shell, 'Сцены сказки')
-requireText('public shell', shell, 'Hikoya lavhalari')
+requireText('public shell', shell, 'Сцены сказок')
+requireText('public shell', shell, 'Hikoyalar lavhalari')
 requireText('public shell', shell, "getPublishedSeasonStories(season).length > 0")
 requireText('public shell', shell, 'storyCount: publishedStories.length')
+requireText('public shell', shell, 'story2Unlocked')
+requireText('public shell', shell, "kind: 'locked-story'")
+requireText('public shell', shell, 'Эта сказка откроется после завершения «Праздника мужества».')
+requireText('public shell', shell, 'galleryTitle')
+requireText('public shell', shell, "episode.readerUnit === 'part'")
+requireText('public shell', shell, 'formatSevenRoadsPartLabel')
+requireText('public shell', shell, 'formatSevenRoadsPartProgress')
 requireText('public shell', shell, 'episode.storyNumber')
 requireText('public shell', shell, 'formatSevenRoadsStoryLabel(language, episode.storyNumber)')
 requireText('public shell', shell, "expanded ? 'rotate-180' : ''")
