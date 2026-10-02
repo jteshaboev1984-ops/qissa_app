@@ -26,6 +26,7 @@ const readingKey =
   `qissa:v1:authoredReadingPosition:${storyId}:${storyVersion}`
 const discoveryKey =
   `qissa:v1:authoredIllustrationDiscovery:${storyId}:${storyVersion}`
+const languageKey = 'qissa:v1:sevenRoadsLanguage'
 
 const choice = (decisionIndex, choiceIndex) =>
   story.parts
@@ -521,6 +522,44 @@ try {
     'Unchosen selected-only branch art leaked into gallery discovery',
   )
 
+  await evaluate(
+    `localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`,
+  )
+  await reloadAndWait()
+  await waitFor(bodyHas('Sharqiy karvon siri'), 'Uzbek Story 2 title')
+  await waitFor(bodyHas('8-qism / 10'), 'Uzbek Story 2 part progress')
+  await waitFor(bodyHas('Tanlov saqlandi'), 'restored Uzbek choice state')
+  await waitFor(
+    bodyHas('Nadir yo‘l ayrilishiga yaqinlashardi.'),
+    'Uzbek Choice 4B resolution',
+  )
+  await waitFor(
+    `[...document.images].some((img) => img.src.includes(${JSON.stringify(chosenChoice4Asset)}))`,
+    'selected Choice 4B illustration after Uzbek language switch',
+  )
+
+  const progressAfterLanguageSwitch = await readJsonStorage(progressKey)
+  discovery = await readJsonStorage(discoveryKey)
+
+  assert(
+    progressAfterLanguageSwitch.current_part_index === 7,
+    'Story 2 part changed during RU→UZ language switch',
+  )
+  assert(
+    progressAfterLanguageSwitch.selected_choices.story2_choice_3_sarvan_check ===
+      choice3a.choice_id &&
+      progressAfterLanguageSwitch.selected_choices.story2_choice_4_stop_nadir ===
+        choice4b.choice_id,
+    'Story 2 choices changed during RU→UZ language switch',
+  )
+  assert(
+    discovery.includes(chosenChoice3Asset) &&
+      discovery.includes(chosenChoice4Asset) &&
+      !discovery.includes(unchosenChoice3Asset) &&
+      !discovery.includes(unchosenChoice4Asset),
+    'Gallery discovery changed incorrectly during RU→UZ language switch',
+  )
+
   assert(
     browserErrors.length === 0,
     `Browser runtime exceptions: ${browserErrors.join(' | ')}`,
@@ -531,6 +570,7 @@ try {
   console.log('[story2-resume-gallery] viewport: 430x932')
   console.log('[story2-resume-gallery] Choice 3A progress + non-zero reading position survived reload')
   console.log('[story2-resume-gallery] Choice 4B progress survived reload')
+  console.log('[story2-resume-gallery] RU→UZ language switch preserved part, choices, and discovery')
   console.log('[story2-resume-gallery] selected-only discovery persisted: ' + [
     chosenChoice3Asset,
     chosenChoice4Asset,
