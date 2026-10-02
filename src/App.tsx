@@ -133,6 +133,9 @@ function App() {
           <AuthoredStoryPlayer
             story={story}
             seasonNumber={season.number}
+            storyNumber={seasonStory.number}
+            completionScope={seasonStory.completionScope}
+            readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
             completionSummary={copy.completionSummary}
             readerPreferences={readerPreferences}
@@ -173,6 +176,9 @@ function App() {
           <AuthoredStoryPlayer
             story={story}
             seasonNumber={season.number}
+            storyNumber={seasonStory.number}
+            completionScope={seasonStory.completionScope}
+            readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
             completionSummary={copy.completionSummary}
             initialEpisodeNumber={requestedEpisodeNumber ?? undefined}
