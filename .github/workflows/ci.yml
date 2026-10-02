@@ -70,3 +70,15 @@ jobs:
 
       - name: Verify unpublished Story 2 is absent from production bundle
         run: npm run check:story2-bundle-closed
+
+      - name: Build gated Story 2 preview on integration branch
+        if: github.head_ref == 'story2-reader-layout'
+        env:
+          VITE_QISSA_AUTHORED_V3_PREVIEW: true
+          VITE_QISSA_STORY2_PREVIEW: true
+          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
+        run: npm run build
+
+      - name: Verify gated Story 2 preview bundle
+        if: github.head_ref == 'story2-reader-layout'
+        run: npm run check:story2-preview-bundle
