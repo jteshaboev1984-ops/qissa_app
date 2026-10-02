@@ -3,7 +3,10 @@ import { PublishedStoriesShell, type PublishedStoriesTab } from './components/Pu
 import { PublishedStoriesWelcome } from './components/PublishedStoriesWelcome'
 import { SeasonOverview } from './components/SeasonOverview'
 import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
-import { getSevenRoadsSeason1 } from './data/sevenRoadsSeasons'
+import {
+  getPrimaryPublishedSeasonStory,
+  getSevenRoadsSeason1,
+} from './data/sevenRoadsSeasons'
 import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
 import { getSevenRoadsCopy } from './features/publishedStories/sevenRoadsCopy'
 import { publishedStoriesConsent } from './lib/publishedStoriesConsent'
@@ -19,8 +22,11 @@ type SevenRoadsView = 'shell' | 'season' | 'story' | 'settings'
 function App() {
   const [language, setLanguage] = useState(() => sevenRoadsLanguagePreference.load())
   const season = useMemo(() => getSevenRoadsSeason1(language), [language])
-  const story = season.story
-  if (!story) throw new Error('Published Seven Roads Season 1 must have a story package.')
+  const seasonStory = getPrimaryPublishedSeasonStory(season)
+  const story = seasonStory?.authoredStory
+  if (!seasonStory || !story) {
+    throw new Error('Published Seven Roads Season 1 must have a published story package.')
+  }
 
   const copy = getSevenRoadsCopy(language)
 
@@ -67,7 +73,7 @@ function App() {
     }
   }, [story2PreviewRequested])
 
-  const episodeTitles = season.episodes.map((episode) => episode.title)
+  const episodeTitles = seasonStory.episodes.map((episode) => episode.title)
 
   const changeLanguage = (nextLanguage: typeof language) => {
     setLanguage(nextLanguage)
@@ -98,6 +104,9 @@ function App() {
           <AuthoredStoryPlayer
             story={story2PreviewStory}
             seasonNumber={2}
+            storyNumber={2}
+            completionScope="story"
+            readerUnit="part"
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
               const next = { ...readerPreferences, ...patch }
