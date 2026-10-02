@@ -331,11 +331,24 @@ try {
     `document.readyState === 'complete'`,
     'initial document load',
   )
-  await waitFor(
-    bodyHas('Тайна восточного каравана'),
-    'Story 2 preview',
-    20000,
-  )
+  try {
+    await waitFor(
+      bodyHas('Тайна восточного каравана'),
+      'Story 2 preview',
+      20000,
+    )
+  } catch (error) {
+    const diagnostic = await evaluate(`({
+      href: location.href,
+      title: document.title,
+      readyState: document.readyState,
+      body: document.body?.innerText?.slice(0, 2000) ?? '',
+      scripts: [...document.scripts].map((script) => script.src),
+    })`)
+    console.error('[story2-resume-gallery] preview diagnostic:', JSON.stringify(diagnostic))
+    console.error('[story2-resume-gallery] runtime exceptions:', browserErrors.join(' | '))
+    throw error
+  }
 
   await evaluate(`(() => {
     localStorage.removeItem(${JSON.stringify(progressKey)})
