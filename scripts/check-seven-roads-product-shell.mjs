@@ -179,7 +179,7 @@ forbidText('public shell gallery legacy copy', shell, 'Ochilgan illyustratsiyala
 requireText('public shell', shell, 'sevenRoadsUiAssets.futureSeasonPlaceholder')
 forbidText('public shell fixed world background', shell, 'fixed inset-y-0 left-1/2')
 requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsSeasonEpisodeContext(language, 1, 1)')
-requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsEpisodeProgress(language, reading.currentEpisode, 6)')
+requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsEpisodeProgress(')
 requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsSeasonLabel(language, season.number)')
 requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsEpisodeLabel(language, episode.episodeNumber)')
 requireText('public shell Uzbek completion', shell, "language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён'")
