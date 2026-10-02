@@ -14,6 +14,10 @@ const inventory = JSON.parse(
     'utf8',
   ),
 )
+const assetRegistrySource = fs.readFileSync(
+  path.join(root, 'src/data/authoredStoryAssets.ts'),
+  'utf8',
+)
 
 const errors = []
 const fail = (message) => errors.push(message)
@@ -25,7 +29,10 @@ if (story.cover_illustration.status !== 'approved') {
   fail(`Story 2 cover must be approved, got ${story.cover_illustration.status}`)
 }
 if (story.cover_illustration.runtime_url !== null) {
-  fail('Story 2 cover runtime_url must remain null until hosted/registered')
+  fail('Story 2 cover runtime_url must stay null because runtime resolution is registry-based')
+}
+if (!assetRegistrySource.includes("'seven_roads_story2_cover_v1'")) {
+  fail('Story 2 cover must be staged in the readiness-gated asset registry')
 }
 
 if (inventory.version !== 'story2-cover-runtime-webp-1') {
@@ -90,4 +97,4 @@ console.log('[story2-cover] PASS')
 console.log('[story2-cover] approved asset id: seven_roads_story2_cover_v1')
 console.log('[story2-cover] portrait 1024x1536 · exact 2:3')
 console.log(`[story2-cover] locked WebP: ${inventory.bytes} bytes · ${inventory.sha256}`)
-console.log('[story2-cover] runtime hosting remains a separate release gate')
+console.log('[story2-cover] runtime route is staged behind the Story 2 readiness flag; public object verification remains a release gate')
