@@ -143,6 +143,7 @@ Latest verified PR CI at this checkpoint:
 - asset-verification run: `#752` — **success**
 - gated-preview build run: `#756` — **success**
 - multi-story shell integration run: `#780` — **success**
+- stable-origin resume/Gallery run: `#791` — **success**
 
 Passed gates include:
 
@@ -197,13 +198,37 @@ Key release semantics:
 
 This contract is enforced by `scripts/check-seven-roads-product-shell.mjs` and `scripts/check-authored-story2-v4.mjs`.
 
+## Stable-origin reload/resume + Gallery checkpoint — 2026-10-02
+
+A real Chromium smoke now runs against the gated Story 2 build on a stable local HTTP origin:
+
+`http://127.0.0.1:4173/qissa_app/`
+
+Viewport: **430 × 932**.
+
+The smoke performs actual reader interactions and real page reloads. It verified:
+
+- Choice 3A progress survives reload;
+- a non-zero Story 2 reading position survives reload and is restored;
+- Choice 4B progress survives a second reload;
+- selected-only Gallery discovery persists for `seven_roads_story2_p6a_img_03_v1` and `seven_roads_story2_p8b_img_01_v1`;
+- unchosen branch art `seven_roads_story2_p6b_img_03_v1` and `seven_roads_story2_p8a_img_01_v1` remains locked;
+- no browser runtime exception occurred during the smoke.
+
+The test also exposed and fixed one real UX bug: part-based Story 2 was briefly using the episode-boundary CTA (“Следующая серия”) between internal parts. The reader now applies episode-boundary UI only when `readerUnit === 'episode'`; Story 2 correctly uses ordinary continuation between its ten internal parts.
+
+Automated command:
+
+`npm run smoke:story2-resume-gallery`
+
+CI result: **Seven Roads CI #791 — success**.
+
 ## Remaining publication blockers
 
 Do not publish Story 2 until all of the following are complete:
 
-1. Run one stable-origin browser reload/resume + Gallery discovery smoke so Story 2 persistence is proven across an actual navigation/reload boundary.
-2. Add and accept the Uzbek localization overlay before enabling Story 2 in Uzbek.
-3. Approve/host a Story 2 cover if the final product shell requires one.
-4. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
+1. Add and accept the Uzbek localization overlay before enabling Story 2 in Uzbek.
+2. Approve/host a Story 2 cover if the final product shell requires one.
+3. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
 
 No production release flag should be flipped as part of the current PR.
