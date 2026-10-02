@@ -196,7 +196,7 @@ Key release semantics:
 - Story 2 preview is explicitly `seasonNumber=2`, `storyNumber=2`, `completionScope=story`, `readerUnit=part`.
 - Per-story reading position and choices remain separated by the existing authored-story persistence keys (`story_id + story_version`).
 - Resetting a multi-story season clears each published story package in that season rather than only the currently open story.
-- The public Season 2 collection is still empty while Season 2 remains `coming_soon`; unpublished Story 2 metadata therefore does not leak into the normal production bundle.
+- Season 2 now publishes Story 2 as story #2; Story 2 keeps its own progress namespace, part-based reader semantics and story-level completion.
 
 This contract is enforced by `scripts/check-seven-roads-product-shell.mjs` and `scripts/check-authored-story2-v4.mjs`.
 
@@ -292,27 +292,28 @@ Live verification completed in **Seven Roads CI #822**:
 
 The cover inventory is now `approved_hosted_verified`.
 
-## Release-candidate state
+## Release state applied — pending production deployment
 
-All content/runtime QA gates are now complete:
+Publication was explicitly authorized on 2026-10-02.
 
-- Russian V4 package: PASS;
-- Uzbek overlay: PASS;
-- 16 logical choice paths: PASS;
-- exact text → image ordering: PASS;
-- 28 scene runtime assets: hosted + byte/hash verified;
-- Story 2 cover: hosted + byte/hash verified;
-- cover-enabled RU and UZ mobile reader: PASS;
-- reload/resume: PASS;
-- Gallery selected-only discovery: PASS;
-- production bundle remains closed while Story 2 is unreleased.
+The release branch now:
 
-The current branch intentionally keeps:
+- publishes Season 2;
+- publishes `seven-roads-season-2-story-2`;
+- resolves the RU/UZ Story 2 package from the public authored-story registry;
+- preserves `completionScope: 'story'` and `readerUnit: 'part'`;
+- enables Story 2 runtime assets in the production Pages build;
+- requires the default production bundle to contain Story 2 RU/UZ content, cover, branch art and the Story 2 Storage route.
 
-- Season 2 = `coming_soon`;
-- public Season 2 `stories: []`;
-- Story 2 preview/runtime flags disabled in the production Pages workflow.
+Release CI **#842** passed on the successful rerun, including:
 
-Therefore there is **no remaining content-production blocker**. The next operation is a deliberate release-state change, followed by production deployment and post-release smoke.
+- V4/UZ validation;
+- 28 scene live hash checks;
+- cover live hash check;
+- product-shell validation;
+- TypeScript/build;
+- published bundle-open assertion;
+- stable-origin reload/resume + Gallery smoke;
+- published release-state validation.
 
-No production release flag is flipped automatically by this checkpoint.
+The next step is merge/deploy to `main`, followed by post-release production smoke. The rollback plan remains valid until that smoke is complete.
