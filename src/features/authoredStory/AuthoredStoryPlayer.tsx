@@ -485,9 +485,11 @@ export function AuthoredStoryPlayer({
     !part.is_final && currentPartNumber < story.parts.length
       ? readerPartProgress(story, currentPartNumber + 1)
       : null
-  const isReaderEpisodeBoundary = Boolean(
-    nextReaderProgress && nextReaderProgress.current > readerProgress.current,
-  )
+  const isReaderEpisodeBoundary =
+    readerUnit === 'episode' &&
+    Boolean(
+      nextReaderProgress && nextReaderProgress.current > readerProgress.current,
+    )
   const currentDecisionChoiceId = part.decision
     ? progress.selected_choices[part.decision.decision_id] ?? null
     : null
