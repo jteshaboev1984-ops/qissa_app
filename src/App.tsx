@@ -5,6 +5,7 @@ import { SeasonOverview } from './components/SeasonOverview'
 import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
 import {
   getPrimaryPublishedSeasonStory,
+  getPublishedSeasonStories,
   getSeasonStoryByNumber,
   getSevenRoadsSeason1,
   getSevenRoadsSeasons,
@@ -150,7 +151,11 @@ function App() {
             completionScope={seasonStory.completionScope}
             readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
-            completionSummary={copy.completionSummary}
+            completionSummary={
+              seasonStory.completionScope === 'season'
+                ? copy.completionSummary
+                : undefined
+            }
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
               const next = { ...readerPreferences, ...patch }
@@ -193,7 +198,11 @@ function App() {
             completionScope={seasonStory.completionScope}
             readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
-            completionSummary={copy.completionSummary}
+            completionSummary={
+              seasonStory.completionScope === 'season'
+                ? copy.completionSummary
+                : undefined
+            }
             initialEpisodeNumber={requestedEpisodeNumber ?? undefined}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
@@ -235,8 +244,12 @@ function App() {
         }}
         onBack={() => setView('shell')}
         onResetSeason={() => {
-          authoredStoryPersistence.clear(story)
-          authoredReadingPosition.clear(story)
+          getPublishedSeasonStories(season).forEach((seasonStoryEntry) => {
+            const authoredStory = seasonStoryEntry.authoredStory
+            if (!authoredStory) return
+            authoredStoryPersistence.clear(authoredStory)
+            authoredReadingPosition.clear(authoredStory)
+          })
           setTab('home')
           setView('shell')
         }}
@@ -279,6 +292,10 @@ function App() {
         setView('season')
       }}
       onContinueStory={() => {
+        const homeSeason = getSevenRoadsSeason1(language)
+        const homeStory = getPrimaryPublishedSeasonStory(homeSeason)
+        setSelectedSeasonNumber(homeSeason.number)
+        setSelectedStoryNumber(homeStory?.number ?? 1)
         setRequestedEpisodeNumber(null)
         setView('story')
       }}
