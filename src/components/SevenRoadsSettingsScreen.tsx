@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { ReaderSettingsPanel } from './ReaderSettingsPanel'
 import {
-  formatSevenRoadsSeasonLabel,
   getSevenRoadsCopy,
   sevenRoadsLanguageName,
   sevenRoadsLanguages,
@@ -99,7 +98,9 @@ export function SevenRoadsSettingsScreen({
       </section>
 
       <section className="mt-4 rounded-[1.5rem] border border-[#d8b9a9] bg-[#fff7f1] p-5">
-        <p className="q-label mb-2 text-[#8a5a44]">{formatSevenRoadsSeasonLabel(language, 1)}</p>
+        <p className="q-label mb-2 text-[#8a5a44]">
+          {language === 'uz' ? 'Hikoyalar jarayoni' : 'Прогресс сказок'}
+        </p>
         <h2 className="q-heading text-2xl font-bold">{copy.restartSeason}</h2>
         <p className="mt-2 text-sm leading-6 text-[#75594a]">
           {copy.restartSeasonBody}
