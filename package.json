@@ -55,7 +55,8 @@
     "ops:upload-story2-assets": "node scripts/upload-story2-runtime-assets.mjs",
     "check:story2-preview-bundle": "node scripts/check-story2-preview-bundle.mjs",
     "smoke:story2-resume-gallery": "node scripts/smoke-story2-resume-gallery-browser.mjs",
-    "check:authored-story2-uz": "node scripts/check-authored-story2-uz.mjs"
+    "check:authored-story2-uz": "node scripts/check-authored-story2-uz.mjs",
+    "check:story2-cover": "node scripts/check-story2-cover.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
