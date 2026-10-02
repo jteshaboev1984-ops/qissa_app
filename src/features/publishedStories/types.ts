@@ -15,6 +15,8 @@ export interface PublishedSeasonStory {
   status: PublishedStoryStatus
   authoredStory: AuthoredStoryPackage | null
   episodes: PublishedSeasonEpisode[]
+  completionScope: 'season' | 'story'
+  readerUnit: 'episode' | 'part'
 }
 
 export interface PublishedSeason {
