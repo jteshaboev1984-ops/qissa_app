@@ -5,10 +5,14 @@ const root = process.cwd()
 const storyPath = path.join(root, 'src/data/authored/taynaVostochnogoKaravanaV4.ru.json')
 const manifestPath = path.join(root, 'docs/qissa/story2/story2_v4_layout_manifest.json')
 const seasonsPath = path.join(root, 'src/data/sevenRoadsSeasons.ts')
+const appPath = path.join(root, 'src/App.tsx')
+const playerPath = path.join(root, 'src/features/authoredStory/AuthoredStoryPlayer.tsx')
 
 const story = JSON.parse(fs.readFileSync(storyPath, 'utf8'))
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
 const seasonsSource = fs.readFileSync(seasonsPath, 'utf8')
+const appSource = fs.readFileSync(appPath, 'utf8')
+const playerSource = fs.readFileSync(playerPath, 'utf8')
 
 const errors = []
 const fail = (message) => errors.push(message)
@@ -487,6 +491,28 @@ if (!seasonsSource.includes("id: 'seven-roads-season-2'")) {
 if (!seasonsSource.includes("status: 'coming_soon'")) {
   fail('Story 2 must remain coming_soon until runtime assets and localization are release-ready')
 }
+if (!seasonsSource.includes('stories: []')) {
+  fail('Season 2 public shell must not expose unpublished story metadata')
+}
+for (const marker of [
+  'storyNumber={2}',
+  'completionScope="story"',
+  'readerUnit="part"',
+]) {
+  if (!appSource.includes(marker)) {
+    fail(`Story 2 preview reader contract is missing: ${marker}`)
+  }
+}
+for (const marker of [
+  "completionScope === 'story'",
+  "readerUnit === 'part'",
+  'formatSevenRoadsStoryCompleted(language, storyNumber)',
+  'part.is_final ? finishLabel : copy.continue',
+]) {
+  if (!playerSource.includes(marker)) {
+    fail(`Story 2 story-scope completion contract is missing: ${marker}`)
+  }
+}
 
 if (errors.length > 0) {
   errors.forEach((error) => console.error(`[story2-v4] ${error}`))
@@ -501,4 +527,5 @@ console.log('[story2-v4] 5 deferred Choice-3 payoff segments')
 console.log('[story2-v4] all 16 paths preserve the exact 26-image reader sequence without branch leaks')
 console.log('[story2-v4] Choice 3 deferred payoff text is present only on the selected path')
 console.log('[story2-v4] critical road-seal canon and app-layout manifest are locked')
-console.log('[story2-v4] Season 2 remains gated as coming_soon')
+console.log('[story2-v4] Season 2 remains gated as coming_soon with no unpublished story metadata in the public collection')
+console.log('[story2-v4] Story 2 preview completes as Сказка 2 and uses part-level reader progress, never false season completion')
