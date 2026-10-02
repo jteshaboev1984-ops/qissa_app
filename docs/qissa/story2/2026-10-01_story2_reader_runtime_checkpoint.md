@@ -254,11 +254,34 @@ Detailed reconciliation notes:
 
 `docs/qissa/story2/2026-10-02_story2_uz_localization_reconciliation.md`
 
+## Story 2 cover checkpoint — 2026-10-02
+
+The corrected Story 2 cover candidate has been **accepted** as:
+
+`seven_roads_story2_cover_v1`
+
+Approved PNG master is stored in QISSA Library at:
+
+`/QISSA/production/seven_roads/story2_v2/approved/seven_roads_story2_cover_v1.png`
+
+Locked runtime derivative:
+
+- format: WebP
+- dimensions: **1024 × 1536**
+- aspect ratio: **2:3 portrait**
+- size: **293,120 bytes**
+- SHA-256: `eefdcb674febb46f4ecebc209cdbd1c13f5d9977360d5d4c95633f83eab00d8b`
+- Library runtime path: `/QISSA/production/seven_roads/story2_v2/runtime_webp/seven_roads_story2_cover_v1.webp`
+- intended Supabase object: `story-images/seven-roads/story2_v2/seven_roads_story2_cover_v1.webp`
+
+The authored package now marks the cover as `approved`. Runtime registration is intentionally not enabled until the public Supabase object exists and passes byte/hash verification.
+
 ## Remaining publication blockers
 
 Do not publish Story 2 until all of the following are complete:
 
-1. Approve/host a Story 2 cover if the final product shell requires one.
-2. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
+1. Upload the already approved Story 2 cover WebP to its locked Supabase object path and pass the live byte/hash smoke.
+2. Run the final cover-enabled RU + UZ reader/library smoke.
+3. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
 
 No production release flag should be flipped as part of the current PR.
