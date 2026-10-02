@@ -142,3 +142,93 @@ After Storage upload:
 4. confirm the unchosen branch image never appears in reader or Gallery;
 5. confirm scroll/resume does not skip or prematurely mark selected-only art as seen;
 6. keep Story 2 unpublished until those rendered-reader checks pass.
+
+
+## Post-hosting rendered-reader smoke — 2026-10-02
+
+**PASS**
+
+After the 28 runtime WebPs were uploaded to production Supabase Storage and independently byte/hash verified, the gated Story 2 preview build from GitHub Actions was exercised in a real Chromium/React/CSS mobile rendering harness at **430 × 932**.
+
+The environment blocks direct top-level preview navigation, so the smoke used the exact CI-built JS/CSS artifact in an isolated browser document and supplied the exact prebuilt Story 2 authored package. Story-image requests were fulfilled from the same locked 28 WebPs whose public Supabase copies passed the live hash smoke. No story prose, branch logic, anchors, or reader code was rewritten for the test.
+
+### Rendered path coverage
+
+Four rendered paths were completed to cover both Story 3 and Story 4 visual branches:
+
+- Choice 3A + Choice 4A — PASS
+- Choice 3A + Choice 4B — PASS
+- Choice 3B + Choice 4A — PASS
+- Choice 3B + Choice 4B — PASS
+
+Choices 1 and 2 were kept on the same baseline option because they intentionally have no branch-specific illustration; their shared convergence images were still rendered and checked.
+
+For every tested path:
+
+- exactly **26 scene images** became visible;
+- all visible images loaded at natural size **1536 × 1024**;
+- every shared image immediately followed its locked V4 anchor paragraph;
+- only the selected Choice 3 image appeared;
+- only the selected Choice 4 image appeared;
+- no duplicate image appeared;
+- no unchosen branch image leaked into the DOM;
+- deferred Choice 3 payoff prose appeared only on its selected path.
+
+### Choice 3 rendered anchor proof
+
+**3A / P6A-IMG-03**
+
+The image rendered immediately after:
+
+> На воротах ещё сохранился старый знак двора: две узкие башни по сторонам проезда.
+
+The mobile frame shows Samira at the old Sarvan caravan yard, with the two narrow towers visible before the subsequent recognition/payoff prose.
+
+**3B / P6B-IMG-03**
+
+The image rendered immediately after:
+
+> — У Каменного колодца. Они уже стояли возле дороги. Две лошади, несколько связок кожи.
+
+The mobile frame shows Samira questioning Azim in the horse-yard context before the dialogue continues.
+
+Both branch frames preserve readable text/image spacing and do not expose the other branch.
+
+### Choice 4 rendered anchor proof
+
+**4A / P8A-IMG-01**
+
+The image rendered immediately after:
+
+> Он увидел стражников впереди и резко остановился.
+
+The frame shows the adult guards blocking the route, consistent with the shortcut-and-warning branch.
+
+**4B / P8B-IMG-01**
+
+The image rendered immediately after:
+
+> Вторая легла дальше по той же стороне, не давая ему снова взять левее.
+
+The frame shows the safe arrow-routing action and the right-hand escape passage; the arrows are not aimed at Nadir.
+
+### General mobile layout result
+
+The rendered reader preserved:
+
+- sticky reader controls;
+- readable serif text at the default setting;
+- clear paragraph separation;
+- full-width landscape illustrations with rounded corners;
+- no text overlay on illustrations;
+- no clipping or visible stretching;
+- correct continuation of prose beneath each illustration.
+
+P1, Choice 3A, Choice 3B, Choice 4A, Choice 4B, P7 and P10 critical transition frames were visually inspected in the rendered mobile flow.
+
+### Remaining rendered-runtime gap
+
+A true browser **reload/resume persistence** smoke still requires an allowed stable preview origin so browser storage survives navigation/reload in the test environment. The current rendered smoke verifies the active-session React path and DOM ordering, but does not claim an end-to-end reload/resume proof for Story 2.
+
+Story 1 already owns the shared authored-reader persistence implementation; nevertheless, Story 2 should receive one final stable-origin resume/Gallery smoke before publication.
+
