@@ -82,3 +82,12 @@ jobs:
       - name: Verify gated Story 2 preview bundle
         if: github.head_ref == 'story2-reader-layout'
         run: npm run check:story2-preview-bundle
+
+      - name: Upload gated Story 2 preview artifact
+        if: github.head_ref == 'story2-reader-layout'
+        uses: actions/upload-artifact@v4
+        with:
+          name: story2-preview-dist
+          path: ./dist
+          if-no-files-found: error
+          retention-days: 3
