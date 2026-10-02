@@ -1,5 +1,8 @@
 import { prazdnikMuzhestvaV3ByLanguage } from './authoredStories'
-import type { PublishedSeason } from '../features/publishedStories/types'
+import type {
+  PublishedSeason,
+  PublishedSeasonStory,
+} from '../features/publishedStories/types'
 import {
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
@@ -24,24 +27,49 @@ const episodeTitles: Record<SevenRoadsLanguage, string[]> = {
   ],
 }
 
+export const getPublishedSeasonStories = (
+  season: PublishedSeason,
+): PublishedSeasonStory[] =>
+  season.stories.filter(
+    (story) => story.status === 'published' && Boolean(story.authoredStory),
+  )
+
+export const getSeasonStoryByNumber = (
+  season: PublishedSeason,
+  storyNumber: number,
+): PublishedSeasonStory | null =>
+  season.stories.find((story) => story.number === storyNumber) ?? null
+
+export const getPrimaryPublishedSeasonStory = (
+  season: PublishedSeason,
+): PublishedSeasonStory | null =>
+  getPublishedSeasonStories(season)[0] ?? null
+
 export const getSevenRoadsSeason1 = (
   language: SevenRoadsLanguage,
 ): PublishedSeason => {
   const copy = getSevenRoadsCopy(language)
-  const story = prazdnikMuzhestvaV3ByLanguage[language]
+  const authoredStory = prazdnikMuzhestvaV3ByLanguage[language]
+  const publishedStory: PublishedSeasonStory = {
+    id: 'seven-roads-season-1-story-1',
+    number: 1,
+    title: authoredStory.title,
+    status: 'published',
+    authoredStory,
+    episodes: episodeTitles[language].map((title, index) => ({
+      number: index + 1,
+      title,
+    })),
+  }
 
   return {
     id: 'seven-roads-season-1',
     worldId: 'seven_roads',
     worldTitle: copy.worldTitle,
     number: 1,
-    title: story.title,
+    title: authoredStory.title,
     status: 'published',
-    story,
-    episodes: episodeTitles[language].map((title, index) => ({
-      number: index + 1,
-      title,
-    })),
+    stories: [publishedStory],
   }
 }
 
@@ -54,8 +82,10 @@ export const getSevenRoadsSeason2 = (
   number: 2,
   title: null,
   status: 'coming_soon',
-  story: null,
-  episodes: [],
+  // Do not ship unpublished story metadata in the public production bundle.
+  // Season 2 is intentionally an empty public collection until individual
+  // stories pass their own release gates.
+  stories: [],
 })
 
 export const getSevenRoadsSeasons = (
