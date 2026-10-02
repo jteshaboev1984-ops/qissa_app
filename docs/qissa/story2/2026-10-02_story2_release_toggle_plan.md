@@ -2,18 +2,13 @@
 
 ## Current state
 
-Story 2 is technically release-ready but intentionally unpublished.
+Publication was explicitly authorized on 2026-10-02.
 
-Current safeguards:
-
-- Season 2 status is `coming_soon`.
-- Public Season 2 story collection is empty.
-- Story 2 runtime/preview flags remain false in production Pages.
-- Default production bundle contains no Story 2 prose or runtime routes.
+The release change set has been applied on the release branch and is pending merge/deployment. The internal preview route remains disabled in production; the published Story 2 runtime asset flag is enabled.
 
 ## Explicit release change
 
-When publication is authorized, perform the release as one controlled change set:
+Applied release change set:
 
 1. Add Story 2 RU/UZ package to the published authored-story registry.
 2. Add Story 2 as **Story 2** inside the Season 2 story collection.
@@ -21,8 +16,8 @@ When publication is authorized, perform the release as one controlled change set
 4. Switch the relevant Season 2/publication status from `coming_soon` to the published state required by the product shell.
 5. Enable Story 2 runtime assets in the production build.
 6. Remove/replace the pre-release production-bundle-closed assertion with a release assertion that requires Story 2 to be present.
-7. Build and deploy.
-8. Run production smoke for:
+7. Build release branch and require the published bundle-open assertion. **Completed in CI #842.**
+8. Merge/deploy to production, then run production smoke for:
    - RU fresh read;
    - UZ fresh read;
    - cover;
