@@ -44,6 +44,9 @@ jobs:
       - name: Validate Story 2 V4 authored package
         run: npm run check:authored-story2
 
+      - name: Validate Story 2 Uzbek localization
+        run: npm run check:authored-story2-uz
+
       - name: Validate Story 2 runtime asset inventory
         run: npm run check:story2-runtime
 
