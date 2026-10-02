@@ -102,9 +102,9 @@ jobs:
         if: github.head_ref == 'story2-reader-layout'
         run: npm run smoke:story2-resume-gallery
 
-      - name: Validate Story 2 release candidate state
+      - name: Validate published Story 2 release state
         if: github.head_ref == 'story2-reader-layout'
-        run: npm run check:story2-release-candidate
+        run: npm run check:story2-release-open
 
       - name: Upload gated Story 2 preview artifact
         if: github.head_ref == 'story2-reader-layout'
