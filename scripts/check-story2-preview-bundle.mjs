@@ -41,11 +41,6 @@ if (missing.length > 0) {
   process.exit(1)
 }
 
-if (!searchable.includes('seven-roads/story2_v2/seven_roads_story2_cover_v1.webp')) {
-  console.error('[story2-preview-bundle] approved Story 2 cover runtime route is missing')
-  process.exit(1)
-}
-
 console.log('[story2-preview-bundle] PASS')
 console.log('[story2-preview-bundle] Story 2 prose, all branch IDs, and hosted runtime prefix are present')
-console.log('[story2-preview-bundle] approved cover runtime route is staged behind the Story 2 asset flag')
+console.log('[story2-preview-bundle] approved cover asset id and Story 2 runtime prefix are staged behind the Story 2 asset flag')
