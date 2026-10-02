@@ -1,4 +1,4 @@
-# QISSA Story 2 reader/runtime checkpoint — 2026-10-01
+# QISSA Story 2 reader/runtime checkpoint — updated 2026-10-02
 
 ## Scope
 
@@ -120,21 +120,28 @@ Modes:
 - `absent`: all 28 public Story 2 objects must be absent.
 - `present`: all 28 public objects must return successfully and match the locked MIME type, byte length, and SHA-256 digest.
 
-Current production Supabase state checked on 2026-10-01:
+Current production Supabase state checked on 2026-10-02:
 
 - bucket: `story-images`
 - prefix: `seven-roads/story2_v2/`
-- Story 2 object count: **0**
+- Story 2 object count: **28 / 28**
+- MIME: **28 / 28 image/webp**
+- aggregate payload: **9,071,006 bytes**
+- live public-object smoke: **PASS**
 
-So the correct release state remains **assets not ready**.
+GitHub Actions run **#752** downloaded every public object and verified the locked byte length and SHA-256 digest for all 28 files. Result:
+
+`[story2-assets-live] PASS expected present · 28/28 objects · 9071006 bytes verified`
+
+Runtime assets are therefore **hosted and verified**. Publication remains closed for the separate preview/render/localization/product-shell gates below.
 
 ## CI checkpoint
 
 Latest verified PR CI at this checkpoint:
 
 - workflow: `Seven Roads CI`
-- run: `#749`
-- result: **success**
+- asset-verification run: `#752` — **success**
+- gated-preview build run: `#756` — **success**
 
 Passed gates include:
 
@@ -153,13 +160,12 @@ Passed gates include:
 
 Do not publish Story 2 until all of the following are complete:
 
-1. Upload all 28 locked WebP assets to the production `story-images/seven-roads/story2_v2/` prefix.
-2. Run the live asset smoke with `expected_state=present` and get 28/28 byte/hash matches.
-3. Turn on Story 2 runtime asset resolution only in the intended preview/staging build and perform a real reader visual smoke.
-4. Verify exact text → illustration ordering on both Choice 3 branches and both Choice 4 branches in the rendered reader.
-5. Add and accept the Uzbek localization overlay before enabling Story 2 in Uzbek.
-6. Resolve the Season 2 multi-story product-shell model before publishing this story as Season 2 story #2.
-7. Approve/host a Story 2 cover if the final product shell requires one.
-8. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
+1. Perform a real rendered-reader visual smoke using the gated preview build with Story 2 runtime assets enabled.
+2. Verify exact text → illustration ordering on both Choice 3 branches and both Choice 4 branches in the rendered reader.
+3. Verify mobile scroll/resume and Gallery discovery for selected-only branch art.
+4. Add and accept the Uzbek localization overlay before enabling Story 2 in Uzbek.
+5. Resolve the Season 2 multi-story product-shell model before publishing this story as Season 2 story #2.
+6. Approve/host a Story 2 cover if the final product shell requires one.
+7. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
 
 No production release flag should be flipped as part of the current PR.
