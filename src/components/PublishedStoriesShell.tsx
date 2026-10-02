@@ -40,7 +40,7 @@ export function PublishedStoriesShell({
   language: SevenRoadsLanguage
   tab: PublishedStoriesTab
   onTab: (tab: PublishedStoriesTab) => void
-  onOpenSeason: () => void
+  onOpenSeason: (seasonNumber: number) => void
   onContinueStory: () => void
   onOpenSettings: () => void
 }) {
@@ -110,7 +110,7 @@ export function PublishedStoriesShell({
         eyebrow: language === 'uz' ? 'Hikoyani boshlash' : 'Начать историю',
         title: sevenRoadsSeason1.title,
         subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, 1),
-        action: onOpenSeason,
+        action: () => onOpenSeason(sevenRoadsSeason1.number),
       }
     }
 
@@ -340,7 +340,7 @@ export function PublishedStoriesShell({
 
                     <button
                       type="button"
-                      onClick={onOpenSeason}
+                      onClick={() => onOpenSeason(sevenRoadsSeason1.number)}
                       className="relative min-h-52 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] transition active:scale-[0.99]"
                     >
                       {seasonCover ? (
