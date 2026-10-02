@@ -50,6 +50,9 @@ jobs:
       - name: Validate Story 2 runtime asset inventory
         run: npm run check:story2-runtime
 
+      - name: Validate Story 2 approved cover
+        run: npm run check:story2-cover
+
       - name: Verify public Story 2 runtime assets on integration branch
         if: github.head_ref == 'story2-reader-layout'
         env:
