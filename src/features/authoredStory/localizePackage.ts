@@ -11,6 +11,7 @@ export interface AuthoredStoryLocalizedChoiceText {
   effect_summary: string
   resolution_text: string
   last_event: string
+  illustration_after_text?: string
 }
 
 export interface AuthoredStoryLocalizedDecisionText {
@@ -25,6 +26,13 @@ export interface AuthoredStoryLocalizedPartText {
   story_text: string
   post_choice_text: string
   image_anchor_texts: Record<string, string>
+  conditional_segment_texts?: Record<
+    string,
+    {
+      after_text: string
+      text: string
+    }
+  >
   decision: AuthoredStoryLocalizedDecisionText | null
 }
 
@@ -60,11 +68,44 @@ const localizeChoice = (
 ): AuthoredStoryChoice => {
   const localized = requireLocalizedChoice(decisionText, choice.choice_id)
 
+  const localizedIllustration = choice.illustration
+    ? {
+        ...choice.illustration,
+        after_text:
+          choice.illustration.after_text == null
+            ? undefined
+            : localized.illustration_after_text?.trim(),
+      }
+    : null
+
+  if (
+    choice.illustration?.behavior === 'show_in_resolution_after_anchor' &&
+    !localizedIllustration?.after_text
+  ) {
+    throw new Error(
+      `Missing localized choice illustration anchor: ${choice.choice_id}`,
+    )
+  }
+
+  if (localizedIllustration?.after_text) {
+    const occurrences = localized.resolution_text
+      .split(/\n\n+/)
+      .map((paragraph) => paragraph.trim())
+      .filter((paragraph) => paragraph === localizedIllustration.after_text).length
+
+    if (occurrences !== 1) {
+      throw new Error(
+        `${choice.choice_id}: localized choice illustration anchor must occur exactly once, got ${occurrences}`,
+      )
+    }
+  }
+
   return {
     ...choice,
     text: localized.text,
     effect_summary: localized.effect_summary,
     resolution_text: localized.resolution_text,
+    illustration: localizedIllustration,
     state_patch: {
       ...choice.state_patch,
       last_event: localized.last_event,
@@ -128,12 +169,39 @@ const localizePart = (
     }
   })
 
+  const conditionalSegments = (part.conditional_segments ?? []).map((segment) => {
+    const localizedSegment = localized.conditional_segment_texts?.[segment.segment_id]
+    if (!localizedSegment?.after_text?.trim() || !localizedSegment.text?.trim()) {
+      throw new Error(`Missing localized conditional segment: ${segment.segment_id}`)
+    }
+
+    const phaseText =
+      segment.phase === 'story_text' ? localized.story_text : localized.post_choice_text
+    const occurrences = phaseText
+      .split(/\n\n+/)
+      .map((paragraph) => paragraph.trim())
+      .filter((paragraph) => paragraph === localizedSegment.after_text.trim()).length
+
+    if (occurrences !== 1) {
+      throw new Error(
+        `${segment.segment_id}: localized conditional anchor must occur exactly once, got ${occurrences}`,
+      )
+    }
+
+    return {
+      ...segment,
+      after_text: localizedSegment.after_text,
+      text: localizedSegment.text,
+    }
+  })
+
   return {
     ...part,
     title: localized.title,
     story_text: localized.story_text,
     post_choice_text: localized.post_choice_text,
     image_slots: imageSlots,
+    conditional_segments: conditionalSegments,
     decision: localizeDecision(part.decision, localized.decision),
   }
 }

@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { getSevenRoadsSeason1, getSevenRoadsSeasons } from '../data/sevenRoadsSeasons'
+import {
+  getPrimaryPublishedSeasonStory,
+  getPublishedSeasonStories,
+  getSevenRoadsSeason1,
+  getSevenRoadsSeasons,
+} from '../data/sevenRoadsSeasons'
 import { sevenRoadsUiAssets } from '../data/sevenRoadsUiAssets'
 import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
@@ -9,6 +14,7 @@ import {
   formatSevenRoadsEpisodeProgress,
   formatSevenRoadsSeasonEpisodeContext,
   formatSevenRoadsSeasonLabel,
+  formatSevenRoadsStoryLabel,
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
@@ -21,7 +27,7 @@ export type PublishedStoriesTab = 'home' | 'library'
 type LibraryView = 'seasons' | 'gallery'
 type LibraryNotice =
   | { kind: 'coming-season'; seasonNumber: number }
-  | { kind: 'locked-art'; episodeNumber: number }
+  | { kind: 'locked-art'; episodeNumber: number; storyNumber?: number }
 
 export function PublishedStoriesShell({
   language,
@@ -34,14 +40,15 @@ export function PublishedStoriesShell({
   language: SevenRoadsLanguage
   tab: PublishedStoriesTab
   onTab: (tab: PublishedStoriesTab) => void
-  onOpenSeason: () => void
+  onOpenSeason: (seasonNumber: number) => void
   onContinueStory: () => void
   onOpenSettings: () => void
 }) {
   const copy = getSevenRoadsCopy(language)
   const sevenRoadsSeason1 = getSevenRoadsSeason1(language)
   const sevenRoadsSeasons = getSevenRoadsSeasons(language)
-  const story = sevenRoadsSeason1.story
+  const season1Story = getPrimaryPublishedSeasonStory(sevenRoadsSeason1)
+  const story = season1Story?.authoredStory ?? null
   const progress = story ? authoredStoryPersistence.load(story) : null
   const reading = sevenRoadsStory1ReadingState(progress)
 
@@ -51,31 +58,38 @@ export function PublishedStoriesShell({
   const [galleryLightbox, setGalleryLightbox] = useState<{ url: string; alt: string } | null>(null)
   const [notice, setNotice] = useState<LibraryNotice | null>(null)
 
-  const seasonCover = story
-    ? resolveAuthoredStoryAssetUrl(
-        story.cover_illustration.asset_id,
-        story.cover_illustration.runtime_url,
-      )
-    : null
-
   const currentEpisodeTitle =
-    sevenRoadsSeason1.episodes[reading.currentEpisode - 1]?.title ?? sevenRoadsSeason1.title
+    season1Story?.episodes[reading.currentEpisode - 1]?.title ?? sevenRoadsSeason1.title
 
   const buildSeasonGallery = (season: (typeof sevenRoadsSeasons)[number]) => {
-    if (season.status !== 'published' || !season.story) {
-      return { episodes: [], totalItems: 0, unlockedItems: 0 }
-    }
+    const publishedStories =
+      season.status === 'published' ? getPublishedSeasonStories(season) : []
 
-    const seasonProgress = authoredStoryPersistence.load(season.story)
-    const episodes = authoredIllustrationDiscovery.buildGalleryEpisodes(
-      season.story,
-      season.episodes.map((episode) => episode.title),
-      seasonProgress,
-      season.number === 1 ? sevenRoadsStory1EpisodeNumber : undefined,
-    )
+    const episodes = publishedStories.flatMap((seasonStory) => {
+      const authoredStory = seasonStory.authoredStory
+      if (!authoredStory) return []
+
+      const storyProgress = authoredStoryPersistence.load(authoredStory)
+      const storyEpisodes = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        authoredStory,
+        seasonStory.episodes.map((episode) => episode.title),
+        storyProgress,
+        season.number === 1 && seasonStory.number === 1
+          ? sevenRoadsStory1EpisodeNumber
+          : undefined,
+      )
+
+      return storyEpisodes.map((episode) => ({
+        ...episode,
+        storyId: seasonStory.id,
+        storyNumber: seasonStory.number,
+        storyTitle: seasonStory.title ?? authoredStory.title,
+      }))
+    })
 
     return {
       episodes,
+      storyCount: publishedStories.length,
       totalItems: episodes.reduce((sum, episode) => sum + episode.items.length, 0),
       unlockedItems: episodes.reduce((sum, episode) => sum + episode.unlockedCount, 0),
     }
@@ -89,7 +103,7 @@ export function PublishedStoriesShell({
         eyebrow: language === 'uz' ? 'Hikoyani boshlash' : 'Начать историю',
         title: sevenRoadsSeason1.title,
         subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, 1),
-        action: onOpenSeason,
+        action: () => onOpenSeason(sevenRoadsSeason1.number),
       }
     }
 
@@ -109,15 +123,6 @@ export function PublishedStoriesShell({
       action: onContinueStory,
     }
   })()
-
-  const seasonProgressLabel =
-    reading.state === 'completed'
-      ? copy.completed
-      : reading.state === 'in_progress'
-        ? formatSevenRoadsEpisodeProgress(language, reading.currentEpisode, 6)
-        : language === 'uz'
-          ? 'Boshlanmagan'
-          : 'Не начат'
 
   const closeNotice = () => setNotice(null)
 
@@ -189,8 +194,8 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? `Bu lavha ${notice.episodeNumber}-qismdagi shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
-                    : `Она откроется после того, как эта сцена появится во время чтения серии ${notice.episodeNumber}. Так Галерея не показывает сюжет заранее.`}
+                    ? `Bu lavha ${notice.storyNumber ? `${notice.storyNumber}-hikoyadagi ` : ''}${notice.episodeNumber}-qismdagi shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
+                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? `сказки ${notice.storyNumber}, ` : ''}серии ${notice.episodeNumber}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
                   {reading.state === 'in_progress' ? (
@@ -317,66 +322,111 @@ export function PublishedStoriesShell({
                       <h2 className="q-heading mt-1 text-2xl font-bold">{copy.seasons}</h2>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={onOpenSeason}
-                      className="relative min-h-52 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] transition active:scale-[0.99]"
-                    >
-                      {seasonCover ? (
-                        <img
-                          src={seasonCover}
-                          alt=""
-                          className="absolute inset-0 h-full w-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : null}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/5" />
-                      <div className="absolute inset-x-0 bottom-0 p-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                            {formatSevenRoadsSeasonLabel(language, 1)}
-                          </p>
-                          <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
-                            {seasonProgressLabel}
-                          </span>
-                        </div>
-                        <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">
-                          {sevenRoadsSeason1.title}
-                        </h3>
-                      </div>
-                    </button>
+                    {sevenRoadsSeasons.map((season) => {
+                      const primaryStory = getPrimaryPublishedSeasonStory(season)
+                      const authoredStory = primaryStory?.authoredStory ?? null
 
-                    {sevenRoadsSeasons
-                      .filter((season) => season.status === 'coming_soon')
-                      .map((season) => (
+                      if (
+                        season.status !== 'published' ||
+                        !primaryStory ||
+                        !authoredStory
+                      ) {
+                        return (
+                          <button
+                            key={season.id}
+                            type="button"
+                            onClick={() =>
+                              setNotice({ kind: 'coming-season', seasonNumber: season.number })
+                            }
+                            className="relative min-h-40 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.7)] transition active:scale-[0.99]"
+                          >
+                            <img
+                              src={sevenRoadsUiAssets.futureSeasonPlaceholder}
+                              alt=""
+                              className="absolute inset-0 h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                            <div className="absolute inset-x-0 bottom-0 p-4">
+                              <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
+                                {formatSevenRoadsSeasonLabel(language, season.number)}
+                              </p>
+                              <div className="mt-1 flex items-end justify-between gap-3">
+                                <h3 className="font-serif text-2xl font-bold text-white">
+                                  {copy.soon}
+                                </h3>
+                                <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                                  {language === 'uz' ? 'Tayyorlanmoqda' : 'Готовим'}
+                                </span>
+                              </div>
+                            </div>
+                          </button>
+                        )
+                      }
+
+                      const seasonStoryProgress =
+                        authoredStoryPersistence.load(authoredStory)
+                      const progressLabel =
+                        season.number === 1
+                          ? (() => {
+                              const state =
+                                sevenRoadsStory1ReadingState(seasonStoryProgress)
+                              return state.state === 'completed'
+                                ? copy.completed
+                                : state.state === 'in_progress'
+                                  ? formatSevenRoadsEpisodeProgress(
+                                      language,
+                                      state.currentEpisode,
+                                      6,
+                                    )
+                                  : language === 'uz'
+                                    ? 'Boshlanmagan'
+                                    : 'Не начат'
+                            })()
+                          : seasonStoryProgress?.completed
+                            ? copy.completed
+                            : seasonStoryProgress
+                              ? copy.continue
+                              : language === 'uz'
+                                ? 'Boshlanmagan'
+                                : 'Не начат'
+                      const coverUrl = resolveAuthoredStoryAssetUrl(
+                        authoredStory.cover_illustration.asset_id,
+                        authoredStory.cover_illustration.runtime_url,
+                      )
+
+                      return (
                         <button
                           key={season.id}
                           type="button"
-                          onClick={() =>
-                            setNotice({ kind: 'coming-season', seasonNumber: season.number })
-                          }
-                          className="relative min-h-40 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.7)] transition active:scale-[0.99]"
+                          onClick={() => onOpenSeason(season.number)}
+                          className="relative min-h-52 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] transition active:scale-[0.99]"
                         >
-                          <img
-                            src={sevenRoadsUiAssets.futureSeasonPlaceholder}
-                            alt=""
-                            className="absolute inset-0 h-full w-full object-cover"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                          {coverUrl ? (
+                            <img
+                              src={coverUrl}
+                              alt=""
+                              className="absolute inset-0 h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : null}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/5" />
                           <div className="absolute inset-x-0 bottom-0 p-4">
-                            <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                              {formatSevenRoadsSeasonLabel(language, season.number)}
-                            </p>
-                            <div className="mt-1 flex items-end justify-between gap-3">
-                              <h3 className="font-serif text-2xl font-bold text-white">{copy.soon}</h3>
-                              <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
-                                {language === 'uz' ? 'Tayyorlanmoqda' : 'Готовим'}
+                            <div className="flex items-center justify-between gap-3">
+                              <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
+                                {formatSevenRoadsSeasonLabel(language, season.number)}
+                              </p>
+                              <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                                {progressLabel}
                               </span>
                             </div>
+                            <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">
+                              {season.title ?? primaryStory.title ?? authoredStory.title}
+                            </h3>
                           </div>
                         </button>
-                      ))}
+                      )
+                    })}
                   </div>
                 ) : (
                   <div className="space-y-5">
@@ -388,7 +438,11 @@ export function PublishedStoriesShell({
 
                     <div className="overflow-hidden rounded-[1.15rem] border-y border-[#d8c39a]/80 bg-[#fff9ed]/45">
                       {sevenRoadsSeasons
-                        .filter((season) => season.status === 'published' && Boolean(season.story))
+                        .filter(
+                          (season) =>
+                            season.status === 'published' &&
+                            getPublishedSeasonStories(season).length > 0,
+                        )
                         .map((season) => {
                           const gallery = buildSeasonGallery(season)
                           const expanded = expandedGallerySeason === season.number
@@ -414,7 +468,7 @@ export function PublishedStoriesShell({
                                 aria-controls={panelId}
                               >
                                 <h3 className="min-w-0 flex-1 font-serif text-lg font-bold leading-tight text-[#2d332f]">
-                                  {season.title}
+                                  {season.title ?? formatSevenRoadsSeasonLabel(language, season.number)}
                                 </h3>
 
                                 <div className="flex flex-none items-center gap-2.5">
@@ -465,15 +519,16 @@ export function PublishedStoriesShell({
 
                                   <div className="mt-4 overflow-hidden rounded-[1rem] border border-[#d8c39a]/70 bg-[#fffaf0]/55">
                                     {gallery.episodes.map((episode) => {
-                                      const episodeKey = `${season.number}:${episode.episodeNumber}`
+                                      const episodeKey =
+                                        `${season.number}:${episode.storyNumber}:${episode.episodeNumber}`
                                       const episodeExpanded =
                                         expandedGalleryEpisode === episodeKey
                                       const episodePanelId =
-                                        `gallery-season-${season.number}-episode-${episode.episodeNumber}`
+                                        `gallery-season-${season.number}-story-${episode.storyNumber}-episode-${episode.episodeNumber}`
 
                                       return (
                                         <section
-                                          key={episode.episodeNumber}
+                                          key={episodeKey}
                                           className="border-b border-[#d8c39a]/65 last:border-b-0"
                                         >
                                           <button
@@ -488,6 +543,11 @@ export function PublishedStoriesShell({
                                             aria-controls={episodePanelId}
                                           >
                                             <div className="min-w-0 flex-1">
+                                              {gallery.storyCount > 1 ? (
+                                                <p className="text-[0.58rem] font-bold uppercase tracking-[0.12em] text-[#9a8055]">
+                                                  {formatSevenRoadsStoryLabel(language, episode.storyNumber)} · {episode.storyTitle}
+                                                </p>
+                                              ) : null}
                                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
                                                 {formatSevenRoadsEpisodeLabel(language, episode.episodeNumber)}
                                               </p>
@@ -574,6 +634,10 @@ export function PublishedStoriesShell({
                                                         setNotice({
                                                           kind: 'locked-art',
                                                           episodeNumber: episode.episodeNumber,
+                                                          storyNumber:
+                                                            gallery.storyCount > 1
+                                                              ? episode.storyNumber
+                                                              : undefined,
                                                         })
                                                       }
                                                       aria-label={

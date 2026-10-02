@@ -9,6 +9,8 @@ interface ImportMetaEnv {
   readonly VITE_QISSA_STORY_TIMEOUT_MS?: string
   readonly VITE_QISSA_STORY_FALLBACK_TO_LOCAL?: 'true' | 'false'
   readonly VITE_QISSA_AUTHORED_V3_PREVIEW?: 'true' | 'false'
+  readonly VITE_QISSA_STORY2_PREVIEW?: 'true' | 'false'
+  readonly VITE_QISSA_STORY2_RUNTIME_ASSETS_READY?: 'true' | 'false'
 }
 
 interface ImportMeta {

@@ -184,20 +184,66 @@ export const advanceAuthoredStory = (
   }
 }
 
-export const buildAuthoredNarrativeBlocks = (
-  part: AuthoredStoryPart,
-  phase: AuthoredStoryPhase,
+export const buildAuthoredChoiceResolutionBlocks = (
+  choice: AuthoredStoryChoice,
 ): AuthoredStoryNarrativeBlock[] => {
-  const text = phase === 'story_text' ? part.story_text : part.post_choice_text
-  const paragraphs = paragraphsOf(text)
-  const slots = part.image_slots.filter((slot) => slot.phase === phase)
-  const byAnchor = new Map(slots.map((slot) => [slot.after_text, slot]))
+  const paragraphs = paragraphsOf(choice.resolution_text)
+  const illustration =
+    choice.illustration?.behavior === 'show_in_resolution_after_anchor'
+      ? choice.illustration
+      : null
 
   const blocks: AuthoredStoryNarrativeBlock[] = []
   for (const paragraph of paragraphs) {
     blocks.push({ kind: 'text', text: paragraph })
-    const slot = byAnchor.get(paragraph)
-    if (slot) blocks.push({ kind: 'image', slot })
+    if (illustration?.after_text === paragraph) {
+      blocks.push({ kind: 'image', slot: illustration })
+    }
+  }
+  return blocks
+}
+
+export const buildAuthoredNarrativeBlocks = (
+  part: AuthoredStoryPart,
+  phase: AuthoredStoryPhase,
+  selectedChoices: Record<string, string> = {},
+): AuthoredStoryNarrativeBlock[] => {
+  const text = phase === 'story_text' ? part.story_text : part.post_choice_text
+  const paragraphs = paragraphsOf(text)
+  const slots = part.image_slots.filter((slot) => slot.phase === phase)
+  const slotsByAnchor = new Map<string, typeof slots>()
+
+  for (const slot of slots) {
+    const anchored = slotsByAnchor.get(slot.after_text) ?? []
+    anchored.push(slot)
+    slotsByAnchor.set(slot.after_text, anchored)
+  }
+
+  const conditionalSegments = (part.conditional_segments ?? []).filter(
+    (segment) => segment.phase === phase,
+  )
+  const conditionalByAnchor = new Map<string, typeof conditionalSegments>()
+
+  for (const segment of conditionalSegments) {
+    const anchored = conditionalByAnchor.get(segment.after_text) ?? []
+    anchored.push(segment)
+    conditionalByAnchor.set(segment.after_text, anchored)
+  }
+
+  const blocks: AuthoredStoryNarrativeBlock[] = []
+  for (const paragraph of paragraphs) {
+    blocks.push({ kind: 'text', text: paragraph })
+
+    for (const slot of slotsByAnchor.get(paragraph) ?? []) {
+      blocks.push({ kind: 'image', slot })
+    }
+
+    for (const segment of conditionalByAnchor.get(paragraph) ?? []) {
+      if (selectedChoices[segment.when.decision_id] !== segment.when.choice_id) continue
+      for (const conditionalParagraph of paragraphsOf(segment.text)) {
+        blocks.push({ kind: 'text', text: conditionalParagraph })
+      }
+    }
   }
   return blocks
 }
@@ -214,6 +260,8 @@ export const validateAuthoredStoryPackage = (
   const partIds = new Set<string>()
   const decisionIds = new Set<string>()
   const choiceIds = new Set<string>()
+  const choicesByDecision = new Map<string, Set<string>>()
+  const conditionalSegmentIds = new Set<string>()
   const assetIds = new Set<string>()
 
   if (!story.cover_illustration.asset_id.trim()) {
@@ -258,18 +306,78 @@ export const validateAuthoredStoryPackage = (
         errors.push(`${part.decision.decision_id}: exactly two choices are required`)
       }
 
+      const decisionChoiceIds = new Set<string>()
       for (const choice of part.decision.choices) {
         if (choiceIds.has(choice.choice_id)) errors.push(`duplicate choice_id: ${choice.choice_id}`)
         choiceIds.add(choice.choice_id)
+        decisionChoiceIds.add(choice.choice_id)
 
         if (!choice.resolution_text.trim()) {
           errors.push(`${choice.choice_id}: resolution_text is required`)
         }
 
-        if (assetIds.has(choice.illustration.asset_id)) {
-          errors.push(`duplicate asset_id: ${choice.illustration.asset_id}`)
+        if (choice.illustration) {
+          if (assetIds.has(choice.illustration.asset_id)) {
+            errors.push(`duplicate asset_id: ${choice.illustration.asset_id}`)
+          }
+          assetIds.add(choice.illustration.asset_id)
+
+          if (choice.illustration.behavior === 'show_in_resolution_after_anchor') {
+            const anchor = choice.illustration.after_text?.trim()
+            if (!anchor) {
+              errors.push(
+                `${choice.choice_id}: show_in_resolution_after_anchor requires after_text`,
+              )
+            } else {
+              const count = paragraphsOf(choice.resolution_text).filter(
+                (paragraph) => paragraph === anchor,
+              ).length
+              if (count !== 1) {
+                errors.push(
+                  `${choice.choice_id}: choice illustration anchor must occur exactly once, got ${count}`,
+                )
+              }
+            }
+          }
         }
-        assetIds.add(choice.illustration.asset_id)
+      }
+      choicesByDecision.set(part.decision.decision_id, decisionChoiceIds)
+    }
+
+    for (const segment of part.conditional_segments ?? []) {
+      if (conditionalSegmentIds.has(segment.segment_id)) {
+        errors.push(`duplicate conditional segment_id: ${segment.segment_id}`)
+      }
+      conditionalSegmentIds.add(segment.segment_id)
+
+      if (!segment.text.trim()) {
+        errors.push(`${segment.segment_id}: conditional segment text is required`)
+      }
+
+      const count = paragraphsByPhase[segment.phase].filter(
+        (paragraph) => paragraph === segment.after_text,
+      ).length
+      if (count !== 1) {
+        errors.push(
+          `${segment.segment_id}: expected exactly one anchor paragraph in ${segment.phase}, got ${count}`,
+        )
+      }
+    }
+  })
+
+  story.parts.forEach((part) => {
+    for (const segment of part.conditional_segments ?? []) {
+      const allowedChoices = choicesByDecision.get(segment.when.decision_id)
+      if (!allowedChoices) {
+        errors.push(
+          `${segment.segment_id}: unknown decision_id ${segment.when.decision_id}`,
+        )
+        continue
+      }
+      if (!allowedChoices.has(segment.when.choice_id)) {
+        errors.push(
+          `${segment.segment_id}: choice_id ${segment.when.choice_id} does not belong to ${segment.when.decision_id}`,
+        )
       }
     }
   })

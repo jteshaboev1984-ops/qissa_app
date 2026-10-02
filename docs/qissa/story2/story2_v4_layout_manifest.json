@@ -1,0 +1,479 @@
+{
+  "manifest_version": "story2-v4-layout-1",
+  "source_of_truth": "/QISSA/production/seven_roads/story2_v2/seven_roads_story2_interactive_v4_continuity_sync.md",
+  "story_id": "seven_roads_tayna_vostochnogo_karavana",
+  "story_version": "interactive-v4-continuity-sync",
+  "language": "ru",
+  "asset_count": 28,
+  "parts": [
+    {
+      "part_id": "story2_part_1_homecoming_aras",
+      "order": 1,
+      "source_lines": [
+        12,
+        144
+      ],
+      "image_slots": [
+        {
+          "slot_id": "P1-IMG-01",
+          "asset_id": "seven_roads_story2_p1_img_01_v1",
+          "after_text": "Теперь проходом почти никто не пользовался."
+        },
+        {
+          "slot_id": "P1-IMG-02",
+          "asset_id": "seven_roads_story2_p1_img_02_v1",
+          "after_text": "Знал мастерскую лукодела у ремесленного ряда. Над дверью там висел круглый щит с тремя старыми стрелами, а в дни большого каравана мастер выставлял готовые луки прямо у входа."
+        }
+      ]
+    },
+    {
+      "part_id": "story2_part_2_eastern_caravan",
+      "order": 2,
+      "source_lines": [
+        146,
+        318
+      ],
+      "image_slots": [
+        {
+          "slot_id": "P2-IMG-01",
+          "asset_id": "seven_roads_story2_p2_img_01_v1",
+          "after_text": "К полудню тихий Арас загудел."
+        },
+        {
+          "slot_id": "P2-IMG-02",
+          "asset_id": "seven_roads_story2_p2_img_02_v1",
+          "after_text": "Молчаливого — Барласом."
+        }
+      ]
+    },
+    {
+      "part_id": "story2_part_3_treasury_night",
+      "order": 3,
+      "source_lines": [
+        320,
+        472
+      ],
+      "image_slots": [
+        {
+          "slot_id": "P3-IMG-01",
+          "asset_id": "seven_roads_story2_p3_img_01_v2",
+          "after_text": "Когда он поднял её, на красной поверхности остался глубокий рисунок."
+        },
+        {
+          "slot_id": "P3-IMG-02",
+          "asset_id": "seven_roads_story2_p3_img_02_v1",
+          "after_text": "— Эй!"
+        },
+        {
+          "slot_id": "P3-IMG-03",
+          "asset_id": "seven_roads_story2_p3_img_03_v1",
+          "after_text": "Теперь они провели лошадей наружу одну за другой."
+        }
+      ]
+    },
+    {
+      "part_id": "story2_part_4_nadir_infiltration",
+      "order": 4,
+      "source_lines": [
+        474,
+        660
+      ],
+      "image_slots": [
+        {
+          "slot_id": "P4-IMG-01",
+          "asset_id": "seven_roads_story2_p4_img_01_v1",
+          "after_text": "Барлас быстро сравнил жетоны и кивнул."
+        },
+        {
+          "slot_id": "P4-IMG-02",
+          "asset_id": "seven_roads_story2_p4_img_02_v1",
+          "after_text": "— Конечно, кусается."
+        }
+      ]
+    },
+    {
+      "part_id": "story2_part_5_first_investigation",
+      "order": 5,
+      "story_text_lines": [
+        662,
+        822
+      ],
+      "decision_lines": [
+        824,
+        952
+      ],
+      "post_choice_lines": [
+        954,
+        1180
+      ],
+      "decision": {
+        "decision_id": "story2_choice_1_first_investigation",
+        "choices": [
+          {
+            "choice_id": "story2_choice_1a_people",
+            "source_lines": [
+              830,
+              902
+            ],
+            "illustration": null
+          },
+          {
+            "choice_id": "story2_choice_1b_rashid_barlas_place",
+            "source_lines": [
+              904,
+              952
+            ],
+            "illustration": null
+          }
+        ],
+        "convergence_starts_at": 954
+      },
+      "image_slots": [
+        {
+          "slot_id": "P5-IMG-01",
+          "asset_id": "seven_roads_story2_p5_img_01_v1",
+          "phase": "story_text",
+          "after_text": "Капитан поднял маленький отколовшийся кусочек сургуча. На одной стороне виднелись несколько вдавленных линий."
+        },
+        {
+          "slot_id": "P5-IMG-02",
+          "asset_id": "seven_roads_story2_p5_img_02_v1",
+          "phase": "post_choice_text",
+          "after_text": "Тот самый."
+        }
+      ]
+    },
+    {
+      "part_id": "story2_part_6_old_passage_and_sarvan_records",
+      "order": 6,
+      "story_text_lines": [
+        1184,
+        1188
+      ],
+      "decision_lines": [
+        1190,
+        1278
+      ],
+      "post_choice_lines": [
+        1280,
+        1390
+      ],
+      "decision": {
+        "decision_id": "story2_choice_2_old_passage",
+        "choices": [
+          {
+            "choice_id": "story2_choice_2a_inside_old_yard",
+            "source_lines": [
+              1196,
+              1232
+            ],
+            "illustration": null
+          },
+          {
+            "choice_id": "story2_choice_2b_outside_with_shamol",
+            "source_lines": [
+              1234,
+              1278
+            ],
+            "illustration": null
+          }
+        ],
+        "convergence_starts_at": 1280
+      },
+      "image_slots": [
+        {
+          "slot_id": "P6-IMG-01",
+          "asset_id": "seven_roads_story2_p6_img_01_v1",
+          "phase": "post_choice_text",
+          "after_text": "Дальше земля становилась твёрже, и след быстро терялся."
+        },
+        {
+          "slot_id": "P6-IMG-02",
+          "asset_id": "seven_roads_story2_p6_img_02_v1",
+          "phase": "post_choice_text",
+          "after_text": "— Эти двое, если верить твоему письму, не отсюда."
+        }
+      ]
+    },
+    {
+      "part_id": "story2_part_7_samira_check_and_third_track",
+      "order": 7,
+      "story_text_lines": [
+        1392,
+        1408
+      ],
+      "decision_lines": [
+        1410,
+        1496
+      ],
+      "post_choice_common_ranges": [
+        [
+          1498,
+          1666
+        ],
+        [
+          1688,
+          1960
+        ]
+      ],
+      "decision": {
+        "decision_id": "story2_choice_3_sarvan_check",
+        "choices": [
+          {
+            "choice_id": "story2_choice_3a_old_sarvan_yard",
+            "source_lines": [
+              1416,
+              1448
+            ],
+            "illustration": {
+              "slot_id": "P6A-IMG-03",
+              "asset_id": "seven_roads_story2_p6a_img_03_v1",
+              "behavior": "show_in_resolution_after_anchor",
+              "after_text": "На воротах ещё сохранился старый знак двора: две узкие башни по сторонам проезда."
+            }
+          },
+          {
+            "choice_id": "story2_choice_3b_azim",
+            "source_lines": [
+              1450,
+              1496
+            ],
+            "illustration": {
+              "slot_id": "P6B-IMG-03",
+              "asset_id": "seven_roads_story2_p6b_img_03_v1",
+              "behavior": "show_in_resolution_after_anchor",
+              "after_text": "— У Каменного колодца. Они уже стояли возле дороги. Две лошади, несколько связок кожи."
+            }
+          }
+        ],
+        "convergence_starts_at": 1498
+      },
+      "conditional_segments": [
+        {
+          "segment_id": "story2_choice3a_reunion_payoff",
+          "phase": "post_choice_text",
+          "when": {
+            "decision_id": "story2_choice_3_sarvan_check",
+            "choice_id": "story2_choice_3a_old_sarvan_yard"
+          },
+          "after_text": "— Похоже на то.",
+          "source_lines": [
+            1670,
+            1676
+          ]
+        },
+        {
+          "segment_id": "story2_choice3b_reunion_payoff",
+          "phase": "post_choice_text",
+          "when": {
+            "decision_id": "story2_choice_3_sarvan_check",
+            "choice_id": "story2_choice_3b_azim"
+          },
+          "after_text": "— Похоже на то.",
+          "source_lines": [
+            1680,
+            1686
+          ]
+        }
+      ],
+      "image_slots": [
+        {
+          "slot_id": "P7-IMG-01",
+          "asset_id": "seven_roads_story2_p7_img_01_v1",
+          "phase": "post_choice_text",
+          "after_text": "Последним Самира надела широкий пояс Всадника короля и закрепила на нём церемониальную саблю в ножнах."
+        },
+        {
+          "slot_id": "P7-IMG-02",
+          "asset_id": "seven_roads_story2_p7_img_02_v1",
+          "phase": "post_choice_text",
+          "after_text": "— А потом кто-то другой вошёл."
+        },
+        {
+          "slot_id": "P7-IMG-03",
+          "asset_id": "seven_roads_story2_p7_img_03_v1",
+          "phase": "post_choice_text",
+          "after_text": "И сразу понял слишком много."
+        }
+      ]
+    },
+    {
+      "part_id": "story2_part_8_stop_nadir",
+      "order": 8,
+      "story_text_lines": [
+        1962,
+        1994
+      ],
+      "decision_lines": [
+        1996,
+        2138
+      ],
+      "post_choice_lines": [],
+      "decision": {
+        "decision_id": "story2_choice_4_stop_nadir",
+        "choices": [
+          {
+            "choice_id": "story2_choice_4a_guard_shortcut",
+            "branch_lines": [
+              2004,
+              2024
+            ],
+            "shared_capture_lines": [
+              2096,
+              2124
+            ],
+            "illustration": {
+              "slot_id": "P8A-IMG-01",
+              "asset_id": "seven_roads_story2_p8a_img_01_v1",
+              "behavior": "show_in_resolution_after_anchor",
+              "after_text": "Он увидел стражников впереди и резко остановился."
+            }
+          },
+          {
+            "choice_id": "story2_choice_4b_two_bows",
+            "branch_lines": [
+              2028,
+              2092
+            ],
+            "shared_capture_lines": [
+              2096,
+              2124
+            ],
+            "branch_tail_lines": [
+              2128,
+              2138
+            ],
+            "illustration": {
+              "slot_id": "P8B-IMG-01",
+              "asset_id": "seven_roads_story2_p8b_img_01_v1",
+              "behavior": "show_in_resolution_after_anchor",
+              "after_text": "Вторая легла дальше по той же стороне, не давая ему снова взять левее."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "part_id": "story2_part_9_interrogation_and_sarvan_token",
+      "order": 9,
+      "story_text_common_ranges": [
+        [
+          2142,
+          2376
+        ],
+        [
+          2404,
+          2434
+        ]
+      ],
+      "conditional_segments": [
+        {
+          "segment_id": "story2_choice3a_token_payoff",
+          "phase": "story_text",
+          "when": {
+            "decision_id": "story2_choice_3_sarvan_check",
+            "choice_id": "story2_choice_3a_old_sarvan_yard"
+          },
+          "after_text": "Капитан передал жетон ей.",
+          "source_lines": [
+            2380,
+            2388
+          ]
+        },
+        {
+          "segment_id": "story2_choice3b_token_payoff",
+          "phase": "story_text",
+          "when": {
+            "decision_id": "story2_choice_3_sarvan_check",
+            "choice_id": "story2_choice_3b_azim"
+          },
+          "after_text": "Капитан передал жетон ей.",
+          "source_lines": [
+            2392,
+            2400
+          ]
+        },
+        {
+          "segment_id": "story2_choice3b_well_payoff",
+          "phase": "story_text",
+          "when": {
+            "decision_id": "story2_choice_3_sarvan_check",
+            "choice_id": "story2_choice_3b_azim"
+          },
+          "after_text": "В комнате стало тихо.",
+          "source_lines": [
+            2438,
+            2456
+          ]
+        }
+      ],
+      "image_slots": [
+        {
+          "slot_id": "P9-IMG-01",
+          "asset_id": "seven_roads_story2_p9_img_01_v1",
+          "after_text": "Капитан сел напротив."
+        },
+        {
+          "slot_id": "P9-IMG-02",
+          "asset_id": "seven_roads_story2_p9_img_02_v1",
+          "after_text": "Темур достал металлическую накладку со знаком разбойников и положил рядом с деревянным жетоном."
+        },
+        {
+          "slot_id": "P9-IMG-03",
+          "asset_id": "seven_roads_story2_p9_img_03_v1",
+          "after_text": "— Такой знак был на его воротах."
+        }
+      ]
+    },
+    {
+      "part_id": "story2_part_10_two_roads",
+      "order": 10,
+      "source_lines": [
+        2460,
+        2767
+      ],
+      "image_slots": [
+        {
+          "slot_id": "P10-IMG-01",
+          "asset_id": "seven_roads_story2_p10_img_01_v1",
+          "after_text": "Со стороны разговор выглядел обычным."
+        },
+        {
+          "slot_id": "P10-IMG-02",
+          "asset_id": "seven_roads_story2_p10_img_02_v1",
+          "after_text": "С ними был старший стражник капитана. При нём находилось запечатанное письмо для начальника стражи Сарвана."
+        },
+        {
+          "slot_id": "P10-IMG-03",
+          "asset_id": "seven_roads_story2_p10_img_03_v1",
+          "after_text": "Булут пошёл следом."
+        },
+        {
+          "slot_id": "P10-IMG-04",
+          "asset_id": "seven_roads_story2_p10_img_04_v1",
+          "after_text": "Самира покачала головой."
+        },
+        {
+          "slot_id": "P10-IMG-05",
+          "asset_id": "seven_roads_story2_p10_img_05_v1",
+          "after_text": "В это же утро восточный караван уходил дальше с Надиром. Где-то среди обычных путников ехали люди капитана, а впереди уже спешил гонец с предупреждением."
+        }
+      ]
+    }
+  ],
+  "runtime_rules": {
+    "choice_1_images": "none",
+    "choice_2_images": "none",
+    "choice_3_images": "do not preview both branches; after selection insert only the selected branch image at its exact paragraph inside the branch resolution",
+    "choice_4_images": "do not preview both branches; after selection insert only the selected branch image at its exact paragraph inside the branch resolution",
+    "deferred_choice_3_payoffs": "must render from saved choice memory; never flatten both branches into common prose",
+    "text_image_order": "image appears only after its exact anchor paragraph to avoid clue spoilers",
+    "listen_mode": "keep existing style-pack listening mode; Story2 production illustrations are Reading/Gallery assets"
+  },
+  "publication_gates": [
+    "Runtime-host all 28 approved assets and register stable URLs.",
+    "Create Russian authored story package from V4 using this layout.",
+    "Add accepted Uzbek localization overlay before publishing Season 2 in Uzbek.",
+    "Run authored package validation, typecheck, build, and production visual smoke before release."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "version": "story2-cover-runtime-webp-1",
+  "source_approved_library_path": "/QISSA/production/seven_roads/story2_v2/approved/seven_roads_story2_cover_v1.png",
+  "source_runtime_library_path": "/QISSA/production/seven_roads/story2_v2/runtime_webp/seven_roads_story2_cover_v1.webp",
+  "asset_id": "seven_roads_story2_cover_v1",
+  "filename": "seven_roads_story2_cover_v1.webp",
+  "width": 1024,
+  "height": 1536,
+  "bytes": 293120,
+  "sha256": "eefdcb674febb46f4ecebc209cdbd1c13f5d9977360d5d4c95633f83eab00d8b",
+  "supabase_bucket": "story-images",
+  "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_cover_v1.webp",
+  "status": "approved_hosted_verified"
+}

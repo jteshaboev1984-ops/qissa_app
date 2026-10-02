@@ -1,9 +1,14 @@
 import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
+import {
+  getPrimaryPublishedSeasonStory,
+  getPublishedSeasonStories,
+} from '../data/sevenRoadsSeasons'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import type { PublishedSeason } from '../features/publishedStories/types'
 import {
   formatSevenRoadsEpisodeLabel,
   formatSevenRoadsSeasonLabel,
+  formatSevenRoadsStoryLabel,
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
@@ -18,16 +23,102 @@ export function SeasonOverview({
   language: SevenRoadsLanguage
   season: PublishedSeason
   onBack: () => void
-  onRead: (episodeNumber?: number) => void
+  onRead: (storyNumber: number, episodeNumber?: number) => void
 }) {
-  if (!season.story || season.status !== 'published') return null
+  const publishedStories = getPublishedSeasonStories(season)
+  const seasonStory = getPrimaryPublishedSeasonStory(season)
+  const story = seasonStory?.authoredStory
+  if (!seasonStory || !story || season.status !== 'published') return null
 
   const copy = getSevenRoadsCopy(language)
-  const progress = authoredStoryPersistence.load(season.story)
+
+  if (publishedStories.length > 1 || seasonStory.completionScope === 'story') {
+    return (
+      <main className="mx-auto min-h-[100dvh] max-w-[430px] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] text-[#2d332f] sm:px-5">
+        <button
+          type="button"
+          className="rounded-full border border-[#cdb583] bg-[#fffaf0] px-4 py-2.5 text-xs font-bold text-[#4b463b] active:scale-[0.98]"
+          onClick={onBack}
+        >
+          ← {copy.seasons}
+        </button>
+
+        <div className="mt-8">
+          <p className="q-label">{formatSevenRoadsSeasonLabel(language, season.number)}</p>
+          <h1 className="q-heading mt-1 text-3xl font-bold">
+            {season.title ?? copy.worldTitle}
+          </h1>
+          <p className="mt-3 text-sm leading-6 text-[#6c6252]">
+            {publishedStories.length > 1
+              ? language === 'uz'
+                ? 'Bu mavsum bir nechta alohida hikoyadan iborat. Har bir hikoya o‘z o‘qish joyi va tanlovlarini alohida saqlaydi.'
+                : 'Этот сезон состоит из нескольких отдельных сказок. У каждой сказки свой прогресс чтения и свои сохранённые выборы.'
+              : language === 'uz'
+                ? 'Bu mavsumdagi hikoyalar alohida o‘qiladi. Har bir hikoyaning o‘z o‘qish joyi va tanlovlari saqlanadi.'
+                : 'Сказки этого сезона читаются отдельно. У каждой сохраняются свой прогресс и свои выборы.'}
+          </p>
+        </div>
+
+        <div className="mt-6 space-y-3">
+          {publishedStories.map((seasonStoryEntry) => {
+            const authoredStory = seasonStoryEntry.authoredStory
+            if (!authoredStory) return null
+
+            const storyProgress = authoredStoryPersistence.load(authoredStory)
+            const storyState =
+              storyProgress?.completed
+                ? copy.completed
+                : storyProgress
+                  ? copy.continue
+                  : language === 'uz'
+                    ? 'Boshlanmagan'
+                    : 'Не начата'
+            const coverUrl = resolveAuthoredStoryAssetUrl(
+              authoredStory.cover_illustration.asset_id,
+              authoredStory.cover_illustration.runtime_url,
+            )
+
+            return (
+              <button
+                key={seasonStoryEntry.id}
+                type="button"
+                className="relative min-h-44 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] transition active:scale-[0.99]"
+                onClick={() => onRead(seasonStoryEntry.number)}
+              >
+                {coverUrl ? (
+                  <img
+                    src={coverUrl}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                ) : null}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10" />
+                <div className="absolute inset-x-0 bottom-0 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
+                      {formatSevenRoadsStoryLabel(language, seasonStoryEntry.number)}
+                    </p>
+                    <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                      {storyState}
+                    </span>
+                  </div>
+                  <h2 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">
+                    {seasonStoryEntry.title ?? authoredStory.title}
+                  </h2>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </main>
+    )
+  }
+  const progress = authoredStoryPersistence.load(story)
   const reading = sevenRoadsStory1ReadingState(progress)
   const coverUrl = resolveAuthoredStoryAssetUrl(
-    season.story.cover_illustration.asset_id,
-    season.story.cover_illustration.runtime_url,
+    story.cover_illustration.asset_id,
+    story.cover_illustration.runtime_url,
   )
 
   const primaryLabel =
@@ -68,7 +159,7 @@ export function SeasonOverview({
             <button
               type="button"
               className="mt-5 w-full rounded-full border border-[#f0d7a0]/80 bg-[#ecd09a] px-5 py-4 text-sm font-extrabold text-[#263f42] shadow-[0_16px_40px_-22px_rgba(0,0,0,.9)] transition active:scale-[0.98]"
-              onClick={() => onRead()}
+              onClick={() => onRead(seasonStory.number)}
             >
               {primaryLabel}
             </button>
@@ -89,7 +180,7 @@ export function SeasonOverview({
         </div>
 
         <div className="mt-4 space-y-2.5">
-          {season.episodes.map((episode) => {
+          {seasonStory.episodes.map((episode) => {
             const completed = reading.state === 'completed' || episode.number < reading.currentEpisode
             const current = reading.state !== 'completed' && episode.number === reading.currentEpisode
             const locked = reading.state !== 'completed' && episode.number > reading.currentEpisode
@@ -149,7 +240,7 @@ export function SeasonOverview({
                 key={episode.number}
                 type="button"
                 className={className}
-                onClick={() => onRead(episode.number)}
+                onClick={() => onRead(seasonStory.number, episode.number)}
               >
                 {body}
               </button>

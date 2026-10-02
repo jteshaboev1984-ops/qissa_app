@@ -47,7 +47,20 @@
     "check:story-library": "node scripts/check-story-library-persistence.mjs",
     "check:authored-v3": "node scripts/check-authored-story-v3.mjs",
     "check:authored-progress-backend": "node scripts/check-authored-progress-backend.mjs",
-    "check:seven-roads-shell": "node scripts/check-seven-roads-product-shell.mjs"
+    "check:seven-roads-shell": "node scripts/check-seven-roads-product-shell.mjs",
+    "check:authored-story2": "node scripts/check-authored-story2-v4.mjs",
+    "check:story2-runtime": "node scripts/check-story2-runtime-assets.mjs",
+    "smoke:story2-assets-live": "node scripts/smoke-story2-assets-live.mjs",
+    "check:story2-bundle-closed": "node scripts/check-story2-production-bundle-closed.mjs",
+    "ops:upload-story2-assets": "node scripts/upload-story2-runtime-assets.mjs",
+    "check:story2-preview-bundle": "node scripts/check-story2-preview-bundle.mjs",
+    "smoke:story2-resume-gallery": "node scripts/smoke-story2-resume-gallery-browser.mjs",
+    "check:authored-story2-uz": "node scripts/check-authored-story2-uz.mjs",
+    "check:story2-cover": "node scripts/check-story2-cover.mjs",
+    "smoke:story2-cover-live": "node scripts/smoke-story2-cover-live.mjs",
+    "check:story2-release-candidate": "node scripts/check-story2-release-candidate.mjs",
+    "check:story2-bundle-open": "node scripts/check-story2-production-bundle-open.mjs",
+    "check:story2-release-open": "node scripts/check-story2-release-open.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

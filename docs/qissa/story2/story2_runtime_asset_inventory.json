@@ -1,0 +1,288 @@
+{
+  "version": "story2-runtime-webp-3",
+  "source_library_path": "/QISSA/production/seven_roads/story2_v2/runtime_webp/",
+  "count": 28,
+  "total_bytes": 9071006,
+  "items": [
+    {
+      "asset_id": "seven_roads_story2_p10_img_01_v1",
+      "filename": "seven_roads_story2_p10_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 394392,
+      "sha256": "bc907bec3931382b4dc2bc9416642b73bcaebc0757db408c20b3202a76686ab2",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p10_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p10_img_02_v1",
+      "filename": "seven_roads_story2_p10_img_02_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 373806,
+      "sha256": "f92160a3678032ea94acbae88a976378a382db9997e08583420bbc575030c398",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p10_img_02_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p10_img_03_v1",
+      "filename": "seven_roads_story2_p10_img_03_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 401054,
+      "sha256": "55a27ec2189c45ad368f9cc8dc82aeac845c394bd7d092612e973c706a13021f",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p10_img_03_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p10_img_04_v1",
+      "filename": "seven_roads_story2_p10_img_04_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 424418,
+      "sha256": "8ec226bff2d5bc1713014bb43a742acd0ec665f9aa087ec73f316b57f0db1c91",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p10_img_04_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p10_img_05_v1",
+      "filename": "seven_roads_story2_p10_img_05_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 507706,
+      "sha256": "b7c8e5c30edd7976786cc94ea2d95793b6f2114613f7f89f7cd51dc1d8bafdb4",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p10_img_05_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p1_img_01_v1",
+      "filename": "seven_roads_story2_p1_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 543200,
+      "sha256": "753c628b649e28922e75ba8fcc7fedeecd946b7192eaba93795c85f7223d8920",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p1_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p1_img_02_v1",
+      "filename": "seven_roads_story2_p1_img_02_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 346586,
+      "sha256": "1dab061d2966bbc657a4547cc0eb4a66b595e11d5e42e44a4bc4e638a84643e1",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p1_img_02_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p2_img_01_v1",
+      "filename": "seven_roads_story2_p2_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 388812,
+      "sha256": "5ed74088458d395ed3756c870e319c0f78509e134b6d964cf81dac966fb509b3",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p2_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p2_img_02_v1",
+      "filename": "seven_roads_story2_p2_img_02_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 325990,
+      "sha256": "012654eb227fa3d9f5ea763d6ba03bc7caa66be1fbc90f948057a8cae504bdd0",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p2_img_02_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p3_img_01_v2",
+      "filename": "seven_roads_story2_p3_img_01_v2.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 164724,
+      "sha256": "e7bdb31bc0e78f65fd945c94ea09f65c73f5d1708569ecc198ab3f0df8376048",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p3_img_01_v2.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p3_img_02_v1",
+      "filename": "seven_roads_story2_p3_img_02_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 168568,
+      "sha256": "5a76b95da8141f445cc0031534bac088e13a958a5edc460888c38a8c547abbe4",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p3_img_02_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p3_img_03_v1",
+      "filename": "seven_roads_story2_p3_img_03_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 223234,
+      "sha256": "4d68e264be53be31d421d89cc0aca1662a1e5318e5aa5c729dd2157e6f93d7f8",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p3_img_03_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p4_img_01_v1",
+      "filename": "seven_roads_story2_p4_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 248230,
+      "sha256": "1e74b9885d9dfe99c61f4587c3a0cf98cefe53635d1f68878589af484ec2623e",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p4_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p4_img_02_v1",
+      "filename": "seven_roads_story2_p4_img_02_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 258050,
+      "sha256": "88b5e04438240a7a82f3787d46a5545fe38566ee3f814b6d2675898c324baa3c",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p4_img_02_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p5_img_01_v1",
+      "filename": "seven_roads_story2_p5_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 317908,
+      "sha256": "9014eface0081629798a13154a8f3db1dc16aa87846ed0b526eaf5536abc3e97",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p5_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p5_img_02_v1",
+      "filename": "seven_roads_story2_p5_img_02_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 264896,
+      "sha256": "37f70039f620ac2f7fe8afba9966625a8f78e145682a250b5e914a3ba1e692ad",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p5_img_02_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p6_img_01_v1",
+      "filename": "seven_roads_story2_p6_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 397534,
+      "sha256": "0012493c7f272e826dac6fec2c0741f27eee9ca2b7d22039055bdcaffaa85404",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p6_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p6_img_02_v1",
+      "filename": "seven_roads_story2_p6_img_02_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 273972,
+      "sha256": "581de5e7c139f62d02eb2c44b9f767693c536e8a20048cb65a1b5dc29dfa9515",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p6_img_02_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p6a_img_03_v1",
+      "filename": "seven_roads_story2_p6a_img_03_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 411344,
+      "sha256": "be8af4c079ebd00ac313a08bc21cc9ff70623e6c8ecfd1070b7d01c102ad4c89",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p6a_img_03_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p6b_img_03_v1",
+      "filename": "seven_roads_story2_p6b_img_03_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 385604,
+      "sha256": "5996c68761fdcee1307fd7f0d0f6378d8f1928013002db6eddd6f75014e61b45",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p6b_img_03_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p7_img_01_v1",
+      "filename": "seven_roads_story2_p7_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 374840,
+      "sha256": "6dcb6b84ee6cfbc0e3ac803f032f83e79828a48a088301cc38dabda7976a093e",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p7_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p7_img_02_v1",
+      "filename": "seven_roads_story2_p7_img_02_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 351796,
+      "sha256": "9cc5872f3970887c6ddd8fc6b3cfb0474305e366e5780435c002eeabaa0302ea",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p7_img_02_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p7_img_03_v1",
+      "filename": "seven_roads_story2_p7_img_03_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 336520,
+      "sha256": "0d7bb16cbad3914128f7e70792cf281a698040f438620ab59fb6472279d3624d",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p7_img_03_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p8a_img_01_v1",
+      "filename": "seven_roads_story2_p8a_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 260720,
+      "sha256": "99ce5e77134660feed82976aaaf8a3b7075f4a08580233fa6f6f78eb98fb3b99",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p8a_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p8b_img_01_v1",
+      "filename": "seven_roads_story2_p8b_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 303708,
+      "sha256": "2e51107813e59c4dd457e9c7fd724ff59c9915ddb7b4e2fc031dd6ce3f0c3226",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p8b_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p9_img_01_v1",
+      "filename": "seven_roads_story2_p9_img_01_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 218228,
+      "sha256": "ccc85c24a863f9875cf37f8684722bcc6c4b017bd8817d21274ebbb10a25dae0",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p9_img_01_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p9_img_02_v1",
+      "filename": "seven_roads_story2_p9_img_02_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 197604,
+      "sha256": "3b6eae46a96f765a1aacbd1fcc276fe7406792ebfad9ee3ab36b00cc60fd0558",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p9_img_02_v1.webp"
+    },
+    {
+      "asset_id": "seven_roads_story2_p9_img_03_v1",
+      "filename": "seven_roads_story2_p9_img_03_v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 207562,
+      "sha256": "ccf2d2138bb3b8e14777684cbe8e4c481029b9601ac0953df3842658b8aa64f2",
+      "supabase_bucket": "story-images",
+      "supabase_object_path": "seven-roads/story2_v2/seven_roads_story2_p9_img_03_v1.webp"
+    }
+  ]
+}

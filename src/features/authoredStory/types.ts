@@ -23,6 +23,7 @@ export interface AuthoredStoryChoiceIllustration {
   behavior: string
   asset_id: string
   runtime_url: string | null
+  after_text?: string
 }
 
 export interface AuthoredStoryChoice {
@@ -32,7 +33,18 @@ export interface AuthoredStoryChoice {
   resolution_text: string
   state_patch: StatePatch
   value_alignment: PositiveValue[]
-  illustration: AuthoredStoryChoiceIllustration
+  illustration: AuthoredStoryChoiceIllustration | null
+}
+
+export interface AuthoredStoryConditionalSegment {
+  segment_id: string
+  phase: AuthoredStoryPhase
+  after_text: string
+  when: {
+    decision_id: string
+    choice_id: string
+  }
+  text: string
 }
 
 export interface AuthoredStoryDecision {
@@ -51,6 +63,7 @@ export interface AuthoredStoryPart {
   visual_state: string
   illustration_refs: string[]
   image_slots: AuthoredStoryImageSlot[]
+  conditional_segments?: AuthoredStoryConditionalSegment[]
   decision: AuthoredStoryDecision | null
   is_final: boolean
 }
@@ -129,4 +142,4 @@ export interface AuthoredStoryProgress {
 
 export type AuthoredStoryNarrativeBlock =
   | { kind: 'text'; text: string }
-  | { kind: 'image'; slot: AuthoredStoryImageSlot }
+  | { kind: 'image'; slot: AuthoredStoryImageSlot | AuthoredStoryChoiceIllustration }

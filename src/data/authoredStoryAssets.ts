@@ -30,11 +30,56 @@ const productionAssets: AuthoredStoryAssetRegistry = {
   "seven_roads_story1_cover_v1": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/story1_v3/seven_roads_story1_cover_v1.webp",
 }
 
+
+const story2AssetIds = [
+  'seven_roads_story2_cover_v1',
+  'seven_roads_story2_p1_img_01_v1',
+  'seven_roads_story2_p1_img_02_v1',
+  'seven_roads_story2_p2_img_01_v1',
+  'seven_roads_story2_p2_img_02_v1',
+  'seven_roads_story2_p3_img_01_v2',
+  'seven_roads_story2_p3_img_02_v1',
+  'seven_roads_story2_p3_img_03_v1',
+  'seven_roads_story2_p4_img_01_v1',
+  'seven_roads_story2_p4_img_02_v1',
+  'seven_roads_story2_p5_img_01_v1',
+  'seven_roads_story2_p5_img_02_v1',
+  'seven_roads_story2_p6_img_01_v1',
+  'seven_roads_story2_p6_img_02_v1',
+  'seven_roads_story2_p6a_img_03_v1',
+  'seven_roads_story2_p6b_img_03_v1',
+  'seven_roads_story2_p7_img_01_v1',
+  'seven_roads_story2_p7_img_02_v1',
+  'seven_roads_story2_p7_img_03_v1',
+  'seven_roads_story2_p8a_img_01_v1',
+  'seven_roads_story2_p8b_img_01_v1',
+  'seven_roads_story2_p9_img_01_v1',
+  'seven_roads_story2_p9_img_02_v1',
+  'seven_roads_story2_p9_img_03_v1',
+  'seven_roads_story2_p10_img_01_v1',
+  'seven_roads_story2_p10_img_02_v1',
+  'seven_roads_story2_p10_img_03_v1',
+  'seven_roads_story2_p10_img_04_v1',
+  'seven_roads_story2_p10_img_05_v1',
+] as const
+
+const story2AssetsEnabled =
+  import.meta.env.VITE_QISSA_STORY2_RUNTIME_ASSETS_READY === 'true'
+
+const story2ProductionAssets: AuthoredStoryAssetRegistry = story2AssetsEnabled
+  ? Object.fromEntries(
+      story2AssetIds.map((assetId) => [
+        assetId,
+        `https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/story2_v2/${assetId}.webp`,
+      ]),
+    )
+  : {}
+
 export const resolveAuthoredStoryAssetUrl = (
   assetId: string,
   inlineRuntimeUrl?: string | null,
 ): string | null => {
-  const registered = productionAssets[assetId]?.trim()
+  const registered = (productionAssets[assetId] ?? story2ProductionAssets[assetId])?.trim()
   if (registered) return registered
 
   const inline = inlineRuntimeUrl?.trim()
@@ -43,5 +88,6 @@ export const resolveAuthoredStoryAssetUrl = (
 
 export const authoredStoryAssetRegistry = {
   resolve: resolveAuthoredStoryAssetUrl,
-  registeredCount: () => Object.keys(productionAssets).length,
+  registeredCount: () =>
+    Object.keys(productionAssets).length + Object.keys(story2ProductionAssets).length,
 }

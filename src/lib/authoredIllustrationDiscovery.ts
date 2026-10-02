@@ -76,16 +76,30 @@ const markSeen = (
   return ids
 }
 
+const choicePreviewIsVisible = (asset: AuthoredStoryChoiceIllustration): boolean =>
+  asset.behavior !== 'show_after_selection' &&
+  asset.behavior !== 'show_after_resolution' &&
+  asset.behavior !== 'show_in_resolution_after_anchor'
+
 const addPartAssets = (
   ids: Set<string>,
   part: AuthoredStoryPackage['parts'][number],
-  includeChoicePreviews: boolean,
+  selectedChoiceId?: string,
 ) => {
   part.image_slots.forEach((slot) => ids.add(slot.asset_id))
 
-  if (includeChoicePreviews && part.decision) {
-    part.decision.choices.forEach((choice) => ids.add(choice.illustration.asset_id))
-  }
+  if (!part.decision) return
+
+  part.decision.choices.forEach((choice) => {
+    if (choice.illustration && choicePreviewIsVisible(choice.illustration)) {
+      ids.add(choice.illustration.asset_id)
+    }
+  })
+
+  const selectedChoice = part.decision.choices.find(
+    (choice) => choice.choice_id === selectedChoiceId,
+  )
+  if (selectedChoice?.illustration) ids.add(selectedChoice.illustration.asset_id)
 }
 
 const seedFromProgress = (
@@ -99,8 +113,13 @@ const seedFromProgress = (
     const definitelyCompleted = progress.completed || index < progress.current_part_index
     if (definitelyCompleted) {
       // To finish a part, the reader has passed every shared illustration.
-      // Decision cards also show both choice previews before confirmation.
-      addPartAssets(ids, part, true)
+      // Preview-visible choice art is discovered on the menu; selected-only art
+      // is discovered only for the branch the reader actually chose.
+      addPartAssets(
+        ids,
+        part,
+        part.decision ? progress.selected_choices[part.decision.decision_id] : undefined,
+      )
       return
     }
 
@@ -109,8 +128,14 @@ const seedFromProgress = (
       part.decision &&
       progress.selected_choices[part.decision.decision_id]
     ) {
-      // Confirming a choice means both preview cards were already shown.
-      part.decision.choices.forEach((choice) => ids.add(choice.illustration.asset_id))
+      // Only art that was actually visible on the choice menu can be inferred as seen.
+      // Selected-only art is unlocked by StoryImage's IntersectionObserver when the
+      // reader really reaches it; do not leak it into the gallery on confirmation.
+      part.decision.choices.forEach((choice) => {
+        if (choice.illustration && choicePreviewIsVisible(choice.illustration)) {
+          ids.add(choice.illustration.asset_id)
+        }
+      })
     }
   })
 
@@ -168,6 +193,7 @@ const buildGalleryEpisodes = (
 
     if (part.decision) {
       part.decision.choices.forEach((choice) => {
+        if (!choice.illustration) return
         push(
           episodeNumber,
           imageItem(

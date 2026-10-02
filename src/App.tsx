@@ -1,9 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PublishedStoriesShell, type PublishedStoriesTab } from './components/PublishedStoriesShell'
 import { PublishedStoriesWelcome } from './components/PublishedStoriesWelcome'
 import { SeasonOverview } from './components/SeasonOverview'
 import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
-import { getSevenRoadsSeason1 } from './data/sevenRoadsSeasons'
+import {
+  getPrimaryPublishedSeasonStory,
+  getPublishedSeasonStories,
+  getSeasonStoryByNumber,
+  getSevenRoadsSeason1,
+  getSevenRoadsSeasons,
+} from './data/sevenRoadsSeasons'
 import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
 import { getSevenRoadsCopy } from './features/publishedStories/sevenRoadsCopy'
 import { publishedStoriesConsent } from './lib/publishedStoriesConsent'
@@ -11,15 +17,30 @@ import { authoredStoryPersistence } from './lib/authoredStoryPersistence'
 import { authoredReadingPosition } from './lib/authoredReadingPosition'
 import { sevenRoadsLanguagePreference } from './lib/sevenRoadsLanguagePreference'
 import { sevenRoadsReaderPreferences } from './lib/sevenRoadsReaderPreferences'
+import type { AuthoredStoryPackage } from './features/authoredStory/types'
 import type { ReaderPreferences } from './types/qissa'
 
 type SevenRoadsView = 'shell' | 'season' | 'story' | 'settings'
 
 function App() {
   const [language, setLanguage] = useState(() => sevenRoadsLanguagePreference.load())
-  const season = useMemo(() => getSevenRoadsSeason1(language), [language])
-  const story = season.story
-  if (!story) throw new Error('Published Seven Roads Season 1 must have a story package.')
+  const seasons = useMemo(() => getSevenRoadsSeasons(language), [language])
+  const [selectedSeasonNumber, setSelectedSeasonNumber] = useState(1)
+  const season =
+    seasons.find(
+      (candidate) =>
+        candidate.number === selectedSeasonNumber && candidate.status === 'published',
+    ) ?? getSevenRoadsSeason1(language)
+  const primarySeasonStory = getPrimaryPublishedSeasonStory(season)
+  const [selectedStoryNumber, setSelectedStoryNumber] = useState(
+    () => primarySeasonStory?.number ?? 1,
+  )
+  const seasonStory =
+    getSeasonStoryByNumber(season, selectedStoryNumber) ?? primarySeasonStory
+  const story = seasonStory?.authoredStory
+  if (!seasonStory || !story) {
+    throw new Error('Published Seven Roads Season 1 must have a published story package.')
+  }
 
   const copy = getSevenRoadsCopy(language)
 
@@ -33,15 +54,92 @@ function App() {
     () => sevenRoadsReaderPreferences.load(),
   )
 
-  const authoredPreviewRequested =
-    import.meta.env.VITE_QISSA_AUTHORED_V3_PREVIEW === 'true' &&
-    new URLSearchParams(window.location.search).get('authoredStory') === 'prazdnik-muzhestva'
+  const authoredPreviewKey =
+    import.meta.env.VITE_QISSA_AUTHORED_V3_PREVIEW === 'true'
+      ? new URLSearchParams(window.location.search).get('authoredStory')
+      : null
+  const authoredPreviewRequested = authoredPreviewKey === 'prazdnik-muzhestva'
+  const story2PreviewRequested =
+    import.meta.env.VITE_QISSA_STORY2_PREVIEW === 'true' &&
+    authoredPreviewKey === 'tayna-vostochnogo-karavana'
+  const [story2PreviewStory, setStory2PreviewStory] = useState<AuthoredStoryPackage | null>(null)
+  const [story2PreviewError, setStory2PreviewError] = useState<string | null>(null)
 
-  const episodeTitles = season.episodes.map((episode) => episode.title)
+  useEffect(() => {
+    if (!story2PreviewRequested) return
+
+    let active = true
+    setStory2PreviewError(null)
+
+    setStory2PreviewStory(null)
+
+    import('./data/story2Preview')
+      .then(({ taynaVostochnogoKaravanaV4ByLanguage }) => {
+        if (active) setStory2PreviewStory(taynaVostochnogoKaravanaV4ByLanguage[language])
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        setStory2PreviewError(
+          error instanceof Error ? error.message : 'Story 2 preview failed to load.',
+        )
+      })
+
+    return () => {
+      active = false
+    }
+  }, [story2PreviewRequested, language])
+
+  const episodeTitles = seasonStory.episodes.map((episode) => episode.title)
 
   const changeLanguage = (nextLanguage: typeof language) => {
     setLanguage(nextLanguage)
     sevenRoadsLanguagePreference.save(nextLanguage)
+  }
+
+
+  if (story2PreviewRequested) {
+    if (story2PreviewError) {
+      return (
+        <div className="mx-auto max-w-[430px] px-4 py-8 text-sm text-[#6b2d2d]">
+          Story 2 preview error: {story2PreviewError}
+        </div>
+      )
+    }
+
+    if (!story2PreviewStory) {
+      return (
+        <div className="mx-auto max-w-[430px] px-4 py-8 text-sm text-[#665d49]">
+          Loading Story 2 preview…
+        </div>
+      )
+    }
+
+    return (
+      <div className="relative min-h-screen text-[#1f241d]">
+        <div className="mx-auto max-w-[430px] px-4 py-5 sm:px-6">
+          <AuthoredStoryPlayer
+            story={story2PreviewStory}
+            seasonNumber={2}
+            storyNumber={2}
+            completionScope="story"
+            readerUnit="part"
+            readerPreferences={readerPreferences}
+            onReaderPreferencesChange={(patch) => {
+              const next = { ...readerPreferences, ...patch }
+              setReaderPreferences(next)
+              sevenRoadsReaderPreferences.save(next)
+            }}
+            showMissingAssetPlaceholders
+            showCover
+            onBack={() => {
+              const url = new URL(window.location.href)
+              url.searchParams.delete('authoredStory')
+              window.location.assign(url.toString())
+            }}
+          />
+        </div>
+      </div>
+    )
   }
 
   if (authoredPreviewRequested) {
@@ -51,8 +149,15 @@ function App() {
           <AuthoredStoryPlayer
             story={story}
             seasonNumber={season.number}
+            storyNumber={seasonStory.number}
+            completionScope={seasonStory.completionScope}
+            readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
-            completionSummary={copy.completionSummary}
+            completionSummary={
+              seasonStory.completionScope === 'season'
+                ? copy.completionSummary
+                : undefined
+            }
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
               const next = { ...readerPreferences, ...patch }
@@ -91,8 +196,15 @@ function App() {
           <AuthoredStoryPlayer
             story={story}
             seasonNumber={season.number}
+            storyNumber={seasonStory.number}
+            completionScope={seasonStory.completionScope}
+            readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
-            completionSummary={copy.completionSummary}
+            completionSummary={
+              seasonStory.completionScope === 'season'
+                ? copy.completionSummary
+                : undefined
+            }
             initialEpisodeNumber={requestedEpisodeNumber ?? undefined}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
@@ -134,8 +246,12 @@ function App() {
         }}
         onBack={() => setView('shell')}
         onResetSeason={() => {
-          authoredStoryPersistence.clear(story)
-          authoredReadingPosition.clear(story)
+          getPublishedSeasonStories(season).forEach((seasonStoryEntry) => {
+            const authoredStory = seasonStoryEntry.authoredStory
+            if (!authoredStory) return
+            authoredStoryPersistence.clear(authoredStory)
+            authoredReadingPosition.clear(authoredStory)
+          })
           setTab('home')
           setView('shell')
         }}
@@ -152,7 +268,8 @@ function App() {
           setRequestedEpisodeNumber(null)
           setView('shell')
         }}
-        onRead={(episodeNumber) => {
+        onRead={(storyNumber, episodeNumber) => {
+          setSelectedStoryNumber(storyNumber)
           setRequestedEpisodeNumber(episodeNumber ?? null)
           setView('story')
         }}
@@ -165,11 +282,22 @@ function App() {
       language={language}
       tab={tab}
       onTab={setTab}
-      onOpenSeason={() => {
+      onOpenSeason={(seasonNumber) => {
+        const nextSeason =
+          seasons.find(
+            (candidate) =>
+              candidate.number === seasonNumber && candidate.status === 'published',
+          ) ?? season
+        setSelectedSeasonNumber(nextSeason.number)
+        setSelectedStoryNumber(getPrimaryPublishedSeasonStory(nextSeason)?.number ?? 1)
         setRequestedEpisodeNumber(null)
         setView('season')
       }}
       onContinueStory={() => {
+        const homeSeason = getSevenRoadsSeason1(language)
+        const homeStory = getPrimaryPublishedSeasonStory(homeSeason)
+        setSelectedSeasonNumber(homeSeason.number)
+        setSelectedStoryNumber(homeStory?.number ?? 1)
         setRequestedEpisodeNumber(null)
         setView('story')
       }}

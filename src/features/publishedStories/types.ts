@@ -1,10 +1,22 @@
 import type { AuthoredStoryPackage } from '../authoredStory/types'
 
 export type PublishedSeasonStatus = 'published' | 'coming_soon'
+export type PublishedStoryStatus = 'published' | 'coming_soon'
 
 export interface PublishedSeasonEpisode {
   number: number
   title: string
+}
+
+export interface PublishedSeasonStory {
+  id: string
+  number: number
+  title: string | null
+  status: PublishedStoryStatus
+  authoredStory: AuthoredStoryPackage | null
+  episodes: PublishedSeasonEpisode[]
+  completionScope: 'season' | 'story'
+  readerUnit: 'episode' | 'part'
 }
 
 export interface PublishedSeason {
@@ -14,6 +26,5 @@ export interface PublishedSeason {
   number: number
   title: string | null
   status: PublishedSeasonStatus
-  story: AuthoredStoryPackage | null
-  episodes: PublishedSeasonEpisode[]
+  stories: PublishedSeasonStory[]
 }

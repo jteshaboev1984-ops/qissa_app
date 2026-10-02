@@ -41,6 +41,33 @@ jobs:
       - name: Validate authored multi-choice V3
         run: npm run check:authored-v3
 
+      - name: Validate Story 2 V4 authored package
+        run: npm run check:authored-story2
+
+      - name: Validate Story 2 Uzbek localization
+        run: npm run check:authored-story2-uz
+
+      - name: Validate Story 2 runtime asset inventory
+        run: npm run check:story2-runtime
+
+      - name: Validate Story 2 approved cover
+        run: npm run check:story2-cover
+
+      - name: Verify hosted Story 2 cover bytes and hash
+        if: github.head_ref == 'story2-reader-layout'
+        env:
+          QISSA_SUPABASE_URL: https://phwakdpxxyncyslvnqht.supabase.co
+        run: npm run smoke:story2-cover-live -- present
+
+      - name: Verify public Story 2 runtime assets on integration branch
+        if: github.head_ref == 'story2-reader-layout'
+        env:
+          QISSA_SUPABASE_URL: https://phwakdpxxyncyslvnqht.supabase.co
+        run: npm run smoke:story2-assets-live -- present
+
+      - name: Validate Story 2 Storage uploader syntax
+        run: node --check scripts/upload-story2-runtime-assets.mjs
+
       - name: Validate authored progress backend contract
         run: npm run check:authored-progress-backend
 
@@ -51,4 +78,39 @@ jobs:
         run: npm run typecheck
 
       - name: Build app
+        env:
+          VITE_QISSA_STORY2_PREVIEW: false
+          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
         run: npm run build
+
+      - name: Verify published Story 2 is present in production bundle
+        run: npm run check:story2-bundle-open
+
+      - name: Build gated Story 2 preview on integration branch
+        if: github.head_ref == 'story2-reader-layout'
+        env:
+          VITE_QISSA_AUTHORED_V3_PREVIEW: true
+          VITE_QISSA_STORY2_PREVIEW: true
+          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
+        run: npm run build
+
+      - name: Verify gated Story 2 preview bundle
+        if: github.head_ref == 'story2-reader-layout'
+        run: npm run check:story2-preview-bundle
+
+      - name: Smoke Story 2 reload resume and gallery discovery
+        if: github.head_ref == 'story2-reader-layout'
+        run: npm run smoke:story2-resume-gallery
+
+      - name: Validate published Story 2 release state
+        if: github.head_ref == 'story2-reader-layout'
+        run: npm run check:story2-release-open
+
+      - name: Upload gated Story 2 preview artifact
+        if: github.head_ref == 'story2-reader-layout'
+        uses: actions/upload-artifact@v4
+        with:
+          name: story2-preview-dist
+          path: ./dist
+          if-no-files-found: error
+          retention-days: 3

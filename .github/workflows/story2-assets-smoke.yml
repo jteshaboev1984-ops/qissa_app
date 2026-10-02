@@ -1,0 +1,40 @@
+name: Story 2 Runtime Asset Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_state:
+        description: Expected public Story 2 asset state
+        required: true
+        default: absent
+        type: choice
+        options:
+          - absent
+          - present
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate local runtime inventory
+        run: npm run check:story2-runtime
+
+      - name: Probe public Story 2 runtime assets
+        env:
+          QISSA_SUPABASE_URL: https://phwakdpxxyncyslvnqht.supabase.co
+        run: npm run smoke:story2-assets-live -- "${{ inputs.expected_state }}"

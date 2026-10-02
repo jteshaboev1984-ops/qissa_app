@@ -46,6 +46,18 @@ jobs:
       - name: Validate authored multi-choice V3
         run: npm run check:authored-v3
 
+      - name: Validate Story 2 V4 authored package
+        run: npm run check:authored-story2
+
+      - name: Validate Story 2 Uzbek localization
+        run: npm run check:authored-story2-uz
+
+      - name: Validate Story 2 runtime asset inventory
+        run: npm run check:story2-runtime
+
+      - name: Validate Story 2 approved cover
+        run: npm run check:story2-cover
+
       - name: Validate authored progress backend contract
         run: npm run check:authored-progress-backend
 
@@ -58,7 +70,12 @@ jobs:
       - name: Build
         env:
           VITE_QISSA_AUTHORED_V3_PREVIEW: true
+          VITE_QISSA_STORY2_PREVIEW: false
+          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
         run: npm run build
+
+      - name: Verify published Story 2 is present in production bundle
+        run: npm run check:story2-bundle-open
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

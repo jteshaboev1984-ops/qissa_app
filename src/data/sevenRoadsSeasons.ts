@@ -1,5 +1,11 @@
-import { prazdnikMuzhestvaV3ByLanguage } from './authoredStories'
-import type { PublishedSeason } from '../features/publishedStories/types'
+import {
+  prazdnikMuzhestvaV3ByLanguage,
+  taynaVostochnogoKaravanaV4ByLanguage,
+} from './authoredStories'
+import type {
+  PublishedSeason,
+  PublishedSeasonStory,
+} from '../features/publishedStories/types'
 import {
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
@@ -24,39 +30,82 @@ const episodeTitles: Record<SevenRoadsLanguage, string[]> = {
   ],
 }
 
+export const getPublishedSeasonStories = (
+  season: PublishedSeason,
+): PublishedSeasonStory[] =>
+  season.stories.filter(
+    (story) => story.status === 'published' && Boolean(story.authoredStory),
+  )
+
+export const getSeasonStoryByNumber = (
+  season: PublishedSeason,
+  storyNumber: number,
+): PublishedSeasonStory | null =>
+  season.stories.find((story) => story.number === storyNumber) ?? null
+
+export const getPrimaryPublishedSeasonStory = (
+  season: PublishedSeason,
+): PublishedSeasonStory | null =>
+  getPublishedSeasonStories(season)[0] ?? null
+
 export const getSevenRoadsSeason1 = (
   language: SevenRoadsLanguage,
 ): PublishedSeason => {
   const copy = getSevenRoadsCopy(language)
-  const story = prazdnikMuzhestvaV3ByLanguage[language]
+  const authoredStory = prazdnikMuzhestvaV3ByLanguage[language]
+  const publishedStory: PublishedSeasonStory = {
+    id: 'seven-roads-season-1-story-1',
+    number: 1,
+    title: authoredStory.title,
+    status: 'published',
+    authoredStory,
+    completionScope: 'season',
+    readerUnit: 'episode',
+    episodes: episodeTitles[language].map((title, index) => ({
+      number: index + 1,
+      title,
+    })),
+  }
 
   return {
     id: 'seven-roads-season-1',
     worldId: 'seven_roads',
     worldTitle: copy.worldTitle,
     number: 1,
-    title: story.title,
+    title: authoredStory.title,
     status: 'published',
-    story,
-    episodes: episodeTitles[language].map((title, index) => ({
-      number: index + 1,
-      title,
-    })),
+    stories: [publishedStory],
   }
 }
 
 export const getSevenRoadsSeason2 = (
   language: SevenRoadsLanguage,
-): PublishedSeason => ({
-  id: 'seven-roads-season-2',
-  worldId: 'seven_roads',
-  worldTitle: getSevenRoadsCopy(language).worldTitle,
-  number: 2,
-  title: null,
-  status: 'coming_soon',
-  story: null,
-  episodes: [],
-})
+): PublishedSeason => {
+  const authoredStory = taynaVostochnogoKaravanaV4ByLanguage[language]
+  const publishedStory: PublishedSeasonStory = {
+    id: 'seven-roads-season-2-story-2',
+    number: 2,
+    title: authoredStory.title,
+    status: 'published',
+    authoredStory,
+    completionScope: 'story',
+    readerUnit: 'part',
+    episodes: authoredStory.parts.map((part, index) => ({
+      number: index + 1,
+      title: part.title,
+    })),
+  }
+
+  return {
+    id: 'seven-roads-season-2',
+    worldId: 'seven_roads',
+    worldTitle: getSevenRoadsCopy(language).worldTitle,
+    number: 2,
+    title: null,
+    status: 'published',
+    stories: [publishedStory],
+  }
+}
 
 export const getSevenRoadsSeasons = (
   language: SevenRoadsLanguage,
