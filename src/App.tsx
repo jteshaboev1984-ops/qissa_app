@@ -71,9 +71,11 @@ function App() {
     let active = true
     setStory2PreviewError(null)
 
+    setStory2PreviewStory(null)
+
     import('./data/story2Preview')
-      .then(({ taynaVostochnogoKaravanaV4Ru }) => {
-        if (active) setStory2PreviewStory(taynaVostochnogoKaravanaV4Ru)
+      .then(({ taynaVostochnogoKaravanaV4ByLanguage }) => {
+        if (active) setStory2PreviewStory(taynaVostochnogoKaravanaV4ByLanguage[language])
       })
       .catch((error: unknown) => {
         if (!active) return
@@ -85,7 +87,7 @@ function App() {
     return () => {
       active = false
     }
-  }, [story2PreviewRequested])
+  }, [story2PreviewRequested, language])
 
   const episodeTitles = seasonStory.episodes.map((episode) => episode.title)
 
