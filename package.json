@@ -52,7 +52,8 @@
     "check:story2-runtime": "node scripts/check-story2-runtime-assets.mjs",
     "smoke:story2-assets-live": "node scripts/smoke-story2-assets-live.mjs",
     "check:story2-bundle-closed": "node scripts/check-story2-production-bundle-closed.mjs",
-    "ops:upload-story2-assets": "node scripts/upload-story2-runtime-assets.mjs"
+    "ops:upload-story2-assets": "node scripts/upload-story2-runtime-assets.mjs",
+    "check:story2-preview-bundle": "node scripts/check-story2-preview-bundle.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
