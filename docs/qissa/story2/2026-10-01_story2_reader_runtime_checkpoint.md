@@ -144,6 +144,7 @@ Latest verified PR CI at this checkpoint:
 - gated-preview build run: `#756` — **success**
 - multi-story shell integration run: `#780` — **success**
 - stable-origin resume/Gallery run: `#791` — **success**
+- Uzbek localization + RU→UZ persistence run: `#800` — **success**
 
 Passed gates include:
 
@@ -223,12 +224,41 @@ Automated command:
 
 CI result: **Seven Roads CI #791 — success**.
 
+## Uzbek localization checkpoint — 2026-10-02
+
+Story 2 now has a gated Uzbek localization overlay:
+
+`src/data/authored/taynaVostochnogoKaravanaV4.uz.json`
+
+Canonical authority remains the Russian V4 continuity-sync source. The Uzbek literary-tightening source was used only as native wording reference and was reconciled back to V4 where it diverged.
+
+Reconciliation completed:
+
+- restored the V4 old-Aras-passage continuity omitted by the tightened Uzbek wording;
+- removed the non-V4 guard names `Kamol` and `Rahim`, keeping role-based `sardor` / `katta qo‘riqchi`;
+- preserved all 10 parts, 4 decisions, 24 shared image anchors, 4 selected-branch image anchors and 5 deferred Choice-3 payoff segments;
+- preserved the real-road-seal canon and Nadir continuity;
+- kept the exact Story 2 identity/version so reading progress and choices survive language changes.
+
+The stable-origin Chromium smoke now also switches the active Story 2 reader from Russian to Uzbek after real saved choices and reloads. It verified that:
+
+- the same part remains open;
+- Choice 3A and Choice 4B remain selected;
+- selected Gallery art remains unlocked;
+- unchosen branch art remains locked;
+- Uzbek title, part label and selected branch prose render successfully.
+
+CI result: **Seven Roads CI #800 — success**.
+
+Detailed reconciliation notes:
+
+`docs/qissa/story2/2026-10-02_story2_uz_localization_reconciliation.md`
+
 ## Remaining publication blockers
 
 Do not publish Story 2 until all of the following are complete:
 
-1. Add and accept the Uzbek localization overlay before enabling Story 2 in Uzbek.
-2. Approve/host a Story 2 cover if the final product shell requires one.
-3. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
+1. Approve/host a Story 2 cover if the final product shell requires one.
+2. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
 
 No production release flag should be flipped as part of the current PR.
