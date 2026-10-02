@@ -156,16 +156,31 @@ Passed gates include:
 - unpublished Story 2 bundle-closure verification;
 - Story 2 Storage uploader syntax guard.
 
+## Rendered preview checkpoint — 2026-10-02
+
+The gated preview build has now been rendered at a 430 × 932 mobile viewport using the exact CI-built reader bundle and locked Story 2 assets.
+
+Rendered path coverage:
+
+- Choice 3A + Choice 4A — PASS
+- Choice 3A + Choice 4B — PASS
+- Choice 3B + Choice 4A — PASS
+- Choice 3B + Choice 4B — PASS
+
+Each path rendered exactly 26 scene images, with no duplicate or unchosen branch image. Choice 3/4 illustrations appeared only after their exact approved V4 anchor paragraphs. Deferred Choice 3 payoff prose remained branch-correct.
+
+Detailed evidence is recorded in:
+
+`docs/qissa/story2/2026-10-01_story2_runtime_visual_sequence_audit.md`
+
 ## Remaining publication blockers
 
 Do not publish Story 2 until all of the following are complete:
 
-1. Perform a real rendered-reader visual smoke using the gated preview build with Story 2 runtime assets enabled.
-2. Verify exact text → illustration ordering on both Choice 3 branches and both Choice 4 branches in the rendered reader.
-3. Verify mobile scroll/resume and Gallery discovery for selected-only branch art.
-4. Add and accept the Uzbek localization overlay before enabling Story 2 in Uzbek.
-5. Resolve the Season 2 multi-story product-shell model before publishing this story as Season 2 story #2.
-6. Approve/host a Story 2 cover if the final product shell requires one.
-7. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
+1. Run one stable-origin browser reload/resume + Gallery discovery smoke so Story 2 persistence is proven across an actual navigation/reload boundary.
+2. Add and accept the Uzbek localization overlay before enabling Story 2 in Uzbek.
+3. Resolve the Season 2 multi-story product-shell model before publishing this story as Season 2 story #2.
+4. Approve/host a Story 2 cover if the final product shell requires one.
+5. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
 
 No production release flag should be flipped as part of the current PR.
