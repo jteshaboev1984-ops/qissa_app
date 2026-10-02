@@ -150,7 +150,9 @@ while (!fs.existsSync(devToolsActivePort) && Date.now() < devToolsDeadline) {
 
 if (!fs.existsSync(devToolsActivePort)) {
   const exitCode = chrome.exitCode
-  cleanup()
+  try { chrome.kill('SIGTERM') } catch {}
+  try { server.close() } catch {}
+  try { fs.rmSync(profileDir, { recursive: true, force: true }) } catch {}
   console.error(
     '[story2-resume-gallery] Chrome DevTools endpoint did not start; exit=' +
       String(exitCode) +
@@ -163,7 +165,9 @@ if (!fs.existsSync(devToolsActivePort)) {
 const [debugPortLine] = fs.readFileSync(devToolsActivePort, 'utf8').trim().split(/\r?\n/)
 const debugPort = Number(debugPortLine)
 if (!Number.isInteger(debugPort) || debugPort <= 0) {
-  cleanup()
+  try { chrome.kill('SIGTERM') } catch {}
+  try { server.close() } catch {}
+  try { fs.rmSync(profileDir, { recursive: true, force: true }) } catch {}
   console.error('[story2-resume-gallery] Invalid DevToolsActivePort: ' + debugPortLine)
   process.exit(2)
 }
