@@ -488,11 +488,20 @@ for (const [key, expected] of Object.entries({
 if (!seasonsSource.includes("id: 'seven-roads-season-2'")) {
   fail('Season 2 shell entry is missing')
 }
-if (!seasonsSource.includes("status: 'coming_soon'")) {
-  fail('Story 2 must remain coming_soon until runtime assets and localization are release-ready')
+if (!seasonsSource.includes("id: 'seven-roads-season-2-story-2'")) {
+  fail('Published Story 2 entry is missing from Season 2')
 }
-if (!seasonsSource.includes('stories: []')) {
-  fail('Season 2 public shell must not expose unpublished story metadata')
+if (!seasonsSource.includes("status: 'published'")) {
+  fail('Story 2 release requires published Season 2/story state')
+}
+if (!seasonsSource.includes("taynaVostochnogoKaravanaV4ByLanguage[language]")) {
+  fail('Season 2 must resolve the published Story 2 package by language')
+}
+if (!seasonsSource.includes("completionScope: 'story'")) {
+  fail('Story 2 must retain story-level completion semantics')
+}
+if (!seasonsSource.includes("readerUnit: 'part'")) {
+  fail('Story 2 must retain part-level reader progress')
 }
 for (const marker of [
   'storyNumber={2}',
@@ -527,5 +536,5 @@ console.log('[story2-v4] 5 deferred Choice-3 payoff segments')
 console.log('[story2-v4] all 16 paths preserve the exact 26-image reader sequence without branch leaks')
 console.log('[story2-v4] Choice 3 deferred payoff text is present only on the selected path')
 console.log('[story2-v4] critical road-seal canon and app-layout manifest are locked')
-console.log('[story2-v4] Season 2 remains gated as coming_soon with no unpublished story metadata in the public collection')
-console.log('[story2-v4] Story 2 preview completes as Сказка 2 and uses part-level reader progress, never false season completion')
+console.log('[story2-v4] Season 2 publishes Story 2 as story #2 with RU/UZ package resolution')
+console.log('[story2-v4] Story 2 completes as Сказка 2 and uses part-level reader progress, never false season completion')
