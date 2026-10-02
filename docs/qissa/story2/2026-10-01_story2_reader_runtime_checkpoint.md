@@ -142,6 +142,7 @@ Latest verified PR CI at this checkpoint:
 - workflow: `Seven Roads CI`
 - asset-verification run: `#752` — **success**
 - gated-preview build run: `#756` — **success**
+- multi-story shell integration run: `#780` — **success**
 
 Passed gates include:
 
@@ -173,14 +174,36 @@ Detailed evidence is recorded in:
 
 `docs/qissa/story2/2026-10-01_story2_runtime_visual_sequence_audit.md`
 
+## Season / story product-shell model — resolved 2026-10-02
+
+The public model no longer assumes `1 season = 1 authored story`.
+
+The hierarchy is now explicit:
+
+`season → ordered stories → reader episodes/parts`
+
+Key release semantics:
+
+- `PublishedSeason` owns an ordered `stories[]` collection.
+- Every published story has its own authored package, status, progress namespace, reader unit, and completion scope.
+- Season 1 remains visually unchanged: its single story completes the season and keeps the existing 6-series UX.
+- Multi-story seasons get a story-selection screen before entering the reader.
+- Gallery grouping is story-aware, so repeated episode numbers from different stories cannot collide.
+- Story-level completion can say “Сказка N завершена” and does not falsely show “Сезон N завершён”.
+- Story 2 preview is explicitly `seasonNumber=2`, `storyNumber=2`, `completionScope=story`, `readerUnit=part`.
+- Per-story reading position and choices remain separated by the existing authored-story persistence keys (`story_id + story_version`).
+- Resetting a multi-story season clears each published story package in that season rather than only the currently open story.
+- The public Season 2 collection is still empty while Season 2 remains `coming_soon`; unpublished Story 2 metadata therefore does not leak into the normal production bundle.
+
+This contract is enforced by `scripts/check-seven-roads-product-shell.mjs` and `scripts/check-authored-story2-v4.mjs`.
+
 ## Remaining publication blockers
 
 Do not publish Story 2 until all of the following are complete:
 
 1. Run one stable-origin browser reload/resume + Gallery discovery smoke so Story 2 persistence is proven across an actual navigation/reload boundary.
 2. Add and accept the Uzbek localization overlay before enabling Story 2 in Uzbek.
-3. Resolve the Season 2 multi-story product-shell model before publishing this story as Season 2 story #2.
-4. Approve/host a Story 2 cover if the final product shell requires one.
-5. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
+3. Approve/host a Story 2 cover if the final product shell requires one.
+4. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
 
 No production release flag should be flipped as part of the current PR.
