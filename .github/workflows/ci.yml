@@ -78,10 +78,13 @@ jobs:
         run: npm run typecheck
 
       - name: Build app
+        env:
+          VITE_QISSA_STORY2_PREVIEW: false
+          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
         run: npm run build
 
-      - name: Verify unpublished Story 2 is absent from production bundle
-        run: npm run check:story2-bundle-closed
+      - name: Verify published Story 2 is present in production bundle
+        run: npm run check:story2-bundle-open
 
       - name: Build gated Story 2 preview on integration branch
         if: github.head_ref == 'story2-reader-layout'
