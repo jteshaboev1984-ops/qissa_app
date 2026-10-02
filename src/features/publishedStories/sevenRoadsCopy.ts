@@ -61,12 +61,12 @@ const ru = {
   progressAndChoices: 'Прогресс и выборы',
   deviceDataBody:
     'Сейчас QISSA хранит прогресс чтения, позицию в тексте и выборы локально на этом устройстве. Аккаунт и облачная синхронизация пока не используются.',
-  restartSeason: 'Начать сезон заново',
+  restartSeason: 'Сбросить прогресс сказок',
   restartSeasonBody:
-    'Это удалит текущий прогресс чтения и сделанные выборы первого сезона на этом устройстве.',
-  restartConfirm: 'Да, начать заново',
+    'Это удалит прогресс чтения и сделанные выборы всех открытых сказок «Королевства семи дорог» на этом устройстве.',
+  restartConfirm: 'Да, сбросить прогресс',
   cancel: 'Отмена',
-  resetSeason: 'Сбросить прогресс сезона',
+  resetSeason: 'Сбросить прогресс сказок',
   close: 'Закрыть',
   readerSettings: 'Настройки чтения',
   openFullscreen: 'Открыть сцену на весь экран',
@@ -156,12 +156,12 @@ const uz = {
   progressAndChoices: 'O‘qilgan joy va tanlovlar',
   deviceDataBody:
     'Hozir QISSA o‘qilgan qismni, matndagi joyni va tanlovlarni faqat shu qurilmada saqlaydi. Akkaunt va bulutli sinxronlash hozircha ishlatilmaydi.',
-  restartSeason: 'Mavsumni boshidan boshlash',
+  restartSeason: 'Hikoyalar jarayonini tozalash',
   restartSeasonBody:
-    'Bu shu qurilmada saqlangan 1-mavsumdagi o‘qilgan joy va tanlovlarni o‘chiradi.',
-  restartConfirm: 'Ha, boshidan boshlash',
+    'Bu shu qurilmada “Yetti yo‘l qirolligi”dagi ochilgan hikoyalarning o‘qilgan joyi va tanlovlarini o‘chiradi.',
+  restartConfirm: 'Ha, jarayonni tozalash',
   cancel: 'Bekor qilish',
-  resetSeason: 'Mavsumni boshidan boshlash',
+  resetSeason: 'Hikoyalar jarayonini tozalash',
   close: 'Yopish',
   readerSettings: 'O‘qish sozlamalari',
   openFullscreen: 'Lavhani to‘liq ekranda ochish',
@@ -211,6 +211,11 @@ export const formatSevenRoadsEpisodeLabel = (
   language: SevenRoadsLanguage,
   episodeNumber: number,
 ) => language === 'uz' ? `${episodeNumber}-qism` : `Серия ${episodeNumber}`
+
+export const formatSevenRoadsPartLabel = (
+  language: SevenRoadsLanguage,
+  partNumber: number,
+) => language === 'uz' ? `${partNumber}-qism` : `Часть ${partNumber}`
 
 export const formatSevenRoadsPartProgress = (
   language: SevenRoadsLanguage,

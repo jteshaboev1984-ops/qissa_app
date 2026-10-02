@@ -44,9 +44,15 @@ export function SeasonOverview({
         </button>
 
         <div className="mt-8">
-          <p className="q-label">{formatSevenRoadsSeasonLabel(language, season.number)}</p>
+          <p className="q-label">
+            {seasonStory.completionScope === 'story'
+              ? formatSevenRoadsStoryLabel(language, seasonStory.number)
+              : formatSevenRoadsSeasonLabel(language, season.number)}
+          </p>
           <h1 className="q-heading mt-1 text-3xl font-bold">
-            {season.title ?? copy.worldTitle}
+            {seasonStory.completionScope === 'story'
+              ? seasonStory.title ?? story.title
+              : season.title ?? copy.worldTitle}
           </h1>
           <p className="mt-3 text-sm leading-6 text-[#6c6252]">
             {publishedStories.length > 1
@@ -54,8 +60,8 @@ export function SeasonOverview({
                 ? 'Bu mavsum bir nechta alohida hikoyadan iborat. Har bir hikoya o‘z o‘qish joyi va tanlovlarini alohida saqlaydi.'
                 : 'Этот сезон состоит из нескольких отдельных сказок. У каждой сказки свой прогресс чтения и свои сохранённые выборы.'
               : language === 'uz'
-                ? 'Bu mavsumdagi hikoyalar alohida o‘qiladi. Har bir hikoyaning o‘z o‘qish joyi va tanlovlari saqlanadi.'
-                : 'Сказки этого сезона читаются отдельно. У каждой сохраняются свой прогресс и свои выборы.'}
+                ? `Bu hikoya ${story.parts.length} qismdan iborat. O‘qilgan joy va tanlovlar saqlanadi.`
+                : `Эта сказка состоит из ${story.parts.length} частей. Прогресс чтения и выборы сохраняются.`}
           </p>
         </div>
 

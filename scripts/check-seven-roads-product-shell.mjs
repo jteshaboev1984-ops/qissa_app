@@ -43,6 +43,11 @@ for (const text of [
   'getSeasonStoryByNumber(season, selectedStoryNumber)',
   'seasonStory?.authoredStory',
   'onLanguageChange={changeLanguage}',
+  "nextSeason.number === 2",
+  "if (!firstStoryProgress?.completed) return",
+  "nextStory?.completionScope === 'story' ? 'story' : 'season'",
+  ".flatMap((publishedSeason) => getPublishedSeasonStories(publishedSeason))",
+  "setSelectedSeasonNumber(1)",
 ]) requireText('Seven Roads App', app, text)
 
 for (const text of [
@@ -95,6 +100,7 @@ requireText('authored localization', authoredLocalization, 'localized image anch
 requireText('authored localization', authoredLocalization, 'last_event: localized.last_event')
 
 requireText('Seven Roads copy', copy, "export type SevenRoadsLanguage = 'ru' | 'uz'")
+requireText('Seven Roads copy', copy, 'formatSevenRoadsPartLabel')
 requireText('Seven Roads copy', copy, "const ru =")
 requireText('Seven Roads copy', copy, "const uz =")
 requireText('Seven Roads copy', copy, "worldTitle: 'Yetti yo‘l qirolligi'")
@@ -172,10 +178,17 @@ requireText('public shell', shell, "Сезон ${notice.seasonNumber} готов
 requireText('public shell', shell, 'Сцена ещё скрыта')
 requireText('public shell', shell, 'Lavha hali ochilmagan')
 forbidText('public shell', shell, 'Lavha hali yashirin')
-requireText('public shell', shell, 'Сцены сказки')
-requireText('public shell', shell, 'Hikoya lavhalari')
+requireText('public shell', shell, 'Сцены сказок')
+requireText('public shell', shell, 'Hikoyalar lavhalari')
 requireText('public shell', shell, "getPublishedSeasonStories(season).length > 0")
 requireText('public shell', shell, 'storyCount: publishedStories.length')
+requireText('public shell', shell, 'story2Unlocked')
+requireText('public shell', shell, "kind: 'locked-story'")
+requireText('public shell', shell, 'Эта сказка откроется после завершения «Праздника мужества».')
+requireText('public shell', shell, 'galleryTitle')
+requireText('public shell', shell, "episode.readerUnit === 'part'")
+requireText('public shell', shell, 'formatSevenRoadsPartLabel')
+requireText('public shell', shell, 'formatSevenRoadsPartProgress')
 requireText('public shell', shell, 'episode.storyNumber')
 requireText('public shell', shell, 'formatSevenRoadsStoryLabel(language, episode.storyNumber)')
 requireText('public shell', shell, "expanded ? 'rotate-180' : ''")
@@ -188,7 +201,8 @@ forbidText('public shell fixed world background', shell, 'fixed inset-y-0 left-1
 requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsSeasonEpisodeContext(language, 1, 1)')
 requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsEpisodeProgress(')
 requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsSeasonLabel(language, season.number)')
-requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsEpisodeLabel(language, episode.episodeNumber)')
+requireText('public shell Uzbek numbering', shell, 'formatSevenRoadsEpisodeLabel(')
+requireText('public shell story-part numbering', shell, 'formatSevenRoadsPartLabel(')
 requireText('public shell Uzbek completion', shell, "language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён'")
 forbidText('public shell Uzbek number order', shell, '{copy.season} {season.number}')
 forbidText('public shell Uzbek number order', shell, '{copy.episode} {episode.episodeNumber}')
@@ -273,8 +287,9 @@ requireText('Seven Roads settings', settings, 'onLanguageChange(option)')
 requireText('Seven Roads settings', settings, 'language={language}')
 requireText('Seven Roads settings', settings, '{copy.resetSeason}')
 requireText('Seven Roads settings', settings, 'ReaderSettingsPanel')
-requireText('Seven Roads settings Uzbek numbering', settings, 'formatSevenRoadsSeasonLabel(language, 1)')
-forbidText('Seven Roads settings Uzbek number order', settings, '{copy.season} 1')
+requireText('Seven Roads settings', settings, 'Прогресс сказок')
+requireText('Seven Roads settings', settings, 'Hikoyalar jarayoni')
+forbidText('Seven Roads settings', settings, 'formatSevenRoadsSeasonLabel(language, 1)')
 requireText('Seven Roads reader preferences', readerPreferences, 'sevenRoadsReaderPreferences')
 
 requireText('authored progress persistence', authoredPersistence, 'story.story_id')

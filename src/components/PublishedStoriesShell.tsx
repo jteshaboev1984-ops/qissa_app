@@ -12,6 +12,8 @@ import { authoredIllustrationDiscovery } from '../lib/authoredIllustrationDiscov
 import {
   formatSevenRoadsEpisodeLabel,
   formatSevenRoadsEpisodeProgress,
+  formatSevenRoadsPartLabel,
+  formatSevenRoadsPartProgress,
   formatSevenRoadsSeasonEpisodeContext,
   formatSevenRoadsSeasonLabel,
   formatSevenRoadsStoryLabel,
@@ -27,7 +29,13 @@ export type PublishedStoriesTab = 'home' | 'library'
 type LibraryView = 'seasons' | 'gallery'
 type LibraryNotice =
   | { kind: 'coming-season'; seasonNumber: number }
-  | { kind: 'locked-art'; episodeNumber: number; storyNumber?: number }
+  | { kind: 'locked-story'; title: string }
+  | {
+      kind: 'locked-art'
+      episodeNumber: number
+      storyNumber?: number
+      readerUnit: 'episode' | 'part'
+    }
 
 export function PublishedStoriesShell({
   language,
@@ -51,6 +59,17 @@ export function PublishedStoriesShell({
   const story = season1Story?.authoredStory ?? null
   const progress = story ? authoredStoryPersistence.load(story) : null
   const reading = sevenRoadsStory1ReadingState(progress)
+  const story2Season = sevenRoadsSeasons.find((season) => season.number === 2) ?? null
+  const story2Story = story2Season ? getPrimaryPublishedSeasonStory(story2Season) : null
+  const story2Package = story2Story?.authoredStory ?? null
+  const story2Progress = story2Package ? authoredStoryPersistence.load(story2Package) : null
+  const story2Unlocked = reading.state === 'completed'
+  const story2CurrentPart = story2Progress
+    ? Math.min(
+        story2Package?.parts.length ?? 10,
+        (story2Progress.current_part_index ?? 0) + 1,
+      )
+    : 1
 
   const [libraryView, setLibraryView] = useState<LibraryView>('seasons')
   const [expandedGallerySeason, setExpandedGallerySeason] = useState<number | null>(null)
@@ -84,6 +103,7 @@ export function PublishedStoriesShell({
         storyId: seasonStory.id,
         storyNumber: seasonStory.number,
         storyTitle: seasonStory.title ?? authoredStory.title,
+        readerUnit: seasonStory.readerUnit,
       }))
     })
 
@@ -107,19 +127,53 @@ export function PublishedStoriesShell({
       }
     }
 
-    if (reading.state === 'completed') {
+    if (reading.state !== 'completed') {
       return {
-        eyebrow: language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён',
-        title: sevenRoadsSeason1.title,
-        subtitle: language === 'uz' ? 'Yakunini ko‘rish' : 'Посмотреть итог',
+        eyebrow: copy.continue,
+        title: currentEpisodeTitle,
+        subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, reading.currentEpisode, 6),
         action: onContinueStory,
       }
     }
 
+    if (story2Story && story2Package) {
+      if (story2Progress?.completed) {
+        return {
+          eyebrow: language === 'uz' ? '2-hikoya tugadi' : 'Сказка 2 завершена',
+          title: story2Story.title ?? story2Package.title,
+          subtitle: language === 'uz' ? 'Yakunini ko‘rish' : 'Посмотреть итог',
+          action: () => onOpenSeason(2),
+        }
+      }
+
+      if (story2Progress) {
+        return {
+          eyebrow: copy.continue,
+          title: story2Story.title ?? story2Package.title,
+          subtitle: formatSevenRoadsPartProgress(
+            language,
+            story2CurrentPart,
+            story2Package.parts.length,
+          ),
+          action: () => onOpenSeason(2),
+        }
+      }
+
+      return {
+        eyebrow: language === 'uz' ? 'Yangi hikoya' : 'Новая сказка',
+        title: story2Story.title ?? story2Package.title,
+        subtitle:
+          language === 'uz'
+            ? `2-hikoya · ${story2Package.parts.length} qism`
+            : `Сказка 2 · ${story2Package.parts.length} частей`,
+        action: () => onOpenSeason(2),
+      }
+    }
+
     return {
-      eyebrow: copy.continue,
-      title: currentEpisodeTitle,
-      subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, reading.currentEpisode, 6),
+      eyebrow: language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён',
+      title: sevenRoadsSeason1.title,
+      subtitle: language === 'uz' ? 'Yakunini ko‘rish' : 'Посмотреть итог',
       action: onContinueStory,
     }
   })()
@@ -186,6 +240,23 @@ export function PublishedStoriesShell({
                   {language === 'uz' ? 'Tushunarli' : 'Понятно'}
                 </button>
               </>
+            ) : notice.kind === 'locked-story' ? (
+              <>
+                <p className="q-label">
+                  {language === 'uz' ? 'Keyingi hikoya' : 'Следующая сказка'}
+                </p>
+                <h2 className="q-heading mt-1 text-2xl font-bold">
+                  {notice.title}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-[#675e4f]">
+                  {language === 'uz'
+                    ? 'Bu hikoya “Jasorat bayrami” tugagandan keyin ochiladi.'
+                    : 'Эта сказка откроется после завершения «Праздника мужества».'}
+                </p>
+                <button type="button" className="q-primary mt-5 w-full" onClick={closeNotice}>
+                  {language === 'uz' ? 'Tushunarli' : 'Понятно'}
+                </button>
+              </>
             ) : (
               <>
                 <p className="q-label">{language === 'uz' ? 'Galereya' : 'Галерея'}</p>
@@ -195,7 +266,7 @@ export function PublishedStoriesShell({
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
                     ? `Bu lavha ${notice.storyNumber ? `${notice.storyNumber}-hikoyadagi ` : ''}${notice.episodeNumber}-qismdagi shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
-                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? `сказки ${notice.storyNumber}, ` : ''}серии ${notice.episodeNumber}. Так Галерея не показывает сюжет заранее.`}
+                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? `сказки ${notice.storyNumber}, ` : ''}${notice.readerUnit === 'part' ? `части ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
                   {reading.state === 'in_progress' ? (
@@ -349,7 +420,9 @@ export function PublishedStoriesShell({
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
                             <div className="absolute inset-x-0 bottom-0 p-4">
                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                                {formatSevenRoadsSeasonLabel(language, season.number)}
+                                {storyScoped
+                                  ? formatSevenRoadsStoryLabel(language, primaryStory.number)
+                                  : formatSevenRoadsSeasonLabel(language, season.number)}
                               </p>
                               <div className="mt-1 flex items-end justify-between gap-3">
                                 <h3 className="font-serif text-2xl font-bold text-white">
@@ -366,8 +439,13 @@ export function PublishedStoriesShell({
 
                       const seasonStoryProgress =
                         authoredStoryPersistence.load(authoredStory)
-                      const progressLabel =
-                        season.number === 1
+                      const locked = season.number === 2 && !story2Unlocked
+                      const storyScoped = primaryStory.completionScope === 'story'
+                      const progressLabel = locked
+                        ? language === 'uz'
+                          ? '1-hikoyadan keyin'
+                          : 'После сказки 1'
+                        : season.number === 1
                           ? (() => {
                               const state =
                                 sevenRoadsStory1ReadingState(seasonStoryProgress)
@@ -386,7 +464,11 @@ export function PublishedStoriesShell({
                           : seasonStoryProgress?.completed
                             ? copy.completed
                             : seasonStoryProgress
-                              ? copy.continue
+                              ? formatSevenRoadsPartProgress(
+                                  language,
+                                  (seasonStoryProgress.current_part_index ?? 0) + 1,
+                                  authoredStory.parts.length,
+                                )
                               : language === 'uz'
                                 ? 'Boshlanmagan'
                                 : 'Не начат'
@@ -399,7 +481,14 @@ export function PublishedStoriesShell({
                         <button
                           key={season.id}
                           type="button"
-                          onClick={() => onOpenSeason(season.number)}
+                          onClick={() =>
+                            locked
+                              ? setNotice({
+                                  kind: 'locked-story',
+                                  title: primaryStory.title ?? authoredStory.title,
+                                })
+                              : onOpenSeason(season.number)
+                          }
                           className="relative min-h-52 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] transition active:scale-[0.99]"
                         >
                           {coverUrl ? (
@@ -432,7 +521,7 @@ export function PublishedStoriesShell({
                   <div className="space-y-5">
                     <div className="px-1">
                       <h2 className="q-heading text-2xl font-bold">
-                        {language === 'uz' ? 'Hikoya lavhalari' : 'Сцены сказки'}
+                        {language === 'uz' ? 'Hikoyalar lavhalari' : 'Сцены сказок'}
                       </h2>
                     </div>
 
@@ -445,7 +534,16 @@ export function PublishedStoriesShell({
                         )
                         .map((season) => {
                           const gallery = buildSeasonGallery(season)
-                          const expanded = expandedGallerySeason === season.number
+                          const primaryGalleryStory = getPrimaryPublishedSeasonStory(season)
+                          const galleryLocked = season.number === 2 && !story2Unlocked
+                          const galleryTitle =
+                            gallery.storyCount === 1
+                              ? primaryGalleryStory?.title ??
+                                primaryGalleryStory?.authoredStory?.title ??
+                                formatSevenRoadsSeasonLabel(language, season.number)
+                              : season.title ?? formatSevenRoadsSeasonLabel(language, season.number)
+                          const expanded =
+                            !galleryLocked && expandedGallerySeason === season.number
                           const progressPercent =
                             gallery.totalItems > 0
                               ? Math.round((gallery.unlockedItems / gallery.totalItems) * 100)
@@ -461,6 +559,16 @@ export function PublishedStoriesShell({
                                 type="button"
                                 className="flex min-h-[64px] w-full items-center gap-3 px-3 py-3 text-left transition active:bg-[#efe3cf]/75"
                                 onClick={() => {
+                                  if (galleryLocked) {
+                                    setNotice({
+                                      kind: 'locked-story',
+                                      title:
+                                        primaryGalleryStory?.title ??
+                                        primaryGalleryStory?.authoredStory?.title ??
+                                        (language === 'uz' ? 'Keyingi hikoya' : 'Следующая сказка'),
+                                    })
+                                    return
+                                  }
                                   setExpandedGallerySeason(expanded ? null : season.number)
                                   setExpandedGalleryEpisode(null)
                                 }}
@@ -468,12 +576,16 @@ export function PublishedStoriesShell({
                                 aria-controls={panelId}
                               >
                                 <h3 className="min-w-0 flex-1 font-serif text-lg font-bold leading-tight text-[#2d332f]">
-                                  {season.title ?? formatSevenRoadsSeasonLabel(language, season.number)}
+                                  {galleryTitle}
                                 </h3>
 
                                 <div className="flex flex-none items-center gap-2.5">
                                   <span className="text-xs font-bold tabular-nums text-[#756a56]">
-                                    {gallery.unlockedItems} / {gallery.totalItems}
+                                    {galleryLocked
+                                      ? language === 'uz'
+                                        ? 'Yopiq'
+                                        : 'Закрыто'
+                                      : `${gallery.unlockedItems} / ${gallery.totalItems}`}
                                   </span>
                                   <span
                                     className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${
@@ -505,7 +617,7 @@ export function PublishedStoriesShell({
                                   id={panelId}
                                   className="border-t border-[#d8c39a]/55 px-3 pb-4 pt-3"
                                   role="region"
-                                  aria-label={season.title ?? copy.seasons}
+                                  aria-label={galleryTitle}
                                 >
                                   <div
                                     className="h-px overflow-hidden bg-[#d8c39a]/80"
@@ -549,7 +661,15 @@ export function PublishedStoriesShell({
                                                 </p>
                                               ) : null}
                                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
-                                                {formatSevenRoadsEpisodeLabel(language, episode.episodeNumber)}
+                                                {episode.readerUnit === 'part'
+                                                  ? formatSevenRoadsPartLabel(
+                                                      language,
+                                                      episode.episodeNumber,
+                                                    )
+                                                  : formatSevenRoadsEpisodeLabel(
+                                                      language,
+                                                      episode.episodeNumber,
+                                                    )}
                                               </p>
                                               <h4 className="mt-0.5 font-serif text-[1.02rem] font-bold leading-tight text-[#2d332f]">
                                                 {episode.title}
@@ -638,12 +758,15 @@ export function PublishedStoriesShell({
                                                             gallery.storyCount > 1
                                                               ? episode.storyNumber
                                                               : undefined,
+                                                          readerUnit: episode.readerUnit,
                                                         })
                                                       }
                                                       aria-label={
                                                         language === 'uz'
                                                           ? `${episode.episodeNumber}-qism lavhasi hali ochilmagan`
-                                                          : `Сцена серии ${episode.episodeNumber} ещё не открыта`
+                                                          : episode.readerUnit === 'part'
+                                                            ? `Сцена части ${episode.episodeNumber} ещё не открыта`
+                                                            : `Сцена серии ${episode.episodeNumber} ещё не открыта`
                                                       }
                                                     >
                                                       <img
