@@ -32,6 +32,7 @@ const productionAssets: AuthoredStoryAssetRegistry = {
 
 
 const story2AssetIds = [
+  'seven_roads_story2_cover_v1',
   'seven_roads_story2_p1_img_01_v1',
   'seven_roads_story2_p1_img_02_v1',
   'seven_roads_story2_p2_img_01_v1',
