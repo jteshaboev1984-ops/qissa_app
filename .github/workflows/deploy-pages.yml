@@ -71,11 +71,11 @@ jobs:
         env:
           VITE_QISSA_AUTHORED_V3_PREVIEW: true
           VITE_QISSA_STORY2_PREVIEW: false
-          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: false
+          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
         run: npm run build
 
-      - name: Verify unpublished Story 2 is absent from production bundle
-        run: npm run check:story2-bundle-closed
+      - name: Verify published Story 2 is present in production bundle
+        run: npm run check:story2-bundle-open
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
