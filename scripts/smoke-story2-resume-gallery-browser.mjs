@@ -261,7 +261,7 @@ try {
   }
 
   const bodyHas = (text) =>
-    `document.body?.innerText.includes(${JSON.stringify(text)}) === true`
+    `document.body?.innerText.toLowerCase().includes(${JSON.stringify(text.toLowerCase())}) === true`
 
   const clickExactButton = async (text) => {
     const clicked = await evaluate(`(() => {
