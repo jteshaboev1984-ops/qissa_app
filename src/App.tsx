@@ -130,7 +130,7 @@ function App() {
               sevenRoadsReaderPreferences.save(next)
             }}
             showMissingAssetPlaceholders
-            showCover={false}
+            showCover
             onBack={() => {
               const url = new URL(window.location.href)
               url.searchParams.delete('authoredStory')
