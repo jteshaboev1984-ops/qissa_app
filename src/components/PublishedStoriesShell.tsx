@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { getSevenRoadsSeason1, getSevenRoadsSeasons } from '../data/sevenRoadsSeasons'
+import {
+  getPrimaryPublishedSeasonStory,
+  getPublishedSeasonStories,
+  getSevenRoadsSeason1,
+  getSevenRoadsSeasons,
+} from '../data/sevenRoadsSeasons'
 import { sevenRoadsUiAssets } from '../data/sevenRoadsUiAssets'
 import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
@@ -9,6 +14,7 @@ import {
   formatSevenRoadsEpisodeProgress,
   formatSevenRoadsSeasonEpisodeContext,
   formatSevenRoadsSeasonLabel,
+  formatSevenRoadsStoryLabel,
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
@@ -21,7 +27,7 @@ export type PublishedStoriesTab = 'home' | 'library'
 type LibraryView = 'seasons' | 'gallery'
 type LibraryNotice =
   | { kind: 'coming-season'; seasonNumber: number }
-  | { kind: 'locked-art'; episodeNumber: number }
+  | { kind: 'locked-art'; episodeNumber: number; storyNumber?: number }
 
 export function PublishedStoriesShell({
   language,
@@ -41,7 +47,8 @@ export function PublishedStoriesShell({
   const copy = getSevenRoadsCopy(language)
   const sevenRoadsSeason1 = getSevenRoadsSeason1(language)
   const sevenRoadsSeasons = getSevenRoadsSeasons(language)
-  const story = sevenRoadsSeason1.story
+  const season1Story = getPrimaryPublishedSeasonStory(sevenRoadsSeason1)
+  const story = season1Story?.authoredStory ?? null
   const progress = story ? authoredStoryPersistence.load(story) : null
   const reading = sevenRoadsStory1ReadingState(progress)
 
@@ -59,23 +66,37 @@ export function PublishedStoriesShell({
     : null
 
   const currentEpisodeTitle =
-    sevenRoadsSeason1.episodes[reading.currentEpisode - 1]?.title ?? sevenRoadsSeason1.title
+    season1Story?.episodes[reading.currentEpisode - 1]?.title ?? sevenRoadsSeason1.title
 
   const buildSeasonGallery = (season: (typeof sevenRoadsSeasons)[number]) => {
-    if (season.status !== 'published' || !season.story) {
-      return { episodes: [], totalItems: 0, unlockedItems: 0 }
-    }
+    const publishedStories =
+      season.status === 'published' ? getPublishedSeasonStories(season) : []
 
-    const seasonProgress = authoredStoryPersistence.load(season.story)
-    const episodes = authoredIllustrationDiscovery.buildGalleryEpisodes(
-      season.story,
-      season.episodes.map((episode) => episode.title),
-      seasonProgress,
-      season.number === 1 ? sevenRoadsStory1EpisodeNumber : undefined,
-    )
+    const episodes = publishedStories.flatMap((seasonStory) => {
+      const authoredStory = seasonStory.authoredStory
+      if (!authoredStory) return []
+
+      const storyProgress = authoredStoryPersistence.load(authoredStory)
+      const storyEpisodes = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        authoredStory,
+        seasonStory.episodes.map((episode) => episode.title),
+        storyProgress,
+        season.number === 1 && seasonStory.number === 1
+          ? sevenRoadsStory1EpisodeNumber
+          : undefined,
+      )
+
+      return storyEpisodes.map((episode) => ({
+        ...episode,
+        storyId: seasonStory.id,
+        storyNumber: seasonStory.number,
+        storyTitle: seasonStory.title ?? authoredStory.title,
+      }))
+    })
 
     return {
       episodes,
+      storyCount: publishedStories.length,
       totalItems: episodes.reduce((sum, episode) => sum + episode.items.length, 0),
       unlockedItems: episodes.reduce((sum, episode) => sum + episode.unlockedCount, 0),
     }
@@ -189,8 +210,8 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? `Bu lavha ${notice.episodeNumber}-qismdagi shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
-                    : `Она откроется после того, как эта сцена появится во время чтения серии ${notice.episodeNumber}. Так Галерея не показывает сюжет заранее.`}
+                    ? `Bu lavha ${notice.storyNumber ? `${notice.storyNumber}-hikoyadagi ` : ''}${notice.episodeNumber}-qismdagi shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
+                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? `сказки ${notice.storyNumber}, ` : ''}серии ${notice.episodeNumber}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
                   {reading.state === 'in_progress' ? (
@@ -388,7 +409,11 @@ export function PublishedStoriesShell({
 
                     <div className="overflow-hidden rounded-[1.15rem] border-y border-[#d8c39a]/80 bg-[#fff9ed]/45">
                       {sevenRoadsSeasons
-                        .filter((season) => season.status === 'published' && Boolean(season.story))
+                        .filter(
+                          (season) =>
+                            season.status === 'published' &&
+                            getPublishedSeasonStories(season).length > 0,
+                        )
                         .map((season) => {
                           const gallery = buildSeasonGallery(season)
                           const expanded = expandedGallerySeason === season.number
@@ -414,7 +439,7 @@ export function PublishedStoriesShell({
                                 aria-controls={panelId}
                               >
                                 <h3 className="min-w-0 flex-1 font-serif text-lg font-bold leading-tight text-[#2d332f]">
-                                  {season.title}
+                                  {season.title ?? formatSevenRoadsSeasonLabel(language, season.number)}
                                 </h3>
 
                                 <div className="flex flex-none items-center gap-2.5">
@@ -465,15 +490,16 @@ export function PublishedStoriesShell({
 
                                   <div className="mt-4 overflow-hidden rounded-[1rem] border border-[#d8c39a]/70 bg-[#fffaf0]/55">
                                     {gallery.episodes.map((episode) => {
-                                      const episodeKey = `${season.number}:${episode.episodeNumber}`
+                                      const episodeKey =
+                                        `${season.number}:${episode.storyNumber}:${episode.episodeNumber}`
                                       const episodeExpanded =
                                         expandedGalleryEpisode === episodeKey
                                       const episodePanelId =
-                                        `gallery-season-${season.number}-episode-${episode.episodeNumber}`
+                                        `gallery-season-${season.number}-story-${episode.storyNumber}-episode-${episode.episodeNumber}`
 
                                       return (
                                         <section
-                                          key={episode.episodeNumber}
+                                          key={episodeKey}
                                           className="border-b border-[#d8c39a]/65 last:border-b-0"
                                         >
                                           <button
@@ -488,6 +514,11 @@ export function PublishedStoriesShell({
                                             aria-controls={episodePanelId}
                                           >
                                             <div className="min-w-0 flex-1">
+                                              {gallery.storyCount > 1 ? (
+                                                <p className="text-[0.58rem] font-bold uppercase tracking-[0.12em] text-[#9a8055]">
+                                                  {formatSevenRoadsStoryLabel(language, episode.storyNumber)} · {episode.storyTitle}
+                                                </p>
+                                              ) : null}
                                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
                                                 {formatSevenRoadsEpisodeLabel(language, episode.episodeNumber)}
                                               </p>
@@ -574,6 +605,10 @@ export function PublishedStoriesShell({
                                                         setNotice({
                                                           kind: 'locked-art',
                                                           episodeNumber: episode.episodeNumber,
+                                                          storyNumber:
+                                                            gallery.storyCount > 1
+                                                              ? episode.storyNumber
+                                                              : undefined,
                                                         })
                                                       }
                                                       aria-label={
