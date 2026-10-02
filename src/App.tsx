@@ -7,6 +7,7 @@ import {
   getPrimaryPublishedSeasonStory,
   getSeasonStoryByNumber,
   getSevenRoadsSeason1,
+  getSevenRoadsSeasons,
 } from './data/sevenRoadsSeasons'
 import { AuthoredStoryPlayer } from './features/authoredStory/AuthoredStoryPlayer'
 import { getSevenRoadsCopy } from './features/publishedStories/sevenRoadsCopy'
@@ -22,7 +23,13 @@ type SevenRoadsView = 'shell' | 'season' | 'story' | 'settings'
 
 function App() {
   const [language, setLanguage] = useState(() => sevenRoadsLanguagePreference.load())
-  const season = useMemo(() => getSevenRoadsSeason1(language), [language])
+  const seasons = useMemo(() => getSevenRoadsSeasons(language), [language])
+  const [selectedSeasonNumber, setSelectedSeasonNumber] = useState(1)
+  const season =
+    seasons.find(
+      (candidate) =>
+        candidate.number === selectedSeasonNumber && candidate.status === 'published',
+    ) ?? getSevenRoadsSeason1(language)
   const primarySeasonStory = getPrimaryPublishedSeasonStory(season)
   const [selectedStoryNumber, setSelectedStoryNumber] = useState(
     () => primarySeasonStory?.number ?? 1,
@@ -260,8 +267,14 @@ function App() {
       language={language}
       tab={tab}
       onTab={setTab}
-      onOpenSeason={() => {
-        setSelectedStoryNumber(primarySeasonStory?.number ?? 1)
+      onOpenSeason={(seasonNumber) => {
+        const nextSeason =
+          seasons.find(
+            (candidate) =>
+              candidate.number === seasonNumber && candidate.status === 'published',
+          ) ?? season
+        setSelectedSeasonNumber(nextSeason.number)
+        setSelectedStoryNumber(getPrimaryPublishedSeasonStory(nextSeason)?.number ?? 1)
         setRequestedEpisodeNumber(null)
         setView('season')
       }}
