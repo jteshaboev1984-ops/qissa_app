@@ -58,7 +58,8 @@
     "check:authored-story2-uz": "node scripts/check-authored-story2-uz.mjs",
     "check:story2-cover": "node scripts/check-story2-cover.mjs",
     "smoke:story2-cover-live": "node scripts/smoke-story2-cover-live.mjs",
-    "check:story2-release-candidate": "node scripts/check-story2-release-candidate.mjs"
+    "check:story2-release-candidate": "node scripts/check-story2-release-candidate.mjs",
+    "check:story2-bundle-open": "node scripts/check-story2-production-bundle-open.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
