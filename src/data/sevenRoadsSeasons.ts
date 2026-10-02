@@ -56,6 +56,8 @@ export const getSevenRoadsSeason1 = (
     title: authoredStory.title,
     status: 'published',
     authoredStory,
+    completionScope: 'season',
+    readerUnit: 'episode',
     episodes: episodeTitles[language].map((title, index) => ({
       number: index + 1,
       title,
