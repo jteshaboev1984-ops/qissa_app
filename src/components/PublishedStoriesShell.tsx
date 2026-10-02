@@ -211,7 +211,7 @@ export function PublishedStoriesShell({
 
       {notice ? (
         <div
-          className="fixed inset-0 z-[95] flex items-end justify-center bg-black/45 p-3 backdrop-blur-[2px]"
+          className="fixed inset-0 z-[95] flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]"
           role="presentation"
           onClick={closeNotice}
         >

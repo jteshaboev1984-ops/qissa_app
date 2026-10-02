@@ -184,6 +184,8 @@ requireText('public shell', shell, "getPublishedSeasonStories(season).length > 0
 requireText('public shell', shell, 'storyCount: publishedStories.length')
 requireText('public shell', shell, 'story2Unlocked')
 requireText('public shell', shell, "kind: 'locked-story'")
+requireText('public shell centered notices', shell, 'fixed inset-0 z-[95] flex items-center justify-center')
+forbidText('public shell bottom-sheet notices', shell, 'fixed inset-0 z-[95] flex items-end justify-center')
 requireText('public shell', shell, 'Эта сказка откроется после завершения «Праздника мужества».')
 requireText('public shell', shell, 'galleryTitle')
 requireText('public shell', shell, "episode.readerUnit === 'part'")
