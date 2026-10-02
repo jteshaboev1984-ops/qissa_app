@@ -212,6 +212,11 @@ export const formatSevenRoadsEpisodeLabel = (
   episodeNumber: number,
 ) => language === 'uz' ? `${episodeNumber}-qism` : `Серия ${episodeNumber}`
 
+export const formatSevenRoadsPartLabel = (
+  language: SevenRoadsLanguage,
+  partNumber: number,
+) => language === 'uz' ? `${partNumber}-qism` : `Часть ${partNumber}`
+
 export const formatSevenRoadsPartProgress = (
   language: SevenRoadsLanguage,
   partNumber: number,
