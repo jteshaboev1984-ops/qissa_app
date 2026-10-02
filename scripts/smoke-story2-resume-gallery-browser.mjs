@@ -125,30 +125,47 @@ const chrome = spawn(
     '--no-sandbox',
     '--disable-dev-shm-usage',
     '--remote-debugging-address=127.0.0.1',
-    '--remote-debugging-port=9222',
+    '--remote-debugging-port=0',
     `--user-data-dir=${profileDir}`,
     '--window-size=430,932',
     'about:blank',
   ],
-  { stdio: ['ignore', 'ignore', 'ignore'] },
+  { stdio: ['ignore', 'ignore', 'pipe'] },
 )
+
+let chromeStderr = ''
+chrome.stderr?.on('data', (chunk) => {
+  chromeStderr += chunk.toString()
+  if (chromeStderr.length > 8000) chromeStderr = chromeStderr.slice(-8000)
+})
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const fetchJsonEventually = async (url, timeoutMs = 15000) => {
-  const deadline = Date.now() + timeoutMs
-  let lastError
-  while (Date.now() < deadline) {
-    try {
-      const response = await fetch(url)
-      if (response.ok) return await response.json()
-      lastError = new Error(`HTTP ${response.status}`)
-    } catch (error) {
-      lastError = error
-    }
-    await sleep(100)
-  }
-  throw lastError ?? new Error(`Timed out fetching ${url}`)
+const devToolsActivePort = path.join(profileDir, 'DevToolsActivePort')
+const devToolsDeadline = Date.now() + 15000
+while (!fs.existsSync(devToolsActivePort) && Date.now() < devToolsDeadline) {
+  if (chrome.exitCode != null) break
+  await sleep(100)
+}
+
+if (!fs.existsSync(devToolsActivePort)) {
+  const exitCode = chrome.exitCode
+  cleanup()
+  console.error(
+    '[story2-resume-gallery] Chrome DevTools endpoint did not start; exit=' +
+      String(exitCode) +
+      '; stderr=' +
+      chromeStderr.slice(-4000),
+  )
+  process.exit(2)
+}
+
+const [debugPortLine] = fs.readFileSync(devToolsActivePort, 'utf8').trim().split(/\r?\n/)
+const debugPort = Number(debugPortLine)
+if (!Number.isInteger(debugPort) || debugPort <= 0) {
+  cleanup()
+  console.error('[story2-resume-gallery] Invalid DevToolsActivePort: ' + debugPortLine)
+  process.exit(2)
 }
 
 let ws
@@ -164,7 +181,9 @@ const cleanup = () => {
 }
 
 try {
-  const targets = await fetchJsonEventually('http://127.0.0.1:9222/json/list')
+  const targetsResponse = await fetch(`http://127.0.0.1:${debugPort}/json/list`)
+  assert(targetsResponse.ok, `DevTools target list returned HTTP ${targetsResponse.status}`)
+  const targets = await targetsResponse.json()
   const target = targets.find((item) => item.type === 'page')
   assert(target?.webSocketDebuggerUrl, 'No debuggable page target was found')
 
