@@ -288,10 +288,21 @@ function App() {
             (candidate) =>
               candidate.number === seasonNumber && candidate.status === 'published',
           ) ?? season
+        const nextStory = getPrimaryPublishedSeasonStory(nextSeason)
+
+        if (nextSeason.number === 2) {
+          const firstSeason = getSevenRoadsSeason1(language)
+          const firstStory = getPrimaryPublishedSeasonStory(firstSeason)
+          const firstStoryProgress = firstStory?.authoredStory
+            ? authoredStoryPersistence.load(firstStory.authoredStory)
+            : null
+          if (!firstStoryProgress?.completed) return
+        }
+
         setSelectedSeasonNumber(nextSeason.number)
-        setSelectedStoryNumber(getPrimaryPublishedSeasonStory(nextSeason)?.number ?? 1)
+        setSelectedStoryNumber(nextStory?.number ?? 1)
         setRequestedEpisodeNumber(null)
-        setView('season')
+        setView(nextStory?.completionScope === 'story' ? 'story' : 'season')
       }}
       onContinueStory={() => {
         const homeSeason = getSevenRoadsSeason1(language)
