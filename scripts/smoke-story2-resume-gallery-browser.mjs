@@ -200,6 +200,7 @@ try {
   let nextId = 1
   const pending = new Map()
   const browserErrors = []
+  let pageLoadEvents = 0
 
   ws.addEventListener('message', (event) => {
     const raw =
@@ -217,6 +218,10 @@ try {
       if (message.error) waiter.reject(new Error(JSON.stringify(message.error)))
       else waiter.resolve(message.result)
       return
+    }
+
+    if (message.method === 'Page.loadEventFired') {
+      pageLoadEvents += 1
     }
 
     if (message.method === 'Runtime.exceptionThrown') {
@@ -258,6 +263,16 @@ try {
       await sleep(100)
     }
     throw new Error(`Timed out waiting for ${label}`)
+  }
+
+  const reloadAndWait = async () => {
+    const before = pageLoadEvents
+    await send('Page.reload', { ignoreCache: true })
+    const deadline = Date.now() + 15000
+    while (pageLoadEvents <= before && Date.now() < deadline) {
+      await sleep(100)
+    }
+    assert(pageLoadEvents > before, 'Page reload did not produce a load event')
   }
 
   const bodyHas = (text) =>
@@ -325,7 +340,7 @@ try {
         (candidate) => candidate.src.includes(${JSON.stringify(assetId)})
       )
       if (!image) return false
-      image.scrollIntoView({ block: 'center', behavior: 'instant' })
+      image.scrollIntoView({ block: 'center', behavior: 'auto' })
       return true
     })()`)
     await waitFor(
@@ -377,9 +392,9 @@ try {
     localStorage.removeItem(${JSON.stringify(progressKey)})
     localStorage.removeItem(${JSON.stringify(readingKey)})
     localStorage.removeItem(${JSON.stringify(discoveryKey)})
-    location.reload()
     return true
   })()`)
+  await reloadAndWait()
   await waitPart(1)
   await waitProgressIndex(0)
 
@@ -407,7 +422,7 @@ try {
     'Unchosen Choice 3 illustration leaked into discovery storage',
   )
 
-  await evaluate('window.scrollTo({ top: Math.max(250, document.body.scrollHeight * 0.55), behavior: "instant" })')
+  await evaluate('window.scrollTo({ top: Math.max(250, document.body.scrollHeight * 0.55), behavior: "auto" })')
   await waitFor(
     `(() => {
       const raw = localStorage.getItem(${JSON.stringify(readingKey)})
@@ -423,7 +438,7 @@ try {
   const savedReadingBeforeReload = await readJsonStorage(readingKey)
   const progressBeforeReload = await readJsonStorage(progressKey)
 
-  await send('Page.reload', { ignoreCache: true })
+  await reloadAndWait()
   await waitPart(7)
   await waitFor(bodyHas('Выбор сохранён'), 'restored Choice 3 selection')
   await waitFor(
@@ -478,7 +493,7 @@ try {
   )
 
   const progressBeforeSecondReload = await readJsonStorage(progressKey)
-  await send('Page.reload', { ignoreCache: true })
+  await reloadAndWait()
   await waitPart(8)
   await waitFor(bodyHas('Выбор сохранён'), 'restored Choice 4 selection')
 
