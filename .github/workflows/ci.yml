@@ -47,6 +47,12 @@ jobs:
       - name: Validate Story 2 runtime asset inventory
         run: npm run check:story2-runtime
 
+      - name: Verify public Story 2 runtime assets on integration branch
+        if: github.head_ref == 'story2-reader-layout'
+        env:
+          QISSA_SUPABASE_URL: https://phwakdpxxyncyslvnqht.supabase.co
+        run: npm run smoke:story2-assets-live -- present
+
       - name: Validate Story 2 Storage uploader syntax
         run: node --check scripts/upload-story2-runtime-assets.mjs
 
