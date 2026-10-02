@@ -57,7 +57,8 @@
     "smoke:story2-resume-gallery": "node scripts/smoke-story2-resume-gallery-browser.mjs",
     "check:authored-story2-uz": "node scripts/check-authored-story2-uz.mjs",
     "check:story2-cover": "node scripts/check-story2-cover.mjs",
-    "smoke:story2-cover-live": "node scripts/smoke-story2-cover-live.mjs"
+    "smoke:story2-cover-live": "node scripts/smoke-story2-cover-live.mjs",
+    "check:story2-release-candidate": "node scripts/check-story2-release-candidate.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
