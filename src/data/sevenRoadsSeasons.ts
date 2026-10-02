@@ -1,4 +1,7 @@
-import { prazdnikMuzhestvaV3ByLanguage } from './authoredStories'
+import {
+  prazdnikMuzhestvaV3ByLanguage,
+  taynaVostochnogoKaravanaV4ByLanguage,
+} from './authoredStories'
 import type {
   PublishedSeason,
   PublishedSeasonStory,
@@ -77,18 +80,32 @@ export const getSevenRoadsSeason1 = (
 
 export const getSevenRoadsSeason2 = (
   language: SevenRoadsLanguage,
-): PublishedSeason => ({
-  id: 'seven-roads-season-2',
-  worldId: 'seven_roads',
-  worldTitle: getSevenRoadsCopy(language).worldTitle,
-  number: 2,
-  title: null,
-  status: 'coming_soon',
-  // Do not ship unpublished story metadata in the public production bundle.
-  // Season 2 is intentionally an empty public collection until individual
-  // stories pass their own release gates.
-  stories: [],
-})
+): PublishedSeason => {
+  const authoredStory = taynaVostochnogoKaravanaV4ByLanguage[language]
+  const publishedStory: PublishedSeasonStory = {
+    id: 'seven-roads-season-2-story-2',
+    number: 2,
+    title: authoredStory.title,
+    status: 'published',
+    authoredStory,
+    completionScope: 'story',
+    readerUnit: 'part',
+    episodes: authoredStory.parts.map((part, index) => ({
+      number: index + 1,
+      title: part.title,
+    })),
+  }
+
+  return {
+    id: 'seven-roads-season-2',
+    worldId: 'seven_roads',
+    worldTitle: getSevenRoadsCopy(language).worldTitle,
+    number: 2,
+    title: null,
+    status: 'published',
+    stories: [publishedStory],
+  }
+}
 
 export const getSevenRoadsSeasons = (
   language: SevenRoadsLanguage,
