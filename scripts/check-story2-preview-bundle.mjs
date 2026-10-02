@@ -24,6 +24,7 @@ const requiredMarkers = [
   'seven_roads_tayna_vostochnogo_karavana',
   'Тайна восточного каравана',
   'seven-roads/story2_v2/',
+  'seven_roads_story2_cover_v1',
   'seven_roads_story2_p1_img_01_v1',
   'seven_roads_story2_p6a_img_03_v1',
   'seven_roads_story2_p6b_img_03_v1',
@@ -40,11 +41,11 @@ if (missing.length > 0) {
   process.exit(1)
 }
 
-if (searchable.includes('seven-roads/story2_v2/seven_roads_story2_cover_v1')) {
-  console.error('[story2-preview-bundle] pending Story 2 cover unexpectedly has a runtime route')
+if (!searchable.includes('seven-roads/story2_v2/seven_roads_story2_cover_v1.webp')) {
+  console.error('[story2-preview-bundle] approved Story 2 cover runtime route is missing')
   process.exit(1)
 }
 
 console.log('[story2-preview-bundle] PASS')
 console.log('[story2-preview-bundle] Story 2 prose, all branch IDs, and hosted runtime prefix are present')
-console.log('[story2-preview-bundle] pending cover has no runtime route')
+console.log('[story2-preview-bundle] approved cover runtime route is staged behind the Story 2 asset flag')
