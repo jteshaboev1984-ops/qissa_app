@@ -145,6 +145,7 @@ Latest verified PR CI at this checkpoint:
 - multi-story shell integration run: `#780` — **success**
 - stable-origin resume/Gallery run: `#791` — **success**
 - Uzbek localization + RU→UZ persistence run: `#800` — **success**
+- hosted cover + final RU/UZ mobile reader run: `#822` — **success**
 
 Passed gates include:
 
@@ -274,14 +275,44 @@ Locked runtime derivative:
 - Library runtime path: `/QISSA/production/seven_roads/story2_v2/runtime_webp/seven_roads_story2_cover_v1.webp`
 - intended Supabase object: `story-images/seven-roads/story2_v2/seven_roads_story2_cover_v1.webp`
 
-The authored package now marks the cover as `approved`. Runtime registration is intentionally not enabled until the public Supabase object exists and passes byte/hash verification.
+The authored package marks the cover as `approved`.
 
-## Remaining publication blockers
+Production Supabase object:
 
-Do not publish Story 2 until all of the following are complete:
+`story-images/seven-roads/story2_v2/seven_roads_story2_cover_v1.webp`
 
-1. Upload the already approved Story 2 cover WebP to its locked Supabase object path and pass the live byte/hash smoke.
-2. Run the final cover-enabled RU + UZ reader/library smoke.
-3. Only after all release gates pass, change Story 2 publication state from `coming_soon`.
+Live verification completed in **Seven Roads CI #822**:
 
-No production release flag should be flipped as part of the current PR.
+- HTTP/public object: PASS
+- MIME: `image/webp`
+- dimensions exercised in reader: **1024 × 1536**
+- bytes: **293,120**
+- SHA-256: `eefdcb674febb46f4ecebc209cdbd1c13f5d9977360d5d4c95633f83eab00d8b`
+- gated mobile reader: cover rendered successfully in fresh **RU and UZ** sessions at 430 × 932.
+
+The cover inventory is now `approved_hosted_verified`.
+
+## Release-candidate state
+
+All content/runtime QA gates are now complete:
+
+- Russian V4 package: PASS;
+- Uzbek overlay: PASS;
+- 16 logical choice paths: PASS;
+- exact text → image ordering: PASS;
+- 28 scene runtime assets: hosted + byte/hash verified;
+- Story 2 cover: hosted + byte/hash verified;
+- cover-enabled RU and UZ mobile reader: PASS;
+- reload/resume: PASS;
+- Gallery selected-only discovery: PASS;
+- production bundle remains closed while Story 2 is unreleased.
+
+The current branch intentionally keeps:
+
+- Season 2 = `coming_soon`;
+- public Season 2 `stories: []`;
+- Story 2 preview/runtime flags disabled in the production Pages workflow.
+
+Therefore there is **no remaining content-production blocker**. The next operation is a deliberate release-state change, followed by production deployment and post-release smoke.
+
+No production release flag is flipped automatically by this checkpoint.
