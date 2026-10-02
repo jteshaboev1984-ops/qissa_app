@@ -38,6 +38,9 @@ for (const text of [
   'sevenRoadsLanguagePreference.load()',
   'getSevenRoadsSeason1(language)',
   'getPrimaryPublishedSeasonStory(season)',
+  'getSevenRoadsSeasons(language)',
+  'selectedSeasonNumber',
+  'getSeasonStoryByNumber(season, selectedStoryNumber)',
   'seasonStory?.authoredStory',
   'onLanguageChange={changeLanguage}',
 ]) requireText('Seven Roads App', app, text)
@@ -68,6 +71,10 @@ requireText('season data', seasons, "prazdnikMuzhestvaV3ByLanguage[language]")
 requireText('published season types', publishedTypes, 'export interface PublishedSeasonStory')
 requireText('published season types', publishedTypes, 'stories: PublishedSeasonStory[]')
 requireText('published season types', publishedTypes, 'authoredStory: AuthoredStoryPackage | null')
+requireText('published season types', publishedTypes, "completionScope: 'season' | 'story'")
+requireText('published season types', publishedTypes, "readerUnit: 'episode' | 'part'")
+requireText('season data', seasons, "completionScope: 'season'")
+requireText('season data', seasons, "readerUnit: 'episode'")
 requireText('season data', seasons, "'Jasorat bayrami'")
 requireText('season data', seasons, "'Sharqiy o‘rmon'")
 requireText('season data', seasons, "'Qaytish'")
@@ -122,6 +129,9 @@ requireText('language preference', languagePreference, 'window.localStorage.setI
 
 requireText('public shell', shell, 'getSevenRoadsSeason1(language)')
 requireText('public shell', shell, 'getSevenRoadsSeasons(language)')
+requireText('public shell', shell, 'sevenRoadsSeasons.map((season) =>')
+requireText('public shell', shell, 'getPrimaryPublishedSeasonStory(season)')
+requireText('public shell', shell, 'onOpenSeason(season.number)')
 requireText('public shell', shell, 'getSevenRoadsCopy(language)')
 requireText('public shell', shell, 'sevenRoadsUiAssets.home')
 requireText('public shell', shell, 'sevenRoadsUiAssets.library')
@@ -186,7 +196,10 @@ requireText('season overview', overview, '{copy.openSeasonPath}')
 requireText('season overview', overview, '{copy.sixEpisodes}')
 requireText('season overview', overview, 'resolveAuthoredStoryAssetUrl')
 requireText('season overview', overview, 'sticky top-0 z-30')
-requireText('season overview', overview, 'onRead(episode.number)')
+requireText('season overview', overview, 'publishedStories.length > 1')
+requireText('season overview', overview, 'formatSevenRoadsStoryLabel(language, seasonStoryEntry.number)')
+requireText('season overview', overview, 'onRead(seasonStoryEntry.number)')
+requireText('season overview', overview, 'onRead(seasonStory.number, episode.number)')
 forbidText('season overview hero', overview, 'season.worldTitle')
 forbidText('season overview hero', overview, 'для 8–9 лет')
 forbidText('season overview hero', overview, '6 серий · 4 решения')
