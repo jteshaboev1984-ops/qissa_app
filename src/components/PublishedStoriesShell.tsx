@@ -58,13 +58,6 @@ export function PublishedStoriesShell({
   const [galleryLightbox, setGalleryLightbox] = useState<{ url: string; alt: string } | null>(null)
   const [notice, setNotice] = useState<LibraryNotice | null>(null)
 
-  const seasonCover = story
-    ? resolveAuthoredStoryAssetUrl(
-        story.cover_illustration.asset_id,
-        story.cover_illustration.runtime_url,
-      )
-    : null
-
   const currentEpisodeTitle =
     season1Story?.episodes[reading.currentEpisode - 1]?.title ?? sevenRoadsSeason1.title
 
@@ -130,15 +123,6 @@ export function PublishedStoriesShell({
       action: onContinueStory,
     }
   })()
-
-  const seasonProgressLabel =
-    reading.state === 'completed'
-      ? copy.completed
-      : reading.state === 'in_progress'
-        ? formatSevenRoadsEpisodeProgress(language, reading.currentEpisode, 6)
-        : language === 'uz'
-          ? 'Boshlanmagan'
-          : 'Не начат'
 
   const closeNotice = () => setNotice(null)
 
@@ -338,66 +322,111 @@ export function PublishedStoriesShell({
                       <h2 className="q-heading mt-1 text-2xl font-bold">{copy.seasons}</h2>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => onOpenSeason(sevenRoadsSeason1.number)}
-                      className="relative min-h-52 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] transition active:scale-[0.99]"
-                    >
-                      {seasonCover ? (
-                        <img
-                          src={seasonCover}
-                          alt=""
-                          className="absolute inset-0 h-full w-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : null}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/5" />
-                      <div className="absolute inset-x-0 bottom-0 p-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                            {formatSevenRoadsSeasonLabel(language, 1)}
-                          </p>
-                          <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
-                            {seasonProgressLabel}
-                          </span>
-                        </div>
-                        <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">
-                          {sevenRoadsSeason1.title}
-                        </h3>
-                      </div>
-                    </button>
+                    {sevenRoadsSeasons.map((season) => {
+                      const primaryStory = getPrimaryPublishedSeasonStory(season)
+                      const authoredStory = primaryStory?.authoredStory ?? null
 
-                    {sevenRoadsSeasons
-                      .filter((season) => season.status === 'coming_soon')
-                      .map((season) => (
+                      if (
+                        season.status !== 'published' ||
+                        !primaryStory ||
+                        !authoredStory
+                      ) {
+                        return (
+                          <button
+                            key={season.id}
+                            type="button"
+                            onClick={() =>
+                              setNotice({ kind: 'coming-season', seasonNumber: season.number })
+                            }
+                            className="relative min-h-40 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.7)] transition active:scale-[0.99]"
+                          >
+                            <img
+                              src={sevenRoadsUiAssets.futureSeasonPlaceholder}
+                              alt=""
+                              className="absolute inset-0 h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                            <div className="absolute inset-x-0 bottom-0 p-4">
+                              <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
+                                {formatSevenRoadsSeasonLabel(language, season.number)}
+                              </p>
+                              <div className="mt-1 flex items-end justify-between gap-3">
+                                <h3 className="font-serif text-2xl font-bold text-white">
+                                  {copy.soon}
+                                </h3>
+                                <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                                  {language === 'uz' ? 'Tayyorlanmoqda' : 'Готовим'}
+                                </span>
+                              </div>
+                            </div>
+                          </button>
+                        )
+                      }
+
+                      const seasonStoryProgress =
+                        authoredStoryPersistence.load(authoredStory)
+                      const progressLabel =
+                        season.number === 1
+                          ? (() => {
+                              const state =
+                                sevenRoadsStory1ReadingState(seasonStoryProgress)
+                              return state.state === 'completed'
+                                ? copy.completed
+                                : state.state === 'in_progress'
+                                  ? formatSevenRoadsEpisodeProgress(
+                                      language,
+                                      state.currentEpisode,
+                                      6,
+                                    )
+                                  : language === 'uz'
+                                    ? 'Boshlanmagan'
+                                    : 'Не начат'
+                            })()
+                          : seasonStoryProgress?.completed
+                            ? copy.completed
+                            : seasonStoryProgress
+                              ? copy.continue
+                              : language === 'uz'
+                                ? 'Boshlanmagan'
+                                : 'Не начат'
+                      const coverUrl = resolveAuthoredStoryAssetUrl(
+                        authoredStory.cover_illustration.asset_id,
+                        authoredStory.cover_illustration.runtime_url,
+                      )
+
+                      return (
                         <button
                           key={season.id}
                           type="button"
-                          onClick={() =>
-                            setNotice({ kind: 'coming-season', seasonNumber: season.number })
-                          }
-                          className="relative min-h-40 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.7)] transition active:scale-[0.99]"
+                          onClick={() => onOpenSeason(season.number)}
+                          className="relative min-h-52 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] transition active:scale-[0.99]"
                         >
-                          <img
-                            src={sevenRoadsUiAssets.futureSeasonPlaceholder}
-                            alt=""
-                            className="absolute inset-0 h-full w-full object-cover"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                          {coverUrl ? (
+                            <img
+                              src={coverUrl}
+                              alt=""
+                              className="absolute inset-0 h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : null}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/5" />
                           <div className="absolute inset-x-0 bottom-0 p-4">
-                            <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                              {formatSevenRoadsSeasonLabel(language, season.number)}
-                            </p>
-                            <div className="mt-1 flex items-end justify-between gap-3">
-                              <h3 className="font-serif text-2xl font-bold text-white">{copy.soon}</h3>
-                              <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
-                                {language === 'uz' ? 'Tayyorlanmoqda' : 'Готовим'}
+                            <div className="flex items-center justify-between gap-3">
+                              <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
+                                {formatSevenRoadsSeasonLabel(language, season.number)}
+                              </p>
+                              <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                                {progressLabel}
                               </span>
                             </div>
+                            <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">
+                              {season.title ?? primaryStory.title ?? authoredStory.title}
+                            </h3>
                           </div>
                         </button>
-                      ))}
+                      )
+                    })}
                   </div>
                 ) : (
                   <div className="space-y-5">
