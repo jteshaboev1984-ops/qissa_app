@@ -1,0 +1,40 @@
+name: Story 2 Cover Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_state:
+        description: Expected public Story 2 cover state
+        required: true
+        default: absent
+        type: choice
+        options:
+          - absent
+          - present
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate approved cover contract
+        run: npm run check:story2-cover
+
+      - name: Probe public Story 2 cover
+        env:
+          QISSA_SUPABASE_URL: https://phwakdpxxyncyslvnqht.supabase.co
+        run: npm run smoke:story2-cover-live -- "${{ inputs.expected_state }}"
