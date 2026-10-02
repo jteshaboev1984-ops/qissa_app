@@ -7,8 +7,11 @@ import { resolveAuthoredStoryAssetUrl } from '../../data/authoredStoryAssets'
 import {
   formatSevenRoadsEpisodeCompleted,
   formatSevenRoadsEpisodeProgress,
+  formatSevenRoadsPartProgress,
   formatSevenRoadsSeasonCompleted,
   formatSevenRoadsSeasonLabel,
+  formatSevenRoadsStoryCompleted,
+  formatSevenRoadsStoryLabel,
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
 } from '../publishedStories/sevenRoadsCopy'
@@ -31,12 +34,18 @@ import type {
 } from './types'
 import type { ReaderPreferences } from '../../types/qissa'
 
+type AuthoredStoryCompletionScope = 'season' | 'story'
+type AuthoredStoryReaderUnit = 'episode' | 'part'
+
 interface AuthoredStoryPlayerProps {
   story: AuthoredStoryPackage
   onBack?: () => void
   showMissingAssetPlaceholders?: boolean
   showCover?: boolean
   seasonNumber?: number
+  storyNumber?: number
+  completionScope?: AuthoredStoryCompletionScope
+  readerUnit?: AuthoredStoryReaderUnit
   episodeTitles?: string[]
   completionSummary?: string
   onFinishForToday?: () => void
@@ -219,6 +228,7 @@ const StoryBlocks = ({
   onImageSeen,
   language,
   episodeNumber,
+  readerUnit,
 }: {
   blocks: ReturnType<typeof buildAuthoredNarrativeBlocks>
   showMissingAssetPlaceholders: boolean
@@ -226,6 +236,7 @@ const StoryBlocks = ({
   onImageSeen: (assetId: string) => void
   language: SevenRoadsLanguage
   episodeNumber: number
+  readerUnit: AuthoredStoryReaderUnit
 }) => (
   <div className="space-y-5">
     {blocks.map((block, index) => {
@@ -234,7 +245,13 @@ const StoryBlocks = ({
           <StoryImage
             key={block.slot.slot_id}
             asset={block.slot}
-            alt={language === 'uz' ? `${episodeNumber}-qism lavhasi` : `Сцена серии ${episodeNumber}`}
+            alt={
+              language === 'uz'
+                ? `${episodeNumber}-qism lavhasi`
+                : readerUnit === 'part'
+                  ? `Сцена части ${episodeNumber}`
+                  : `Сцена серии ${episodeNumber}`
+            }
             showPlaceholder={showMissingAssetPlaceholders}
             onOpen={onOpenImage}
             onSeen={onImageSeen}
@@ -258,6 +275,9 @@ export function AuthoredStoryPlayer({
   showMissingAssetPlaceholders = false,
   showCover = true,
   seasonNumber = 1,
+  storyNumber = 1,
+  completionScope = 'season',
+  readerUnit = 'episode',
   episodeTitles,
   completionSummary,
   onFinishForToday,
@@ -474,6 +494,24 @@ export function AuthoredStoryPlayer({
   const readerTheme = getReaderTheme(readerPreferences)
   const readerTextStyle = getReaderTextStyle(readerPreferences)
   const replayEpisodeEnd = historicalReplay && (isReaderEpisodeBoundary || part.is_final)
+  const readerProgressLabel =
+    readerUnit === 'part'
+      ? formatSevenRoadsPartProgress(language, readerProgress.current, readerProgress.total)
+      : formatSevenRoadsEpisodeProgress(language, readerProgress.current, readerProgress.total)
+  const completionLabel =
+    completionScope === 'story'
+      ? formatSevenRoadsStoryCompleted(language, storyNumber)
+      : formatSevenRoadsSeasonCompleted(language, seasonNumber)
+  const completionEyebrow =
+    completionScope === 'story'
+      ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsStoryLabel(language, storyNumber)} · ${story.title}`
+      : `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${story.title}`
+  const completionMemory =
+    completionScope === 'story' ? copy.storyCompletionMemory : copy.completionMemory
+  const finishLabel =
+    completionScope === 'story' ? copy.finishStory : copy.finishSeason
+  const replayLabel =
+    completionScope === 'story' ? copy.replayStory : copy.replaySeason
 
   if (progress.completed) {
     const completionCoverUrl = resolveAuthoredStoryAssetUrl(
@@ -489,10 +527,10 @@ export function AuthoredStoryPlayer({
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/32 to-[#102327]/96" />
         <div className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-end p-5">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#ead3a0]">
-            QISSA · {formatSevenRoadsSeasonLabel(language, seasonNumber)} · {story.title}
+            {completionEyebrow}
           </p>
           <h2 className="mt-2 font-serif text-3xl font-bold text-[#fff9ec]">
-            {formatSevenRoadsSeasonCompleted(language, seasonNumber)}
+            {completionLabel}
           </h2>
           {completionSummary ? (
             <p className="mt-3 text-base font-semibold leading-7 text-[#f8f1e4]">
@@ -500,14 +538,16 @@ export function AuthoredStoryPlayer({
             </p>
           ) : null}
           <p className="mt-3 text-sm leading-6 text-[#eaf3f1]">
-            {copy.completionMemory}
+            {completionMemory}
           </p>
-          <div className="mt-4 rounded-[1.4rem] border border-[#ead3a0]/35 bg-black/20 px-4 py-3 backdrop-blur-md">
-            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#ead3a0]">
-              {formatSevenRoadsSeasonLabel(language, seasonNumber + 1)}
-            </p>
-            <p className="mt-1 font-bold text-[#fff9ec]">{copy.nextSeasonSoon}</p>
-          </div>
+          {completionScope === 'season' ? (
+            <div className="mt-4 rounded-[1.4rem] border border-[#ead3a0]/35 bg-black/20 px-4 py-3 backdrop-blur-md">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#ead3a0]">
+                {formatSevenRoadsSeasonLabel(language, seasonNumber + 1)}
+              </p>
+              <p className="mt-1 font-bold text-[#fff9ec]">{copy.nextSeasonSoon}</p>
+            </div>
+          ) : null}
           <div className="mt-5 grid gap-2.5">
             {onFinishForToday ? (
               <button
@@ -529,7 +569,7 @@ export function AuthoredStoryPlayer({
               className="w-full rounded-full px-5 py-3 text-sm font-semibold text-[#ead3a0]"
               onClick={restartStory}
             >
-              {copy.replaySeason}
+              {replayLabel}
             </button>
           </div>
         </div>
@@ -597,7 +637,7 @@ export function AuthoredStoryPlayer({
           ) : <span />}
           <div className="flex items-center gap-2">
             <span className="rounded-full border border-current/15 px-3 py-1.5 text-xs font-bold">
-              {formatSevenRoadsEpisodeProgress(language, readerProgress.current, readerProgress.total)}
+              {readerProgressLabel}
             </span>
             <button
               type="button"
@@ -656,6 +696,7 @@ export function AuthoredStoryPlayer({
           onImageSeen={markImageSeen}
           language={language}
           episodeNumber={readerProgress.current}
+          readerUnit={readerUnit}
         />
       </article>
 
@@ -750,6 +791,7 @@ export function AuthoredStoryPlayer({
               onImageSeen={markImageSeen}
               language={language}
               episodeNumber={readerProgress.current}
+              readerUnit={readerUnit}
             />
           </article>
 
@@ -776,6 +818,7 @@ export function AuthoredStoryPlayer({
             onImageSeen={markImageSeen}
             language={language}
             episodeNumber={readerProgress.current}
+            readerUnit={readerUnit}
           />
         </article>
       ) : null}
@@ -830,7 +873,7 @@ export function AuthoredStoryPlayer({
             onClick={continueStory}
             disabled={!canContinue}
           >
-            {part.is_final ? copy.finishSeason : copy.continue}
+            {part.is_final ? finishLabel : copy.continue}
           </button>
         )
       ) : null}
