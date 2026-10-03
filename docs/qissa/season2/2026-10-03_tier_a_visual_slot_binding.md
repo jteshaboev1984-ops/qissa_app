@@ -58,11 +58,11 @@ Accepted literary sources used for exact anchors:
 - Story 2: existing repository V4 layout manifest
 - Story 3: `seven_roads_s2_story3_two_towers_literary_v6.md`
 - Story 4: `seven_roads_s2_story4_waited_man_literary_v4.md`
-- Story 5: accepted Library snapshot `tmp_story5_v4_copy.md`
-- Story 6: accepted Library snapshot `tmp_story6_v3_copy.md`
+- Story 5: `seven_roads_s2_story5_false_road_literary_v4.md`
+- Story 6: `seven_roads_s2_story6_two_reinforcements_literary_v3.md`
 - Story 7: `seven_roads_s2_story7_back_to_ordan_literary_v17_visible_inherited_defect.md`
 
-Before publishing authored packages for Stories 5 and 6, normalize the accepted literary snapshots to canonical non-`tmp` filenames; this does not block the current visual slot binding.
+Canonical Story 5 and Story 6 literary snapshots are stored under `/QISSA/production/seven_roads/season2_text/approved/`.
 
 ## Next implementation gate
 
