@@ -1,0 +1,151 @@
+{
+  "version": "story4-authoring-map-1",
+  "status": "staging-source-locked",
+  "created_at": "2026-10-03",
+  "story_number": 4,
+  "title_ru": "Человек, которого ждут",
+  "canonical_source": {
+    "filename": "seven_roads_s2_story4_waited_man_literary_v4.md",
+    "library_path": "/QISSA/production/seven_roads/season2_text/approved/seven_roads_s2_story4_waited_man_literary_v4.md",
+    "sha256": "b603334c0f620434419a4ca94743ce0142403ba85dc1d884a2d0d794c64252e9",
+    "lines": 787,
+    "header_version": "v3",
+    "version_note": "Canonical filename is v4 while the document header says v3; source text is preserved unchanged.",
+    "declared_interactivity": "2 choices × 2 variants"
+  },
+  "package_plan": {
+    "target_schema": "authored-multi-choice-v2-deferred-branches",
+    "language": "ru",
+    "app_age_group": "8-9",
+    "story_mode": "series",
+    "story_mood": "kind_adventure",
+    "publication_state": "staging-only",
+    "localization_status": "Uzbek overlay not yet authored",
+    "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges, with Markdown presentation markers normalized only at package-build time.",
+    "part_count": 2,
+    "cover_status": "approved cover not yet assigned"
+  },
+  "parts": [
+    {
+      "part_id": "story4_part_1_false_notice_and_route_check",
+      "order": 1,
+      "title": "Часть 1",
+      "story_text": {
+        "source_lines": [
+          7,
+          371
+        ],
+        "sha256": "c45bade650ab9b9f9e3f8c15126b75fdc20c3c45cb1e0297f8da05de46e8fbbf"
+      },
+      "image_slots": [
+        {
+          "slot_id": "S2-ST4-TIERA-FALSE-NOTICE",
+          "asset_id": "seven_roads_s2_story4_false_aras_notice_01_APPROVED",
+          "phase": "story_text",
+          "after_text": "Всё выглядело обычно для дорожного уведомления из Араса.",
+          "runtime_state": "prepared-not-hosted"
+        }
+      ],
+      "decision": {
+        "decision_id": "story4_choice_1_route_b_check",
+        "prompt": "Как Темур и Самира помогут проверить старую патрульную дорогу?",
+        "source_prompt_line": 375,
+        "memory_key": "route_b_check",
+        "choices": [
+          {
+            "choice_id": "story4_choice_1a_road_book",
+            "text": "Самира посмотрит её в дорожной книге.",
+            "source_choice_line": 377,
+            "resolution": {
+              "source_lines": [
+                385,
+                407
+              ],
+              "sha256": "9e58adb7faf8b39f8b717a3800590d0e4a2a0d681388c0b60e79bd755dfcb1a5"
+            },
+            "memory_value": "road_book"
+          },
+          {
+            "choice_id": "story4_choice_1b_road_master",
+            "text": "Темур пойдёт вместе со взрослым к дорожному мастеру, который ведёт тяжёлые повозки.",
+            "source_choice_line": 379,
+            "resolution": {
+              "source_lines": [
+                413,
+                449
+              ],
+              "sha256": "073b7e0be5be3ec04a843ee9a52f03ef06cc4ec0f4eabaefe26e545ff1ce20f3"
+            },
+            "memory_value": "road_master"
+          }
+        ],
+        "convergence_contract": "B — реальный и допустимый объезд для тяжёлой повозки."
+      },
+      "post_choice_text": null,
+      "is_final": false
+    },
+    {
+      "part_id": "story4_part_2_nadir_red_hill_clue",
+      "order": 2,
+      "title": "Часть 2",
+      "story_text": {
+        "source_lines": [
+          455,
+          585
+        ],
+        "sha256": "54e66e367ae0c7740f147dd4666b053a8853ae4af5caa8cdd2ae5437bd3c9ef6"
+      },
+      "image_slots": [],
+      "decision": {
+        "decision_id": "story4_choice_2_nadir_clue",
+        "prompt": "Что Надир уточнит, чтобы не вызвать подозрения и получить полезную деталь?",
+        "source_prompt_line": 587,
+        "memory_key": "nadir_red_hill_clue",
+        "choices": [
+          {
+            "choice_id": "story4_choice_2a_supply_size",
+            "text": "«Сколько брать воды и корма?»",
+            "source_choice_line": 589,
+            "resolution": {
+              "source_lines": [
+                597,
+                615
+              ],
+              "sha256": "cd8b6d07aee5b79e399d16a647169b9c1ed1d5f5e56454f5df594d52837148f5"
+            },
+            "memory_value": "supply_size"
+          },
+          {
+            "choice_id": "story4_choice_2b_drop_point",
+            "text": "«Где именно у Красного холма оставить всё?»",
+            "source_choice_line": 591,
+            "resolution": {
+              "source_lines": [
+                621,
+                637
+              ],
+              "sha256": "a21acb8b560876763f85c95c2c2d9859963fbeb497cdd73876066175819ff1eb"
+            },
+            "memory_value": "drop_point"
+          }
+        ],
+        "convergence_contract": "Красный холм на B связан с людьми сети, ожидающими тюремную повозку."
+      },
+      "post_choice_text": {
+        "source_lines": [
+          643,
+          769
+        ],
+        "sha256": "005459318fd162d6f1aba6e748fcea00d16ee3648411e6280c7dbbfd279760e0"
+      },
+      "is_final": true
+    }
+  ],
+  "blockers_before_runtime_package": [
+    "Resolve the v4 filename / v3 header version label explicitly without rewriting literary content silently.",
+    "Assign an approved Story 4 cover asset.",
+    "Create/approve Uzbek localization overlay.",
+    "Host and byte/hash-verify the Tier A runtime WebP before registering it.",
+    "Generate the runtime AuthoredStoryPackage by verbatim extraction and validate it."
+  ]
+}
