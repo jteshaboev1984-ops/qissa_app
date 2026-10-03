@@ -35,6 +35,9 @@ jobs:
       - name: Validate Tier A visual slot bindings
         run: npm run check:season2-tier-a-slots
 
+      - name: Validate Tier A runtime asset inventory
+        run: npm run check:season2-tier-a-runtime
+
       - name: Validate Story 2 runtime inventory
         run: npm run check:story2-runtime
 
