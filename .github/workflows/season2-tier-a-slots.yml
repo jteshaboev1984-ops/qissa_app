@@ -1,0 +1,51 @@
+name: Season 2 Tier A Slot Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/data/authored/season2TierAVisualSlots.json'
+      - 'src/data/season2TierAVisualSlots.ts'
+      - 'scripts/check-season2-tier-a-visual-slots.mjs'
+      - 'docs/qissa/season2/**'
+      - 'package.json'
+      - '.github/workflows/season2-tier-a-slots.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate Tier A visual slot bindings
+        run: npm run check:season2-tier-a-slots
+
+      - name: Validate Story 2 runtime inventory
+        run: npm run check:story2-runtime
+
+      - name: Validate Seven Roads product shell
+        run: npm run check:seven-roads-shell
+
+      - name: Typecheck app
+        run: npm run typecheck
+
+      - name: Build app
+        env:
+          VITE_QISSA_STORY2_PREVIEW: false
+          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
+        run: npm run build
