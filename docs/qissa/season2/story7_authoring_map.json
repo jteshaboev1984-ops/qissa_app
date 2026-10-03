@@ -1,0 +1,108 @@
+{
+  "version": "story7-authoring-map-1",
+  "status": "staging-source-locked",
+  "created_at": "2026-10-03",
+  "story_number": 7,
+  "title_ru": "Обратно в Ордан",
+  "canonical_source": {
+    "filename": "seven_roads_s2_story7_back_to_ordan_literary_v17_visible_inherited_defect.md",
+    "library_path": "/QISSA/production/seven_roads/season2_text/approved/seven_roads_s2_story7_back_to_ordan_literary_v17_visible_inherited_defect.md",
+    "sha256": "17b0b526f2deda78cb0bcfba85a97100be5dceaaf2fdf92d6105e5f476094725",
+    "lines": 535,
+    "header_version": "v13",
+    "version_note": "Canonical filename records the v17 visible-inherited-defect revision while the document header says v13; source text is preserved unchanged.",
+    "declared_interactivity": "1 choice × 2 variants"
+  },
+  "package_plan": {
+    "target_schema": "authored-multi-choice-v2-deferred-branches",
+    "language": "ru",
+    "app_age_group": "8-9",
+    "story_mode": "series",
+    "story_mood": "kind_adventure",
+    "publication_state": "staging-only",
+    "localization_status": "Uzbek overlay not yet authored",
+    "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges, with Markdown presentation markers normalized only at package-build time.",
+    "part_count": 1,
+    "cover_status": "approved cover not yet assigned"
+  },
+  "parts": [
+    {
+      "part_id": "story7_part_1_back_to_ordan",
+      "order": 1,
+      "title": "Часть 1",
+      "story_text": {
+        "source_lines": [
+          7,
+          281
+        ],
+        "sha256": "cd057ec155dd6c11693e247669a3fd96bac6d7f3736c68862de01d39190d69f1"
+      },
+      "image_slots": [
+        {
+          "slot_id": "S2-ST7-TIERA-SEAL-COMPARISON",
+          "asset_id": "seven_roads_s2_story7_aras_seal_comparison_01_APPROVED",
+          "phase": "story_text",
+          "after_text": "— Вот. На свежем оттиске кончик округлый. На старом — маленькая ровная грань, будто самый край срезан.",
+          "runtime_state": "prepared-not-hosted"
+        },
+        {
+          "slot_id": "S2-ST7-TIERA-ENDING-HOOK",
+          "asset_id": "seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED",
+          "phase": "post_choice_text",
+          "after_text": "— Этой дорогой — больше нет.",
+          "runtime_state": "prepared-not-hosted"
+        }
+      ],
+      "decision": {
+        "decision_id": "story7_choice_1_aras_reconstruction_help",
+        "prompt": "Какую старую запись Темур и Самира помогут проверить первой?",
+        "source_prompt_line": 285,
+        "memory_key": "aras_reconstruction_help",
+        "choices": [
+          {
+            "choice_id": "story7_choice_1a_nadir_statement",
+            "text": "Показания Надира — что он слышал от Рашида и Барласа после тревоги.",
+            "source_choice_line": 287,
+            "resolution": {
+              "source_lines": [
+                295,
+                307
+              ],
+              "sha256": "05fac20e1b2cadbad7840ef5b09281bf9e579066065f408228c9de27251ebd19"
+            },
+            "memory_value": "nadir_statement"
+          },
+          {
+            "choice_id": "story7_choice_1b_theft_inventory",
+            "text": "Первую опись кражи — что именно пропало из сокровищницы.",
+            "source_choice_line": 289,
+            "resolution": {
+              "source_lines": [
+                313,
+                325
+              ],
+              "sha256": "e1b1dcce641a5717ffaf25e136993a57afff8dd9c5fc3d74fdedcfd9868d44c1"
+            },
+            "memory_value": "theft_inventory"
+          }
+        ],
+        "convergence_contract": "Дети передают факты; реконструкцию механизма подделки делают взрослые."
+      },
+      "post_choice_text": {
+        "source_lines": [
+          331,
+          521
+        ],
+        "sha256": "983a91e5f87a35e8810121b76273944d4891173c419ac137504c5630a8f1efdd"
+      },
+      "is_final": true
+    }
+  ],
+  "blockers_before_runtime_package": [
+    "Resolve the v17 filename / v13 header version label explicitly without rewriting literary content silently.",
+    "Assign an approved Story 7 cover asset.",
+    "Create/approve Uzbek localization overlay.",
+    "Host and byte/hash-verify both Tier A runtime WebPs before registering them.",
+    "Generate the runtime AuthoredStoryPackage by verbatim extraction and validate it."
+  ]
+}
