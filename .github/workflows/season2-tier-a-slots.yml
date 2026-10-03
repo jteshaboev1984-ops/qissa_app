@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate canonical Season 2 literary source index
+        run: npm run check:season2-literary-sources
+
       - name: Validate Tier A visual slot bindings
         run: npm run check:season2-tier-a-slots
 
