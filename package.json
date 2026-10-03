@@ -52,6 +52,7 @@
     "check:story2-runtime": "node scripts/check-story2-runtime-assets.mjs",
     "check:season2-tier-a-slots": "node scripts/check-season2-tier-a-visual-slots.mjs",
     "check:season2-tier-a-runtime": "node scripts/check-season2-tier-a-runtime-assets.mjs",
+    "check:season2-literary-sources": "node scripts/check-season2-literary-sources.mjs",
     "ops:upload-season2-tier-a-assets": "node scripts/upload-season2-tier-a-runtime-assets.mjs",
     "smoke:story2-assets-live": "node scripts/smoke-story2-assets-live.mjs",
     "check:story2-bundle-closed": "node scripts/check-story2-production-bundle-closed.mjs",
