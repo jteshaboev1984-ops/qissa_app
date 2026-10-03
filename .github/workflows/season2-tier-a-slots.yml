@@ -38,6 +38,9 @@ jobs:
       - name: Validate Story 1 authored-package extraction map
         run: npm run check:story1-authoring-map
 
+      - name: Validate Season 2 authored-package extraction maps
+        run: npm run check:season2-authoring-maps
+
       - name: Validate Tier A visual slot bindings
         run: npm run check:season2-tier-a-slots
 
