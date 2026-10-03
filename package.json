@@ -50,6 +50,7 @@
     "check:seven-roads-shell": "node scripts/check-seven-roads-product-shell.mjs",
     "check:authored-story2": "node scripts/check-authored-story2-v4.mjs",
     "check:story2-runtime": "node scripts/check-story2-runtime-assets.mjs",
+    "check:season2-tier-a-slots": "node scripts/check-season2-tier-a-visual-slots.mjs",
     "smoke:story2-assets-live": "node scripts/smoke-story2-assets-live.mjs",
     "check:story2-bundle-closed": "node scripts/check-story2-production-bundle-closed.mjs",
     "ops:upload-story2-assets": "node scripts/upload-story2-runtime-assets.mjs",
