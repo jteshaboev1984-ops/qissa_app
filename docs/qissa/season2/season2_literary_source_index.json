@@ -1,0 +1,88 @@
+{
+  "version": "season2-literary-source-index-1",
+  "updated_at": "2026-10-03",
+  "canonical_library_root": "/QISSA/production/seven_roads/season2_text/approved/",
+  "policy": "Canonical literary snapshots are immutable inputs for authored-package staging. Header/version mismatches are recorded, not silently corrected.",
+  "stories": [
+    {
+      "story_number": 1,
+      "title_ru": "Королевское серебро",
+      "canonical_filename": "seven_roads_s2_story1_royal_silver_literary_v5.md",
+      "sha256": "ac2d3c1bbcd90b37df1e01edd6b78a217e6c96c91b5b72ee545f8fa455805ff0",
+      "bytes": 41007,
+      "lines": 1059,
+      "header_version": "v5",
+      "choice_count": 3,
+      "publication_state": "not_published"
+    },
+    {
+      "story_number": 2,
+      "title_ru": "Тайна восточного каравана",
+      "canonical_filename": "seven_roads_s2_story2_eastern_caravan_literary_v4_continuity_sync.md",
+      "sha256": "a9132018781e43d17ae0b224cfed8452a33a64752c4bbd830b0d2d517bd83626",
+      "bytes": 101850,
+      "lines": 2794,
+      "header_version": "V2",
+      "choice_count": 4,
+      "publication_state": "published_as_authored_v4",
+      "version_note": "Canonical filename and published authored package identify the continuity-synced V4 line; the literary snapshot header still says V2. Preserved as source metadata rather than rewritten."
+    },
+    {
+      "story_number": 3,
+      "title_ru": "Две башни",
+      "canonical_filename": "seven_roads_s2_story3_two_towers_literary_v6.md",
+      "sha256": "df509cbbb333f8f6b218207adc1575539b78193fa15b05d82168a97e5a5d9f76",
+      "bytes": 38179,
+      "lines": 976,
+      "header_version": "v6",
+      "choice_count": 3,
+      "publication_state": "not_published"
+    },
+    {
+      "story_number": 4,
+      "title_ru": "Человек, которого ждут",
+      "canonical_filename": "seven_roads_s2_story4_waited_man_literary_v4.md",
+      "sha256": "b603334c0f620434419a4ca94743ce0142403ba85dc1d884a2d0d794c64252e9",
+      "bytes": 31966,
+      "lines": 787,
+      "header_version": "v3",
+      "choice_count": 2,
+      "publication_state": "not_published",
+      "version_note": "Canonical filename is v4 while the document header says v3. Preserved; resolve only through an explicit literary-version decision."
+    },
+    {
+      "story_number": 5,
+      "title_ru": "Ложная дорога",
+      "canonical_filename": "seven_roads_s2_story5_false_road_literary_v4.md",
+      "sha256": "6a39683c5a470cd8221f731b1db950f6454242c07ebae0405ae9ff72af448551",
+      "bytes": 22004,
+      "lines": 638,
+      "header_version": "v4",
+      "choice_count": 1,
+      "publication_state": "not_published"
+    },
+    {
+      "story_number": 6,
+      "title_ru": "Две подмоги",
+      "canonical_filename": "seven_roads_s2_story6_two_reinforcements_literary_v3.md",
+      "sha256": "6b13e767b66ba7ebb0f8a78af511cf19c9bb880414d750d1e770f263eceedf60",
+      "bytes": 23685,
+      "lines": 645,
+      "header_version": "v3",
+      "choice_count": 2,
+      "publication_state": "not_published"
+    },
+    {
+      "story_number": 7,
+      "title_ru": "Обратно в Ордан",
+      "canonical_filename": "seven_roads_s2_story7_back_to_ordan_literary_v17_visible_inherited_defect.md",
+      "sha256": "17b0b526f2deda78cb0bcfba85a97100be5dceaaf2fdf92d6105e5f476094725",
+      "bytes": 23476,
+      "lines": 535,
+      "header_version": "v13",
+      "choice_count": 1,
+      "publication_state": "not_published",
+      "version_note": "Canonical filename records the v17 visible-inherited-defect revision while the document header still says v13. Preserved; do not rewrite source text silently."
+    }
+  ]
+}
