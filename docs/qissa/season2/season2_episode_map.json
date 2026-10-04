@@ -1,0 +1,80 @@
+{
+  "version": "season2-episode-map-1",
+  "updated_at": "2026-10-04",
+  "world_id": "seven_roads",
+  "season_number": 2,
+  "model": "one-season-story-seven-episodes",
+  "authored_story_id": "seven_roads_season_2",
+  "authored_story_version": "season2-arc-v1-staging",
+  "total_parts": 22,
+  "total_decisions": 16,
+  "total_choices": 32,
+  "cover_policy": "one-season-cover",
+  "cover_asset_id": "PENDING_seven_roads_season2_cover_v1",
+  "episodes": [
+    {
+      "episode_number": 1,
+      "title_ru": "Королевское серебро",
+      "source_story_id": "seven_roads_korolevskoe_serebro",
+      "source_story_version": "interactive-v5",
+      "start_part_index": 0,
+      "end_part_index": 2,
+      "part_count": 3
+    },
+    {
+      "episode_number": 2,
+      "title_ru": "Тайна восточного каравана",
+      "source_story_id": "seven_roads_tayna_vostochnogo_karavana",
+      "source_story_version": "interactive-v4-continuity-sync",
+      "start_part_index": 3,
+      "end_part_index": 12,
+      "part_count": 10
+    },
+    {
+      "episode_number": 3,
+      "title_ru": "Две башни",
+      "source_story_id": "seven_roads_dve_bashni",
+      "source_story_version": "interactive-v6",
+      "start_part_index": 13,
+      "end_part_index": 15,
+      "part_count": 3
+    },
+    {
+      "episode_number": 4,
+      "title_ru": "Человек, которого ждут",
+      "source_story_id": "seven_roads_chelovek_kotorogo_zhdut",
+      "source_story_version": "interactive-v4",
+      "start_part_index": 16,
+      "end_part_index": 17,
+      "part_count": 2
+    },
+    {
+      "episode_number": 5,
+      "title_ru": "Ложная дорога",
+      "source_story_id": "seven_roads_lozhnaya_doroga",
+      "source_story_version": "interactive-v4",
+      "start_part_index": 18,
+      "end_part_index": 18,
+      "part_count": 1
+    },
+    {
+      "episode_number": 6,
+      "title_ru": "Две подмоги",
+      "source_story_id": "seven_roads_dve_podmogi",
+      "source_story_version": "interactive-v3",
+      "start_part_index": 19,
+      "end_part_index": 20,
+      "part_count": 2
+    },
+    {
+      "episode_number": 7,
+      "title_ru": "Обратно в Ордан",
+      "source_story_id": "seven_roads_obratno_v_ordan",
+      "source_story_version": "interactive-v17-visible-inherited-defect",
+      "start_part_index": 21,
+      "end_part_index": 21,
+      "part_count": 1
+    }
+  ],
+  "migration_note": "The currently published standalone Season 2 Story 2 remains untouched until the combined RU+UZ season package and explicit progress migration are release-ready."
+}
