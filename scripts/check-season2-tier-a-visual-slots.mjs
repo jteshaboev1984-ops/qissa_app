@@ -33,7 +33,7 @@ const fail = (message) => errors.push(message)
 if (manifest.version !== 'season2-tier-a-visual-slots-1') {
   fail(`unexpected manifest version: ${manifest.version}`)
 }
-if (manifest.status !== 'implementation-staging') {
+if (manifest.status !== 'runtime-assets-hosted') {
   fail(`unexpected manifest status: ${manifest.status}`)
 }
 if (manifest.world_id !== 'seven_roads') {
@@ -145,15 +145,15 @@ for (const slot of manifest.slots ?? []) {
       fail(`${slot.slot_id}: published Story 2 asset is missing from authoredStoryAssets.ts`)
     }
   } else {
-    if (slot.runtime_state !== 'staged-master-only') {
-      fail(`${slot.slot_id}: unpublished Story ${slot.story_number} must remain staged-master-only`)
+    if (slot.runtime_state !== 'hosted-runtime-ready') {
+      fail(`${slot.slot_id}: unpublished Story ${slot.story_number} must be hosted-runtime-ready`)
     }
     if (
-      authoredAssetsSource.includes(`'${slot.asset_id}'`) ||
-      authoredAssetsSource.includes(`"${slot.asset_id}"`)
+      !authoredAssetsSource.includes(`'${slot.asset_id}'`) &&
+      !authoredAssetsSource.includes(`"${slot.asset_id}"`)
     ) {
       fail(
-        `${slot.slot_id}: staged asset must not enter authoredStoryAssets.ts before hosting/publication`,
+        `${slot.slot_id}: hosted Tier A asset is missing from authoredStoryAssets.ts`,
       )
     }
   }
@@ -192,4 +192,4 @@ if (errors.length > 0) {
 console.log('[season2-tier-a-slots] PASS')
 console.log('[season2-tier-a-slots] 12/12 approved Tier A frames bound to exact story anchors')
 console.log('[season2-tier-a-slots] Story 2 cross-links match the published V4 layout')
-console.log('[season2-tier-a-slots] Stories 1 and 3-7 remain staged and cannot leak into runtime assets early')
+console.log('[season2-tier-a-slots] Stories 1 and 3-7 have verified runtime assets but remain unpublished')
