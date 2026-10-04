@@ -19,6 +19,10 @@ export interface PublishedSeasonStory {
   readerUnit: 'episode' | 'part'
 }
 
+export type PublishedSeasonPresentation =
+  | 'default'
+  | 'single-cover-episode-list'
+
 export interface PublishedSeason {
   id: string
   worldId: string
@@ -27,4 +31,6 @@ export interface PublishedSeason {
   title: string | null
   status: PublishedSeasonStatus
   stories: PublishedSeasonStory[]
+  presentation?: PublishedSeasonPresentation
+  coverAssetId?: string | null
 }
