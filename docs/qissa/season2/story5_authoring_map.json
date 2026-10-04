@@ -42,14 +42,14 @@
           "asset_id": "seven_roads_s2_story5_red_hill_recon_01_APPROVED",
           "phase": "story_text",
           "after_text": "— Разведка их нашла.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         },
         {
           "slot_id": "S2-ST5-TIERA-REAL-REINFORCEMENT",
           "asset_id": "seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED",
           "phase": "post_choice_text",
           "after_text": "Они выехали из поста.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         }
       ],
       "decision": {
@@ -100,7 +100,6 @@
   "blockers_before_runtime_package": [
     "Assign an approved Story 5 cover asset.",
     "Create/approve Uzbek localization overlay.",
-    "Host and byte/hash-verify both Tier A runtime WebPs before registering them.",
     "Generate the runtime AuthoredStoryPackage by verbatim extraction and validate it."
   ]
 }
