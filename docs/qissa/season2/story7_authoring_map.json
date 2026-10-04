@@ -43,14 +43,14 @@
           "asset_id": "seven_roads_s2_story7_aras_seal_comparison_01_APPROVED",
           "phase": "story_text",
           "after_text": "— Вот. На свежем оттиске кончик округлый. На старом — маленькая ровная грань, будто самый край срезан.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         },
         {
           "slot_id": "S2-ST7-TIERA-ENDING-HOOK",
           "asset_id": "seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED",
           "phase": "post_choice_text",
           "after_text": "— Этой дорогой — больше нет.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         }
       ],
       "decision": {
@@ -102,7 +102,6 @@
     "Resolve the v17 filename / v13 header version label explicitly without rewriting literary content silently.",
     "Assign an approved Story 7 cover asset.",
     "Create/approve Uzbek localization overlay.",
-    "Host and byte/hash-verify both Tier A runtime WebPs before registering them.",
     "Generate the runtime AuthoredStoryPackage by verbatim extraction and validate it."
   ]
 }
