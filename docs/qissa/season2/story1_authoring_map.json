@@ -43,7 +43,7 @@
           "asset_id": "seven_roads_s2_story1_royal_silver_attack_01_APPROVED",
           "phase": "story_text",
           "after_text": "И понял, что его заметили.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         }
       ],
       "decision": {
@@ -101,7 +101,7 @@
           "asset_id": "seven_roads_s2_story1_danyar_pursuit_01_APPROVED",
           "phase": "story_text",
           "after_text": "Данияр с оставшимся стражником продолжил погоню по основной дороге.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         }
       ],
       "decision": {
@@ -214,7 +214,6 @@
   "blockers_before_runtime_package": [
     "Assign an approved Story 1 cover asset.",
     "Create/approve Uzbek localization overlay.",
-    "Host and byte/hash-verify the two Tier A runtime WebPs before adding them to authoredStoryAssets.ts.",
     "Generate the runtime AuthoredStoryPackage by verbatim extraction from these locked ranges and validate it."
   ]
 }
