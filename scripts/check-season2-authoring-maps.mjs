@@ -171,6 +171,12 @@ for (const storyNumber of expectedStoryNumbers) {
     if (mapped.after_text !== locked.after_text) {
       fail(`Story ${storyNumber} ${locked.slot_id}: anchor text drifted`)
     }
+    if (mapped.runtime_state !== 'hosted-verified') {
+      fail(`Story ${storyNumber} ${locked.slot_id}: authoring map must mark hosted-verified`)
+    }
+    if (locked.runtime_state !== 'hosted-runtime-ready') {
+      fail(`Story ${storyNumber} ${locked.slot_id}: Tier A manifest must mark hosted-runtime-ready`)
+    }
   }
   if (mappedSlots.size !== expectedSlots.length) {
     fail(
@@ -200,5 +206,5 @@ if (errors.length > 0) {
 console.log('[season2-authoring-maps] PASS')
 console.log('[season2-authoring-maps] Stories 1 and 3-7 source maps are locked')
 console.log('[season2-authoring-maps] 12 decisions / 24 branch resolutions mapped without prose rewriting')
-console.log('[season2-authoring-maps] 10/10 staged Tier A image anchors aligned to their authoring parts')
-console.log('[season2-authoring-maps] cover, localization, hosting and publication blockers remain explicit')
+console.log('[season2-authoring-maps] 10/10 hosted Tier A image anchors aligned to their authoring parts')
+console.log('[season2-authoring-maps] cover, localization and publication blockers remain explicit')
