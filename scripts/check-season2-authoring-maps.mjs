@@ -187,18 +187,24 @@ for (const storyNumber of expectedStoryNumbers) {
   if (map.package_plan?.publication_state !== 'staging-only') {
     fail(`Story ${storyNumber}: authoring map must remain staging-only`)
   }
-  if (!String(map.package_plan?.cover_status ?? '').includes('not yet assigned')) {
-    fail(`Story ${storyNumber}: cover blocker must remain explicit`)
+  if (map.package_plan?.cover_policy !== 'shared-season-cover') {
+    fail(`Story ${storyNumber}: must use the shared Season 2 cover policy`)
+  }
+  if (map.package_plan?.shared_season_cover_asset_id !== 'PENDING_seven_roads_season2_cover_v1') {
+    fail(`Story ${storyNumber}: shared Season 2 cover asset gate drifted`)
+  }
+  if (!String(map.package_plan?.cover_status ?? '').includes('no episode-specific cover')) {
+    fail(`Story ${storyNumber}: per-episode cover must remain disabled`)
   }
   if (!String(map.package_plan?.localization_status ?? '').includes('not yet authored')) {
     fail(`Story ${storyNumber}: Uzbek localization blocker must remain explicit`)
   }
-  if (!Array.isArray(map.blockers_before_runtime_package) || map.blockers_before_runtime_package.length < 2) {
-    fail(`Story ${storyNumber}: cover and localization blockers must remain explicit`)
+  if (!Array.isArray(map.blockers_before_runtime_package) || map.blockers_before_runtime_package.length < 1) {
+    fail(`Story ${storyNumber}: localization blocker must remain explicit`)
   }
   const blockerText = (map.blockers_before_runtime_package ?? []).join(' ')
-  if (!/cover/i.test(blockerText)) {
-    fail(`Story ${storyNumber}: cover blocker must remain explicit`)
+  if (/cover/i.test(blockerText)) {
+    fail(`Story ${storyNumber}: episode-specific cover blocker must not return`)
   }
   if (!/Uzbek/i.test(blockerText)) {
     fail(`Story ${storyNumber}: Uzbek localization blocker must remain explicit`)
@@ -220,4 +226,4 @@ console.log('[season2-authoring-maps] PASS')
 console.log('[season2-authoring-maps] Stories 1 and 3-7 source maps are locked')
 console.log('[season2-authoring-maps] 12 decisions / 24 branch resolutions mapped without prose rewriting')
 console.log('[season2-authoring-maps] 10/10 hosted Tier A image anchors aligned to their authoring parts')
-console.log('[season2-authoring-maps] Russian staging packages are recorded; cover + localization release blockers remain explicit')
+console.log('[season2-authoring-maps] Russian episode packages are recorded; no per-episode covers; Uzbek localization remains explicit')
