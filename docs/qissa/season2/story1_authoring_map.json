@@ -23,7 +23,9 @@
     "publication_state": "staging-only",
     "cover_status": "approved cover not yet assigned",
     "localization_status": "Uzbek overlay not yet authored",
-    "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges."
+    "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges.",
+    "staging_ru_package": "src/data/authored/staging/season2Story1RoyalSilver.ru.json",
+    "staging_ru_package_status": "built-and-validated-pending-release-gates"
   },
   "parts": [
     {
@@ -213,7 +215,6 @@
   ],
   "blockers_before_runtime_package": [
     "Assign an approved Story 1 cover asset.",
-    "Create/approve Uzbek localization overlay.",
-    "Generate the runtime AuthoredStoryPackage by verbatim extraction from these locked ranges and validate it."
+    "Create/approve Uzbek localization overlay."
   ]
 }
