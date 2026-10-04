@@ -8,8 +8,10 @@ on:
       - 'src/data/authored/season2TierAVisualSlots.json'
       - 'src/data/season2TierAVisualSlots.ts'
       - 'src/data/authoredStoryAssets.ts'
+      - 'src/data/authored/staging/**'
       - 'scripts/check-season2-tier-a-visual-slots.mjs'
       - 'scripts/check-season2-tier-a-runtime-assets.mjs'
+      - 'scripts/check-season2-staging-authored-packages.mjs'
       - 'docs/qissa/season2/**'
       - 'package.json'
       - '.github/workflows/season2-tier-a-slots.yml'
@@ -48,6 +50,9 @@ jobs:
 
       - name: Validate Tier A runtime asset inventory
         run: npm run check:season2-tier-a-runtime
+
+      - name: Validate Russian staging authored packages
+        run: npm run check:season2-staging-packages
 
       - name: Validate Story 2 runtime inventory
         run: npm run check:story2-runtime
