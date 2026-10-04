@@ -2,7 +2,7 @@ import rawManifest from './authored/season2TierAVisualSlots.json'
 
 export type Season2TierAVisualRuntimeState =
   | 'published-existing-runtime'
-  | 'staged-master-only'
+  | 'hosted-runtime-ready'
 
 export type Season2TierAVisualSlot = {
   story_number: number
@@ -20,7 +20,7 @@ export type Season2TierAVisualSlot = {
 
 export type Season2TierAVisualSlotManifest = {
   version: string
-  status: 'implementation-staging'
+  status: 'runtime-assets-hosted'
   updated_at: string
   world_id: 'seven_roads'
   season_number: 2
