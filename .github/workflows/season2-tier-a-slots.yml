@@ -9,6 +9,7 @@ on:
       - 'src/data/season2TierAVisualSlots.ts'
       - 'src/data/authoredStoryAssets.ts'
       - 'src/data/authored/staging/**'
+      - 'src/data/season2StagingAuthoredStories.ts'
       - 'scripts/check-season2-tier-a-visual-slots.mjs'
       - 'scripts/check-season2-tier-a-runtime-assets.mjs'
       - 'scripts/check-season2-staging-authored-packages.mjs'
