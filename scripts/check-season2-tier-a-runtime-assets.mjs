@@ -25,7 +25,7 @@ const fail = (message) => errors.push(message)
 if (inventory.version !== 'season2-tier-a-runtime-webp-1') {
   fail(`unexpected inventory version: ${inventory.version}`)
 }
-if (inventory.status !== 'prepared_library_only') {
+if (inventory.status !== 'hosted_verified') {
   fail(`unexpected inventory status: ${inventory.status}`)
 }
 if (inventory.count !== 10) {
@@ -103,8 +103,13 @@ for (const item of inventory.items ?? []) {
   ) {
     fail(`${assetId}: unexpected object path ${objectPath}`)
   }
-  if (status !== 'prepared_not_hosted') {
-    fail(`${assetId}: expected prepared_not_hosted, got ${status}`)
+  if (status !== 'hosted_verified') {
+    fail(`${assetId}: expected hosted_verified, got ${status}`)
+  }
+  const expectedPublicUrl =
+    `https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/${objectPath}`
+  if (item.public_url !== expectedPublicUrl) {
+    fail(`${assetId}: unexpected public_url ${item.public_url}`)
   }
 
   for (const [label, value] of [
@@ -134,12 +139,10 @@ for (const item of inventory.items ?? []) {
   }
 
   if (
-    assetsSource.includes(`'${assetId}'`) ||
-    assetsSource.includes(`"${assetId}"`)
+    !assetsSource.includes(`'${assetId}'`) &&
+    !assetsSource.includes(`"${assetId}"`)
   ) {
-    fail(
-      `${assetId}: staged runtime asset must not be registered publicly before hosting verification`,
-    )
+    fail(`${assetId}: hosted runtime asset is missing from authoredStoryAssets.ts`)
   }
 }
 
@@ -166,5 +169,5 @@ if (errors.length > 0) {
 console.log('[season2-tier-a-runtime] PASS')
 console.log('[season2-tier-a-runtime] 10/10 staged approved masters have locked WebP derivatives')
 console.log('[season2-tier-a-runtime] all objects target story-images/seven-roads/season2_tier_a_v1/')
-console.log('[season2-tier-a-runtime] staged assets remain absent from public authoredStoryAssets registry')
+console.log('[season2-tier-a-runtime] hosted assets are registered through the verified Season 2 Tier A public prefix')
 console.log(`[season2-tier-a-runtime] locked total: ${inventory.total_bytes} bytes`)
