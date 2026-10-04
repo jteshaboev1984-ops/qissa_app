@@ -31,14 +31,17 @@
     "choice_asset_count": 0,
     "cover_asset_count": 1,
     "visible_assets_per_playthrough": 2,
-    "rule": "Render each approved Tier A shared image immediately after its locked exact anchor. Cover remains pending and blocks publication.",
+    "rule": "Episode package inside Season 2. Do not create an episode-specific cover. The product uses one shared Season 2 cover; scene illustrations render only at their locked exact anchors.",
     "production_prompt_pack_ref": "/QISSA/production/seven_roads/season2_visual_final/"
   },
   "cover_illustration": {
-    "asset_id": "PENDING_seven_roads_s2_story3_cover",
+    "asset_id": "PENDING_seven_roads_season2_cover_v1",
     "runtime_url": null,
-    "status": "pending-approval",
-    "editorial_reference_ids": []
+    "status": "pending-shared-season-cover",
+    "editorial_reference_ids": [
+      "seven_roads_story1_cover_v1",
+      "seven_roads_story2_cover_v1"
+    ]
   },
   "parts": [
     {
