@@ -122,6 +122,24 @@ for (const storyNumber of expectedStories) {
     fail(`Story ${storyNumber}: pending cover sentinel must remain explicit`)
   }
 
+  const normalizedNarrativeText = [
+    ...(packageJson.parts ?? []).map((part) => part.story_text ?? ''),
+    ...(packageJson.parts ?? []).map((part) => part.post_choice_text ?? ''),
+    ...(packageJson.parts ?? []).flatMap((part) =>
+      (part.decision?.choices ?? []).map((choice) => choice.resolution_text ?? ''),
+    ),
+  ].join('\n')
+
+  if (/^#{1,6}\s/m.test(normalizedNarrativeText)) {
+    fail(`Story ${storyNumber}: Markdown heading markers leaked into runtime prose`)
+  }
+  if (normalizedNarrativeText.includes('**')) {
+    fail(`Story ${storyNumber}: Markdown bold markers leaked into runtime prose`)
+  }
+  if (/^---+$/m.test(normalizedNarrativeText)) {
+    fail(`Story ${storyNumber}: Markdown horizontal rules leaked into runtime prose`)
+  }
+
   const parts = packageJson.parts ?? []
   if (parts.length !== (map.parts ?? []).length) {
     fail(
