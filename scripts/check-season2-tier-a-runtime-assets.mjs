@@ -47,15 +47,15 @@ if (
   fail(`unexpected runtime Library root: ${inventory.runtime_library_root}`)
 }
 
-const stagedSlots = (slots.slots ?? []).filter(
-  (slot) => slot.runtime_state === 'staged-master-only',
+const hostedSlots = (slots.slots ?? []).filter(
+  (slot) => slot.runtime_state === 'hosted-runtime-ready',
 )
-if (stagedSlots.length !== 10) {
-  fail(`expected 10 staged Tier A slots outside Story 2, got ${stagedSlots.length}`)
+if (hostedSlots.length !== 10) {
+  fail(`expected 10 hosted Tier A slots outside Story 2, got ${hostedSlots.length}`)
 }
 
 const expectedByAssetId = new Map(
-  stagedSlots.map((slot) => [slot.asset_id, slot]),
+  hostedSlots.map((slot) => [slot.asset_id, slot]),
 )
 const seenAssetIds = new Set()
 const seenSlotIds = new Set()
@@ -79,7 +79,7 @@ for (const item of inventory.items ?? []) {
 
   const slot = expectedByAssetId.get(assetId)
   if (!slot) {
-    fail(`${assetId}: inventory asset is not a staged Tier A slot`)
+    fail(`${assetId}: inventory asset is not a hosted Tier A slot`)
   } else {
     if (slot.slot_id !== slotId) {
       fail(`${assetId}: slot mismatch, expected ${slot.slot_id}, got ${slotId}`)
@@ -146,9 +146,9 @@ for (const item of inventory.items ?? []) {
   }
 }
 
-for (const slot of stagedSlots) {
+for (const slot of hostedSlots) {
   if (!seenAssetIds.has(slot.asset_id)) {
-    fail(`missing runtime derivative for staged slot ${slot.slot_id}: ${slot.asset_id}`)
+    fail(`missing runtime derivative for hosted slot ${slot.slot_id}: ${slot.asset_id}`)
   }
 }
 
