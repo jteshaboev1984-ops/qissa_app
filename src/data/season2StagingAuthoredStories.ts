@@ -34,11 +34,11 @@ for (const story of season2StagingRussianStories) {
   }
 
   if (
-    story.cover_illustration.status !== 'pending-approval' ||
-    !story.cover_illustration.asset_id.startsWith('PENDING_')
+    story.cover_illustration.status !== 'pending-shared-season-cover' ||
+    story.cover_illustration.asset_id !== 'PENDING_seven_roads_season2_cover_v1'
   ) {
     throw new Error(
-      `Season 2 staging package unexpectedly lost its cover release gate: ${story.story_id}`,
+      `Season 2 episode package must use the single shared season-cover gate: ${story.story_id}`,
     )
   }
 }
@@ -47,8 +47,9 @@ for (const story of season2StagingRussianStories) {
  * Internal pre-release registry only.
  *
  * Do not import this collection into authoredStories.ts or any published shell.
- * The stories become eligible for publication only after approved covers and
- * Uzbek localization overlays have replaced the current release gates.
+ * Product model: one Season 2 cover + seven episode rows. These episode
+ * packages do not get separate cover cards. Publication still waits for the
+ * shared Season 2 cover and Uzbek localization overlays.
  */
 export const season2StagingAuthoredStoriesRu =
   season2StagingRussianStories
