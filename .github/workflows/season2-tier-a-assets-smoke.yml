@@ -1,0 +1,46 @@
+name: Season 2 Tier A Asset Smoke
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'docs/qissa/season2/season2_tier_a_runtime_asset_inventory.json'
+      - 'scripts/upload-season2-tier-a-runtime-assets.mjs'
+      - '.github/workflows/season2-tier-a-assets-smoke.yml'
+  workflow_dispatch:
+    inputs:
+      expected_state:
+        description: Expected public Storage state
+        required: true
+        default: present
+        type: choice
+        options:
+          - absent
+          - present
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Verify expected public asset state
+        env:
+          QISSA_SUPABASE_URL: https://phwakdpxxyncyslvnqht.supabase.co
+          EXPECTED_STATE: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_state || 'present' }}
+        run: |
+          if [ "$EXPECTED_STATE" = "present" ]; then
+            node scripts/upload-season2-tier-a-runtime-assets.mjs --verify-only
+          else
+            node scripts/upload-season2-tier-a-runtime-assets.mjs --expect-absent
+          fi
