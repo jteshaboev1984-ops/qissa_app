@@ -1,0 +1,74 @@
+{
+  "version": "season2-product-model-1",
+  "updated_at": "2026-10-04",
+  "world_id": "seven_roads",
+  "season_number": 2,
+  "owner_decision": "option-2",
+  "presentation_mode": "one-season-cover-seven-episode-list",
+  "product_rules": {
+    "season_cover_count": 1,
+    "episode_cover_count": 0,
+    "season_cover_asset_id": "PENDING_seven_roads_season2_cover_v1",
+    "episode_cards_use_images": false,
+    "episode_rows_show_number_title_progress": true,
+    "episode_packages_keep_independent_progress": true,
+    "reader_shows_episode_specific_cover": false,
+    "scene_illustrations_remain_inside_reader_and_gallery": true,
+    "public_switch_only_after_full_release_gate": true
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "title_ru": "Королевское серебро",
+      "package_path": "src/data/authored/staging/season2Story1RoyalSilver.ru.json",
+      "status": "staging"
+    },
+    {
+      "number": 2,
+      "title_ru": "Тайна восточного каравана",
+      "package_path": "src/data/authored/taynaVostochnogoKaravanaV4.ru.json",
+      "status": "currently-published-standalone"
+    },
+    {
+      "number": 3,
+      "title_ru": "Две башни",
+      "package_path": "src/data/authored/staging/season2Story3TwoTowers.ru.json",
+      "status": "staging"
+    },
+    {
+      "number": 4,
+      "title_ru": "Человек, которого ждут",
+      "package_path": "src/data/authored/staging/season2Story4WaitedMan.ru.json",
+      "status": "staging"
+    },
+    {
+      "number": 5,
+      "title_ru": "Ложная дорога",
+      "package_path": "src/data/authored/staging/season2Story5FalseRoad.ru.json",
+      "status": "staging"
+    },
+    {
+      "number": 6,
+      "title_ru": "Две подмоги",
+      "package_path": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
+      "status": "staging"
+    },
+    {
+      "number": 7,
+      "title_ru": "Обратно в Ордан",
+      "package_path": "src/data/authored/staging/season2Story7BackToOrdan.ru.json",
+      "status": "staging"
+    }
+  ],
+  "compatibility": {
+    "current_live_season2_story2_must_not_be_removed_before_switch": true,
+    "current_story2_progress_must_be_preserved": true,
+    "implementation_strategy": "Keep seven authored packages behind the scenes. Present them as seven episodes under one Season 2 page. This avoids resetting the already-live Story 2 progress while matching the approved user-facing model.",
+    "legacy_story2_cover": "Retain in storage/package for backward compatibility; do not use it as an episode card once the one-cover Season 2 presentation is activated."
+  },
+  "release_blockers": [
+    "Approve and host one shared Season 2 cover.",
+    "Create and approve Uzbek localization for Episodes 1 and 3-7.",
+    "Wire the seven episode packages into the one-cover Season 2 presentation and run progress/resume/gallery regression smokes."
+  ]
+}
