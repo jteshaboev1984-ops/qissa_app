@@ -99,7 +99,6 @@
     }
   ],
   "blockers_before_runtime_package": [
-    "Resolve the v17 filename / v13 header version label explicitly without rewriting literary content silently.",
     "Assign an approved Story 7 cover asset.",
     "Create/approve Uzbek localization overlay.",
     "Generate the runtime AuthoredStoryPackage by verbatim extraction and validate it."
