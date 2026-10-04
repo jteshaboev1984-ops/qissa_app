@@ -193,8 +193,21 @@ for (const storyNumber of expectedStoryNumbers) {
   if (!String(map.package_plan?.localization_status ?? '').includes('not yet authored')) {
     fail(`Story ${storyNumber}: Uzbek localization blocker must remain explicit`)
   }
-  if (!Array.isArray(map.blockers_before_runtime_package) || map.blockers_before_runtime_package.length < 3) {
-    fail(`Story ${storyNumber}: runtime blockers must remain explicit`)
+  if (!Array.isArray(map.blockers_before_runtime_package) || map.blockers_before_runtime_package.length < 2) {
+    fail(`Story ${storyNumber}: cover and localization blockers must remain explicit`)
+  }
+  const blockerText = (map.blockers_before_runtime_package ?? []).join(' ')
+  if (!/cover/i.test(blockerText)) {
+    fail(`Story ${storyNumber}: cover blocker must remain explicit`)
+  }
+  if (!/Uzbek/i.test(blockerText)) {
+    fail(`Story ${storyNumber}: Uzbek localization blocker must remain explicit`)
+  }
+  if (!map.package_plan?.staging_ru_package?.trim()) {
+    fail(`Story ${storyNumber}: Russian staging package path is required`)
+  }
+  if (map.package_plan?.staging_ru_package_status !== 'built-and-validated-pending-release-gates') {
+    fail(`Story ${storyNumber}: unexpected Russian staging package status`)
   }
 }
 
@@ -207,4 +220,4 @@ console.log('[season2-authoring-maps] PASS')
 console.log('[season2-authoring-maps] Stories 1 and 3-7 source maps are locked')
 console.log('[season2-authoring-maps] 12 decisions / 24 branch resolutions mapped without prose rewriting')
 console.log('[season2-authoring-maps] 10/10 hosted Tier A image anchors aligned to their authoring parts')
-console.log('[season2-authoring-maps] cover, localization and publication blockers remain explicit')
+console.log('[season2-authoring-maps] Russian staging packages are recorded; cover + localization release blockers remain explicit')
