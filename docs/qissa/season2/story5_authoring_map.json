@@ -22,7 +22,9 @@
     "localization_status": "Uzbek overlay not yet authored",
     "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges, with Markdown presentation markers normalized only at package-build time.",
     "part_count": 1,
-    "cover_status": "approved cover not yet assigned"
+    "cover_status": "approved cover not yet assigned",
+    "staging_ru_package": "src/data/authored/staging/season2Story5FalseRoad.ru.json",
+    "staging_ru_package_status": "built-and-validated-pending-release-gates"
   },
   "parts": [
     {
@@ -99,7 +101,6 @@
   ],
   "blockers_before_runtime_package": [
     "Assign an approved Story 5 cover asset.",
-    "Create/approve Uzbek localization overlay.",
-    "Generate the runtime AuthoredStoryPackage by verbatim extraction and validate it."
+    "Create/approve Uzbek localization overlay."
   ]
 }
