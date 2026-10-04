@@ -78,6 +78,12 @@ for (const [index, part] of (map.parts ?? []).entries()) {
     if (locked.after_text !== slot.after_text) {
       fail(`${slot.slot_id}: anchor text drifted from Tier A manifest`)
     }
+    if (slot.runtime_state !== 'hosted-verified') {
+      fail(`${slot.slot_id}: Story 1 authoring map must mark hosted-verified`)
+    }
+    if (locked.runtime_state !== 'hosted-runtime-ready') {
+      fail(`${slot.slot_id}: Tier A manifest must mark hosted-runtime-ready`)
+    }
   }
 
   const decision = part.decision
