@@ -24,7 +24,9 @@
     "part_count": 2,
     "cover_status": "approved cover not yet assigned",
     "staging_ru_package": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
-    "staging_ru_package_status": "built-and-validated-pending-release-gates"
+    "staging_ru_package_status": "built-and-validated-pending-release-gates",
+    "cover_policy": "shared-season-cover",
+    "shared_season_cover_asset_id": "PENDING_seven_roads_season2_cover_v1"
   },
   "parts": [
     {
@@ -151,7 +153,6 @@
     }
   ],
   "blockers_before_runtime_package": [
-    "Assign an approved Story 6 cover asset.",
     "Create/approve Uzbek localization overlay."
   ]
 }
