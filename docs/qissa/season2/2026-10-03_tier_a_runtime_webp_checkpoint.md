@@ -49,9 +49,16 @@ Reserved prefix:
 
 Current state:
 
-**prepared, not hosted**
+**hosted and byte/hash verified**
 
-No public URL has been registered in `src/data/authoredStoryAssets.ts`.
+Public verification:
+
+- GitHub Actions workflow: `Season 2 Tier A Asset Smoke`
+- verification run: **#19**
+- result: **SUCCESS**
+- exact check: all 10 public WebPs matched locked byte sizes and SHA-256 values
+
+All ten verified asset ids are now registered in `src/data/authoredStoryAssets.ts` under the dedicated public prefix.
 
 ## Integrity
 
@@ -99,11 +106,11 @@ and
 
 ## Release rule
 
-Do not add these ten asset ids to `src/data/authoredStoryAssets.ts` until all ten Storage objects pass public byte/hash verification.
+The ten Tier A runtime assets have passed public byte/hash verification and may be resolved by the app asset registry.
 
-Do not publish Stories 1 or 3–7 merely because their Tier A images are ready.
+Do not publish Stories 1 or 3–7 merely because their Tier A images are hosted.
 
-After hosting verification, the next implementation phase is authored-package integration at the exact anchors locked in:
+The next implementation phase is authored-package integration at the exact anchors locked in:
 
 `src/data/authored/season2TierAVisualSlots.json`
 
