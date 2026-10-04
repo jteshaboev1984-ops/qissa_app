@@ -99,6 +99,12 @@ for (const storyNumber of [4, 7]) {
   if (!entry?.version_note?.trim()) {
     fail(`Story ${storyNumber}: filename/header version mismatch must stay documented`)
   }
+  if (entry?.version_resolution_status !== 'resolved') {
+    fail(`Story ${storyNumber}: filename/header version decision must be explicitly resolved`)
+  }
+  if (!entry?.runtime_version_decision?.trim()) {
+    fail(`Story ${storyNumber}: runtime version decision text is required`)
+  }
 }
 
 if (errors.length > 0) {
@@ -109,4 +115,4 @@ if (errors.length > 0) {
 console.log('[season2-literary-sources] PASS')
 console.log('[season2-literary-sources] 7/7 canonical literary snapshots indexed')
 console.log('[season2-literary-sources] Tier A slot source refs match canonical source filenames')
-console.log('[season2-literary-sources] known version-label discrepancies remain explicit')
+console.log('[season2-literary-sources] known version-label discrepancies are explicitly resolved without rewriting source prose')
