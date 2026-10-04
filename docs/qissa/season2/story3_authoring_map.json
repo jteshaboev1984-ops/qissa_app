@@ -42,7 +42,7 @@
           "asset_id": "seven_roads_s2_story3_two_towers_niche_discovery_01_APPROVED",
           "phase": "story_text",
           "after_text": "Под одной из них в стену была встроена деревянная дверца размером чуть больше ладони.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         }
       ],
       "decision": {
@@ -193,7 +193,6 @@
   "blockers_before_runtime_package": [
     "Assign an approved Story 3 cover asset.",
     "Create/approve Uzbek localization overlay.",
-    "Host and byte/hash-verify the Tier A runtime WebP before registering it.",
     "Generate the runtime AuthoredStoryPackage by verbatim extraction and validate it."
   ]
 }
