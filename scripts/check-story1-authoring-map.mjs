@@ -129,8 +129,14 @@ if (finalParts.length !== 1 || finalParts[0] !== map.parts.at(-1)) {
 if (map.package_plan?.publication_state !== 'staging-only') {
   fail('Story 1 authoring map must remain staging-only')
 }
-if (!String(map.package_plan?.cover_status ?? '').includes('not yet assigned')) {
-  fail('Story 1 cover blocker must remain explicit')
+if (map.package_plan?.cover_policy !== 'shared-season-cover') {
+  fail('Story 1 must use the shared Season 2 cover policy')
+}
+if (map.package_plan?.shared_season_cover_asset_id !== 'PENDING_seven_roads_season2_cover_v1') {
+  fail('Story 1 shared Season 2 cover asset gate drifted')
+}
+if (!String(map.package_plan?.cover_status ?? '').includes('no episode-specific cover')) {
+  fail('Story 1 must not require an episode-specific cover')
 }
 if (!String(map.package_plan?.localization_status ?? '').includes('not yet authored')) {
   fail('Story 1 Uzbek localization blocker must remain explicit')
@@ -144,4 +150,4 @@ if (errors.length > 0) {
 console.log('[story1-authoring-map] PASS')
 console.log('[story1-authoring-map] source hash + 3 decisions + 6 branches locked')
 console.log('[story1-authoring-map] 2/2 approved Tier A visual anchors aligned')
-console.log('[story1-authoring-map] publication blockers remain explicit')
+console.log('[story1-authoring-map] shared Season 2 cover policy + Uzbek localization gate remain explicit')
