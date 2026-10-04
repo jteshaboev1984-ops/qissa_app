@@ -43,7 +43,7 @@
           "asset_id": "seven_roads_s2_story4_false_aras_notice_01_APPROVED",
           "phase": "story_text",
           "after_text": "Всё выглядело обычно для дорожного уведомления из Араса.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         }
       ],
       "decision": {
@@ -145,7 +145,6 @@
     "Resolve the v4 filename / v3 header version label explicitly without rewriting literary content silently.",
     "Assign an approved Story 4 cover asset.",
     "Create/approve Uzbek localization overlay.",
-    "Host and byte/hash-verify the Tier A runtime WebP before registering it.",
     "Generate the runtime AuthoredStoryPackage by verbatim extraction and validate it."
   ]
 }
