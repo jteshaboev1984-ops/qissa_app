@@ -42,7 +42,7 @@
           "asset_id": "seven_roads_s2_story6_false_reinforcement_watchtower_01_APPROVED",
           "phase": "story_text",
           "after_text": "— Нас прислал Рустам.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         }
       ],
       "decision": {
@@ -100,7 +100,7 @@
           "asset_id": "seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED",
           "phase": "story_text",
           "after_text": "— Я никого вперёд не посылал.",
-          "runtime_state": "prepared-not-hosted"
+          "runtime_state": "hosted-verified"
         }
       ],
       "decision": {
@@ -151,7 +151,6 @@
   "blockers_before_runtime_package": [
     "Assign an approved Story 6 cover asset.",
     "Create/approve Uzbek localization overlay.",
-    "Host and byte/hash-verify both Tier A runtime WebPs before registering them.",
     "Generate the runtime AuthoredStoryPackage by verbatim extraction and validate it."
   ]
 }
