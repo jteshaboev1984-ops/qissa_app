@@ -13,7 +13,7 @@ on:
       expected_state:
         description: Expected public Storage state
         required: true
-        default: absent
+        default: present
         type: choice
         options:
           - absent
@@ -37,7 +37,7 @@ jobs:
       - name: Verify expected public asset state
         env:
           QISSA_SUPABASE_URL: https://phwakdpxxyncyslvnqht.supabase.co
-          EXPECTED_STATE: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_state || 'absent' }}
+          EXPECTED_STATE: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_state || 'present' }}
         run: |
           if [ "$EXPECTED_STATE" = "present" ]; then
             node scripts/upload-season2-tier-a-runtime-assets.mjs --verify-only
