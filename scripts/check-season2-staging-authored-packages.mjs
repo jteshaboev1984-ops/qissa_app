@@ -30,7 +30,7 @@ const sourceByStory = new Map(
 if (inventory.version !== 'season2-staging-authored-packages-1') {
   fail(`unexpected inventory version: ${inventory.version}`)
 }
-if (inventory.status !== 'ru-staging-packages-built-not-published') {
+if (inventory.status !== 'ru-episode-packages-built-single-season-cover-pending') {
   fail(`unexpected inventory status: ${inventory.status}`)
 }
 if (inventory.world_id !== 'seven_roads' || inventory.season_number !== 2) {
@@ -116,10 +116,10 @@ for (const storyNumber of expectedStories) {
   }
 
   if (
-    packageJson.cover_illustration?.status !== 'pending-approval' ||
-    !String(packageJson.cover_illustration?.asset_id ?? '').startsWith('PENDING_')
+    packageJson.cover_illustration?.status !== 'pending-shared-season-cover' ||
+    packageJson.cover_illustration?.asset_id !== 'PENDING_seven_roads_season2_cover_v1'
   ) {
-    fail(`Story ${storyNumber}: pending cover sentinel must remain explicit`)
+    fail(`Story ${storyNumber}: episode package must use the single shared Season 2 cover gate`)
   }
 
   const normalizedNarrativeText = [
@@ -284,7 +284,7 @@ for (const storyNumber of expectedStories) {
   }
 
   if (
-    entry.cover_state !== 'pending-approval' ||
+    entry.cover_state !== 'shared-season-cover-pending' ||
     entry.localization_state !== 'ru-only-staging' ||
     entry.publication_state !== 'not-published'
   ) {
@@ -303,4 +303,4 @@ console.log('[season2-staging-packages] PASS')
 console.log('[season2-staging-packages] 6/6 Russian staging packages are structurally valid')
 console.log('[season2-staging-packages] 12 decisions / 24 choices remain aligned to locked authoring maps')
 console.log('[season2-staging-packages] 10/10 Tier A image slots resolve through the verified hosted asset registry')
-console.log('[season2-staging-packages] packages remain unregistered; pending covers + UZ localization still block publication')
+console.log('[season2-staging-packages] packages remain unregistered; one shared Season 2 cover + UZ localization still block publication')
