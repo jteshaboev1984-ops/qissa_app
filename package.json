@@ -55,6 +55,7 @@
     "check:season2-literary-sources": "node scripts/check-season2-literary-sources.mjs",
     "check:story1-authoring-map": "node scripts/check-story1-authoring-map.mjs",
     "check:season2-authoring-maps": "node scripts/check-season2-authoring-maps.mjs",
+    "check:season2-staging-packages": "node scripts/check-season2-staging-authored-packages.mjs",
     "ops:upload-season2-tier-a-assets": "node scripts/upload-season2-tier-a-runtime-assets.mjs",
     "smoke:story2-assets-live": "node scripts/smoke-story2-assets-live.mjs",
     "check:story2-bundle-closed": "node scripts/check-story2-production-bundle-closed.mjs",
