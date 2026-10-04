@@ -1,6 +1,6 @@
 {
   "version": "season2-literary-source-index-1",
-  "updated_at": "2026-10-03",
+  "updated_at": "2026-10-04",
   "canonical_library_root": "/QISSA/production/seven_roads/season2_text/approved/",
   "policy": "Canonical literary snapshots are immutable inputs for authored-package staging. Header/version mismatches are recorded, not silently corrected.",
   "stories": [
@@ -48,7 +48,9 @@
       "header_version": "v3",
       "choice_count": 2,
       "publication_state": "not_published",
-      "version_note": "Canonical filename is v4 while the document header says v3. Preserved; resolve only through an explicit literary-version decision."
+      "version_note": "Canonical filename is v4 while the document header says v3. Preserved; resolve only through an explicit literary-version decision.",
+      "version_resolution_status": "resolved",
+      "runtime_version_decision": "Use canonical filename revision v4 as the runtime/source revision identifier. Preserve the internal v3 header verbatim as a stale inherited label; do not rewrite literary prose solely to change the header."
     },
     {
       "story_number": 5,
@@ -82,7 +84,9 @@
       "header_version": "v13",
       "choice_count": 1,
       "publication_state": "not_published",
-      "version_note": "Canonical filename records the v17 visible-inherited-defect revision while the document header still says v13. Preserved; do not rewrite source text silently."
+      "version_note": "Canonical filename records the v17 visible-inherited-defect revision while the document header still says v13. Preserved; do not rewrite source text silently.",
+      "version_resolution_status": "resolved",
+      "runtime_version_decision": "Use canonical filename revision v17-visible-inherited-defect as the runtime/source revision identifier. Preserve the internal v13 header verbatim as a stale inherited label; do not rewrite literary prose solely to change the header."
     }
   ]
 }
