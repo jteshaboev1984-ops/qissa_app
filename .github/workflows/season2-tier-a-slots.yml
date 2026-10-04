@@ -7,7 +7,9 @@ on:
     paths:
       - 'src/data/authored/season2TierAVisualSlots.json'
       - 'src/data/season2TierAVisualSlots.ts'
+      - 'src/data/authoredStoryAssets.ts'
       - 'scripts/check-season2-tier-a-visual-slots.mjs'
+      - 'scripts/check-season2-tier-a-runtime-assets.mjs'
       - 'docs/qissa/season2/**'
       - 'package.json'
       - '.github/workflows/season2-tier-a-slots.yml'
