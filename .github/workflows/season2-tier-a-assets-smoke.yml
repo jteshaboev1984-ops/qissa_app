@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'docs/qissa/season2/season2_tier_a_runtime_asset_inventory.json'
+      - 'docs/qissa/season2/season2_cover_v1_inventory.json'
+      - 'scripts/verify-season2-cover-public.mjs'
       - 'scripts/upload-season2-tier-a-runtime-assets.mjs'
       - '.github/workflows/season2-tier-a-assets-smoke.yml'
   workflow_dispatch:
@@ -44,3 +46,7 @@ jobs:
           else
             node scripts/upload-season2-tier-a-runtime-assets.mjs --expect-absent
           fi
+
+      - name: Verify public Season 2 shared cover
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.expected_state == 'present' }}
+        run: node scripts/verify-season2-cover-public.mjs
