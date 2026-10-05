@@ -545,6 +545,16 @@ try {
     'Episode 3 gallery discovery was not persisted before reset',
   )
 
+  for (const story of [episode3, episode4, episode5, episode6]) {
+    await setJson(
+      progressKey(story),
+      makeProgress(story, {
+        completed: true,
+        currentPartIndex: story.parts.length - 1,
+      }),
+    )
+  }
+
   const staleKeys = [
     'qissa:v1:authoredStoryProgress:retired_seven_roads_story:old-version',
     'qissa:v1:authoredReadingPosition:retired_seven_roads_story:old-version',
@@ -557,6 +567,25 @@ try {
   }
 
   await clickExactButton('Hozircha to‘xtash')
+  await waitFor(
+    bodyHas('7 qismning barchasi tugadi'),
+    'truthful completed Season 2 Home state',
+  )
+  assert(
+    !(await evaluate(bodyHas('Mavsum yakunini ko‘rish'))),
+    'Home still promises a nonexistent Season 2 result screen',
+  )
+
+  await clickButtonContaining('2-mavsum')
+  await waitFor(
+    bodyHas('7-qismni ochish'),
+    'completed Season 2 overview opens the real last episode',
+  )
+  assert(
+    !(await evaluate(bodyHas('Mavsum yakunini ko‘rish'))),
+    'Season 2 overview still promises a nonexistent season result screen',
+  )
+  await clickExactButton('← Mavsumlar')
   await waitFor(
     `document.querySelector('button[aria-label="Sozlamalar"]') !== null`,
     'Uzbek Home before reset',
@@ -602,6 +631,7 @@ try {
   console.log('[season2-release-browser] completed Episodes 1+2 unlocked Episode 3')
   console.log('[season2-release-browser] Episode 3 inherited and persisted Episode 2 Sarvan choice')
   console.log('[season2-release-browser] Episode 3 Uzbek reader resolved its hosted Tier A image')
+  console.log('[season2-release-browser] completed Season 2 Home/overview states do not promise a nonexistent season-result screen')
   console.log('[season2-release-browser] progress reset clears current and stale-version progress, reading position, and gallery discovery')
 } finally {
   cleanup()
