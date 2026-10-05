@@ -268,15 +268,9 @@ function App() {
         }}
         onBack={() => setView('shell')}
         onResetSeason={() => {
-          seasons
-            .flatMap((publishedSeason) => getPublishedSeasonStories(publishedSeason))
-            .forEach((seasonStoryEntry) => {
-              const authoredStory = seasonStoryEntry.authoredStory
-              if (!authoredStory) return
-              authoredStoryPersistence.clear(authoredStory)
-              authoredReadingPosition.clear(authoredStory)
-              authoredIllustrationDiscovery.clear(authoredStory)
-            })
+          authoredStoryPersistence.clearAll()
+          authoredReadingPosition.clearAll()
+          authoredIllustrationDiscovery.clearAll()
           setSelectedSeasonNumber(1)
           setSelectedStoryNumber(1)
           setRequestedEpisodeNumber(null)
