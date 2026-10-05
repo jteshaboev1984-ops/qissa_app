@@ -21,13 +21,13 @@
     "story_mood": "kind_adventure",
     "part_count": 3,
     "publication_state": "staging-only",
-    "cover_status": "shared Season 2 cover pending; no episode-specific cover",
+    "cover_status": "shared Season 2 cover approved; runtime WebP prepared, hosting pending; no episode-specific cover",
     "localization_status": "Uzbek overlay not yet authored",
     "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges.",
     "staging_ru_package": "src/data/authored/staging/season2Story1RoyalSilver.ru.json",
     "staging_ru_package_status": "built-and-validated-pending-release-gates",
     "cover_policy": "shared-season-cover",
-    "shared_season_cover_asset_id": "PENDING_seven_roads_season2_cover_v1"
+    "shared_season_cover_asset_id": "seven_roads_season2_cover_v1"
   },
   "parts": [
     {
