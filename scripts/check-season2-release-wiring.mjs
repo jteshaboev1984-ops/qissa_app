@@ -51,6 +51,17 @@ for (const id of [
   }
 }
 
+const singleCoverOverviewBlock = overview.slice(
+  overview.indexOf("if (season.presentation === 'single-cover-episode-list')"),
+  overview.indexOf("if (publishedStories.length > 1"),
+)
+if (singleCoverOverviewBlock.includes('copy.openSeasonResult')) {
+  fail('Season 2 overview still promises a nonexistent season-result screen')
+}
+if (!singleCoverOverviewBlock.includes('primaryEpisode.entry.number')) {
+  fail('Completed Season 2 overview does not point back to the real last episode')
+}
+
 if (!overview.includes('startedIncompleteIndex')) {
   fail('Season overview does not prioritize started legacy Episode 2 progress')
 }
@@ -75,6 +86,12 @@ if (!shell.includes('season2StartedIncomplete')) {
 }
 if (!shell.includes('season2AllCompleted')) {
   fail('Home does not expose Season 2 completion state')
+}
+if (
+  !shell.includes('Все 7 серий завершены') ||
+  !shell.includes('7 qismning barchasi tugadi')
+) {
+  fail('Completed Season 2 Home state must describe real completion without a fake result screen')
 }
 if (shell.includes('story2Unlocked')) {
   fail('legacy Story 2-only shell lock remains after seven-episode wiring')
