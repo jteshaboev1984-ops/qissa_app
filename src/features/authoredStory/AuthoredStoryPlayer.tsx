@@ -34,7 +34,7 @@ import type {
 } from './types'
 import type { ReaderPreferences } from '../../types/qissa'
 
-type AuthoredStoryCompletionScope = 'season' | 'story'
+type AuthoredStoryCompletionScope = 'season' | 'story' | 'episode'
 type AuthoredStoryReaderUnit = 'episode' | 'part'
 
 interface AuthoredStoryPlayerProps {
@@ -518,19 +518,35 @@ export function AuthoredStoryPlayer({
       ? formatSevenRoadsPartProgress(language, readerProgress.current, readerProgress.total)
       : formatSevenRoadsEpisodeProgress(language, readerProgress.current, readerProgress.total)
   const completionLabel =
-    completionScope === 'story'
-      ? formatSevenRoadsStoryCompleted(language, storyNumber)
-      : formatSevenRoadsSeasonCompleted(language, seasonNumber)
+    completionScope === 'episode'
+      ? formatSevenRoadsEpisodeCompleted(language, storyNumber)
+      : completionScope === 'story'
+        ? formatSevenRoadsStoryCompleted(language, storyNumber)
+        : formatSevenRoadsSeasonCompleted(language, seasonNumber)
   const completionEyebrow =
-    completionScope === 'story'
-      ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsStoryLabel(language, storyNumber)} · ${story.title}`
-      : `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${story.title}`
+    completionScope === 'episode'
+      ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsEpisodeLabel(language, storyNumber)} · ${story.title}`
+      : completionScope === 'story'
+        ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsStoryLabel(language, storyNumber)} · ${story.title}`
+        : `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${story.title}`
   const completionMemory =
-    completionScope === 'story' ? copy.storyCompletionMemory : copy.completionMemory
+    completionScope === 'episode'
+      ? copy.episodeCompletionMemory
+      : completionScope === 'story'
+        ? copy.storyCompletionMemory
+        : copy.completionMemory
   const finishLabel =
-    completionScope === 'story' ? copy.finishStory : copy.finishSeason
+    completionScope === 'episode'
+      ? copy.finishEpisode
+      : completionScope === 'story'
+        ? copy.finishStory
+        : copy.finishSeason
   const replayLabel =
-    completionScope === 'story' ? copy.replayStory : copy.replaySeason
+    completionScope === 'episode'
+      ? copy.replayEpisode
+      : completionScope === 'story'
+        ? copy.replayStory
+        : copy.replaySeason
 
   if (progress.completed) {
     const completionCoverUrl = resolveAuthoredStoryAssetUrl(
@@ -581,7 +597,7 @@ export function AuthoredStoryPlayer({
                 className="w-full rounded-full border border-white/35 bg-black/20 px-5 py-3 text-sm font-semibold text-[#fff9ec] backdrop-blur-md"
                 onClick={onBack}
               >
-                {copy.backHome}
+                {completionScope === 'episode' ? copy.returnToSeason : copy.backHome}
               </button>
             ) : null}
             <button
