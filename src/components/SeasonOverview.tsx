@@ -75,7 +75,9 @@ export function SeasonOverview({
       ? resolveAuthoredStoryAssetUrl(season.coverAssetId, null)
       : null
     const primaryLabel = allCompleted
-      ? copy.openSeasonResult
+      ? language === 'uz'
+        ? `${primaryEpisode.entry.number}-qismni ochish`
+        : `Открыть серию ${primaryEpisode.entry.number}`
       : primaryIndex === 0 && !primaryEpisode.progress
         ? copy.startSeason
         : copy.continue
