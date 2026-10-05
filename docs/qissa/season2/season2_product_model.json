@@ -1,6 +1,6 @@
 {
   "version": "season2-product-model-1",
-  "updated_at": "2026-10-04",
+  "updated_at": "2026-10-05",
   "world_id": "seven_roads",
   "season_number": 2,
   "owner_decision": "option-2",
@@ -22,58 +22,59 @@
       "number": 1,
       "title_ru": "Королевское серебро",
       "package_path": "src/data/authored/staging/season2Story1RoyalSilver.ru.json",
-      "status": "staging"
+      "status": "release-candidate-wired"
     },
     {
       "number": 2,
       "title_ru": "Тайна восточного каравана",
       "package_path": "src/data/authored/taynaVostochnogoKaravanaV4.ru.json",
-      "status": "currently-published-standalone"
+      "status": "published-preserved-in-release-candidate"
     },
     {
       "number": 3,
       "title_ru": "Две башни",
       "package_path": "src/data/authored/staging/season2Story3TwoTowers.ru.json",
-      "status": "staging"
+      "status": "release-candidate-wired"
     },
     {
       "number": 4,
       "title_ru": "Человек, которого ждут",
       "package_path": "src/data/authored/staging/season2Story4WaitedMan.ru.json",
-      "status": "staging"
+      "status": "release-candidate-wired"
     },
     {
       "number": 5,
       "title_ru": "Ложная дорога",
       "package_path": "src/data/authored/staging/season2Story5FalseRoad.ru.json",
-      "status": "staging"
+      "status": "release-candidate-wired"
     },
     {
       "number": 6,
       "title_ru": "Две подмоги",
       "package_path": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
-      "status": "staging"
+      "status": "release-candidate-wired"
     },
     {
       "number": 7,
       "title_ru": "Обратно в Ордан",
       "package_path": "src/data/authored/staging/season2Story7BackToOrdan.ru.json",
-      "status": "staging"
+      "status": "release-candidate-wired"
     }
   ],
   "compatibility": {
     "current_live_season2_story2_must_not_be_removed_before_switch": true,
     "current_story2_progress_must_be_preserved": true,
     "implementation_strategy": "Keep seven authored packages behind the scenes. Present them as seven episodes under one Season 2 page. This avoids resetting the already-live Story 2 progress while matching the approved user-facing model.",
-    "legacy_story2_cover": "Retain in storage/package for backward compatibility; do not use it as an episode card once the one-cover Season 2 presentation is activated."
+    "legacy_story2_cover": "Retain in storage/package for backward compatibility; do not use it as an episode card once the one-cover Season 2 presentation is activated.",
+    "release_wiring": "All seven packages are composed as seven episode rows under one shared Season 2 cover; Episode 2 keeps its existing story_id/story_version persistence key."
   },
   "release_blockers": [
-    "Wire all seven episode packages into the one-cover Season 2 public presentation while preserving existing Episode 2 progress.",
-    "Run final progress/resume/gallery/reader regression smokes before merge/release."
+    "Run final Season 2 progress/resume/gallery/reader browser regression smoke and review the result before merge/release."
   ],
   "localization": {
     "status": "ru+uz-complete-staging",
     "episode_2": "existing-live-ru+uz",
     "episodes_1_3_4_5_6_7": "staged-ru+uz-ci-validated"
-  }
+  },
+  "release_state": "wired-release-candidate"
 }
