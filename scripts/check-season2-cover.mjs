@@ -63,8 +63,11 @@ if (model.product_rules?.season_cover_asset_id !== cover.asset_id) {
 if (model.product_rules?.season_cover_status !== cover.status) {
   fail('product model cover status must match cover inventory')
 }
-if (seasonData.includes("presentation: 'single-cover-episode-list'")) {
-  fail('public Season 2 presentation must remain dormant until localization gates close')
+if (!seasonData.includes("presentation: 'single-cover-episode-list'")) {
+  fail('Season 2 shared cover must be active in the seven-episode release candidate')
+}
+if (!seasonData.includes(`coverAssetId: '${cover.asset_id}'`)) {
+  fail('Season 2 shared cover asset id is not wired into season data')
 }
 if (
   !assetRegistry.includes(`'${cover.asset_id}'`) &&
@@ -80,4 +83,4 @@ if (errors.length > 0) {
 
 console.log('[season2-cover] PASS')
 console.log('[season2-cover] approved 1024x1536 master + 419444-byte WebP derivative locked')
-console.log('[season2-cover] hosted shared cover is registry-ready while Season 2 presentation remains dormant')
+console.log('[season2-cover] hosted shared cover is active in the seven-episode Season 2 release candidate')
