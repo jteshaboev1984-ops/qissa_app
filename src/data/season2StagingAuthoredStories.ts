@@ -79,12 +79,12 @@ for (const story of season2StagingRussianStories) {
 }
 
 /**
- * Internal pre-release registry only.
+ * Season 2 release-candidate registry.
  *
- * Do not import this collection into authoredStories.ts or any published shell.
- * Product model: one Season 2 cover + seven episode rows. These episode
- * packages do not get separate cover cards. Publication still waits for the
- * shared Season 2 cover and Uzbek localization overlays.
+ * These packages stay separate to preserve per-episode progress and the
+ * already-live Episode 2 storage key. The user-facing Season 2 surface may
+ * compose them into one shared-cover / seven-episode season, but they must
+ * not be flattened into one authored package.
  */
 export const season2StagingAuthoredStoriesRu =
   season2StagingRussianStories
@@ -105,3 +105,10 @@ export const findSeason2StagingAuthoredStoryRu = (
   season2StagingAuthoredStoriesRu.find(
     (story) => story.story_id === storyId,
   ) ?? null
+
+export const getSeason2ReleaseCandidateStories = (
+  language: 'ru' | 'uz',
+): readonly AuthoredStoryPackage[] =>
+  language === 'uz'
+    ? season2StagingAuthoredStoriesUz
+    : season2StagingAuthoredStoriesRu
