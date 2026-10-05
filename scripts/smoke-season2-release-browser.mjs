@@ -293,6 +293,17 @@ try {
     assert(clicked, `Button not found: ${text}`)
   }
 
+  const season2CoverPresentExpression = `(() => {
+    const token = 'seven_roads_season2_cover_v1'
+    const imageMatch = [...document.images].some((img) => img.src.includes(token))
+    const backgroundMatch = [...document.querySelectorAll('*')].some((node) => {
+      const inline = node.getAttribute?.('style') ?? ''
+      const computed = getComputedStyle(node).backgroundImage ?? ''
+      return inline.includes(token) || computed.includes(token)
+    })
+    return imageMatch || backgroundMatch
+  })()`
+
   const reloadAndWait = async () => {
     const before = pageLoadEvents
     await send('Page.reload', { ignoreCache: true })
@@ -382,9 +393,12 @@ try {
   await clickButtonContaining('Тайна восточного каравана')
   await waitFor(bodyHas('Часть 8 / 10'), 'legacy Episode 2 resume at part 8')
   const coverLeakedIntoEpisodeReader = await evaluate(
-    `[...document.images].some((img) => img.src.includes('seven_roads_season2_cover_v1'))`,
+    season2CoverPresentExpression,
   )
-  assert(!coverLeakedIntoEpisodeReader, 'shared Season 2 cover leaked into episode reader')
+  assert(
+    !coverLeakedIntoEpisodeReader,
+    'shared Season 2 cover leaked into resumed Episode 2 reader',
+  )
 
   await clickExactButton('Закрыть')
   await waitFor(bodyHas('7 серий'), 'return from Episode 2 reader to Season 2 overview')
@@ -434,6 +448,15 @@ try {
   await waitFor(bodyHas('7 qism'), 'Uzbek overview before Episode 3')
   await clickButtonContaining('Ikki minora')
 
+  await waitFor(bodyHas('1-qism / 3'), 'Episode 3 fresh reader part 1')
+  const coverLeakedIntoFreshEpisodeReader = await evaluate(
+    season2CoverPresentExpression,
+  )
+  assert(
+    !coverLeakedIntoFreshEpisodeReader,
+    'shared Season 2 cover leaked into fresh Episode 3 reader',
+  )
+
   await waitFor(
     bodyHas('Samira darrov janubiy minoraga bordi.'),
     'Episode 3 inherited Episode 2 choice payoff',
@@ -458,6 +481,25 @@ try {
     'Episode 3 persisted inherited Episode 2 choice',
   )
 
+  await setJson(
+    progressKey(episode7),
+    makeProgress(episode7, {
+      completed: true,
+      currentPartIndex: episode7.parts.length - 1,
+    }),
+  )
+  await clickExactButton('Yopish')
+  await waitFor(bodyHas('7 qism'), 'return from Episode 3 to Season 2 overview')
+  await clickButtonContaining('Ordanga qaytish')
+  await waitFor(bodyHas('7-qism tugadi'), 'Episode 7 completion screen')
+  const coverLeakedIntoEpisodeCompletion = await evaluate(
+    season2CoverPresentExpression,
+  )
+  assert(
+    !coverLeakedIntoEpisodeCompletion,
+    'shared Season 2 cover leaked into Episode 7 completion screen',
+  )
+
   assert(
     browserErrors.length === 0,
     `Browser runtime exceptions: ${browserErrors.join(' | ')}`,
@@ -466,7 +508,7 @@ try {
   console.log('[season2-release-browser] PASS')
   console.log('[season2-release-browser] viewport 430x932')
   console.log('[season2-release-browser] legacy Episode 2 progress resumed at part 8 under the new seven-episode season')
-  console.log('[season2-release-browser] one shared Season 2 cover rendered on overview and stayed out of episode reader')
+  console.log('[season2-release-browser] one shared Season 2 cover rendered on overview and stayed out of fresh/resumed readers and episode completion')
   console.log('[season2-release-browser] all seven RU and UZ episode titles rendered')
   console.log('[season2-release-browser] completed Episodes 1+2 unlocked Episode 3')
   console.log('[season2-release-browser] Episode 3 inherited and persisted Episode 2 Sarvan choice')
