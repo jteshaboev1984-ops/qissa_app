@@ -161,7 +161,7 @@ export function HomeScreen({
           </div>
 
           {isTomorrowMemoryState && savedChoiceText ? (
-            <div className="rounded-[1.5rem] border border-[#b9d9d4] bg-[#edf8f6] px-4 py-4 shadow-[0_14px_34px_-30px_rgba(53,102,107,.9)]">
+            <div className="rounded-3xl border border-[#b9d9d4] bg-[#edf8f6] px-4 py-4 shadow-[0_14px_34px_-30px_rgba(53,102,107,.9)]">
               <p className="q-label mb-2 text-[#35666b]">{memoryCopy[language].label}</p>
               <p className="text-base font-bold leading-6 text-[#243c3b]">{savedChoiceText}</p>
               {savedMemoryText ? <p className="mt-2 text-sm leading-6 text-[#41615f]">{savedMemoryText}</p> : null}

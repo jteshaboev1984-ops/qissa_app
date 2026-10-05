@@ -1,0 +1,106 @@
+{
+  "version": "story5-authoring-map-1",
+  "status": "staging-source-locked",
+  "created_at": "2026-10-03",
+  "story_number": 5,
+  "title_ru": "Ложная дорога",
+  "canonical_source": {
+    "filename": "seven_roads_s2_story5_false_road_literary_v4.md",
+    "library_path": "/QISSA/production/seven_roads/season2_text/approved/seven_roads_s2_story5_false_road_literary_v4.md",
+    "sha256": "6a39683c5a470cd8221f731b1db950f6454242c07ebae0405ae9ff72af448551",
+    "lines": 638,
+    "header_version": "v4",
+    "declared_interactivity": "1 choice × 2 variants"
+  },
+  "package_plan": {
+    "target_schema": "authored-multi-choice-v2-deferred-branches",
+    "language": "ru",
+    "app_age_group": "8-9",
+    "story_mode": "series",
+    "story_mood": "kind_adventure",
+    "publication_state": "staging-only",
+    "localization_status": "Uzbek staging overlay authored and CI-validated",
+    "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges, with Markdown presentation markers normalized only at package-build time.",
+    "part_count": 1,
+    "cover_status": "shared Season 2 cover hosted and verified; no episode-specific cover",
+    "staging_ru_package": "src/data/authored/staging/season2Story5FalseRoad.ru.json",
+    "staging_ru_package_status": "built-and-validated-pending-release-gates",
+    "cover_policy": "shared-season-cover",
+    "shared_season_cover_asset_id": "seven_roads_season2_cover_v1",
+    "staging_uz_overlay": "src/data/authored/staging/season2Story5FalseRoad.uz.json"
+  },
+  "parts": [
+    {
+      "part_id": "story5_part_1_false_road",
+      "order": 1,
+      "title": "Часть 1",
+      "story_text": {
+        "source_lines": [
+          7,
+          299
+        ],
+        "sha256": "4608b193468c32cb8e44c14c575c809111f1d7b34f990af06f06d9c1509bfa31"
+      },
+      "image_slots": [
+        {
+          "slot_id": "S2-ST5-TIERA-RED-HILL",
+          "asset_id": "seven_roads_s2_story5_red_hill_recon_01_APPROVED",
+          "phase": "story_text",
+          "after_text": "— Разведка их нашла.",
+          "runtime_state": "hosted-verified"
+        },
+        {
+          "slot_id": "S2-ST5-TIERA-REAL-REINFORCEMENT",
+          "asset_id": "seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED",
+          "phase": "post_choice_text",
+          "after_text": "Они выехали из поста.",
+          "runtime_state": "hosted-verified"
+        }
+      ],
+      "decision": {
+        "decision_id": "story5_choice_1_road_post_approach",
+        "prompt": "Какой путь они выберут к дорожному посту?",
+        "source_prompt_line": 303,
+        "memory_key": "road_post_approach",
+        "choices": [
+          {
+            "choice_id": "story5_choice_1a_forest_edge",
+            "text": "Короткий путь вдоль открытой кромки Восточного леса.",
+            "source_choice_line": 305,
+            "resolution": {
+              "source_lines": [
+                313,
+                361
+              ],
+              "sha256": "076c8014a59a05ac5e6ac5a9734f7f8255580e15062a0863b904504dadedadf0"
+            },
+            "memory_value": "forest_edge"
+          },
+          {
+            "choice_id": "story5_choice_1b_open_ridge",
+            "text": "Длинный путь по открытому плато.",
+            "source_choice_line": 307,
+            "resolution": {
+              "source_lines": [
+                367,
+                413
+              ],
+              "sha256": "f6827eda8311884d6a364ea30ea54f38f40e837a27d8fd6c43a9392006eca496"
+            },
+            "memory_value": "open_ridge"
+          }
+        ],
+        "convergence_contract": "Обе ветки безопасны и одобрены Рахимом; различается эмоциональный опыт дороги."
+      },
+      "post_choice_text": {
+        "source_lines": [
+          419,
+          625
+        ],
+        "sha256": "656502b3dd19b50157c2b766607ce7db1eba8bf62631ad2b686a3c90a1c79c5b"
+      },
+      "is_final": true
+    }
+  ],
+  "blockers_before_runtime_package": []
+}

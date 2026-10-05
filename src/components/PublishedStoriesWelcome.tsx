@@ -66,14 +66,14 @@ export function PublishedStoriesWelcome({
   if (step === 'intro') {
     return (
       <main
-        className="relative mx-auto min-h-[100dvh] max-w-[430px] overflow-hidden bg-cover bg-center text-white"
+        className="relative mx-auto min-h-dvh max-w-[430px] overflow-hidden bg-cover bg-center text-white"
         style={backgroundStyle}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#102025]/5 via-[#102025]/5 to-[#102025]/90" />
+        <div className="absolute inset-0 bg-linear-to-b from-[#102025]/5 via-[#102025]/5 to-[#102025]/90" />
 
-        <div className="relative z-10 flex min-h-[100dvh] flex-col px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
+        <div className="relative z-10 flex min-h-dvh flex-col px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
           <header className="text-center">
-            <p className="font-serif text-[1.55rem] font-bold tracking-[0.22em] text-[#fff7df] drop-shadow-sm">
+            <p className="font-serif text-[1.55rem] font-bold tracking-[0.22em] text-[#fff7df] drop-shadow-xs">
               QISSA
             </p>
             <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.24em] text-[#f0d9a5]">
@@ -113,12 +113,12 @@ export function PublishedStoriesWelcome({
 
   return (
     <main
-      className="relative mx-auto min-h-[100dvh] max-w-[430px] overflow-hidden bg-cover bg-center"
+      className="relative mx-auto min-h-dvh max-w-[430px] overflow-hidden bg-cover bg-center"
       style={backgroundStyle}
     >
       <div className="absolute inset-0 bg-[#10272c]/45 backdrop-blur-[2px]" />
 
-      <div className="relative z-10 flex min-h-[100dvh] flex-col justify-end pt-[max(1rem,env(safe-area-inset-top))]">
+      <div className="relative z-10 flex min-h-dvh flex-col justify-end pt-[max(1rem,env(safe-area-inset-top))]">
         <header className="absolute inset-x-0 top-[max(1.25rem,env(safe-area-inset-top))] text-center">
           <p className="font-serif text-xl font-bold tracking-[0.2em] text-[#fff7df]">QISSA</p>
           <div className="mt-3">
@@ -130,7 +130,7 @@ export function PublishedStoriesWelcome({
           </div>
         </header>
 
-        <section className="rounded-t-[2rem] border-t border-[#e2c998] bg-[#fffaf0]/96 px-5 pb-[max(1.4rem,env(safe-area-inset-bottom))] pt-6 shadow-[0_-22px_55px_-36px_rgba(0,0,0,.8)] backdrop-blur-xl">
+        <section className="rounded-t-4xl border-t border-[#e2c998] bg-[#fffaf0]/96 px-5 pb-[max(1.4rem,env(safe-area-inset-bottom))] pt-6 shadow-[0_-22px_55px_-36px_rgba(0,0,0,.8)] backdrop-blur-xl">
           <div>
             <p className="q-label mb-2">{copy.parentLabel}</p>
             <h1 className="q-heading text-3xl font-bold leading-tight">

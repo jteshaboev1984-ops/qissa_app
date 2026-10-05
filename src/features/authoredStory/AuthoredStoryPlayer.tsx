@@ -6,6 +6,7 @@ import { authoredIllustrationDiscovery } from '../../lib/authoredIllustrationDis
 import { resolveAuthoredStoryAssetUrl } from '../../data/authoredStoryAssets'
 import {
   formatSevenRoadsEpisodeCompleted,
+  formatSevenRoadsEpisodeLabel,
   formatSevenRoadsEpisodeProgress,
   formatSevenRoadsPartProgress,
   formatSevenRoadsSeasonCompleted,
@@ -34,7 +35,7 @@ import type {
 } from './types'
 import type { ReaderPreferences } from '../../types/qissa'
 
-type AuthoredStoryCompletionScope = 'season' | 'story'
+type AuthoredStoryCompletionScope = 'season' | 'story' | 'episode'
 type AuthoredStoryReaderUnit = 'episode' | 'part'
 
 interface AuthoredStoryPlayerProps {
@@ -52,6 +53,7 @@ interface AuthoredStoryPlayerProps {
   initialEpisodeNumber?: number
   readerPreferences: ReaderPreferences
   onReaderPreferencesChange: (patch: Partial<ReaderPreferences>) => void
+  inheritedSelectedChoices?: Record<string, string>
 }
 
 const getReaderTextStyle = (preferences: ReaderPreferences): CSSProperties => ({
@@ -191,7 +193,7 @@ function StoryImage({
       <div ref={containerRef} className="space-y-2">
         <button
           type="button"
-          className="block w-full cursor-zoom-in rounded-[1.75rem] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37] focus-visible:ring-offset-2"
+          className="block w-full cursor-zoom-in rounded-[1.75rem] text-left focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#d4af37] focus-visible:ring-offset-2"
           onClick={() => onOpen?.(resolvedUrl, alt)}
           aria-label={`${copy.openFullscreen}: ${alt}`}
         >
@@ -284,15 +286,28 @@ export function AuthoredStoryPlayer({
   initialEpisodeNumber,
   readerPreferences,
   onReaderPreferencesChange,
+  inheritedSelectedChoices = {},
 }: AuthoredStoryPlayerProps) {
   const language: SevenRoadsLanguage = story.language === 'uz' ? 'uz' : 'ru'
   const copy = getSevenRoadsCopy(language)
 
   const persistedProgress = useMemo(() => {
     const saved = authoredStoryPersistence.load(story)
-    if (saved && saved.current_part_index < story.parts.length) return saved
-    return createInitialAuthoredStoryProgress(story)
-  }, [story])
+    const base =
+      saved && saved.current_part_index < story.parts.length
+        ? saved
+        : createInitialAuthoredStoryProgress(story)
+
+    if (Object.keys(inheritedSelectedChoices).length === 0) return base
+
+    return {
+      ...base,
+      selected_choices: {
+        ...inheritedSelectedChoices,
+        ...base.selected_choices,
+      },
+    }
+  }, [story, inheritedSelectedChoices])
 
   const requestedPartIndex = useMemo(
     () =>
@@ -450,7 +465,10 @@ export function AuthoredStoryPlayer({
     authoredStoryPersistence.clear(story)
     authoredReadingPosition.clear(story)
     restoredPartRef.current = null
-    const fresh = createInitialAuthoredStoryProgress(story)
+    const fresh = {
+      ...createInitialAuthoredStoryProgress(story),
+      selected_choices: { ...inheritedSelectedChoices },
+    }
     setPreviewChoiceId(null)
     updateProgress(fresh)
   }
@@ -501,32 +519,50 @@ export function AuthoredStoryPlayer({
       ? formatSevenRoadsPartProgress(language, readerProgress.current, readerProgress.total)
       : formatSevenRoadsEpisodeProgress(language, readerProgress.current, readerProgress.total)
   const completionLabel =
-    completionScope === 'story'
-      ? formatSevenRoadsStoryCompleted(language, storyNumber)
-      : formatSevenRoadsSeasonCompleted(language, seasonNumber)
+    completionScope === 'episode'
+      ? formatSevenRoadsEpisodeCompleted(language, storyNumber)
+      : completionScope === 'story'
+        ? formatSevenRoadsStoryCompleted(language, storyNumber)
+        : formatSevenRoadsSeasonCompleted(language, seasonNumber)
   const completionEyebrow =
-    completionScope === 'story'
-      ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsStoryLabel(language, storyNumber)} · ${story.title}`
-      : `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${story.title}`
+    completionScope === 'episode'
+      ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsEpisodeLabel(language, storyNumber)} · ${story.title}`
+      : completionScope === 'story'
+        ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsStoryLabel(language, storyNumber)} · ${story.title}`
+        : `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${story.title}`
   const completionMemory =
-    completionScope === 'story' ? copy.storyCompletionMemory : copy.completionMemory
+    completionScope === 'episode'
+      ? copy.episodeCompletionMemory
+      : completionScope === 'story'
+        ? copy.storyCompletionMemory
+        : copy.completionMemory
   const finishLabel =
-    completionScope === 'story' ? copy.finishStory : copy.finishSeason
+    completionScope === 'episode'
+      ? copy.finishEpisode
+      : completionScope === 'story'
+        ? copy.finishStory
+        : copy.finishSeason
   const replayLabel =
-    completionScope === 'story' ? copy.replayStory : copy.replaySeason
+    completionScope === 'episode'
+      ? copy.replayEpisode
+      : completionScope === 'story'
+        ? copy.replayStory
+        : copy.replaySeason
 
   if (progress.completed) {
-    const completionCoverUrl = resolveAuthoredStoryAssetUrl(
-      story.cover_illustration.asset_id,
-      story.cover_illustration.runtime_url,
-    )
+    const completionCoverUrl = showCover
+      ? resolveAuthoredStoryAssetUrl(
+          story.cover_illustration.asset_id,
+          story.cover_illustration.runtime_url,
+        )
+      : null
 
     return (
       <section
         className="relative min-h-[calc(100dvh-2.5rem)] overflow-hidden rounded-[1.85rem] bg-[#17383d] bg-cover bg-center text-center text-white"
         style={completionCoverUrl ? { backgroundImage: `url("${completionCoverUrl}")` } : undefined}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/32 to-[#102327]/96" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/20 via-black/32 to-[#102327]/96" />
         <div className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-end p-5">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#ead3a0]">
             {completionEyebrow}
@@ -564,7 +600,7 @@ export function AuthoredStoryPlayer({
                 className="w-full rounded-full border border-white/35 bg-black/20 px-5 py-3 text-sm font-semibold text-[#fff9ec] backdrop-blur-md"
                 onClick={onBack}
               >
-                {copy.backHome}
+                {completionScope === 'episode' ? copy.returnToSeason : copy.backHome}
               </button>
             ) : null}
             <button
@@ -583,7 +619,7 @@ export function AuthoredStoryPlayer({
     <>
       {showReaderSettings ? (
         <div
-          className="fixed inset-0 z-[90] flex items-end bg-black/45 p-3 backdrop-blur-[1px]"
+          className="fixed inset-0 z-90 flex items-end bg-black/45 p-3 backdrop-blur-[1px]"
           role="presentation"
           onClick={() => setShowReaderSettings(false)}
         >
@@ -607,7 +643,7 @@ export function AuthoredStoryPlayer({
       {lightbox ? (
         <button
           type="button"
-          className="fixed inset-0 z-[100] flex h-[100dvh] w-screen cursor-zoom-out items-center justify-center bg-black/95 p-3 sm:p-6"
+          className="fixed inset-0 z-100 flex h-dvh w-screen cursor-zoom-out items-center justify-center bg-black/95 p-3 sm:p-6"
           onClick={() => setLightbox(null)}
           aria-label={copy.closeFullscreen}
         >
@@ -624,7 +660,7 @@ export function AuthoredStoryPlayer({
 
       <section
         ref={topRef}
-        className={`min-h-[100dvh] space-y-5 pb-10 transition-colors ${readerTheme.page}`}
+        className={`min-h-dvh space-y-5 pb-10 transition-colors ${readerTheme.page}`}
       >
         <div
           className={`sticky top-0 z-40 -mx-2 flex items-center justify-between gap-2 border-b px-2 py-2 backdrop-blur-xl ${readerTheme.toolbar}`}
@@ -767,7 +803,7 @@ export function AuthoredStoryPlayer({
 
       {selectedChoice && currentDecisionChoiceId ? (
         <>
-          <section className="rounded-[1.5rem] border border-[#9bbdb8] bg-[#e5f0ed] p-5">
+          <section className="rounded-3xl border border-[#9bbdb8] bg-[#e5f0ed] p-5">
             <p className="q-label mb-2 text-[#35666b]">{copy.choiceSaved}</p>
             <p className="font-bold leading-6 text-[#243c3b]">{selectedChoice.text}</p>
           </section>

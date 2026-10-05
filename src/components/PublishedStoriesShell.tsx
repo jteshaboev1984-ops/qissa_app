@@ -29,11 +29,12 @@ export type PublishedStoriesTab = 'home' | 'library'
 type LibraryView = 'seasons' | 'gallery'
 type LibraryNotice =
   | { kind: 'coming-season'; seasonNumber: number }
-  | { kind: 'locked-story'; title: string }
+  | { kind: 'locked-season'; seasonNumber: number }
   | {
       kind: 'locked-art'
       episodeNumber: number
       storyNumber?: number
+      storyAsEpisode?: boolean
       readerUnit: 'episode' | 'part'
     }
 
@@ -59,17 +60,44 @@ export function PublishedStoriesShell({
   const story = season1Story?.authoredStory ?? null
   const progress = story ? authoredStoryPersistence.load(story) : null
   const reading = sevenRoadsStory1ReadingState(progress)
-  const story2Season = sevenRoadsSeasons.find((season) => season.number === 2) ?? null
-  const story2Story = story2Season ? getPrimaryPublishedSeasonStory(story2Season) : null
-  const story2Package = story2Story?.authoredStory ?? null
-  const story2Progress = story2Package ? authoredStoryPersistence.load(story2Package) : null
-  const story2Unlocked = reading.state === 'completed'
-  const story2CurrentPart = story2Progress
-    ? Math.min(
-        story2Package?.parts.length ?? 10,
-        (story2Progress.current_part_index ?? 0) + 1,
-      )
-    : 1
+  const season2 = sevenRoadsSeasons.find((season) => season.number === 2) ?? null
+  const season2Stories = season2 ? getPublishedSeasonStories(season2) : []
+  const season2Entries = season2Stories.map((entry) => {
+    const authoredStory = entry.authoredStory
+    const progress = authoredStory
+      ? authoredStoryPersistence.load(authoredStory)
+      : null
+    return {
+      entry,
+      authoredStory,
+      progress,
+      completed: Boolean(progress?.completed),
+    }
+  })
+  const season2Unlocked = reading.state === 'completed'
+  const season2AllCompleted =
+    season2Entries.length === 7 && season2Entries.every((item) => item.completed)
+  const season2CompletedCount = season2Entries.filter((item) => item.completed).length
+  const season2CanResumeAt = (index: number) => {
+    const item = season2Entries[index]
+    if (!item?.progress || item.completed) return false
+
+    const priorEpisodesCompleted = season2Entries
+      .slice(0, index)
+      .every((previous) => previous.completed)
+    const legacyEpisode2Resume = item.entry.number === 2
+
+    return priorEpisodesCompleted || legacyEpisode2Resume
+  }
+  const season2StartedIncomplete =
+    season2Entries.find((item, index) => !item.completed && season2CanResumeAt(index)) ?? null
+  const season2FirstIncomplete =
+    season2Entries.find((item) => !item.completed) ?? null
+  const season2Primary =
+    season2StartedIncomplete ??
+    season2FirstIncomplete ??
+    season2Entries.at(-1) ??
+    null
 
   const [libraryView, setLibraryView] = useState<LibraryView>('seasons')
   const [expandedGallerySeason, setExpandedGallerySeason] = useState<number | null>(null)
@@ -136,36 +164,57 @@ export function PublishedStoriesShell({
       }
     }
 
-    if (story2Story && story2Package) {
-      if (story2Progress?.completed) {
+    if (season2 && season2Primary?.authoredStory) {
+      if (season2AllCompleted) {
         return {
-          eyebrow: language === 'uz' ? '2-hikoya tugadi' : 'Сказка 2 завершена',
-          title: story2Story.title ?? story2Package.title,
-          subtitle: language === 'uz' ? 'Yakunini ko‘rish' : 'Посмотреть итог',
+          eyebrow: language === 'uz' ? '2-mavsum tugadi' : 'Сезон 2 завершён',
+          title: formatSevenRoadsSeasonLabel(language, 2),
+          subtitle:
+            language === 'uz'
+              ? '7 qismning barchasi tugadi'
+              : 'Все 7 серий завершены',
           action: () => onOpenSeason(2),
         }
       }
 
-      if (story2Progress) {
+      if (season2StartedIncomplete) {
         return {
           eyebrow: copy.continue,
-          title: story2Story.title ?? story2Package.title,
-          subtitle: formatSevenRoadsPartProgress(
+          title:
+            season2StartedIncomplete.entry.title ??
+            season2StartedIncomplete.authoredStory?.title ??
+            formatSevenRoadsSeasonLabel(language, 2),
+          subtitle: formatSevenRoadsSeasonEpisodeContext(
             language,
-            story2CurrentPart,
-            story2Package.parts.length,
+            2,
+            season2StartedIncomplete.entry.number,
+            7,
+          ),
+          action: () => onOpenSeason(2),
+        }
+      }
+
+      if (season2CompletedCount > 0 && season2FirstIncomplete) {
+        return {
+          eyebrow: language === 'uz' ? 'Keyingi qism' : 'Следующая серия',
+          title:
+            season2FirstIncomplete.entry.title ??
+            season2FirstIncomplete.authoredStory?.title ??
+            formatSevenRoadsSeasonLabel(language, 2),
+          subtitle: formatSevenRoadsSeasonEpisodeContext(
+            language,
+            2,
+            season2FirstIncomplete.entry.number,
+            7,
           ),
           action: () => onOpenSeason(2),
         }
       }
 
       return {
-        eyebrow: language === 'uz' ? 'Yangi hikoya' : 'Новая сказка',
-        title: story2Story.title ?? story2Package.title,
-        subtitle:
-          language === 'uz'
-            ? `2-hikoya · ${story2Package.parts.length} qism`
-            : `Сказка 2 · ${story2Package.parts.length} частей`,
+        eyebrow: language === 'uz' ? 'Yangi mavsum' : 'Новый сезон',
+        title: formatSevenRoadsSeasonLabel(language, 2),
+        subtitle: language === 'uz' ? '7 qism' : '7 серий',
         action: () => onOpenSeason(2),
       }
     }
@@ -181,7 +230,7 @@ export function PublishedStoriesShell({
   const closeNotice = () => setNotice(null)
 
   return (
-    <div className="relative mx-auto h-[100dvh] max-w-[430px] overflow-hidden text-white">
+    <div className="relative mx-auto h-dvh max-w-[430px] overflow-hidden text-white">
       <div
         className="absolute inset-0 z-0 bg-cover bg-center"
         style={{ backgroundImage: `url("${backgroundUrl}")` }}
@@ -189,15 +238,15 @@ export function PublishedStoriesShell({
       <div
         className={`absolute inset-0 z-0 ${
           tab === 'home'
-            ? 'bg-gradient-to-b from-[#0f2528]/10 via-[#0f2528]/10 to-[#0b2226]/80'
-            : 'bg-gradient-to-b from-[#12252a]/10 via-transparent to-[#0d2024]/72'
+            ? 'bg-linear-to-b from-[#0f2528]/10 via-[#0f2528]/10 to-[#0b2226]/80'
+            : 'bg-linear-to-b from-[#12252a]/10 via-transparent to-[#0d2024]/72'
         }`}
       />
 
       {galleryLightbox ? (
         <button
           type="button"
-          className="fixed inset-0 z-[100] flex cursor-zoom-out items-center justify-center bg-black/95 p-3"
+          className="fixed inset-0 z-100 flex cursor-zoom-out items-center justify-center bg-black/95 p-3"
           onClick={() => setGalleryLightbox(null)}
           aria-label={language === 'uz' ? 'Lavhani yopish' : 'Закрыть сцену'}
         >
@@ -211,7 +260,7 @@ export function PublishedStoriesShell({
 
       {notice ? (
         <div
-          className="fixed inset-0 z-[95] flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]"
+          className="fixed inset-0 z-95 flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]"
           role="presentation"
           onClick={closeNotice}
         >
@@ -240,18 +289,18 @@ export function PublishedStoriesShell({
                   {language === 'uz' ? 'Tushunarli' : 'Понятно'}
                 </button>
               </>
-            ) : notice.kind === 'locked-story' ? (
+            ) : notice.kind === 'locked-season' ? (
               <>
                 <p className="q-label">
-                  {language === 'uz' ? 'Keyingi hikoya' : 'Следующая сказка'}
+                  {language === 'uz' ? 'Keyingi mavsum' : 'Следующий сезон'}
                 </p>
                 <h2 className="q-heading mt-1 text-2xl font-bold">
-                  {notice.title}
+                  {formatSevenRoadsSeasonLabel(language, notice.seasonNumber)}
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? 'Bu hikoya “Jasorat bayrami” tugagandan keyin ochiladi.'
-                    : 'Эта сказка откроется после завершения «Праздника мужества».'}
+                    ? 'Bu mavsum “Jasorat bayrami” tugagandan keyin ochiladi.'
+                    : 'Этот сезон откроется после завершения «Праздника мужества».'}
                 </p>
                 <button type="button" className="q-primary mt-5 w-full" onClick={closeNotice}>
                   {language === 'uz' ? 'Tushunarli' : 'Понятно'}
@@ -265,8 +314,8 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? `Bu lavha ${notice.storyNumber ? `${notice.storyNumber}-hikoyadagi ` : ''}${notice.episodeNumber}-qismdagi shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
-                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? `сказки ${notice.storyNumber}, ` : ''}${notice.readerUnit === 'part' ? `части ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
+                    ? `Bu lavha ${notice.storyNumber ? (notice.storyAsEpisode ? `2-mavsumning ${notice.storyNumber}-qismida, ` : `${notice.storyNumber}-hikoyada, `) : ''}${notice.readerUnit === 'part' ? `ichki ${notice.episodeNumber}-qismdagi` : `${notice.episodeNumber}-qismdagi`} shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
+                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? (notice.storyAsEpisode ? `серии ${notice.storyNumber}, ` : `сказки ${notice.storyNumber}, `) : ''}${notice.readerUnit === 'part' ? `части ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
                   {reading.state === 'in_progress' ? (
@@ -294,7 +343,7 @@ export function PublishedStoriesShell({
       <div className="relative z-10 flex h-full min-h-0 flex-col px-4 pt-[max(1.2rem,env(safe-area-inset-top))] sm:px-5">
         <header className="flex flex-none items-start justify-between gap-4 px-1">
           <div>
-            <p className="font-serif text-xl font-bold tracking-[0.2em] text-[#fff7df] drop-shadow">
+            <p className="font-serif text-xl font-bold tracking-[0.2em] text-[#fff7df] drop-shadow-sm">
               QISSA
             </p>
             <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#efd9aa]">
@@ -347,7 +396,7 @@ export function PublishedStoriesShell({
               <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
                 {language === 'uz' ? 'Hikoyalar xazinasi' : 'Хранилище историй'}
               </p>
-              <h1 className="mt-1 font-serif text-[2.45rem] font-bold leading-none text-[#fffaf0] drop-shadow">
+              <h1 className="mt-1 font-serif text-[2.45rem] font-bold leading-none text-[#fffaf0] drop-shadow-sm">
                 {copy.library}
               </h1>
               <p className="mt-3 max-w-[350px] text-sm leading-6 text-[#f4ecdf]">
@@ -357,7 +406,7 @@ export function PublishedStoriesShell({
               </p>
             </div>
 
-            <section className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-[2rem] border-t border-[#ead8b7]/75 bg-[#f8efdf]/90 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5">
+            <section className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-4xl border-t border-[#ead8b7]/75 bg-[#f8efdf]/90 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5">
               <div className="relative z-30 flex-none bg-[#fff9ed]/95 px-4 pt-4 backdrop-blur-xl sm:px-5">
                 <div className="grid grid-cols-2 border-b border-[#d8c39a]/75">
                   <button
@@ -396,6 +445,7 @@ export function PublishedStoriesShell({
                     {sevenRoadsSeasons.map((season) => {
                       const primaryStory = getPrimaryPublishedSeasonStory(season)
                       const authoredStory = primaryStory?.authoredStory ?? null
+                      const storyScoped = primaryStory?.completionScope === 'story'
 
                       if (
                         season.status !== 'published' ||
@@ -417,7 +467,7 @@ export function PublishedStoriesShell({
                               className="absolute inset-0 h-full w-full object-cover"
                               loading="lazy"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-black/10" />
                             <div className="absolute inset-x-0 bottom-0 p-4">
                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
                                 {storyScoped
@@ -428,7 +478,7 @@ export function PublishedStoriesShell({
                                 <h3 className="font-serif text-2xl font-bold text-white">
                                   {copy.soon}
                                 </h3>
-                                <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                                <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur-sm">
                                   {language === 'uz' ? 'Tayyorlanmoqda' : 'Готовим'}
                                 </span>
                               </div>
@@ -439,8 +489,37 @@ export function PublishedStoriesShell({
 
                       const seasonStoryProgress =
                         authoredStoryPersistence.load(authoredStory)
-                      const locked = season.number === 2 && !story2Unlocked
-                      const storyScoped = primaryStory.completionScope === 'story'
+                      const locked = season.number === 2 && !season2Unlocked
+                      const publishedSeasonStories = getPublishedSeasonStories(season)
+                      const singleCoverEpisodeList =
+                        season.presentation === 'single-cover-episode-list'
+                      const seasonEpisodeStates = singleCoverEpisodeList
+                        ? publishedSeasonStories.map((entry) => {
+                            const packageStory = entry.authoredStory
+                            const packageProgress = packageStory
+                              ? authoredStoryPersistence.load(packageStory)
+                              : null
+                            return {
+                              entry,
+                              progress: packageProgress,
+                              completed: Boolean(packageProgress?.completed),
+                            }
+                          })
+                        : []
+                      const completedEpisodeCount = seasonEpisodeStates.filter(
+                        (item) => item.completed,
+                      ).length
+                      const activeSeasonEpisode =
+                        seasonEpisodeStates.find((item, index) => {
+                          if (!item.progress || item.completed) return false
+                          const priorEpisodesCompleted = seasonEpisodeStates
+                            .slice(0, index)
+                            .every((previous) => previous.completed)
+                          const legacyEpisode2Resume = item.entry.number === 2
+                          return priorEpisodesCompleted || legacyEpisode2Resume
+                        }) ??
+                        seasonEpisodeStates.find((item) => !item.completed) ??
+                        null
                       const progressLabel = locked
                         ? language === 'uz'
                           ? '1-hikoyadan keyin'
@@ -461,21 +540,36 @@ export function PublishedStoriesShell({
                                     ? 'Boshlanmagan'
                                     : 'Не начат'
                             })()
-                          : seasonStoryProgress?.completed
-                            ? copy.completed
-                            : seasonStoryProgress
-                              ? formatSevenRoadsPartProgress(
-                                  language,
-                                  (seasonStoryProgress.current_part_index ?? 0) + 1,
-                                  authoredStory.parts.length,
-                                )
-                              : language === 'uz'
-                                ? 'Boshlanmagan'
-                                : 'Не начат'
-                      const coverUrl = resolveAuthoredStoryAssetUrl(
-                        authoredStory.cover_illustration.asset_id,
-                        authoredStory.cover_illustration.runtime_url,
-                      )
+                          : singleCoverEpisodeList
+                            ? seasonEpisodeStates.length > 0 &&
+                              completedEpisodeCount === seasonEpisodeStates.length
+                              ? copy.completed
+                              : activeSeasonEpisode?.progress
+                                ? formatSevenRoadsEpisodeProgress(
+                                    language,
+                                    activeSeasonEpisode.entry.number,
+                                    seasonEpisodeStates.length,
+                                  )
+                                : language === 'uz'
+                                  ? 'Boshlanmagan'
+                                  : 'Не начат'
+                            : seasonStoryProgress?.completed
+                              ? copy.completed
+                              : seasonStoryProgress
+                                ? formatSevenRoadsPartProgress(
+                                    language,
+                                    (seasonStoryProgress.current_part_index ?? 0) + 1,
+                                    authoredStory.parts.length,
+                                  )
+                                : language === 'uz'
+                                  ? 'Boshlanmagan'
+                                  : 'Не начат'
+                      const coverUrl = season.coverAssetId
+                        ? resolveAuthoredStoryAssetUrl(season.coverAssetId, null)
+                        : resolveAuthoredStoryAssetUrl(
+                            authoredStory.cover_illustration.asset_id,
+                            authoredStory.cover_illustration.runtime_url,
+                          )
 
                       return (
                         <button
@@ -484,8 +578,8 @@ export function PublishedStoriesShell({
                           onClick={() =>
                             locked
                               ? setNotice({
-                                  kind: 'locked-story',
-                                  title: primaryStory.title ?? authoredStory.title,
+                                  kind: 'locked-season',
+                                  seasonNumber: season.number,
                                 })
                               : onOpenSeason(season.number)
                           }
@@ -499,13 +593,13 @@ export function PublishedStoriesShell({
                               loading="lazy"
                             />
                           ) : null}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/5" />
+                          <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/25 to-black/5" />
                           <div className="absolute inset-x-0 bottom-0 p-4">
                             <div className="flex items-center justify-between gap-3">
                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
                                 {formatSevenRoadsSeasonLabel(language, season.number)}
                               </p>
-                              <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                              <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur-sm">
                                 {progressLabel}
                               </span>
                             </div>
@@ -535,7 +629,7 @@ export function PublishedStoriesShell({
                         .map((season) => {
                           const gallery = buildSeasonGallery(season)
                           const primaryGalleryStory = getPrimaryPublishedSeasonStory(season)
-                          const galleryLocked = season.number === 2 && !story2Unlocked
+                          const galleryLocked = season.number === 2 && !season2Unlocked
                           const galleryTitle =
                             gallery.storyCount === 1
                               ? primaryGalleryStory?.title ??
@@ -561,11 +655,8 @@ export function PublishedStoriesShell({
                                 onClick={() => {
                                   if (galleryLocked) {
                                     setNotice({
-                                      kind: 'locked-story',
-                                      title:
-                                        primaryGalleryStory?.title ??
-                                        primaryGalleryStory?.authoredStory?.title ??
-                                        (language === 'uz' ? 'Keyingi hikoya' : 'Следующая сказка'),
+                                      kind: 'locked-season',
+                                      seasonNumber: season.number,
                                     })
                                     return
                                   }
@@ -629,7 +720,7 @@ export function PublishedStoriesShell({
                                     />
                                   </div>
 
-                                  <div className="mt-4 overflow-hidden rounded-[1rem] border border-[#d8c39a]/70 bg-[#fffaf0]/55">
+                                  <div className="mt-4 overflow-hidden rounded-2xl border border-[#d8c39a]/70 bg-[#fffaf0]/55">
                                     {gallery.episodes.map((episode) => {
                                       const episodeKey =
                                         `${season.number}:${episode.storyNumber}:${episode.episodeNumber}`
@@ -657,7 +748,9 @@ export function PublishedStoriesShell({
                                             <div className="min-w-0 flex-1">
                                               {gallery.storyCount > 1 ? (
                                                 <p className="text-[0.58rem] font-bold uppercase tracking-[0.12em] text-[#9a8055]">
-                                                  {formatSevenRoadsStoryLabel(language, episode.storyNumber)} · {episode.storyTitle}
+                                                  {season.presentation === 'single-cover-episode-list'
+                                                    ? formatSevenRoadsEpisodeLabel(language, episode.storyNumber)
+                                                    : formatSevenRoadsStoryLabel(language, episode.storyNumber)} · {episode.storyTitle}
                                                 </p>
                                               ) : null}
                                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
@@ -727,7 +820,7 @@ export function PublishedStoriesShell({
                                                       <button
                                                         key={item.key}
                                                         type="button"
-                                                        className="aspect-[4/3] overflow-hidden rounded-[1.2rem] border border-[#d4bc8d] bg-[#e9dcc5] shadow-[0_14px_32px_-26px_rgba(74,49,13,.75)] transition active:scale-[0.98]"
+                                                        className="aspect-4/3 overflow-hidden rounded-[1.2rem] border border-[#d4bc8d] bg-[#e9dcc5] shadow-[0_14px_32px_-26px_rgba(74,49,13,.75)] transition active:scale-[0.98]"
                                                         onClick={() =>
                                                           setGalleryLightbox({
                                                             url,
@@ -749,7 +842,7 @@ export function PublishedStoriesShell({
                                                     <button
                                                       key={item.key}
                                                       type="button"
-                                                      className="relative aspect-[4/3] overflow-hidden rounded-[1.2rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_14px_32px_-26px_rgba(74,49,13,.7)] transition active:scale-[0.98]"
+                                                      className="relative aspect-4/3 overflow-hidden rounded-[1.2rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_14px_32px_-26px_rgba(74,49,13,.7)] transition active:scale-[0.98]"
                                                       onClick={() =>
                                                         setNotice({
                                                           kind: 'locked-art',
@@ -758,6 +851,8 @@ export function PublishedStoriesShell({
                                                             gallery.storyCount > 1
                                                               ? episode.storyNumber
                                                               : undefined,
+                                                          storyAsEpisode:
+                                                            season.presentation === 'single-cover-episode-list',
                                                           readerUnit: episode.readerUnit,
                                                         })
                                                       }
@@ -777,7 +872,7 @@ export function PublishedStoriesShell({
                                                       />
                                                       <div className="absolute inset-0 bg-[#10282d]/60" />
                                                       <div className="absolute inset-0 flex items-center justify-center">
-                                                        <div className="rounded-full border border-[#efd7a7]/60 bg-black/25 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-[#fff4dc] backdrop-blur-sm">
+                                                        <div className="rounded-full border border-[#efd7a7]/60 bg-black/25 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-[#fff4dc] backdrop-blur-xs">
                                                           {language === 'uz'
                                                             ? 'Ochilmagan'
                                                             : 'Не открыто'}

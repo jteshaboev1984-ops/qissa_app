@@ -15,9 +15,13 @@ export interface PublishedSeasonStory {
   status: PublishedStoryStatus
   authoredStory: AuthoredStoryPackage | null
   episodes: PublishedSeasonEpisode[]
-  completionScope: 'season' | 'story'
+  completionScope: 'season' | 'story' | 'episode'
   readerUnit: 'episode' | 'part'
 }
+
+export type PublishedSeasonPresentation =
+  | 'default'
+  | 'single-cover-episode-list'
 
 export interface PublishedSeason {
   id: string
@@ -27,4 +31,6 @@ export interface PublishedSeason {
   title: string | null
   status: PublishedSeasonStatus
   stories: PublishedSeasonStory[]
+  presentation?: PublishedSeasonPresentation
+  coverAssetId?: string | null
 }

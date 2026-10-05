@@ -365,6 +365,25 @@ export const validateAuthoredStoryPackage = (
     }
   })
 
+  for (const external of story.external_choice_context ?? []) {
+    if (!external.decision_id.trim()) {
+      errors.push('external choice decision_id is required')
+      continue
+    }
+    if (choicesByDecision.has(external.decision_id)) {
+      errors.push(`external decision_id collides with local decision: ${external.decision_id}`)
+      continue
+    }
+    if (!external.source_story_id.trim() || !external.source_story_version.trim()) {
+      errors.push(`${external.decision_id}: external choice source story/version is required`)
+    }
+    const allowed = new Set(external.allowed_choice_ids.filter(Boolean))
+    if (allowed.size === 0) {
+      errors.push(`${external.decision_id}: at least one allowed external choice is required`)
+    }
+    choicesByDecision.set(external.decision_id, allowed)
+  }
+
   story.parts.forEach((part) => {
     for (const segment of part.conditional_segments ?? []) {
       const allowedChoices = choicesByDecision.get(segment.when.decision_id)

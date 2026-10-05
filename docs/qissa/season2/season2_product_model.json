@@ -1,0 +1,98 @@
+{
+  "version": "season2-product-model-1",
+  "updated_at": "2026-10-05",
+  "world_id": "seven_roads",
+  "season_number": 2,
+  "owner_decision": "option-2",
+  "presentation_mode": "one-season-cover-seven-episode-list",
+  "product_rules": {
+    "season_cover_count": 1,
+    "episode_cover_count": 0,
+    "season_cover_asset_id": "seven_roads_season2_cover_v1",
+    "episode_cards_use_images": false,
+    "episode_rows_show_number_title_progress": true,
+    "episode_packages_keep_independent_progress": true,
+    "reader_shows_episode_specific_cover": false,
+    "scene_illustrations_remain_inside_reader_and_gallery": true,
+    "public_switch_only_after_full_release_gate": true,
+    "season_cover_status": "hosted_verified"
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "title_ru": "Королевское серебро",
+      "package_path": "src/data/authored/staging/season2Story1RoyalSilver.ru.json",
+      "status": "release-candidate-wired"
+    },
+    {
+      "number": 2,
+      "title_ru": "Тайна восточного каравана",
+      "package_path": "src/data/authored/taynaVostochnogoKaravanaV4.ru.json",
+      "status": "published-preserved-in-release-candidate"
+    },
+    {
+      "number": 3,
+      "title_ru": "Две башни",
+      "package_path": "src/data/authored/staging/season2Story3TwoTowers.ru.json",
+      "status": "release-candidate-wired"
+    },
+    {
+      "number": 4,
+      "title_ru": "Человек, которого ждут",
+      "package_path": "src/data/authored/staging/season2Story4WaitedMan.ru.json",
+      "status": "release-candidate-wired"
+    },
+    {
+      "number": 5,
+      "title_ru": "Ложная дорога",
+      "package_path": "src/data/authored/staging/season2Story5FalseRoad.ru.json",
+      "status": "release-candidate-wired"
+    },
+    {
+      "number": 6,
+      "title_ru": "Две подмоги",
+      "package_path": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
+      "status": "release-candidate-wired"
+    },
+    {
+      "number": 7,
+      "title_ru": "Обратно в Ордан",
+      "package_path": "src/data/authored/staging/season2Story7BackToOrdan.ru.json",
+      "status": "release-candidate-wired"
+    }
+  ],
+  "compatibility": {
+    "current_live_season2_story2_must_not_be_removed_before_switch": true,
+    "current_story2_progress_must_be_preserved": true,
+    "implementation_strategy": "Keep seven authored packages behind the scenes. Present them as seven episodes under one Season 2 page. This avoids resetting the already-live Story 2 progress while matching the approved user-facing model.",
+    "legacy_story2_cover": "Retain in storage/package for backward compatibility; do not use it as an episode card once the one-cover Season 2 presentation is activated.",
+    "release_wiring": "All seven packages are composed as seven episode rows under one shared Season 2 cover; Episode 2 keeps its existing story_id/story_version persistence key."
+  },
+  "release_blockers": [],
+  "localization": {
+    "status": "ru+uz-complete-staging",
+    "episode_2": "existing-live-ru+uz",
+    "episodes_1_3_4_5_6_7": "staged-ru+uz-ci-validated"
+  },
+  "release_state": "release-gates-passed",
+  "release_validation": {
+    "dedicated_workflow": "Season 2 Tier A Slot Check",
+    "conclusion": "success-required",
+    "checks": [
+      "RU+UZ episode overlays validated",
+      "shared Season 2 cover validated and excluded from episode readers/completion screens",
+      "seven-episode release wiring validated",
+      "legacy Episode 2 progress resume preserved",
+      "Episode 3 inherited Episode 2 choice preserved",
+      "hosted Tier A image resolves and unlocks gallery only after entering the viewport",
+      "completed Season 2 Home/overview navigation does not promise a nonexistent result screen",
+      "progress reset clears progress, reading position, and gallery discovery, including stale story versions",
+      "typecheck passed",
+      "production build passed",
+      "430x932 browser regression smoke passed"
+    ]
+  },
+  "known_non_release_blockers": [
+    "Broad Seven Roads CI still reports the pre-existing dev-only npm audit finding in the Tailwind 3.x toolchain; production dependency audit remains clean."
+  ]
+}

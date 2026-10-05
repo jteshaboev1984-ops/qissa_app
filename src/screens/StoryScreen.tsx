@@ -153,7 +153,7 @@ export function StoryScreen({
           setViewMode('read')
           onReaderPreferencesChange({ defaultPlaybackMode: 'read' })
         }}
-        className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${viewMode === 'read' ? 'bg-[#fffdf7] text-[#24261f] shadow-sm' : 'text-[#665d49]'}`}
+        className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${viewMode === 'read' ? 'bg-[#fffdf7] text-[#24261f] shadow-xs' : 'text-[#665d49]'}`}
       >
         {t(language, 'story.read_mode')}
       </button>
@@ -162,7 +162,7 @@ export function StoryScreen({
           setViewMode('listen')
           onReaderPreferencesChange({ defaultPlaybackMode: 'listen' })
         }}
-        className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${viewMode === 'listen' ? 'bg-[#fffdf7] text-[#24261f] shadow-sm' : 'text-[#665d49]'}`}
+        className={`rounded-full px-4 py-2.5 text-sm font-bold transition ${viewMode === 'listen' ? 'bg-[#fffdf7] text-[#24261f] shadow-xs' : 'text-[#665d49]'}`}
       >
         {t(language, 'story.listen_mode')}
       </button>
@@ -248,7 +248,7 @@ export function StoryScreen({
     return (
       <section
         onPointerDownCapture={() => setViewMode('read')}
-        className="relative overflow-hidden rounded-[2rem] border border-[#eadfc9] bg-[#fffdf7]/90 p-5 shadow-[0_18px_44px_-34px_rgba(115,92,0,.65)]"
+        className="relative overflow-hidden rounded-4xl border border-[#eadfc9] bg-[#fffdf7]/90 p-5 shadow-[0_18px_44px_-34px_rgba(115,92,0,.65)]"
       >
         <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-[#f3d34a]/20 blur-2xl" />
 
@@ -449,7 +449,7 @@ export function StoryScreen({
     if (!canShowVocabulary) return null
 
     return (
-      <section className="rounded-[1.5rem] border border-[#cfe9cf] bg-[#eff9ee]/70 p-4 text-sm">
+      <section className="rounded-3xl border border-[#cfe9cf] bg-[#eff9ee]/70 p-4 text-sm">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-bold text-[#244f2c]">{t(language, 'story.show_words')}</h3>
           {showVocabulary ? (

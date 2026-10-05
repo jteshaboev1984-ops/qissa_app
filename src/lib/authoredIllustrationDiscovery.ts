@@ -65,6 +65,33 @@ const writeIds = (
   }
 }
 
+const clear = (
+  story: Pick<AuthoredStoryPackage, 'story_id' | 'story_version'>,
+) => {
+  const target = storage()
+  if (!target) return
+  try {
+    target.removeItem(keyFor(story))
+  } catch {
+    // Ignore cleanup failures; reset should remain usable.
+  }
+}
+
+const clearAll = () => {
+  const target = storage()
+  if (!target) return
+  try {
+    const keys: string[] = []
+    for (let index = 0; index < target.length; index += 1) {
+      const key = target.key(index)
+      if (key?.startsWith(`${KEY_PREFIX}:`)) keys.push(key)
+    }
+    keys.forEach((key) => target.removeItem(key))
+  } catch {
+    // Ignore cleanup failures during a full progress reset.
+  }
+}
+
 const markSeen = (
   story: Pick<AuthoredStoryPackage, 'story_id' | 'story_version'>,
   assetId: string,
@@ -237,6 +264,8 @@ export const authoredIllustrationDiscovery = {
   keyPrefix: KEY_PREFIX,
   keyFor,
   load: readIds,
+  clear,
+  clearAll,
   markSeen,
   seedFromProgress,
   buildGalleryEpisodes,

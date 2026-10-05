@@ -1,0 +1,220 @@
+{
+  "version": "story1-authoring-map-1",
+  "status": "staging-source-locked",
+  "created_at": "2026-10-03",
+  "story_number": 1,
+  "title_ru": "Королевское серебро",
+  "canonical_source": {
+    "filename": "seven_roads_s2_story1_royal_silver_literary_v5.md",
+    "library_path": "/QISSA/production/seven_roads/season2_text/approved/seven_roads_s2_story1_royal_silver_literary_v5.md",
+    "sha256": "ac2d3c1bbcd90b37df1e01edd6b78a217e6c96c91b5b72ee545f8fa455805ff0",
+    "lines": 1059,
+    "header_version": "v5",
+    "declared_interactivity": "3 choices × 2 variants"
+  },
+  "package_plan": {
+    "target_schema": "authored-multi-choice-v2-deferred-branches",
+    "language": "ru",
+    "app_age_group": "8-9",
+    "editorial_age_range": "source does not explicitly declare a runtime age range",
+    "story_mode": "series",
+    "story_mood": "kind_adventure",
+    "part_count": 3,
+    "publication_state": "staging-only",
+    "cover_status": "shared Season 2 cover hosted and verified; no episode-specific cover",
+    "localization_status": "Uzbek staging overlay authored and CI-validated",
+    "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges.",
+    "staging_ru_package": "src/data/authored/staging/season2Story1RoyalSilver.ru.json",
+    "staging_ru_package_status": "built-and-validated-pending-release-gates",
+    "cover_policy": "shared-season-cover",
+    "shared_season_cover_asset_id": "seven_roads_season2_cover_v1",
+    "staging_uz_overlay": "src/data/authored/staging/season2Story1RoyalSilver.uz.json"
+  },
+  "parts": [
+    {
+      "part_id": "story1_part_1_royal_silver_ambush",
+      "order": 1,
+      "title": "Часть 1",
+      "story_text": {
+        "source_lines": [
+          7,
+          127
+        ],
+        "sha256": "1eeca862cfa1c2d0c6d9a16fdda90ffe28c4cb289b7c2730ef0397877fea8d8f"
+      },
+      "image_slots": [
+        {
+          "slot_id": "S2-ST1-TIERA-ATTACK",
+          "asset_id": "seven_roads_s2_story1_royal_silver_attack_01_APPROVED",
+          "phase": "story_text",
+          "after_text": "И понял, что его заметили.",
+          "runtime_state": "hosted-verified"
+        }
+      ],
+      "decision": {
+        "decision_id": "story1_choice_1_first_response",
+        "prompt": "Что Данияр сделает первым?",
+        "source_prompt_line": 131,
+        "memory_key": "silver_convoy_first_response",
+        "choices": [
+          {
+            "choice_id": "story1_choice_1a_stabilize_harness",
+            "text": "Удержит переднюю упряжь и поможет вознице успокоить лошадей.",
+            "source_choice_line": 133,
+            "resolution": {
+              "source_lines": [
+                141,
+                171
+              ],
+              "sha256": "b4c638114a201e7c8b27bf4bbb6b62675b0cc1e23ce723bcf154b9719893c1ea"
+            },
+            "memory_value": "stabilize_front_harness"
+          },
+          {
+            "choice_id": "story1_choice_1b_reopen_guard_path",
+            "text": "Освободит проход для двух задних стражников, чтобы охрана снова собралась вместе.",
+            "source_choice_line": 135,
+            "resolution": {
+              "source_lines": [
+                177,
+                205
+              ],
+              "sha256": "546d41f1ab04867ad4f80b557ed4673083bdb42adbbb8baa80ccd28430690d6d"
+            },
+            "memory_value": "reopen_rear_guard_path"
+          }
+        ],
+        "convergence_contract": "Повозка сохранена; нападение теряет темп."
+      },
+      "post_choice_text": null,
+      "is_final": false
+    },
+    {
+      "part_id": "story1_part_2_kamran_pursuit",
+      "order": 2,
+      "title": "Часть 2",
+      "story_text": {
+        "source_lines": [
+          211,
+          407
+        ],
+        "sha256": "2a4aa0a447574cb0e5f3fd44e235346f187de0617e581f773b6bdc556391c778"
+      },
+      "image_slots": [
+        {
+          "slot_id": "S2-ST1-TIERA-PURSUIT",
+          "asset_id": "seven_roads_s2_story1_danyar_pursuit_01_APPROVED",
+          "phase": "story_text",
+          "after_text": "Данияр с оставшимся стражником продолжил погоню по основной дороге.",
+          "runtime_state": "hosted-verified"
+        }
+      ],
+      "decision": {
+        "decision_id": "story1_choice_2_kamran_search",
+        "prompt": "Как Данияр продолжит поиск?",
+        "source_prompt_line": 411,
+        "memory_key": "kamran_capture_method",
+        "choices": [
+          {
+            "choice_id": "story1_choice_2a_follow_tracks",
+            "text": "Найдёт следы тёмного коня и пойдёт по ним.",
+            "source_choice_line": 413,
+            "resolution": {
+              "source_lines": [
+                421,
+                457
+              ],
+              "sha256": "16ba2ae8cbd7a678849732783d248b5827203056b504b6cb665249d760dcb336"
+            },
+            "memory_value": "tracks"
+          },
+          {
+            "choice_id": "story1_choice_2b_predict_exit",
+            "text": "Вспомнит устройство внешних дворов и перекроет самый вероятный выход.",
+            "source_choice_line": 415,
+            "resolution": {
+              "source_lines": [
+                463,
+                495
+              ],
+              "sha256": "62abd8707c05cb61094221df96f7d58712d41d776cedb33659f1499eacca0d55"
+            },
+            "memory_value": "predicted_exit"
+          }
+        ],
+        "convergence_contract": "Камран отрезан от безопасного выхода и задержан."
+      },
+      "post_choice_text": null,
+      "is_final": false
+    },
+    {
+      "part_id": "story1_part_3_network_sign",
+      "order": 3,
+      "title": "Часть 3",
+      "story_text": {
+        "source_lines": [
+          500,
+          576
+        ],
+        "sha256": "4ea89e8e4afeb11bedddd1e3909d5cdc53e5090feec5605573a629c814602800"
+      },
+      "image_slots": [],
+      "decision": {
+        "decision_id": "story1_choice_3_network_link",
+        "prompt": "Что Данияр проверит, чтобы понять, с кем они столкнулись?",
+        "source_prompt_line": 580,
+        "memory_key": "network_sign_source",
+        "choices": [
+          {
+            "choice_id": "story1_choice_3a_check_gear",
+            "text": "Осмотрит вещи Камрана и снаряжение его коня.",
+            "source_choice_line": 582,
+            "resolution": {
+              "source_lines": [
+                590,
+                624
+              ],
+              "sha256": "d8554cf675bb8c2b431c8401492f61fcb05659428ddacad769fa2a7a45fed794"
+            },
+            "memory_value": "gear"
+          },
+          {
+            "choice_id": "story1_choice_3b_check_escape_route",
+            "text": "Вернётся к месту нападения и проверит дорогу, по которой ушли остальные.",
+            "source_choice_line": 584,
+            "resolution": {
+              "source_lines": [
+                630,
+                670
+              ],
+              "sha256": "4e024f280f6342e197006c7adc5af71e33d2257f7bbd56b5522ef8d4f89b5c31"
+            },
+            "memory_value": "escape_route"
+          }
+        ],
+        "convergence_contract": "Нападение связывается с той же сетью; личность Камрана по-прежнему не раскрыта."
+      },
+      "post_choice_text": {
+        "source_lines": [
+          676,
+          1030
+        ],
+        "sha256": "b76f26bf39f9f44c71bb4aa7be02c89dbcf985490b6fa546a59d8e8af9a646bb"
+      },
+      "is_final": true
+    }
+  ],
+  "canonical_events_without_choice": [
+    "Данияр отправляет самого быстрого стражника по служебной тропе к восточным воротам.",
+    "Тот устно передаёт точные приметы Камрана.",
+    "Начальник ворот направляет описание к внешнему караванному двору и старым скотным воротам."
+  ],
+  "final_invariants": [
+    "Серебро спасено.",
+    "Камран задержан в Ордане и называет себя Фаридом.",
+    "Нападение связано с уже известным знаком сети.",
+    "Уцелевшие разбойники возвращаются к сети через условную лесную точку.",
+    "Сеть узнаёт об аресте Камрана и решает воздействовать на дорогу, а не на тюрьму."
+  ],
+  "blockers_before_runtime_package": []
+}

@@ -27,7 +27,7 @@ export function SevenRoadsSettingsScreen({
   const copy = getSevenRoadsCopy(language)
 
   return (
-    <main className="mx-auto min-h-[100dvh] max-w-[430px] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] text-[#2d332f] sm:px-5">
+    <main className="mx-auto min-h-dvh max-w-[430px] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] text-[#2d332f] sm:px-5">
       <header className="mb-5 flex items-center justify-between gap-3">
         <button
           type="button"
@@ -97,7 +97,7 @@ export function SevenRoadsSettingsScreen({
         </p>
       </section>
 
-      <section className="mt-4 rounded-[1.5rem] border border-[#d8b9a9] bg-[#fff7f1] p-5">
+      <section className="mt-4 rounded-3xl border border-[#d8b9a9] bg-[#fff7f1] p-5">
         <p className="q-label mb-2 text-[#8a5a44]">
           {language === 'uz' ? 'Hikoyalar jarayoni' : 'Прогресс сказок'}
         </p>

@@ -1,0 +1,157 @@
+{
+  "version": "story6-authoring-map-1",
+  "status": "staging-source-locked",
+  "created_at": "2026-10-03",
+  "story_number": 6,
+  "title_ru": "Две подмоги",
+  "canonical_source": {
+    "filename": "seven_roads_s2_story6_two_reinforcements_literary_v3.md",
+    "library_path": "/QISSA/production/seven_roads/season2_text/approved/seven_roads_s2_story6_two_reinforcements_literary_v3.md",
+    "sha256": "6b13e767b66ba7ebb0f8a78af511cf19c9bb880414d750d1e770f263eceedf60",
+    "lines": 645,
+    "header_version": "v3",
+    "declared_interactivity": "2 choices × 2 variants"
+  },
+  "package_plan": {
+    "target_schema": "authored-multi-choice-v2-deferred-branches",
+    "language": "ru",
+    "app_age_group": "8-9",
+    "story_mode": "series",
+    "story_mood": "kind_adventure",
+    "publication_state": "staging-only",
+    "localization_status": "Uzbek staging overlay authored and CI-validated",
+    "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges, with Markdown presentation markers normalized only at package-build time.",
+    "part_count": 2,
+    "cover_status": "shared Season 2 cover hosted and verified; no episode-specific cover",
+    "staging_ru_package": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
+    "staging_ru_package_status": "built-and-validated-pending-release-gates",
+    "cover_policy": "shared-season-cover",
+    "shared_season_cover_asset_id": "seven_roads_season2_cover_v1",
+    "staging_uz_overlay": "src/data/authored/staging/season2Story6TwoReinforcements.uz.json"
+  },
+  "parts": [
+    {
+      "part_id": "story6_part_1_false_reinforcement_and_delay",
+      "order": 1,
+      "title": "Часть 1",
+      "story_text": {
+        "source_lines": [
+          7,
+          143
+        ],
+        "sha256": "d192ceffcaa09a8c6e5c1be7733d21cbe3a07d5af8c69e2e218b66422befa675"
+      },
+      "image_slots": [
+        {
+          "slot_id": "S2-ST6-TIERA-FALSE-REINFORCEMENT",
+          "asset_id": "seven_roads_s2_story6_false_reinforcement_watchtower_01_APPROVED",
+          "phase": "story_text",
+          "after_text": "— Нас прислал Рустам.",
+          "runtime_state": "hosted-verified"
+        }
+      ],
+      "decision": {
+        "decision_id": "story6_choice_1_reinforcement_bypass",
+        "prompt": "Как быстрее найти обход?",
+        "source_prompt_line": 147,
+        "memory_key": "reinforcement_bypass",
+        "choices": [
+          {
+            "choice_id": "story6_choice_1a_road_book",
+            "text": "Самира проверит дорожную книгу.",
+            "source_choice_line": 149,
+            "resolution": {
+              "source_lines": [
+                157,
+                177
+              ],
+              "sha256": "c5b90c8a7e085ff29c76facb50ed7aa90ddf983f3f0f0f81faaeade495bb468f"
+            },
+            "memory_value": "road_book"
+          },
+          {
+            "choice_id": "story6_choice_1b_fresh_tracks",
+            "text": "Темур пойдёт по свежим следам.",
+            "source_choice_line": 151,
+            "resolution": {
+              "source_lines": [
+                183,
+                205
+              ],
+              "sha256": "0632db3c12595b420e7508ba517506e56f50ce6a516c839aeb9dda415d8188c3"
+            },
+            "memory_value": "fresh_tracks"
+          }
+        ],
+        "convergence_contract": "Обе ветки выводят настоящую подмогу на один и тот же обход."
+      },
+      "post_choice_text": null,
+      "is_final": false
+    },
+    {
+      "part_id": "story6_part_2_two_reinforcements",
+      "order": 2,
+      "title": "Часть 2",
+      "story_text": {
+        "source_lines": [
+          211,
+          371
+        ],
+        "sha256": "45e55785378791d38c04cc9d24a1566a95b4f454eedba911930c946df2ec20a7"
+      },
+      "image_slots": [
+        {
+          "slot_id": "S2-ST6-TIERA-REVEAL",
+          "asset_id": "seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED",
+          "phase": "story_text",
+          "after_text": "— Я никого вперёд не посылал.",
+          "runtime_state": "hosted-verified"
+        }
+      ],
+      "decision": {
+        "decision_id": "story6_choice_2_child_task",
+        "prompt": "Где Темур и Самира помогут в первую очередь?",
+        "source_prompt_line": 375,
+        "memory_key": "tower_child_task",
+        "choices": [
+          {
+            "choice_id": "story6_choice_2a_wagon_team",
+            "text": "У передней пары тюремной повозки.",
+            "source_choice_line": 377,
+            "resolution": {
+              "source_lines": [
+                385,
+                417
+              ],
+              "sha256": "a7100550a9e3dc518297942b2791c8b9963a0ccf641d7dc4e72bd36e4e196bf1"
+            },
+            "memory_value": "wagon_team"
+          },
+          {
+            "choice_id": "story6_choice_2b_clear_return_road",
+            "text": "На обратной дороге, где бегут свободные лошади.",
+            "source_choice_line": 379,
+            "resolution": {
+              "source_lines": [
+                423,
+                447
+              ],
+              "sha256": "1af6d487224d34e3bd6009349ac28e3d476c0c333d4e99c08473bfe0df03501d"
+            },
+            "memory_value": "clear_return_road"
+          }
+        ],
+        "convergence_contract": "Обман раскрыт; Фарид не освобождён; конвой разворачивается обратно в Ордан."
+      },
+      "post_choice_text": {
+        "source_lines": [
+          453,
+          629
+        ],
+        "sha256": "275bc76785b90e3ea58ff86e34acdf7d117688549e3867fcaa0e0564e8c50840"
+      },
+      "is_final": true
+    }
+  ],
+  "blockers_before_runtime_package": []
+}

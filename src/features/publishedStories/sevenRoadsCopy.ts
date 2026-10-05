@@ -63,7 +63,7 @@ const ru = {
     'Сейчас QISSA хранит прогресс чтения, позицию в тексте и выборы локально на этом устройстве. Аккаунт и облачная синхронизация пока не используются.',
   restartSeason: 'Сбросить прогресс сказок',
   restartSeasonBody:
-    'Это удалит прогресс чтения и сделанные выборы всех открытых сказок «Королевства семи дорог» на этом устройстве.',
+    'Это удалит прогресс чтения, сделанные выборы и открытые сцены всех сказок «Королевства семи дорог» на этом устройстве.',
   restartConfirm: 'Да, сбросить прогресс',
   cancel: 'Отмена',
   resetSeason: 'Сбросить прогресс сказок',
@@ -90,15 +90,19 @@ const ru = {
   finishToday: 'Завершить на сегодня',
   finishSeason: 'Завершить сезон',
   finishStory: 'Завершить сказку',
+  finishEpisode: 'Завершить серию',
   seasonCompleted: 'завершён',
   completionMemory:
     'QISSA запомнила четыре выбора. В следующих сезонах они смогут влиять на то, кто первым предложит решение, что герои проверят и насколько легко Темур и Самира будут доверять друг другу.',
   storyCompletionMemory:
     'QISSA сохранила выборы этой сказки. Они останутся частью пути героев дальше.',
+  episodeCompletionMemory:
+    'QISSA сохранила выборы этой серии. Они останутся частью общего пути сезона.',
   nextSeasonSoon: 'Следующий сезон — скоро',
   backHome: 'На главную',
   replaySeason: 'Пройти сезон заново',
   replayStory: 'Прочитать сказку заново',
+  replayEpisode: 'Прочитать серию заново',
   completionSummary: 'Темур и Самира стали юными бахадурами царства.',
 }
 
@@ -158,7 +162,7 @@ const uz = {
     'Hozir QISSA o‘qilgan qismni, matndagi joyni va tanlovlarni faqat shu qurilmada saqlaydi. Akkaunt va bulutli sinxronlash hozircha ishlatilmaydi.',
   restartSeason: 'Hikoyalar jarayonini tozalash',
   restartSeasonBody:
-    'Bu shu qurilmada “Yetti yo‘l qirolligi”dagi ochilgan hikoyalarning o‘qilgan joyi va tanlovlarini o‘chiradi.',
+    'Bu shu qurilmada “Yetti yo‘l qirolligi”dagi hikoyalarning o‘qilgan joyi, tanlovlari va ochilgan lavhalarini o‘chiradi.',
   restartConfirm: 'Ha, jarayonni tozalash',
   cancel: 'Bekor qilish',
   resetSeason: 'Hikoyalar jarayonini tozalash',
@@ -185,15 +189,19 @@ const uz = {
   finishToday: 'Hozircha to‘xtash',
   finishSeason: 'Mavsumni tugatish',
   finishStory: 'Hikoyani tugatish',
+  finishEpisode: 'Qismni tugatish',
   seasonCompleted: 'tugadi',
   completionMemory:
     'QISSA to‘rtta tanlovni eslab qoldi. Keyingi mavsumlarda ular kim birinchi bo‘lib yechim taklif qilishiga, qahramonlar nimani tekshirishiga va Temur bilan Samiraning bir-biriga qanchalik oson ishonishiga ta’sir qilishi mumkin.',
   storyCompletionMemory:
     'QISSA bu hikoyadagi tanlovlaringni saqladi. Ular qahramonlarning keyingi yo‘lida esda qoladi.',
+  episodeCompletionMemory:
+    'QISSA bu qismdagi tanlovlaringni saqladi. Ular mavsumning umumiy yo‘lida esda qoladi.',
   nextSeasonSoon: 'Keyingi mavsum — tez orada',
   backHome: 'Bosh sahifaga',
   replaySeason: 'Mavsumni boshidan o‘qish',
   replayStory: 'Hikoyani boshidan o‘qish',
+  replayEpisode: 'Qismni boshidan o‘qish',
   completionSummary: 'Temur va Samira qirollikning yosh bahodirlariga aylanishdi.',
 }
 

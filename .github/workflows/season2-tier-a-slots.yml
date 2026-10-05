@@ -1,0 +1,106 @@
+name: Season 2 Tier A Slot Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/data/authored/season2TierAVisualSlots.json'
+      - 'src/data/season2TierAVisualSlots.ts'
+      - 'src/data/authoredStoryAssets.ts'
+      - 'src/data/authored/staging/**'
+      - 'src/data/season2StagingAuthoredStories.ts'
+      - 'src/features/publishedStories/sevenRoadsCopy.ts'
+      - 'src/features/publishedStories/types.ts'
+      - 'src/features/authoredStory/types.ts'
+      - 'src/features/authoredStory/engine.ts'
+      - 'src/features/authoredStory/AuthoredStoryPlayer.tsx'
+      - 'src/components/PublishedStoriesShell.tsx'
+      - 'src/components/SeasonOverview.tsx'
+      - 'src/App.tsx'
+      - 'src/data/sevenRoadsSeasons.ts'
+      - 'docs/qissa/season2/season2_product_model.json'
+      - 'docs/qissa/season2/season2_cover_v1_inventory.json'
+      - 'scripts/check-season2-tier-a-visual-slots.mjs'
+      - 'scripts/check-season2-tier-a-runtime-assets.mjs'
+      - 'scripts/check-season2-staging-authored-packages.mjs'
+      - 'scripts/check-season2-product-model.mjs'
+      - 'scripts/check-season2-cover.mjs'
+      - 'scripts/check-season2-story1-uz.mjs'
+      - 'scripts/check-season2-uz-overlays.mjs'
+      - 'scripts/check-season2-release-wiring.mjs'
+      - 'scripts/smoke-season2-release-browser.mjs'
+      - 'docs/qissa/season2/**'
+      - 'package.json'
+      - '.github/workflows/season2-tier-a-slots.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate canonical Season 2 literary source index
+        run: npm run check:season2-literary-sources
+
+      - name: Validate Story 1 authored-package extraction map
+        run: npm run check:story1-authoring-map
+
+      - name: Validate Season 2 authored-package extraction maps
+        run: npm run check:season2-authoring-maps
+
+      - name: Validate Tier A visual slot bindings
+        run: npm run check:season2-tier-a-slots
+
+      - name: Validate Tier A runtime asset inventory
+        run: npm run check:season2-tier-a-runtime
+
+      - name: Validate Russian staging authored packages
+        run: npm run check:season2-staging-packages
+
+      - name: Validate Season 2 one-cover product model
+        run: npm run check:season2-product-model
+
+      - name: Validate approved Season 2 shared cover
+        run: npm run check:season2-cover
+
+      - name: Validate Episode 1 Uzbek staging overlay
+        run: npm run check:season2-story1-uz
+
+      - name: Validate all Season 2 Uzbek staging overlays
+        run: npm run check:season2-uz-overlays
+
+      - name: Validate Season 2 release wiring
+        run: npm run check:season2-release-wiring
+
+      - name: Validate Story 2 runtime inventory
+        run: npm run check:story2-runtime
+
+      - name: Validate Seven Roads product shell
+        run: npm run check:seven-roads-shell
+
+      - name: Typecheck app
+        run: npm run typecheck
+
+      - name: Build app
+        env:
+          VITE_QISSA_STORY2_PREVIEW: false
+          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
+        run: npm run build
+
+      - name: Smoke Season 2 seven-episode browser flow
+        run: npm run smoke:season2-release-browser

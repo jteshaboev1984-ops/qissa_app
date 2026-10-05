@@ -5,7 +5,6 @@ import { SeasonOverview } from './components/SeasonOverview'
 import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
 import {
   getPrimaryPublishedSeasonStory,
-  getPublishedSeasonStories,
   getSeasonStoryByNumber,
   getSevenRoadsSeason1,
   getSevenRoadsSeasons,
@@ -15,6 +14,7 @@ import { getSevenRoadsCopy } from './features/publishedStories/sevenRoadsCopy'
 import { publishedStoriesConsent } from './lib/publishedStoriesConsent'
 import { authoredStoryPersistence } from './lib/authoredStoryPersistence'
 import { authoredReadingPosition } from './lib/authoredReadingPosition'
+import { authoredIllustrationDiscovery } from './lib/authoredIllustrationDiscovery'
 import { sevenRoadsLanguagePreference } from './lib/sevenRoadsLanguagePreference'
 import { sevenRoadsReaderPreferences } from './lib/sevenRoadsReaderPreferences'
 import type { AuthoredStoryPackage } from './features/authoredStory/types'
@@ -91,6 +91,22 @@ function App() {
 
   const episodeTitles = seasonStory.episodes.map((episode) => episode.title)
 
+  const inheritedSelectedChoices = useMemo<Record<string, string>>(() => {
+    if (season.number !== 2 || seasonStory.number !== 3) return {}
+
+    const sourceStory = getSeasonStoryByNumber(season, 2)?.authoredStory
+    if (!sourceStory) return {}
+
+    const sourceProgress = authoredStoryPersistence.load(sourceStory)
+    const inheritedChoice =
+      sourceProgress?.selected_choices.story2_choice_3_sarvan_check
+    if (!inheritedChoice) return {}
+
+    return {
+      story2_choice_3_sarvan_check: inheritedChoice,
+    }
+  }, [season, seasonStory.number])
+
   const changeLanguage = (nextLanguage: typeof language) => {
     setLanguage(nextLanguage)
     sevenRoadsLanguagePreference.save(nextLanguage)
@@ -153,6 +169,7 @@ function App() {
             completionScope={seasonStory.completionScope}
             readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
+            showCover={season.presentation !== 'single-cover-episode-list'}
             completionSummary={
               seasonStory.completionScope === 'season'
                 ? copy.completionSummary
@@ -200,12 +217,14 @@ function App() {
             completionScope={seasonStory.completionScope}
             readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
+            showCover={season.presentation !== 'single-cover-episode-list'}
             completionSummary={
               seasonStory.completionScope === 'season'
                 ? copy.completionSummary
                 : undefined
             }
             initialEpisodeNumber={requestedEpisodeNumber ?? undefined}
+            inheritedSelectedChoices={inheritedSelectedChoices}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
               const next = { ...readerPreferences, ...patch }
@@ -213,7 +232,9 @@ function App() {
               sevenRoadsReaderPreferences.save(next)
             }}
             onBack={() => {
-              const returnToSeason = requestedEpisodeNumber != null
+              const returnToSeason =
+                requestedEpisodeNumber != null ||
+                season.presentation === 'single-cover-episode-list'
               setRequestedEpisodeNumber(null)
               if (returnToSeason) {
                 setView('season')
@@ -246,14 +267,9 @@ function App() {
         }}
         onBack={() => setView('shell')}
         onResetSeason={() => {
-          seasons
-            .flatMap((publishedSeason) => getPublishedSeasonStories(publishedSeason))
-            .forEach((seasonStoryEntry) => {
-              const authoredStory = seasonStoryEntry.authoredStory
-              if (!authoredStory) return
-              authoredStoryPersistence.clear(authoredStory)
-              authoredReadingPosition.clear(authoredStory)
-            })
+          authoredStoryPersistence.clearAll()
+          authoredReadingPosition.clearAll()
+          authoredIllustrationDiscovery.clearAll()
           setSelectedSeasonNumber(1)
           setSelectedStoryNumber(1)
           setRequestedEpisodeNumber(null)

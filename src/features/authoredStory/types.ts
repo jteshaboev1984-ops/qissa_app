@@ -54,6 +54,13 @@ export interface AuthoredStoryDecision {
   merge_state: Record<string, string>
 }
 
+export interface AuthoredStoryExternalChoiceContext {
+  decision_id: string
+  allowed_choice_ids: string[]
+  source_story_id: string
+  source_story_version: string
+}
+
 export interface AuthoredStoryPart {
   part_id: string
   order: number
@@ -110,6 +117,7 @@ export interface AuthoredStoryPackage {
   required_final_invariants: Record<string, string>
   illustration_plan: AuthoredStoryIllustrationPlan
   cover_illustration: AuthoredStoryCoverIllustration
+  external_choice_context?: AuthoredStoryExternalChoiceContext[]
   parts: AuthoredStoryPart[]
 }
 
