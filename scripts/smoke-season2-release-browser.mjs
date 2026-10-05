@@ -557,7 +557,10 @@ try {
   }
 
   await clickExactButton('Hozircha to‘xtash')
-  await waitFor(bodyHas('Yetti yo‘l qirolligi'), 'Uzbek Home before reset')
+  await waitFor(
+    `document.querySelector('button[aria-label="Sozlamalar"]') !== null`,
+    'Uzbek Home before reset',
+  )
   await clickAriaButton('Sozlamalar')
   await waitFor(bodyHas('Hikoyalar jarayoni'), 'Uzbek settings progress section')
   await clickExactButton('Hikoyalar jarayonini tozalash')
