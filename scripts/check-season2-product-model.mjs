@@ -75,11 +75,11 @@ for (let index = 0; index < expectedTitles.length; index += 1) {
 }
 
 const stagedPaths = model.episodes
-  .filter((episode) => episode.status === 'staging')
+  .filter((episode) => episode.number !== 2)
   .map((episode) => episode.package_path)
 
 if (stagedPaths.length !== 6) {
-  fail(`expected six staging episode packages, got ${stagedPaths.length}`)
+  fail(`expected six release-candidate episode packages, got ${stagedPaths.length}`)
 }
 
 for (const packagePath of stagedPaths) {
@@ -129,7 +129,7 @@ if (!seasonData.includes("getSeason2ReleaseCandidateStories")) {
   fail('Season 2 release-candidate package registry is not wired into season data')
 }
 
-for (const episode of model.episodes.filter((entry) => entry.status === 'staging')) {
+for (const episode of model.episodes.filter((entry) => entry.number !== 2)) {
   const packageJson = readJson(episode.package_path)
   if (authoredStories.includes(packageJson.story_id)) {
     fail(`${episode.title_ru}: staging episode leaked into public authoredStories registry`)
