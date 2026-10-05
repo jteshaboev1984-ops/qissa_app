@@ -20,6 +20,7 @@ on:
       - 'scripts/check-season2-story1-uz.mjs'
       - 'scripts/check-season2-uz-overlays.mjs'
       - 'scripts/check-season2-release-wiring.mjs'
+      - 'scripts/smoke-season2-release-browser.mjs'
       - 'docs/qissa/season2/**'
       - 'package.json'
       - '.github/workflows/season2-tier-a-slots.yml'
@@ -91,3 +92,6 @@ jobs:
           VITE_QISSA_STORY2_PREVIEW: false
           VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
         run: npm run build
+
+      - name: Smoke Season 2 seven-episode browser flow
+        run: npm run smoke:season2-release-browser
