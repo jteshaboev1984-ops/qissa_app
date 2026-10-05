@@ -565,6 +565,16 @@ try {
     'Episode 3 persisted inherited Episode 2 choice',
   )
 
+  for (const story of [episode3, episode4, episode5, episode6]) {
+    await setJson(
+      progressKey(story),
+      makeProgress(story, {
+        completed: true,
+        currentPartIndex: story.parts.length - 1,
+      }),
+    )
+  }
+
   await setJson(
     progressKey(episode7),
     makeProgress(episode7, {
@@ -599,16 +609,6 @@ try {
     ),
     'Episode 3 gallery discovery was not persisted before reset',
   )
-
-  for (const story of [episode3, episode4, episode5, episode6]) {
-    await setJson(
-      progressKey(story),
-      makeProgress(story, {
-        completed: true,
-        currentPartIndex: story.parts.length - 1,
-      }),
-    )
-  }
 
   const staleKeys = [
     'qissa:v1:authoredStoryProgress:retired_seven_roads_story:old-version',
