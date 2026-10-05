@@ -59,17 +59,32 @@ export function PublishedStoriesShell({
   const story = season1Story?.authoredStory ?? null
   const progress = story ? authoredStoryPersistence.load(story) : null
   const reading = sevenRoadsStory1ReadingState(progress)
-  const story2Season = sevenRoadsSeasons.find((season) => season.number === 2) ?? null
-  const story2Story = story2Season ? getPrimaryPublishedSeasonStory(story2Season) : null
-  const story2Package = story2Story?.authoredStory ?? null
-  const story2Progress = story2Package ? authoredStoryPersistence.load(story2Package) : null
-  const story2Unlocked = reading.state === 'completed'
-  const story2CurrentPart = story2Progress
-    ? Math.min(
-        story2Package?.parts.length ?? 10,
-        (story2Progress.current_part_index ?? 0) + 1,
-      )
-    : 1
+  const season2 = sevenRoadsSeasons.find((season) => season.number === 2) ?? null
+  const season2Stories = season2 ? getPublishedSeasonStories(season2) : []
+  const season2Entries = season2Stories.map((entry) => {
+    const authoredStory = entry.authoredStory
+    const progress = authoredStory
+      ? authoredStoryPersistence.load(authoredStory)
+      : null
+    return {
+      entry,
+      authoredStory,
+      progress,
+      completed: Boolean(progress?.completed),
+    }
+  })
+  const season2Unlocked = reading.state === 'completed'
+  const season2AllCompleted =
+    season2Entries.length === 7 && season2Entries.every((item) => item.completed)
+  const season2StartedIncomplete =
+    season2Entries.find((item) => Boolean(item.progress) && !item.completed) ?? null
+  const season2FirstIncomplete =
+    season2Entries.find((item) => !item.completed) ?? null
+  const season2Primary =
+    season2StartedIncomplete ??
+    season2FirstIncomplete ??
+    season2Entries.at(-1) ??
+    null
 
   const [libraryView, setLibraryView] = useState<LibraryView>('seasons')
   const [expandedGallerySeason, setExpandedGallerySeason] = useState<number | null>(null)
@@ -136,36 +151,37 @@ export function PublishedStoriesShell({
       }
     }
 
-    if (story2Story && story2Package) {
-      if (story2Progress?.completed) {
+    if (season2 && season2Primary?.authoredStory) {
+      if (season2AllCompleted) {
         return {
-          eyebrow: language === 'uz' ? '2-hikoya tugadi' : 'Сказка 2 завершена',
-          title: story2Story.title ?? story2Package.title,
+          eyebrow: language === 'uz' ? '2-mavsum tugadi' : 'Сезон 2 завершён',
+          title: formatSevenRoadsSeasonLabel(language, 2),
           subtitle: language === 'uz' ? 'Yakunini ko‘rish' : 'Посмотреть итог',
           action: () => onOpenSeason(2),
         }
       }
 
-      if (story2Progress) {
+      if (season2StartedIncomplete) {
         return {
           eyebrow: copy.continue,
-          title: story2Story.title ?? story2Package.title,
-          subtitle: formatSevenRoadsPartProgress(
+          title:
+            season2StartedIncomplete.entry.title ??
+            season2StartedIncomplete.authoredStory?.title ??
+            formatSevenRoadsSeasonLabel(language, 2),
+          subtitle: formatSevenRoadsSeasonEpisodeContext(
             language,
-            story2CurrentPart,
-            story2Package.parts.length,
+            2,
+            season2StartedIncomplete.entry.number,
+            7,
           ),
           action: () => onOpenSeason(2),
         }
       }
 
       return {
-        eyebrow: language === 'uz' ? 'Yangi hikoya' : 'Новая сказка',
-        title: story2Story.title ?? story2Package.title,
-        subtitle:
-          language === 'uz'
-            ? `2-hikoya · ${story2Package.parts.length} qism`
-            : `Сказка 2 · ${story2Package.parts.length} частей`,
+        eyebrow: language === 'uz' ? 'Yangi mavsum' : 'Новый сезон',
+        title: formatSevenRoadsSeasonLabel(language, 2),
+        subtitle: language === 'uz' ? '7 qism' : '7 серий',
         action: () => onOpenSeason(2),
       }
     }
