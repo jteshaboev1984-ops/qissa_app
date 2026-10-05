@@ -169,6 +169,7 @@ function App() {
             completionScope={seasonStory.completionScope}
             readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
+            showCover={season.presentation !== 'single-cover-episode-list'}
             completionSummary={
               seasonStory.completionScope === 'season'
                 ? copy.completionSummary
@@ -230,7 +231,9 @@ function App() {
               sevenRoadsReaderPreferences.save(next)
             }}
             onBack={() => {
-              const returnToSeason = requestedEpisodeNumber != null
+              const returnToSeason =
+                requestedEpisodeNumber != null ||
+                season.presentation === 'single-cover-episode-list'
               setRequestedEpisodeNumber(null)
               if (returnToSeason) {
                 setView('season')
