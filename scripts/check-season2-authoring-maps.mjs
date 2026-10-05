@@ -190,11 +190,15 @@ for (const storyNumber of expectedStoryNumbers) {
   if (map.package_plan?.cover_policy !== 'shared-season-cover') {
     fail(`Story ${storyNumber}: must use the shared Season 2 cover policy`)
   }
-  if (map.package_plan?.shared_season_cover_asset_id !== 'PENDING_seven_roads_season2_cover_v1') {
-    fail(`Story ${storyNumber}: shared Season 2 cover asset gate drifted`)
+  if (map.package_plan?.shared_season_cover_asset_id !== 'seven_roads_season2_cover_v1') {
+    fail(`Story ${storyNumber}: shared Season 2 cover asset id drifted`)
   }
-  if (!String(map.package_plan?.cover_status ?? '').includes('no episode-specific cover')) {
-    fail(`Story ${storyNumber}: per-episode cover must remain disabled`)
+  if (
+    !String(map.package_plan?.cover_status ?? '').includes('approved') ||
+    !String(map.package_plan?.cover_status ?? '').includes('hosting pending') ||
+    !String(map.package_plan?.cover_status ?? '').includes('no episode-specific cover')
+  ) {
+    fail(`Story ${storyNumber}: shared-cover approval state or per-episode-cover policy drifted`)
   }
   if (!String(map.package_plan?.localization_status ?? '').includes('not yet authored')) {
     fail(`Story ${storyNumber}: Uzbek localization blocker must remain explicit`)
