@@ -41,9 +41,9 @@
     "production_prompt_pack_ref": "/QISSA/production/seven_roads/season2_visual_final/"
   },
   "cover_illustration": {
-    "asset_id": "PENDING_seven_roads_season2_cover_v1",
+    "asset_id": "seven_roads_season2_cover_v1",
     "runtime_url": null,
-    "status": "pending-shared-season-cover",
+    "status": "approved-master-runtime-prepared-not-hosted",
     "editorial_reference_ids": [
       "seven_roads_story1_cover_v1",
       "seven_roads_story2_cover_v1"
