@@ -634,7 +634,17 @@ try {
   await clickExactButton('Kutubxona')
   await waitFor(bodyHas('Galereya'), 'Uzbek Library')
   await clickExactButton('Galereya')
-  await clickButtonContaining('2-mavsum')
+  const season2GalleryExpanded = await evaluate(`(() => {
+    const button = document.querySelector('button[aria-controls="gallery-season-2"]')
+    if (!button) return false
+    button.click()
+    return true
+  })()`)
+  assert(season2GalleryExpanded, 'Season 2 gallery accordion button not found')
+  await waitFor(
+    `document.querySelector('button[aria-controls="gallery-season-2"]')?.getAttribute('aria-expanded') === 'true'`,
+    'expanded Season 2 gallery accordion',
+  )
   await waitFor(bodyHas('Sharqiy karvon siri'), 'expanded Season 2 gallery')
   await assertViewportMatrix('Uzbek Season 2 gallery')
   await clickExactButton('Bosh sahifa')
