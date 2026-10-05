@@ -49,7 +49,7 @@ const cases = [
       'Shimoliy chegara yo‘li',
       'Tosh tizmasi',
       'chap qoshidan chakkasigacha',
-      '— Razvedka ularni topdi.',
+      '— Kuzatuvchilar ularni topdi.',
       'Ular postdan chiqib ketishdi.',
     ],
   },
