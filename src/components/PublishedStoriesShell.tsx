@@ -412,6 +412,7 @@ export function PublishedStoriesShell({
                     {sevenRoadsSeasons.map((season) => {
                       const primaryStory = getPrimaryPublishedSeasonStory(season)
                       const authoredStory = primaryStory?.authoredStory ?? null
+                      const storyScoped = primaryStory?.completionScope === 'story'
 
                       if (
                         season.status !== 'published' ||
@@ -455,8 +456,32 @@ export function PublishedStoriesShell({
 
                       const seasonStoryProgress =
                         authoredStoryPersistence.load(authoredStory)
-                      const locked = season.number === 2 && !story2Unlocked
-                      const storyScoped = primaryStory.completionScope === 'story'
+                      const locked = season.number === 2 && !season2Unlocked
+                      const publishedSeasonStories = getPublishedSeasonStories(season)
+                      const singleCoverEpisodeList =
+                        season.presentation === 'single-cover-episode-list'
+                      const seasonEpisodeStates = singleCoverEpisodeList
+                        ? publishedSeasonStories.map((entry) => {
+                            const packageStory = entry.authoredStory
+                            const packageProgress = packageStory
+                              ? authoredStoryPersistence.load(packageStory)
+                              : null
+                            return {
+                              entry,
+                              progress: packageProgress,
+                              completed: Boolean(packageProgress?.completed),
+                            }
+                          })
+                        : []
+                      const completedEpisodeCount = seasonEpisodeStates.filter(
+                        (item) => item.completed,
+                      ).length
+                      const activeSeasonEpisode =
+                        seasonEpisodeStates.find(
+                          (item) => Boolean(item.progress) && !item.completed,
+                        ) ??
+                        seasonEpisodeStates.find((item) => !item.completed) ??
+                        null
                       const progressLabel = locked
                         ? language === 'uz'
                           ? '1-hikoyadan keyin'
@@ -477,21 +502,36 @@ export function PublishedStoriesShell({
                                     ? 'Boshlanmagan'
                                     : 'Не начат'
                             })()
-                          : seasonStoryProgress?.completed
-                            ? copy.completed
-                            : seasonStoryProgress
-                              ? formatSevenRoadsPartProgress(
-                                  language,
-                                  (seasonStoryProgress.current_part_index ?? 0) + 1,
-                                  authoredStory.parts.length,
-                                )
-                              : language === 'uz'
-                                ? 'Boshlanmagan'
-                                : 'Не начат'
-                      const coverUrl = resolveAuthoredStoryAssetUrl(
-                        authoredStory.cover_illustration.asset_id,
-                        authoredStory.cover_illustration.runtime_url,
-                      )
+                          : singleCoverEpisodeList
+                            ? seasonEpisodeStates.length > 0 &&
+                              completedEpisodeCount === seasonEpisodeStates.length
+                              ? copy.completed
+                              : activeSeasonEpisode?.progress
+                                ? formatSevenRoadsEpisodeProgress(
+                                    language,
+                                    activeSeasonEpisode.entry.number,
+                                    seasonEpisodeStates.length,
+                                  )
+                                : language === 'uz'
+                                  ? 'Boshlanmagan'
+                                  : 'Не начат'
+                            : seasonStoryProgress?.completed
+                              ? copy.completed
+                              : seasonStoryProgress
+                                ? formatSevenRoadsPartProgress(
+                                    language,
+                                    (seasonStoryProgress.current_part_index ?? 0) + 1,
+                                    authoredStory.parts.length,
+                                  )
+                                : language === 'uz'
+                                  ? 'Boshlanmagan'
+                                  : 'Не начат'
+                      const coverUrl = season.coverAssetId
+                        ? resolveAuthoredStoryAssetUrl(season.coverAssetId, null)
+                        : resolveAuthoredStoryAssetUrl(
+                            authoredStory.cover_illustration.asset_id,
+                            authoredStory.cover_illustration.runtime_url,
+                          )
 
                       return (
                         <button
@@ -551,7 +591,7 @@ export function PublishedStoriesShell({
                         .map((season) => {
                           const gallery = buildSeasonGallery(season)
                           const primaryGalleryStory = getPrimaryPublishedSeasonStory(season)
-                          const galleryLocked = season.number === 2 && !story2Unlocked
+                          const galleryLocked = season.number === 2 && !season2Unlocked
                           const galleryTitle =
                             gallery.storyCount === 1
                               ? primaryGalleryStory?.title ??
