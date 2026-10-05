@@ -68,7 +68,12 @@
     "legacy_story2_cover": "Retain in storage/package for backward compatibility; do not use it as an episode card once the one-cover Season 2 presentation is activated."
   },
   "release_blockers": [
-    "Create and approve Uzbek localization for Episodes 3-7.",
-    "Wire the seven episode packages into the one-cover Season 2 presentation and run progress/resume/gallery regression smokes."
-  ]
+    "Wire all seven episode packages into the one-cover Season 2 public presentation while preserving existing Episode 2 progress.",
+    "Run final progress/resume/gallery/reader regression smokes before merge/release."
+  ],
+  "localization": {
+    "status": "ru+uz-complete-staging",
+    "episode_2": "existing-live-ru+uz",
+    "episodes_1_3_4_5_6_7": "staged-ru+uz-ci-validated"
+  }
 }
