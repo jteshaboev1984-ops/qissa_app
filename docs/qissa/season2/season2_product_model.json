@@ -15,7 +15,7 @@
     "reader_shows_episode_specific_cover": false,
     "scene_illustrations_remain_inside_reader_and_gallery": true,
     "public_switch_only_after_full_release_gate": true,
-    "season_cover_status": "approved-master-runtime-prepared-not-hosted"
+    "season_cover_status": "hosted_verified"
   },
   "episodes": [
     {
@@ -68,8 +68,7 @@
     "legacy_story2_cover": "Retain in storage/package for backward compatibility; do not use it as an episode card once the one-cover Season 2 presentation is activated."
   },
   "release_blockers": [
-    "Host and publicly byte/hash-verify the approved shared Season 2 WebP cover.",
-    "Create and approve Uzbek localization for Episodes 1 and 3-7.",
+    "Create and approve Uzbek localization for Episodes 3-7.",
     "Wire the seven episode packages into the one-cover Season 2 presentation and run progress/resume/gallery regression smokes."
   ]
 }
