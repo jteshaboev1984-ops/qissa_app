@@ -53,7 +53,7 @@ for (const story of season2StagingRussianStories) {
   }
 
   if (
-    story.cover_illustration.status !== 'approved-master-runtime-prepared-not-hosted' ||
+    story.cover_illustration.status !== 'hosted_verified' ||
     story.cover_illustration.asset_id !== 'seven_roads_season2_cover_v1'
   ) {
     throw new Error(
@@ -68,7 +68,7 @@ for (const story of season2StagingRussianStories) {
  * Do not import this collection into authoredStories.ts or any published shell.
  * Product model: one Season 2 cover + seven episode rows. These episode
  * packages do not get separate cover cards. Publication still waits for the
- * hosted+verified shared Season 2 cover and Uzbek localization overlays.
+ * shared Season 2 cover and Uzbek localization overlays.
  */
 export const season2StagingAuthoredStoriesRu =
   season2StagingRussianStories
