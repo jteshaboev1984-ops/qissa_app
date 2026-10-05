@@ -3,8 +3,8 @@
   "created_at": "2026-10-04",
   "world_id": "seven_roads",
   "season_number": 2,
-  "status": "ru-episode-packages-built-shared-season-cover-hosted-verified",
-  "rule": "Season 2 uses one hosted+verified shared season-level cover and seven episode packages. No episode-specific cover cards are produced. RU packages remain unpublished until Uzbek localization for Episodes 3-7 is complete and final release wiring/smokes pass.",
+  "status": "ru-uz-episode-packages-built-shared-season-cover-hosted-verified",
+  "rule": "Season 2 uses one hosted+verified shared cover and seven episode rows. RU+UZ staging is complete for Episodes 1 and 3-7; Episode 2 already has live RU+UZ. Packages remain unpublished until final Season 2 wiring and regression smokes pass.",
   "packages": [
     {
       "story_number": 1,
@@ -29,15 +29,16 @@
       "story_id": "seven_roads_dve_bashni",
       "story_version": "interactive-v6",
       "package_path": "src/data/authored/staging/season2Story3TwoTowers.ru.json",
-      "github_blob_sha": "acb828da5e1a82c6048dba2ebab28dab8ff653b1",
+      "github_blob_sha": "111c97de89bcb15ba4540b8889ff2622be1e8293",
       "source_sha256": "df509cbbb333f8f6b218207adc1575539b78193fa15b05d82168a97e5a5d9f76",
       "part_count": 3,
       "decision_count": 3,
       "choice_count": 6,
       "tier_a_image_count": 1,
       "cover_state": "shared-season-cover-hosted-verified",
-      "localization_state": "ru-only-staging",
-      "publication_state": "not-published"
+      "localization_state": "ru+uz-staging",
+      "publication_state": "not-published",
+      "uz_overlay_path": "src/data/authored/staging/season2Story3TwoTowers.uz.json"
     },
     {
       "story_number": 4,
@@ -45,15 +46,16 @@
       "story_id": "seven_roads_chelovek_kotorogo_zhdut",
       "story_version": "interactive-v4",
       "package_path": "src/data/authored/staging/season2Story4WaitedMan.ru.json",
-      "github_blob_sha": "2b0b5bada7d3ae296ad1c64112d1c7d7e9387e16",
+      "github_blob_sha": "da2f2818f27f39fcb04edd3fa607738e03789475",
       "source_sha256": "b603334c0f620434419a4ca94743ce0142403ba85dc1d884a2d0d794c64252e9",
       "part_count": 2,
       "decision_count": 2,
       "choice_count": 4,
       "tier_a_image_count": 1,
       "cover_state": "shared-season-cover-hosted-verified",
-      "localization_state": "ru-only-staging",
-      "publication_state": "not-published"
+      "localization_state": "ru+uz-staging",
+      "publication_state": "not-published",
+      "uz_overlay_path": "src/data/authored/staging/season2Story4WaitedMan.uz.json"
     },
     {
       "story_number": 5,
@@ -68,8 +70,9 @@
       "choice_count": 2,
       "tier_a_image_count": 2,
       "cover_state": "shared-season-cover-hosted-verified",
-      "localization_state": "ru-only-staging",
-      "publication_state": "not-published"
+      "localization_state": "ru+uz-staging",
+      "publication_state": "not-published",
+      "uz_overlay_path": "src/data/authored/staging/season2Story5FalseRoad.uz.json"
     },
     {
       "story_number": 6,
@@ -84,8 +87,9 @@
       "choice_count": 4,
       "tier_a_image_count": 2,
       "cover_state": "shared-season-cover-hosted-verified",
-      "localization_state": "ru-only-staging",
-      "publication_state": "not-published"
+      "localization_state": "ru+uz-staging",
+      "publication_state": "not-published",
+      "uz_overlay_path": "src/data/authored/staging/season2Story6TwoReinforcements.uz.json"
     },
     {
       "story_number": 7,
@@ -100,8 +104,9 @@
       "choice_count": 2,
       "tier_a_image_count": 2,
       "cover_state": "shared-season-cover-hosted-verified",
-      "localization_state": "ru-only-staging",
-      "publication_state": "not-published"
+      "localization_state": "ru+uz-staging",
+      "publication_state": "not-published",
+      "uz_overlay_path": "src/data/authored/staging/season2Story7BackToOrdan.uz.json"
     }
   ]
 }
