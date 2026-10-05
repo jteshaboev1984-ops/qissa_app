@@ -39,7 +39,7 @@ if (
 }
 if (
   model.product_rules?.season_cover_status !==
-  'approved-master-runtime-prepared-not-hosted'
+  'hosted_verified'
 ) {
   fail('shared Season 2 cover approval/runtime-preparation state drifted')
 }
@@ -88,7 +88,7 @@ for (const packagePath of stagedPaths) {
     pkg.cover_illustration?.asset_id !==
       'seven_roads_season2_cover_v1' ||
     pkg.cover_illustration?.status !==
-      'approved-master-runtime-prepared-not-hosted'
+      'hosted_verified'
   ) {
     fail(`${packagePath}: must use shared Season 2 cover gate`)
   }
@@ -120,9 +120,6 @@ if (!seasonOverview.includes('Boolean(item.progress)')) {
 if (seasonData.includes("presentation: 'single-cover-episode-list'")) {
   fail('public Season 2 presentation switched on before release gates are complete')
 }
-if (seasonData.includes('seven_roads_season2_cover_v1')) {
-  fail('unhosted Season 2 cover must not leak into public season data')
-}
 
 for (const episode of model.episodes.filter((entry) => entry.status === 'staging')) {
   const packageJson = readJson(episode.package_path)
@@ -137,6 +134,6 @@ if (errors.length > 0) {
 }
 
 console.log('[season2-product-model] PASS')
-console.log('[season2-product-model] one approved shared cover + seven episode rows locked; cover runtime hosting remains gated')
+console.log('[season2-product-model] one hosted+verified shared cover + seven episode rows locked')
 console.log('[season2-product-model] six new RU episode packages remain unpublished')
 console.log('[season2-product-model] live Story 2 progress compatibility remains preserved')
