@@ -568,13 +568,18 @@ try {
   await setJson(
     progressKey(episode7),
     makeProgress(episode7, {
-      completed: true,
+      completed: false,
       currentPartIndex: episode7.parts.length - 1,
+      selectedChoices: {
+        story7_choice_1_aras_reconstruction_help: 'story7_choice_1a_nadir_statement',
+      },
     }),
   )
   await clickExactButton('Yopish')
   await waitFor(bodyHas('7 qism'), 'return from Episode 3 to Season 2 overview')
   await clickButtonContaining('Ordanga qaytish')
+  await waitFor(bodyHas('1-qism / 1'), 'Episode 7 final part before completion')
+  await clickExactButton('Qismni tugatish')
   await waitFor(bodyHas('7-qism tugadi'), 'Episode 7 completion screen')
   await assertViewportMatrix('Uzbek Episode 7 completion')
   const coverLeakedIntoEpisodeCompletion = await evaluate(
@@ -644,6 +649,23 @@ try {
     !(await evaluate(bodyHas('Mavsum yakunini ko‘rish'))),
     'Season 2 overview still promises a nonexistent season result screen',
   )
+  await clickButtonContaining('7-qismni ochish')
+  await waitFor(bodyHas('Oldin o‘qilgan qism'), 'completed Episode 7 historical replay')
+  const episode7CompletionAfterReplayOpen = await evaluate(`(() => {
+    const raw = localStorage.getItem(${JSON.stringify(progressKey(episode7))})
+    if (!raw) return false
+    try {
+      return JSON.parse(raw).completed === true
+    } catch {
+      return false
+    }
+  })()`)
+  assert(
+    episode7CompletionAfterReplayOpen,
+    'opening a completed Season 2 episode cleared its completion state',
+  )
+  await clickExactButton('Yopish')
+  await waitFor(bodyHas('7 qism'), 'return from completed Episode 7 replay')
   await clickExactButton('← Mavsumlar')
   await waitFor(
     `document.querySelector('button[aria-label="Sozlamalar"]') !== null`,
@@ -694,6 +716,7 @@ try {
   console.log('[season2-release-browser] progress reset clears current and stale-version progress, reading position, and gallery discovery')
   console.log('[season2-release-browser] stale/injected later-episode progress cannot bypass sequential unlock; legacy Episode 2 resume remains available')
   console.log('[season2-release-browser] Season 2 overview, reader, completion, and gallery fit all required mobile viewports')
+  console.log('[season2-release-browser] completed Season 2 episodes reopen as non-destructive historical replays')
 } finally {
   cleanup()
 }
