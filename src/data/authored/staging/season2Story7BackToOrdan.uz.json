@@ -23,7 +23,7 @@
             "text": "Nadirning ko‘rsatmasini — qo‘riqchilar ogohlantirilgandan keyin Rashid va Barlasdan nimalarni eshitganini.",
             "effect_summary": "Nadirning ko‘rsatmasini — qo‘riqchilar ogohlantirilgandan keyin Rashid va Barlasdan nimalarni eshitganini.",
             "resolution_text": "Temur Nadirning ko‘rsatmasi yozilgan varaqni oldi.\n\nKo‘p qidirishga to‘g‘ri kelmadi.\n\n— Mana aniq gap: «Qo‘riqchilar ogohlantirilgani uchun kumushni olishga to‘g‘ri keldi».\n\nRahim satrni o‘zi ham qayta o‘qidi.\n\n— Saidga mana shuni ko‘rsatamiz.\n\nU yozuvni Saidning oldiga qo‘ydi. Said esa o‘g‘irlikning dastlabki ro‘yxatini ushlab turardi.\n\n— Bu yerda haqiqatan yo‘qolgan narsalar sanalgan: bir xalta kumush, qadah va ichida ikkita uzuk bo‘lgan quticha. Qolgan qimmatbaho buyumlar va yo‘l muhri joyida qolgan.",
-            "last_event": "Temur Nadirning ko‘rsatmasidan signal ko‘tarilgach kumushni olishga to‘g‘ri kelgani haqidagi aniq gapni topdi."
+            "last_event": "Temur Nadirning ko‘rsatmasidan qo‘riqchilar ogohlantirilgach kumushni olishga to‘g‘ri kelgani haqidagi aniq gapni topdi."
           },
           {
             "choice_id": "story7_choice_1b_theft_inventory",
