@@ -61,10 +61,15 @@ export function SeasonOverview({
     if (episodeEntries.length === 0) return null
 
     const allCompleted = episodeEntries.every((item) => item.completed)
+    const startedIncompleteIndex = episodeEntries.findIndex(
+      (item) => Boolean(item.progress) && !item.completed,
+    )
     const firstIncompleteIndex = episodeEntries.findIndex((item) => !item.completed)
     const primaryIndex = allCompleted
       ? episodeEntries.length - 1
-      : Math.max(0, firstIncompleteIndex)
+      : startedIncompleteIndex >= 0
+        ? startedIncompleteIndex
+        : Math.max(0, firstIncompleteIndex)
     const primaryEpisode = episodeEntries[primaryIndex]
     const seasonCoverUrl = season.coverAssetId
       ? resolveAuthoredStoryAssetUrl(season.coverAssetId, null)
