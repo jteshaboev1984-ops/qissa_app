@@ -94,7 +94,7 @@ export function SeasonOverview({
         : copy.continue
 
     return (
-      <main className="mx-auto min-h-[100dvh] max-w-[430px] bg-[#efe2cb] text-[#2d332f]">
+      <main className="mx-auto min-h-dvh max-w-[430px] bg-[#efe2cb] text-[#2d332f]">
         <section
           className="sticky top-0 z-30 flex h-[58dvh] min-h-[440px] max-h-[650px] flex-col bg-[#17383d] bg-cover bg-center text-white"
           style={
@@ -103,7 +103,7 @@ export function SeasonOverview({
               : undefined
           }
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/5 to-[#102327]/94" />
+          <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/5 to-[#102327]/94" />
 
           <div className="relative z-10 flex h-full flex-col px-4 pb-8 pt-[max(1rem,env(safe-area-inset-top))] sm:px-5">
             <div>
@@ -122,7 +122,7 @@ export function SeasonOverview({
               <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
                 {formatSevenRoadsSeasonLabel(language, season.number)}
               </p>
-              <h1 className="mt-2 font-serif text-[2.35rem] font-bold leading-[1.02] tracking-[-0.035em] text-white drop-shadow">
+              <h1 className="mt-2 font-serif text-[2.35rem] font-bold leading-[1.02] tracking-[-0.035em] text-white drop-shadow-sm">
                 {season.title ?? formatSevenRoadsSeasonLabel(language, season.number)}
               </h1>
               <button
@@ -141,7 +141,7 @@ export function SeasonOverview({
           </div>
         </section>
 
-        <section className="relative z-10 rounded-t-[2rem] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 sm:px-5">
+        <section className="relative z-10 rounded-t-4xl bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 sm:px-5">
           <div className="px-1">
             <p className="q-label mb-1">{copy.openSeasonPath}</p>
             <h2 className="q-heading text-2xl font-bold">
@@ -192,7 +192,7 @@ export function SeasonOverview({
                     {item.completed ? '✓' : item.entry.number}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#817662]">
+                    <p className="text-[0.65rem] font-bold uppercase tracking-widest text-[#817662]">
                       {formatSevenRoadsEpisodeLabel(language, item.entry.number)}
                     </p>
                     <p className="font-bold leading-6 text-[#342f25]">
@@ -247,7 +247,7 @@ export function SeasonOverview({
 
   if (publishedStories.length > 1 || seasonStory.completionScope === 'story') {
     return (
-      <main className="mx-auto min-h-[100dvh] max-w-[430px] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] text-[#2d332f] sm:px-5">
+      <main className="mx-auto min-h-dvh max-w-[430px] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] text-[#2d332f] sm:px-5">
         <button
           type="button"
           className="rounded-full border border-[#cdb583] bg-[#fffaf0] px-4 py-2.5 text-xs font-bold text-[#4b463b] active:scale-[0.98]"
@@ -312,13 +312,13 @@ export function SeasonOverview({
                     loading="lazy"
                   />
                 ) : null}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-black/10" />
                 <div className="absolute inset-x-0 bottom-0 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
                       {formatSevenRoadsStoryLabel(language, seasonStoryEntry.number)}
                     </p>
-                    <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                    <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur-sm">
                       {storyState}
                     </span>
                   </div>
@@ -348,12 +348,12 @@ export function SeasonOverview({
         : copy.continue
 
   return (
-    <main className="mx-auto min-h-[100dvh] max-w-[430px] bg-[#efe2cb] text-[#2d332f]">
+    <main className="mx-auto min-h-dvh max-w-[430px] bg-[#efe2cb] text-[#2d332f]">
       <section
         className="sticky top-0 z-30 flex h-[68dvh] min-h-[520px] max-h-[720px] flex-col bg-[#17383d] bg-cover bg-center text-white"
         style={coverUrl ? { backgroundImage: `url("${coverUrl}")` } : undefined}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/5 to-[#102327]/94" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/5 to-[#102327]/94" />
 
         <div className="relative z-10 flex h-full flex-col px-4 pb-8 pt-[max(1rem,env(safe-area-inset-top))] sm:px-5">
           <div>
@@ -372,7 +372,7 @@ export function SeasonOverview({
             <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
               {formatSevenRoadsSeasonLabel(language, season.number)}
             </p>
-            <h1 className="mt-2 font-serif text-[2.35rem] font-bold leading-[1.02] tracking-[-0.035em] text-white drop-shadow">
+            <h1 className="mt-2 font-serif text-[2.35rem] font-bold leading-[1.02] tracking-[-0.035em] text-white drop-shadow-sm">
               {season.title}
             </h1>
             <button
@@ -386,7 +386,7 @@ export function SeasonOverview({
         </div>
       </section>
 
-      <section className="relative z-10 rounded-t-[2rem] bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 sm:px-5">
+      <section className="relative z-10 rounded-t-4xl bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 sm:px-5">
         <div className="px-1">
           <p className="q-label mb-1">{copy.openSeasonPath}</p>
           <h2 className="q-heading text-2xl font-bold">{copy.sixEpisodes}</h2>
@@ -427,7 +427,7 @@ export function SeasonOverview({
                   {completed ? '✓' : episode.number}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-[#817662]">
+                  <p className="text-[0.65rem] font-bold uppercase tracking-widest text-[#817662]">
                     {formatSevenRoadsEpisodeLabel(language, episode.number)}
                   </p>
                   <p className="font-bold leading-6 text-[#342f25]">{episode.title}</p>

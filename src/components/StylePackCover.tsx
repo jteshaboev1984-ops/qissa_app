@@ -21,10 +21,10 @@ const variantHeights: Record<Variant, string> = {
 
 const variantRadii: Record<Variant, string> = {
   hero: 'rounded-[2.5rem]',
-  card: 'rounded-[2rem]',
-  story: 'rounded-[2rem]',
+  card: 'rounded-4xl',
+  story: 'rounded-4xl',
   listening: 'rounded-[2.25rem]',
-  compact: 'rounded-[1.5rem]',
+  compact: 'rounded-3xl',
 }
 
 export function StylePackCover({
@@ -59,7 +59,7 @@ export function StylePackCover({
         <span className="mt-3 h-1.5 w-1.5 rounded-full bg-white/55" />
         <span className="h-2.5 w-2.5 rounded-full bg-white/45" />
       </div>
-      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#fffaf0]/90 via-[#fffaf0]/42 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-[#fffaf0]/90 via-[#fffaf0]/42 to-transparent" />
       {(title || subtitle) ? (
         <div className={`absolute inset-x-0 bottom-0 ${isCompact ? 'p-3' : 'p-5'}`}>
           {subtitle ? <p className="q-label mb-1 text-[10px] opacity-80">{subtitle}</p> : null}

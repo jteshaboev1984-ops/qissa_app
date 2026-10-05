@@ -33,7 +33,7 @@ export function FeaturedAuthoredStoryCard({ onOpen }: { onOpen: () => void }) {
         <img
           src={coverUrl}
           alt={prazdnikMuzhestvaV3.title}
-          className="aspect-[4/3] w-full object-cover"
+          className="aspect-4/3 w-full object-cover"
           loading="lazy"
         />
       ) : null}

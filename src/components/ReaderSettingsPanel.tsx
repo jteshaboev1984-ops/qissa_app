@@ -85,7 +85,7 @@ function ChoicePill({ active, onClick, children }: { active: boolean; onClick: (
       onClick={onClick}
       className={`rounded-full border px-3.5 py-2 text-xs font-bold transition active:scale-[0.98] ${
         active
-          ? 'border-[#d4af37] bg-[#fff1bd] text-[#3b2d00] shadow-sm'
+          ? 'border-[#d4af37] bg-[#fff1bd] text-[#3b2d00] shadow-xs'
           : 'border-[#eadfc9] bg-white/80 text-[#5f5848] hover:bg-white'
       }`}
     >

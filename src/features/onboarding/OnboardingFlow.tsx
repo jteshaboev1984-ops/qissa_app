@@ -114,7 +114,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onComplete, 
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-[#ede3cf]">
         <div
-          className="h-2 rounded-full bg-gradient-to-r from-[#d4af37] to-[#35666b] transition-all duration-500"
+          className="h-2 rounded-full bg-linear-to-r from-[#d4af37] to-[#35666b] transition-all duration-500"
           style={{ width: `${((stepIndex + 1) / activeSteps.length) * 100}%` }}
         />
       </div>
@@ -145,7 +145,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onComplete, 
       </div>
       {draft.heroType === 'custom' && (
         <input
-          className="w-full rounded-2xl border border-[#eadfc9] bg-white px-4 py-3 text-[#24261f] shadow-sm"
+          className="w-full rounded-2xl border border-[#eadfc9] bg-white px-4 py-3 text-[#24261f] shadow-xs"
           placeholder={t(language, 'hero.custom_placeholder')}
           value={draft.customHeroName ?? ''}
           onChange={(event) => setDraft({ ...draft, customHeroName: event.target.value })}
@@ -186,7 +186,7 @@ export function OnboardingFlow({ language, mode, initialSelections, onComplete, 
   )
 
   const renderFooter = () => (
-    <div className="sticky bottom-0 flex items-center justify-between gap-2 rounded-[1.5rem] bg-[#fcf9f2]/95 pt-3 backdrop-blur">
+    <div className="sticky bottom-0 flex items-center justify-between gap-2 rounded-3xl bg-[#fcf9f2]/95 pt-3 backdrop-blur-sm">
       <button onClick={back} className="q-secondary px-4 py-2.5">
         {t(language, 'actions.back')}
       </button>

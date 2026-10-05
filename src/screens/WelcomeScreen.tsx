@@ -91,7 +91,7 @@ export function WelcomeScreen({
         </p>
       </div>
 
-      <section className="rounded-[1.5rem] border border-[#e7dac2] bg-[#fffaf0] p-4">
+      <section className="rounded-3xl border border-[#e7dac2] bg-[#fffaf0] p-4">
         <h3 className="q-heading text-xl font-bold leading-tight">{labels.title}</h3>
         <p className="mt-2 text-sm leading-6 text-[#625846]">{labels.intro}</p>
 

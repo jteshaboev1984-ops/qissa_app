@@ -91,7 +91,7 @@ export function StoryArchiveShelf({
           const canOpen = !legacyScope && canRestoreArchiveItem(item)
 
           return (
-            <article key={`${item.id}-${item.updatedAt}`} className="rounded-[1.5rem] border border-[#eadfc9] bg-[#fff8e9] p-4">
+            <article key={`${item.id}-${item.updatedAt}`} className="rounded-3xl border border-[#eadfc9] bg-[#fff8e9] p-4">
               <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <p className="q-label mb-1">{pack.title[language]}</p>

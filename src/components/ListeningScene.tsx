@@ -68,10 +68,10 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
               : copy.ready
 
   return (
-    <div className={`space-y-4 rounded-[2rem] border p-4 text-[#f8f2e7] transition-colors duration-300 ${
+    <div className={`space-y-4 rounded-4xl border p-4 text-[#f8f2e7] transition-colors duration-300 ${
       isNightMode
         ? 'border-[#242b28] bg-[#090d0b] shadow-[0_18px_45px_-30px_rgba(0,0,0,.9)]'
-        : 'border-[#2f3a35] bg-gradient-to-b from-[#26332f] to-[#121916] shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_18px_45px_-30px_rgba(0,0,0,.65)]'
+        : 'border-[#2f3a35] bg-linear-to-b from-[#26332f] to-[#121916] shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_18px_45px_-30px_rgba(0,0,0,.65)]'
     }`}>
       <p
         role={narration.status === 'error' || unavailable ? 'alert' : 'status'}
@@ -85,13 +85,13 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
       </p>
 
       {narration.requiresAiVoiceDisclosure ? (
-        <p className="rounded-xl border border-[#5b665f] bg-white/[0.04] px-3 py-2 text-[11px] leading-5 text-[#cfc7b5]">
+        <p className="rounded-xl border border-[#5b665f] bg-white/4 px-3 py-2 text-[11px] leading-5 text-[#cfc7b5]">
           {copy.aiVoiceDisclosure}
         </p>
       ) : null}
 
       {isNightMode ? (
-        <div className="rounded-[1.75rem] border border-white/8 bg-white/[0.03] px-5 py-8 text-center">
+        <div className="rounded-[1.75rem] border border-white/8 bg-white/3 px-5 py-8 text-center">
           <p className="text-4xl" aria-hidden="true">☾</p>
           <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#b8aa85]">{stylePack.title[language]}</p>
           <h3 className="q-heading mt-2 text-2xl font-bold text-[#f3ecd9]">{episode.title}</h3>
@@ -100,7 +100,7 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
         <StylePackCover stylePack={stylePack} variant="listening" title={episode.title} subtitle={stylePack.title[language]} />
       )}
 
-      <div className="space-y-4 rounded-[1.5rem] border border-white/10 bg-white/7 p-4">
+      <div className="space-y-4 rounded-3xl border border-white/10 bg-white/7 p-4">
         <div>
           <div className="flex items-center justify-between gap-3">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#d4af37]">{t(language, 'listen.progress')}</p>
@@ -131,7 +131,7 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
             {t(language, 'listen.back_10')}
           </button>
           <button
-            className="h-16 w-16 rounded-full bg-gradient-to-b from-[#f0cd58] to-[#d4af37] text-sm font-black text-[#2b2100] shadow-[0_18px_35px_-22px_rgba(212,175,55,.9)] disabled:cursor-not-allowed disabled:opacity-45"
+            className="h-16 w-16 rounded-full bg-linear-to-b from-[#f0cd58] to-[#d4af37] text-sm font-black text-[#2b2100] shadow-[0_18px_35px_-22px_rgba(212,175,55,.9)] disabled:cursor-not-allowed disabled:opacity-45"
             onClick={narration.isPlaying ? narration.pause : narration.play}
             disabled={unavailable || narration.isLoading}
             aria-label={narration.isPlaying ? t(language, 'listen.pause') : t(language, 'listen.play')}
@@ -183,7 +183,7 @@ export function ListeningScene({ language, episode, preferences, onPreferencesCh
       </div>
 
       {showText ? (
-        <article className={`rounded-[1.5rem] border border-white/10 bg-[#fff8e9] p-5 text-[#29271f] ${textSizeClass[preferences.textSize]} ${lineHeightClass[preferences.lineSpacing]}`}>
+        <article className={`rounded-3xl border border-white/10 bg-[#fff8e9] p-5 text-[#29271f] ${textSizeClass[preferences.textSize]} ${lineHeightClass[preferences.lineSpacing]}`}>
           {narration.timeline.map((segment, index) => (
             <span
               key={segment.id}

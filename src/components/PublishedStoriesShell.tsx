@@ -230,7 +230,7 @@ export function PublishedStoriesShell({
   const closeNotice = () => setNotice(null)
 
   return (
-    <div className="relative mx-auto h-[100dvh] max-w-[430px] overflow-hidden text-white">
+    <div className="relative mx-auto h-dvh max-w-[430px] overflow-hidden text-white">
       <div
         className="absolute inset-0 z-0 bg-cover bg-center"
         style={{ backgroundImage: `url("${backgroundUrl}")` }}
@@ -238,15 +238,15 @@ export function PublishedStoriesShell({
       <div
         className={`absolute inset-0 z-0 ${
           tab === 'home'
-            ? 'bg-gradient-to-b from-[#0f2528]/10 via-[#0f2528]/10 to-[#0b2226]/80'
-            : 'bg-gradient-to-b from-[#12252a]/10 via-transparent to-[#0d2024]/72'
+            ? 'bg-linear-to-b from-[#0f2528]/10 via-[#0f2528]/10 to-[#0b2226]/80'
+            : 'bg-linear-to-b from-[#12252a]/10 via-transparent to-[#0d2024]/72'
         }`}
       />
 
       {galleryLightbox ? (
         <button
           type="button"
-          className="fixed inset-0 z-[100] flex cursor-zoom-out items-center justify-center bg-black/95 p-3"
+          className="fixed inset-0 z-100 flex cursor-zoom-out items-center justify-center bg-black/95 p-3"
           onClick={() => setGalleryLightbox(null)}
           aria-label={language === 'uz' ? 'Lavhani yopish' : 'Закрыть сцену'}
         >
@@ -260,7 +260,7 @@ export function PublishedStoriesShell({
 
       {notice ? (
         <div
-          className="fixed inset-0 z-[95] flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]"
+          className="fixed inset-0 z-95 flex items-center justify-center bg-black/45 p-4 backdrop-blur-[2px]"
           role="presentation"
           onClick={closeNotice}
         >
@@ -343,7 +343,7 @@ export function PublishedStoriesShell({
       <div className="relative z-10 flex h-full min-h-0 flex-col px-4 pt-[max(1.2rem,env(safe-area-inset-top))] sm:px-5">
         <header className="flex flex-none items-start justify-between gap-4 px-1">
           <div>
-            <p className="font-serif text-xl font-bold tracking-[0.2em] text-[#fff7df] drop-shadow">
+            <p className="font-serif text-xl font-bold tracking-[0.2em] text-[#fff7df] drop-shadow-sm">
               QISSA
             </p>
             <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#efd9aa]">
@@ -396,7 +396,7 @@ export function PublishedStoriesShell({
               <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
                 {language === 'uz' ? 'Hikoyalar xazinasi' : 'Хранилище историй'}
               </p>
-              <h1 className="mt-1 font-serif text-[2.45rem] font-bold leading-none text-[#fffaf0] drop-shadow">
+              <h1 className="mt-1 font-serif text-[2.45rem] font-bold leading-none text-[#fffaf0] drop-shadow-sm">
                 {copy.library}
               </h1>
               <p className="mt-3 max-w-[350px] text-sm leading-6 text-[#f4ecdf]">
@@ -406,7 +406,7 @@ export function PublishedStoriesShell({
               </p>
             </div>
 
-            <section className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-[2rem] border-t border-[#ead8b7]/75 bg-[#f8efdf]/90 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5">
+            <section className="-mx-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-4xl border-t border-[#ead8b7]/75 bg-[#f8efdf]/90 text-[#2d332f] shadow-[0_-24px_60px_-40px_rgba(0,0,0,.75)] backdrop-blur-xl sm:-mx-5">
               <div className="relative z-30 flex-none bg-[#fff9ed]/95 px-4 pt-4 backdrop-blur-xl sm:px-5">
                 <div className="grid grid-cols-2 border-b border-[#d8c39a]/75">
                   <button
@@ -467,7 +467,7 @@ export function PublishedStoriesShell({
                               className="absolute inset-0 h-full w-full object-cover"
                               loading="lazy"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-black/10" />
                             <div className="absolute inset-x-0 bottom-0 p-4">
                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
                                 {storyScoped
@@ -478,7 +478,7 @@ export function PublishedStoriesShell({
                                 <h3 className="font-serif text-2xl font-bold text-white">
                                   {copy.soon}
                                 </h3>
-                                <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                                <span className="rounded-full border border-white/25 bg-black/25 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur-sm">
                                   {language === 'uz' ? 'Tayyorlanmoqda' : 'Готовим'}
                                 </span>
                               </div>
@@ -593,13 +593,13 @@ export function PublishedStoriesShell({
                               loading="lazy"
                             />
                           ) : null}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/5" />
+                          <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/25 to-black/5" />
                           <div className="absolute inset-x-0 bottom-0 p-4">
                             <div className="flex items-center justify-between gap-3">
                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
                                 {formatSevenRoadsSeasonLabel(language, season.number)}
                               </p>
-                              <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur">
+                              <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur-sm">
                                 {progressLabel}
                               </span>
                             </div>
@@ -720,7 +720,7 @@ export function PublishedStoriesShell({
                                     />
                                   </div>
 
-                                  <div className="mt-4 overflow-hidden rounded-[1rem] border border-[#d8c39a]/70 bg-[#fffaf0]/55">
+                                  <div className="mt-4 overflow-hidden rounded-2xl border border-[#d8c39a]/70 bg-[#fffaf0]/55">
                                     {gallery.episodes.map((episode) => {
                                       const episodeKey =
                                         `${season.number}:${episode.storyNumber}:${episode.episodeNumber}`
@@ -820,7 +820,7 @@ export function PublishedStoriesShell({
                                                       <button
                                                         key={item.key}
                                                         type="button"
-                                                        className="aspect-[4/3] overflow-hidden rounded-[1.2rem] border border-[#d4bc8d] bg-[#e9dcc5] shadow-[0_14px_32px_-26px_rgba(74,49,13,.75)] transition active:scale-[0.98]"
+                                                        className="aspect-4/3 overflow-hidden rounded-[1.2rem] border border-[#d4bc8d] bg-[#e9dcc5] shadow-[0_14px_32px_-26px_rgba(74,49,13,.75)] transition active:scale-[0.98]"
                                                         onClick={() =>
                                                           setGalleryLightbox({
                                                             url,
@@ -842,7 +842,7 @@ export function PublishedStoriesShell({
                                                     <button
                                                       key={item.key}
                                                       type="button"
-                                                      className="relative aspect-[4/3] overflow-hidden rounded-[1.2rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_14px_32px_-26px_rgba(74,49,13,.7)] transition active:scale-[0.98]"
+                                                      className="relative aspect-4/3 overflow-hidden rounded-[1.2rem] border border-[#cfb57f]/80 bg-[#17383d] text-left shadow-[0_14px_32px_-26px_rgba(74,49,13,.7)] transition active:scale-[0.98]"
                                                       onClick={() =>
                                                         setNotice({
                                                           kind: 'locked-art',
@@ -872,7 +872,7 @@ export function PublishedStoriesShell({
                                                       />
                                                       <div className="absolute inset-0 bg-[#10282d]/60" />
                                                       <div className="absolute inset-0 flex items-center justify-center">
-                                                        <div className="rounded-full border border-[#efd7a7]/60 bg-black/25 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-[#fff4dc] backdrop-blur-sm">
+                                                        <div className="rounded-full border border-[#efd7a7]/60 bg-black/25 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-[#fff4dc] backdrop-blur-xs">
                                                           {language === 'uz'
                                                             ? 'Ochilmagan'
                                                             : 'Не открыто'}
