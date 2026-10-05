@@ -6,6 +6,7 @@ import { authoredIllustrationDiscovery } from '../../lib/authoredIllustrationDis
 import { resolveAuthoredStoryAssetUrl } from '../../data/authoredStoryAssets'
 import {
   formatSevenRoadsEpisodeCompleted,
+  formatSevenRoadsEpisodeLabel,
   formatSevenRoadsEpisodeProgress,
   formatSevenRoadsPartProgress,
   formatSevenRoadsSeasonCompleted,
