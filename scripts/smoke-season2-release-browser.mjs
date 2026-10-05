@@ -480,6 +480,28 @@ try {
     )`,
     'Episode 3 hosted Tier A image in Uzbek reader',
   )
+  await evaluate(`(() => {
+    const image = [...document.images].find((img) =>
+      img.src.includes('seven_roads_s2_story3_two_towers_niche_discovery_01_APPROVED')
+    )
+    if (!image) return false
+    image.scrollIntoView({ block: 'center', behavior: 'auto' })
+    return true
+  })()`)
+  await waitFor(
+    `(() => {
+      const raw = localStorage.getItem(${JSON.stringify(discoveryKey(episode3))})
+      if (!raw) return false
+      try {
+        return JSON.parse(raw).includes(
+          'seven_roads_s2_story3_two_towers_niche_discovery_01_APPROVED'
+        )
+      } catch {
+        return false
+      }
+    })()`,
+    'Episode 3 gallery discovery after image enters viewport',
+  )
   await waitFor(
     `(() => {
       const raw = localStorage.getItem(${JSON.stringify(progressKey(episode3))})
