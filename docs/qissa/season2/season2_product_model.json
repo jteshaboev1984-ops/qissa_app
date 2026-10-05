@@ -68,13 +68,27 @@
     "legacy_story2_cover": "Retain in storage/package for backward compatibility; do not use it as an episode card once the one-cover Season 2 presentation is activated.",
     "release_wiring": "All seven packages are composed as seven episode rows under one shared Season 2 cover; Episode 2 keeps its existing story_id/story_version persistence key."
   },
-  "release_blockers": [
-    "Run final Season 2 progress/resume/gallery/reader browser regression smoke and review the result before merge/release."
-  ],
+  "release_blockers": [],
   "localization": {
     "status": "ru+uz-complete-staging",
     "episode_2": "existing-live-ru+uz",
     "episodes_1_3_4_5_6_7": "staged-ru+uz-ci-validated"
   },
-  "release_state": "wired-release-candidate"
+  "release_state": "release-gates-passed",
+  "release_validation": {
+    "dedicated_workflow": "Season 2 Tier A Slot Check",
+    "run_number": 219,
+    "conclusion": "success",
+    "checks": [
+      "RU+UZ episode overlays validated",
+      "shared cover validated",
+      "seven-episode release wiring validated",
+      "typecheck passed",
+      "production build passed",
+      "430x932 browser regression smoke passed",
+      "legacy Episode 2 progress resume preserved",
+      "Episode 3 inherited Episode 2 choice preserved",
+      "hosted Tier A image resolved in Uzbek reader"
+    ]
+  }
 }
