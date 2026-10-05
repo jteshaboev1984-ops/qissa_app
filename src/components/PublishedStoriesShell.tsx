@@ -275,7 +275,7 @@ export function PublishedStoriesShell({
                   {language === 'uz' ? 'Tushunarli' : 'Понятно'}
                 </button>
               </>
-            ) : notice.kind === 'locked-story' ? (
+            ) : notice.kind === 'locked-season' ? (
               <>
                 <p className="q-label">
                   {language === 'uz' ? 'Keyingi mavsum' : 'Следующий сезон'}
