@@ -121,6 +121,20 @@ for (const item of cases) {
     if (!localized.title?.trim()) {
       fail(`Story ${item.story} ${basePart.part_id}: localized title is empty`)
     }
+    const baseStoryParagraphs = paragraphsOf(basePart.story_text).length
+    const localizedStoryParagraphs = paragraphsOf(localized.story_text).length
+    if (localizedStoryParagraphs !== baseStoryParagraphs) {
+      fail(
+        `Story ${item.story} ${basePart.part_id}: story_text paragraph count drifted ${localizedStoryParagraphs} != ${baseStoryParagraphs}`,
+      )
+    }
+    const basePostParagraphs = paragraphsOf(basePart.post_choice_text).length
+    const localizedPostParagraphs = paragraphsOf(localized.post_choice_text).length
+    if (localizedPostParagraphs !== basePostParagraphs) {
+      fail(
+        `Story ${item.story} ${basePart.part_id}: post_choice_text paragraph count drifted ${localizedPostParagraphs} != ${basePostParagraphs}`,
+      )
+    }
     if (!localized.story_text?.trim()) {
       fail(`Story ${item.story} ${basePart.part_id}: localized story_text is empty`)
     }
@@ -171,6 +185,13 @@ for (const item of cases) {
         )
         continue
       }
+      const baseConditionalParagraphs = paragraphsOf(segment.text).length
+      const localizedConditionalParagraphs = paragraphsOf(localizedSegment.text).length
+      if (localizedConditionalParagraphs !== baseConditionalParagraphs) {
+        fail(
+          `Story ${item.story} ${segment.segment_id}: conditional paragraph count drifted ${localizedConditionalParagraphs} != ${baseConditionalParagraphs}`,
+        )
+      }
       const count = paragraphsOf(phaseText[segment.phase]).filter(
         (paragraph) => paragraph === localizedSegment.after_text.trim(),
       ).length
@@ -215,6 +236,13 @@ for (const item of cases) {
         if (!choice[key]?.trim()) {
           fail(`Story ${item.story} ${baseChoice.choice_id}: localized ${key} is empty`)
         }
+      }
+      const baseResolutionParagraphs = paragraphsOf(baseChoice.resolution_text).length
+      const localizedResolutionParagraphs = paragraphsOf(choice.resolution_text).length
+      if (localizedResolutionParagraphs !== baseResolutionParagraphs) {
+        fail(
+          `Story ${item.story} ${baseChoice.choice_id}: resolution paragraph count drifted ${localizedResolutionParagraphs} != ${baseResolutionParagraphs}`,
+        )
       }
       if (baseChoice.illustration?.behavior === 'show_in_resolution_after_anchor') {
         const anchor = choice.illustration_after_text
@@ -262,6 +290,14 @@ for (const item of cases) {
   if (/^#{1,6}\s/m.test(corpus) || corpus.includes('**') || /^---+$/m.test(corpus)) {
     fail(`Story ${item.story}: Markdown presentation markers leaked into Uzbek localization`)
   }
+  if (corpus.includes('\\n')) {
+    fail(`Story ${item.story}: literal \\n escape leaked into visible Uzbek prose`)
+  }
+  for (const forbidden of ['kapitan', 'razvedka', 'razvedkachi', 'dushlo', 'aravakashı']) {
+    if (corpus.toLowerCase().includes(forbidden)) {
+      fail(`Story ${item.story}: non-QISSA Uzbek term leaked: ${forbidden}`)
+    }
+  }
   for (const marker of item.markers) {
     if (!corpus.includes(marker)) {
       fail(`Story ${item.story}: critical Uzbek marker missing: ${marker}`)
@@ -299,5 +335,5 @@ if (errors.length > 0) {
 console.log('[season2-uz-overlays] PASS')
 console.log('[season2-uz-overlays] Episodes 1, 3, 4, 5, 6, 7 overlays align with their Russian runtime packages')
 console.log('[season2-uz-overlays] localized image anchors + conditional segments + choices validated')
-console.log('[season2-uz-overlays] Latin-script and critical Season 2 canon markers validated')
+console.log('[season2-uz-overlays] Latin-script, paragraph parity, terminology, and critical Season 2 canon markers validated')
 console.log('[season2-uz-overlays] Story 3 inherited Episode 2 branch labels stay hidden; Story 4 prison wagon remains exactly two horses')
