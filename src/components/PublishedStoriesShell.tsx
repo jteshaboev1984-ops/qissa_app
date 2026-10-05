@@ -29,11 +29,12 @@ export type PublishedStoriesTab = 'home' | 'library'
 type LibraryView = 'seasons' | 'gallery'
 type LibraryNotice =
   | { kind: 'coming-season'; seasonNumber: number }
-  | { kind: 'locked-story'; title: string }
+  | { kind: 'locked-season'; seasonNumber: number }
   | {
       kind: 'locked-art'
       episodeNumber: number
       storyNumber?: number
+      storyAsEpisode?: boolean
       readerUnit: 'episode' | 'part'
     }
 
@@ -259,15 +260,15 @@ export function PublishedStoriesShell({
             ) : notice.kind === 'locked-story' ? (
               <>
                 <p className="q-label">
-                  {language === 'uz' ? 'Keyingi hikoya' : 'Следующая сказка'}
+                  {language === 'uz' ? 'Keyingi mavsum' : 'Следующий сезон'}
                 </p>
                 <h2 className="q-heading mt-1 text-2xl font-bold">
-                  {notice.title}
+                  {formatSevenRoadsSeasonLabel(language, notice.seasonNumber)}
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? 'Bu hikoya “Jasorat bayrami” tugagandan keyin ochiladi.'
-                    : 'Эта сказка откроется после завершения «Праздника мужества».'}
+                    ? 'Bu mavsum “Jasorat bayrami” tugagandan keyin ochiladi.'
+                    : 'Этот сезон откроется после завершения «Праздника мужества».'}
                 </p>
                 <button type="button" className="q-primary mt-5 w-full" onClick={closeNotice}>
                   {language === 'uz' ? 'Tushunarli' : 'Понятно'}
@@ -281,8 +282,8 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? `Bu lavha ${notice.storyNumber ? `${notice.storyNumber}-hikoyadagi ` : ''}${notice.episodeNumber}-qismdagi shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
-                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? `сказки ${notice.storyNumber}, ` : ''}${notice.readerUnit === 'part' ? `части ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
+                    ? `Bu lavha ${notice.storyNumber ? (notice.storyAsEpisode ? `2-mavsumning ${notice.storyNumber}-qismida, ` : `${notice.storyNumber}-hikoyada, `) : ''}${notice.readerUnit === 'part' ? `ichki ${notice.episodeNumber}-qismdagi` : `${notice.episodeNumber}-qismdagi`} shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
+                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? (notice.storyAsEpisode ? `серии ${notice.storyNumber}, ` : `сказки ${notice.storyNumber}, `) : ''}${notice.readerUnit === 'part' ? `части ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
                   {reading.state === 'in_progress' ? (
@@ -540,8 +541,8 @@ export function PublishedStoriesShell({
                           onClick={() =>
                             locked
                               ? setNotice({
-                                  kind: 'locked-story',
-                                  title: primaryStory.title ?? authoredStory.title,
+                                  kind: 'locked-season',
+                                  seasonNumber: season.number,
                                 })
                               : onOpenSeason(season.number)
                           }
@@ -617,11 +618,8 @@ export function PublishedStoriesShell({
                                 onClick={() => {
                                   if (galleryLocked) {
                                     setNotice({
-                                      kind: 'locked-story',
-                                      title:
-                                        primaryGalleryStory?.title ??
-                                        primaryGalleryStory?.authoredStory?.title ??
-                                        (language === 'uz' ? 'Keyingi hikoya' : 'Следующая сказка'),
+                                      kind: 'locked-season',
+                                      seasonNumber: season.number,
                                     })
                                     return
                                   }
@@ -713,7 +711,9 @@ export function PublishedStoriesShell({
                                             <div className="min-w-0 flex-1">
                                               {gallery.storyCount > 1 ? (
                                                 <p className="text-[0.58rem] font-bold uppercase tracking-[0.12em] text-[#9a8055]">
-                                                  {formatSevenRoadsStoryLabel(language, episode.storyNumber)} · {episode.storyTitle}
+                                                  {season.presentation === 'single-cover-episode-list'
+                                                    ? formatSevenRoadsEpisodeLabel(language, episode.storyNumber)
+                                                    : formatSevenRoadsStoryLabel(language, episode.storyNumber)} · {episode.storyTitle}
                                                 </p>
                                               ) : null}
                                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#8a6a36]">
@@ -814,6 +814,8 @@ export function PublishedStoriesShell({
                                                             gallery.storyCount > 1
                                                               ? episode.storyNumber
                                                               : undefined,
+                                                          storyAsEpisode:
+                                                            season.presentation === 'single-cover-episode-list',
                                                           readerUnit: episode.readerUnit,
                                                         })
                                                       }
