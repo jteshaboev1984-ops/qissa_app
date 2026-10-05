@@ -61,8 +61,19 @@ export function SeasonOverview({
     if (episodeEntries.length === 0) return null
 
     const allCompleted = episodeEntries.every((item) => item.completed)
-    const startedIncompleteIndex = episodeEntries.findIndex(
-      (item) => Boolean(item.progress) && !item.completed,
+    const canResumeEpisodeAt = (index: number) => {
+      const item = episodeEntries[index]
+      if (!item?.progress || item.completed) return false
+
+      const priorEpisodesCompleted = episodeEntries
+        .slice(0, index)
+        .every((previous) => previous.completed)
+      const legacyEpisode2Resume = item.entry.number === 2
+
+      return priorEpisodesCompleted || legacyEpisode2Resume
+    }
+    const startedIncompleteIndex = episodeEntries.findIndex((_, index) =>
+      canResumeEpisodeAt(index),
     )
     const firstIncompleteIndex = episodeEntries.findIndex((item) => !item.completed)
     const primaryIndex = allCompleted
@@ -143,7 +154,9 @@ export function SeasonOverview({
               const priorEpisodesCompleted = episodeEntries
                 .slice(0, index)
                 .every((previous) => previous.completed)
-              const available = priorEpisodesCompleted || Boolean(item.progress)
+              const legacyEpisode2Resume =
+                item.entry.number === 2 && Boolean(item.progress)
+              const available = priorEpisodesCompleted || legacyEpisode2Resume
               const current =
                 !allCompleted &&
                 index === primaryIndex &&
