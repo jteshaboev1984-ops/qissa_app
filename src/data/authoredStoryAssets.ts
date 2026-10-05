@@ -97,6 +97,11 @@ const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
     ]),
   )
 
+const season2SharedAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_season2_cover_v1':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_v1/seven_roads_season2_cover_v1.webp',
+}
+
 export const resolveAuthoredStoryAssetUrl = (
   assetId: string,
   inlineRuntimeUrl?: string | null,
@@ -104,7 +109,8 @@ export const resolveAuthoredStoryAssetUrl = (
   const registered = (
     productionAssets[assetId] ??
     story2ProductionAssets[assetId] ??
-    season2TierAProductionAssets[assetId]
+    season2TierAProductionAssets[assetId] ??
+    season2SharedAssets[assetId]
   )?.trim()
   if (registered) return registered
 
@@ -117,5 +123,6 @@ export const authoredStoryAssetRegistry = {
   registeredCount: () =>
     Object.keys(productionAssets).length +
     Object.keys(story2ProductionAssets).length +
-    Object.keys(season2TierAProductionAssets).length,
+    Object.keys(season2TierAProductionAssets).length +
+    Object.keys(season2SharedAssets).length,
 }
