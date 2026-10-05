@@ -22,11 +22,11 @@
     "localization_status": "Uzbek overlay not yet authored",
     "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges, with Markdown presentation markers normalized only at package-build time.",
     "part_count": 2,
-    "cover_status": "shared Season 2 cover pending; no episode-specific cover",
+    "cover_status": "shared Season 2 cover approved; runtime WebP prepared, hosting pending; no episode-specific cover",
     "staging_ru_package": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
     "staging_ru_package_status": "built-and-validated-pending-release-gates",
     "cover_policy": "shared-season-cover",
-    "shared_season_cover_asset_id": "PENDING_seven_roads_season2_cover_v1"
+    "shared_season_cover_asset_id": "seven_roads_season2_cover_v1"
   },
   "parts": [
     {
