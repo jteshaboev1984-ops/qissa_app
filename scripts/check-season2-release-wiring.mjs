@@ -63,10 +63,19 @@ if (!singleCoverOverviewBlock.includes('primaryEpisode.entry.number')) {
 }
 
 if (!overview.includes('startedIncompleteIndex')) {
-  fail('Season overview does not prioritize started legacy Episode 2 progress')
+  fail('Season overview does not prioritize valid resumable Season 2 progress')
 }
-if (!overview.includes('priorEpisodesCompleted || Boolean(item.progress)')) {
-  fail('Season overview does not preserve access to already-started legacy Episode 2')
+if (
+  !overview.includes('const legacyEpisode2Resume') ||
+  !overview.includes('priorEpisodesCompleted || legacyEpisode2Resume')
+) {
+  fail('Season overview does not preserve legacy Episode 2 resume while keeping later episodes sequentially locked')
+}
+if (
+  !overview.includes('item.completed ? 1 : undefined') ||
+  !overview.includes('allCompleted ? 1 : undefined')
+) {
+  fail('Completed Season 2 episodes are not wired as non-destructive historical replays')
 }
 if (!app.includes("season.presentation === 'single-cover-episode-list'")) {
   fail('App does not keep Season 2 reader navigation inside the season flow')
@@ -83,6 +92,12 @@ if (!player.includes('const completionCoverUrl = showCover')) {
 }
 if (!shell.includes('season2StartedIncomplete')) {
   fail('Home does not resume an already-started Season 2 episode')
+}
+if (
+  !shell.includes('season2CanResumeAt') ||
+  !shell.includes('const legacyEpisode2Resume = item.entry.number === 2')
+) {
+  fail('Home/Library do not enforce sequential Season 2 resume with the legacy Episode 2 exception')
 }
 if (!shell.includes('season2AllCompleted')) {
   fail('Home does not expose Season 2 completion state')
