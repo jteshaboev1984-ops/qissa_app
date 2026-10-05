@@ -283,12 +283,21 @@ for (const storyNumber of expectedStories) {
     fail(`Story ${storyNumber}: illustration plan counts are inconsistent`)
   }
 
+  const expectedLocalizationState =
+    storyNumber === 1 ? 'ru+uz-staging' : 'ru-only-staging'
   if (
     entry.cover_state !== 'shared-season-cover-approved-master-runtime-prepared-not-hosted' ||
-    entry.localization_state !== 'ru-only-staging' ||
+    entry.localization_state !== expectedLocalizationState ||
     entry.publication_state !== 'not-published'
   ) {
-    fail(`Story ${storyNumber}: release blockers must remain explicit in inventory`)
+    fail(`Story ${storyNumber}: release staging state drifted in inventory`)
+  }
+  if (
+    storyNumber === 1 &&
+    entry.uz_overlay_path !==
+      'src/data/authored/staging/season2Story1RoyalSilver.uz.json'
+  ) {
+    fail('Story 1: Uzbek overlay path missing from staging inventory')
   }
 }
 
@@ -303,4 +312,4 @@ console.log('[season2-staging-packages] PASS')
 console.log('[season2-staging-packages] 6/6 Russian staging packages are structurally valid')
 console.log('[season2-staging-packages] 12 decisions / 24 choices remain aligned to locked authoring maps')
 console.log('[season2-staging-packages] 10/10 Tier A image slots resolve through the verified hosted asset registry')
-console.log('[season2-staging-packages] packages remain unregistered; shared cover runtime hosting + UZ localization still block publication')
+console.log('[season2-staging-packages] packages remain unregistered; shared cover hosting + Stories 3-7 UZ localization still block publication')
