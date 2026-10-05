@@ -5,7 +5,6 @@ import { SeasonOverview } from './components/SeasonOverview'
 import { SevenRoadsSettingsScreen } from './components/SevenRoadsSettingsScreen'
 import {
   getPrimaryPublishedSeasonStory,
-  getPublishedSeasonStories,
   getSeasonStoryByNumber,
   getSevenRoadsSeason1,
   getSevenRoadsSeasons,
