@@ -30,7 +30,7 @@ const sourceByStory = new Map(
 if (inventory.version !== 'season2-staging-authored-packages-1') {
   fail(`unexpected inventory version: ${inventory.version}`)
 }
-if (inventory.status !== 'ru-episode-packages-built-shared-season-cover-hosted-verified') {
+if (inventory.status !== 'ru-uz-episode-packages-built-shared-season-cover-hosted-verified') {
   fail(`unexpected inventory status: ${inventory.status}`)
 }
 if (inventory.world_id !== 'seven_roads' || inventory.season_number !== 2) {
@@ -283,8 +283,7 @@ for (const storyNumber of expectedStories) {
     fail(`Story ${storyNumber}: illustration plan counts are inconsistent`)
   }
 
-  const expectedLocalizationState =
-    storyNumber === 1 ? 'ru+uz-staging' : 'ru-only-staging'
+  const expectedLocalizationState = 'ru+uz-staging'
   if (
     entry.cover_state !== 'shared-season-cover-hosted-verified' ||
     entry.localization_state !== expectedLocalizationState ||
@@ -292,12 +291,16 @@ for (const storyNumber of expectedStories) {
   ) {
     fail(`Story ${storyNumber}: release staging state drifted in inventory`)
   }
-  if (
-    storyNumber === 1 &&
-    entry.uz_overlay_path !==
-      'src/data/authored/staging/season2Story1RoyalSilver.uz.json'
-  ) {
-    fail('Story 1: Uzbek overlay path missing from staging inventory')
+  const expectedUzOverlay = new Map([
+    [1, 'src/data/authored/staging/season2Story1RoyalSilver.uz.json'],
+    [3, 'src/data/authored/staging/season2Story3TwoTowers.uz.json'],
+    [4, 'src/data/authored/staging/season2Story4WaitedMan.uz.json'],
+    [5, 'src/data/authored/staging/season2Story5FalseRoad.uz.json'],
+    [6, 'src/data/authored/staging/season2Story6TwoReinforcements.uz.json'],
+    [7, 'src/data/authored/staging/season2Story7BackToOrdan.uz.json'],
+  ]).get(storyNumber)
+  if (entry.uz_overlay_path !== expectedUzOverlay) {
+    fail(`Story ${storyNumber}: Uzbek overlay path missing/drifted in staging inventory`)
   }
 }
 
@@ -312,4 +315,4 @@ console.log('[season2-staging-packages] PASS')
 console.log('[season2-staging-packages] 6/6 Russian staging packages are structurally valid')
 console.log('[season2-staging-packages] 12 decisions / 24 choices remain aligned to locked authoring maps')
 console.log('[season2-staging-packages] 10/10 Tier A image slots resolve through the verified hosted asset registry')
-console.log('[season2-staging-packages] packages remain unregistered; Stories 3-7 UZ localization + final release wiring still block publication')
+console.log('[season2-staging-packages] all six non-live episodes have RU+UZ staging; only final release wiring/smokes remain')
