@@ -63,7 +63,7 @@ const ru = {
     'Сейчас QISSA хранит прогресс чтения, позицию в тексте и выборы локально на этом устройстве. Аккаунт и облачная синхронизация пока не используются.',
   restartSeason: 'Сбросить прогресс сказок',
   restartSeasonBody:
-    'Это удалит прогресс чтения и сделанные выборы всех открытых сказок «Королевства семи дорог» на этом устройстве.',
+    'Это удалит прогресс чтения, сделанные выборы и открытые сцены всех сказок «Королевства семи дорог» на этом устройстве.',
   restartConfirm: 'Да, сбросить прогресс',
   cancel: 'Отмена',
   resetSeason: 'Сбросить прогресс сказок',
@@ -162,7 +162,7 @@ const uz = {
     'Hozir QISSA o‘qilgan qismni, matndagi joyni va tanlovlarni faqat shu qurilmada saqlaydi. Akkaunt va bulutli sinxronlash hozircha ishlatilmaydi.',
   restartSeason: 'Hikoyalar jarayonini tozalash',
   restartSeasonBody:
-    'Bu shu qurilmada “Yetti yo‘l qirolligi”dagi ochilgan hikoyalarning o‘qilgan joyi va tanlovlarini o‘chiradi.',
+    'Bu shu qurilmada “Yetti yo‘l qirolligi”dagi hikoyalarning o‘qilgan joyi, tanlovlari va ochilgan lavhalarini o‘chiradi.',
   restartConfirm: 'Ha, jarayonni tozalash',
   cancel: 'Bekor qilish',
   resetSeason: 'Hikoyalar jarayonini tozalash',
