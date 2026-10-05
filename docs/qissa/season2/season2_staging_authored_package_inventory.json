@@ -19,8 +19,9 @@
       "choice_count": 6,
       "tier_a_image_count": 2,
       "cover_state": "shared-season-cover-approved-master-runtime-prepared-not-hosted",
-      "localization_state": "ru-only-staging",
-      "publication_state": "not-published"
+      "localization_state": "ru+uz-staging",
+      "publication_state": "not-published",
+      "uz_overlay_path": "src/data/authored/staging/season2Story1RoyalSilver.uz.json"
     },
     {
       "story_number": 3,
