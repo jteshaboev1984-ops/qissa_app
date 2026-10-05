@@ -17,6 +17,7 @@ on:
       - 'scripts/check-season2-staging-authored-packages.mjs'
       - 'scripts/check-season2-product-model.mjs'
       - 'scripts/check-season2-cover.mjs'
+      - 'scripts/check-season2-story1-uz.mjs'
       - 'docs/qissa/season2/**'
       - 'package.json'
       - '.github/workflows/season2-tier-a-slots.yml'
@@ -64,6 +65,9 @@ jobs:
 
       - name: Validate approved Season 2 shared cover
         run: npm run check:season2-cover
+
+      - name: Validate Episode 1 Uzbek staging overlay
+        run: npm run check:season2-story1-uz
 
       - name: Validate Story 2 runtime inventory
         run: npm run check:story2-runtime
