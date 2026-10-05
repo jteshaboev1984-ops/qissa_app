@@ -78,8 +78,19 @@ export function PublishedStoriesShell({
   const season2AllCompleted =
     season2Entries.length === 7 && season2Entries.every((item) => item.completed)
   const season2CompletedCount = season2Entries.filter((item) => item.completed).length
+  const season2CanResumeAt = (index: number) => {
+    const item = season2Entries[index]
+    if (!item?.progress || item.completed) return false
+
+    const priorEpisodesCompleted = season2Entries
+      .slice(0, index)
+      .every((previous) => previous.completed)
+    const legacyEpisode2Resume = item.entry.number === 2
+
+    return priorEpisodesCompleted || legacyEpisode2Resume
+  }
   const season2StartedIncomplete =
-    season2Entries.find((item) => Boolean(item.progress) && !item.completed) ?? null
+    season2Entries.find((item, index) => !item.completed && season2CanResumeAt(index)) ?? null
   const season2FirstIncomplete =
     season2Entries.find((item) => !item.completed) ?? null
   const season2Primary =
@@ -499,9 +510,14 @@ export function PublishedStoriesShell({
                         (item) => item.completed,
                       ).length
                       const activeSeasonEpisode =
-                        seasonEpisodeStates.find(
-                          (item) => Boolean(item.progress) && !item.completed,
-                        ) ??
+                        seasonEpisodeStates.find((item, index) => {
+                          if (!item.progress || item.completed) return false
+                          const priorEpisodesCompleted = seasonEpisodeStates
+                            .slice(0, index)
+                            .every((previous) => previous.completed)
+                          const legacyEpisode2Resume = item.entry.number === 2
+                          return priorEpisodesCompleted || legacyEpisode2Resume
+                        }) ??
                         seasonEpisodeStates.find((item) => !item.completed) ??
                         null
                       const progressLabel = locked
