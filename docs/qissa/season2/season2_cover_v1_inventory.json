@@ -1,0 +1,48 @@
+{
+  "version": "season2-cover-v1",
+  "updated_at": "2026-10-05",
+  "world_id": "seven_roads",
+  "season_number": 2,
+  "asset_id": "seven_roads_season2_cover_v1",
+  "status": "approved-master-runtime-prepared-not-hosted",
+  "approval": "accepted by owner after child-age correction",
+  "format": {
+    "width": 1024,
+    "height": 1536,
+    "aspect_ratio": "2:3",
+    "no_baked_text": true
+  },
+  "master": {
+    "filename": "seven_roads_season2_cover_v1_APPROVED.png",
+    "bytes": 3837508,
+    "sha256": "1614ca3ef92ee1c015e7ffc9d69c01e25988986e8881fe88a19aa33e96135de3",
+    "library_path": "/QISSA/production/seven_roads/season2_visual_final/cover/seven_roads_season2_cover_v1_APPROVED.png"
+  },
+  "runtime_derivative": {
+    "filename": "seven_roads_season2_cover_v1.webp",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 419444,
+    "sha256": "49b3e2eb7514cd71d98a497e654b2f2c1f3da767c4fbe20fa929b57bfaa47ba4",
+    "library_path": "/QISSA/production/seven_roads/season2_visual_final/cover/seven_roads_season2_cover_v1.webp",
+    "supabase_bucket": "story-images",
+    "supabase_object_path": "seven-roads/season2_v1/seven_roads_season2_cover_v1.webp",
+    "public_url": null,
+    "status": "prepared_not_hosted"
+  },
+  "locked_visuals": [
+    "Temur and Samira read as approximately 12 years old.",
+    "Temur wears blue/turquoise clothing, rust scarf and blue patterned doppa.",
+    "Samira wears burgundy/red travel clothing and has long dark hair/braid.",
+    "Shamol is the dark horse; Bulut is the light-grey horse.",
+    "Season-wide composition combines road network, Aras/caravan, watchtower/riders and investigation mood.",
+    "Warm painterly Central Asian / Silk Road-inspired QISSA visual language."
+  ],
+  "incidental_not_canon": [
+    "Exact map drawing held by Temur.",
+    "Exact number and placement of background riders, wagons and market figures.",
+    "Exact city skyline and distant mountain geometry.",
+    "Background camel banners are compositional atmosphere and do not create new season-wide heraldic canon."
+  ],
+  "release_gate": "Do not activate the Season 2 shared cover in public season data until the WebP object is hosted and publicly byte/hash verified."
+}
