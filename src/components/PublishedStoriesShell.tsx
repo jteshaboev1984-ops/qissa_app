@@ -158,7 +158,10 @@ export function PublishedStoriesShell({
         return {
           eyebrow: language === 'uz' ? '2-mavsum tugadi' : 'Сезон 2 завершён',
           title: formatSevenRoadsSeasonLabel(language, 2),
-          subtitle: language === 'uz' ? 'Yakunini ko‘rish' : 'Посмотреть итог',
+          subtitle:
+            language === 'uz'
+              ? '7 qismning barchasi tugadi'
+              : 'Все 7 серий завершены',
           action: () => onOpenSeason(2),
         }
       }
