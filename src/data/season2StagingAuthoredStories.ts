@@ -5,6 +5,11 @@ import rawSeason2Story4WaitedManRu from './authored/staging/season2Story4WaitedM
 import rawSeason2Story5FalseRoadRu from './authored/staging/season2Story5FalseRoad.ru.json'
 import rawSeason2Story6TwoReinforcementsRu from './authored/staging/season2Story6TwoReinforcements.ru.json'
 import rawSeason2Story7BackToOrdanRu from './authored/staging/season2Story7BackToOrdan.ru.json'
+import rawSeason2Story7BackToOrdanUz from './authored/staging/season2Story7BackToOrdan.uz.json'
+import rawSeason2Story6TwoReinforcementsUz from './authored/staging/season2Story6TwoReinforcements.uz.json'
+import rawSeason2Story5FalseRoadUz from './authored/staging/season2Story5FalseRoad.uz.json'
+import rawSeason2Story4WaitedManUz from './authored/staging/season2Story4WaitedMan.uz.json'
+import rawSeason2Story3TwoTowersUz from './authored/staging/season2Story3TwoTowers.uz.json'
 import { validateAuthoredStoryPackage } from '../features/authoredStory/engine'
 import {
   localizeAuthoredStoryPackage,
@@ -25,18 +30,29 @@ const season2StagingRussianStories: readonly AuthoredStoryPackage[] = [
 ]
 
 
-const season2Story1Uz = localizeAuthoredStoryPackage(
-  coerce(rawSeason2Story1RoyalSilverRu),
-  rawSeason2Story1RoyalSilverUz as AuthoredStoryLocalizationOverlay,
-)
+const season2StagingUzPairs = [
+  [rawSeason2Story1RoyalSilverRu, rawSeason2Story1RoyalSilverUz],
+  [rawSeason2Story3TwoTowersRu, rawSeason2Story3TwoTowersUz],
+  [rawSeason2Story4WaitedManRu, rawSeason2Story4WaitedManUz],
+  [rawSeason2Story5FalseRoadRu, rawSeason2Story5FalseRoadUz],
+  [rawSeason2Story6TwoReinforcementsRu, rawSeason2Story6TwoReinforcementsUz],
+  [rawSeason2Story7BackToOrdanRu, rawSeason2Story7BackToOrdanUz],
+] as const
 
-const season2Story1UzValidationErrors =
-  validateAuthoredStoryPackage(season2Story1Uz)
-if (season2Story1UzValidationErrors.length > 0) {
-  throw new Error(
-    `Invalid Season 2 Episode 1 Uzbek staging package: ${season2Story1UzValidationErrors.join('; ')}`,
-  )
-}
+const season2StagingUzbekStories: readonly AuthoredStoryPackage[] =
+  season2StagingUzPairs.map(([rawBase, rawOverlay]) => {
+    const localized = localizeAuthoredStoryPackage(
+      coerce(rawBase),
+      rawOverlay as AuthoredStoryLocalizationOverlay,
+    )
+    const validationErrors = validateAuthoredStoryPackage(localized)
+    if (validationErrors.length > 0) {
+      throw new Error(
+        `Invalid Season 2 Uzbek staging package (${localized.story_id}): ${validationErrors.join('; ')}`,
+      )
+    }
+    return localized
+  })
 
 for (const story of season2StagingRussianStories) {
   const validationErrors = validateAuthoredStoryPackage(story)
@@ -73,7 +89,15 @@ for (const story of season2StagingRussianStories) {
 export const season2StagingAuthoredStoriesRu =
   season2StagingRussianStories
 
-export const season2StagingStory1Uz = season2Story1Uz
+export const season2StagingAuthoredStoriesUz =
+  season2StagingUzbekStories
+
+export const findSeason2StagingAuthoredStoryUz = (
+  storyId: string,
+): AuthoredStoryPackage | null =>
+  season2StagingAuthoredStoriesUz.find(
+    (story) => story.story_id === storyId,
+  ) ?? null
 
 export const findSeason2StagingAuthoredStoryRu = (
   storyId: string,
