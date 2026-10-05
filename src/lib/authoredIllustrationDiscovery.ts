@@ -65,6 +65,18 @@ const writeIds = (
   }
 }
 
+const clear = (
+  story: Pick<AuthoredStoryPackage, 'story_id' | 'story_version'>,
+) => {
+  const target = storage()
+  if (!target) return
+  try {
+    target.removeItem(keyFor(story))
+  } catch {
+    // Ignore cleanup failures; reset should remain usable.
+  }
+}
+
 const markSeen = (
   story: Pick<AuthoredStoryPackage, 'story_id' | 'story_version'>,
   assetId: string,
@@ -237,6 +249,7 @@ export const authoredIllustrationDiscovery = {
   keyPrefix: KEY_PREFIX,
   keyFor,
   load: readIds,
+  clear,
   markSeen,
   seedFromProgress,
   buildGalleryEpisodes,
