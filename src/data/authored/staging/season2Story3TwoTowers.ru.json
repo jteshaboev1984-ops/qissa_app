@@ -37,7 +37,7 @@
   "cover_illustration": {
     "asset_id": "seven_roads_season2_cover_v1",
     "runtime_url": null,
-    "status": "approved-master-runtime-prepared-not-hosted",
+    "status": "hosted_verified",
     "editorial_reference_ids": [
       "seven_roads_story1_cover_v1",
       "seven_roads_story2_cover_v1"
