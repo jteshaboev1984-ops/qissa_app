@@ -46,7 +46,9 @@ for (const text of [
   "nextSeason.number === 2",
   "if (!firstStoryProgress?.completed) return",
   "nextStory?.completionScope === 'story' ? 'story' : 'season'",
-  ".flatMap((publishedSeason) => getPublishedSeasonStories(publishedSeason))",
+  "authoredStoryPersistence.clearAll()",
+  "authoredReadingPosition.clearAll()",
+  "authoredIllustrationDiscovery.clearAll()",
   "setSelectedSeasonNumber(1)",
 ]) requireText('Seven Roads App', app, text)
 
@@ -314,16 +316,19 @@ requireText('Seven Roads reader preferences', readerPreferences, 'sevenRoadsRead
 
 requireText('authored progress persistence', authoredPersistence, 'story.story_id')
 requireText('authored progress persistence', authoredPersistence, 'story.story_version')
+requireText('authored progress persistence', authoredPersistence, 'clearAll')
 forbidText('authored progress persistence key', authoredPersistence, 'story.language')
 requireText('reading position persistence', readingPosition, 'scroll_y')
 requireText('reading position persistence', readingPosition, 'part_index')
 requireText('reading position persistence', readingPosition, 'story.story_id')
 requireText('reading position persistence', readingPosition, 'story.story_version')
+requireText('reading position persistence', readingPosition, 'clearAll')
 forbidText('reading position persistence key', readingPosition, 'story.language')
 
 requireText('illustration discovery', illustrationDiscovery, 'authoredIllustrationDiscovery')
 requireText('illustration discovery', illustrationDiscovery, 'seedFromProgress')
 requireText('illustration discovery', illustrationDiscovery, 'buildGalleryEpisodes')
+requireText('illustration discovery', illustrationDiscovery, 'clearAll')
 requireText('illustration discovery', illustrationDiscovery, 'selected_choices')
 requireText('illustration discovery', illustrationDiscovery, 'episodeNumberForPart')
 requireText('illustration discovery', illustrationDiscovery, '(partIndex) => partIndex + 1')
