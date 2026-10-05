@@ -15,6 +15,7 @@ import { getSevenRoadsCopy } from './features/publishedStories/sevenRoadsCopy'
 import { publishedStoriesConsent } from './lib/publishedStoriesConsent'
 import { authoredStoryPersistence } from './lib/authoredStoryPersistence'
 import { authoredReadingPosition } from './lib/authoredReadingPosition'
+import { authoredIllustrationDiscovery } from './lib/authoredIllustrationDiscovery'
 import { sevenRoadsLanguagePreference } from './lib/sevenRoadsLanguagePreference'
 import { sevenRoadsReaderPreferences } from './lib/sevenRoadsReaderPreferences'
 import type { AuthoredStoryPackage } from './features/authoredStory/types'
@@ -274,6 +275,7 @@ function App() {
               if (!authoredStory) return
               authoredStoryPersistence.clear(authoredStory)
               authoredReadingPosition.clear(authoredStory)
+              authoredIllustrationDiscovery.clear(authoredStory)
             })
           setSelectedSeasonNumber(1)
           setSelectedStoryNumber(1)
