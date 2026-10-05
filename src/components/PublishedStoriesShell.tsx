@@ -77,6 +77,7 @@ export function PublishedStoriesShell({
   const season2Unlocked = reading.state === 'completed'
   const season2AllCompleted =
     season2Entries.length === 7 && season2Entries.every((item) => item.completed)
+  const season2CompletedCount = season2Entries.filter((item) => item.completed).length
   const season2StartedIncomplete =
     season2Entries.find((item) => Boolean(item.progress) && !item.completed) ?? null
   const season2FirstIncomplete =
@@ -173,6 +174,23 @@ export function PublishedStoriesShell({
             language,
             2,
             season2StartedIncomplete.entry.number,
+            7,
+          ),
+          action: () => onOpenSeason(2),
+        }
+      }
+
+      if (season2CompletedCount > 0 && season2FirstIncomplete) {
+        return {
+          eyebrow: language === 'uz' ? 'Keyingi qism' : 'Следующая серия',
+          title:
+            season2FirstIncomplete.entry.title ??
+            season2FirstIncomplete.authoredStory?.title ??
+            formatSevenRoadsSeasonLabel(language, 2),
+          subtitle: formatSevenRoadsSeasonEpisodeContext(
+            language,
+            2,
+            season2FirstIncomplete.entry.number,
             7,
           ),
           action: () => onOpenSeason(2),
