@@ -52,6 +52,7 @@ interface AuthoredStoryPlayerProps {
   initialEpisodeNumber?: number
   readerPreferences: ReaderPreferences
   onReaderPreferencesChange: (patch: Partial<ReaderPreferences>) => void
+  inheritedSelectedChoices?: Record<string, string>
 }
 
 const getReaderTextStyle = (preferences: ReaderPreferences): CSSProperties => ({
@@ -284,15 +285,28 @@ export function AuthoredStoryPlayer({
   initialEpisodeNumber,
   readerPreferences,
   onReaderPreferencesChange,
+  inheritedSelectedChoices = {},
 }: AuthoredStoryPlayerProps) {
   const language: SevenRoadsLanguage = story.language === 'uz' ? 'uz' : 'ru'
   const copy = getSevenRoadsCopy(language)
 
   const persistedProgress = useMemo(() => {
     const saved = authoredStoryPersistence.load(story)
-    if (saved && saved.current_part_index < story.parts.length) return saved
-    return createInitialAuthoredStoryProgress(story)
-  }, [story])
+    const base =
+      saved && saved.current_part_index < story.parts.length
+        ? saved
+        : createInitialAuthoredStoryProgress(story)
+
+    if (Object.keys(inheritedSelectedChoices).length === 0) return base
+
+    return {
+      ...base,
+      selected_choices: {
+        ...inheritedSelectedChoices,
+        ...base.selected_choices,
+      },
+    }
+  }, [story, inheritedSelectedChoices])
 
   const requestedPartIndex = useMemo(
     () =>
@@ -450,7 +464,10 @@ export function AuthoredStoryPlayer({
     authoredStoryPersistence.clear(story)
     authoredReadingPosition.clear(story)
     restoredPartRef.current = null
-    const fresh = createInitialAuthoredStoryProgress(story)
+    const fresh = {
+      ...createInitialAuthoredStoryProgress(story),
+      selected_choices: { ...inheritedSelectedChoices },
+    }
     setPreviewChoiceId(null)
     updateProgress(fresh)
   }
