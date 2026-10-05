@@ -645,7 +645,10 @@ try {
     `document.querySelector('button[aria-controls="gallery-season-2"]')?.getAttribute('aria-expanded') === 'true'`,
     'expanded Season 2 gallery accordion',
   )
-  await waitFor(bodyHas('Sharqiy karvon siri'), 'expanded Season 2 gallery')
+  await waitFor(
+    `document.querySelectorAll('#gallery-season-2 button[aria-controls^="gallery-season-2-story-"]').length >= 7`,
+    'Season 2 gallery episode groups',
+  )
   await assertViewportMatrix('Uzbek Season 2 gallery')
   await clickExactButton('Bosh sahifa')
   await waitFor(bodyHas('7 qismning barchasi tugadi'), 'completed Season 2 Home after gallery smoke')
