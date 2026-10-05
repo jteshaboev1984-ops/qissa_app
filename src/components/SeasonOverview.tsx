@@ -128,7 +128,12 @@ export function SeasonOverview({
               <button
                 type="button"
                 className="mt-5 w-full rounded-full border border-[#f0d7a0]/80 bg-[#ecd09a] px-5 py-4 text-sm font-extrabold text-[#263f42] shadow-[0_16px_40px_-22px_rgba(0,0,0,.9)] transition active:scale-[0.98]"
-                onClick={() => onRead(primaryEpisode.entry.number)}
+                onClick={() =>
+                  onRead(
+                    primaryEpisode.entry.number,
+                    allCompleted ? 1 : undefined,
+                  )
+                }
               >
                 {primaryLabel}
               </button>
@@ -223,7 +228,12 @@ export function SeasonOverview({
                   key={item.entry.id}
                   type="button"
                   className={className}
-                  onClick={() => onRead(item.entry.number)}
+                  onClick={() =>
+                    onRead(
+                      item.entry.number,
+                      item.completed ? 1 : undefined,
+                    )
+                  }
                 >
                   {body}
                 </button>
