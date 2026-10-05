@@ -60,8 +60,15 @@ if (!overview.includes('priorEpisodesCompleted || Boolean(item.progress)')) {
 if (!app.includes("season.presentation === 'single-cover-episode-list'")) {
   fail('App does not keep Season 2 reader navigation inside the season flow')
 }
-if (!app.includes("showCover={season.presentation !== 'single-cover-episode-list'}")) {
-  fail('Season 2 reader still risks rendering per-episode cover cards')
+const liveReaderBlock = app.slice(
+  app.indexOf("if (view === 'story')"),
+  app.indexOf("if (view === 'settings')"),
+)
+if (!liveReaderBlock.includes("showCover={season.presentation !== 'single-cover-episode-list'}")) {
+  fail('Live Season 2 reader still risks rendering the shared cover inside an episode')
+}
+if (!player.includes('const completionCoverUrl = showCover')) {
+  fail('Episode completion screen does not honor the Season 2 cover visibility contract')
 }
 if (!shell.includes('season2StartedIncomplete')) {
   fail('Home does not resume an already-started Season 2 episode')
