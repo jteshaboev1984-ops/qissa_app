@@ -663,7 +663,11 @@ try {
     'Season 2 overview still promises a nonexistent season result screen',
   )
   await clickButtonContaining('7-qismni ochish')
-  await waitFor(bodyHas('Oldin o‘qilgan qism'), 'completed Episode 7 historical replay')
+  await waitFor(bodyHas('1-qism / 1'), 'completed Episode 7 historical replay reader')
+  assert(
+    !(await evaluate(bodyHas('7-qism tugadi'))),
+    'completed Episode 7 reopened on the completion screen instead of historical replay',
+  )
   const episode7CompletionAfterReplayOpen = await evaluate(`(() => {
     const raw = localStorage.getItem(${JSON.stringify(progressKey(episode7))})
     if (!raw) return false
