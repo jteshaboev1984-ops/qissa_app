@@ -142,8 +142,17 @@ if (
 ) {
   fail('Story 1 must not require an episode-specific cover')
 }
-if (!String(map.package_plan?.localization_status ?? '').includes('not yet authored')) {
-  fail('Story 1 Uzbek localization blocker must remain explicit')
+if (map.package_plan?.localization_status !== 'Uzbek staging overlay authored and CI-validated') {
+  fail('Story 1 Uzbek staging localization status drifted')
+}
+if (
+  map.package_plan?.staging_uz_overlay !==
+  'src/data/authored/staging/season2Story1RoyalSilver.uz.json'
+) {
+  fail('Story 1 Uzbek staging overlay path drifted')
+}
+if ((map.blockers_before_runtime_package ?? []).length !== 0) {
+  fail('Story 1 authoring map should have no episode-local blockers after RU+UZ staging')
 }
 
 if (errors.length > 0) {
@@ -154,4 +163,4 @@ if (errors.length > 0) {
 console.log('[story1-authoring-map] PASS')
 console.log('[story1-authoring-map] source hash + 3 decisions + 6 branches locked')
 console.log('[story1-authoring-map] 2/2 approved Tier A visual anchors aligned')
-console.log('[story1-authoring-map] shared Season 2 cover policy + Uzbek localization gate remain explicit')
+console.log('[story1-authoring-map] shared Season 2 cover policy locked; RU+UZ episode staging complete')
