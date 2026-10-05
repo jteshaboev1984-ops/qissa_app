@@ -77,18 +77,22 @@
   "release_state": "release-gates-passed",
   "release_validation": {
     "dedicated_workflow": "Season 2 Tier A Slot Check",
-    "run_number": 219,
-    "conclusion": "success",
+    "conclusion": "success-required",
     "checks": [
       "RU+UZ episode overlays validated",
-      "shared cover validated",
+      "shared Season 2 cover validated and excluded from episode readers/completion screens",
       "seven-episode release wiring validated",
-      "typecheck passed",
-      "production build passed",
-      "430x932 browser regression smoke passed",
       "legacy Episode 2 progress resume preserved",
       "Episode 3 inherited Episode 2 choice preserved",
-      "hosted Tier A image resolved in Uzbek reader"
+      "hosted Tier A image resolves and unlocks gallery only after entering the viewport",
+      "completed Season 2 Home/overview navigation does not promise a nonexistent result screen",
+      "progress reset clears progress, reading position, and gallery discovery, including stale story versions",
+      "typecheck passed",
+      "production build passed",
+      "430x932 browser regression smoke passed"
     ]
-  }
+  },
+  "known_non_release_blockers": [
+    "Broad Seven Roads CI still reports the pre-existing dev-only npm audit finding in the Tailwind 3.x toolchain; production dependency audit remains clean."
+  ]
 }
