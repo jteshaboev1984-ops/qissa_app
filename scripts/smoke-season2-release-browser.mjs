@@ -293,6 +293,19 @@ try {
     assert(clicked, `Button not found: ${text}`)
   }
 
+  const clickAriaButton = async (label) => {
+    const clicked = await evaluate(`(() => {
+      const wanted = ${JSON.stringify(label)}
+      const button = [...document.querySelectorAll('button')].find(
+        (candidate) => candidate.getAttribute('aria-label') === wanted
+      )
+      if (!button) return false
+      button.click()
+      return true
+    })()`)
+    assert(clicked, `Button with aria-label not found: ${label}`)
+  }
+
   const season2CoverPresentExpression = `(() => {
     const token = 'seven_roads_season2_cover_v1'
     const imageMatch = [...document.images].some((img) => img.src.includes(token))
@@ -500,6 +513,39 @@ try {
     'shared Season 2 cover leaked into Episode 7 completion screen',
   )
 
+  const episode3DiscoveryBeforeReset = await evaluate(
+    `localStorage.getItem(${JSON.stringify(discoveryKey(episode3))})`,
+  )
+  assert(
+    episode3DiscoveryBeforeReset?.includes(
+      'seven_roads_s2_story3_two_towers_niche_discovery_01_APPROVED',
+    ),
+    'Episode 3 gallery discovery was not persisted before reset',
+  )
+
+  await clickExactButton('Hozircha to‘xtash')
+  await waitFor(bodyHas('Yetti yo‘l qirolligi'), 'Uzbek Home before reset')
+  await clickAriaButton('Sozlamalar')
+  await waitFor(bodyHas('Hikoyalar jarayoni'), 'Uzbek settings progress section')
+  await clickExactButton('Hikoyalar jarayonini tozalash')
+  await clickExactButton('Ha, jarayonni tozalash')
+  await waitFor(bodyHas('Jasorat bayrami'), 'Home after full story reset')
+
+  for (const story of [season1, ...season2Episodes]) {
+    const storedProgress = await evaluate(
+      `localStorage.getItem(${JSON.stringify(progressKey(story))})`,
+    )
+    const storedReading = await evaluate(
+      `localStorage.getItem(${JSON.stringify(readingKey(story))})`,
+    )
+    const storedDiscovery = await evaluate(
+      `localStorage.getItem(${JSON.stringify(discoveryKey(story))})`,
+    )
+    assert(storedProgress === null, `progress survived reset for ${story.story_id}`)
+    assert(storedReading === null, `reading position survived reset for ${story.story_id}`)
+    assert(storedDiscovery === null, `gallery discovery survived reset for ${story.story_id}`)
+  }
+
   assert(
     browserErrors.length === 0,
     `Browser runtime exceptions: ${browserErrors.join(' | ')}`,
@@ -513,6 +559,7 @@ try {
   console.log('[season2-release-browser] completed Episodes 1+2 unlocked Episode 3')
   console.log('[season2-release-browser] Episode 3 inherited and persisted Episode 2 Sarvan choice')
   console.log('[season2-release-browser] Episode 3 Uzbek reader resolved its hosted Tier A image')
+  console.log('[season2-release-browser] progress reset clears progress, reading position, and gallery discovery across both seasons')
 } finally {
   cleanup()
 }
