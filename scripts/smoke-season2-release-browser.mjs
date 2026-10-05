@@ -523,6 +523,17 @@ try {
     'Episode 3 gallery discovery was not persisted before reset',
   )
 
+  const staleKeys = [
+    'qissa:v1:authoredStoryProgress:retired_seven_roads_story:old-version',
+    'qissa:v1:authoredReadingPosition:retired_seven_roads_story:old-version',
+    'qissa:v1:authoredIllustrationDiscovery:retired_seven_roads_story:old-version',
+  ]
+  for (const key of staleKeys) {
+    await evaluate(
+      `localStorage.setItem(${JSON.stringify(key)}, '{"legacy":true}')`,
+    )
+  }
+
   await clickExactButton('Hozircha to‘xtash')
   await waitFor(bodyHas('Yetti yo‘l qirolligi'), 'Uzbek Home before reset')
   await clickAriaButton('Sozlamalar')
@@ -546,6 +557,13 @@ try {
     assert(storedDiscovery === null, `gallery discovery survived reset for ${story.story_id}`)
   }
 
+  for (const key of staleKeys) {
+    const staleValue = await evaluate(
+      `localStorage.getItem(${JSON.stringify(key)})`,
+    )
+    assert(staleValue === null, `stale authored-story data survived reset: ${key}`)
+  }
+
   assert(
     browserErrors.length === 0,
     `Browser runtime exceptions: ${browserErrors.join(' | ')}`,
@@ -559,7 +577,7 @@ try {
   console.log('[season2-release-browser] completed Episodes 1+2 unlocked Episode 3')
   console.log('[season2-release-browser] Episode 3 inherited and persisted Episode 2 Sarvan choice')
   console.log('[season2-release-browser] Episode 3 Uzbek reader resolved its hosted Tier A image')
-  console.log('[season2-release-browser] progress reset clears progress, reading position, and gallery discovery across both seasons')
+  console.log('[season2-release-browser] progress reset clears current and stale-version progress, reading position, and gallery discovery')
 } finally {
   cleanup()
 }
