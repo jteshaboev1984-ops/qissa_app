@@ -21,7 +21,7 @@
     "story_mood": "kind_adventure",
     "publication_state": "staging-only",
     "localization_status": "Uzbek overlay not yet authored",
-    "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges, with Markdown presentation markers normalized only at package-build time.",
+    "rule": "Runtime prose follows the locked literary source except for explicitly documented canon-fix patches in runtime_editorial_patches; Markdown presentation markers are normalized at package-build time.",
     "part_count": 2,
     "cover_status": "shared Season 2 cover hosted and verified; no episode-specific cover",
     "staging_ru_package": "src/data/authored/staging/season2Story4WaitedMan.ru.json",
@@ -147,5 +147,13 @@
   ],
   "blockers_before_runtime_package": [
     "Create/approve Uzbek localization overlay."
+  ],
+  "runtime_editorial_patches": [
+    {
+      "patch_id": "story4_prison_wagon_two_horses",
+      "source_line_context": "С закрытым деревянным кузовом, усиленными колёсами и двумя парами лошадей.",
+      "runtime_text": "С закрытым деревянным кузовом, усиленными колёсами и двумя лошадьми.",
+      "reason": "Canonical prison wagon has exactly two horses."
+    }
   ]
 }
