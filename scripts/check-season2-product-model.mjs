@@ -116,9 +116,17 @@ if (!seasonOverview.includes('Boolean(item.progress)')) {
   fail('SeasonOverview must preserve access to already-started legacy Story 2 progress')
 }
 
-// The new presentation must remain dormant until the shared cover + UZ overlays are ready.
-if (seasonData.includes("presentation: 'single-cover-episode-list'")) {
-  fail('public Season 2 presentation switched on before release gates are complete')
+if (!seasonData.includes("presentation: 'single-cover-episode-list'")) {
+  fail('Season 2 one-cover / seven-episode presentation is not wired')
+}
+if (!seasonData.includes("coverAssetId: 'seven_roads_season2_cover_v1'")) {
+  fail('Season 2 shared cover is not wired into published season data')
+}
+if (!seasonData.includes("completionScope: 'episode'")) {
+  fail('Season 2 packages must render as episodes, not separate story cards')
+}
+if (!seasonData.includes("getSeason2ReleaseCandidateStories")) {
+  fail('Season 2 release-candidate package registry is not wired into season data')
 }
 
 for (const episode of model.episodes.filter((entry) => entry.status === 'staging')) {
@@ -135,5 +143,5 @@ if (errors.length > 0) {
 
 console.log('[season2-product-model] PASS')
 console.log('[season2-product-model] one hosted+verified shared cover + seven episode rows locked')
-console.log('[season2-product-model] six new RU episode packages remain unpublished')
+console.log('[season2-product-model] seven episode packages are wired behind one shared Season 2 cover')
 console.log('[season2-product-model] live Story 2 progress compatibility remains preserved')
