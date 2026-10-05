@@ -195,7 +195,7 @@ for (const storyNumber of expectedStoryNumbers) {
   }
   if (
     !String(map.package_plan?.cover_status ?? '').includes('approved') ||
-    !String(map.package_plan?.cover_status ?? '').includes('hosting pending') ||
+    !String(map.package_plan?.cover_status ?? '').includes('hosted and verified') ||
     !String(map.package_plan?.cover_status ?? '').includes('no episode-specific cover')
   ) {
     fail(`Story ${storyNumber}: shared-cover approval state or per-episode-cover policy drifted`)
