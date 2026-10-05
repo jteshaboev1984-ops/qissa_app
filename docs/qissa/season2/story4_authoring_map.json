@@ -20,14 +20,15 @@
     "story_mode": "series",
     "story_mood": "kind_adventure",
     "publication_state": "staging-only",
-    "localization_status": "Uzbek overlay not yet authored",
+    "localization_status": "Uzbek staging overlay authored and CI-validated",
     "rule": "Runtime prose follows the locked literary source except for explicitly documented canon-fix patches in runtime_editorial_patches; Markdown presentation markers are normalized at package-build time.",
     "part_count": 2,
     "cover_status": "shared Season 2 cover hosted and verified; no episode-specific cover",
     "staging_ru_package": "src/data/authored/staging/season2Story4WaitedMan.ru.json",
     "staging_ru_package_status": "built-and-validated-pending-release-gates",
     "cover_policy": "shared-season-cover",
-    "shared_season_cover_asset_id": "seven_roads_season2_cover_v1"
+    "shared_season_cover_asset_id": "seven_roads_season2_cover_v1",
+    "staging_uz_overlay": "src/data/authored/staging/season2Story4WaitedMan.uz.json"
   },
   "parts": [
     {
@@ -145,9 +146,7 @@
       "is_final": true
     }
   ],
-  "blockers_before_runtime_package": [
-    "Create/approve Uzbek localization overlay."
-  ],
+  "blockers_before_runtime_package": [],
   "runtime_editorial_patches": [
     {
       "patch_id": "story4_prison_wagon_two_horses",
