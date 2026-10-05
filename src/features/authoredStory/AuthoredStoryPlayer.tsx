@@ -550,10 +550,12 @@ export function AuthoredStoryPlayer({
         : copy.replaySeason
 
   if (progress.completed) {
-    const completionCoverUrl = resolveAuthoredStoryAssetUrl(
-      story.cover_illustration.asset_id,
-      story.cover_illustration.runtime_url,
-    )
+    const completionCoverUrl = showCover
+      ? resolveAuthoredStoryAssetUrl(
+          story.cover_illustration.asset_id,
+          story.cover_illustration.runtime_url,
+        )
+      : null
 
     return (
       <section
