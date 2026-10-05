@@ -137,7 +137,7 @@ if (map.package_plan?.shared_season_cover_asset_id !== 'seven_roads_season2_cove
 }
 if (
   !String(map.package_plan?.cover_status ?? '').includes('approved') ||
-  !String(map.package_plan?.cover_status ?? '').includes('hosting pending') ||
+  !String(map.package_plan?.cover_status ?? '').includes('hosted and verified') ||
   !String(map.package_plan?.cover_status ?? '').includes('no episode-specific cover')
 ) {
   fail('Story 1 must not require an episode-specific cover')
