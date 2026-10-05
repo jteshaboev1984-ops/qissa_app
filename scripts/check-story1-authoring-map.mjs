@@ -132,10 +132,14 @@ if (map.package_plan?.publication_state !== 'staging-only') {
 if (map.package_plan?.cover_policy !== 'shared-season-cover') {
   fail('Story 1 must use the shared Season 2 cover policy')
 }
-if (map.package_plan?.shared_season_cover_asset_id !== 'PENDING_seven_roads_season2_cover_v1') {
-  fail('Story 1 shared Season 2 cover asset gate drifted')
+if (map.package_plan?.shared_season_cover_asset_id !== 'seven_roads_season2_cover_v1') {
+  fail('Story 1 shared Season 2 cover asset id drifted')
 }
-if (!String(map.package_plan?.cover_status ?? '').includes('no episode-specific cover')) {
+if (
+  !String(map.package_plan?.cover_status ?? '').includes('approved') ||
+  !String(map.package_plan?.cover_status ?? '').includes('hosting pending') ||
+  !String(map.package_plan?.cover_status ?? '').includes('no episode-specific cover')
+) {
   fail('Story 1 must not require an episode-specific cover')
 }
 if (!String(map.package_plan?.localization_status ?? '').includes('not yet authored')) {
