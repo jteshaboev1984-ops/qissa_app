@@ -17,7 +17,7 @@ const fail = (message) => errors.push(message)
 
 if (cover.version !== 'season2-cover-v1') fail('unexpected cover inventory version')
 if (cover.asset_id !== 'seven_roads_season2_cover_v1') fail('unexpected cover asset id')
-if (cover.status !== 'approved-master-runtime-prepared-not-hosted') {
+if (cover.status !== 'hosted_verified') {
   fail(`unexpected cover status: ${cover.status}`)
 }
 if (
@@ -50,10 +50,11 @@ if (
   fail('runtime WebP object path drifted')
 }
 if (
-  cover.runtime_derivative?.status !== 'prepared_not_hosted' ||
-  cover.runtime_derivative?.public_url !== null
+  cover.runtime_derivative?.status !== 'hosted_verified' ||
+  cover.runtime_derivative?.public_url !==
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_v1/seven_roads_season2_cover_v1.webp'
 ) {
-  fail('runtime cover must remain prepared_not_hosted until public verification')
+  fail('runtime cover must remain hosted_verified at the locked public URL')
 }
 
 if (model.product_rules?.season_cover_asset_id !== cover.asset_id) {
@@ -62,14 +63,14 @@ if (model.product_rules?.season_cover_asset_id !== cover.asset_id) {
 if (model.product_rules?.season_cover_status !== cover.status) {
   fail('product model cover status must match cover inventory')
 }
-if (seasonData.includes(cover.asset_id)) {
-  fail('unhosted cover must not enter public season data')
+if (seasonData.includes("presentation: 'single-cover-episode-list'")) {
+  fail('public Season 2 presentation must remain dormant until localization gates close')
 }
 if (
-  assetRegistry.includes(`'${cover.asset_id}'`) ||
-  assetRegistry.includes(`"${cover.asset_id}"`)
+  !assetRegistry.includes(`'${cover.asset_id}'`) &&
+  !assetRegistry.includes(`"${cover.asset_id}"`)
 ) {
-  fail('unhosted cover must not enter authoredStoryAssets.ts')
+  fail('hosted shared cover must be registered in authoredStoryAssets.ts')
 }
 
 if (errors.length > 0) {
@@ -79,4 +80,4 @@ if (errors.length > 0) {
 
 console.log('[season2-cover] PASS')
 console.log('[season2-cover] approved 1024x1536 master + 419444-byte WebP derivative locked')
-console.log('[season2-cover] cover remains deliberately absent from public runtime until hosting verification')
+console.log('[season2-cover] hosted shared cover is registry-ready while Season 2 presentation remains dormant')
