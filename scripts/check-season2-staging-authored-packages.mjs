@@ -30,7 +30,7 @@ const sourceByStory = new Map(
 if (inventory.version !== 'season2-staging-authored-packages-1') {
   fail(`unexpected inventory version: ${inventory.version}`)
 }
-if (inventory.status !== 'ru-episode-packages-built-shared-season-cover-approved-runtime-pending') {
+if (inventory.status !== 'ru-episode-packages-built-shared-season-cover-hosted-verified') {
   fail(`unexpected inventory status: ${inventory.status}`)
 }
 if (inventory.world_id !== 'seven_roads' || inventory.season_number !== 2) {
@@ -116,7 +116,7 @@ for (const storyNumber of expectedStories) {
   }
 
   if (
-    packageJson.cover_illustration?.status !== 'approved-master-runtime-prepared-not-hosted' ||
+    packageJson.cover_illustration?.status !== 'hosted_verified' ||
     packageJson.cover_illustration?.asset_id !== 'seven_roads_season2_cover_v1'
   ) {
     fail(`Story ${storyNumber}: episode package must use the approved shared Season 2 cover gate`)
@@ -286,7 +286,7 @@ for (const storyNumber of expectedStories) {
   const expectedLocalizationState =
     storyNumber === 1 ? 'ru+uz-staging' : 'ru-only-staging'
   if (
-    entry.cover_state !== 'shared-season-cover-approved-master-runtime-prepared-not-hosted' ||
+    entry.cover_state !== 'shared-season-cover-hosted-verified' ||
     entry.localization_state !== expectedLocalizationState ||
     entry.publication_state !== 'not-published'
   ) {
@@ -312,4 +312,4 @@ console.log('[season2-staging-packages] PASS')
 console.log('[season2-staging-packages] 6/6 Russian staging packages are structurally valid')
 console.log('[season2-staging-packages] 12 decisions / 24 choices remain aligned to locked authoring maps')
 console.log('[season2-staging-packages] 10/10 Tier A image slots resolve through the verified hosted asset registry')
-console.log('[season2-staging-packages] packages remain unregistered; shared cover hosting + Stories 3-7 UZ localization still block publication')
+console.log('[season2-staging-packages] packages remain unregistered; Stories 3-7 UZ localization + final release wiring still block publication')
