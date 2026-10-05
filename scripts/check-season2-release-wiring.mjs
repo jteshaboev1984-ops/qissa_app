@@ -95,7 +95,7 @@ if (!app.includes('story2_choice_3_sarvan_check')) {
   fail('App does not seed Episode 3 with the persisted Episode 2 choice')
 }
 
-if (model.release_state !== 'wired-release-candidate') {
+if (model.release_state !== 'release-gates-passed') {
   fail(`unexpected Season 2 release state: ${model.release_state}`)
 }
 if (model.localization?.status !== 'ru+uz-complete-staging') {
@@ -104,8 +104,8 @@ if (model.localization?.status !== 'ru+uz-complete-staging') {
 if (model.product_rules?.season_cover_status !== 'hosted_verified') {
   fail('Season 2 shared cover is not hosted_verified')
 }
-if (!Array.isArray(model.release_blockers) || model.release_blockers.length !== 1) {
-  fail('Season 2 should have exactly one remaining release blocker: final browser regression')
+if (!Array.isArray(model.release_blockers) || model.release_blockers.length !== 0) {
+  fail('Season 2 release blockers must be empty after the browser regression gate passes')
 }
 
 if (errors.length) {
@@ -118,4 +118,4 @@ console.log('[season2-release-wiring] one shared cover + seven episode packages 
 console.log('[season2-release-wiring] Episode 2 story_id/story_version persistence identity preserved')
 console.log('[season2-release-wiring] legacy Episode 2 progress remains resumable before sequential unlock catches up')
 console.log('[season2-release-wiring] Episode 3 inherits the saved Episode 2 Sarvan choice')
-console.log('[season2-release-wiring] only the final browser regression gate remains')
+console.log('[season2-release-wiring] Season 2 release gates are closed; branch is ready for merge review')
