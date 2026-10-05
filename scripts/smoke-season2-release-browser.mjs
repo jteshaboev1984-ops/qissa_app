@@ -306,6 +306,43 @@ try {
     assert(clicked, `Button with aria-label not found: ${label}`)
   }
 
+  const setViewport = async (width, height) => {
+    await send('Emulation.setDeviceMetricsOverride', {
+      width,
+      height,
+      deviceScaleFactor: 1,
+      mobile: true,
+    })
+    await sleep(80)
+  }
+
+  const assertViewportFits = async (label) => {
+    const metrics = await evaluate(`(() => ({
+      innerWidth: window.innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      bodyWidth: document.body.scrollWidth,
+      overflowingButtons: [...document.querySelectorAll('button')].filter((button) => {
+        const style = getComputedStyle(button)
+        if (style.display === 'none' || style.visibility === 'hidden') return false
+        const rect = button.getBoundingClientRect()
+        return rect.width > 0 && (rect.left < -1 || rect.right > window.innerWidth + 1)
+      }).map((button) => button.textContent?.trim().slice(0, 80) ?? '')
+    }))()`)
+    assert(
+      metrics.documentWidth <= metrics.innerWidth + 1 &&
+        metrics.bodyWidth <= metrics.innerWidth + 1 &&
+        metrics.overflowingButtons.length === 0,
+      `${label}: horizontal overflow at ${metrics.innerWidth}px; document=${metrics.documentWidth}, body=${metrics.bodyWidth}, buttons=${metrics.overflowingButtons.join(' | ')}`,
+    )
+  }
+
+  const assertViewportMatrix = async (label) => {
+    for (const [width, height] of [[360, 800], [390, 844], [430, 932]]) {
+      await setViewport(width, height)
+      await assertViewportFits(`${label} ${width}x${height}`)
+    }
+  }
+
   const season2CoverPresentExpression = `(() => {
     const token = 'seven_roads_season2_cover_v1'
     const imageMatch = [...document.images].some((img) => img.src.includes(token))
@@ -339,12 +376,7 @@ try {
 
   await send('Page.enable')
   await send('Runtime.enable')
-  await send('Emulation.setDeviceMetricsOverride', {
-    width: 430,
-    height: 932,
-    deviceScaleFactor: 1,
-    mobile: true,
-  })
+  await setViewport(430, 932)
 
   await send('Page.navigate', {
     url: 'http://127.0.0.1:4173/qissa_app/',
@@ -376,6 +408,13 @@ try {
       },
     }),
   )
+  await setJson(
+    progressKey(episode4),
+    makeProgress(episode4, {
+      completed: false,
+      currentPartIndex: 1,
+    }),
+  )
 
   await reloadAndWait()
   await waitFor(bodyHas('Тайна восточного каравана'), 'Russian Home legacy Episode 2 resume')
@@ -395,6 +434,14 @@ try {
   ]) {
     await waitFor(bodyHas(title), `Russian Season 2 row: ${title}`)
   }
+
+  const outOfSequenceEpisode4Available = await evaluate(`[...document.querySelectorAll('button')].some(
+    (button) => button.textContent?.includes('Человек, которого ждут')
+  )`)
+  assert(
+    !outOfSequenceEpisode4Available,
+    'Episode 4 became available only because stale/injected progress existed',
+  )
 
   await waitFor(
     `[...document.querySelectorAll('section')].some((node) =>
@@ -434,6 +481,7 @@ try {
   ]) {
     await waitFor(bodyHas(title), `Uzbek Season 2 row: ${title}`)
   }
+  await assertViewportMatrix('Uzbek Season 2 overview')
 
   await setJson(
     progressKey(episode1),
@@ -462,6 +510,7 @@ try {
   await clickButtonContaining('Ikki minora')
 
   await waitFor(bodyHas('1-qism / 3'), 'Episode 3 fresh reader part 1')
+  await assertViewportMatrix('Uzbek Episode 3 reader')
   const coverLeakedIntoFreshEpisodeReader = await evaluate(
     season2CoverPresentExpression,
   )
@@ -527,6 +576,7 @@ try {
   await waitFor(bodyHas('7 qism'), 'return from Episode 3 to Season 2 overview')
   await clickButtonContaining('Ordanga qaytish')
   await waitFor(bodyHas('7-qism tugadi'), 'Episode 7 completion screen')
+  await assertViewportMatrix('Uzbek Episode 7 completion')
   const coverLeakedIntoEpisodeCompletion = await evaluate(
     season2CoverPresentExpression,
   )
@@ -576,6 +626,15 @@ try {
     'Home still promises a nonexistent Season 2 result screen',
   )
 
+  await clickExactButton('Kutubxona')
+  await waitFor(bodyHas('Galereya'), 'Uzbek Library')
+  await clickExactButton('Galereya')
+  await clickButtonContaining('2-mavsum')
+  await waitFor(bodyHas('Sharqiy karvon siri'), 'expanded Season 2 gallery')
+  await assertViewportMatrix('Uzbek Season 2 gallery')
+  await clickExactButton('Bosh sahifa')
+  await waitFor(bodyHas('7 qismning barchasi tugadi'), 'completed Season 2 Home after gallery smoke')
+
   await clickButtonContaining('2-mavsum')
   await waitFor(
     bodyHas('7-qismni ochish'),
@@ -624,7 +683,7 @@ try {
   )
 
   console.log('[season2-release-browser] PASS')
-  console.log('[season2-release-browser] viewport 430x932')
+  console.log('[season2-release-browser] mobile viewports 360x800, 390x844, 430x932')
   console.log('[season2-release-browser] legacy Episode 2 progress resumed at part 8 under the new seven-episode season')
   console.log('[season2-release-browser] one shared Season 2 cover rendered on overview and stayed out of fresh/resumed readers and episode completion')
   console.log('[season2-release-browser] all seven RU and UZ episode titles rendered')
@@ -633,6 +692,8 @@ try {
   console.log('[season2-release-browser] Episode 3 Uzbek reader resolved its hosted Tier A image')
   console.log('[season2-release-browser] completed Season 2 Home/overview states do not promise a nonexistent season-result screen')
   console.log('[season2-release-browser] progress reset clears current and stale-version progress, reading position, and gallery discovery')
+  console.log('[season2-release-browser] stale/injected later-episode progress cannot bypass sequential unlock; legacy Episode 2 resume remains available')
+  console.log('[season2-release-browser] Season 2 overview, reader, completion, and gallery fit all required mobile viewports')
 } finally {
   cleanup()
 }
