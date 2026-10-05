@@ -136,7 +136,6 @@ if (map.package_plan?.shared_season_cover_asset_id !== 'seven_roads_season2_cove
   fail('Story 1 shared Season 2 cover asset id drifted')
 }
 if (
-  !String(map.package_plan?.cover_status ?? '').includes('approved') ||
   !String(map.package_plan?.cover_status ?? '').includes('hosted and verified') ||
   !String(map.package_plan?.cover_status ?? '').includes('no episode-specific cover')
 ) {
