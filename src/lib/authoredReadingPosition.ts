@@ -87,10 +87,26 @@ const clear = (story: Pick<AuthoredStoryPackage, 'story_id' | 'story_version'>) 
   }
 }
 
+const clearAll = () => {
+  const target = storage()
+  if (!target) return
+  try {
+    const keys: string[] = []
+    for (let index = 0; index < target.length; index += 1) {
+      const key = target.key(index)
+      if (key?.startsWith(`${KEY_PREFIX}:`)) keys.push(key)
+    }
+    keys.forEach((key) => target.removeItem(key))
+  } catch {
+    // Ignore cleanup failures during a full progress reset.
+  }
+}
+
 export const authoredReadingPosition = {
   keyPrefix: KEY_PREFIX,
   keyFor,
   load,
   save,
   clear,
+  clearAll,
 }
