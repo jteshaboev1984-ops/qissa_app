@@ -11,10 +11,12 @@ on:
       - 'src/data/authored/staging/**'
       - 'src/data/season2StagingAuthoredStories.ts'
       - 'docs/qissa/season2/season2_product_model.json'
+      - 'docs/qissa/season2/season2_cover_v1_inventory.json'
       - 'scripts/check-season2-tier-a-visual-slots.mjs'
       - 'scripts/check-season2-tier-a-runtime-assets.mjs'
       - 'scripts/check-season2-staging-authored-packages.mjs'
       - 'scripts/check-season2-product-model.mjs'
+      - 'scripts/check-season2-cover.mjs'
       - 'docs/qissa/season2/**'
       - 'package.json'
       - '.github/workflows/season2-tier-a-slots.yml'
@@ -59,6 +61,9 @@ jobs:
 
       - name: Validate Season 2 one-cover product model
         run: npm run check:season2-product-model
+
+      - name: Validate approved Season 2 shared cover
+        run: npm run check:season2-cover
 
       - name: Validate Story 2 runtime inventory
         run: npm run check:story2-runtime
