@@ -200,18 +200,34 @@ for (const storyNumber of expectedStoryNumbers) {
   ) {
     fail(`Story ${storyNumber}: shared-cover approval state or per-episode-cover policy drifted`)
   }
-  if (!String(map.package_plan?.localization_status ?? '').includes('not yet authored')) {
-    fail(`Story ${storyNumber}: Uzbek localization blocker must remain explicit`)
-  }
-  if (!Array.isArray(map.blockers_before_runtime_package) || map.blockers_before_runtime_package.length < 1) {
-    fail(`Story ${storyNumber}: localization blocker must remain explicit`)
-  }
   const blockerText = (map.blockers_before_runtime_package ?? []).join(' ')
   if (/cover/i.test(blockerText)) {
     fail(`Story ${storyNumber}: episode-specific cover blocker must not return`)
   }
-  if (!/Uzbek/i.test(blockerText)) {
-    fail(`Story ${storyNumber}: Uzbek localization blocker must remain explicit`)
+
+  if (storyNumber === 1) {
+    if (map.package_plan?.localization_status !== 'Uzbek staging overlay authored and CI-validated') {
+      fail('Story 1: Uzbek staging localization status drifted')
+    }
+    if (
+      map.package_plan?.staging_uz_overlay !==
+      'src/data/authored/staging/season2Story1RoyalSilver.uz.json'
+    ) {
+      fail('Story 1: Uzbek staging overlay path drifted')
+    }
+    if ((map.blockers_before_runtime_package ?? []).length !== 0) {
+      fail('Story 1: episode-local blockers should be empty after RU+UZ staging')
+    }
+  } else {
+    if (!String(map.package_plan?.localization_status ?? '').includes('not yet authored')) {
+      fail(`Story ${storyNumber}: Uzbek localization blocker must remain explicit`)
+    }
+    if (!Array.isArray(map.blockers_before_runtime_package) || map.blockers_before_runtime_package.length < 1) {
+      fail(`Story ${storyNumber}: localization blocker must remain explicit`)
+    }
+    if (!/Uzbek/i.test(blockerText)) {
+      fail(`Story ${storyNumber}: Uzbek localization blocker must remain explicit`)
+    }
   }
   if (!map.package_plan?.staging_ru_package?.trim()) {
     fail(`Story ${storyNumber}: Russian staging package path is required`)
@@ -230,4 +246,4 @@ console.log('[season2-authoring-maps] PASS')
 console.log('[season2-authoring-maps] Stories 1 and 3-7 source maps are locked')
 console.log('[season2-authoring-maps] 12 decisions / 24 branch resolutions mapped without prose rewriting')
 console.log('[season2-authoring-maps] 10/10 hosted Tier A image anchors aligned to their authoring parts')
-console.log('[season2-authoring-maps] Russian episode packages are recorded; no per-episode covers; Uzbek localization remains explicit')
+console.log('[season2-authoring-maps] RU episode packages recorded; Story 1 RU+UZ staged; Stories 3-7 Uzbek localization remains explicit')
