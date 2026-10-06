@@ -432,6 +432,34 @@ export function AuthoredStoryPlayer({
   }, [part.part_id, selectedChoice?.choice_id])
 
   useEffect(() => {
+    const updatePageNavigation = () => {
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight
+      const maxScrollY = Math.max(
+        0,
+        document.documentElement.scrollHeight - viewportHeight,
+      )
+      setPageNavigation({
+        canBack: window.scrollY > 12,
+        canForward: window.scrollY < maxScrollY - 12,
+      })
+    }
+
+    updatePageNavigation()
+    window.addEventListener('scroll', updatePageNavigation, { passive: true })
+    window.addEventListener('resize', updatePageNavigation)
+
+    const frame = window.requestAnimationFrame(updatePageNavigation)
+    const retry = window.setTimeout(updatePageNavigation, 250)
+
+    return () => {
+      window.removeEventListener('scroll', updatePageNavigation)
+      window.removeEventListener('resize', updatePageNavigation)
+      window.cancelAnimationFrame(frame)
+      window.clearTimeout(retry)
+    }
+  }, [displayedPartIndex, readerPreferences])
+
+  useEffect(() => {
     if (!lightbox) return
 
     const previousOverflow = document.body.style.overflow
