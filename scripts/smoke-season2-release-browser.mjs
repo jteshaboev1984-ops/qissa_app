@@ -476,6 +476,33 @@ try {
   const episode2ProgressBeforeReview = await evaluate(
     `localStorage.getItem(${JSON.stringify(progressKey(episode2))})`,
   )
+
+  await evaluate('window.scrollTo({ top: 0, behavior: "auto" })')
+  await sleep(150)
+  const pageStartY = await evaluate('window.scrollY')
+  await clickAriaButton('Следующая страница')
+  await sleep(450)
+  const pageForwardY = await evaluate('window.scrollY')
+  assert(
+    pageForwardY > pageStartY,
+    'single next-page arrow did not move one reader page forward',
+  )
+  await waitFor(bodyHas('Часть 8 / 10'), 'single page navigation keeps the current part')
+  const episode2ProgressAfterPageMove = await evaluate(
+    `localStorage.getItem(${JSON.stringify(progressKey(episode2))})`,
+  )
+  assert(
+    episode2ProgressAfterPageMove === episode2ProgressBeforeReview,
+    'single page navigation mutated authored story progress',
+  )
+  await clickAriaButton('Предыдущая страница')
+  await sleep(450)
+  const pageBackY = await evaluate('window.scrollY')
+  assert(
+    pageBackY < pageForwardY,
+    'single previous-page arrow did not move one reader page backward',
+  )
+
   await clickAriaButton('Предыдущая прочитанная часть')
   await waitFor(bodyHas('Часть 7 / 10'), 'read-only previous part review')
   await waitFor(bodyHas('Это только просмотр.'), 'read-only review notice')
@@ -511,8 +538,8 @@ try {
     'reviewing a previous part changed gallery discovery state',
   )
 
-  await clickExactButton('Вернуться к текущей части')
-  await waitFor(bodyHas('Часть 8 / 10'), 'return from review to current part')
+  await clickAriaButton('Следующая прочитанная часть')
+  await waitFor(bodyHas('Часть 8 / 10'), 'double next arrow returns from review to current part')
 
   await evaluate('window.history.back()')
   await waitFor(
@@ -794,7 +821,8 @@ try {
   console.log('[season2-release-browser] mobile viewports 360x800, 390x844, 430x932')
   console.log('[season2-release-browser] legacy Episode 2 progress resumed at part 8 under the new seven-episode season')
   console.log('[season2-release-browser] browser Back returns from reader to the previous QISSA screen')
-  console.log('[season2-release-browser] previous-part review is read-only and preserves progress, resume position, and gallery discovery')
+  console.log('[season2-release-browser] single arrows move one screen-page without changing the current part or story progress')
+  console.log('[season2-release-browser] double arrows move between read logical parts while preserving progress, resume position, and gallery discovery')
   console.log('[season2-release-browser] one shared Season 2 cover rendered on overview and stayed out of fresh/resumed readers and episode completion')
   console.log('[season2-release-browser] all seven RU and UZ episode titles rendered')
   console.log('[season2-release-browser] completed Season 1 announces the already-published Season 2 instead of stale coming-soon copy')

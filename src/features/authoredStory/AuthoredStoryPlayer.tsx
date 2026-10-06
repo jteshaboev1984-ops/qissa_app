@@ -347,6 +347,10 @@ export function AuthoredStoryPlayer({
   const [lightbox, setLightbox] = useState<{ url: string; alt: string } | null>(null)
   const [showReaderSettings, setShowReaderSettings] = useState(false)
   const [reviewPartIndex, setReviewPartIndex] = useState<number | null>(null)
+  const [pageNavigation, setPageNavigation] = useState({
+    canBack: false,
+    canForward: true,
+  })
   const topRef = useRef<HTMLDivElement | null>(null)
   const restoredPartRef = useRef<number | null>(null)
 
@@ -428,6 +432,34 @@ export function AuthoredStoryPlayer({
   }, [part.part_id, selectedChoice?.choice_id])
 
   useEffect(() => {
+    const updatePageNavigation = () => {
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight
+      const maxScrollY = Math.max(
+        0,
+        document.documentElement.scrollHeight - viewportHeight,
+      )
+      setPageNavigation({
+        canBack: window.scrollY > 12,
+        canForward: window.scrollY < maxScrollY - 12,
+      })
+    }
+
+    updatePageNavigation()
+    window.addEventListener('scroll', updatePageNavigation, { passive: true })
+    window.addEventListener('resize', updatePageNavigation)
+
+    const frame = window.requestAnimationFrame(updatePageNavigation)
+    const retry = window.setTimeout(updatePageNavigation, 250)
+
+    return () => {
+      window.removeEventListener('scroll', updatePageNavigation)
+      window.removeEventListener('resize', updatePageNavigation)
+      window.cancelAnimationFrame(frame)
+      window.clearTimeout(retry)
+    }
+  }, [displayedPartIndex, readerPreferences])
+
+  useEffect(() => {
     if (!lightbox) return
 
     const previousOverflow = document.body.style.overflow
@@ -505,6 +537,15 @@ export function AuthoredStoryPlayer({
     onBack?.()
   }
 
+  const scrollReaderPage = (direction: -1 | 1) => {
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight
+    const pageDistance = Math.max(240, viewportHeight - 160)
+    window.scrollBy({
+      top: direction * pageDistance,
+      behavior: 'smooth',
+    })
+  }
+
   const openImage = (url: string, alt: string) => setLightbox({ url, alt })
 
   const markImageSeen = (assetId: string) => {
@@ -520,13 +561,10 @@ export function AuthoredStoryPlayer({
   const canContinue =
     !isReviewingPreviousPart && canAdvanceAuthoredStory(story, progress)
   const previousReviewPartIndex =
-    readerUnit === 'part' &&
-    !historicalReplay &&
-    readerProgress.current > 1
+    !historicalReplay && readerProgress.current > 1
       ? firstPartIndexForEpisode(story, readerProgress.current - 1)
       : null
   const nextReviewPartIndex =
-    readerUnit === 'part' &&
     !historicalReplay &&
     isReviewingPreviousPart &&
     readerProgress.current < persistedReaderProgress.current
@@ -563,6 +601,26 @@ export function AuthoredStoryPlayer({
     Boolean(
       nextReaderProgress && nextReaderProgress.current > readerProgress.current,
     )
+  const canAdvanceToNextReaderUnit =
+    !historicalReplay &&
+    !isReviewingPreviousPart &&
+    canContinue &&
+    Boolean(
+      nextReaderProgress && nextReaderProgress.current > readerProgress.current,
+    )
+  const previousReaderUnitLabel =
+    readerUnit === 'part' ? copy.previousReadPart : copy.previousReadEpisode
+  const nextReaderUnitLabel =
+    readerUnit === 'part' ? copy.nextReadPart : copy.nextReadEpisode
+
+  const goToNextReaderUnit = () => {
+    if (isReviewingPreviousPart) {
+      openReviewPart(nextReviewPartIndex)
+      return
+    }
+    if (canAdvanceToNextReaderUnit) continueStory()
+  }
+
   const currentDecisionChoiceId = part.decision
     ? progress.selected_choices[part.decision.decision_id] ?? null
     : null
@@ -738,7 +796,7 @@ export function AuthoredStoryPlayer({
 
       <section
         ref={topRef}
-        className={`min-h-dvh space-y-5 pb-10 transition-colors ${readerTheme.page}`}
+        className={`min-h-dvh space-y-5 pb-28 transition-colors ${readerTheme.page}`}
       >
         <div
           className={`sticky top-0 z-40 -mx-2 flex items-center justify-between gap-2 border-b px-2 py-2 backdrop-blur-xl ${readerTheme.toolbar}`}
@@ -755,31 +813,9 @@ export function AuthoredStoryPlayer({
             </button>
           ) : <span />}
           <div className="flex items-center gap-2">
-            {previousReviewPartIndex != null ? (
-              <button
-                type="button"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-current/15 text-lg font-bold"
-                onClick={() => openReviewPart(previousReviewPartIndex)}
-                aria-label={copy.previousReadPart}
-                title={copy.previousReadPart}
-              >
-                ‹
-              </button>
-            ) : null}
             <span className="rounded-full border border-current/15 px-3 py-1.5 text-xs font-bold">
               {readerProgressLabel}
             </span>
-            {nextReviewPartIndex != null ? (
-              <button
-                type="button"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-current/15 text-lg font-bold"
-                onClick={() => openReviewPart(nextReviewPartIndex)}
-                aria-label={copy.nextReadPart}
-                title={copy.nextReadPart}
-              >
-                ›
-              </button>
-            ) : null}
             <button
               type="button"
               className="flex h-10 min-w-10 items-center justify-center rounded-full border border-current/15 px-3 text-sm font-bold"
@@ -790,6 +826,56 @@ export function AuthoredStoryPlayer({
             </button>
           </div>
         </div>
+
+        <nav
+          className={`fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-50 flex w-[calc(100%-1.5rem)] max-w-[414px] -translate-x-1/2 items-center justify-center gap-2 rounded-full border px-2 py-2 shadow-[0_16px_42px_-26px_rgba(0,0,0,.65)] backdrop-blur-xl ${readerTheme.toolbar}`}
+          aria-label={readerUnit === 'part' ? copy.partNavigation : copy.episodeNavigation}
+        >
+          <button
+            type="button"
+            className="flex h-11 w-12 items-center justify-center rounded-full border border-current/15 text-xl font-bold disabled:cursor-not-allowed disabled:opacity-30"
+            onClick={() => openReviewPart(previousReviewPartIndex)}
+            disabled={previousReviewPartIndex == null}
+            aria-label={previousReaderUnitLabel}
+            title={previousReaderUnitLabel}
+          >
+            «
+          </button>
+          <button
+            type="button"
+            className="flex h-11 w-12 items-center justify-center rounded-full border border-current/15 text-xl font-bold disabled:cursor-not-allowed disabled:opacity-30"
+            onClick={() => scrollReaderPage(-1)}
+            disabled={!pageNavigation.canBack}
+            aria-label={copy.previousPage}
+            title={copy.previousPage}
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className="flex h-11 w-12 items-center justify-center rounded-full border border-current/15 text-xl font-bold disabled:cursor-not-allowed disabled:opacity-30"
+            onClick={() => scrollReaderPage(1)}
+            disabled={!pageNavigation.canForward}
+            aria-label={copy.nextPage}
+            title={copy.nextPage}
+          >
+            ›
+          </button>
+          <button
+            type="button"
+            className="flex h-11 w-12 items-center justify-center rounded-full border border-current/15 text-xl font-bold disabled:cursor-not-allowed disabled:opacity-30"
+            onClick={goToNextReaderUnit}
+            disabled={
+              isReviewingPreviousPart
+                ? nextReviewPartIndex == null
+                : !canAdvanceToNextReaderUnit
+            }
+            aria-label={nextReaderUnitLabel}
+            title={nextReaderUnitLabel}
+          >
+            »
+          </button>
+        </nav>
 
       <header className="space-y-3">
         {isReviewingPreviousPart ? (
