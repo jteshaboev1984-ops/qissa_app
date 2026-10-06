@@ -473,8 +473,27 @@ try {
     'shared Season 2 cover leaked into resumed Episode 2 reader',
   )
 
-  await clickAriaButton('Назад')
-  await waitFor(bodyHas('7 серий'), 'return from Episode 2 reader to Season 2 overview')
+  const episode2ProgressBeforeReview = await evaluate(
+    `localStorage.getItem(${JSON.stringify(progressKey(episode2))})`,
+  )
+  await clickAriaButton('Предыдущая прочитанная часть')
+  await waitFor(bodyHas('Часть 7 / 10'), 'read-only previous part review')
+  await waitFor(bodyHas('Просмотр прочитанной части'), 'read-only review notice')
+  const episode2ProgressAfterReview = await evaluate(
+    `localStorage.getItem(${JSON.stringify(progressKey(episode2))})`,
+  )
+  assert(
+    episode2ProgressAfterReview === episode2ProgressBeforeReview,
+    'reviewing a previous part mutated persisted Episode 2 progress',
+  )
+  await clickExactButton('Вернуться к текущей части')
+  await waitFor(bodyHas('Часть 8 / 10'), 'return from review to current part')
+
+  await evaluate('window.history.back()')
+  await waitFor(
+    bodyHas('7 серий'),
+    'browser back returns from Episode 2 reader to Season 2 overview',
+  )
 
   await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`)
   await reloadAndWait()
@@ -749,6 +768,8 @@ try {
   console.log('[season2-release-browser] PASS')
   console.log('[season2-release-browser] mobile viewports 360x800, 390x844, 430x932')
   console.log('[season2-release-browser] legacy Episode 2 progress resumed at part 8 under the new seven-episode season')
+  console.log('[season2-release-browser] browser Back returns from reader to the previous QISSA screen')
+  console.log('[season2-release-browser] previous-part review is read-only and preserves persisted progress')
   console.log('[season2-release-browser] one shared Season 2 cover rendered on overview and stayed out of fresh/resumed readers and episode completion')
   console.log('[season2-release-browser] all seven RU and UZ episode titles rendered')
   console.log('[season2-release-browser] completed Season 1 announces the already-published Season 2 instead of stale coming-soon copy')
