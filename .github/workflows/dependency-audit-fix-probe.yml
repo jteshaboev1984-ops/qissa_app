@@ -1,0 +1,63 @@
+name: Dependency Audit Fix Probe
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  audit-fix:
+    if: github.head_ref == 'fix/post-release-p3-status-copy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fix branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply non-breaking npm audit lockfile fix
+        run: npm audit fix --package-lock-only
+
+      - name: Reinstall locked dependencies
+        run: npm ci
+
+      - name: Audit production dependencies
+        run: npm run audit:prod
+
+      - name: Audit full dependency graph
+        run: npm run audit:all
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        env:
+          VITE_QISSA_STORY2_PREVIEW: false
+          VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
+        run: npm run build
+
+      - name: Commit lockfile fix
+        shell: bash
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            echo "No lockfile changes produced."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "chore: refresh patched transitive dependency"
+          git push origin HEAD:${{ github.head_ref }}
