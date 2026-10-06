@@ -51,6 +51,7 @@ interface AuthoredStoryPlayerProps {
   completionSummary?: string
   nextSeasonPublished?: boolean
   onFinishForToday?: () => void
+  onCompletionExit?: () => void
   initialEpisodeNumber?: number
   readerPreferences: ReaderPreferences
   onReaderPreferencesChange: (patch: Partial<ReaderPreferences>) => void
@@ -285,6 +286,7 @@ export function AuthoredStoryPlayer({
   completionSummary,
   nextSeasonPublished = false,
   onFinishForToday,
+  onCompletionExit,
   initialEpisodeNumber,
   readerPreferences,
   onReaderPreferencesChange,
@@ -344,10 +346,15 @@ export function AuthoredStoryPlayer({
   const [previewChoiceId, setPreviewChoiceId] = useState<string | null>(null)
   const [lightbox, setLightbox] = useState<{ url: string; alt: string } | null>(null)
   const [showReaderSettings, setShowReaderSettings] = useState(false)
+  const [reviewPartIndex, setReviewPartIndex] = useState<number | null>(null)
   const topRef = useRef<HTMLDivElement | null>(null)
   const restoredPartRef = useRef<number | null>(null)
 
-  const part = getCurrentAuthoredStoryPart(story, progress)
+  const displayedPartIndex = reviewPartIndex ?? progress.current_part_index
+  const isReviewingPreviousPart =
+    reviewPartIndex != null && reviewPartIndex < progress.current_part_index
+  const part =
+    story.parts[displayedPartIndex] ?? getCurrentAuthoredStoryPart(story, progress)
   const selectedChoice = getSelectedChoiceForPart(part, progress)
   const storyBlocks = useMemo(
     () => buildAuthoredNarrativeBlocks(part, 'story_text', progress.selected_choices),
@@ -368,7 +375,7 @@ export function AuthoredStoryPlayer({
   }, [story, progress, historicalReplay])
 
   useEffect(() => {
-    if (historicalReplay) return
+    if (historicalReplay || reviewPartIndex != null) return
 
     const saved = authoredReadingPosition.load(story)
     if (!saved || saved.part_index !== progress.current_part_index) return
@@ -386,10 +393,10 @@ export function AuthoredStoryPlayer({
 
     const retry = window.setTimeout(restore, 350)
     return () => window.clearTimeout(retry)
-  }, [story, progress.current_part_index, historicalReplay])
+  }, [story, progress.current_part_index, historicalReplay, reviewPartIndex])
 
   useEffect(() => {
-    if (historicalReplay) return
+    if (historicalReplay || reviewPartIndex != null) return
 
     let frame = 0
 
@@ -414,7 +421,7 @@ export function AuthoredStoryPlayer({
       if (frame) window.cancelAnimationFrame(frame)
       persistPosition()
     }
-  }, [story, progress.current_part_index, historicalReplay])
+  }, [story, progress.current_part_index, historicalReplay, reviewPartIndex])
 
   useEffect(() => {
     setPreviewChoiceId(selectedChoice?.choice_id ?? null)
@@ -443,17 +450,18 @@ export function AuthoredStoryPlayer({
   }
 
   const confirmChoice = () => {
-    if (!previewChoiceId || selectedChoice || !part.decision) return
+    if (isReviewingPreviousPart || !previewChoiceId || selectedChoice || !part.decision) return
     const selected = selectAuthoredStoryChoice(story, progress, previewChoiceId)
     const withResolution = markAuthoredStoryResolutionShown(story, selected)
     updateProgress(withResolution)
   }
 
   const continueStory = () => {
-    if (!canAdvanceAuthoredStory(story, progress)) return
+    if (isReviewingPreviousPart || !canAdvanceAuthoredStory(story, progress)) return
     const next = advanceAuthoredStory(story, progress)
     if (!historicalReplay) authoredReadingPosition.clear(story)
     restoredPartRef.current = null
+    setReviewPartIndex(null)
     updateProgress(next)
 
     requestAnimationFrame(() => {
@@ -472,20 +480,26 @@ export function AuthoredStoryPlayer({
       selected_choices: { ...inheritedSelectedChoices },
     }
     setPreviewChoiceId(null)
+    setReviewPartIndex(null)
     updateProgress(fresh)
   }
 
   const finishForToday = () => {
-    if (!onFinishForToday || !canAdvanceAuthoredStory(story, progress)) return
+    if (
+      isReviewingPreviousPart ||
+      !onFinishForToday ||
+      !canAdvanceAuthoredStory(story, progress)
+    ) return
     const next = advanceAuthoredStory(story, progress)
     authoredReadingPosition.clear(story)
     restoredPartRef.current = null
+    setReviewPartIndex(null)
     updateProgress(next)
     onFinishForToday()
   }
 
   const closeReader = () => {
-    if (!historicalReplay) {
+    if (!historicalReplay && reviewPartIndex == null) {
       authoredReadingPosition.save(story, progress.current_part_index, window.scrollY)
     }
     onBack?.()
@@ -494,13 +508,52 @@ export function AuthoredStoryPlayer({
   const openImage = (url: string, alt: string) => setLightbox({ url, alt })
 
   const markImageSeen = (assetId: string) => {
+    if (isReviewingPreviousPart) return
     authoredIllustrationDiscovery.markSeen(story, assetId)
   }
 
-  const currentPartNumber = progress.current_part_index + 1
+  const currentPartNumber = displayedPartIndex + 1
+  const persistedPartNumber = progress.current_part_index + 1
   const readerProgress = readerPartProgress(story, currentPartNumber)
+  const persistedReaderProgress = readerPartProgress(story, persistedPartNumber)
   const readerEpisodeTitle = episodeTitles?.[readerProgress.current - 1] ?? part.title
-  const canContinue = canAdvanceAuthoredStory(story, progress)
+  const canContinue =
+    !isReviewingPreviousPart && canAdvanceAuthoredStory(story, progress)
+  const previousReviewPartIndex =
+    readerUnit === 'part' &&
+    !historicalReplay &&
+    readerProgress.current > 1
+      ? firstPartIndexForEpisode(story, readerProgress.current - 1)
+      : null
+  const nextReviewPartIndex =
+    readerUnit === 'part' &&
+    !historicalReplay &&
+    isReviewingPreviousPart &&
+    readerProgress.current < persistedReaderProgress.current
+      ? firstPartIndexForEpisode(story, readerProgress.current + 1)
+      : null
+
+  const openReviewPart = (partIndex: number | null) => {
+    if (partIndex == null || partIndex > progress.current_part_index) return
+    restoredPartRef.current = null
+
+    if (partIndex === progress.current_part_index) {
+      setReviewPartIndex(null)
+      return
+    }
+
+    setReviewPartIndex(partIndex)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    })
+  }
+
+  const returnToCurrentPart = () => {
+    restoredPartRef.current = null
+    setReviewPartIndex(null)
+  }
   const nextReaderProgress =
     !part.is_final && currentPartNumber < story.parts.length
       ? readerPartProgress(story, currentPartNumber + 1)
@@ -613,7 +666,11 @@ export function AuthoredStoryPlayer({
             {onBack ? (
               <button
                 className="w-full rounded-full border border-white/35 bg-black/20 px-5 py-3 text-sm font-semibold text-[#fff9ec] backdrop-blur-md"
-                onClick={onBack}
+                onClick={
+                  completionScope === 'episode'
+                    ? onBack
+                    : onCompletionExit ?? onBack
+                }
               >
                 {completionScope === 'episode' ? copy.returnToSeason : copy.backHome}
               </button>
@@ -698,9 +755,31 @@ export function AuthoredStoryPlayer({
             </button>
           ) : <span />}
           <div className="flex items-center gap-2">
+            {previousReviewPartIndex != null ? (
+              <button
+                type="button"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-current/15 text-lg font-bold"
+                onClick={() => openReviewPart(previousReviewPartIndex)}
+                aria-label={copy.previousReadPart}
+                title={copy.previousReadPart}
+              >
+                ‹
+              </button>
+            ) : null}
             <span className="rounded-full border border-current/15 px-3 py-1.5 text-xs font-bold">
               {readerProgressLabel}
             </span>
+            {nextReviewPartIndex != null ? (
+              <button
+                type="button"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-current/15 text-lg font-bold"
+                onClick={() => openReviewPart(nextReviewPartIndex)}
+                aria-label={copy.nextReadPart}
+                title={copy.nextReadPart}
+              >
+                ›
+              </button>
+            ) : null}
             <button
               type="button"
               className="flex h-10 min-w-10 items-center justify-center rounded-full border border-current/15 px-3 text-sm font-bold"
@@ -713,6 +792,12 @@ export function AuthoredStoryPlayer({
         </div>
 
       <header className="space-y-3">
+        {isReviewingPreviousPart ? (
+          <div className="rounded-2xl border border-[#c8b27e] bg-[#fff7df] px-4 py-3 text-[#514933]">
+            <p className="q-label mb-1">{copy.reviewingPart}</p>
+            <p className="text-xs leading-5">{copy.reviewingPartBody}</p>
+          </div>
+        ) : null}
         {showCover && currentPartNumber === 1 ? (
           <StoryImage
             asset={{
@@ -762,7 +847,7 @@ export function AuthoredStoryPlayer({
         />
       </article>
 
-      {part.decision && !selectedChoice ? (
+      {!isReviewingPreviousPart && part.decision && !selectedChoice ? (
         <section className="q-stone-panel p-5">
           <p className="q-label mb-2">{copy.yourChoice}</p>
           <h3 className="q-heading mb-2 text-2xl font-bold leading-tight">{part.decision.prompt}</h3>
@@ -885,7 +970,19 @@ export function AuthoredStoryPlayer({
         </article>
       ) : null}
 
-      {(!part.decision || selectedChoice) ? (
+      {isReviewingPreviousPart ? (
+        <section className="q-stone-panel space-y-3 p-5 text-center">
+          <div>
+            <p className="q-label mb-1">{copy.reviewingPart}</p>
+            <p className="text-sm leading-6 text-[#625846]">
+              {copy.reviewingPartBody}
+            </p>
+          </div>
+          <button className="q-primary w-full" onClick={returnToCurrentPart}>
+            {copy.returnToCurrentPart}
+          </button>
+        </section>
+      ) : (!part.decision || selectedChoice) ? (
         replayEpisodeEnd ? (
           <section className="q-stone-panel space-y-4 p-5 text-center">
             <div>

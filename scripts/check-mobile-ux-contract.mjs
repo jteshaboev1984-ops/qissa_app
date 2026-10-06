@@ -13,6 +13,8 @@ const css = read('src/index.css')
 const bottomNav = read('src/components/AppBottomNav.tsx')
 const storyScreen = read('src/screens/StoryScreen.tsx')
 const listeningScene = read('src/components/ListeningScene.tsx')
+const app = read('src/App.tsx')
+const authoredReader = read('src/features/authoredStory/AuthoredStoryPlayer.tsx')
 
 requireCondition(
   /viewport-fit=cover/.test(html),
@@ -70,4 +72,19 @@ requireCondition(
   'primary listening controls must remain comfortably tappable',
 )
 
-console.log('Mobile UX contract passed: dynamic viewport, device safe areas, 44px touch targets, bounded reader, and listening controls are protected.')
+requireCondition(
+  /window\.history\.pushState/.test(app) &&
+    /window\.history\.replaceState/.test(app) &&
+    /popstate/.test(app),
+  'mobile browser and Android Back must follow the QISSA navigation stack',
+)
+
+requireCondition(
+  /previousReviewPartIndex/.test(authoredReader) &&
+    /nextReviewPartIndex/.test(authoredReader) &&
+    /isReviewingPreviousPart/.test(authoredReader) &&
+    /reviewPartIndex != null/.test(authoredReader),
+  'the authored reader must support read-only review of previously read parts without replacing the saved resume position',
+)
+
+console.log('Mobile UX contract passed: dynamic viewport, device safe areas, 44px touch targets, browser Back, read-only part review, bounded reader, and listening controls are protected.')

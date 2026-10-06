@@ -473,8 +473,52 @@ try {
     'shared Season 2 cover leaked into resumed Episode 2 reader',
   )
 
-  await clickAriaButton('Назад')
-  await waitFor(bodyHas('7 серий'), 'return from Episode 2 reader to Season 2 overview')
+  const episode2ProgressBeforeReview = await evaluate(
+    `localStorage.getItem(${JSON.stringify(progressKey(episode2))})`,
+  )
+  await clickAriaButton('Предыдущая прочитанная часть')
+  await waitFor(bodyHas('Часть 7 / 10'), 'read-only previous part review')
+  await waitFor(bodyHas('Это только просмотр.'), 'read-only review notice')
+  await assertViewportMatrix('Russian Episode 2 review toolbar')
+  const episode2ProgressAfterReview = await evaluate(
+    `localStorage.getItem(${JSON.stringify(progressKey(episode2))})`,
+  )
+  assert(
+    episode2ProgressAfterReview === episode2ProgressBeforeReview,
+    'reviewing a previous part mutated persisted Episode 2 progress',
+  )
+
+  const reviewReadingPositionBeforeScroll = await evaluate(
+    `localStorage.getItem(${JSON.stringify(readingKey(episode2))})`,
+  )
+  const reviewDiscoveryBeforeScroll = await evaluate(
+    `localStorage.getItem(${JSON.stringify(discoveryKey(episode2))})`,
+  )
+  await evaluate('window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "auto" })')
+  await sleep(250)
+  const reviewReadingPositionAfterScroll = await evaluate(
+    `localStorage.getItem(${JSON.stringify(readingKey(episode2))})`,
+  )
+  const reviewDiscoveryAfterScroll = await evaluate(
+    `localStorage.getItem(${JSON.stringify(discoveryKey(episode2))})`,
+  )
+  assert(
+    reviewReadingPositionAfterScroll === reviewReadingPositionBeforeScroll,
+    'review scroll overwrote the saved current-part reading position',
+  )
+  assert(
+    reviewDiscoveryAfterScroll === reviewDiscoveryBeforeScroll,
+    'reviewing a previous part changed gallery discovery state',
+  )
+
+  await clickExactButton('Вернуться к текущей части')
+  await waitFor(bodyHas('Часть 8 / 10'), 'return from review to current part')
+
+  await evaluate('window.history.back()')
+  await waitFor(
+    bodyHas('7 серий'),
+    'browser back returns from Episode 2 reader to Season 2 overview',
+  )
 
   await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`)
   await reloadAndWait()
@@ -749,6 +793,8 @@ try {
   console.log('[season2-release-browser] PASS')
   console.log('[season2-release-browser] mobile viewports 360x800, 390x844, 430x932')
   console.log('[season2-release-browser] legacy Episode 2 progress resumed at part 8 under the new seven-episode season')
+  console.log('[season2-release-browser] browser Back returns from reader to the previous QISSA screen')
+  console.log('[season2-release-browser] previous-part review is read-only and preserves progress, resume position, and gallery discovery')
   console.log('[season2-release-browser] one shared Season 2 cover rendered on overview and stayed out of fresh/resumed readers and episode completion')
   console.log('[season2-release-browser] all seven RU and UZ episode titles rendered')
   console.log('[season2-release-browser] completed Season 1 announces the already-published Season 2 instead of stale coming-soon copy')

@@ -42,6 +42,7 @@ export function PublishedStoriesShell({
   language,
   tab,
   onTab,
+  onBack,
   onOpenSeason,
   onContinueStory,
   onOpenSettings,
@@ -49,6 +50,7 @@ export function PublishedStoriesShell({
   language: SevenRoadsLanguage
   tab: PublishedStoriesTab
   onTab: (tab: PublishedStoriesTab) => void
+  onBack: () => void
   onOpenSeason: (seasonNumber: number) => void
   onContinueStory: () => void
   onOpenSettings: () => void
@@ -352,7 +354,7 @@ export function PublishedStoriesShell({
             {tab === 'library' ? (
               <button
                 type="button"
-                onClick={() => onTab('home')}
+                onClick={onBack}
                 className="flex h-11 w-11 flex-none items-center justify-center rounded-full border border-white/25 bg-black/20 text-lg font-bold text-white/95 backdrop-blur-md transition active:scale-[0.96]"
                 aria-label={copy.back}
                 title={copy.back}

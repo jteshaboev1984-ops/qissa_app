@@ -49,8 +49,18 @@ for (const text of [
   "authoredStoryPersistence.clearAll()",
   "authoredReadingPosition.clearAll()",
   "authoredIllustrationDiscovery.clearAll()",
-  "setSelectedSeasonNumber(1)",
+  "selectedSeasonNumber: 1",
 ]) requireText('Seven Roads App', app, text)
+
+for (const text of [
+  'QISSA_HISTORY_SNAPSHOT_KEY',
+  'window.history.pushState',
+  'window.history.replaceState',
+  "window.addEventListener('popstate'",
+  'navigateBack(',
+  'navigateTo(',
+  'qissaNavigationDepth',
+]) requireText('Seven Roads browser navigation', app, text)
 
 for (const text of [
   'storyService',
@@ -138,6 +148,8 @@ requireText('Seven Roads copy', copy, "replayEpisode: 'Прочитать сер
 requireText('Seven Roads copy', copy, "replayStory: 'Прочитать сказку заново'")
 requireText('Seven Roads copy', copy, "nextSeasonAvailable: 'Следующий сезон уже открыт'")
 requireText('Seven Roads copy', copy, "nextSeasonAvailable: 'Keyingi mavsum ochiq'")
+requireText('Seven Roads copy', copy, "previousReadPart: 'Предыдущая прочитанная часть'")
+requireText('Seven Roads copy', copy, "previousReadPart: 'Oldingi o‘qilgan qism'")
 requireText('Seven Roads copy', copy, "${episodeNumber}-qism tugadi")
 requireText('Seven Roads copy', copy, "${seasonNumber}-mavsum tugadi")
 forbidText('Seven Roads copy', copy, "Buguncha yakunlash")
@@ -163,7 +175,7 @@ requireText('public shell', shell, 'sevenRoadsUiAssets.futureSeasonPlaceholder')
 requireText('public shell', shell, 'onOpenSettings')
 requireText('public shell', shell, 'aria-label={copy.settings}')
 requireText('public shell Library back', shell, "tab === 'library'")
-requireText('public shell Library back', shell, "onClick={() => onTab('home')}")
+requireText('public shell Library back', shell, 'onClick={onBack}')
 requireText('public shell Library back', shell, 'aria-label={copy.back}')
 requireText('public shell', shell, "type LibraryView = 'seasons' | 'gallery'")
 requireText('public shell', shell, 'authoredIllustrationDiscovery.buildGalleryEpisodes')
@@ -308,6 +320,12 @@ requireText('reader', player, 'authoredReadingPosition.clear')
 requireText('reader', player, 'aria-label={copy.readerSettings}')
 requireText('reader', player, 'getReaderTextStyle')
 requireText('reader', player, 'historicalReplay')
+requireText('reader review navigation', player, 'reviewPartIndex')
+requireText('reader review navigation', player, 'isReviewingPreviousPart')
+requireText('reader review navigation', player, 'copy.previousReadPart')
+requireText('reader review navigation', player, 'copy.nextReadPart')
+requireText('reader review navigation', player, 'copy.returnToCurrentPart')
+requireText('reader review navigation', player, 'reviewPartIndex != null')
 requireText('reader', player, '{copy.returnToSeason}')
 requireText('reader', player, 'sticky top-0 z-40')
 requireText('reader', player, 'authoredIllustrationDiscovery.markSeen')
