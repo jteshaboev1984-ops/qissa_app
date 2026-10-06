@@ -603,14 +603,18 @@ export function PublishedStoriesShell({
                           <div className="absolute inset-x-0 bottom-0 p-4">
                             <div className="flex items-center justify-between gap-3">
                               <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                                {formatSevenRoadsSeasonLabel(language, season.number)}
+                                {singleCoverEpisodeList
+                                  ? season.worldTitle
+                                  : formatSevenRoadsSeasonLabel(language, season.number)}
                               </p>
                               <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur-sm">
                                 {progressLabel}
                               </span>
                             </div>
                             <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">
-                              {season.title ?? primaryStory.title ?? authoredStory.title}
+                              {singleCoverEpisodeList
+                                ? formatSevenRoadsSeasonLabel(language, season.number)
+                                : season.title ?? primaryStory.title ?? authoredStory.title}
                             </h3>
                           </div>
                         </button>
