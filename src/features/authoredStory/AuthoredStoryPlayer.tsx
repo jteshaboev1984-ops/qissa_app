@@ -964,7 +964,19 @@ export function AuthoredStoryPlayer({
         </article>
       ) : null}
 
-      {(!part.decision || selectedChoice) ? (
+      {isReviewingPreviousPart ? (
+        <section className="q-stone-panel space-y-3 p-5 text-center">
+          <div>
+            <p className="q-label mb-1">{copy.reviewingPart}</p>
+            <p className="text-sm leading-6 text-[#625846]">
+              {copy.reviewingPartBody}
+            </p>
+          </div>
+          <button className="q-primary w-full" onClick={returnToCurrentPart}>
+            {copy.returnToCurrentPart}
+          </button>
+        </section>
+      ) : (!part.decision || selectedChoice) ? (
         replayEpisodeEnd ? (
           <section className="q-stone-panel space-y-4 p-5 text-center">
             <div>
