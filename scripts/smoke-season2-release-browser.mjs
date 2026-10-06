@@ -473,7 +473,7 @@ try {
     'shared Season 2 cover leaked into resumed Episode 2 reader',
   )
 
-  await clickExactButton('Назад')
+  await clickAriaButton('Назад')
   await waitFor(bodyHas('7 серий'), 'return from Episode 2 reader to Season 2 overview')
 
   await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`)
@@ -606,7 +606,7 @@ try {
       },
     }),
   )
-  await clickExactButton('Orqaga')
+  await clickAriaButton('Orqaga')
   await waitFor(bodyHas('7 qism'), 'return from Episode 3 to Season 2 overview')
   await clickButtonContaining('Ordanga qaytish')
   await waitFor(bodyHas('1-qism / 1'), 'Episode 7 final part before completion')
@@ -706,7 +706,7 @@ try {
     episode7CompletionAfterReplayOpen,
     'opening a completed Season 2 episode cleared its completion state',
   )
-  await clickExactButton('Orqaga')
+  await clickAriaButton('Orqaga')
   await waitFor(bodyHas('7 qism'), 'return from completed Episode 7 replay')
   await clickExactButton('← Mavsumlar')
   await waitFor(
