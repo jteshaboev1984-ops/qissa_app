@@ -589,29 +589,33 @@ export function PublishedStoriesShell({
                                 })
                               : onOpenSeason(season.number)
                           }
-                          className="relative min-h-52 w-full overflow-hidden rounded-[1.55rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_18px_42px_-30px_rgba(0,0,0,.75)] transition active:scale-[0.99]"
+                          className="relative h-[11.5rem] w-full overflow-hidden rounded-[1.65rem] border border-[#cfb57f] bg-[#17383d] text-left shadow-[0_20px_48px_-30px_rgba(0,0,0,.78)] transition active:scale-[0.99]"
                         >
                           {coverUrl ? (
                             <img
                               src={coverUrl}
                               alt=""
-                              className="absolute inset-0 h-full w-full object-cover"
+                              className={`absolute inset-0 h-full w-full object-cover ${
+                                singleCoverEpisodeList
+                                  ? 'object-[center_38%]'
+                                  : 'object-[center_42%]'
+                              }`}
                               loading="lazy"
                             />
                           ) : null}
-                          <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/25 to-black/5" />
-                          <div className="absolute inset-x-0 bottom-0 p-4">
-                            <div className="flex items-center justify-between gap-3">
-                              <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f0d7a0]">
-                                {singleCoverEpisodeList
-                                  ? season.worldTitle
-                                  : formatSevenRoadsSeasonLabel(language, season.number)}
-                              </p>
-                              <span className="rounded-full bg-black/35 px-2.5 py-1 text-[0.62rem] font-bold text-white/90 backdrop-blur-sm">
-                                {progressLabel}
-                              </span>
-                            </div>
-                            <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-white">
+                          <div className="absolute inset-0 bg-linear-to-t from-black/88 via-black/12 to-transparent" />
+                          <div className="absolute right-3 top-3">
+                            <span className="rounded-full border border-white/20 bg-black/35 px-3 py-1.5 text-[0.62rem] font-bold text-white/95 backdrop-blur-md">
+                              {progressLabel}
+                            </span>
+                          </div>
+                          <div className="absolute inset-x-0 bottom-0 p-4.5">
+                            <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#f0d7a0] drop-shadow">
+                              {singleCoverEpisodeList
+                                ? season.worldTitle
+                                : formatSevenRoadsSeasonLabel(language, season.number)}
+                            </p>
+                            <h3 className="mt-1 font-serif text-[1.75rem] font-bold leading-[1.05] text-white drop-shadow-md">
                               {singleCoverEpisodeList
                                 ? formatSevenRoadsSeasonLabel(language, season.number)
                                 : season.title ?? primaryStory.title ?? authoredStory.title}
