@@ -486,6 +486,30 @@ try {
     episode2ProgressAfterReview === episode2ProgressBeforeReview,
     'reviewing a previous part mutated persisted Episode 2 progress',
   )
+
+  const reviewReadingPositionBeforeScroll = await evaluate(
+    `localStorage.getItem(${JSON.stringify(readingKey(episode2))})`,
+  )
+  const reviewDiscoveryBeforeScroll = await evaluate(
+    `localStorage.getItem(${JSON.stringify(discoveryKey(episode2))})`,
+  )
+  await evaluate('window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "auto" })')
+  await sleep(250)
+  const reviewReadingPositionAfterScroll = await evaluate(
+    `localStorage.getItem(${JSON.stringify(readingKey(episode2))})`,
+  )
+  const reviewDiscoveryAfterScroll = await evaluate(
+    `localStorage.getItem(${JSON.stringify(discoveryKey(episode2))})`,
+  )
+  assert(
+    reviewReadingPositionAfterScroll === reviewReadingPositionBeforeScroll,
+    'review scroll overwrote the saved current-part reading position',
+  )
+  assert(
+    reviewDiscoveryAfterScroll === reviewDiscoveryBeforeScroll,
+    'reviewing a previous part changed gallery discovery state',
+  )
+
   await clickExactButton('Вернуться к текущей части')
   await waitFor(bodyHas('Часть 8 / 10'), 'return from review to current part')
 
@@ -769,7 +793,7 @@ try {
   console.log('[season2-release-browser] mobile viewports 360x800, 390x844, 430x932')
   console.log('[season2-release-browser] legacy Episode 2 progress resumed at part 8 under the new seven-episode season')
   console.log('[season2-release-browser] browser Back returns from reader to the previous QISSA screen')
-  console.log('[season2-release-browser] previous-part review is read-only and preserves persisted progress')
+  console.log('[season2-release-browser] previous-part review is read-only and preserves progress, resume position, and gallery discovery')
   console.log('[season2-release-browser] one shared Season 2 cover rendered on overview and stayed out of fresh/resumed readers and episode completion')
   console.log('[season2-release-browser] all seven RU and UZ episode titles rendered')
   console.log('[season2-release-browser] completed Season 1 announces the already-published Season 2 instead of stale coming-soon copy')
