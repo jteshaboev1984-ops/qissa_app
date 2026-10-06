@@ -827,6 +827,56 @@ export function AuthoredStoryPlayer({
           </div>
         </div>
 
+        <nav
+          className={`fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-50 flex w-[calc(100%-1.5rem)] max-w-[414px] -translate-x-1/2 items-center justify-center gap-2 rounded-full border px-2 py-2 shadow-[0_16px_42px_-26px_rgba(0,0,0,.65)] backdrop-blur-xl ${readerTheme.toolbar}`}
+          aria-label={readerUnit === 'part' ? copy.partNavigation : copy.episodeNavigation}
+        >
+          <button
+            type="button"
+            className="flex h-11 w-12 items-center justify-center rounded-full border border-current/15 text-xl font-bold disabled:cursor-not-allowed disabled:opacity-30"
+            onClick={() => openReviewPart(previousReviewPartIndex)}
+            disabled={previousReviewPartIndex == null}
+            aria-label={previousReaderUnitLabel}
+            title={previousReaderUnitLabel}
+          >
+            «
+          </button>
+          <button
+            type="button"
+            className="flex h-11 w-12 items-center justify-center rounded-full border border-current/15 text-xl font-bold disabled:cursor-not-allowed disabled:opacity-30"
+            onClick={() => scrollReaderPage(-1)}
+            disabled={!pageNavigation.canBack}
+            aria-label={copy.previousPage}
+            title={copy.previousPage}
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className="flex h-11 w-12 items-center justify-center rounded-full border border-current/15 text-xl font-bold disabled:cursor-not-allowed disabled:opacity-30"
+            onClick={() => scrollReaderPage(1)}
+            disabled={!pageNavigation.canForward}
+            aria-label={copy.nextPage}
+            title={copy.nextPage}
+          >
+            ›
+          </button>
+          <button
+            type="button"
+            className="flex h-11 w-12 items-center justify-center rounded-full border border-current/15 text-xl font-bold disabled:cursor-not-allowed disabled:opacity-30"
+            onClick={goToNextReaderUnit}
+            disabled={
+              isReviewingPreviousPart
+                ? nextReviewPartIndex == null
+                : !canAdvanceToNextReaderUnit
+            }
+            aria-label={nextReaderUnitLabel}
+            title={nextReaderUnitLabel}
+          >
+            »
+          </button>
+        </nav>
+
       <header className="space-y-3">
         {isReviewingPreviousPart ? (
           <div className="rounded-2xl border border-[#c8b27e] bg-[#fff7df] px-4 py-3 text-[#514933]">
