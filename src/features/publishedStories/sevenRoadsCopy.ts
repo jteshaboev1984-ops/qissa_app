@@ -99,6 +99,7 @@ const ru = {
   episodeCompletionMemory:
     'QISSA сохранила выборы этой серии. Они останутся частью общего пути сезона.',
   nextSeasonSoon: 'Следующий сезон — скоро',
+  nextSeasonAvailable: 'Следующий сезон уже открыт',
   backHome: 'На главную',
   replaySeason: 'Пройти сезон заново',
   replayStory: 'Прочитать сказку заново',
@@ -198,6 +199,7 @@ const uz = {
   episodeCompletionMemory:
     'QISSA bu qismdagi tanlovlaringni saqladi. Ular mavsumning umumiy yo‘lida esda qoladi.',
   nextSeasonSoon: 'Keyingi mavsum — tez orada',
+  nextSeasonAvailable: 'Keyingi mavsum ochiq',
   backHome: 'Bosh sahifaga',
   replaySeason: 'Mavsumni boshidan o‘qish',
   replayStory: 'Hikoyani boshidan o‘qish',
