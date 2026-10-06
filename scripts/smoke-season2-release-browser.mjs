@@ -479,6 +479,7 @@ try {
   await clickAriaButton('Предыдущая прочитанная часть')
   await waitFor(bodyHas('Часть 7 / 10'), 'read-only previous part review')
   await waitFor(bodyHas('Это только просмотр.'), 'read-only review notice')
+  await assertViewportMatrix('Russian Episode 2 review toolbar')
   const episode2ProgressAfterReview = await evaluate(
     `localStorage.getItem(${JSON.stringify(progressKey(episode2))})`,
   )
