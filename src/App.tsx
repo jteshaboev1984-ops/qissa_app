@@ -360,18 +360,18 @@ function App() {
               const returnToSeason =
                 requestedEpisodeNumber != null ||
                 season.presentation === 'single-cover-episode-list'
-              setRequestedEpisodeNumber(null)
-              if (returnToSeason) {
-                setView('season')
-                return
-              }
-              setTab('home')
-              setView('shell')
+              navigateBack(
+                returnToSeason
+                  ? { view: 'season', requestedEpisodeNumber: null }
+                  : { view: 'shell', tab: 'home', requestedEpisodeNumber: null },
+              )
             }}
             onFinishForToday={() => {
-              setRequestedEpisodeNumber(null)
-              setTab('home')
-              setView('shell')
+              replaceNavigation({
+                view: 'shell',
+                tab: 'home',
+                requestedEpisodeNumber: null,
+              })
             }}
           />
         </div>
@@ -390,16 +390,18 @@ function App() {
           setReaderPreferences(next)
           sevenRoadsReaderPreferences.save(next)
         }}
-        onBack={() => setView('shell')}
+        onBack={() => navigateBack({ view: 'shell' })}
         onResetSeason={() => {
           authoredStoryPersistence.clearAll()
           authoredReadingPosition.clearAll()
           authoredIllustrationDiscovery.clearAll()
-          setSelectedSeasonNumber(1)
-          setSelectedStoryNumber(1)
-          setRequestedEpisodeNumber(null)
-          setTab('home')
-          setView('shell')
+          replaceNavigation({
+            view: 'shell',
+            tab: 'home',
+            selectedSeasonNumber: 1,
+            selectedStoryNumber: 1,
+            requestedEpisodeNumber: null,
+          })
         }}
       />
     )
@@ -410,14 +412,18 @@ function App() {
       <SeasonOverview
         language={language}
         season={season}
-        onBack={() => {
-          setRequestedEpisodeNumber(null)
-          setView('shell')
-        }}
+        onBack={() =>
+          navigateBack({
+            view: 'shell',
+            requestedEpisodeNumber: null,
+          })
+        }
         onRead={(storyNumber, episodeNumber) => {
-          setSelectedStoryNumber(storyNumber)
-          setRequestedEpisodeNumber(episodeNumber ?? null)
-          setView('story')
+          navigateTo({
+            view: 'story',
+            selectedStoryNumber: storyNumber,
+            requestedEpisodeNumber: episodeNumber ?? null,
+          })
         }}
       />
     )
@@ -427,7 +433,11 @@ function App() {
     <PublishedStoriesShell
       language={language}
       tab={tab}
-      onTab={setTab}
+      onTab={(nextTab) => {
+        if (nextTab === tab) return
+        navigateTo({ view: 'shell', tab: nextTab })
+      }}
+      onBack={() => navigateBack({ view: 'shell', tab: 'home' })}
       onOpenSeason={(seasonNumber) => {
         const nextSeason =
           seasons.find(
@@ -445,20 +455,24 @@ function App() {
           if (!firstStoryProgress?.completed) return
         }
 
-        setSelectedSeasonNumber(nextSeason.number)
-        setSelectedStoryNumber(nextStory?.number ?? 1)
-        setRequestedEpisodeNumber(null)
-        setView(nextStory?.completionScope === 'story' ? 'story' : 'season')
+        navigateTo({
+          view: nextStory?.completionScope === 'story' ? 'story' : 'season',
+          selectedSeasonNumber: nextSeason.number,
+          selectedStoryNumber: nextStory?.number ?? 1,
+          requestedEpisodeNumber: null,
+        })
       }}
       onContinueStory={() => {
         const homeSeason = getSevenRoadsSeason1(language)
         const homeStory = getPrimaryPublishedSeasonStory(homeSeason)
-        setSelectedSeasonNumber(homeSeason.number)
-        setSelectedStoryNumber(homeStory?.number ?? 1)
-        setRequestedEpisodeNumber(null)
-        setView('story')
+        navigateTo({
+          view: 'story',
+          selectedSeasonNumber: homeSeason.number,
+          selectedStoryNumber: homeStory?.number ?? 1,
+          requestedEpisodeNumber: null,
+        })
       }}
-      onOpenSettings={() => setView('settings')}
+      onOpenSettings={() => navigateTo({ view: 'settings' })}
     />
   )
 }
