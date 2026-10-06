@@ -373,7 +373,7 @@ export function AuthoredStoryPlayer({
   }, [story, progress, historicalReplay])
 
   useEffect(() => {
-    if (historicalReplay) return
+    if (historicalReplay || reviewPartIndex != null) return
 
     const saved = authoredReadingPosition.load(story)
     if (!saved || saved.part_index !== progress.current_part_index) return
@@ -391,10 +391,10 @@ export function AuthoredStoryPlayer({
 
     const retry = window.setTimeout(restore, 350)
     return () => window.clearTimeout(retry)
-  }, [story, progress.current_part_index, historicalReplay])
+  }, [story, progress.current_part_index, historicalReplay, reviewPartIndex])
 
   useEffect(() => {
-    if (historicalReplay) return
+    if (historicalReplay || reviewPartIndex != null) return
 
     let frame = 0
 
@@ -419,7 +419,7 @@ export function AuthoredStoryPlayer({
       if (frame) window.cancelAnimationFrame(frame)
       persistPosition()
     }
-  }, [story, progress.current_part_index, historicalReplay])
+  }, [story, progress.current_part_index, historicalReplay, reviewPartIndex])
 
   useEffect(() => {
     setPreviewChoiceId(selectedChoice?.choice_id ?? null)
