@@ -344,10 +344,15 @@ export function AuthoredStoryPlayer({
   const [previewChoiceId, setPreviewChoiceId] = useState<string | null>(null)
   const [lightbox, setLightbox] = useState<{ url: string; alt: string } | null>(null)
   const [showReaderSettings, setShowReaderSettings] = useState(false)
+  const [reviewPartIndex, setReviewPartIndex] = useState<number | null>(null)
   const topRef = useRef<HTMLDivElement | null>(null)
   const restoredPartRef = useRef<number | null>(null)
 
-  const part = getCurrentAuthoredStoryPart(story, progress)
+  const displayedPartIndex = reviewPartIndex ?? progress.current_part_index
+  const isReviewingPreviousPart =
+    reviewPartIndex != null && reviewPartIndex < progress.current_part_index
+  const part =
+    story.parts[displayedPartIndex] ?? getCurrentAuthoredStoryPart(story, progress)
   const selectedChoice = getSelectedChoiceForPart(part, progress)
   const storyBlocks = useMemo(
     () => buildAuthoredNarrativeBlocks(part, 'story_text', progress.selected_choices),
