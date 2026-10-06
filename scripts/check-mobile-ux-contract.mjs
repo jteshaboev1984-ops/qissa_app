@@ -87,4 +87,18 @@ requireCondition(
   'the authored reader must support read-only review of previously read parts without replacing the saved resume position',
 )
 
-console.log('Mobile UX contract passed: dynamic viewport, device safe areas, 44px touch targets, browser Back, read-only part review, bounded reader, and listening controls are protected.')
+requireCondition(
+  /scrollReaderPage/.test(authoredReader) &&
+    /previousPage/.test(authoredReader) &&
+    /nextPage/.test(authoredReader) &&
+    /canAdvanceToNextReaderUnit/.test(authoredReader),
+  'single reader arrows must move by one screen-page while double arrows move by logical part or episode',
+)
+
+requireCondition(
+  /h-11 w-12/.test(authoredReader) &&
+    /safe-area-inset-bottom/.test(authoredReader),
+  'reader page and unit controls must remain 44px tappable and clear the phone home indicator',
+)
+
+console.log('Mobile UX contract passed: dynamic viewport, device safe areas, 44px touch targets, browser Back, single-page arrows, double-unit review navigation, bounded reader, and listening controls are protected.')
