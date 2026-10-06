@@ -661,6 +661,12 @@ export function AuthoredStoryPlayer({
           onClick={() => setLightbox(null)}
           aria-label={copy.closeFullscreen}
         >
+          <span
+            className="absolute right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/55 text-2xl font-light text-white"
+            aria-hidden="true"
+          >
+            ×
+          </span>
           <img
             src={lightbox.url}
             alt={lightbox.alt}
