@@ -601,6 +601,26 @@ export function AuthoredStoryPlayer({
     Boolean(
       nextReaderProgress && nextReaderProgress.current > readerProgress.current,
     )
+  const canAdvanceToNextReaderUnit =
+    !historicalReplay &&
+    !isReviewingPreviousPart &&
+    canContinue &&
+    Boolean(
+      nextReaderProgress && nextReaderProgress.current > readerProgress.current,
+    )
+  const previousReaderUnitLabel =
+    readerUnit === 'part' ? copy.previousReadPart : copy.previousReadEpisode
+  const nextReaderUnitLabel =
+    readerUnit === 'part' ? copy.nextReadPart : copy.nextReadEpisode
+
+  const goToNextReaderUnit = () => {
+    if (isReviewingPreviousPart) {
+      openReviewPart(nextReviewPartIndex)
+      return
+    }
+    if (canAdvanceToNextReaderUnit) continueStory()
+  }
+
   const currentDecisionChoiceId = part.decision
     ? progress.selected_choices[part.decision.decision_id] ?? null
     : null
@@ -776,7 +796,7 @@ export function AuthoredStoryPlayer({
 
       <section
         ref={topRef}
-        className={`min-h-dvh space-y-5 pb-10 transition-colors ${readerTheme.page}`}
+        className={`min-h-dvh space-y-5 pb-28 transition-colors ${readerTheme.page}`}
       >
         <div
           className={`sticky top-0 z-40 -mx-2 flex items-center justify-between gap-2 border-b px-2 py-2 backdrop-blur-xl ${readerTheme.toolbar}`}
@@ -793,31 +813,9 @@ export function AuthoredStoryPlayer({
             </button>
           ) : <span />}
           <div className="flex items-center gap-2">
-            {previousReviewPartIndex != null ? (
-              <button
-                type="button"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-current/15 text-lg font-bold"
-                onClick={() => openReviewPart(previousReviewPartIndex)}
-                aria-label={copy.previousReadPart}
-                title={copy.previousReadPart}
-              >
-                ‹
-              </button>
-            ) : null}
             <span className="rounded-full border border-current/15 px-3 py-1.5 text-xs font-bold">
               {readerProgressLabel}
             </span>
-            {nextReviewPartIndex != null ? (
-              <button
-                type="button"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-current/15 text-lg font-bold"
-                onClick={() => openReviewPart(nextReviewPartIndex)}
-                aria-label={copy.nextReadPart}
-                title={copy.nextReadPart}
-              >
-                ›
-              </button>
-            ) : null}
             <button
               type="button"
               className="flex h-10 min-w-10 items-center justify-center rounded-full border border-current/15 px-3 text-sm font-bold"
