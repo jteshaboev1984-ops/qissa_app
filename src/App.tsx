@@ -373,6 +373,13 @@ function App() {
                 requestedEpisodeNumber: null,
               })
             }}
+            onCompletionExit={() => {
+              replaceNavigation({
+                view: 'shell',
+                tab: 'home',
+                requestedEpisodeNumber: null,
+              })
+            }}
           />
         </div>
       </div>
