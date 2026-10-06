@@ -347,6 +347,10 @@ export function AuthoredStoryPlayer({
   const [lightbox, setLightbox] = useState<{ url: string; alt: string } | null>(null)
   const [showReaderSettings, setShowReaderSettings] = useState(false)
   const [reviewPartIndex, setReviewPartIndex] = useState<number | null>(null)
+  const [pageNavigation, setPageNavigation] = useState({
+    canBack: false,
+    canForward: true,
+  })
   const topRef = useRef<HTMLDivElement | null>(null)
   const restoredPartRef = useRef<number | null>(null)
 
