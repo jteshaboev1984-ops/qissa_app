@@ -613,7 +613,7 @@ try {
   await clickExactButton('Qismni tugatish')
   await waitFor(bodyHas('7-qism tugadi'), 'Episode 7 completion screen')
   await waitFor(
-    `[...document.querySelectorAll('button')].some((button) => button.textContent?.trim() === '← Orqaga')`,
+    `document.querySelector('button[aria-label="Orqaga"]') !== null`,
     'Episode 7 completion visible back control',
   )
   await assertViewportMatrix('Uzbek Episode 7 completion')
