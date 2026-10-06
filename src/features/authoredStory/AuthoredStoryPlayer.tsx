@@ -51,6 +51,7 @@ interface AuthoredStoryPlayerProps {
   completionSummary?: string
   nextSeasonPublished?: boolean
   onFinishForToday?: () => void
+  onCompletionExit?: () => void
   initialEpisodeNumber?: number
   readerPreferences: ReaderPreferences
   onReaderPreferencesChange: (patch: Partial<ReaderPreferences>) => void
@@ -285,6 +286,7 @@ export function AuthoredStoryPlayer({
   completionSummary,
   nextSeasonPublished = false,
   onFinishForToday,
+  onCompletionExit,
   initialEpisodeNumber,
   readerPreferences,
   onReaderPreferencesChange,
@@ -664,7 +666,11 @@ export function AuthoredStoryPlayer({
             {onBack ? (
               <button
                 className="w-full rounded-full border border-white/35 bg-black/20 px-5 py-3 text-sm font-semibold text-[#fff9ec] backdrop-blur-md"
-                onClick={onBack}
+                onClick={
+                  completionScope === 'episode'
+                    ? onBack
+                    : onCompletionExit ?? onBack
+                }
               >
                 {completionScope === 'episode' ? copy.returnToSeason : copy.backHome}
               </button>
