@@ -565,6 +565,16 @@ export function AuthoredStoryPlayer({
         style={completionCoverUrl ? { backgroundImage: `url("${completionCoverUrl}")` } : undefined}
       >
         <div className="absolute inset-0 bg-linear-to-b from-black/20 via-black/32 to-[#102327]/96" />
+        {onBack ? (
+          <button
+            type="button"
+            className="absolute left-4 top-[max(1rem,env(safe-area-inset-top))] z-20 flex h-11 items-center gap-2 rounded-full border border-white/25 bg-black/25 px-4 text-xs font-bold text-white/95 backdrop-blur-md transition active:scale-[0.97]"
+            onClick={closeReader}
+          >
+            <span aria-hidden="true">←</span>
+            <span>{copy.back}</span>
+          </button>
+        ) : null}
         <div className="relative z-10 flex min-h-[calc(100dvh-2.5rem)] flex-col justify-end p-5">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#ead3a0]">
             {completionEyebrow}
@@ -671,10 +681,12 @@ export function AuthoredStoryPlayer({
         >
           {onBack ? (
             <button
-              className="rounded-full border border-current/15 px-3.5 py-2 text-xs font-bold"
+              type="button"
+              className="flex min-h-11 items-center gap-1.5 rounded-full border border-current/15 px-3.5 py-2 text-xs font-bold"
               onClick={closeReader}
             >
-              {copy.close}
+              <span aria-hidden="true">←</span>
+              <span>{copy.back}</span>
             </button>
           ) : <span />}
           <div className="flex items-center gap-2">
