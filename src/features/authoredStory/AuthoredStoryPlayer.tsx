@@ -537,6 +537,15 @@ export function AuthoredStoryPlayer({
     onBack?.()
   }
 
+  const scrollReaderPage = (direction: -1 | 1) => {
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight
+    const pageDistance = Math.max(240, viewportHeight - 160)
+    window.scrollBy({
+      top: direction * pageDistance,
+      behavior: 'smooth',
+    })
+  }
+
   const openImage = (url: string, alt: string) => setLightbox({ url, alt })
 
   const markImageSeen = (assetId: string) => {
@@ -552,13 +561,10 @@ export function AuthoredStoryPlayer({
   const canContinue =
     !isReviewingPreviousPart && canAdvanceAuthoredStory(story, progress)
   const previousReviewPartIndex =
-    readerUnit === 'part' &&
-    !historicalReplay &&
-    readerProgress.current > 1
+    !historicalReplay && readerProgress.current > 1
       ? firstPartIndexForEpisode(story, readerProgress.current - 1)
       : null
   const nextReviewPartIndex =
-    readerUnit === 'part' &&
     !historicalReplay &&
     isReviewingPreviousPart &&
     readerProgress.current < persistedReaderProgress.current
