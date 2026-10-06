@@ -520,8 +520,12 @@ try {
   await waitFor(bodyHas('2-mavsum · 3-qism / 7'), 'Uzbek next Episode 3 context')
   await clickExactButton('Kutubxona')
   await waitFor(bodyHas('3-qism / 7'), 'Uzbek Library Season 2 between-episode progress')
-  await clickExactButton('Bosh sahifa')
-  await waitFor(bodyHas('Ikki minora'), 'Uzbek Home after Library progress regression')
+  await waitFor(
+    `document.querySelector('button[aria-label="Orqaga"]') !== null`,
+    'Uzbek Library visible back control',
+  )
+  await clickAriaButton('Orqaga')
+  await waitFor(bodyHas('Ikki minora'), 'Uzbek Home after Library back navigation')
   await clickButtonContaining('Ikki minora')
   await waitFor(bodyHas('7 qism'), 'Uzbek overview before Episode 3')
   await clickButtonContaining('Ikki minora')
@@ -608,6 +612,10 @@ try {
   await waitFor(bodyHas('1-qism / 1'), 'Episode 7 final part before completion')
   await clickExactButton('Qismni tugatish')
   await waitFor(bodyHas('7-qism tugadi'), 'Episode 7 completion screen')
+  await waitFor(
+    `[...document.querySelectorAll('button')].some((button) => button.textContent?.trim() === '← Orqaga')`,
+    'Episode 7 completion visible back control',
+  )
   await assertViewportMatrix('Uzbek Episode 7 completion')
   const coverLeakedIntoEpisodeCompletion = await evaluate(
     season2CoverPresentExpression,
