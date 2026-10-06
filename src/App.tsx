@@ -43,6 +43,10 @@ function App() {
   }
 
   const copy = getSevenRoadsCopy(language)
+  const nextSeasonPublished = seasons.some(
+    (candidate) =>
+      candidate.number === season.number + 1 && candidate.status === 'published',
+  )
 
   const [consentAccepted, setConsentAccepted] = useState(
     () => Boolean(publishedStoriesConsent.load()),
@@ -175,6 +179,7 @@ function App() {
                 ? copy.completionSummary
                 : undefined
             }
+            nextSeasonPublished={nextSeasonPublished}
             readerPreferences={readerPreferences}
             onReaderPreferencesChange={(patch) => {
               const next = { ...readerPreferences, ...patch }
@@ -223,6 +228,7 @@ function App() {
                 ? copy.completionSummary
                 : undefined
             }
+            nextSeasonPublished={nextSeasonPublished}
             initialEpisodeNumber={requestedEpisodeNumber ?? undefined}
             inheritedSelectedChoices={inheritedSelectedChoices}
             readerPreferences={readerPreferences}
