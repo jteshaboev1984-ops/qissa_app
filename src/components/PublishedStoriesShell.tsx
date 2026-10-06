@@ -342,13 +342,26 @@ export function PublishedStoriesShell({
 
       <div className="relative z-10 flex h-full min-h-0 flex-col px-4 pt-[max(1.2rem,env(safe-area-inset-top))] sm:px-5">
         <header className="flex flex-none items-start justify-between gap-4 px-1">
-          <div>
-            <p className="font-serif text-xl font-bold tracking-[0.2em] text-[#fff7df] drop-shadow-sm">
-              QISSA
-            </p>
-            <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#efd9aa]">
-              {copy.worldTitle}
-            </p>
+          <div className="flex items-start gap-3">
+            {tab === 'library' ? (
+              <button
+                type="button"
+                onClick={() => onTab('home')}
+                className="flex h-11 w-11 flex-none items-center justify-center rounded-full border border-white/25 bg-black/20 text-lg font-bold text-white/95 backdrop-blur-md transition active:scale-[0.96]"
+                aria-label={copy.back}
+                title={copy.back}
+              >
+                ←
+              </button>
+            ) : null}
+            <div>
+              <p className="font-serif text-xl font-bold tracking-[0.2em] text-[#fff7df] drop-shadow-sm">
+                QISSA
+              </p>
+              <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#efd9aa]">
+                {copy.worldTitle}
+              </p>
+            </div>
           </div>
           <button
             type="button"
