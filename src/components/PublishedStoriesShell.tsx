@@ -550,9 +550,15 @@ export function PublishedStoriesShell({
                                     activeSeasonEpisode.entry.number,
                                     seasonEpisodeStates.length,
                                   )
-                                : language === 'uz'
-                                  ? 'Boshlanmagan'
-                                  : 'Не начат'
+                                : completedEpisodeCount > 0 && activeSeasonEpisode
+                                  ? formatSevenRoadsEpisodeProgress(
+                                      language,
+                                      activeSeasonEpisode.entry.number,
+                                      seasonEpisodeStates.length,
+                                    )
+                                  : language === 'uz'
+                                    ? 'Boshlanmagan'
+                                    : 'Не начат'
                             : seasonStoryProgress?.completed
                               ? copy.completed
                               : seasonStoryProgress

@@ -49,6 +49,7 @@ interface AuthoredStoryPlayerProps {
   readerUnit?: AuthoredStoryReaderUnit
   episodeTitles?: string[]
   completionSummary?: string
+  nextSeasonPublished?: boolean
   onFinishForToday?: () => void
   initialEpisodeNumber?: number
   readerPreferences: ReaderPreferences
@@ -282,6 +283,7 @@ export function AuthoredStoryPlayer({
   readerUnit = 'episode',
   episodeTitles,
   completionSummary,
+  nextSeasonPublished = false,
   onFinishForToday,
   initialEpisodeNumber,
   readerPreferences,
@@ -583,7 +585,9 @@ export function AuthoredStoryPlayer({
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#ead3a0]">
                 {formatSevenRoadsSeasonLabel(language, seasonNumber + 1)}
               </p>
-              <p className="mt-1 font-bold text-[#fff9ec]">{copy.nextSeasonSoon}</p>
+              <p className="mt-1 font-bold text-[#fff9ec]">
+                {nextSeasonPublished ? copy.nextSeasonAvailable : copy.nextSeasonSoon}
+              </p>
             </div>
           ) : null}
           <div className="mt-5 grid gap-2.5">

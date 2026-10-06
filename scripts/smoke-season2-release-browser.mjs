@@ -420,6 +420,19 @@ try {
   await waitFor(bodyHas('Тайна восточного каравана'), 'Russian Home legacy Episode 2 resume')
   await waitFor(bodyHas('Сезон 2 · серия 2 / 7'), 'Russian Home Season 2 episode context')
 
+  await clickExactButton('Библиотека')
+  await waitFor(bodyHas('Праздник мужества'), 'Russian Library before Season 1 completion regression')
+  await clickButtonContaining('Праздник мужества')
+  await waitFor(bodyHas('Открыть итог сезона'), 'completed Season 1 overview')
+  await clickExactButton('Открыть итог сезона')
+  await waitFor(bodyHas('Следующий сезон уже открыт'), 'published Season 2 completion announcement')
+  assert(
+    !(await evaluate(bodyHas('Следующий сезон — скоро'))),
+    'Season 1 completion still says the already-published Season 2 is coming soon',
+  )
+  await clickExactButton('На главную')
+  await waitFor(bodyHas('Тайна восточного каравана'), 'Russian Home after Season 1 completion regression')
+
   await clickButtonContaining('Тайна восточного каравана')
   await waitFor(bodyHas('7 серий'), 'Season 2 Russian overview')
 
@@ -505,6 +518,10 @@ try {
   await reloadAndWait()
   await waitFor(bodyHas('Ikki minora'), 'Uzbek Home next Episode 3')
   await waitFor(bodyHas('2-mavsum · 3-qism / 7'), 'Uzbek next Episode 3 context')
+  await clickExactButton('Kutubxona')
+  await waitFor(bodyHas('3-qism / 7'), 'Uzbek Library Season 2 between-episode progress')
+  await clickExactButton('Bosh sahifa')
+  await waitFor(bodyHas('Ikki minora'), 'Uzbek Home after Library progress regression')
   await clickButtonContaining('Ikki minora')
   await waitFor(bodyHas('7 qism'), 'Uzbek overview before Episode 3')
   await clickButtonContaining('Ikki minora')
@@ -726,6 +743,8 @@ try {
   console.log('[season2-release-browser] legacy Episode 2 progress resumed at part 8 under the new seven-episode season')
   console.log('[season2-release-browser] one shared Season 2 cover rendered on overview and stayed out of fresh/resumed readers and episode completion')
   console.log('[season2-release-browser] all seven RU and UZ episode titles rendered')
+  console.log('[season2-release-browser] completed Season 1 announces the already-published Season 2 instead of stale coming-soon copy')
+  console.log('[season2-release-browser] Season 2 Library keeps next-episode progress between completed episodes')
   console.log('[season2-release-browser] completed Episodes 1+2 unlocked Episode 3')
   console.log('[season2-release-browser] Episode 3 inherited and persisted Episode 2 Sarvan choice')
   console.log('[season2-release-browser] Episode 3 Uzbek reader resolved its hosted Tier A image')
