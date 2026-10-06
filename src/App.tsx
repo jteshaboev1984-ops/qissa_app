@@ -22,6 +22,50 @@ import type { ReaderPreferences } from './types/qissa'
 
 type SevenRoadsView = 'shell' | 'season' | 'story' | 'settings'
 
+interface QissaNavigationSnapshot {
+  view: SevenRoadsView
+  tab: PublishedStoriesTab
+  selectedSeasonNumber: number
+  selectedStoryNumber: number
+  requestedEpisodeNumber: number | null
+}
+
+interface QissaHistoryState {
+  snapshot: QissaNavigationSnapshot
+  depth: number
+}
+
+const QISSA_HISTORY_SNAPSHOT_KEY = 'qissaNavigation'
+const QISSA_HISTORY_DEPTH_KEY = 'qissaNavigationDepth'
+
+const readQissaHistoryState = (state: unknown): QissaHistoryState | null => {
+  if (!state || typeof state !== 'object') return null
+  const record = state as Record<string, unknown>
+  const snapshot = record[QISSA_HISTORY_SNAPSHOT_KEY]
+  const depth = record[QISSA_HISTORY_DEPTH_KEY]
+  if (!snapshot || typeof snapshot !== 'object' || typeof depth !== 'number') return null
+
+  const candidate = snapshot as Partial<QissaNavigationSnapshot>
+  if (
+    (candidate.view !== 'shell' &&
+      candidate.view !== 'season' &&
+      candidate.view !== 'story' &&
+      candidate.view !== 'settings') ||
+    (candidate.tab !== 'home' && candidate.tab !== 'library') ||
+    typeof candidate.selectedSeasonNumber !== 'number' ||
+    typeof candidate.selectedStoryNumber !== 'number' ||
+    (candidate.requestedEpisodeNumber !== null &&
+      typeof candidate.requestedEpisodeNumber !== 'number')
+  ) {
+    return null
+  }
+
+  return {
+    snapshot: candidate as QissaNavigationSnapshot,
+    depth: Math.max(0, Math.floor(depth)),
+  }
+}
+
 function App() {
   const [language, setLanguage] = useState(() => sevenRoadsLanguagePreference.load())
   const seasons = useMemo(() => getSevenRoadsSeasons(language), [language])
@@ -68,6 +112,81 @@ function App() {
     authoredPreviewKey === 'tayna-vostochnogo-karavana'
   const [story2PreviewStory, setStory2PreviewStory] = useState<AuthoredStoryPackage | null>(null)
   const [story2PreviewError, setStory2PreviewError] = useState<string | null>(null)
+
+  const currentNavigationSnapshot = (): QissaNavigationSnapshot => ({
+    view,
+    tab,
+    selectedSeasonNumber,
+    selectedStoryNumber,
+    requestedEpisodeNumber,
+  })
+
+  const applyNavigationSnapshot = (snapshot: QissaNavigationSnapshot) => {
+    setView(snapshot.view)
+    setTab(snapshot.tab)
+    setSelectedSeasonNumber(snapshot.selectedSeasonNumber)
+    setSelectedStoryNumber(snapshot.selectedStoryNumber)
+    setRequestedEpisodeNumber(snapshot.requestedEpisodeNumber)
+  }
+
+  const writeHistoryState = (
+    snapshot: QissaNavigationSnapshot,
+    depth: number,
+    mode: 'push' | 'replace',
+  ) => {
+    const currentState =
+      window.history.state && typeof window.history.state === 'object'
+        ? window.history.state
+        : {}
+    const nextState = {
+      ...currentState,
+      [QISSA_HISTORY_SNAPSHOT_KEY]: snapshot,
+      [QISSA_HISTORY_DEPTH_KEY]: depth,
+    }
+    if (mode === 'push') {
+      window.history.pushState(nextState, '')
+    } else {
+      window.history.replaceState(nextState, '')
+    }
+  }
+
+  const navigateTo = (patch: Partial<QissaNavigationSnapshot>) => {
+    const snapshot = { ...currentNavigationSnapshot(), ...patch }
+    const currentHistory = readQissaHistoryState(window.history.state)
+    applyNavigationSnapshot(snapshot)
+    writeHistoryState(snapshot, (currentHistory?.depth ?? 0) + 1, 'push')
+  }
+
+  const replaceNavigation = (patch: Partial<QissaNavigationSnapshot>) => {
+    const snapshot = { ...currentNavigationSnapshot(), ...patch }
+    applyNavigationSnapshot(snapshot)
+    writeHistoryState(snapshot, 0, 'replace')
+  }
+
+  const navigateBack = (fallback: Partial<QissaNavigationSnapshot>) => {
+    const currentHistory = readQissaHistoryState(window.history.state)
+    if (currentHistory && currentHistory.depth > 0) {
+      window.history.back()
+      return
+    }
+
+    replaceNavigation(fallback)
+  }
+
+  useEffect(() => {
+    if (!consentAccepted || authoredPreviewRequested || story2PreviewRequested) return
+
+    const baseline = currentNavigationSnapshot()
+    writeHistoryState(baseline, 0, 'replace')
+
+    const onPopState = (event: PopStateEvent) => {
+      const historyState = readQissaHistoryState(event.state)
+      if (historyState) applyNavigationSnapshot(historyState.snapshot)
+    }
+
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [consentAccepted, authoredPreviewRequested, story2PreviewRequested])
 
   useEffect(() => {
     if (!story2PreviewRequested) return
