@@ -75,6 +75,11 @@ const ru = {
   illustrationPending: 'Сцена готовится',
   closeFullscreen: 'Закрыть сцену',
   tapToReturn: 'Коснитесь экрана, чтобы вернуться',
+  previousReadPart: 'Предыдущая прочитанная часть',
+  nextReadPart: 'Следующая прочитанная часть',
+  reviewingPart: 'Просмотр прочитанной части',
+  reviewingPartBody: 'Это только просмотр. Текущий прогресс и сохранённые выборы не изменятся.',
+  returnToCurrentPart: 'Вернуться к текущей части',
   yourChoice: 'Твой выбор',
   choiceMemoryHint:
     'QISSA запомнит этот выбор. В следующих сказках он может повлиять на привычки героев и их отношения.',
@@ -175,6 +180,11 @@ const uz = {
   illustrationPending: 'Lavha tayyorlanmoqda',
   closeFullscreen: 'Lavhani yopish',
   tapToReturn: 'Qaytish uchun ekranga teging',
+  previousReadPart: 'Oldingi o‘qilgan qism',
+  nextReadPart: 'Keyingi o‘qilgan qism',
+  reviewingPart: 'O‘qilgan qismni ko‘rish',
+  reviewingPartBody: 'Bu faqat ko‘rish rejimi. Hozirgi jarayon va saqlangan tanlovlar o‘zgarmaydi.',
+  returnToCurrentPart: 'Hozirgi qismga qaytish',
   yourChoice: 'Sening tanloving',
   choiceMemoryHint:
     'QISSA bu tanlovni eslab qoladi. Bu tanlov keyingi hikoyalarda qahramonlarning odatlari va o‘zaro munosabatlariga ta’sir qilishi mumkin.',
