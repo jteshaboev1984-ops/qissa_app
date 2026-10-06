@@ -448,17 +448,18 @@ export function AuthoredStoryPlayer({
   }
 
   const confirmChoice = () => {
-    if (!previewChoiceId || selectedChoice || !part.decision) return
+    if (isReviewingPreviousPart || !previewChoiceId || selectedChoice || !part.decision) return
     const selected = selectAuthoredStoryChoice(story, progress, previewChoiceId)
     const withResolution = markAuthoredStoryResolutionShown(story, selected)
     updateProgress(withResolution)
   }
 
   const continueStory = () => {
-    if (!canAdvanceAuthoredStory(story, progress)) return
+    if (isReviewingPreviousPart || !canAdvanceAuthoredStory(story, progress)) return
     const next = advanceAuthoredStory(story, progress)
     if (!historicalReplay) authoredReadingPosition.clear(story)
     restoredPartRef.current = null
+    setReviewPartIndex(null)
     updateProgress(next)
 
     requestAnimationFrame(() => {
@@ -477,20 +478,26 @@ export function AuthoredStoryPlayer({
       selected_choices: { ...inheritedSelectedChoices },
     }
     setPreviewChoiceId(null)
+    setReviewPartIndex(null)
     updateProgress(fresh)
   }
 
   const finishForToday = () => {
-    if (!onFinishForToday || !canAdvanceAuthoredStory(story, progress)) return
+    if (
+      isReviewingPreviousPart ||
+      !onFinishForToday ||
+      !canAdvanceAuthoredStory(story, progress)
+    ) return
     const next = advanceAuthoredStory(story, progress)
     authoredReadingPosition.clear(story)
     restoredPartRef.current = null
+    setReviewPartIndex(null)
     updateProgress(next)
     onFinishForToday()
   }
 
   const closeReader = () => {
-    if (!historicalReplay) {
+    if (!historicalReplay && reviewPartIndex == null) {
       authoredReadingPosition.save(story, progress.current_part_index, window.scrollY)
     }
     onBack?.()
@@ -499,13 +506,46 @@ export function AuthoredStoryPlayer({
   const openImage = (url: string, alt: string) => setLightbox({ url, alt })
 
   const markImageSeen = (assetId: string) => {
+    if (isReviewingPreviousPart) return
     authoredIllustrationDiscovery.markSeen(story, assetId)
   }
 
-  const currentPartNumber = progress.current_part_index + 1
+  const currentPartNumber = displayedPartIndex + 1
+  const persistedPartNumber = progress.current_part_index + 1
   const readerProgress = readerPartProgress(story, currentPartNumber)
+  const persistedReaderProgress = readerPartProgress(story, persistedPartNumber)
   const readerEpisodeTitle = episodeTitles?.[readerProgress.current - 1] ?? part.title
-  const canContinue = canAdvanceAuthoredStory(story, progress)
+  const canContinue =
+    !isReviewingPreviousPart && canAdvanceAuthoredStory(story, progress)
+  const previousReviewPartIndex =
+    readerUnit === 'part' &&
+    !historicalReplay &&
+    readerProgress.current > 1
+      ? firstPartIndexForEpisode(story, readerProgress.current - 1)
+      : null
+  const nextReviewPartIndex =
+    readerUnit === 'part' &&
+    !historicalReplay &&
+    isReviewingPreviousPart &&
+    readerProgress.current < persistedReaderProgress.current
+      ? firstPartIndexForEpisode(story, readerProgress.current + 1)
+      : null
+
+  const openReviewPart = (partIndex: number | null) => {
+    if (partIndex == null || partIndex >= progress.current_part_index) return
+    restoredPartRef.current = null
+    setReviewPartIndex(partIndex)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    })
+  }
+
+  const returnToCurrentPart = () => {
+    restoredPartRef.current = null
+    setReviewPartIndex(null)
+  }
   const nextReaderProgress =
     !part.is_final && currentPartNumber < story.parts.length
       ? readerPartProgress(story, currentPartNumber + 1)
