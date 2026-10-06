@@ -473,7 +473,7 @@ try {
     'shared Season 2 cover leaked into resumed Episode 2 reader',
   )
 
-  await clickExactButton('Закрыть')
+  await clickAriaButton('Назад')
   await waitFor(bodyHas('7 серий'), 'return from Episode 2 reader to Season 2 overview')
 
   await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`)
@@ -520,8 +520,12 @@ try {
   await waitFor(bodyHas('2-mavsum · 3-qism / 7'), 'Uzbek next Episode 3 context')
   await clickExactButton('Kutubxona')
   await waitFor(bodyHas('3-qism / 7'), 'Uzbek Library Season 2 between-episode progress')
-  await clickExactButton('Bosh sahifa')
-  await waitFor(bodyHas('Ikki minora'), 'Uzbek Home after Library progress regression')
+  await waitFor(
+    `document.querySelector('button[aria-label="Orqaga"]') !== null`,
+    'Uzbek Library visible back control',
+  )
+  await clickAriaButton('Orqaga')
+  await waitFor(bodyHas('Ikki minora'), 'Uzbek Home after Library back navigation')
   await clickButtonContaining('Ikki minora')
   await waitFor(bodyHas('7 qism'), 'Uzbek overview before Episode 3')
   await clickButtonContaining('Ikki minora')
@@ -602,12 +606,16 @@ try {
       },
     }),
   )
-  await clickExactButton('Yopish')
+  await clickAriaButton('Orqaga')
   await waitFor(bodyHas('7 qism'), 'return from Episode 3 to Season 2 overview')
   await clickButtonContaining('Ordanga qaytish')
   await waitFor(bodyHas('1-qism / 1'), 'Episode 7 final part before completion')
   await clickExactButton('Qismni tugatish')
   await waitFor(bodyHas('7-qism tugadi'), 'Episode 7 completion screen')
+  await waitFor(
+    `document.querySelector('button[aria-label="Orqaga"]') !== null`,
+    'Episode 7 completion visible back control',
+  )
   await assertViewportMatrix('Uzbek Episode 7 completion')
   const coverLeakedIntoEpisodeCompletion = await evaluate(
     season2CoverPresentExpression,
@@ -698,7 +706,7 @@ try {
     episode7CompletionAfterReplayOpen,
     'opening a completed Season 2 episode cleared its completion state',
   )
-  await clickExactButton('Yopish')
+  await clickAriaButton('Orqaga')
   await waitFor(bodyHas('7 qism'), 'return from completed Episode 7 replay')
   await clickExactButton('← Mavsumlar')
   await waitFor(
