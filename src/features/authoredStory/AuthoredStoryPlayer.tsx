@@ -532,8 +532,14 @@ export function AuthoredStoryPlayer({
       : null
 
   const openReviewPart = (partIndex: number | null) => {
-    if (partIndex == null || partIndex >= progress.current_part_index) return
+    if (partIndex == null || partIndex > progress.current_part_index) return
     restoredPartRef.current = null
+
+    if (partIndex === progress.current_part_index) {
+      setReviewPartIndex(null)
+      return
+    }
+
     setReviewPartIndex(partIndex)
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -743,9 +749,31 @@ export function AuthoredStoryPlayer({
             </button>
           ) : <span />}
           <div className="flex items-center gap-2">
+            {previousReviewPartIndex != null ? (
+              <button
+                type="button"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-current/15 text-lg font-bold"
+                onClick={() => openReviewPart(previousReviewPartIndex)}
+                aria-label={copy.previousReadPart}
+                title={copy.previousReadPart}
+              >
+                ‹
+              </button>
+            ) : null}
             <span className="rounded-full border border-current/15 px-3 py-1.5 text-xs font-bold">
               {readerProgressLabel}
             </span>
+            {nextReviewPartIndex != null ? (
+              <button
+                type="button"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-current/15 text-lg font-bold"
+                onClick={() => openReviewPart(nextReviewPartIndex)}
+                aria-label={copy.nextReadPart}
+                title={copy.nextReadPart}
+              >
+                ›
+              </button>
+            ) : null}
             <button
               type="button"
               className="flex h-10 min-w-10 items-center justify-center rounded-full border border-current/15 px-3 text-sm font-bold"
@@ -758,6 +786,12 @@ export function AuthoredStoryPlayer({
         </div>
 
       <header className="space-y-3">
+        {isReviewingPreviousPart ? (
+          <div className="rounded-2xl border border-[#c8b27e] bg-[#fff7df] px-4 py-3 text-[#514933]">
+            <p className="q-label mb-1">{copy.reviewingPart}</p>
+            <p className="text-xs leading-5">{copy.reviewingPartBody}</p>
+          </div>
+        ) : null}
         {showCover && currentPartNumber === 1 ? (
           <StoryImage
             asset={{
@@ -807,7 +841,7 @@ export function AuthoredStoryPlayer({
         />
       </article>
 
-      {part.decision && !selectedChoice ? (
+      {!isReviewingPreviousPart && part.decision && !selectedChoice ? (
         <section className="q-stone-panel p-5">
           <p className="q-label mb-2">{copy.yourChoice}</p>
           <h3 className="q-heading mb-2 text-2xl font-bold leading-tight">{part.decision.prompt}</h3>
