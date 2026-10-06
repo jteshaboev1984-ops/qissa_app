@@ -570,6 +570,7 @@ export function AuthoredStoryPlayer({
             type="button"
             className="absolute left-4 top-[max(1rem,env(safe-area-inset-top))] z-20 flex h-11 items-center gap-2 rounded-full border border-white/25 bg-black/25 px-4 text-xs font-bold text-white/95 backdrop-blur-md transition active:scale-[0.97]"
             onClick={closeReader}
+            aria-label={copy.back}
           >
             <span aria-hidden="true">←</span>
             <span>{copy.back}</span>
@@ -690,6 +691,7 @@ export function AuthoredStoryPlayer({
               type="button"
               className="flex min-h-11 items-center gap-1.5 rounded-full border border-current/15 px-3.5 py-2 text-xs font-bold"
               onClick={closeReader}
+              aria-label={copy.back}
             >
               <span aria-hidden="true">←</span>
               <span>{copy.back}</span>
