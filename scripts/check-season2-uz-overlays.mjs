@@ -61,8 +61,9 @@ const cases = [
     markers: [
       '— Bizni Rustam yubordi.',
       '— Men hech kimni oldindan yubormadim.',
-      'Minora yonida allaqachon beshta ot turardi.',
+      'Sal narida yana ikkita zaxira ot bog‘langan edi.',
       'Shimoliy chegara yo‘li',
+      'Qo‘lga olingan uch kishini',
     ],
   },
   {
@@ -75,6 +76,7 @@ const cases = [
       '— Mana. Yangi muhr izida uchi yumaloq. Eskisida esa kichkina tekis qirra bor, xuddi eng cheti kesilgandek.',
       '— Bu yo‘l — endi yo‘q.',
       'Shimoliy chegara yo‘li',
+      'qo‘lga olingan uch kishi',
     ],
   },
 ]
