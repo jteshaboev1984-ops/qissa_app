@@ -215,19 +215,25 @@ function App() {
   const episodeTitles = seasonStory.episodes.map((episode) => episode.title)
 
   const inheritedSelectedChoices = useMemo<Record<string, string>>(() => {
-    if (season.number !== 2 || seasonStory.number !== 3) return {}
+    if (season.number !== 2) return {}
 
-    const sourceStory = getSeasonStoryByNumber(season, 2)?.authoredStory
+    const inheritedFrom =
+      seasonStory.number === 3
+        ? { episode: 2, decisionId: 'story2_choice_3_sarvan_check' }
+        : seasonStory.number === 6
+          ? { episode: 5, decisionId: 'story5_choice_1_road_post_approach' }
+          : null
+
+    if (!inheritedFrom) return {}
+
+    const sourceStory = getSeasonStoryByNumber(season, inheritedFrom.episode)?.authoredStory
     if (!sourceStory) return {}
 
     const sourceProgress = authoredStoryPersistence.load(sourceStory)
-    const inheritedChoice =
-      sourceProgress?.selected_choices.story2_choice_3_sarvan_check
+    const inheritedChoice = sourceProgress?.selected_choices[inheritedFrom.decisionId]
     if (!inheritedChoice) return {}
 
-    return {
-      story2_choice_3_sarvan_check: inheritedChoice,
-    }
+    return { [inheritedFrom.decisionId]: inheritedChoice }
   }, [season, seasonStory.number])
 
   const changeLanguage = (nextLanguage: typeof language) => {
