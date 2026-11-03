@@ -17,6 +17,7 @@ const copy = read('src/features/publishedStories/sevenRoadsCopy.ts')
 const model = json('docs/qissa/season2/season2_product_model.json')
 const story2 = json('src/data/authored/taynaVostochnogoKaravanaV4.ru.json')
 const story3 = json('src/data/authored/staging/season2Story3TwoTowers.ru.json')
+const story6 = json('src/data/authored/staging/season2Story6TwoReinforcements.ru.json')
 
 const expectedStory2Id = 'seven_roads_tayna_vostochnogo_karavana'
 const expectedStory2Version = 'interactive-v4-continuity-sync'
@@ -132,6 +133,32 @@ if (
 }
 if (!app.includes('story2_choice_3_sarvan_check')) {
   fail('App does not seed Episode 3 with the persisted Episode 2 choice')
+}
+
+const episode5Inheritance = story6.external_choice_context ?? []
+if (
+  episode5Inheritance.length !== 1 ||
+  episode5Inheritance[0].decision_id !== 'story5_choice_1_road_post_approach' ||
+  episode5Inheritance[0].source_story_id !== 'seven_roads_lozhnaya_doroga' ||
+  episode5Inheritance[0].source_story_version !== 'interactive-v4'
+) {
+  fail('Episode 6 must inherit the Episode 5 route choice')
+}
+if (
+  !app.includes("episode: 5, decisionId: 'story5_choice_1_road_post_approach'") ||
+  !app.includes("episode: 2, decisionId: 'story2_choice_3_sarvan_check'")
+) {
+  fail('App does not pass prior episode choices to Episodes 3 and 6')
+}
+const episode5Payoffs = story6.parts
+  .flatMap((part) => part.conditional_segments ?? [])
+  .filter((segment) => segment.when?.decision_id === 'story5_choice_1_road_post_approach')
+if (
+  episode5Payoffs.length !== 2 ||
+  !episode5Payoffs.some((segment) => segment.when.choice_id === 'story5_choice_1a_forest_edge') ||
+  !episode5Payoffs.some((segment) => segment.when.choice_id === 'story5_choice_1b_open_ridge')
+) {
+  fail('Episode 6 must show one distinct payoff for each Episode 5 route')
 }
 
 if (model.release_state !== 'release-gates-passed') {
