@@ -138,5 +138,11 @@
         }
       ]
     }
+  ],
+  "runtime_editorial_patches": [
+    {
+      "patch_id": "story5_2026_11_03_approved_route_choice_payoffs",
+      "reason": "Approved editorial change: road choice now weighs speed and preparation against observing riders from the plateau, with an optional reflection on Temur's earlier forest encounter; original choice IDs and main plot preserved."
+    }
   ]
 }
