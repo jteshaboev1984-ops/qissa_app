@@ -165,7 +165,40 @@
         ],
         "merge_state": {}
       },
-      "is_final": true
+      "is_final": true,
+      "conditional_segments": [
+        {
+          "segment_id": "story6_inherited_e5_fast_spare_reins",
+          "phase": "story_text",
+          "after_text": "Передняя пара тоже шарахнулась.",
+          "when": {
+            "decision_id": "story5_choice_1_road_post_approach",
+            "choice_id": "story5_choice_1a_forest_edge"
+          },
+          "text": "Рустам вытащил из седельной сумки исправный запасной повод, который успели приготовить на посту.\n\n— Вознице! — крикнул он.\n\nОдин из стражников взял повод и поспешил к передней паре."
+        },
+        {
+          "segment_id": "story6_inherited_e5_plateau_riders",
+          "phase": "story_text",
+          "after_text": "Он повернулся к дороге.",
+          "when": {
+            "decision_id": "story5_choice_1_road_post_approach",
+            "choice_id": "story5_choice_1b_open_ridge"
+          },
+          "text": "На подходе к башне Самира заметила возле неё несколько осёдланных лошадей.\n\n— Рахим, помнишь всадников с плато? Они ехали сюда, — тихо сказала она.\n\nРахим передал её слова Рустаму.\n\n— Держимся вместе, — негромко велел тот своим людям. — Сначала выясним, кто у повозки."
+        }
+      ]
+    }
+  ],
+  "external_choice_context": [
+    {
+      "decision_id": "story5_choice_1_road_post_approach",
+      "allowed_choice_ids": [
+        "story5_choice_1a_forest_edge",
+        "story5_choice_1b_open_ridge"
+      ],
+      "source_story_id": "seven_roads_lozhnaya_doroga",
+      "source_story_version": "interactive-v4"
     }
   ]
 }
