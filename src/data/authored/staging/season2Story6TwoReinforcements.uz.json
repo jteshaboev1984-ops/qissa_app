@@ -42,7 +42,16 @@
       "image_anchor_texts": {
         "S2-ST6-TIERA-REVEAL": "— Men hech kimni oldindan yubormadim."
       },
-      "conditional_segment_texts": {},
+      "conditional_segment_texts": {
+        "story6_inherited_e5_fast_spare_reins": {
+          "after_text": "Aravaga qo‘shilgan ikki ot ham hurkib ketdi.",
+          "text": "Rustam postda tayyorlab qo‘yishga ulgurgan mustahkam zaxira jilovni egarning xurjunidan oldi.\n\n— Aravakashga! — deb qichqirdi u.\n\nQo‘riqchilardan biri jilovni olib, aravaga qo‘shilgan otlar yoniga shoshildi."
+        },
+        "story6_inherited_e5_plateau_riders": {
+          "after_text": "U yo‘lga o‘girildi.",
+          "text": "Minoraga yaqinlashayotganda Samira uning yonida bir nechta egarlangan otni ko‘rdi.\n\n— Rahim, yassi tepalikdan ko‘rgan chavandozlar esingdami? Ular shu tomonga ketayotgan edi, — dedi u past ovozda.\n\nRahim uning gapini Rustamga yetkazdi.\n\n— Birga yuramiz, — dedi Rustam odamlariga sekingina. — Avval arava yonidagilar kimligini bilib olaylik."
+        }
+      },
       "decision": {
         "decision_id": "story6_choice_2_child_task",
         "prompt": "Temur bilan Samira avval qayerda yordam beradi?",
