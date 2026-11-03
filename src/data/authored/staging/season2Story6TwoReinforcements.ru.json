@@ -200,5 +200,11 @@
       "source_story_id": "seven_roads_lozhnaya_doroga",
       "source_story_version": "interactive-v4"
     }
+  ],
+  "runtime_editorial_patches": [
+    {
+      "patch_id": "story6_2026_11_03_inherited_story5_route_choice",
+      "reason": "Follow-on consequence of approved Episode 5 road choice: distinct conditional passages for prepared spare reins or the plateau rider sighting. Existing Episode 6 choices and the false-reinforcement reveal are unchanged."
+    }
   ]
 }
