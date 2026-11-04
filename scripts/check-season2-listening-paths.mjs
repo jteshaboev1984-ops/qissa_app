@@ -168,7 +168,7 @@ for (const language of ['ru', 'uz']) {
           assert(allText.includes(language === 'ru'
             ? '— Им нужен был рисунок настоящей печати!'
             : '— Ularga haqiqiy muhrning rasmi kerak bo‘lgan!'),
-          'E7 children's central detective inference missing')
+          'E7 child-led central detective inference missing')
         }
 
         const id = 'E' + episode + '_' + language.toUpperCase()
