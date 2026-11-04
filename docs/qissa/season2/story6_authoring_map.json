@@ -1,6 +1,6 @@
 {
   "version": "story6-authoring-map-1",
-  "status": "staging-source-locked",
+  "status": "source-map-archived-after-approved-literary-revision",
   "created_at": "2026-10-03",
   "story_number": 6,
   "title_ru": "Две подмоги",
@@ -19,12 +19,12 @@
     "story_mode": "series",
     "story_mood": "kind_adventure",
     "publication_state": "staging-only",
-    "localization_status": "Uzbek staging overlay authored and CI-validated",
-    "rule": "No prose is rewritten by this map. Runtime story_text/resolution_text/post_choice_text must be extracted verbatim from the locked line ranges, with Markdown presentation markers normalized only at package-build time.",
+    "localization_status": "Uzbek staging overlay revised and parity-validated",
+    "rule": "Archived v3 source-line provenance only. The active staging RU package and UZ overlay contain the approved November 2026 literary revision, which supersedes the original line ranges and two-choice map.",
     "part_count": 2,
     "cover_status": "shared Season 2 cover hosted and verified; no episode-specific cover",
     "staging_ru_package": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
-    "staging_ru_package_status": "built-and-validated-pending-release-gates",
+    "staging_ru_package_status": "revised-one-decision-staging",
     "cover_policy": "shared-season-cover",
     "shared_season_cover_asset_id": "seven_roads_season2_cover_v1",
     "staging_uz_overlay": "src/data/authored/staging/season2Story6TwoReinforcements.uz.json"
@@ -153,5 +153,22 @@
       "is_final": true
     }
   ],
-  "blockers_before_runtime_package": []
+  "blockers_before_runtime_package": [],
+  "current_editorial_revision": {
+    "approved_on": "2026-11-04",
+    "authoritative_staging_package": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
+    "authoritative_uz_overlay": "src/data/authored/staging/season2Story6TwoReinforcements.uz.json",
+    "story_part_count": 2,
+    "choice_count": 2,
+    "decision_count": 1,
+    "part_1": "No interactive choice; characters find old bypass together; bandits attack the guarded wagon before Rustam arrives.",
+    "part_2": "Fifteen attackers confront thirteen adult guards once the relief arrives; children choose to help Rustam or defend the prison wagon; other front also succeeds.",
+    "canonical_outcome": {
+      "attackers": 15,
+      "captured": 7,
+      "escaped": 8,
+      "prisoner": "Farid"
+    },
+    "note": "Original canonical_source and source-lines retained below as historical provenance; current runtime no longer matches those old source line hashes."
+  }
 }
