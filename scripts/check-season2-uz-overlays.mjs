@@ -365,11 +365,38 @@ for (const [label, text] of [
 }
 const story7Base = readJson(cases.find((item) => item.story === 7).base)
 const story7Uz = readJson(cases.find((item) => item.story === 7).overlay)
+// Farid is Kamran's alias, established in Episode 1 and explicitly
+// confirmed in Episode 4. The Ordan guards use Farid; the network uses Kamran.
+const e7Ru = story7Base.parts[0]
+const e7Uz = story7Uz.parts[0]
 if (
-  story7Base.parts.some((part) => (part.story_text + part.post_choice_text).includes('Камран')) ||
-  story7Uz.parts.some((part) => (part.story_text + part.post_choice_text).includes('Kamran'))
+  e7Ru.story_text.includes('Камран') ||
+  e7Uz.story_text.includes('Kamran') ||
+  !e7Ru.story_text.includes('Фарид') ||
+  !e7Uz.story_text.includes('Farid')
 ) {
-  fail('Story 7: prisoner identity must remain Farid')
+  fail('Story 7: public Ordan guard scenes must call the prisoner Farid')
+}
+for (const [label, text, trueName] of [
+  ['Russian', e7Ru.post_choice_text, 'Камран'],
+  ['Uzbek', e7Uz.post_choice_text, 'Kamran'],
+]) {
+  if (!text.includes(trueName)) {
+    fail('Story 7: ' + label + ' network scene must use the prisoner true name ' + trueName)
+  }
+}
+for (const [label, choices, insight, countNearWagon] of [
+  ['RU', battleRu.decision?.choices, ['Темур снова поднял саблю', 'другие конвойные стражники задержали ещё двух'], ''],
+  ['UZ', battleUz.decision?.choices, ['Temur qilichini yana ko‘tardi', 'boshqa konvoy qo‘riqchilari yana ikki bosqinchini'], ''],
+]) {
+  if (!choices?.[0]?.resolution_text.includes(insight[0]) || !choices?.[1]?.resolution_text.includes(insight[1])) {
+    fail('Story 6: ' + label + ' battle paths must contain the final clarity and seven-arrests payoff')
+  }
+}
+const ep7InferenceRu = e7Ru.post_choice_text.includes('— Им нужен был рисунок настоящей печати!')
+const ep7InferenceUz = e7Uz.post_choice_text.includes('— Ularga haqiqiy muhrning rasmi kerak bo‘lgan!')
+if (!ep7InferenceRu || !ep7InferenceUz) {
+  fail('Story 7: children must voice the seal-copy inference in both languages')
 }
 
 if (errors.length > 0) {
