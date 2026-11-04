@@ -206,6 +206,39 @@ for (const storyNumber of expectedStories) {
 
     const mappedDecision = mapped.decision
     const decision = part.decision
+    const revisedStory6 = storyNumber === 6 && map.current_editorial_revision?.decision_count === 1
+    if (revisedStory6) {
+      if (index === 0) {
+        if (decision !== null) fail('Story 6: roadblock choice must be removed')
+        continue
+      }
+      if (
+        decision?.decision_id !== 'story6_choice_2_child_task' ||
+        decision?.choices?.length !== 2 ||
+        !decision.prompt?.trim()
+      ) {
+        fail('Story 6: revised battle decision must have exactly two choices')
+        continue
+      }
+      expectedBaseline.push(mappedDecision.choices[0].choice_id)
+      for (let i = 0; i < 2; i += 1) {
+        const choice = decision.choices[i]
+        const legacyChoice = mappedDecision.choices[i]
+        if (choice.choice_id !== legacyChoice.choice_id) {
+          fail('Story 6: persisted battle choice ID drifted')
+        }
+        if (
+          !choice.text?.trim() || !choice.resolution_text?.trim() ||
+          choice.effect_summary !== choice.text ||
+          choice.state_patch?.last_event !== choice.text ||
+          choice.state_patch?.canon_updates?.tower_child_task !== ['rustam', 'wagon'][i] ||
+          choice.illustration !== null
+        ) {
+          fail('Story 6: revised battle choice content or state patch drifted')
+        }
+      }
+      continue
+    }
     if (!mappedDecision || !decision) {
       fail(`Story ${storyNumber} ${part.part_id}: exactly one mapped decision is required`)
       continue
@@ -313,6 +346,6 @@ if (errors.length > 0) {
 
 console.log('[season2-staging-packages] PASS')
 console.log('[season2-staging-packages] 6/6 Russian staging packages are structurally valid')
-console.log('[season2-staging-packages] 12 decisions / 24 choices remain aligned to locked authoring maps')
+console.log('[season2-staging-packages] revised Story 6 has one battle choice; historic extraction maps remain archived, while all other episode choices match locked source maps')
 console.log('[season2-staging-packages] 10/10 Tier A image slots resolve through the verified hosted asset registry')
 console.log('[season2-staging-packages] all six non-live episodes have RU+UZ staging and are wired in the validated release candidate')
