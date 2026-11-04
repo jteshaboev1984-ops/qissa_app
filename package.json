@@ -73,7 +73,9 @@
     "smoke:story2-cover-live": "node scripts/smoke-story2-cover-live.mjs",
     "check:story2-release-candidate": "node scripts/check-story2-release-candidate.mjs",
     "check:story2-bundle-open": "node scripts/check-story2-production-bundle-open.mjs",
-    "check:story2-release-open": "node scripts/check-story2-release-open.mjs"
+    "check:story2-release-open": "node scripts/check-story2-release-open.mjs",
+    "check:season2-listening-paths": "node scripts/check-season2-listening-paths.mjs",
+    "review:season2-listening-paths": "node scripts/check-season2-listening-paths.mjs --write listening-review"
   },
   "dependencies": {
     "react": "^18.3.1",
