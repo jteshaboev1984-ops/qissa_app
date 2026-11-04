@@ -28,6 +28,7 @@ on:
       - 'scripts/check-season2-cover.mjs'
       - 'scripts/check-season2-story1-uz.mjs'
       - 'scripts/check-season2-uz-overlays.mjs'
+      - 'scripts/check-season2-listening-paths.mjs'
       - 'scripts/check-season2-release-wiring.mjs'
       - 'scripts/smoke-season2-release-browser.mjs'
       - 'docs/qissa/season2/**'
@@ -84,6 +85,9 @@ jobs:
       - name: Validate all Season 2 Uzbek staging overlays
         run: npm run check:season2-uz-overlays
 
+      - name: Generate and validate branch-aware listening review scripts (RU/UZ)
+        run: npm run review:season2-listening-paths
+
       - name: Validate Season 2 release wiring
         run: npm run check:season2-release-wiring
 
@@ -104,3 +108,11 @@ jobs:
 
       - name: Smoke Season 2 seven-episode browser flow
         run: npm run smoke:season2-release-browser
+
+      - name: Upload Episode 6-7 listening review pack
+        uses: actions/upload-artifact@v4
+        with:
+          name: season2-e6-e7-listening-review-pack
+          path: listening-review/
+          if-no-files-found: error
+          retention-days: 7
