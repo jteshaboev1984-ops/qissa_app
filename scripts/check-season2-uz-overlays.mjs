@@ -61,9 +61,9 @@ const cases = [
     markers: [
       '— Bizni Rustam yubordi.',
       '— Men hech kimni oldindan yubormadim.',
-      'Sal narida yana ikkita zaxira ot bog‘langan edi.',
+      'yana ikkita zaxira ot bor edi.',
       'Shimoliy chegara yo‘li',
-      'Qo‘lga olingan uch kishini',
+      'jami yetti bosqinchi qo‘lga olindi.',
     ],
   },
   {
@@ -76,7 +76,7 @@ const cases = [
       '— Mana. Yangi muhr izida uchi yumaloq. Eskisida esa kichkina tekis qirra bor, xuddi eng cheti kesilgandek.',
       '— Bu yo‘l — endi yo‘q.',
       'Shimoliy chegara yo‘li',
-      'qo‘lga olingan uch kishi',
+      'qo‘lga olingan yetti kishi',
     ],
   },
 ]
@@ -327,6 +327,49 @@ for (const editorialLabel of [
   if (story3Corpus.includes(editorialLabel)) {
     fail('Story 3: inherited-choice editorial branch label leaked into visible Uzbek prose')
   }
+}
+
+
+// Episode 6 revised literary contract: the road obstacle has no choice,
+// and a single two-way battle decision preserves the same canonical outcome.
+const story6Base = readJson(cases.find((item) => item.story === 6).base)
+const story6Uz = readJson(cases.find((item) => item.story === 6).overlay)
+if (story6Base.parts[0]?.decision != null || story6Uz.parts[0]?.decision != null) {
+  fail('Story 6: obsolete roadblock choice was not removed')
+}
+const battleRu = story6Base.parts[1]
+const battleUz = story6Uz.parts[1]
+if (
+  battleRu?.decision?.choices?.length !== 2 ||
+  battleUz?.decision?.choices?.length !== 2 ||
+  battleRu?.decision?.decision_id !== 'story6_choice_2_child_task'
+) {
+  fail('Story 6: one two-way battle decision must remain')
+}
+for (const [label, text] of [
+  ['RU story', [story6Base.parts[0]?.story_text, battleRu?.story_text].join('\n\n')],
+  ['RU outcome', battleRu?.post_choice_text ?? ''],
+  ['UZ story', [story6Uz.parts[0]?.story_text, battleUz?.story_text].join('\n\n')],
+  ['UZ outcome', battleUz?.post_choice_text ?? ''],
+]) {
+  const isRu = label.startsWith('RU')
+  const group15 = isRu ? /пятнадцат/u : /o‘n besh/u
+  const caught7 = isRu ? /семерых разбойников/u : /yetti bosqinchi/u
+  const fled8 = isRu ? /Восемь скрылись/u : /Sakkiztasi/u
+  if (label.endsWith('story') && !group15.test(text)) {
+    fail('Story 6: ' + label + ' must introduce fifteen bandits')
+  }
+  if (label.endsWith('outcome') && (!caught7.test(text) || !fled8.test(text))) {
+    fail('Story 6: ' + label + ' must explicitly account for 7 captured and 8 escaped')
+  }
+}
+const story7Base = readJson(cases.find((item) => item.story === 7).base)
+const story7Uz = readJson(cases.find((item) => item.story === 7).overlay)
+if (
+  story7Base.parts.some((part) => (part.story_text + part.post_choice_text).includes('Камран')) ||
+  story7Uz.parts.some((part) => (part.story_text + part.post_choice_text).includes('Kamran'))
+) {
+  fail('Story 7: prisoner identity must remain Farid')
 }
 
 if (errors.length > 0) {
