@@ -15,7 +15,6 @@
   "master_style_id": "seven_roads_painterly_v1",
   "editorial_master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
   "baseline_choice_path": [
-    "story6_choice_1a_road_book",
     "story6_choice_2a_wagon_team"
   ],
   "required_final_invariants": {},
