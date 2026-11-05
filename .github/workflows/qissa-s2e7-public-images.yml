@@ -1,0 +1,26 @@
+name: QISSA S2E7 public WebP SHA-256 verification
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/qissa/season2/story7_approved_illustrations_pending_runtime_2026-11-05.json'
+      - 'scripts/upload-season2-story7-approved-art.mjs'
+      - '.github/workflows/qissa-s2e7-public-images.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-public:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Verify both public E7 WebPs with byte sizes and SHA-256
+        run: node scripts/upload-season2-story7-approved-art.mjs --verify-only
