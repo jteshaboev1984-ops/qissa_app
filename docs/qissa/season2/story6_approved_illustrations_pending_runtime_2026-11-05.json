@@ -1,7 +1,7 @@
 {
   "schema_version": "qissa-season2-story6-approved-art-handoff-1",
   "created_at": "2026-11-05",
-  "note": "Production-side register ONLY. It is not a live app manifest. Existing hosted assets remain unchanged until all new public Storage URLs are verified. These 4 accepted artworks plus the existing false-reinforcements illustration yield five art options, four visible per playthrough.",
+  "note": "Production handoff originated before upload; completed on 2026-11-05: all 4 files now publicly hosted at verified immutable Supabase v2 objects, byte/hash checked by GitHub Actions; runtime mapping wired in merged PR #306. Season 2 remains unpublished.",
   "season": 2,
   "episode": 6,
   "approved_new_or_replacement_assets": [
@@ -9,7 +9,7 @@
       "asset_id": "seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED",
       "scene_role": "rustam_arrives_during_battle",
       "approval": "owner_approved",
-      "hosting": "library_only_pending_supabase",
+      "hosting": "hosted_verified",
       "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.png",
       "master_dimensions": [
         1672,
@@ -31,13 +31,14 @@
       "after_text_ru": "— Я никого вперёд не посылал.",
       "after_text_uz": "— Men hech kimni oldindan yubormadim.",
       "source_status": "approved",
-      "runtime_public_url": null
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.webp",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.webp"
     },
     {
       "asset_id": "seven_roads_s2_story6_roadblock_bypass_01_APPROVED",
       "scene_role": "mountain_road_bypass",
       "approval": "owner_approved",
-      "hosting": "library_only_pending_supabase",
+      "hosting": "hosted_verified",
       "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_roadblock_bypass_01_APPROVED.png",
       "master_dimensions": [
         1672,
@@ -59,13 +60,14 @@
       "after_text_ru": "— Нашёл!",
       "after_text_uz": "— Topdim!",
       "source_status": "approved",
-      "runtime_public_url": null
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story6_roadblock_bypass_01_APPROVED.webp",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story6_roadblock_bypass_01_APPROVED.webp"
     },
     {
       "asset_id": "seven_roads_s2_story6_choice_a_gate_flank_01_APPROVED",
       "scene_role": "choice_a_rustam_flank_gate",
       "approval": "owner_approved",
-      "hosting": "library_only_pending_supabase",
+      "hosting": "hosted_verified",
       "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_choice_a_gate_flank_01_APPROVED.png",
       "master_dimensions": [
         1672,
@@ -87,14 +89,15 @@
       "after_text_ru": "Рахим связал обезоруженного мужчину.",
       "after_text_uz": "Rahim qurolsiz qolgan erkakning qo‘llarini bog‘ladi.",
       "source_status": "approved",
-      "runtime_public_url": null,
-      "binding_reason": "Placed at the completed defensive action after Rahim restrains first attacker; this matches the approved artwork more accurately than immediately after lowering the gate bar."
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story6_choice_a_gate_flank_01_APPROVED.webp",
+      "binding_reason": "Placed at the completed defensive action after Rahim restrains first attacker; this matches the approved artwork more accurately than immediately after lowering the gate bar.",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story6_choice_a_gate_flank_01_APPROVED.webp"
     },
     {
       "asset_id": "seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED",
       "scene_role": "choice_b_wagon_rear_door",
       "approval": "owner_approved",
-      "hosting": "library_only_pending_supabase",
+      "hosting": "hosted_verified",
       "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED.png",
       "master_dimensions": [
         1672,
@@ -116,19 +119,22 @@
       "after_text_ru": "Он задержал преступника.",
       "after_text_uz": "Qo‘riqchi jinoyatchini qo‘lga oldi.",
       "source_status": "approved",
-      "runtime_public_url": null
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED.webp",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED.webp"
     }
   ],
   "existing_unchanged_asset": "seven_roads_s2_story6_false_reinforcement_watchtower_01_APPROVED",
   "operational_gates": [
-    "Upload 4 approved WebPs to immutable Supabase Storage paths.",
-    "Verify each exact public object and SHA-256 before changing the runtime.",
-    "Switch reveal frame from outdated v1 to approved v2 at same narrated anchor.",
-    "Add new shared bypass slot in part 1, no decision.",
-    "Add choice-A image only to actual Rustam-help branch ID story6_choice_2a_wagon_team.",
-    "Add choice-B image only to actual wagon-help branch ID story6_choice_2b_clear_return_road.",
-    "Update RU/UZ overlays, visual registry, immutable inventory, Gallery reveal handling and tests in one coordinated PR.",
-    "Browser test 430x932, both branches, existing Story 2 and saved progress.",
-    "Do not publish Season 2 or silently close deployment issues."
-  ]
+    "COMPLETE: 4/4 WebP objects stored in QISSA public story-images bucket at immutable v2 paths.",
+    "COMPLETE: 4/4 object sizes and SHA256 match approved WebP masters according to GitHub Actions 41978198298.",
+    "COMPLETE: Existing E6 Rustam reveal replaced by v2 at original anchor.",
+    "COMPLETE: New common bypass slot inserted into Part 1 without adding an interactive choice.",
+    "COMPLETE: Gate branch A image tied only to choice story6_choice_2a_wagon_team.",
+    "COMPLETE: Wagon branch B image tied only to choice story6_choice_2b_clear_return_road.",
+    "COMPLETE: RU/UZ localization, Tier A inventory and Gallery code validation in PR #306 (merged).",
+    "COMPLETE: Seven Roads CI, Tier A Slot Check, Tier A Asset Smoke and GH Pages deploy succeeded.",
+    "UNCHANGED: Second Season remains unpublished pending product release."
+  ],
+  "hosting_status": "hosted_verified",
+  "verified_on": "2026-11-05"
 }

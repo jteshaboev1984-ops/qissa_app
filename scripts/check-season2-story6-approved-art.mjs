@@ -26,6 +26,11 @@ if(ru.illustration_plan?.shared_asset_count!==3 || ru.illustration_plan?.choice_
 for(const check of checks){
   const art=approved.approved_new_or_replacement_assets.find(x=>x.scene_role===check.role)
   if(!art){fail('Missing approved manifest '+check.role);continue}
+  const expectedObject='seven-roads/season2_tier_a_v2/'+art.asset_id+'.webp'
+  const expectedUrl='https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/'+expectedObject
+  if(art.hosting!=='hosted_verified' || art.runtime_object_path!==expectedObject || art.runtime_public_url!==expectedUrl){
+    fail(check.role+': public hosted asset metadata does not match approved v2 object path')
+  }
   let slot,langAnchor
   if(check.index===undefined){
     slot=ru.parts[check.part].image_slots.find(s=>s.slot_id===check.slot)

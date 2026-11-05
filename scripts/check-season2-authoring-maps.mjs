@@ -167,7 +167,7 @@ for (const storyNumber of expectedStoryNumbers) {
     }
     const approvedStory6RevealUpgrade = storyNumber === 6 &&
       locked.slot_id === 'S2-ST6-TIERA-REVEAL' &&
-      map.current_editorial_revision?.runtime_art_expansion === 'approved-2026-11-05-pending-hosting' &&
+      map.current_editorial_revision?.runtime_art_expansion === 'hosted-verified-2026-11-05' &&
       mapped.asset_id === 'seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED' &&
       locked.asset_id === 'seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED'
     if (mapped.asset_id !== locked.asset_id && !approvedStory6RevealUpgrade) {

@@ -171,8 +171,8 @@
     },
     "note": "Original canonical_source and source-lines retained below as historical provenance; current runtime no longer matches those old source line hashes.",
     "archival_status": "Original source map is still locked and preserved verbatim for provenance; its decisions are not the active runtime contract.",
-    "runtime_art_expansion": "approved-2026-11-05-pending-hosting",
+    "runtime_art_expansion": "hosted-verified-2026-11-05",
     "runtime_art_handoff": "docs/qissa/season2/story6_approved_illustrations_pending_runtime_2026-11-05.json",
-    "runtime_art_note": "Original locked extraction slots remain archival. Revised active episode includes 3 shared images (one existing false guard, one updated Rustam reveal, one new bypass), and two mutually exclusive choice images. The new PR must not merge until public v2 objects verified."
+    "runtime_art_note": "All 4 E6 WebPs are hosted and exact SHA256-verified (GitHub Actions 2026-11-05); reader code wired via PR #306; no Season 2 publication. Original extraction map preserved."
   }
 }
