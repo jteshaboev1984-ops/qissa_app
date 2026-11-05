@@ -1,0 +1,84 @@
+{
+  "schema_version": "qissa-season2-story4-owner-approved-art-handoff-1",
+  "created_at": "2026-11-05",
+  "world_id": "seven_roads",
+  "season_number": 2,
+  "story_number": 4,
+  "approval": "owner_approved",
+  "publication_state": "unpublished",
+  "hosting": "not_uploaded_or_verified",
+  "runtime_binding": "not_integrated",
+  "library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
+  "library_bundle": "/QISSA/production/seven_roads/season2_visual_final/QISSA_S2E4_Two_Approved_Frames_2026-11-05.zip",
+  "part_id": "story4_part_1_false_notice_and_route_check",
+  "preserve_existing_asset_id": "seven_roads_s2_story4_false_aras_notice_01_APPROVED",
+  "assets": [
+    {
+      "asset_id": "seven_roads_s2_story4_homecoming_01_APPROVED",
+      "slot_id": "S2-ST4-HOMECOMING",
+      "scene_role": "homecoming_family_reunion",
+      "phase": "story_text",
+      "visibility": "shared",
+      "after_text_ru": "Она обняла сына, потом заметила Самиру.",
+      "after_text_uz": "U o‘g‘lini quchoqladi, keyin Samirani ko‘rdi.",
+      "master_png": {
+        "dimensions": [
+          1672,
+          941
+        ],
+        "filename": "seven_roads_s2_story4_homecoming_01_APPROVED.png",
+        "bytes": 2704755,
+        "sha256": "94c41f3bdd98774f691a5384c8808006a3377ecf0cecef59b2571abf7c7f47d2"
+      },
+      "webp": {
+        "dimensions": [
+          1536,
+          864
+        ],
+        "filename": "seven_roads_s2_story4_homecoming_01_APPROVED.webp",
+        "bytes": 329798,
+        "sha256": "3f49fabfa23b9824ae7f35c584a091d48c53292339315c6d436fff7c4c79a279"
+      },
+      "narrative_note": "Mother embraces Temur; Samira stays at a respectful distance with pale Bulut; dark Shamol nearby; before mother and Samira are formally introduced."
+    },
+    {
+      "asset_id": "seven_roads_s2_story4_three_pillars_01_APPROVED",
+      "slot_id": "S2-ST4-THREE-PILLARS",
+      "scene_role": "three_roadside_stone_markers",
+      "phase": "story_text",
+      "visibility": "shared",
+      "after_text_ru": "Потрогал старую трещину.",
+      "after_text_uz": "Eski yoriqqa qo‘l tekkizdi.",
+      "master_png": {
+        "dimensions": [
+          1671,
+          941
+        ],
+        "filename": "seven_roads_s2_story4_three_pillars_01_APPROVED.png",
+        "bytes": 4220995,
+        "sha256": "863dfdb30270f2cfb1509e2e8337817c97dc7fb13fd9365874cefd42908a0817"
+      },
+      "webp": {
+        "dimensions": [
+          1536,
+          864
+        ],
+        "filename": "seven_roads_s2_story4_three_pillars_01_APPROVED.webp",
+        "bytes": 476166,
+        "sha256": "d6cee1c3bd61e41eb2997ae62bcc4113f90a97dc330e426c49d98fb0db10c0ff"
+      },
+      "narrative_note": "Exactly 3 rough stone roadside pillars one higher than two; Temur inspects crack while senior guard waters dark Shamol and white Bulut; Samira looks at ordinary travelers. No network clue exposed."
+    }
+  ],
+  "required_actions": [
+    "Verify public Supabase WebP uploads at immutable object paths before registering runtime URLs",
+    "Connect 2 shared image slots in Russian staging package, exact Uzbek text anchors",
+    "Preserve original Story 4 approved Tier A illustration, existing decisions and all choice IDs",
+    "Update CI checks and inventory/git blob hashes along with package edits",
+    "Keep Season 2 unpublished"
+  ],
+  "cancelled_or_rejected_visuals": [
+    "monumental_colonnades_v1",
+    "ornate_columns_v2"
+  ]
+}
