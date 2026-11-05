@@ -166,7 +166,7 @@ for (const storyNumber of expectedStories) {
     }
 
     const revisedStory6Art = storyNumber === 6 &&
-      map.current_editorial_revision?.runtime_art_expansion === 'approved-2026-11-05-pending-hosting'
+      map.current_editorial_revision?.runtime_art_expansion === 'hosted-verified-2026-11-05'
     const mappedSlots = new Map(
       (mapped.image_slots ?? []).map((slot) => [slot.slot_id, slot]),
     )
