@@ -6,8 +6,8 @@
   "story_number": 4,
   "approval": "owner_approved",
   "publication_state": "unpublished",
-  "hosting": "not_uploaded_or_verified",
-  "runtime_binding": "not_integrated",
+  "hosting": "hosted_verified",
+  "runtime_binding": "hosted_registry_resolved",
   "library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
   "library_bundle": "/QISSA/production/seven_roads/season2_visual_final/QISSA_S2E4_Two_Approved_Frames_2026-11-05.zip",
   "part_id": "story4_part_1_false_notice_and_route_check",
@@ -39,7 +39,10 @@
         "bytes": 329798,
         "sha256": "3f49fabfa23b9824ae7f35c584a091d48c53292339315c6d436fff7c4c79a279"
       },
-      "narrative_note": "Mother embraces Temur; Samira stays at a respectful distance with pale Bulut; dark Shamol nearby; before mother and Samira are formally introduced."
+      "narrative_note": "Mother embraces Temur; Samira stays at a respectful distance with pale Bulut; dark Shamol nearby; before mother and Samira are formally introduced.",
+      "hosting": "hosted_verified",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story4_homecoming_01_APPROVED.webp",
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story4_homecoming_01_APPROVED.webp"
     },
     {
       "asset_id": "seven_roads_s2_story4_three_pillars_01_APPROVED",
@@ -67,7 +70,10 @@
         "bytes": 476166,
         "sha256": "d6cee1c3bd61e41eb2997ae62bcc4113f90a97dc330e426c49d98fb0db10c0ff"
       },
-      "narrative_note": "Exactly 3 rough stone roadside pillars one higher than two; Temur inspects crack while senior guard waters dark Shamol and white Bulut; Samira looks at ordinary travelers. No network clue exposed."
+      "narrative_note": "Exactly 3 rough stone roadside pillars one higher than two; Temur inspects crack while senior guard waters dark Shamol and white Bulut; Samira looks at ordinary travelers. No network clue exposed.",
+      "hosting": "hosted_verified",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story4_three_pillars_01_APPROVED.webp",
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story4_three_pillars_01_APPROVED.webp"
     }
   ],
   "required_actions": [
@@ -80,5 +86,19 @@
   "cancelled_or_rejected_visuals": [
     "monumental_colonnades_v1",
     "ornate_columns_v2"
-  ]
+  ],
+  "supabase_bucket": "story-images",
+  "supabase_prefix": "seven-roads/season2_tier_a_v2/",
+  "verified_on": "2026-11-05",
+  "public_verification": {
+    "workflow_run_id": 42040715620,
+    "workflow_conclusion": "success",
+    "checks": [
+      "public GET",
+      "image/webp MIME",
+      "byte count",
+      "SHA-256"
+    ]
+  },
+  "approved_asset_count": 2
 }
