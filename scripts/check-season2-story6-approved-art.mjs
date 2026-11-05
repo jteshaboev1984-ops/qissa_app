@@ -48,7 +48,7 @@ if(ru.parts[0].image_slots.length!==2 || ru.parts[1].image_slots.length!==1)fail
 if(uz.parts[0].image_anchor_texts?.['S2-ST6-BYPASS-SHARED']!=='— Topdim!')fail('UZ bypass anchor lost')
 if(errors.length){for(const e of errors)console.error('[story6-approved-art] '+e);process.exit(1)}
 
-if(process.argv.includes('--verify-public')){
+if(process.argv.includes('--verify-public') || process.env.GITHUB_ACTIONS === 'true'){
   const host='https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/'
   for(const a of approved.approved_new_or_replacement_assets){
     const objectPath='seven-roads/season2_tier_a_v2/'+a.asset_id+'.webp'
