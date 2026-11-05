@@ -97,9 +97,12 @@ for (const item of inventory.items ?? []) {
   if (filename !== `${assetId}.webp`) {
     fail(`${assetId}: filename must be ${assetId}.webp`)
   }
+  const expectedPrefix = slotId === 'S2-ST6-TIERA-REVEAL'
+    ? 'season2_tier_a_v2'
+    : 'season2_tier_a_v1'
   if (
     objectPath !==
-    `seven-roads/season2_tier_a_v1/${assetId}.webp`
+    `seven-roads/${expectedPrefix}/${assetId}.webp`
   ) {
     fail(`${assetId}: unexpected object path ${objectPath}`)
   }
@@ -157,7 +160,7 @@ if (inventory.total_bytes !== totalBytes) {
     `inventory total_bytes=${inventory.total_bytes} but item sum=${totalBytes}`,
   )
 }
-if (inventory.total_bytes !== 3386868) {
+if (inventory.total_bytes !== 3533580) {
   fail(`unexpected locked Tier A runtime byte total: ${inventory.total_bytes}`)
 }
 
@@ -167,7 +170,7 @@ if (errors.length > 0) {
 }
 
 console.log('[season2-tier-a-runtime] PASS')
-console.log('[season2-tier-a-runtime] 10/10 staged approved masters have locked WebP derivatives')
-console.log('[season2-tier-a-runtime] all objects target story-images/seven-roads/season2_tier_a_v1/')
+console.log('[season2-tier-a-runtime] 10/10 Tier A slots have locked WebP derivative metadata (v2 reveal is pending verified upload)')
+console.log('[season2-tier-a-runtime] the Episode 6 reveal uses immutable v2 prefix; all other Tier A objects stay on v1')
 console.log('[season2-tier-a-runtime] hosted assets are registered through the verified Season 2 Tier A public prefix')
 console.log(`[season2-tier-a-runtime] locked total: ${inventory.total_bytes} bytes`)
