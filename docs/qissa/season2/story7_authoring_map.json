@@ -103,5 +103,16 @@
       "is_final": true
     }
   ],
-  "blockers_before_runtime_package": []
+  "blockers_before_runtime_package": [],
+  "current_editorial_revision": {
+    "runtime_art_expansion": "hosted-verified-2026-11-05",
+    "approved_image_count": 4,
+    "added_shared_slots": [
+      "S2-ST7-RETURN-ORDAN",
+      "S2-ST7-MORNING-HORSES"
+    ],
+    "owner_approved": true,
+    "storage_verified_workflow": 42006002350,
+    "notes": "Keep locked original Tier A map image_slots unchanged; two verified additional shared image slots are mapped through the Story 7 manifest. Season unpublished."
+  }
 }
