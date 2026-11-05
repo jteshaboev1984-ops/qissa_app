@@ -29,6 +29,7 @@ on:
       - 'scripts/check-season2-story1-uz.mjs'
       - 'scripts/check-season2-uz-overlays.mjs'
       - 'scripts/check-season2-listening-paths.mjs'
+      - 'scripts/check-season2-story6-approved-art.mjs'
       - 'scripts/check-season2-release-wiring.mjs'
       - 'scripts/smoke-season2-release-browser.mjs'
       - 'docs/qissa/season2/**'
@@ -84,6 +85,9 @@ jobs:
 
       - name: Validate all Season 2 Uzbek staging overlays
         run: npm run check:season2-uz-overlays
+
+      - name: Check approved Episode 6 image placement and branch isolation
+        run: npm run check:season2-story6-approved-art
 
       - name: Generate and validate branch-aware listening review scripts (RU/UZ)
         run: npm run review:season2-listening-paths
