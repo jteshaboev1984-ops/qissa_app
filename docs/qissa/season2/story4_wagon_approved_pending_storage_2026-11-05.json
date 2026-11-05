@@ -1,0 +1,39 @@
+{
+  "schema_version": "qissa-season2-story4-wagon-pending-storage-1",
+  "date": "2026-11-05",
+  "story_number": 4,
+  "part_id": "story4_part_2_nadir_red_hill_clue",
+  "status": "owner_approved_pending_supabase_storage",
+  "season_publication": "unpublished",
+  "asset_id": "seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED",
+  "slot_id": "S2-ST4-WAGON-DAWN-LOCK",
+  "kind": "shared",
+  "phase": "story_text",
+  "after_text_ru": "Он ещё раз проверил упряжь и запор на задней двери.",
+  "after_text_uz": "U qo‘sh otlarni va orqa eshik qulfini yana bir bor tekshirdi.",
+  "library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
+  "png": {
+    "filename": "seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED.png",
+    "width": 1672,
+    "height": 941,
+    "bytes": 3156594,
+    "sha256": "198963f4b9bfcb276eda0caab96fd8c9b07f92fec5bf15a9b1215fd5710b0359"
+  },
+  "webp": {
+    "filename": "seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED.webp",
+    "width": 1536,
+    "height": 864,
+    "bytes": 402028,
+    "sha256": "7efb9e99db4f9e826462c1e2129801d20b7ded5907712747c6e1d76d93a6fb82"
+  },
+  "proposed_supabase_bucket": "story-images",
+  "proposed_supabase_prefix": "seven-roads/season2_tier_a_v2/",
+  "hosting": "unverified_not_uploaded",
+  "runtime_binding": "not_integrated",
+  "editorial_acceptance": "Owner approved the morning gate/courtyard wagon-lock illustration in chat. Daniyar checks the closed wagon lock, two draft horses, accompanying guards, dawn light. The location shows fortress interior near arch, accepted as editorial simplification.",
+  "requirements": [
+    "Do not add runtime asset URLs until the exact public object passes MIME, size and SHA-256 validation.",
+    "Do not replace the two already integrated Story4 frames or the existing Tier A image.",
+    "Do not change narrative text, choices, or season publication."
+  ]
+}
