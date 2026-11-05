@@ -1,0 +1,133 @@
+{
+  "schema_version": "qissa-season2-story6-approved-art-handoff-1",
+  "created_at": "2026-11-05",
+  "note": "Production-side register ONLY. It is not a live app manifest. Existing hosted assets remain unchanged until all new public Storage URLs are verified. These 4 accepted artworks plus the existing false-reinforcements illustration yield five art options, four visible per playthrough.",
+  "season": 2,
+  "episode": 6,
+  "approved_new_or_replacement_assets": [
+    {
+      "asset_id": "seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED",
+      "scene_role": "rustam_arrives_during_battle",
+      "approval": "owner_approved",
+      "hosting": "library_only_pending_supabase",
+      "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.png",
+      "master_dimensions": [
+        1672,
+        941
+      ],
+      "master_bytes": 3392590,
+      "master_sha256": "671e8d62895fc356cba363fd57958f749278dde326fdd9e722dce5beb3a2f105",
+      "webp_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.webp",
+      "webp_dimensions": [
+        1536,
+        864
+      ],
+      "webp_bytes": 528508,
+      "webp_sha256": "a95cd925fa32604f09e961148e1797f6b0f9eab9c2eb02eae3c74dfd69b0420c",
+      "story": 6,
+      "part": "story6_part_2_two_reinforcements",
+      "visibility": "shared",
+      "choice_id": null,
+      "after_text_ru": "— Я никого вперёд не посылал.",
+      "after_text_uz": "— Men hech kimni oldindan yubormadim.",
+      "source_status": "approved",
+      "runtime_public_url": null
+    },
+    {
+      "asset_id": "seven_roads_s2_story6_roadblock_bypass_01_APPROVED",
+      "scene_role": "mountain_road_bypass",
+      "approval": "owner_approved",
+      "hosting": "library_only_pending_supabase",
+      "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_roadblock_bypass_01_APPROVED.png",
+      "master_dimensions": [
+        1672,
+        941
+      ],
+      "master_bytes": 3561811,
+      "master_sha256": "d6ab79b50af1e696715c1a61c4588286de4491da4237b9e6cab1a16adc68f0a1",
+      "webp_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_roadblock_bypass_01_APPROVED.webp",
+      "webp_dimensions": [
+        1536,
+        864
+      ],
+      "webp_bytes": 526246,
+      "webp_sha256": "115c462ebcc1ec92667f5ea3d5b923f290376f83f065ae82ec8a6fce82939ae8",
+      "story": 6,
+      "part": "story6_part_1_false_reinforcement_and_delay",
+      "visibility": "shared",
+      "choice_id": null,
+      "after_text_ru": "— Нашёл!",
+      "after_text_uz": "— Topdim!",
+      "source_status": "approved",
+      "runtime_public_url": null
+    },
+    {
+      "asset_id": "seven_roads_s2_story6_choice_a_gate_flank_01_APPROVED",
+      "scene_role": "choice_a_rustam_flank_gate",
+      "approval": "owner_approved",
+      "hosting": "library_only_pending_supabase",
+      "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_choice_a_gate_flank_01_APPROVED.png",
+      "master_dimensions": [
+        1672,
+        941
+      ],
+      "master_bytes": 3323053,
+      "master_sha256": "0b2cdf2607aa7152712027169a27da545b976ba7a70581e58154b8727cce6000",
+      "webp_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_choice_a_gate_flank_01_APPROVED.webp",
+      "webp_dimensions": [
+        1536,
+        864
+      ],
+      "webp_bytes": 412828,
+      "webp_sha256": "a143606acd8ce040479e90ae9f33cd30ae6faf0087dd8c36976a95965a88cc97",
+      "story": 6,
+      "part": "story6_part_2_two_reinforcements",
+      "visibility": "selected_choice_only",
+      "choice_id": "story6_choice_2a_wagon_team",
+      "after_text_ru": "Темур опустил тяжёлую деревянную перекладину.",
+      "after_text_uz": "Temur og‘ir yog‘och tambani tushirdi.",
+      "source_status": "approved",
+      "runtime_public_url": null
+    },
+    {
+      "asset_id": "seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED",
+      "scene_role": "choice_b_wagon_rear_door",
+      "approval": "owner_approved",
+      "hosting": "library_only_pending_supabase",
+      "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED.png",
+      "master_dimensions": [
+        1672,
+        941
+      ],
+      "master_bytes": 3204925,
+      "master_sha256": "91ce29cc51140655a6400bbe176e8a6744344541bcc69ba7833a7d5b60a6e2ee",
+      "webp_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED.webp",
+      "webp_dimensions": [
+        1536,
+        864
+      ],
+      "webp_bytes": 432082,
+      "webp_sha256": "60a9240767a4c2afe598ffefccaa3e9628bb1e94f1bddc2c2e84266b78a70051",
+      "story": 6,
+      "part": "story6_part_2_two_reinforcements",
+      "visibility": "selected_choice_only",
+      "choice_id": "story6_choice_2b_clear_return_road",
+      "after_text_ru": "Он задержал преступника.",
+      "after_text_uz": "Qo‘riqchi jinoyatchini qo‘lga oldi.",
+      "source_status": "approved",
+      "runtime_public_url": null
+    }
+  ],
+  "existing_unchanged_asset": "seven_roads_s2_story6_false_reinforcement_watchtower_01_APPROVED",
+  "operational_gates": [
+    "Upload 4 approved WebPs to immutable Supabase Storage paths.",
+    "Verify each exact public object and SHA-256 before changing the runtime.",
+    "Switch reveal frame from outdated v1 to approved v2 at same narrated anchor.",
+    "Add new shared bypass slot in part 1, no decision.",
+    "Add choice-A image only to actual Rustam-help branch ID story6_choice_2a_wagon_team.",
+    "Add choice-B image only to actual wagon-help branch ID story6_choice_2b_clear_return_road.",
+    "Update RU/UZ overlays, visual registry, immutable inventory, Gallery reveal handling and tests in one coordinated PR.",
+    "Browser test 430x932, both branches, existing Story 2 and saved progress.",
+    "Do not publish Season 2 or silently close deployment issues."
+  ]
+}
