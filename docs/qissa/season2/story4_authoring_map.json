@@ -154,5 +154,16 @@
       "runtime_text": "С закрытым деревянным кузовом, усиленными колёсами и двумя лошадьми.",
       "reason": "Canonical prison wagon has exactly two horses."
     }
-  ]
+  ],
+  "current_editorial_revision": {
+    "runtime_art_expansion": "hosted-verified-2026-11-05",
+    "approved_image_count": 3,
+    "added_shared_slots": [
+      "S2-ST4-HOMECOMING",
+      "S2-ST4-THREE-PILLARS"
+    ],
+    "owner_approved": true,
+    "storage_verified_workflow": 42040715620,
+    "notes": "Preserve locked original Tier A map and source prose. Two hosted shared art slots registered via independent manifest; Season 2 unpublished."
+  }
 }
