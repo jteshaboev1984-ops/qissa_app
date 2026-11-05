@@ -84,18 +84,29 @@ const season2TierAAssetIds = [
   'seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED',
   'seven_roads_s2_story5_red_hill_recon_01_APPROVED',
   'seven_roads_s2_story6_false_reinforcement_watchtower_01_APPROVED',
-  'seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED',
+  
   'seven_roads_s2_story7_aras_seal_comparison_01_APPROVED',
   'seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED',
 ] as const
 
+const season2TierAV2AssetIds = [
+  'seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED',
+  'seven_roads_s2_story6_roadblock_bypass_01_APPROVED',
+  'seven_roads_s2_story6_choice_a_gate_flank_01_APPROVED',
+  'seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED',
+] as const
+
 const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
-  Object.fromEntries(
-    season2TierAAssetIds.map((assetId) => [
+  Object.fromEntries([
+    ...season2TierAAssetIds.map((assetId) => [
       assetId,
       `https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v1/${assetId}.webp`,
     ]),
-  )
+    ...season2TierAV2AssetIds.map((assetId) => [
+      assetId,
+      `https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/${assetId}.webp`,
+    ]),
+  ])
 
 const season2SharedAssets: AuthoredStoryAssetRegistry = {
   'seven_roads_season2_cover_v1':
