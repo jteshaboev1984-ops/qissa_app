@@ -1,7 +1,7 @@
 {
   "version": "season2-tier-a-visual-slots-1",
   "status": "runtime-assets-hosted",
-  "updated_at": "2026-10-04",
+  "updated_at": "2026-11-05",
   "world_id": "seven_roads",
   "season_number": 2,
   "library_master_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames",
@@ -135,13 +135,13 @@
       "story_title_ru": "Две подмоги",
       "source_reference": "seven_roads_s2_story6_two_reinforcements_literary_v3.md",
       "slot_id": "S2-ST6-TIERA-REVEAL",
-      "asset_id": "seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED",
-      "master_filename": "seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED.png",
-      "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED.png",
+      "asset_id": "seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED",
+      "master_filename": "seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.png",
+      "master_library_path": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.png",
       "runtime_state": "hosted-runtime-ready",
       "behavior": "show_after_anchor",
       "after_text": "— Я никого вперёд не посылал.",
-      "note": "NOV 04, 2026: User APPROVED the corrected action scene as v2. Its PNG + prepared 1536x864 WebP are saved and SHA-verified in QISSA Library as seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED. Current asset_id still resolves to OLD v1 hosting intentionally. v2 Supabase Storage upload and runtime registry/hash migration are PENDING: do not switch runtime until verified. See docs/qissa/season2/2026-11-04_story6_reveal_v2_approved_handoff.md and issue #297."
+      "note": "Owner-approved 2026-11-05 action frame replaces peaceful v1 at unchanged anchor. This staging PR stays unmerged until exact v2 WebP is hosted and verified; historical v1 remains archived."
     },
     {
       "story_number": 7,

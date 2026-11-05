@@ -6,7 +6,7 @@
   "runtime_library_root": "/QISSA/production/seven_roads/season2_visual_final/runtime_webp_v1/",
   "upload_bundle": "season2_tier_a_runtime_upload_bundle_v1.zip",
   "count": 10,
-  "total_bytes": 3386868,
+  "total_bytes": 3533580,
   "encoding": {
     "format": "webp",
     "quality": 88,
@@ -122,19 +122,19 @@
       "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v1/seven_roads_s2_story6_false_reinforcement_watchtower_01_APPROVED.webp"
     },
     {
-      "asset_id": "seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED",
-      "filename": "seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED.webp",
+      "asset_id": "seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED",
+      "filename": "seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.webp",
       "story_number": 6,
       "slot_id": "S2-ST6-TIERA-REVEAL",
       "source_width": 1672,
       "source_height": 941,
       "width": 1536,
       "height": 864,
-      "bytes": 381796,
-      "sha256": "75268cc319d7270cb5b8a6f0e52085305985d0c8bc8ed1fe54b325e2dbd5ab1d",
-      "supabase_object_path": "seven-roads/season2_tier_a_v1/seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED.webp",
+      "bytes": 528508,
+      "sha256": "a95cd925fa32604f09e961148e1797f6b0f9eab9c2eb02eae3c74dfd69b0420c",
+      "supabase_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.webp",
       "status": "hosted_verified",
-      "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v1/seven_roads_s2_story6_two_reinforcements_reveal_01_APPROVED.webp"
+      "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED.webp"
     },
     {
       "asset_id": "seven_roads_s2_story7_aras_seal_comparison_01_APPROVED",
@@ -167,5 +167,6 @@
       "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v1/seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED.webp"
     }
   ],
-  "verified_at": "2026-10-04"
+  "verified_at": "2026-10-04",
+  "updated_at": "2026-11-05"
 }
