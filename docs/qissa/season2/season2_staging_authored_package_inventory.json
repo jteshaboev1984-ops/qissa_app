@@ -97,16 +97,17 @@
       "story_id": "seven_roads_obratno_v_ordan",
       "story_version": "interactive-v17-visible-inherited-defect",
       "package_path": "src/data/authored/staging/season2Story7BackToOrdan.ru.json",
-      "github_blob_sha": "df2f835ec94fa6eec30800d3b8d45fa30769b358",
+      "github_blob_sha": "2020d2aaf4e6d9f1751c7682c618a9112b17f9cc",
       "source_sha256": "17b0b526f2deda78cb0bcfba85a97100be5dceaaf2fdf92d6105e5f476094725",
       "part_count": 1,
       "decision_count": 1,
       "choice_count": 2,
-      "tier_a_image_count": 2,
+      "tier_a_image_count": 4,
       "cover_state": "shared-season-cover-hosted-verified",
       "localization_state": "ru+uz-staging",
       "publication_state": "not-published",
-      "uz_overlay_path": "src/data/authored/staging/season2Story7BackToOrdan.uz.json"
+      "uz_overlay_path": "src/data/authored/staging/season2Story7BackToOrdan.uz.json",
+      "visual_expansion": "2 newly verified shared scene images (existing 2 Tier A locked)"
     }
   ]
 }

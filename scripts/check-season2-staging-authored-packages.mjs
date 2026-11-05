@@ -188,6 +188,28 @@ for (const storyNumber of expectedStories) {
         }
       }
     }
+    // Story 7: two newly verified shared illustrations are maintained outside
+    // the immutable original Tier A map, following the Episode 6 expansion model.
+    if (storyNumber === 7) {
+      const expansion = readJson(
+        'docs/qissa/season2/story7_approved_illustrations_pending_runtime_2026-11-05.json',
+      )
+      if (expansion.hosting !== 'hosted_verified' ||
+          expansion.runtime_binding !== 'hosted_registry_resolved' ||
+          expansion.supabase_prefix !== 'seven-roads/season2_tier_a_v2/' ||
+          expansion.assets?.length !== 2) {
+        fail('Story 7: approved new illustrations are not verified and ready')
+      } else {
+        for (const asset of expansion.assets) {
+          mappedSlots.set(asset.slot_id, {
+            slot_id: asset.slot_id,
+            asset_id: asset.asset_id,
+            phase: 'story_text',
+            after_text: asset.after_text_ru,
+          })
+        }
+      }
+    }
     if ((part.image_slots ?? []).length !== mappedSlots.size) {
       fail(`Story ${storyNumber} ${part.part_id}: image slot count drifted`)
     }
@@ -383,5 +405,5 @@ if (errors.length > 0) {
 console.log('[season2-staging-packages] PASS')
 console.log('[season2-staging-packages] 6/6 Russian staging packages are structurally valid')
 console.log('[season2-staging-packages] revised Story 6 has one battle choice; historic extraction maps remain archived, while all other episode choices match locked source maps')
-console.log('[season2-staging-packages] 10/10 Tier A image slots resolve through the verified hosted asset registry')
+console.log('[season2-staging-packages] locked Tier A plus verified Episode 6–7 expansions resolve through hosted asset registry')
 console.log('[season2-staging-packages] all six non-live episodes have RU+UZ staging and are wired in the validated release candidate')

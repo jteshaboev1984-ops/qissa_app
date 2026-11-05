@@ -1,10 +1,22 @@
-# QISSA S2 Episode 7 — two approved scene illustrations, runtime handoff
+# QISSA S2E7 — Verified Supabase artwork and localized runtime integration
 
-**Owner approval:** 2026-11-05. **Both PNG/WebP pairs uploaded to persistent ChatGPT QISSA Library; not uploaded to Supabase Storage. Season 2 must stay UNPUBLISHED.** This supersedes the proposal to generate a microscopic wax-seal clue. Previously approved two E7 frames remain intact.
+**Updated 2026-11-05. Owner-approved new frames: 2. Four narrative images in this episode; no separate episode cover. Season 2 remains UNPUBLISHED.**
 
-The machine-readable source for file names, dimensions, SHA-256 and RU/UZ paragraph anchors is [`story7_approved_illustrations_pending_runtime_2026-11-05.json`](./story7_approved_illustrations_pending_runtime_2026-11-05.json).
+Public-hosting verification: [GitHub Actions 42006002350](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/42006002350) and later PR verification, both using actual public GET bytes, MIME and SHA-256.
 
-## Current art
+The new, original images are hosted **in v2**, not the originally proposed v3:
+- Return to Ordan: `seven-roads/season2_tier_a_v2/seven_roads_s2_story7_return_to_ordan_01_APPROVED.webp`
+- Morning horses: `seven-roads/season2_tier_a_v2/seven_roads_s2_story7_morning_horses_01_APPROVED.webp`
+
+This integration uses the established Episode 6 expansion pattern: the original Tier A map remains immutable and records the two legacy E7 images; the separate `story7_approved_illustrations_pending_runtime_2026-11-05.json` records and validates the two additional owner-approved, verified shared images. The Russian staging package now has four `image_slots` (2 new + 2 existing), the Uzbek overlay has four localized anchor mappings, and the source index and story text are unchanged.
+
+Both new illustrations appear only when their exact shared `story_text` paragraph is reached. Existing resolution choices, image positions, and gallery discovery rules remain unchanged. A permanent QA gate verifies the new image positions, registry bindings, choice IDs and four-slot contract, while the public WebP workflow verifies the uploaded bytes independently.
+
+**Release state:** E7 staged integration only. No user-facing Season 2 publication/release toggle changed.
+
+---
+
+## Four narrative images including two new
 
 | Proposed shared slot | Approved scene | RU anchor | UZ anchor |
 |---|---|---|---|
@@ -13,7 +25,7 @@ The machine-readable source for file names, dimensions, SHA-256 and RU/UZ paragr
 
 Both slots are **shared**, phase `story_text`, Part 1; neither belongs to a branch, and neither creates a new choice. The already approved seal comparison and network leader ending remain unchanged. **The seal macro slot `S2-ST7-SEAL-DEFECT-DETAIL` is cancelled.** The approved return artwork has one minor editorial caveat regarding apparent gate orientation; the owner accepted it.
 
-## Handoff (no premature links)
+## Former upload instructions (archive; already completed)
 
 1. Download the two-image ZIP from QISSA Library, path `/QISSA/production/seven_roads/season2_visual_final/QISSA_S2E7_Two_Approved_Illustrations_2026-11-05.zip`, into a local secure developer machine and unzip. Do **not** commit binary images or secrets to the repository.
 2. From repository root run `node scripts/check-season2-story7-art-handoff.mjs`; it verifies 2 approved pending slots, both RU/UZ exact anchors once, existing scene slots, and preserved choice IDs.
