@@ -4,7 +4,7 @@
   "story_id": "seven_roads_obratno_v_ordan",
   "story_number": 7,
   "part_id": "story7_part_1_back_to_ordan",
-  "status": "owner_approved_library_verified_pending_supabase_storage",
+  "status": "owner_approved_library_and_supabase_verified",
   "publication_state": "season2_unpublished",
   "visibility": "shared_all_choices",
   "phase": "story_text",
@@ -31,7 +31,10 @@
       "after_text_ru": "Потом семеро задержанных у старой башни.",
       "after_text_uz": "Keyin eski minora yonida qo‘lga olingan yetti kishi.",
       "gallery_gate": "after_shared_story_text",
-      "editorial_note": "The owner accepted the frame despite minor ambiguity in direction of movement relative to city gate."
+      "editorial_note": "The owner accepted the frame despite minor ambiguity in direction of movement relative to city gate.",
+      "hosting": "hosted_verified",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story7_return_to_ordan_01_APPROVED.webp",
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_return_to_ordan_01_APPROVED.webp"
     },
     {
       "scene_role": "morning_horses",
@@ -52,13 +55,16 @@
       "after_text_ru": "Без карт, печатей и разбойников.",
       "after_text_uz": "Xaritalarsiz, muhrlarsiz va qaroqchilarsiz.",
       "gallery_gate": "after_shared_story_text",
-      "editorial_note": "Owner approved second revised frame; horses stand on grounded hooves, Shamol approaches bucket, Bulut keeps muzzle over water."
+      "editorial_note": "Owner approved second revised frame; horses stand on grounded hooves, Shamol approaches bucket, Bulut keeps muzzle over water.",
+      "hosting": "hosted_verified",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story7_morning_horses_01_APPROVED.webp",
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_morning_horses_01_APPROVED.webp"
     }
   ],
   "source_library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
   "approved_zip_library_path": "/QISSA/production/seven_roads/season2_visual_final/QISSA_S2E7_Two_Approved_Illustrations_2026-11-05.zip",
-  "hosting": "not_uploaded_not_verified",
-  "runtime_binding": "not_integrated",
+  "hosting": "hosted_verified",
+  "runtime_binding": "hosted_registry_resolved",
   "cancelled_asset_slot": "S2-ST7-SEAL-DEFECT-DETAIL",
   "preserve_existing_approved_assets": [
     "seven_roads_s2_story7_aras_seal_comparison_01_APPROVED",
@@ -75,7 +81,18 @@
     "bucket": "story-images",
     "object_count": 2,
     "object_sizes_match": true,
-    "hashes_verified": false,
-    "source": "Supabase storage.objects metadata; public byte/hash test still required"
-  }
+    "hashes_verified": true,
+    "source": "Supabase storage.objects metadata; public byte/hash test still required",
+    "public_verification": {
+      "workflow_run_id": 42006002350,
+      "workflow_result": "success",
+      "checked_properties": [
+        "http_get",
+        "content_type",
+        "file_bytes",
+        "sha256"
+      ]
+    }
+  },
+  "verified_on": "2026-11-05"
 }
