@@ -1,0 +1,26 @@
+name: QISSA Story 4 verified public illustration SHA-256
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/qissa/season2/story4_approved_illustrations_pending_runtime_2026-11-05.json'
+      - 'scripts/verify-season2-story4-approved-webps.mjs'
+      - '.github/workflows/qissa-s2e4-public-webps.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Verify BOTH public WebP files byte length, MIME, SHA-256
+        run: node scripts/verify-season2-story4-approved-webps.mjs
