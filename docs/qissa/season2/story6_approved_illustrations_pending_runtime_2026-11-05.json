@@ -84,10 +84,11 @@
       "part": "story6_part_2_two_reinforcements",
       "visibility": "selected_choice_only",
       "choice_id": "story6_choice_2a_wagon_team",
-      "after_text_ru": "Темур опустил тяжёлую деревянную перекладину.",
-      "after_text_uz": "Temur og‘ir yog‘och tambani tushirdi.",
+      "after_text_ru": "Рахим связал обезоруженного мужчину.",
+      "after_text_uz": "Rahim qurolsiz qolgan erkakning qo‘llarini bog‘ladi.",
       "source_status": "approved",
-      "runtime_public_url": null
+      "runtime_public_url": null,
+      "binding_reason": "Placed at the completed defensive action after Rahim restrains first attacker; this matches the approved artwork more accurately than immediately after lowering the gate bar."
     },
     {
       "asset_id": "seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED",
