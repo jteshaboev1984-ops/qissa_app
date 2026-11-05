@@ -92,7 +92,7 @@ jobs:
       - name: Check approved Episode 6 image placement and branch isolation
         run: npm run check:season2-story6-approved-art
 
-      - name: Check Episode 4 approved new art and RU/UZ anchors (pre-upload gate)
+      - name: Check Story 4 hosted art and exact RU/UZ anchors
         run: node scripts/check-season2-story4-art-handoff.mjs
 
       - name: Check Episode 7 owner-approved art and RU/UZ anchors (pre-upload gate)
