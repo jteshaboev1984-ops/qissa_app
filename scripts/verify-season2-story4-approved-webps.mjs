@@ -6,7 +6,7 @@ const prefix='seven-roads/season2_tier_a_v2/'
 if(manifest.assets?.length!==2)throw new Error('Expected 2 images in approved manifest')
 for(const asset of manifest.assets){
   const objectPath=prefix+asset.webp.filename
-  const response=await fetch(root+'story-images/'+objectPath,{cache:'no-store',signal:AbortSignal.timeout(30000)})
+  const response=await fetch(root+objectPath,{cache:'no-store',signal:AbortSignal.timeout(30000)})
   if(!response.ok)throw new Error(asset.asset_id+' public GET HTTP '+response.status)
   const contentType=(response.headers.get('content-type')||'').toLowerCase()
   if(!contentType.includes('image/webp'))throw new Error(asset.asset_id+' wrong MIME '+contentType)
