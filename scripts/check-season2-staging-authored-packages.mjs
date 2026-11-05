@@ -165,9 +165,29 @@ for (const storyNumber of expectedStories) {
       fail(`Story ${storyNumber} ${part.part_id}: story_text is empty`)
     }
 
+    const revisedStory6Art = storyNumber === 6 &&
+      map.current_editorial_revision?.runtime_art_expansion === 'approved-2026-11-05-pending-hosting'
     const mappedSlots = new Map(
       (mapped.image_slots ?? []).map((slot) => [slot.slot_id, slot]),
     )
+    if (revisedStory6Art) {
+      if (index === 0) {
+        mappedSlots.set('S2-ST6-BYPASS-SHARED', {
+          slot_id: 'S2-ST6-BYPASS-SHARED',
+          asset_id: 'seven_roads_s2_story6_roadblock_bypass_01_APPROVED',
+          phase: 'story_text',
+          after_text: '— Нашёл!',
+        })
+      } else {
+        const reveal = mappedSlots.get('S2-ST6-TIERA-REVEAL')
+        if (reveal) {
+          mappedSlots.set('S2-ST6-TIERA-REVEAL', {
+            ...reveal,
+            asset_id: 'seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED',
+          })
+        }
+      }
+    }
     if ((part.image_slots ?? []).length !== mappedSlots.size) {
       fail(`Story ${storyNumber} ${part.part_id}: image slot count drifted`)
     }
@@ -232,9 +252,19 @@ for (const storyNumber of expectedStories) {
           choice.effect_summary !== choice.text ||
           choice.state_patch?.last_event !== choice.text ||
           choice.state_patch?.canon_updates?.tower_child_task !== ['rustam', 'wagon'][i] ||
-          choice.illustration !== null
+          !choice.illustration ||
+          choice.illustration.asset_id !== [
+            'seven_roads_s2_story6_choice_a_gate_flank_01_APPROVED',
+            'seven_roads_s2_story6_choice_b_wagon_door_01_APPROVED',
+          ][i] ||
+          choice.illustration.slot_id !== ['S2-ST6-CHOICE-A-GATE', 'S2-ST6-CHOICE-B-WAGON-DEFENSE'][i] ||
+          choice.illustration.behavior !== 'show_in_resolution_after_anchor' ||
+          choice.illustration.after_text !== [
+            'Рахим связал обезоруженного мужчину.',
+            'Он задержал преступника.',
+          ][i]
         ) {
-          fail('Story 6: revised battle choice content or state patch drifted')
+          fail('Story 6: revised battle choice content, illustration or state patch drifted')
         }
       }
       continue
@@ -309,9 +339,15 @@ for (const storyNumber of expectedStories) {
   }
   if (
     packageJson.illustration_plan?.shared_asset_count !== packageImageCount ||
-    packageJson.illustration_plan?.choice_asset_count !== 0 ||
+    packageJson.illustration_plan?.choice_asset_count !== (
+      storyNumber === 6 && map.current_editorial_revision?.runtime_art_expansion
+        ? 2 : 0
+    ) ||
     packageJson.illustration_plan?.cover_asset_count !== 1 ||
-    packageJson.illustration_plan?.planned_asset_count !== packageImageCount + 1
+    packageJson.illustration_plan?.planned_asset_count !== packageImageCount + 1 + (
+      storyNumber === 6 && map.current_editorial_revision?.runtime_art_expansion
+        ? 2 : 0
+    )
   ) {
     fail(`Story ${storyNumber}: illustration plan counts are inconsistent`)
   }
