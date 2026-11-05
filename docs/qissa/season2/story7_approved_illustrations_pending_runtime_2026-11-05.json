@@ -9,7 +9,7 @@
   "visibility": "shared_all_choices",
   "phase": "story_text",
   "supabase_bucket": "story-images",
-  "supabase_prefix": "seven-roads/season2_tier_a_v3/",
+  "supabase_prefix": "seven-roads/season2_tier_a_v2/",
   "approved_asset_count": 2,
   "assets": [
     {
@@ -69,5 +69,13 @@
     "Do not manufacture public_url before verified storage GET and hash verification",
     "Do not replace previously approved imagery",
     "Do not publish Season 2"
-  ]
+  ],
+  "storage_discovery": {
+    "verified_metadata_at": "2026-11-05",
+    "bucket": "story-images",
+    "object_count": 2,
+    "object_sizes_match": true,
+    "hashes_verified": false,
+    "source": "Supabase storage.objects metadata; public byte/hash test still required"
+  }
 }
