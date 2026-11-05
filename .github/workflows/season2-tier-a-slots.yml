@@ -31,6 +31,7 @@ on:
       - 'scripts/check-season2-listening-paths.mjs'
       - 'scripts/check-season2-story6-approved-art.mjs'
       - 'scripts/check-season2-story7-art-handoff.mjs'
+      - 'scripts/check-season2-story4-art-handoff.mjs'
       - 'scripts/upload-season2-story7-approved-art.mjs'
       - 'scripts/check-season2-release-wiring.mjs'
       - 'scripts/smoke-season2-release-browser.mjs'
@@ -90,6 +91,9 @@ jobs:
 
       - name: Check approved Episode 6 image placement and branch isolation
         run: npm run check:season2-story6-approved-art
+
+      - name: Check Episode 4 approved new art and RU/UZ anchors (pre-upload gate)
+        run: node scripts/check-season2-story4-art-handoff.mjs
 
       - name: Check Episode 7 owner-approved art and RU/UZ anchors (pre-upload gate)
         run: node scripts/check-season2-story7-art-handoff.mjs
