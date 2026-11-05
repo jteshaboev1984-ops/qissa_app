@@ -90,6 +90,8 @@ const season2TierAAssetIds = [
 ] as const
 
 const season2TierAV2AssetIds = [
+  'seven_roads_s2_story4_homecoming_01_APPROVED',
+  'seven_roads_s2_story4_three_pillars_01_APPROVED',
   'seven_roads_s2_story7_return_to_ordan_01_APPROVED',
   'seven_roads_s2_story7_morning_horses_01_APPROVED',
   'seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED',
