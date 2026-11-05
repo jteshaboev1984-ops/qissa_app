@@ -141,7 +141,7 @@
       "runtime_state": "hosted-runtime-ready",
       "behavior": "show_after_anchor",
       "after_text": "— Я никого вперёд не посылал.",
-      "note": "Owner-approved 2026-11-05 action frame replaces peaceful v1 at unchanged anchor. This staging PR stays unmerged until exact v2 WebP is hosted and verified; historical v1 remains archived."
+      "note": "Approved Rustam-arrival battle illustration v2, hosted SHA256-verified 2026-11-05, integrated via PR #306. Story 6 remains unpublished. Original v1 image retained in archive."
     },
     {
       "story_number": 7,
