@@ -1,0 +1,73 @@
+{
+  "schema_version": "qissa-season2-story4-remaining-art-1",
+  "updated": "2026-11-06",
+  "world_id": "seven_roads",
+  "season_number": 2,
+  "story_number": 4,
+  "part_id": "story4_part_2_nadir_red_hill_clue",
+  "publication_state": "unpublished",
+  "review_state": "both_user_approved_and_public_hash_verified",
+  "hosting": "hosted_verified",
+  "runtime_binding": "hosted_registry_resolved",
+  "supabase_bucket": "story-images",
+  "supabase_prefix": "seven-roads/season2_tier_a_v2/",
+  "additional_shared_assets": [
+    {
+      "slot_id": "S2-ST4-WAGON-DAWN-LOCK",
+      "asset_id": "seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED",
+      "storage_filename": "seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED.webp",
+      "sha256": "7efb9e99db4f9e826462c1e2129801d20b7ded5907712747c6e1d76d93a6fb82",
+      "bytes": 402028,
+      "width": 1536,
+      "height": 864,
+      "phase": "story_text",
+      "kind": "shared",
+      "after_text_ru": "Он ещё раз проверил упряжь и запор на задней двери.",
+      "after_text_uz": "U qo‘sh otlarni va orqa eshik qulfini yana bir bor tekshirdi.",
+      "editorial_status": "approved_original",
+      "source_manifest": "docs/qissa/season2/story4_wagon_approved_pending_storage_2026-11-05.json",
+      "hosting": "hosted_verified",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED.webp",
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED.webp"
+    },
+    {
+      "slot_id": "S2-ST4-NADIR-CONTACT",
+      "asset_id": "seven_roads_s2_story4_nadir_contact_01_APPROVED",
+      "storage_filename": "seven_roads_s2_story4_nadir_contact_01_DRAFT_v2.webp",
+      "sha256": "2daefd0c7b4a66a6f0140ed106a8cb777686dbca75eaf2d1be259a781445bca0",
+      "bytes": 360404,
+      "width": 1536,
+      "height": 864,
+      "phase": "story_text",
+      "kind": "shared",
+      "after_text_ru": "Надир нёс два ведра воды, когда рядом остановился незнакомый человек.",
+      "after_text_uz": "Nadir ikki chelak suv ko‘tarib ketayotganda yonida notanish odam to‘xtadi.",
+      "editorial_status": "final_upload_accepted_by_owner",
+      "storage_filename_note": "The uploaded file retains its review name DRAFT_v2; logical asset ID is APPROVED and resolves explicitly to the exact hash-verified immutable object without renaming or reupload.",
+      "hosting": "hosted_verified",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story4_nadir_contact_01_DRAFT_v2.webp",
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story4_nadir_contact_01_DRAFT_v2.webp"
+    }
+  ],
+  "preserved_original_slots": [
+    "S2-ST4-HOMECOMING",
+    "S2-ST4-THREE-PILLARS",
+    "S2-ST4-TIERA-FALSE-NOTICE"
+  ],
+  "protected_choice_ids": [
+    "story4_choice_1a_road_book",
+    "story4_choice_1b_road_master",
+    "story4_choice_2a_supply_size",
+    "story4_choice_2b_drop_point"
+  ],
+  "file_integrity_proof": {
+    "workflow_run_id": 42195719199,
+    "status": "success",
+    "evidence": [
+      "public HTTP 200",
+      "MIME image/webp",
+      "verified SHA-256 bytes"
+    ],
+    "date": "2026-11-06"
+  }
+}

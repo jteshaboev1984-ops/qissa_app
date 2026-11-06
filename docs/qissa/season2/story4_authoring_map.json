@@ -156,14 +156,19 @@
     }
   ],
   "current_editorial_revision": {
-    "runtime_art_expansion": "hosted-verified-2026-11-05",
-    "approved_image_count": 3,
+    "runtime_art_expansion": "hosted-verified-2026-11-06",
+    "approved_image_count": 5,
     "added_shared_slots": [
       "S2-ST4-HOMECOMING",
-      "S2-ST4-THREE-PILLARS"
+      "S2-ST4-THREE-PILLARS",
+      "S2-ST4-WAGON-DAWN-LOCK",
+      "S2-ST4-NADIR-CONTACT"
     ],
     "owner_approved": true,
-    "storage_verified_workflow": 42040715620,
-    "notes": "Preserve locked original Tier A map and source prose. Two hosted shared art slots registered via independent manifest; Season 2 unpublished."
+    "storage_verified_workflows": [
+      42040715620,
+      42195719199
+    ],
+    "notes": "One immutable original Tier A slot remains in map; other four slots are verified supplemental images in two manifests. Original Russian/Uzbek prose and choice IDs preserved. Season 2 unpublished."
   }
 }

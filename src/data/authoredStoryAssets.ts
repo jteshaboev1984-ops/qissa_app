@@ -90,6 +90,7 @@ const season2TierAAssetIds = [
 ] as const
 
 const season2TierAV2AssetIds = [
+  'seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED',
   'seven_roads_s2_story4_homecoming_01_APPROVED',
   'seven_roads_s2_story4_three_pillars_01_APPROVED',
   'seven_roads_s2_story7_return_to_ordan_01_APPROVED',
@@ -110,6 +111,10 @@ const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
       assetId,
       `https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/${assetId}.webp`,
     ]),
+    // The user-uploaded Nadir WebP retains its immutable DRAFT_v2 filename,
+    // but its verified content is owner-approved and resolved by the logical approved ID.
+    ['seven_roads_s2_story4_nadir_contact_01_APPROVED',
+      'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story4_nadir_contact_01_DRAFT_v2.webp'],
   ])
 
 const season2SharedAssets: AuthoredStoryAssetRegistry = {
