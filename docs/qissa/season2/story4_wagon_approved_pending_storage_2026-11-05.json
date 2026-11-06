@@ -3,7 +3,7 @@
   "date": "2026-11-05",
   "story_number": 4,
   "part_id": "story4_part_2_nadir_red_hill_clue",
-  "status": "owner_approved_pending_supabase_storage",
+  "status": "owner_approved_hosted_verified",
   "season_publication": "unpublished",
   "asset_id": "seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED",
   "slot_id": "S2-ST4-WAGON-DAWN-LOCK",
@@ -28,12 +28,17 @@
   },
   "proposed_supabase_bucket": "story-images",
   "proposed_supabase_prefix": "seven-roads/season2_tier_a_v2/",
-  "hosting": "unverified_not_uploaded",
-  "runtime_binding": "not_integrated",
+  "hosting": "hosted_verified",
+  "runtime_binding": "hosted_registry_resolved",
   "editorial_acceptance": "Owner approved the morning gate/courtyard wagon-lock illustration in chat. Daniyar checks the closed wagon lock, two draft horses, accompanying guards, dawn light. The location shows fortress interior near arch, accepted as editorial simplification.",
   "requirements": [
     "Do not add runtime asset URLs until the exact public object passes MIME, size and SHA-256 validation.",
     "Do not replace the two already integrated Story4 frames or the existing Tier A image.",
     "Do not change narrative text, choices, or season publication."
-  ]
+  ],
+  "verified_public_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED.webp",
+  "public_sha256_verification": {
+    "workflow_run_id": 42195719199,
+    "status": "success"
+  }
 }
