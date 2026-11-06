@@ -6,9 +6,9 @@
   "story_number": 4,
   "part_id": "story4_part_2_nadir_red_hill_clue",
   "publication_state": "unpublished",
-  "review_state": "owner_uploaded_wagon_approved_and_nadir_final_review",
-  "hosting": "pending_independent_public_sha256",
-  "runtime_binding": "not_integrated",
+  "review_state": "both_user_approved_and_public_hash_verified",
+  "hosting": "hosted_verified",
+  "runtime_binding": "hosted_registry_resolved",
   "supabase_bucket": "story-images",
   "supabase_prefix": "seven-roads/season2_tier_a_v2/",
   "additional_shared_assets": [
@@ -25,7 +25,10 @@
       "after_text_ru": "Он ещё раз проверил упряжь и запор на задней двери.",
       "after_text_uz": "U qo‘sh otlarni va orqa eshik qulfini yana bir bor tekshirdi.",
       "editorial_status": "approved_original",
-      "source_manifest": "docs/qissa/season2/story4_wagon_approved_pending_storage_2026-11-05.json"
+      "source_manifest": "docs/qissa/season2/story4_wagon_approved_pending_storage_2026-11-05.json",
+      "hosting": "hosted_verified",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED.webp",
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED.webp"
     },
     {
       "slot_id": "S2-ST4-NADIR-CONTACT",
@@ -40,7 +43,10 @@
       "after_text_ru": "Надир нёс два ведра воды, когда рядом остановился незнакомый человек.",
       "after_text_uz": "Nadir ikki chelak suv ko‘tarib ketayotganda yonida notanish odam to‘xtadi.",
       "editorial_status": "final_upload_accepted_by_owner",
-      "storage_filename_note": "The uploaded file retains its review name DRAFT_v2; logical asset ID is APPROVED and resolves explicitly to the exact hash-verified immutable object without renaming or reupload."
+      "storage_filename_note": "The uploaded file retains its review name DRAFT_v2; logical asset ID is APPROVED and resolves explicitly to the exact hash-verified immutable object without renaming or reupload.",
+      "hosting": "hosted_verified",
+      "runtime_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story4_nadir_contact_01_DRAFT_v2.webp",
+      "runtime_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story4_nadir_contact_01_DRAFT_v2.webp"
     }
   ],
   "preserved_original_slots": [
@@ -54,5 +60,14 @@
     "story4_choice_2a_supply_size",
     "story4_choice_2b_drop_point"
   ],
-  "file_integrity_proof": null
+  "file_integrity_proof": {
+    "workflow_run_id": 42195719199,
+    "status": "success",
+    "evidence": [
+      "public HTTP 200",
+      "MIME image/webp",
+      "verified SHA-256 bytes"
+    ],
+    "date": "2026-11-06"
+  }
 }
