@@ -1,5 +1,30 @@
 # QISSA | Seven Roads — cross-season illustration density audit and Episode 7 visual acceptance
 
+> **CURRENT STATUS UPDATE — 2026-11-06.** The 2026-11-05 audit and proposals preserved below are a historical snapshot. Counts, the E7 wax-clue suggestion and its instruction to create E7 artwork are **superseded** by owner approvals and verified integration in [PR #313](https://github.com/jteshaboev1984-ops/qissa_app/pull/313), [PR #315](https://github.com/jteshaboev1984-ops/qissa_app/pull/315) and [PR #317](https://github.com/jteshaboev1984-ops/qissa_app/pull/317). Do not action old E7 prompts.
+
+## Live visual inventory — 2026-11-06 (all seasons still as staged; S2 unpublished)
+
+| Scope | Unique narrative frames | Seen in one reading | Status |
+|---|---:|---:|---|
+| Season 1 «Праздник мужества» | 26 | 22 | unchanged |
+| S2 Ep1 «Королевское серебро» | 2 | 2 | sparse, later |
+| S2 Ep2 «Тайна восточного каравана» | 28 | 26 | existing detailed layout |
+| S2 Ep3 «Две башни» | 1 | 1 | next high-priority [issue #318](https://github.com/jteshaboev1984-ops/qissa_app/issues/318) |
+| S2 Ep4 «Человек, которого ждут» | **5** | **5** | **complete** — 4 additions + original Tier A, all SHA-verified and RU/UZ registered, issue #312 closed |
+| S2 Ep5 «Ложная дорога» | 2 | 2 | sparse, later |
+| S2 Ep6 «Две подмоги» | 5 | 4 | unchanged after E6 QA |
+| S2 Ep7 «Обратно в Ордан» | **4** | **4** | **complete** — return + quiet morning added; original seal comparison and ending hook retained |
+
+**Season 2 totals as staged:** **47 distinct narrative frames**, **44 visible on a complete one-choice-per-episode route**, plus one shared Season 2 cover (48 unique art assets with cover / 45 seen with cover). The previous baseline of 41 was correct as of the original audit and is retained only as history. Final E4 has 5 shared frames for about 3,422 first-choice words (~684 words/image); E7 has 4 for about 1,791 words (~448 words/image).
+
+**Owner-decision override:** E7 `S2-ST7-SEAL-DEFECT-DETAIL` microscopic wax macro frame was **CANCELLED**, not produced. The approved wider seal-comparison image remains. The owner chose and approved the calm morning with horses in its place. Do not reopen micro-detail attempts.
+
+**Next density work:** S2 E3 (currently 1; propose 3 new images: old Sarvan caravan courtyard with TWO narrow towers, normal market route, and a discussion around sketches/maps after the narrative reveal; all proposals awaiting image approval; see issue #318). S2 E1 (propose +3) and E5 (+1) follow. This remaining +7 would bring S2 from 47 to 54 distinct frames if all later proposals prove worthwhile; it is **not a rigid target** or implicit approval.
+
+**Release boundary:** two newly uploaded E4 images were independently verified by public GET, MIME, byte count and SHA-256 in [GitHub Actions #42195719199](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/42195719199). The verified shared E4 images, original choices and gallery gating passed full Season 2 CI in [PR #317](https://github.com/jteshaboev1984-ops/qissa_app/pull/317). **S2 is NOT PUBLISHED.**
+
+---
+
 **Audit date:** 2026-11-05  
 **Scope:** approved manuscript-facing image placements in main; RU story content, localized UZ anchors, original PNG masters in QISSA Library.  
 **Status:** editorial recommendation only, **not** new artwork approval. No publication changes. Audio remains deferred.
