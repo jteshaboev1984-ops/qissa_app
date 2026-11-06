@@ -210,6 +210,29 @@ for (const storyNumber of expectedStories) {
         }
       }
     }
+    // Story 4 Part 2: the owner-approved and independently hashed final
+    // wagon and Nadir frames supplement the original immutable source map.
+    if (storyNumber === 4 && index === 1) {
+      const finalArt = readJson(
+        'docs/qissa/season2/story4_remaining_two_approved_art_2026-11-06.json',
+      )
+      if (finalArt.hosting !== 'hosted_verified' ||
+          finalArt.runtime_binding !== 'hosted_registry_resolved' ||
+          finalArt.file_integrity_proof?.status !== 'success' ||
+          finalArt.supabase_prefix !== 'seven-roads/season2_tier_a_v2/' ||
+          finalArt.additional_shared_assets?.length !== 2) {
+        fail('Story 4 Part 2: remaining two approved frames not independently verified')
+      } else {
+        for (const asset of finalArt.additional_shared_assets) {
+          mappedSlots.set(asset.slot_id, {
+            slot_id: asset.slot_id,
+            asset_id: asset.asset_id,
+            phase: 'story_text',
+            after_text: asset.after_text_ru,
+          })
+        }
+      }
+    }
     // Story 7: two newly verified shared illustrations are maintained outside
     // the immutable original Tier A map, following the Episode 6 expansion model.
     if (storyNumber === 7) {
@@ -427,5 +450,5 @@ if (errors.length > 0) {
 console.log('[season2-staging-packages] PASS')
 console.log('[season2-staging-packages] 6/6 Russian staging packages are structurally valid')
 console.log('[season2-staging-packages] revised Story 6 has one battle choice; historic extraction maps remain archived, while all other episode choices match locked source maps')
-console.log('[season2-staging-packages] locked Tier A plus verified Episode 4, 6 and 7 expansions resolve through hosted asset registry')
+console.log('[season2-staging-packages] locked Tier A plus verified Episode 4, 6 and 7 expansions (including E4 Part 2) resolve through hosted asset registry')
 console.log('[season2-staging-packages] all six non-live episodes have RU+UZ staging and are wired in the validated release candidate')
