@@ -1,0 +1,21 @@
+name: QISSA E4 remaining approved WebP public SHA-256
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/qissa/season2/story4_remaining_two_approved_art_2026-11-06.json'
+      - 'scripts/verify-season2-story4-remaining-webps.mjs'
+      - '.github/workflows/qissa-s2e4-final-public-webps.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-webps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Verify actual public WebPs and hashes
+        run: node scripts/verify-season2-story4-remaining-webps.mjs
