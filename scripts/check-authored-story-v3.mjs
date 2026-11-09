@@ -65,7 +65,7 @@ for (const phrase of staleCeremonyPhrases) {
 }
 
 if (!allStoryText.includes('Так Темур и Самира стали Всадниками короля.')) {
-  fail('approved King's Rider ceremony ending is missing')
+  fail('approved King’s Rider ceremony ending is missing')
 }
 
 if (story.required_final_invariants.temur_and_samira_named_young_bahadurs !== 'true') {
@@ -74,7 +74,7 @@ if (story.required_final_invariants.temur_and_samira_named_young_bahadurs !== 't
 
 const bahadurImageSlot = sharedSlots.find((slot) => slot.asset_id === 'seven_roads_story1_p7_img_03_v1')
 if (bahadurImageSlot?.after_text !== 'Так Темур и Самира стали Всадниками короля.') {
-  fail('P7-IMG-03 is not anchored after the completed King's Rider ceremony')
+  fail('P7-IMG-03 is not anchored after the completed King’s Rider ceremony')
 }
 
 const paragraphsOf = (text) =>
