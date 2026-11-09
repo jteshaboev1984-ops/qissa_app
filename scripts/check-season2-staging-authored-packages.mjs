@@ -2,6 +2,12 @@ import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 
+// GitHub Actions must independently hash the uploaded public Story 3 WebPs.
+// Keep local literary/anchor validation offline-capable.
+if (process.env.GITHUB_ACTIONS === 'true') {
+  await import('./verify-season2-story3-approved-webps.mjs')
+}
+
 const root = process.cwd()
 const readJson = (relative) =>
   JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'))
@@ -184,6 +190,34 @@ for (const storyNumber of expectedStories) {
           mappedSlots.set('S2-ST6-TIERA-REVEAL', {
             ...reveal,
             asset_id: 'seven_roads_s2_story6_two_reinforcements_reveal_02_APPROVED',
+          })
+        }
+      }
+    }
+    // Story 3: two separately owner-approved, already uploaded shared frames
+    // supplement the immutable original Tier A source map. The draft
+    // caravan-yard frame is deliberately excluded until owner approval.
+    if (storyNumber === 3 && (index === 1 || index === 2)) {
+      const expansion = readJson(
+        'docs/qissa/season2/story3_approved_illustrations_2026-11-09.json',
+      )
+      if (
+        expansion.approval !== 'owner_approved_market_and_guardhouse_only' ||
+        expansion.bucket !== 'story-images' ||
+        expansion.prefix !== 'seven-roads/season2_tier_a_v2/' ||
+        !['storage_metadata_confirmed_sha_pending', 'sha_verified'].includes(expansion.remote_state) ||
+        expansion.assets?.length !== 2
+      ) {
+        fail('Story 3: approved shared image expansion manifest invalid')
+      } else {
+        for (const asset of expansion.assets.filter(
+          (asset) => asset.part_id === part.part_id,
+        )) {
+          mappedSlots.set(asset.slot_id, {
+            slot_id: asset.slot_id,
+            asset_id: asset.asset_id,
+            phase: asset.phase,
+            after_text: asset.after_text_ru,
           })
         }
       }
@@ -452,3 +486,6 @@ console.log('[season2-staging-packages] 6/6 Russian staging packages are structu
 console.log('[season2-staging-packages] revised Story 6 has one battle choice; historic extraction maps remain archived, while all other episode choices match locked source maps')
 console.log('[season2-staging-packages] locked Tier A plus verified Episode 4, 6 and 7 expansions (including E4 Part 2) resolve through hosted asset registry')
 console.log('[season2-staging-packages] all six non-live episodes have RU+UZ staging and are wired in the validated release candidate')
+
+// Validate the additional bilingual S2E3 slots, gallery and immutable IDs.
+await import('./check-season2-story3-approved-art.mjs')
