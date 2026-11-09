@@ -2,6 +2,12 @@ import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 
+// GitHub Actions must independently hash the uploaded public Story 3 WebPs.
+// Keep local literary/anchor validation offline-capable.
+if (process.env.GITHUB_ACTIONS === 'true') {
+  await import('./verify-season2-story3-approved-webps.mjs')
+}
+
 const root = process.cwd()
 const readJson = (relative) =>
   JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'))
