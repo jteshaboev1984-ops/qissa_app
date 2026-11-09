@@ -4,6 +4,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import assert from 'node:assert/strict'
+import { localizeAuthoredStoryPackage } from '../src/features/authoredStory/localizePackage.ts'
 
 export const AUTHORED_STORIES = [
   'prazdnikMuzhestvaV3',
@@ -196,7 +197,10 @@ const main = () => {
       path.join(root, 'src/data/authored', stem + '.' + language + '.json'), 'utf8',
     ))
     const ru = load('ru')
-    const uz = load('uz')
+    const uzOverlay = load('uz')
+    // Uzbek is a text overlay; inherit structural canon from the approved RU base.
+    // The application uses the same localization merge, not a second full JSON package.
+    const uz = localizeAuthoredStoryPackage(ru, uzOverlay)
     const ruAudit = auditStoryPackage(ru)
     const uzAudit = auditStoryPackage(uz)
     const bilingual = auditLanguagePair(ru, uz)
