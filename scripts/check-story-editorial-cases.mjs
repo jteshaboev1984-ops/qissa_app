@@ -55,11 +55,16 @@ for(const lang of ['ru','uz']){
   mustNot(leave,ru?'правило короля':'Qirolning qoidasi','E03-'+lang)
   must(first,ru?'срисовал знак':'belgini kichik qog‘ozga','E01-sketch-'+lang)
   must(later,ru?'рисунок знака':'chizib olgan qaroqchilar belgisini','E01-paper-display-'+lang)
-  must(interrogation,ru?'вернул находку капитану':'metall qoplamani sardorga qaytargan','E01-custody-'+lang)
+  must(interrogation,ru?'вернул находку капитану':'metall qoplamani sardorga qaytardi','E01-custody-'+lang)
+  must(interrogation,ru?'убрал находку в сумку':'xaltasiga solib qo‘ydi','E01-retrieval-from-bag-'+lang)
   mustNot(later,ru?'Он достал металлическую накладку':'Temur qaroqchilar belgisi tushirilgan metall qoplamani chiqardi','E01-no-recovery-'+lang)
   must(message,ru?'Свернул записку и спрятал':'Qog‘ozni buklab','E02-channel-write-'+lang)
   must(message,ru?'прочитал записку под пробкой':'tiqin ostidagi xatni o‘qidi','E02-channel-read-'+lang)
   must(message,ru?'Красный холм. Старая патрульная дорога':'Qizil tepalik. Eski patrul yo‘li','E02-specific-content-'+lang)
+  must(message,ru?'Люди ждут тюремную повозку':'Odamlar mahbus tashilayotgan aravani kutyapti','E02-target-of-warning-'+lang)
+  must(message,ru?'забрал записку и повесил пустую флягу':'xatni o‘zi bilan oldi va bo‘sh idishni','E02-note-not-left-as-evidence-'+lang)
+  mustNot(message,ru?'На северной стороне есть старое каменное корыто':'Shimoliy tomonda eski tosh nov','E02-no-drop-point-choice-leak-'+lang)
+  mustNot(message,ru?'По большому бурдюку воды на каждой':'Har birida katta mesh','E02-no-supplies-choice-leak-'+lang)
   for(const choice of c.parts[1].decision.choices){
     assert(choice.state_patch?.canon_updates?.nadir_red_hill_clue,'E02 choice memory lost: '+choice.choice_id)
   }
