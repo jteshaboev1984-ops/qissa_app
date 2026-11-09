@@ -1,3 +1,4 @@
+import { auditCanonTransitions } from './canon-guard.ts'
 import {
   isRecord,
   positiveValues,
@@ -397,6 +398,8 @@ export const validateStoryBlueprint = (context: NormalizedStoryContext, blueprin
   if (!isRecord(blueprint)) return ['blueprint_not_object']
   const value = blueprint as unknown as StoryBlueprint
   const errors: string[] = []
+
+  for (const canonError of auditCanonTransitions(context, value)) errors.push('blueprint_' + canonError)
 
   const naturalLanguageBlueprint = blueprintNaturalLanguageValues(value)
   if (genericHeroAliasNeedsRewrite(context, naturalLanguageBlueprint)) errors.push('blueprint_generic_hero_alias_requires_rewrite')
