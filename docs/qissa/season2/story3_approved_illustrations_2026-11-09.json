@@ -13,7 +13,7 @@
   "bucket": "story-images",
   "prefix": "seven-roads/season2_tier_a_v2/",
   "local_library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
-  "remote_state": "storage_metadata_confirmed_sha_pending",
+  "remote_state": "sha_verified",
   "note": "Historical Tier A inventory remains unchanged. Yard DRAFT uploaded to Storage but is NOT approved, registered, or used.",
   "assets": [
     {
@@ -68,7 +68,18 @@
     "draft_yard_uploaded_but_excluded": true
   },
   "public_verification": {
-    "status": "pending_ci_remote_get",
-    "workflow_run_id": null
+    "status": "success",
+    "method": "public_http_get",
+    "workflow_run_id": 42674432654,
+    "job_id": 129352086992,
+    "step": "Validate Russian staging authored packages",
+    "checked_properties": [
+      "http_status",
+      "content_type",
+      "actual_bytes_length",
+      "sha256",
+      "webp_dimensions_if_vp8x"
+    ],
+    "confirmed_from": "GitHub Actions runner, node scripts/verify-season2-story3-approved-webps.mjs (step completed success)"
   }
 }
