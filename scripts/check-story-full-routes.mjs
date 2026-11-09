@@ -29,39 +29,56 @@ export const enumerateRoutes = (story) => {
     }))), [{}])
 }
 
-const assertRenderedSegment = (story, part, phase, selected, blocks) => {
-  for (const segment of (part.conditional_segments ?? []).filter((s) => s.phase === phase)) {
-    const segmentParas = textParagraphs(segment.text)
-    const expected = selected[segment.when.decision_id] === segment.when.choice_id
-    if (!segmentParas.length) throw new Error(story.title + ': empty conditional text ' + segment.segment_id)
-    const firstPara = segmentParas[0]
-    // Find the conditional insertion precisely AFTER its anchor. This checks
-    // runtime rendering rather than assuming the JSON alone proves visibility.
-    const anchorPositions = blocks.map((block, i) => block.kind === 'text' && block.text === segment.after_text ? i : -1).filter((i) => i >= 0)
-    assert.equal(anchorPositions.length, 1, story.title + ': ambiguous ' + segment.segment_id)
-    const anchor = anchorPositions[0]
-    const shownHere = blocks[anchor + 1]?.kind === 'text' &&
-      blocks[anchor + 1].text === firstPara
-    // Another conditional can precede this one at the same anchor; inspect the
-    // complete contiguous inserted block subsequence instead of only next.
-    const sequence = blocks.slice(anchor + 1, anchor + 1 + (part.conditional_segments ?? []).length * 24)
-      .filter((block) => block.kind === 'text').map((block) => block.text)
-    const hasSegment = sequence.includes(firstPara)
-    if (expected && !hasSegment) throw new Error(story.title + ': selected segment absent ' + segment.segment_id)
-    if (!expected && hasSegment && !shownHere) {
-      // Only flag a leak if this distinctive whole paragraph is not already
-      // present in the shared prose; equal wording alone is not a branch bug.
-      const shared = textParagraphs(part[phase])
-      if (!shared.includes(firstPara)) throw new Error(story.title + ': unselected segment leaked ' + segment.segment_id)
+// Strictly compare the text stream against the selected route. Checking only
+// whether a conditional segment is present can miss leaked unselected prose.
+export const assertRenderedTextBlocks = (story, part, phase, selected, blocks) => {
+  const segments = (part.conditional_segments ?? []).filter((s) => s.phase === phase)
+  const expected = []
+  for (const paragraph of textParagraphs(part[phase])) {
+    expected.push(paragraph)
+    for (const segment of segments) {
+      if (segment.after_text !== paragraph) continue
+      if (selected[segment.when.decision_id] !== segment.when.choice_id) continue
+      expected.push(...textParagraphs(segment.text))
     }
   }
+  const actual = blocks.filter((block) => block.kind === 'text').map((block) => block.text)
+  assert.deepEqual(actual, expected,
+    story.title + ': wrong conditional text in ' + part.part_id + '/' + phase)
 }
+
+// Mutations exercise both failure modes: omitted selected branch and leaked
+// unselected branch. Green CI must not mean merely "some segment appeared".
+const fixturePart = {
+  part_id: 'synthetic',
+  story_text: 'Opening\\n\\nAnchor\\n\\nClosing',
+  post_choice_text: '',
+  image_slots: [],
+  conditional_segments: [
+    { segment_id: 'synthetic-a', phase: 'story_text', after_text: 'Anchor',
+      when: { decision_id: 'synthetic-decision', choice_id: 'a' }, text: 'Route A' },
+    { segment_id: 'synthetic-b', phase: 'story_text', after_text: 'Anchor',
+      when: { decision_id: 'synthetic-decision', choice_id: 'b' }, text: 'Route B' },
+  ],
+}
+fixturePart.story_text = fixturePart.story_text.replaceAll('\\n','\n')
+const fixtureSelected = { 'synthetic-decision': 'a' }
+const fixtureBlocks = buildAuthoredNarrativeBlocks(fixturePart, 'story_text', fixtureSelected)
+assertRenderedTextBlocks({ title: 'fixture' }, fixturePart, 'story_text', fixtureSelected, fixtureBlocks)
+assert.throws(() => assertRenderedTextBlocks(
+  { title: 'fixture' }, fixturePart, 'story_text', fixtureSelected,
+  [...fixtureBlocks, { kind: 'text', text: 'Route B' }],
+), /wrong conditional text/u, 'must reject leaked unselected branch')
+assert.throws(() => assertRenderedTextBlocks(
+  { title: 'fixture' }, fixturePart, 'story_text', fixtureSelected,
+  fixtureBlocks.filter((block) => block.text !== 'Route A'),
+), /wrong conditional text/u, 'must reject missing chosen branch')
 
 export const renderSelectedRoute = (story, selected) => {
   const output = []
   for (const part of story.parts) {
     const pre = buildAuthoredNarrativeBlocks(part, 'story_text', selected)
-    assertRenderedSegment(story, part, 'story_text', selected, pre)
+    assertRenderedTextBlocks(story, part, 'story_text', selected, pre)
     output.push(...pre.filter((block) => block.kind === 'text').map((block) => block.text))
     if (part.decision) {
       const selectedChoice = part.decision.choices.find((c) => c.choice_id === selected[part.decision.decision_id])
@@ -69,7 +86,7 @@ export const renderSelectedRoute = (story, selected) => {
       output.push(...textParagraphs(selectedChoice.resolution_text))
     }
     const post = buildAuthoredNarrativeBlocks(part, 'post_choice_text', selected)
-    assertRenderedSegment(story, part, 'post_choice_text', selected, post)
+    assertRenderedTextBlocks(story, part, 'post_choice_text', selected, post)
     output.push(...post.filter((block) => block.kind === 'text').map((block) => block.text))
   }
   return output.join('\n\n')
