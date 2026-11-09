@@ -321,7 +321,9 @@ Source blob: `b07b0f26a0a7b94b2bd8754887b7340fcaf5bc8c`; ожидаемая ре
 **СТАНЕТ:**
 
 ```text
-Человек не ушёл сразу. Когда рядом с повозкой никого не осталось, он снял флягу, прочитал записку под пробкой, забрал записку и повесил пустую флягу обратно.
+Человек не ушёл сразу. Когда возле повозки никого не осталось, он снял флягу, незаметно вынул из-под пробки сложенную записку и вернул пустую флягу на прежний крюк.
+
+Только за дальним навесом, скрывшись за сложенными тюками, он развернул записку и прочитал сообщение.
 
 Через некоторое время к нему подошёл другой работник.
 
@@ -381,7 +383,9 @@ Odam darrov ketmadi.
 **СТАНЕТ:**
 
 ```text
-Odam darrov ketmadi. Arava yonida hech kim qolmaganda idishni olib, tiqin ostidagi xatni o‘qidi, xatni o‘zi bilan oldi va bo‘sh idishni yana joyiga osdi.
+Odam darrov ketmadi. Arava yonida hech kim qolmaganda idishni olib, tiqin ostidagi buklangan xatni sezdirmay oldi va bo‘sh idishni avvalgi ilgakka qaytarib osdi.
+
+Faqat uzoqdagi soyabon ortiga, taxlangan yuklar orasidagi pana joyga o‘tgach, u xatni ochib o‘qidi.
 ```
 
 Фрагмент 4:

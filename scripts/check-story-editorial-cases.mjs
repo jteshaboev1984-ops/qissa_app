@@ -59,10 +59,19 @@ for(const lang of ['ru','uz']){
   must(interrogation,ru?'убрал находку в сумку':'xaltasiga solib qo‘ydi','E01-retrieval-from-bag-'+lang)
   mustNot(later,ru?'Он достал металлическую накладку':'Temur qaroqchilar belgisi tushirilgan metall qoplamani chiqardi','E01-no-recovery-'+lang)
   must(message,ru?'Свернул записку и спрятал':'Qog‘ozni buklab','E02-channel-write-'+lang)
-  must(message,ru?'прочитал записку под пробкой':'tiqin ostidagi xatni o‘qidi','E02-channel-read-'+lang)
+  const retrieval=ru?'незаметно вынул из-под пробки сложенную записку':'tiqin ostidagi buklangan xatni sezdirmay oldi'
+  const concealedReading=ru?'скрывшись за сложенными тюками':'taxlangan yuklar orasidagi pana joyga o‘tgach'
+  const readAfterConcealment=ru?'развернул записку и прочитал сообщение':'xatni ochib o‘qidi'
+  must(message,retrieval,'E02-note-retrieved-'+lang)
+  must(message,concealedReading,'E02-hide-to-read-'+lang)
+  must(message,readAfterConcealment,'E02-channel-read-'+lang)
+  assert(message.indexOf(retrieval)<message.indexOf(concealedReading) &&
+      message.indexOf(concealedReading)<message.indexOf(readAfterConcealment),
+    'E02 reading must occur after taking note to hidden place: '+lang)
   must(message,ru?'Красный холм. Старая патрульная дорога':'Qizil tepalik. Eski patrul yo‘li','E02-specific-content-'+lang)
   must(message,ru?'Люди ждут тюремную повозку':'Odamlar mahbus tashilayotgan aravani kutyapti','E02-target-of-warning-'+lang)
-  must(message,ru?'забрал записку и повесил пустую флягу':'xatni o‘zi bilan oldi va bo‘sh idishni','E02-note-not-left-as-evidence-'+lang)
+  must(message,ru?'вернул пустую флягу на прежний крюк':'bo‘sh idishni avvalgi ilgakka qaytarib osdi','E02-flask-left-without-note-'+lang)
+  mustNot(message,ru?'прочитал записку под пробкой':'tiqin ostidagi xatni o‘qidi','E02-no-open-reading-at-cart-'+lang)
   const dropClue=ru?'На северной стороне есть старое каменное корыто':'Shimoliy tomonida eski tosh oxur bor'
   const supplyClue=ru?'По большому бурдюку воды на каждой':'Har biriga bittadan katta mesh suv'
   must(c.parts[1].decision.choices[1].resolution_text,dropClue,'E02-drop-choice-fixture-'+lang)
