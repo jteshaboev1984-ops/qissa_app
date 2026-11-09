@@ -1,0 +1,87 @@
+{
+  "schema_version": "qissa_approved_literary_manifest_v1",
+  "date": "2026-11-09",
+  "status": "OWNER_APPROVED_INTEGRATION_TESTED_PENDING_MERGE",
+  "approval": "Explicit QISSA owner message: 'ок. принимаем все. вноси.' following all 13 before-after decisions, refined king speech and King's Rider title",
+  "base_main_sha": "5fef63314f64c41a113cd63d9192efa5100cd8fc",
+  "pr_number": 321,
+  "issue_number": 322,
+  "world_bible_v1_historical": "docs/qissa/ai/SEVEN_ROADS_WORLD_BIBLE_V1.md",
+  "world_bible_v2_approved": "docs/qissa/ai/SEVEN_ROADS_WORLD_BIBLE_V2.md",
+  "story1_historical_fixture": "docs/qissa/ai/fixtures/prazdnik_muzhestva_interactive_v3.ru.json",
+  "story1_approved_fixture": "docs/qissa/ai/fixtures/prazdnik_muzhestva_interactive_v3_owner_approved_20261109.ru.json",
+  "story1_approved_literary_source": "docs/qissa/ai/reviews/2026-11-09_prazdnik_muzhestva_owner_approved_v3_text.md",
+  "cases": [
+    "E01",
+    "E02",
+    "E03",
+    "E04",
+    "STYLE-01",
+    "STYLE-02",
+    "META-01",
+    "CANON-01",
+    "R01",
+    "R02",
+    "R03",
+    "R04",
+    "R05-no-ID-change",
+    "R06-official-title"
+  ],
+  "source_files": [
+    {
+      "path": "src/data/authored/prazdnikMuzhestvaV3.ru.json",
+      "previous_git_blob_sha": "cefd720a52d8f9d45fe9e92126a88ac393d6a0f7",
+      "approved_git_blob_sha": "4e49f587ee2df3dc6c9f89fa74cca8c70b709e81"
+    },
+    {
+      "path": "src/data/authored/prazdnikMuzhestvaV3.uz.json",
+      "previous_git_blob_sha": "64e2d342199fb253f6d08db5708de284bbaf626e",
+      "approved_git_blob_sha": "a37cf8241c1f9b1a4de44f5ee2d9392f1d8e41eb"
+    },
+    {
+      "path": "src/data/authored/taynaVostochnogoKaravanaV4.ru.json",
+      "previous_git_blob_sha": "23359bfe52158af4142725be4ffdbf642c88d92c",
+      "approved_git_blob_sha": "1eae700d477baad58b32dfca303e852d80d4e415"
+    },
+    {
+      "path": "src/data/authored/taynaVostochnogoKaravanaV4.uz.json",
+      "previous_git_blob_sha": "650e06cc598a3fba3e452358e646304c9fb82b83",
+      "approved_git_blob_sha": "6b0e69083a314c3e0761a4f759b153ef9a2eab11"
+    },
+    {
+      "path": "src/data/authored/staging/season2Story4WaitedMan.ru.json",
+      "previous_git_blob_sha": "b07b0f26a0a7b94b2bd8754887b7340fcaf5bc8c",
+      "approved_git_blob_sha": "7c94223151a5d5ca287e59d350394aab22e5054e"
+    },
+    {
+      "path": "src/data/authored/staging/season2Story4WaitedMan.uz.json",
+      "previous_git_blob_sha": "9c06174c2c6509d0e942701f2c433a5e93006a4d",
+      "approved_git_blob_sha": "3cb6aaff57885d2aad346254d45f94c0368b02e5"
+    },
+    {
+      "path": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
+      "previous_git_blob_sha": "36f91d7a7ca6d7d794274366d7e347921177c31c",
+      "approved_git_blob_sha": "3130df982b8f64ad756ef5e60c2794c066463ebf"
+    },
+    {
+      "path": "src/data/authored/staging/season2Story6TwoReinforcements.uz.json",
+      "previous_git_blob_sha": "925a2d022eda6ec75b9b6f3b90f39bf8936df3d3",
+      "approved_git_blob_sha": "70b48c7d84a2a63e0dba6977eb5fa98e9342fd22"
+    },
+    {
+      "path": "src/data/authored/staging/season2Story7BackToOrdan.ru.json",
+      "previous_git_blob_sha": "2020d2aaf4e6d9f1751c7682c618a9112b17f9cc",
+      "approved_git_blob_sha": "e5fde8ac773375a334ffab1c80fe621967674a3a"
+    },
+    {
+      "path": "src/data/authored/staging/season2Story7BackToOrdan.uz.json",
+      "previous_git_blob_sha": "abfd919b4eb1a0768d944fcdb7977a5f0430c4b8",
+      "approved_git_blob_sha": "67101f138790269f3929f0c2ad3c4cd218242651"
+    }
+  ],
+  "compatible_legacy_ids": true,
+  "compatible_story_versions": true,
+  "season2_publication_changed": false,
+  "story_ai_tts_enablement_changed": false,
+  "native_uz_human_audio_signoff": false
+}
