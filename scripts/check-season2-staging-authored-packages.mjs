@@ -188,6 +188,34 @@ for (const storyNumber of expectedStories) {
         }
       }
     }
+    // Story 3: two separately owner-approved, already uploaded shared frames
+    // supplement the immutable original Tier A source map. The draft
+    // caravan-yard frame is deliberately excluded until owner approval.
+    if (storyNumber === 3 && (index === 1 || index === 2)) {
+      const expansion = readJson(
+        'docs/qissa/season2/story3_approved_illustrations_2026-11-09.json',
+      )
+      if (
+        expansion.approval !== 'owner_approved_market_and_guardhouse_only' ||
+        expansion.bucket !== 'story-images' ||
+        expansion.prefix !== 'seven-roads/season2_tier_a_v2/' ||
+        !['storage_metadata_confirmed_sha_pending', 'sha_verified'].includes(expansion.remote_state) ||
+        expansion.assets?.length !== 2
+      ) {
+        fail('Story 3: approved shared image expansion manifest invalid')
+      } else {
+        for (const asset of expansion.assets.filter(
+          (asset) => asset.part_id === part.part_id,
+        )) {
+          mappedSlots.set(asset.slot_id, {
+            slot_id: asset.slot_id,
+            asset_id: asset.asset_id,
+            phase: asset.phase,
+            after_text: asset.after_text_ru,
+          })
+        }
+      }
+    }
     // Story 4: the two additional hosted/owner-approved frames augment
     // the original locked Tier A map, as in the Episode 7 expansion.
     if (storyNumber === 4 && index === 0) {
