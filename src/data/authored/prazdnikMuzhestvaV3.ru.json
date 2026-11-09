@@ -140,9 +140,7 @@
                 "temur_escape_method": "jumped_ditch"
               }
             },
-            "value_alignment": [
-              "care_for_animals"
-            ],
+            "value_alignment": [],
             "illustration": {
               "slot_id": "part_3_eastern_forest:p3_jump_ditch:image",
               "kind": "choice",
