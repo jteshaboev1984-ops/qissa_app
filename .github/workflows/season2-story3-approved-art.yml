@@ -1,0 +1,26 @@
+name: Season 2 Story 3 Approved Art Remote Verification
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/qissa/season2/story3_approved_illustrations_2026-11-09.json'
+      - 'scripts/verify-season2-story3-approved-webps.mjs'
+      - 'src/data/authored/staging/season2Story3TwoTowers.*.json'
+      - 'src/data/authoredStoryAssets.ts'
+      - '.github/workflows/season2-story3-approved-art.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify actual public Storage bytes, MIME and SHA-256
+        run: node scripts/verify-season2-story3-approved-webps.mjs
