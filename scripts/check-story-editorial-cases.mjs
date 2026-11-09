@@ -42,7 +42,8 @@ const story4={ru:load('staging/season2Story4WaitedMan','ru'),uz:load('staging/se
 const must=(text,needle,caseId)=>assert(text.includes(needle),caseId+' missing: '+needle)
 const mustNot=(text,needle,caseId)=>assert(!text.includes(needle),caseId+' stale: '+needle)
 for(const lang of ['ru','uz']){
-  const a=story1[lang],b=story2[lang],c=story4[lang]
+  const a=story1[lang],b=story2[lang]
+  const c=lang==='ru'?story4.ru:localizeAuthoredStoryPackage(story4.ru,story4.uz)
   const ru=lang==='ru'
   const forest=a.parts[2].story_text
   const leave=a.parts[4].decision.choices[0].resolution_text
