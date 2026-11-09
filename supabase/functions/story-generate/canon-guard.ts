@@ -37,11 +37,12 @@ export const auditCanonTransitions = (
   const errors: string[] = []
   const patches = [candidate.state_patch, ...(candidate.choices ?? []).map((choice) => choice.state_patch)]
   const known: Record<string, string> = {
+    ...context.canonState,
+    // The normalized series identity wins over any stale/conflicting canon record.
     hero_name: context.heroName,
     main_character: context.heroName,
     hero_type: context.heroType,
     style_pack_id: context.stylePackId,
-    ...context.canonState,
   }
 
   for (const patch of patches) {
