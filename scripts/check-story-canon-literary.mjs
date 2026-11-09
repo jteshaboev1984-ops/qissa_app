@@ -120,9 +120,15 @@ export const auditStoryPackage = (story) => {
   const para = allText.flatMap(paragraphs)
   const shortCount = para.filter((item) => words(item).length <= 4).length
   const adjacentRepetitions = []
-  for (let i = 1; i < para.length; i += 1) {
-    if (normalized(para[i]) === normalized(para[i - 1]) && words(para[i]).length >= 2) {
-      adjacentRepetitions.push(i)
+  // Alternatives are mutually exclusive: never compare the tail of choice A to
+  // the head of choice B as though the child heard both in sequence.
+  for (const block of allText) {
+    const localParagraphs = paragraphs(block)
+    for (let i = 1; i < localParagraphs.length; i += 1) {
+      if (normalized(localParagraphs[i]) === normalized(localParagraphs[i - 1]) &&
+          words(localParagraphs[i]).length >= 2) {
+        adjacentRepetitions.push(i)
+      }
     }
   }
   if (adjacentRepetitions.length) warnings.push('adjacent_identical_paragraph_review:' + adjacentRepetitions.length)
