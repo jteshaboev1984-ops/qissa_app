@@ -63,8 +63,14 @@ for(const lang of ['ru','uz']){
   must(message,ru?'Красный холм. Старая патрульная дорога':'Qizil tepalik. Eski patrul yo‘li','E02-specific-content-'+lang)
   must(message,ru?'Люди ждут тюремную повозку':'Odamlar mahbus tashilayotgan aravani kutyapti','E02-target-of-warning-'+lang)
   must(message,ru?'забрал записку и повесил пустую флягу':'xatni o‘zi bilan oldi va bo‘sh idishni','E02-note-not-left-as-evidence-'+lang)
-  mustNot(message,ru?'На северной стороне есть старое каменное корыто':'Shimoliy tomonda eski tosh nov','E02-no-drop-point-choice-leak-'+lang)
-  mustNot(message,ru?'По большому бурдюку воды на каждой':'Har birida katta mesh','E02-no-supplies-choice-leak-'+lang)
+  const dropClue=ru?'На северной стороне есть старое каменное корыто':'Shimoliy tomonida eski tosh oxur bor'
+  const supplyClue=ru?'По большому бурдюку воды на каждой':'Har biriga bittadan katta mesh suv'
+  must(c.parts[1].decision.choices[1].resolution_text,dropClue,'E02-drop-choice-fixture-'+lang)
+  must(c.parts[1].decision.choices[0].resolution_text,supplyClue,'E02-supply-choice-fixture-'+lang)
+  mustNot(message,dropClue,'E02-no-drop-point-choice-leak-'+lang)
+  mustNot(message,supplyClue,'E02-no-supplies-choice-leak-'+lang)
+  assert.throws(()=>mustNot(message+'\\n'+dropClue,dropClue,'fixture-branch-b-'+lang),/stale/u)
+  assert.throws(()=>mustNot(message+'\\n'+supplyClue,supplyClue,'fixture-branch-a-'+lang),/stale/u)
   for(const choice of c.parts[1].decision.choices){
     assert(choice.state_patch?.canon_updates?.nadir_red_hill_clue,'E02 choice memory lost: '+choice.choice_id)
   }
