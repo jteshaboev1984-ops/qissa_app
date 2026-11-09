@@ -1,0 +1,52 @@
+{
+  "schema_version": "qissa-season2-story3-approved-art-v1",
+  "issue": 318,
+  "source_revisions": {
+    "ru_blob_sha": "111c97de89bcb15ba4540b8889ff2622be1e8293",
+    "uz_blob_sha": "8b2c23c792e82ddbc2f95c9fc8db0503c28ee28a"
+  },
+  "season_number": 2,
+  "story_number": 3,
+  "story_id": "seven_roads_dve_bashni",
+  "publication_state": "unpublished",
+  "approval": "owner_approved_market_and_guardhouse_only",
+  "bucket": "story-images",
+  "prefix": "seven-roads/season2_tier_a_v2/",
+  "local_library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
+  "remote_state": "storage_metadata_confirmed_sha_pending",
+  "note": "Historical Tier A inventory remains unchanged. Yard DRAFT uploaded to Storage but is NOT approved, registered, or used.",
+  "assets": [
+    {
+      "scene": "sarvan_market",
+      "slot_id": "S2-ST3-SARVAN-MARKET",
+      "asset_id": "seven_roads_s2_story3_sarvan_market_01_APPROVED",
+      "filename": "seven_roads_s2_story3_sarvan_market_01_APPROVED.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 491024,
+      "sha256": "2ef6ca2f45d224a78e287bc9d727dd7332a2d416b5b673c4646494885440b352",
+      "phase": "story_text",
+      "part_id": "story3_part_2_courier_route",
+      "after_text_ru": "Она купила маленький свёрток и протянула ему.",
+      "after_text_uz": "Samira kichik tuguncha sotib olib, unga uzatdi.",
+      "master_png_bytes": 3157856,
+      "master_png_sha256": "51d9fd9db99a4acc37a33d551ee397782839c46adbc8f4d3d9a14db425947f30"
+    },
+    {
+      "scene": "guardhouse_two_drawings_map",
+      "slot_id": "S2-ST3-GUARDHOUSE-MAP",
+      "asset_id": "seven_roads_s2_story3_guardhouse_two_drawings_map_01_APPROVED",
+      "filename": "seven_roads_s2_story3_guardhouse_two_drawings_map_01_APPROVED.webp",
+      "width": 1672,
+      "height": 941,
+      "bytes": 221742,
+      "sha256": "c8900230df26cefa8b664d667cd87ebf16e95e843c6546dc2dc5052e40233aa3",
+      "phase": "post_choice_text",
+      "part_id": "story3_part_3_three_pillars",
+      "after_text_ru": "На стол положили два рисунка.",
+      "after_text_uz": "Stol ustiga ikki rasm qo‘yildi.",
+      "master_png_bytes": 2418942,
+      "master_png_sha256": "aeb768e9c5f186b7c6a4b0318e8b8b7e84e798cdb8e2a305c94d325fe9ecfd0c"
+    }
+  ]
+}
