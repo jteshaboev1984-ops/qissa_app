@@ -42,6 +42,17 @@ Paragraphs of 1–4 words, average sentence length, frequent verbs of looking, r
 
 Tag-to-action meaning (e.g. a risky horse jump marked care_for_animals), apparent time compression after a wait choice, contradictory dialogue and overlooked items require a human semantic reading or a dedicated source-specific oracle; keyword matching is not enough.
 
+## 5a. Evidence provenance and character-knowledge ledger
+
+The reviewer must trace two separate inventories for every plot-changing clue:
+
+- **Physical possession ledger:** last on-page holder, explicit handoff, location, any custody break, and whether the later user can plausibly retrieve it. One object cannot simultaneously remain with a guard and be produced from a child's bag without a transfer.
+- **Information/knowledge ledger:** exact fact learned, original observer, who received it, communication channel, time needed, and what the receiver is allowed to conclude. A coded signal with only one established meaning does not automatically transmit unseen precise coordinates, numbers or the contents of an unwitnessed conversation.
+
+At each choice and convergence ask: (a) who knows this **in this selected path**, (b) who knows it **in both paths**, (c) did the fact come from an earlier confirmed scene, (d) is a later inference earned by new evidence? Never import a clue from an unselected route. A previously inferred *hypothesis* can recur, but show when new evidence confirms it instead of letting characters rediscover it without reference.
+
+Check off-page activity cautiously: it may be plausible, but if a decisive clue changes owner or travels between people, a visible handoff or clearly established channel is better than silently inventing one during review.
+
 ## 6. Whole-branch acceptance
 
 For each decision, review both choices and the continuation after each. The questions:
