@@ -53,7 +53,7 @@
     "check:season2-tier-a-slots": "node scripts/check-season2-tier-a-visual-slots.mjs",
     "check:season2-tier-a-runtime": "node scripts/check-season2-tier-a-runtime-assets.mjs",
     "check:season2-literary-sources": "node scripts/check-season2-literary-sources.mjs",
-    "check:story-canon-literary": "node scripts/check-story-canon-literary.mjs --self-test && node scripts/check-story-canon-literary.mjs && node scripts/check-story-runtime-canon.mjs",
+    "check:story-canon-literary": "node scripts/check-story-canon-literary.mjs --self-test && node scripts/check-story-canon-literary.mjs && node scripts/check-story-runtime-canon.mjs && node scripts/check-story-full-routes.mjs",
     "check:story1-authoring-map": "node scripts/check-story1-authoring-map.mjs",
     "check:season2-authoring-maps": "node scripts/check-season2-authoring-maps.mjs",
     "check:season2-staging-packages": "node scripts/check-season2-staging-authored-packages.mjs",
