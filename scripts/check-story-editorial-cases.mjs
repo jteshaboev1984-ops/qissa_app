@@ -19,20 +19,28 @@ const set=(object,pointer,value)=>{
   const parent=keys.reduce((item,key)=>item[key],object)
   parent[last]=value
 }
+// After owner approval the proposed text is in the versioned authored package.
+ // Historical draft blobs/preconditions remain archived in the proposal document.
+ // New approved source blobs are locked in a separate signed-provenance manifest.
+const approved=JSON.parse(fs.readFileSync(
+  'docs/qissa/ai/reviews/2026-11-09_owner_approved_literary_manifest.json','utf8',
+))
+assert.equal(approved.schema_version,'qissa_approved_literary_manifest_v1')
+assert.match(approved.status,/OWNER_APPROVED/)
 const modified=new Map()
 for(const packagePatch of proposal.source_files){
+  const approvedEntry=approved.source_files.find(x=>x.path===packagePatch.path)
+  assert(approvedEntry,'approved manifest omits '+packagePatch.path)
+  assert.equal(approvedEntry.previous_git_blob_sha,packagePatch.source_git_blob_sha,
+    'historical source provenance mismatch: '+packagePatch.path)
   const raw=fs.readFileSync(packagePatch.path,'utf8')
-  assert.equal(hash(raw),packagePatch.source_git_blob_sha,
-    'locked source drifted; proposal must be rebased, not silently applied: '+packagePatch.path)
+  assert.equal(hash(raw),approvedEntry.approved_git_blob_sha,
+    'approved source drifted; require a NEW owner-reviewed revision: '+packagePatch.path)
   const story=JSON.parse(raw)
   for(const change of packagePatch.edits){
-    assert.deepEqual(get(story,change.pointer),change.old_value,
-      'proposal precondition failed: '+packagePatch.path+':'+change.pointer)
-    set(story,change.pointer,change.new_value)
+    assert.deepEqual(get(story,change.pointer),change.new_value,
+      'approved operation missing/altered: '+packagePatch.path+':'+change.pointer)
   }
-  const proposedText=JSON.stringify(story,null,2)+'\n'
-  assert.equal(hash(proposedText),packagePatch.draft_git_blob_sha,
-    'proposal reconstruction drifted: '+packagePatch.path)
   modified.set(packagePatch.path,story)
 }
 const load=(name,lang)=>modified.get('src/data/authored/'+name+'.'+lang+'.json')
@@ -90,4 +98,4 @@ for(const [ru,uz] of [[story1.ru,story1.uz],[story2.ru,story2.uz],[story4.ru,sto
   assert.deepEqual(auditStoryPackage(runtimeUz).errors,[])
   assert.deepEqual(auditLanguagePair(ru,runtimeUz),[])
 }
-console.log('[editorial-proposals] PASS 6 exact source-hash-locked JSON proposal transformations; E01–E04 RU/UZ; source files UNCHANGED')
+console.log('[editorial-approved] PASS 6 owner-approved source-hash-locked JSON packages; E01–E04 RU/UZ; old proposal blobs retained as provenance')

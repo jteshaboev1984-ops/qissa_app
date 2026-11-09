@@ -25,30 +25,32 @@ const replaceExactlyOnce = (s, before, after) => {
   assert.equal(s.indexOf(before), s.lastIndexOf(before), 'ambiguous excerpt')
   return s.replace(before, after)
 }
-assert.throws(() => replaceExactlyOnce('foo foo', 'foo', 'bar'), /ambiguous excerpt/)
-assert.throws(() => replaceExactlyOnce('other', 'foo', 'bar'), /missing excerpt/)
-
-const originals = new Map()
-const edited = new Map()
-const counted = new Map()
-for (const op of doc.operations) {
-  if (!originals.has(op.path)) {
-    const raw = fs.readFileSync(op.path, 'utf8')
-    assert.equal(gitBlobSha(raw), op.source_git_blob_sha, 'immutable source drift: ' + op.path)
-    const original = JSON.parse(raw)
-    originals.set(op.path, original)
-    edited.set(op.path, structuredClone(original))
-  } else {
-    const raw = fs.readFileSync(op.path, 'utf8')
-    assert.equal(gitBlobSha(raw), op.source_git_blob_sha, 'source mismatch: ' + op.path)
+// The historical change records are immutable; the approved packages must
+// contain every exact new excerpt, not the original old excerpt.
+const approved=JSON.parse(fs.readFileSync(
+  'docs/qissa/ai/reviews/2026-11-09_owner_approved_literary_manifest.json','utf8',
+))
+assert.equal(approved.schema_version,'qissa_approved_literary_manifest_v1')
+assert.match(approved.status,/OWNER_APPROVED/)
+const edited=new Map()
+const counted=new Map()
+for(const op of doc.operations){
+  if(!edited.has(op.path)){
+    const entry=approved.source_files.find(x=>x.path===op.path)
+    assert(entry,'missing approved source '+op.path)
+    assert.equal(entry.previous_git_blob_sha,op.source_git_blob_sha,
+      'historical excerpt source provenance changed: '+op.path)
+    const raw=fs.readFileSync(op.path,'utf8')
+    assert.equal(gitBlobSha(raw),entry.approved_git_blob_sha,
+      'new approved version drifted: '+op.path)
+    edited.set(op.path,JSON.parse(raw))
   }
-  assert.equal(op.language, op.path.endsWith('.ru.json') ? 'ru' : 'uz')
-  const before = get(edited.get(op.path), op.pointer)
-  assert.equal(typeof before, 'string')
-  assert(get(originals.get(op.path), op.pointer).includes(op.before_text))
-  set(edited.get(op.path), op.pointer,
-    replaceExactlyOnce(before, op.before_text, op.after_text))
-  counted.set(op.case_id, (counted.get(op.case_id) || 0) + 1)
+  assert.equal(op.language,op.path.endsWith('.ru.json')?'ru':'uz')
+  const current=get(edited.get(op.path),op.pointer)
+  assert.equal(typeof current,'string')
+  assert(current.includes(op.after_text),'owner-approved literary excerpt missing: '+op.path+' '+op.case_id)
+  assert(!current.includes(op.before_text),'unapproved old literary excerpt remains: '+op.path+' '+op.case_id)
+  counted.set(op.case_id,(counted.get(op.case_id)||0)+1)
 }
 for (const id of ['R01', 'R02', 'R03', 'R04']) {
   assert.equal(counted.get(id), 2, id + ' must have one RU and one UZ operation')
@@ -102,4 +104,4 @@ for (const lang of ['ru', 'uz']) {
   assert(p2.decision.choices[0].resolution_text.includes(anchor),
     'R03 3a image choice anchor changed '+lang)
 }
-console.log('[owner-followups] PASS 8 exact R01–R04 owner-reviewed draft excerpts; RU/UZ route topology; image anchors; locked sources unchanged')
+console.log('[owner-followups] PASS 8 R01–R04 owner-approved excerpts in locked RU/UZ sources; route topology, image anchors and previous SHA provenance')
