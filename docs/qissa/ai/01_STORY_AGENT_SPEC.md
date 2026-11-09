@@ -117,3 +117,7 @@ For the current backend contract:
 The production frontend calls the remote Story endpoint. The backend may use a real model only when Story AI is explicitly enabled and privacy/cost/safety gates pass. During the current launch-hardening stage Story AI is intentionally disabled, so the same endpoint returns the deterministic safe editorial fallback.
 
 Both provider generation and fallback generation must preserve the same episode contract so UI, persistence and memory behavior do not depend on generation source.
+
+
+## Canon and oral-literary quality gate (2026-11-09 supplement)
+Before blueprint output, the Architect must preserve established hero/world identity, prior choices, location/time constraints, object ownership/status, relationships and intentionally open arcs. Every choice must produce a distinct defensible outcome; a common branch merge may state only facts true in both paths. The Narrator uses natural varied oral rhythm, preserving purposeful short lines and avoiding redundant final moral commentary. Do not introduce universal short-paragraph, sentence-length, repetition or speech-size quotas. These instructions are implemented in runtime editorial-guidance.ts and backed by the narrow canon-guard.ts; they do not add an AI call or change release scope. QISSA-specific acceptance: 13_CANON_AND_LITERARY_ACCEPTANCE_WORKFLOW_V2.md.

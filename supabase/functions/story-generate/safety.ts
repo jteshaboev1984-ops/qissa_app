@@ -1,3 +1,4 @@
+import { auditCanonTransitions } from './canon-guard.ts'
 import {
   emptySafetyFlags,
   isRecord,
@@ -511,6 +512,8 @@ export const validateCandidate = (context: NormalizedStoryContext, candidate: un
   const errors: string[] = []
   if (!isRecord(candidate)) return ['candidate_not_object']
   const value = candidate as StoryCandidate
+
+  for (const canonError of auditCanonTransitions(context, value)) errors.push(canonError)
 
   if (hasSingleLanguageMismatch(context.language, candidateLanguageValues(value), context.recurringCharacters)) errors.push('story_language_mismatch')
   if (visibleSafetyLanguageNeedsRewrite(context.language, candidateChildVisibleValues(value).join(' '))) {

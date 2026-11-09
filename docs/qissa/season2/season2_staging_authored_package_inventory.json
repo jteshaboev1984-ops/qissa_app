@@ -46,7 +46,7 @@
       "story_id": "seven_roads_chelovek_kotorogo_zhdut",
       "story_version": "interactive-v4",
       "package_path": "src/data/authored/staging/season2Story4WaitedMan.ru.json",
-      "github_blob_sha": "b07b0f26a0a7b94b2bd8754887b7340fcaf5bc8c",
+      "github_blob_sha": "7c94223151a5d5ca287e59d350394aab22e5054e",
       "source_sha256": "b603334c0f620434419a4ca94743ce0142403ba85dc1d884a2d0d794c64252e9",
       "part_count": 2,
       "decision_count": 2,
@@ -56,7 +56,17 @@
       "localization_state": "ru+uz-staging",
       "publication_state": "not-published",
       "uz_overlay_path": "src/data/authored/staging/season2Story4WaitedMan.uz.json",
-      "visual_expansion": "4 owner-approved SHA-verified shared scenes plus original Tier A: 5 total. Season remains unpublished."
+      "visual_expansion": "4 owner-approved SHA-verified shared scenes plus original Tier A: 5 total. Season remains unpublished.",
+      "approved_owner_revision": {
+        "date": "2026-11-09",
+        "issue": 322,
+        "pr": 321,
+        "previous_package_blob_sha": "b07b0f26a0a7b94b2bd8754887b7340fcaf5bc8c",
+        "current_package_blob_sha": "7c94223151a5d5ca287e59d350394aab22e5054e",
+        "revision_manifest": "docs/qissa/ai/reviews/2026-11-09_owner_approved_literary_manifest.json",
+        "source_master_status": "historical-immutable",
+        "publication_change": false
+      }
     },
     {
       "story_number": 5,
@@ -81,7 +91,7 @@
       "story_id": "seven_roads_dve_podmogi",
       "story_version": "interactive-v3",
       "package_path": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
-      "github_blob_sha": "36f91d7a7ca6d7d794274366d7e347921177c31c",
+      "github_blob_sha": "3130df982b8f64ad756ef5e60c2794c066463ebf",
       "source_sha256": "6b13e767b66ba7ebb0f8a78af511cf19c9bb880414d750d1e770f263eceedf60",
       "part_count": 2,
       "decision_count": 1,
@@ -90,7 +100,17 @@
       "cover_state": "shared-season-cover-hosted-verified",
       "localization_state": "ru+uz-staging",
       "publication_state": "not-published",
-      "uz_overlay_path": "src/data/authored/staging/season2Story6TwoReinforcements.uz.json"
+      "uz_overlay_path": "src/data/authored/staging/season2Story6TwoReinforcements.uz.json",
+      "approved_owner_revision": {
+        "date": "2026-11-09",
+        "issue": 322,
+        "pr": 321,
+        "previous_package_blob_sha": "36f91d7a7ca6d7d794274366d7e347921177c31c",
+        "current_package_blob_sha": "3130df982b8f64ad756ef5e60c2794c066463ebf",
+        "revision_manifest": "docs/qissa/ai/reviews/2026-11-09_owner_approved_literary_manifest.json",
+        "source_master_status": "historical-immutable",
+        "publication_change": false
+      }
     },
     {
       "story_number": 7,
@@ -98,7 +118,7 @@
       "story_id": "seven_roads_obratno_v_ordan",
       "story_version": "interactive-v17-visible-inherited-defect",
       "package_path": "src/data/authored/staging/season2Story7BackToOrdan.ru.json",
-      "github_blob_sha": "2020d2aaf4e6d9f1751c7682c618a9112b17f9cc",
+      "github_blob_sha": "e5fde8ac773375a334ffab1c80fe621967674a3a",
       "source_sha256": "17b0b526f2deda78cb0bcfba85a97100be5dceaaf2fdf92d6105e5f476094725",
       "part_count": 1,
       "decision_count": 1,
@@ -108,7 +128,17 @@
       "localization_state": "ru+uz-staging",
       "publication_state": "not-published",
       "uz_overlay_path": "src/data/authored/staging/season2Story7BackToOrdan.uz.json",
-      "visual_expansion": "2 newly verified shared scene images (existing 2 Tier A locked)"
+      "visual_expansion": "2 newly verified shared scene images (existing 2 Tier A locked)",
+      "approved_owner_revision": {
+        "date": "2026-11-09",
+        "issue": 322,
+        "pr": 321,
+        "previous_package_blob_sha": "2020d2aaf4e6d9f1751c7682c618a9112b17f9cc",
+        "current_package_blob_sha": "e5fde8ac773375a334ffab1c80fe621967674a3a",
+        "revision_manifest": "docs/qissa/ai/reviews/2026-11-09_owner_approved_literary_manifest.json",
+        "source_master_status": "historical-immutable",
+        "publication_change": false
+      }
     }
   ]
 }

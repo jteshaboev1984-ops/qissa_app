@@ -1,0 +1,87 @@
+{
+  "schema_version": "qissa_owner_followups_excerpt_v1",
+  "date": "2026-11-09",
+  "status": "OWNER_ACCEPTED_EDITORIAL_DIRECTION_DRAFT_NOT_PUBLISHED_UZ_NATIVE_QA_PENDING",
+  "base_source_commit": "5fef63314f64c41a113cd63d9192efa5100cd8fc",
+  "disclaimer": "Proposals only; never edit source-file locked hashes, approved literary masters or published stories. R01 new wording addresses owner feedback: no choppy 2–3-word paragraphs.",
+  "excluded_cases": [
+    "E01_OLD_REVIEW_ALREADY_IN_PROPOSAL_JSON",
+    "E02_REVISED_IN_INITIAL_PROPOSAL_JSON",
+    "STYLE-02_REVISED_KING_SPEECH_PENDING_FINAL_REVIEW",
+    "R06_OWNER_SELECTED_KINGS_RIDER_OFFICIAL_TITLE_REQUIRES_CANON_V2_DELTA"
+  ],
+  "operations": [
+    {
+      "case_id": "R01",
+      "language": "ru",
+      "path": "src/data/authored/prazdnikMuzhestvaV3.ru.json",
+      "source_git_blob_sha": "cefd720a52d8f9d45fe9e92126a88ac393d6a0f7",
+      "pointer": "/parts/5/story_text",
+      "before_text": "Чтобы приближающийся всадник увидел её ещё до поворота, Самира поднялась на небольшой склон над дорогой.\n\nОттуда было видно дальше.\n\nОна прислушалась.\n\nПока ничего.\n\nСамира поднялась ещё немного.",
+      "after_text": "Самира поднялась на небольшой склон над дорогой: отсюда Темур должен был заметить её ещё до опасного поворота. Некоторое время она всматривалась в дорогу, прислушиваясь к далёким звукам, но топота копыт Шамола не было слышно. Тогда Самира осторожно поднялась немного выше."
+    },
+    {
+      "case_id": "R01",
+      "language": "uz",
+      "path": "src/data/authored/prazdnikMuzhestvaV3.uz.json",
+      "source_git_blob_sha": "64e2d342199fb253f6d08db5708de284bbaf626e",
+      "pointer": "/parts/5/story_text",
+      "before_text": "Yaqinlashayotgan chavandoz uni burilishga yetmasidan ko‘rishi uchun Samira yo‘l ustidagi kichik qiyalikka ko‘tarildi.\n\nU yerdan uzoqroqqa qarash mumkin edi.\n\nU quloq soldi.\n\nHali hech narsa eshitilmasdi.\n\nSamira yana biroz yuqoriga ko‘tarildi.",
+      "after_text": "Samira yo‘l ustidagi kichik qiyalikka ko‘tarildi: bu yerdan Temur uni xavfli burilishga yetmasidan ko‘rishi kerak edi. U bir muddat yo‘lni kuzatib, uzoqdan keladigan tovushlarga quloq soldi, ammo Shamolning tuyoq tovushi hali eshitilmasdi. Shunda Samira ehtiyotkorlik bilan yana biroz yuqoriga ko‘tarildi."
+    },
+    {
+      "case_id": "R02",
+      "language": "ru",
+      "path": "src/data/authored/staging/season2Story7BackToOrdan.ru.json",
+      "source_git_blob_sha": "2020d2aaf4e6d9f1751c7682c618a9112b17f9cc",
+      "pointer": "/parts/0/post_choice_text",
+      "before_text": "— Серебро взяли только после тревоги. Значит, пришли не за серебром?",
+      "after_text": "— Капитан ещё в Арасе сомневался, что они пришли за серебром. Теперь понятно почему?"
+    },
+    {
+      "case_id": "R02",
+      "language": "uz",
+      "path": "src/data/authored/staging/season2Story7BackToOrdan.uz.json",
+      "source_git_blob_sha": "abfd919b4eb1a0768d944fcdb7977a5f0430c4b8",
+      "pointer": "/parts/0/post_choice_text",
+      "before_text": "— Kumushni faqat xavf tug‘ilgandan keyin olishgan. Demak, aslida kumush uchun kelishmaganmi?",
+      "after_text": "— Arasda sardor ham ular kumush uchun kelmagan bo‘lishi mumkinligini aytgandi. Endi sababi ayon bo‘ldimi?"
+    },
+    {
+      "case_id": "R03",
+      "language": "ru",
+      "path": "src/data/authored/taynaVostochnogoKaravanaV4.ru.json",
+      "source_git_blob_sha": "23359bfe52158af4142725be4ffdbf642c88d92c",
+      "pointer": "/parts/6/decision/choices/0/resolution_text",
+      "before_text": "Большая часть помещений давно пустовала.\n\nНа воротах ещё сохранился старый знак двора: две узкие башни по сторонам проезда.",
+      "after_text": "Большая часть помещений давно пустовала.\n\nУ порога южной башни ровно лежала пыль — свежих следов не было. Самира заметила это, осматривая двор.\n\nНа воротах ещё сохранился старый знак двора: две узкие башни по сторонам проезда."
+    },
+    {
+      "case_id": "R03",
+      "language": "uz",
+      "path": "src/data/authored/taynaVostochnogoKaravanaV4.uz.json",
+      "source_git_blob_sha": "650e06cc598a3fba3e452358e646304c9fb82b83",
+      "pointer": "/parts/6/decision/choices/0/resolution_text",
+      "before_text": "Binolarning aksari anchadan beri bo‘sh edi.\n\nDarvoza ustida eski hovlining belgisi saqlanib qolgan edi: kirishning ikki tomonida ikkita tor minora.",
+      "after_text": "Binolarning aksari anchadan beri bo‘sh edi.\n\nJanubiy minoraning ostonasida chang bir tekis yotardi, yangi izlar ko‘rinmasdi. Samira hovlini ko‘zdan kechirayotib buni payqadi.\n\nDarvoza ustida eski hovlining belgisi saqlanib qolgan edi: kirishning ikki tomonida ikkita tor minora."
+    },
+    {
+      "case_id": "R04",
+      "language": "ru",
+      "path": "src/data/authored/staging/season2Story6TwoReinforcements.ru.json",
+      "source_git_blob_sha": "36f91d7a7ca6d7d794274366d7e347921177c31c",
+      "pointer": "/parts/1/post_choice_text",
+      "before_text": "— Только руки ещё не слушаются.\n\n— После такой схватки это неудивительно, — сказал Рахим. — Хорошо, что держались вместе.",
+      "after_text": "— Только руки ещё не слушаются.\n\nРахим посмотрел на обоих.\n\n— Я велел вам оставаться у стены. Когда вы ушли, я не знал, где вас искать.\n\n— Мы увидели, что стражникам нужна помощь, — сказала Самира.\n\n— Понимаю. И рад, что вы целы. Но вы оба очень рисковали.\n\n— После такой схватки это неудивительно, — сказал Рахим. — Хорошо, что держались вместе."
+    },
+    {
+      "case_id": "R04",
+      "language": "uz",
+      "path": "src/data/authored/staging/season2Story6TwoReinforcements.uz.json",
+      "source_git_blob_sha": "925a2d022eda6ec75b9b6f3b90f39bf8936df3d3",
+      "pointer": "/parts/1/post_choice_text",
+      "before_text": "— Faqat qo‘llarim hali tinchimayapti.\n\n— Bunday jangdan keyin bu tabiiy, — dedi Rahim. — Yaxshiyam birga harakat qildingiz.",
+      "after_text": "— Faqat qo‘llarim hali tinchimayapti.\n\nRahim ikkoviga qaradi.\n\n— Sizlarga devor yonida qolishni aytgandim. Ketganingizda qayerdan izlashni bilmay qoldim.\n\n— Qo‘riqchilarga yordam kerakligini ko‘rdik, — dedi Samira.\n\n— Tushunaman. Sog‘-omon ekaningizdan xursandman. Lekin ikkovingiz ham qattiq tavakkal qildingiz.\n\n— Bunday jangdan keyin bu tabiiy, — dedi Rahim. — Yaxshiyam birga harakat qildingiz."
+    }
+  ]
+}

@@ -2,10 +2,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const root = process.cwd()
-const docsFixturePath = path.join(root, 'docs/qissa/ai/fixtures/prazdnik_muzhestva_interactive_v3.ru.json')
+const docsFixturePath = path.join(root, 'docs/qissa/ai/fixtures/prazdnik_muzhestva_interactive_v3_owner_approved_20261109.ru.json')
 const runtimeFixturePath = path.join(root, 'src/data/authored/prazdnikMuzhestvaV3.ru.json')
 const uzOverlayPath = path.join(root, 'src/data/authored/prazdnikMuzhestvaV3.uz.json')
-const v2Path = path.join(root, 'docs/qissa/ai/reviews/2026-09-23_prazdnik_muzhestva_working_v2.md')
+const v2Path = path.join(root, 'docs/qissa/ai/reviews/2026-11-09_prazdnik_muzhestva_owner_approved_v3_text.md')
 const assetRegistryPath = path.join(root, 'src/data/authoredStoryAssets.ts')
 
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'))
@@ -64,17 +64,17 @@ for (const phrase of staleCeremonyPhrases) {
   if (allStoryText.includes(phrase)) fail(`stale ceremony phrase remains: ${phrase}`)
 }
 
-if (!allStoryText.includes('Так Темур и Самира стали юными бахадурами царства.')) {
-  fail('approved bahadur ceremony ending is missing')
+if (!allStoryText.includes('Так Темур и Самира стали Всадниками короля.')) {
+  fail('approved King’s Rider ceremony ending is missing')
 }
 
 if (story.required_final_invariants.temur_and_samira_named_young_bahadurs !== 'true') {
-  fail('bahadur final invariant is missing')
+  fail('legacy title compatibility final invariant is missing')
 }
 
 const bahadurImageSlot = sharedSlots.find((slot) => slot.asset_id === 'seven_roads_story1_p7_img_03_v1')
-if (bahadurImageSlot?.after_text !== 'Так Темур и Самира стали юными бахадурами царства.') {
-  fail('P7-IMG-03 is not anchored after the completed bahadur ceremony')
+if (bahadurImageSlot?.after_text !== 'Так Темур и Самира стали Всадниками короля.') {
+  fail('P7-IMG-03 is not anchored after the completed King’s Rider ceremony')
 }
 
 const paragraphsOf = (text) =>
@@ -192,12 +192,12 @@ for (const term of [
   'Zaran',
   'Shamol',
   'Bulut',
-  'bahodir',
+  'Qirol chavandozi',
 ]) {
   if (!uzText.includes(term)) fail(`Uzbek authored text is missing canonical term: ${term}`)
 }
 
-if (!uzText.includes('Shu tariqa Temur va Samira qirollikning yosh bahodirlariga aylanishdi.')) {
+if (!uzText.includes('Shu tariqa Temur va Samira Qirol chavandozlariga aylanishdi.')) {
   fail('Uzbek authored text is missing the approved bahodir ceremony ending')
 }
 
