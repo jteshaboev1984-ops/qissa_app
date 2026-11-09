@@ -126,3 +126,11 @@ At the end of each task, report:
 - what was intentionally not implemented;
 - commands run;
 - remaining risks.
+
+## Development chat coordination (staged; not product Story Agent)
+
+After the architect activates the future ChatGPT Projects workflow, follow docs/ops/CHAT_PROTOCOL.md and docs/ops/WORKSTREAMS.md for chat commands, workstream ownership and verified GitHub handoffs. docs/ops/PROJECT_INSTRUCTIONS.md contains ready-to-paste ChatGPT Project instructions; committing these files does not configure ChatGPT automatically.
+
+Keep the existing product, literary and child-safety restrictions above. For actual current implementation and permitted release status, also verify the later owner-approved closed-beta docs, release/branch strategy, current PR/CI, and the latest relevant Issue **comments**. Never infer current status from an older narrative or a static label. On material conflict, surface it rather than silently broadening product scope.
+
+These coordination rules do not authorize new paid Story AI/TTS calls, editing main, story publication, production deployments or family-data operations. Continue existing chats until the architect explicitly performs cutover.
