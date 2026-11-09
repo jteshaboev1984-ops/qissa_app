@@ -48,5 +48,27 @@
       "master_png_bytes": 2418942,
       "master_png_sha256": "aeb768e9c5f186b7c6a4b0318e8b8b7e84e798cdb8e2a305c94d325fe9ecfd0c"
     }
-  ]
+  ],
+  "integrated_ru_blob_sha": "fe097696085b033016d62440ea576123b7363a78",
+  "storage_metadata": {
+    "verified_on": "2026-11-09",
+    "source": "read-only Supabase storage.objects",
+    "objects": [
+      {
+        "filename": "seven_roads_s2_story3_sarvan_market_01_APPROVED.webp",
+        "mime": "image/webp",
+        "bytes": 491024
+      },
+      {
+        "filename": "seven_roads_s2_story3_guardhouse_two_drawings_map_01_APPROVED.webp",
+        "mime": "image/webp",
+        "bytes": 221742
+      }
+    ],
+    "draft_yard_uploaded_but_excluded": true
+  },
+  "public_verification": {
+    "status": "pending_ci_remote_get",
+    "workflow_run_id": null
+  }
 }
