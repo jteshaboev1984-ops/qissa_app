@@ -195,6 +195,34 @@ for (const storyNumber of expectedStories) {
         }
       }
     }
+    // S2E3 old Sarvan courtyard: newly owner-approved and remotely SHA-verified.
+    // The immutable original Tier A map continues to describe the original niche.
+    if (storyNumber === 3 && index === 0) {
+      const yard = readJson(
+        'docs/qissa/season2/story3_sarvan_yard_approved_2026-11-10.json',
+      )
+      const asset = yard.asset
+      if (
+        yard.owner_decision !== 'approved_corrected_empty_stalls' ||
+        yard.status !== 'owner_approved_supabase_sha_verified' ||
+        yard.publication_state !== 'unpublished' ||
+        yard.remote_integrity_proof?.status !== 'success' ||
+        yard.remote_integrity_proof?.actual_sha256 !== asset?.webp?.sha256 ||
+        asset?.slot_id !== 'S2-ST3-SARVAN-YARD' ||
+        asset?.part_id !== part.part_id ||
+        asset?.phase !== 'story_text' ||
+        asset?.hosting !== 'hosted_verified'
+      ) {
+        fail('Story 3: final courtyard art requires owner approval, verified remote SHA and exact shared slot')
+      } else {
+        mappedSlots.set(asset.slot_id, {
+          slot_id: asset.slot_id,
+          asset_id: asset.asset_id,
+          phase: asset.phase,
+          after_text: asset.after_text_ru,
+        })
+      }
+    }
     // Story 3: two separately owner-approved, already uploaded shared frames
     // supplement the immutable original Tier A source map. The draft
     // caravan-yard frame is deliberately excluded until owner approval.
