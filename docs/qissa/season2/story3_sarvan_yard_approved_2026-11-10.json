@@ -49,5 +49,7 @@
     "actual_sha256": "a3058e8032e8e9a4b83d1db714be589c479d7c71ba997529951a5d05ec7e2d04"
   },
   "excluded_previous_draft": "seven-roads/season2_tier_a_v2/seven_roads_s2_story3_sarvan_old_caravan_yard_01_DRAFT.webp",
-  "release_guard": "Do not publish Season 2 or modify story text/choices."
+  "release_guard": "Do not publish Season 2 or modify story text/choices.",
+  "integrated_ru_blob_sha": "8b9ea5d89115fc6d0bc90d3521875ee9eec76b7f",
+  "integrated_uz_blob_sha": "5d1e2acdac664a108774931aa5fa1c4dc914cffd"
 }
