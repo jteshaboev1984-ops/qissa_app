@@ -26,11 +26,11 @@
     "master_style_id": "seven_roads_painterly_v1",
     "editorial_master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
     "runtime_asset_storage": "supabase://story-images/seven-roads/season2_tier_a_v1/",
-    "planned_asset_count": 4,
-    "shared_asset_count": 3,
+    "planned_asset_count": 5,
+    "shared_asset_count": 4,
     "choice_asset_count": 0,
     "cover_asset_count": 1,
-    "visible_assets_per_playthrough": 4,
+    "visible_assets_per_playthrough": 5,
     "rule": "Episode package inside Season 2. Do not create an episode-specific cover. The product uses one shared Season 2 cover; scene illustrations render only at their locked exact anchors.",
     "production_prompt_pack_ref": "/QISSA/production/seven_roads/season2_visual_final/",
     "additional_runtime_asset_storage": "supabase://story-images/seven-roads/season2_tier_a_v2/"
@@ -53,9 +53,21 @@
       "post_choice_text": "",
       "visual_state": "S2-ST3-P1",
       "illustration_refs": [
+        "seven_roads_s2_story3_sarvan_old_caravan_yard_01_APPROVED",
         "seven_roads_s2_story3_two_towers_niche_discovery_01_APPROVED"
       ],
       "image_slots": [
+        {
+          "slot_id": "S2-ST3-SARVAN-YARD",
+          "anchor_key": "s2_st3_sarvan_yard",
+          "kind": "shared",
+          "scene_key": "seven_roads_s2_story3_sarvan_old_caravan_yard_01_APPROVED",
+          "status": "approved",
+          "asset_id": "seven_roads_s2_story3_sarvan_old_caravan_yard_01_APPROVED",
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "Две узкие башни стояли по сторонам проезда."
+        },
         {
           "slot_id": "S2-ST3-TIERA-NICHE",
           "anchor_key": "s2_st3_tiera_niche",
