@@ -118,7 +118,7 @@ for (const basePart of base.parts) {
 
 if (decisionCount !== 3) fail(`expected 3 decisions, got ${decisionCount}`)
 if (choiceCount !== 6) fail(`expected 6 choices, got ${choiceCount}`)
-if (anchorCount !== 2) fail(`expected 2 shared anchors, got ${anchorCount}`)
+if (anchorCount !== 3) fail(`expected 3 shared anchors, got ${anchorCount}`)
 
 const corpus = (overlay.parts ?? []).flatMap((part) => [
   part.title,
@@ -153,6 +153,7 @@ for (const marker of [
 }
 for (const marker of [
   'Va Daniyar uni payqaganini tushundi.',
+  'U o‘z odamining yoniga sakrab tushdi, pichog‘ini olib tasmani kesdi.',
   'Daniyar qolgan soqchi bilan asosiy yo‘l bo‘ylab quvishni davom ettirdi.',
 ]) {
   if (!corpus.includes(marker)) {
@@ -167,5 +168,5 @@ if (errors.length > 0) {
 
 console.log('[season2-story1-uz] PASS')
 console.log('[season2-story1-uz] 3/3 parts, 3 decisions, 6 choices aligned')
-console.log('[season2-story1-uz] 2/2 Tier A image anchors validated')
+console.log('[season2-story1-uz] 3/3 original + approved rescue image anchors validated')
 console.log('[season2-story1-uz] Uzbek Latin-script continuity markers validated')
