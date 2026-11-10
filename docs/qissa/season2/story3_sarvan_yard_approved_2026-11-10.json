@@ -1,0 +1,53 @@
+{
+  "schema_version": "qissa-season2-story3-sarvan-yard-approved-1",
+  "issue": 318,
+  "approved_at": "2026-11-10",
+  "owner_decision": "approved_corrected_empty_stalls",
+  "story_id": "seven_roads_dve_bashni",
+  "story_number": 3,
+  "publication_state": "unpublished",
+  "status": "owner_approved_supabase_sha_verified",
+  "visual_canon": "seven_roads_painterly_v1",
+  "original_library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
+  "asset": {
+    "slot_id": "S2-ST3-SARVAN-YARD",
+    "anchor_key": "s2_st3_sarvan_yard",
+    "part_id": "story3_part_1_old_yard_niche",
+    "kind": "shared",
+    "phase": "story_text",
+    "asset_id": "seven_roads_s2_story3_sarvan_old_caravan_yard_01_APPROVED",
+    "master_png": {
+      "filename": "seven_roads_s2_story3_sarvan_old_caravan_yard_01_APPROVED.png",
+      "width": 1672,
+      "height": 941,
+      "bytes": 3071777,
+      "sha256": "2b6db975fbbceac721b372524d92b348f0ba4ba2e8457608a21fe094a9c4cf3a"
+    },
+    "webp": {
+      "filename": "seven_roads_s2_story3_sarvan_old_caravan_yard_01_APPROVED.webp",
+      "width": 1536,
+      "height": 864,
+      "bytes": 413182,
+      "sha256": "a3058e8032e8e9a4b83d1db714be589c479d7c71ba997529951a5d05ec7e2d04"
+    },
+    "storage_bucket": "story-images",
+    "storage_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story3_sarvan_old_caravan_yard_01_APPROVED.webp",
+    "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story3_sarvan_old_caravan_yard_01_APPROVED.webp",
+    "hosting": "hosted_verified",
+    "after_text_ru": "Две узкие башни стояли по сторонам проезда.",
+    "after_text_uz": "Kirishning ikki tomonida ikkita tor minora turardi.",
+    "context_note": "Exactly two narrow gate towers, empty stables with sagging awning, one-wheel-missing wagon, hoofprints and fresh hay, two child protagonists with one guard. No clue/niche is revealed."
+  },
+  "remote_integrity_proof": {
+    "method": "independent_public_HTTP_GET",
+    "status": "success",
+    "github_actions_workflow_run_id": 42796256497,
+    "github_actions_job_id": 129762090004,
+    "executed_script": "scripts/verify-season2-story3-yard-webp.mjs",
+    "content_type": "image/webp",
+    "actual_bytes": 413182,
+    "actual_sha256": "a3058e8032e8e9a4b83d1db714be589c479d7c71ba997529951a5d05ec7e2d04"
+  },
+  "excluded_previous_draft": "seven-roads/season2_tier_a_v2/seven_roads_s2_story3_sarvan_old_caravan_yard_01_DRAFT.webp",
+  "release_guard": "Do not publish Season 2 or modify story text/choices."
+}
