@@ -12,16 +12,17 @@
       "story_id": "seven_roads_korolevskoe_serebro",
       "story_version": "interactive-v5",
       "package_path": "src/data/authored/staging/season2Story1RoyalSilver.ru.json",
-      "github_blob_sha": "cdf806fb6d988dede223d4785053479c910cb93e",
+      "github_blob_sha": "365545ca0e725c7f17fa3f8e1223494fb57e7ba7",
       "source_sha256": "ac2d3c1bbcd90b37df1e01edd6b78a217e6c96c91b5b72ee545f8fa455805ff0",
       "part_count": 3,
       "decision_count": 3,
       "choice_count": 6,
-      "tier_a_image_count": 2,
+      "tier_a_image_count": 3,
       "cover_state": "shared-season-cover-hosted-verified",
       "localization_state": "ru+uz-staging",
       "publication_state": "not-published",
-      "uz_overlay_path": "src/data/authored/staging/season2Story1RoyalSilver.uz.json"
+      "uz_overlay_path": "src/data/authored/staging/season2Story1RoyalSilver.uz.json",
+      "visual_expansion": "Three approved shared S2E1 narrative images: unchanged attack, approved Kamran rescue and unchanged pursuit; original Tier A frozen map retained. Kamran rescue remote WebP bytewise SHA verified, RU/UZ anchors mapped, all texts/decisions preserved; season unpublished."
     },
     {
       "story_number": 3,
