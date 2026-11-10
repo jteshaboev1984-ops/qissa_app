@@ -6,6 +6,7 @@ import path from 'node:path'
 // Keep local literary/anchor validation offline-capable.
 if (process.env.GITHUB_ACTIONS === 'true') {
   await import('./verify-season2-story3-approved-webps.mjs')
+  await import('./verify-season2-story3-yard-webp.mjs')
 }
 
 const root = process.cwd()
