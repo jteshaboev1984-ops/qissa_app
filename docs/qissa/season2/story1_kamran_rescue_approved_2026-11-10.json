@@ -48,5 +48,7 @@
     "verifier": "scripts/verify-season2-story1-kamran-webp.mjs",
     "actual_sha256": "83449a2612dba73bac37ff7b4d153733d54d5040dbdda62c29a062b628de8d34"
   },
-  "integration_scope": "One shared art slot in Part 2; no story/choices/other episodes changes. Season 2 remains unpublished."
+  "integration_scope": "One shared art slot in Part 2; no story/choices/other episodes changes. Season 2 remains unpublished.",
+  "integrated_ru_blob_sha": "365545ca0e725c7f17fa3f8e1223494fb57e7ba7",
+  "integrated_uz_blob_sha": "974a153faa3edcd6d24210b76c177ed3b7f18b86"
 }
