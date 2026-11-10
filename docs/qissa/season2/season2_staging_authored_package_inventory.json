@@ -29,17 +29,17 @@
       "story_id": "seven_roads_dve_bashni",
       "story_version": "interactive-v6",
       "package_path": "src/data/authored/staging/season2Story3TwoTowers.ru.json",
-      "github_blob_sha": "fe097696085b033016d62440ea576123b7363a78",
+      "github_blob_sha": "8b9ea5d89115fc6d0bc90d3521875ee9eec76b7f",
       "source_sha256": "df509cbbb333f8f6b218207adc1575539b78193fa15b05d82168a97e5a5d9f76",
       "part_count": 3,
       "decision_count": 3,
       "choice_count": 6,
-      "tier_a_image_count": 3,
+      "tier_a_image_count": 4,
       "cover_state": "shared-season-cover-hosted-verified",
       "localization_state": "ru+uz-staging",
       "publication_state": "not-published",
       "uz_overlay_path": "src/data/authored/staging/season2Story3TwoTowers.uz.json",
-      "visual_expansion": "Two owner-approved shared S2E3 frames (Sarvan market and guardhouse two sketches/map) augment original niche. SHA-256 gate: scripts/verify-season2-story3-approved-webps.mjs. Yard DRAFT excluded. Season unpublished."
+      "visual_expansion": "Four independently hosted shared story images: owner's APPROVED Sarvan yard, unchanged niche, market and guardhouse map. Exact RU/UZ anchors; remote WebP SHA verified in Actions run 42796256497. Earlier DRAFT remains excluded. Shared cover unchanged; season unpublished."
     },
     {
       "story_number": 4,
