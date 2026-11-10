@@ -196,6 +196,35 @@ for (const storyNumber of expectedStories) {
         }
       }
     }
+    // S2E1 new owner-approved rescue frame augments the immutable Tier A source
+    // map; require independent public WebP verification and exact text anchor.
+    if (storyNumber === 1 && index === 1) {
+      const proof = readJson(
+        'docs/qissa/season2/story1_kamran_rescue_approved_2026-11-10.json',
+      )
+      const asset = proof.slot
+      if (
+        proof.owner_status !== 'APPROVED' ||
+        proof.publication_state !== 'unpublished' ||
+        proof.storage?.bucket !== 'story-images' ||
+        proof.remote_integrity_proof?.status !== 'success' ||
+        proof.remote_integrity_proof?.actual_sha256 !== proof.approved_webp?.sha256 ||
+        proof.approved_webp?.bytes !== 363060 ||
+        asset?.slot_id !== 'S2-ST1-KAMRAN-RESCUE' ||
+        asset?.part_id !== part.part_id ||
+        asset?.kind !== 'shared' ||
+        asset?.phase !== 'story_text'
+      ) {
+        fail('Story 1: Kamran rescue requires owner approval, hosted SHA and exact shared anchor')
+      } else {
+        mappedSlots.set(asset.slot_id, {
+          slot_id: asset.slot_id,
+          asset_id: asset.asset_id,
+          phase: asset.phase,
+          after_text: asset.after_text_ru,
+        })
+      }
+    }
     // S2E3 old Sarvan courtyard: newly owner-approved and remotely SHA-verified.
     // The immutable original Tier A map continues to describe the original niche.
     if (storyNumber === 3 && index === 0) {
