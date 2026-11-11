@@ -4,6 +4,7 @@ const readText = p => fs.readFileSync(p, 'utf8')
 const ru = readJSON('src/data/authored/staging/season2Story1RoyalSilver.ru.json')
 const uz = readJSON('src/data/authored/staging/season2Story1RoyalSilver.uz.json')
 const proof = readJSON('docs/qissa/season2/story1_kamran_rescue_approved_2026-11-10.json')
+const settlement = readJSON('docs/qissa/season2/story1_settlement_story5_fork_approved_2026-11-11.json')
 const inventory = readJSON('docs/qissa/season2/season2_staging_authored_package_inventory.json')
 const registry = readText('src/data/authoredStoryAssets.ts')
 const gallery = readText('src/lib/authoredIllustrationDiscovery.ts')
@@ -21,22 +22,22 @@ const url = 'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/s
 const p=ru.parts?.[1], u=uz.parts?.[1], a=proof.slot
 const slots = ru.parts?.flatMap(x=>x.image_slots||[])||[]
 const ids = slots.map(x=>x.slot_id)
-const expectedIds = ['S2-ST1-TIERA-ATTACK',slotId,'S2-ST1-TIERA-PURSUIT']
+const expectedIds = ['S2-ST1-TIERA-ATTACK',slotId,'S2-ST1-TIERA-PURSUIT','S2-ST1-NETWORK-SETTLEMENT']
 const actualPart2Slots=p?.image_slots?.map(x=>x.slot_id)
 if (ru.story_id !== 'seven_roads_korolevskoe_serebro' ||
     uz.story_id!==ru.story_id || ru.parts?.length!==3 || uz.parts?.length!==3) {
   fail('Wrong Story 1 package, localized story id or part count')
 }
-if (ru.illustration_plan?.shared_asset_count!==3 ||
-    ru.illustration_plan?.planned_asset_count!==4 ||
-    ru.illustration_plan?.visible_assets_per_playthrough!==4 ||
+if (ru.illustration_plan?.shared_asset_count!==4 ||
+    ru.illustration_plan?.planned_asset_count!==5 ||
+    ru.illustration_plan?.visible_assets_per_playthrough!==5 ||
     ru.illustration_plan?.cover_asset_count!==1 ||
     ru.illustration_plan?.choice_asset_count!==0) {
-  fail('Story 1 image count must be 3 narrative shared frames plus one season-wide cover')
+  fail('Story 1 image count must be 4 narrative shared frames plus one season-wide cover')
 }
 if (JSON.stringify(ids)!==JSON.stringify(expectedIds) ||
     JSON.stringify(actualPart2Slots)!==JSON.stringify([slotId,'S2-ST1-TIERA-PURSUIT']) ||
-    new Set(ids).size!==3) {
+    new Set(ids).size!==4) {
   fail('Part 2 rescue must precede original pursuit; no duplicated or missing image slots')
 }
 if (p?.part_id!=='story1_part_2_kamran_pursuit' || u?.part_id!==p?.part_id ||
@@ -94,9 +95,9 @@ if(JSON.stringify(allChoices(ru.parts))!==JSON.stringify(expectedChoices)||
 }
 const inv=inventory.packages?.find(p=>p.story_number===1)
 if(inv?.publication_state!=='not-published' ||
-   inv?.tier_a_image_count!==3 ||
-   inv?.github_blob_sha!==proof.integrated_ru_blob_sha){
+   inv?.tier_a_image_count!==4 ||
+   inv?.github_blob_sha!==settlement.assets?.find(a=>a.story_number===1)?.integrated_ru_blob_sha){
   fail('Updated unpublished staging inventory count or Git blob SHA mismatch')
 }
 if(errors.length){errors.forEach(x=>console.error('[s2e1-art] '+x));process.exit(1)}
-console.log('[s2e1-art] PASS: approved Kamran rescue correctly precedes pursuit; 3 shared art, one season cover, exact RU/UZ anchors, all six choices unchanged, season unpublished')
+console.log('[s2e1-art] PASS: approved Kamran rescue correctly precedes pursuit; 4 shared art, one season cover, exact RU/UZ anchors, all six choices unchanged, season unpublished')

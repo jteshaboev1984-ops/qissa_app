@@ -12,17 +12,17 @@
       "story_id": "seven_roads_korolevskoe_serebro",
       "story_version": "interactive-v5",
       "package_path": "src/data/authored/staging/season2Story1RoyalSilver.ru.json",
-      "github_blob_sha": "365545ca0e725c7f17fa3f8e1223494fb57e7ba7",
+      "github_blob_sha": "a3a1a43d1aa6f86c9a90fd97d1468ec3afd17430",
       "source_sha256": "ac2d3c1bbcd90b37df1e01edd6b78a217e6c96c91b5b72ee545f8fa455805ff0",
       "part_count": 3,
       "decision_count": 3,
       "choice_count": 6,
-      "tier_a_image_count": 3,
+      "tier_a_image_count": 4,
       "cover_state": "shared-season-cover-hosted-verified",
       "localization_state": "ru+uz-staging",
       "publication_state": "not-published",
       "uz_overlay_path": "src/data/authored/staging/season2Story1RoyalSilver.uz.json",
-      "visual_expansion": "Three approved shared S2E1 narrative images: unchanged attack, approved Kamran rescue and unchanged pursuit; original Tier A frozen map retained. Kamran rescue remote WebP bytewise SHA verified, RU/UZ anchors mapped, all texts/decisions preserved; season unpublished."
+      "visual_expansion": "Four approved shared S2E1 narrative images: original attack, Kamran rescue, original pursuit, new hidden Eastern Forest network settlement after wooden-token paragraph. Exact new WebP remote bytewise SHA verified; all six choice IDs and literary narrative unchanged; unpublished."
     },
     {
       "story_number": 3,
@@ -76,16 +76,28 @@
       "story_id": "seven_roads_lozhnaya_doroga",
       "story_version": "interactive-v4",
       "package_path": "src/data/authored/staging/season2Story5FalseRoad.ru.json",
-      "github_blob_sha": "cca8b643edbb6ba2185294ebfe556cd9f2d77bda",
+      "github_blob_sha": "787fcc6109f2f20758bea4a592090e55fe17c806",
       "source_sha256": "6a39683c5a470cd8221f731b1db950f6454242c07ebae0405ae9ff72af448551",
       "part_count": 1,
       "decision_count": 1,
       "choice_count": 2,
-      "tier_a_image_count": 2,
+      "tier_a_image_count": 3,
       "cover_state": "shared-season-cover-hosted-verified",
       "localization_state": "ru+uz-staging",
       "publication_state": "not-published",
-      "uz_overlay_path": "src/data/authored/staging/season2Story5FalseRoad.uz.json"
+      "uz_overlay_path": "src/data/authored/staging/season2Story5FalseRoad.uz.json",
+      "approved_owner_revision": {
+        "date": "2026-11-11",
+        "issue": 318,
+        "previous_package_blob_sha": "cca8b643edbb6ba2185294ebfe556cd9f2d77bda",
+        "current_package_blob_sha": "787fcc6109f2f20758bea4a592090e55fe17c806",
+        "uz_blob_sha": "b9df7fb184e1230c0d07be8999ab5cacb1131e3a",
+        "revision_manifest": "docs/qissa/season2/story5_wooden_sign_text_delta_2026-11-11.json",
+        "source_master_status": "historical-immutable",
+        "new_art_status": "owner-approved-remote-byte-verified-integrated",
+        "publication_change": false
+      },
+      "visual_expansion": "Three shared S2E5 narrative images: earlier Red Hill recon, approved two-way fork with blank wooden sign, existing reinforcement departure. Exact new remote WebP SHA verified and choices unchanged; unpublished."
     },
     {
       "story_number": 6,

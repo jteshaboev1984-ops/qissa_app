@@ -1,0 +1,101 @@
+{
+  "schema_version": "qissa-s2-2026-11-11-two-approved-shared-images-v1",
+  "issue": 318,
+  "owner_status": "APPROVED",
+  "publication_state": "unpublished",
+  "visual_canon": "seven_roads_painterly_v1",
+  "library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
+  "storage": {
+    "project_id": "phwakdpxxyncyslvnqht",
+    "bucket": "story-images",
+    "prefix": "seven-roads/season2_tier_a_v2/"
+  },
+  "remote_integrity_proof": {
+    "status": "success",
+    "method": "GitHub-hosted HTTP GET of actual Storage object response bytes; independent SHA-256, MIME and RIFF/WEBP header checks",
+    "run_id": 43001538293,
+    "job_id": 130458601492,
+    "verifier": "scripts/verify-season2-story1-settlement-story5-fork-webps.mjs",
+    "url": "https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/43001538293"
+  },
+  "assets": [
+    {
+      "story_number": 1,
+      "slot": {
+        "slot_id": "S2-ST1-NETWORK-SETTLEMENT",
+        "anchor_key": "s2_st1_network_settlement",
+        "part_id": "story1_part_3_network_sign",
+        "kind": "shared",
+        "phase": "post_choice_text",
+        "asset_id": "seven_roads_s2_story1_hidden_network_settlement_01_APPROVED",
+        "after_text_ru": "У длинного стола кто-то раскладывал деревянные жетоны.",
+        "after_text_uz": "Uzun stol yonida kimdir yog‘och nishonchalarni terib chiqardi."
+      },
+      "source_png": {
+        "filename": "seven_roads_s2_story1_hidden_network_settlement_01_APPROVED.png",
+        "width": 1672,
+        "height": 941,
+        "bytes": 3210975,
+        "sha256": "6924e3613eec666a721f951efc958a197074dc9b9534504d176ac57944957ded"
+      },
+      "approved_webp": {
+        "filename": "seven_roads_s2_story1_hidden_network_settlement_01_APPROVED.webp",
+        "width": 1536,
+        "height": 864,
+        "bytes": 324470,
+        "sha256": "7675801ac525d30bc2ff1c4c1f0e52768fcbd0b85fd56a358804424d8b93b8ef"
+      },
+      "object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story1_hidden_network_settlement_01_APPROVED.webp",
+      "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story1_hidden_network_settlement_01_APPROVED.webp",
+      "verified_mime": "image/webp",
+      "verified_size": 324470,
+      "verified_remote_sha256": "7675801ac525d30bc2ff1c4c1f0e52768fcbd0b85fd56a358804424d8b93b8ef",
+      "integrated_ru_blob_sha": "a3a1a43d1aa6f86c9a90fd97d1468ec3afd17430",
+      "integrated_uz_blob_sha": "81c08775a966c4a6db760e54a8df024ca72a3397",
+      "previous_ru_blob_sha": "365545ca0e725c7f17fa3f8e1223494fb57e7ba7",
+      "previous_uz_blob_sha": "974a153faa3edcd6d24210b76c177ed3b7f18b86",
+      "literary_text_changes": "None",
+      "prose_and_choice_integrity": "Semantic exact comparison unchanged after stripping only added image slots and references"
+    },
+    {
+      "story_number": 5,
+      "slot": {
+        "slot_id": "S2-ST5-BLANK-FORK",
+        "anchor_key": "s2_st5_blank_wooden_fork",
+        "part_id": "story5_part_1_false_road",
+        "kind": "shared",
+        "phase": "story_text",
+        "asset_id": "seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED",
+        "after_text_ru": "— Они открыты. Выбирайте.",
+        "after_text_uz": "— Ikkalasi ham ochiq. Tanlanglar."
+      },
+      "source_png": {
+        "filename": "seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED.png",
+        "width": 1672,
+        "height": 941,
+        "bytes": 3141905,
+        "sha256": "6a3efffb59c6745b8667df5da9d05c88932c3c76590328f8afeec51dfaf99e06"
+      },
+      "approved_webp": {
+        "filename": "seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED.webp",
+        "width": 1536,
+        "height": 864,
+        "bytes": 339136,
+        "sha256": "d26406136b3cc1b0b4b7bad7d12eb38d287017333da87b95d30bfe9883f62426"
+      },
+      "object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED.webp",
+      "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED.webp",
+      "verified_mime": "image/webp",
+      "verified_size": 339136,
+      "verified_remote_sha256": "d26406136b3cc1b0b4b7bad7d12eb38d287017333da87b95d30bfe9883f62426",
+      "integrated_ru_blob_sha": "787fcc6109f2f20758bea4a592090e55fe17c806",
+      "integrated_uz_blob_sha": "b9df7fb184e1230c0d07be8999ab5cacb1131e3a",
+      "previous_ru_blob_sha": "76e9432045874ae9a21a9f6462605022fd812335",
+      "previous_uz_blob_sha": "06bafcd05600c6ad978aea97a1243cda562e3e1f",
+      "literary_text_changes": "Only previously owner-approved wooden-signpost micro-edit in draft PR #327; no new text changes",
+      "prose_and_choice_integrity": "Semantic exact comparison unchanged after stripping only added image slots and references"
+    }
+  ],
+  "gallery_rule": "Story image is revealed to gallery only once the reader sees the illustration at its exact paragraph position",
+  "promotion_rule": "Owner-approved art only; never publish the second season automatically"
+}
