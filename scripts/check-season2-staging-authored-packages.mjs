@@ -582,3 +582,4 @@ console.log('[season2-staging-packages] all six non-live episodes have RU+UZ sta
 await import('./check-season2-story3-approved-art.mjs')
 await import('./check-season2-story1-kamran-art.mjs')
 await import('./check-season2-2026-11-11-approved-art.mjs')
+await import('./check-season2-costume-continuity.mjs')
