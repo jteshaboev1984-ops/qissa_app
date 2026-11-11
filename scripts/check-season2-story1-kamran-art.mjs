@@ -37,7 +37,7 @@ if (ru.illustration_plan?.shared_asset_count!==4 ||
 }
 if (JSON.stringify(ids)!==JSON.stringify(expectedIds) ||
     JSON.stringify(actualPart2Slots)!==JSON.stringify([slotId,'S2-ST1-TIERA-PURSUIT']) ||
-    new Set(ids).size!==3) {
+    new Set(ids).size!==4) {
   fail('Part 2 rescue must precede original pursuit; no duplicated or missing image slots')
 }
 if (p?.part_id!=='story1_part_2_kamran_pursuit' || u?.part_id!==p?.part_id ||
