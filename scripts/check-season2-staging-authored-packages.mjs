@@ -255,6 +255,37 @@ for (const storyNumber of expectedStories) {
         })
       }
     }
+    // Additional S2E3 Sarvan FAMILY arrival: independent remote WebP GET/SHA
+    // and the owner-approved bilingual paragraph, without editing historical maps.
+    if (storyNumber === 3 && index === 0) {
+      const family = readJson(
+        'docs/qissa/season2/story3_sarvan_family_return_approved_2026-11-11.json',
+      )
+      const asset = family.asset
+      if (
+        family.status !== 'owner_approved_supabase_sha_verified' ||
+        family.owner_decision !== 'approved_after_visual_and_literary_check' ||
+        family.publication_state !== 'unpublished' ||
+        family.remote_integrity_proof?.status !== 'success' ||
+        family.remote_integrity_proof?.actual_sha256 !== asset?.webp?.sha256 ||
+        family.remote_integrity_proof?.actual_bytes !== asset?.webp?.bytes ||
+        family.integrated_ru_blob_sha !== entry.github_blob_sha ||
+        asset?.slot_id !== 'S2-ST3-SARVAN-FAMILY-RETURN' ||
+        asset?.part_id !== part.part_id ||
+        asset?.phase !== 'story_text' ||
+        asset?.kind !== 'shared' ||
+        asset?.hosting !== 'hosted_verified'
+      ) {
+        fail('Story 3: Sarvan family arrival requires owner approval and verified independent remote SHA')
+      } else {
+        mappedSlots.set(asset.slot_id, {
+          slot_id: asset.slot_id,
+          asset_id: asset.asset_id,
+          phase: asset.phase,
+          after_text: asset.after_text_ru,
+        })
+      }
+    }
     // Story 3: two separately owner-approved, already uploaded shared frames
     // supplement the immutable original Tier A source map. The draft
     // caravan-yard frame is deliberately excluded until owner approval.
