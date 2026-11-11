@@ -23,12 +23,19 @@
   },
   "insertion_anchor_ru": "— Они открыты. Выбирайте.",
   "insertion_anchor_uz": "— Ikkalasi ham ochiq. Tanlanglar.",
-  "scope": "Approved local prose delta only. Literary master and world canon are historical/immutable; image remains REVIEW and must not be integrated before art owner sign-off and Storage byte verification.",
+  "scope": "Owner-approved local wooden signpost prose delta only; historical literary master and world canon remain immutable. Subsequently owner-approved fork illustration was independently remote SHA-verified and staged for RU/UZ at exact choice anchor. See story1_settlement_story5_fork_approved_2026-11-11.json.",
   "unchanged": [
     "All choice IDs and outcomes",
     "All other narrative",
     "State transitions",
     "Existing art",
     "Unpublished Season 2 status"
-  ]
+  ],
+  "artwork_followup": {
+    "approval": "APPROVED",
+    "storage_verification": "independent-GitHub-Actions-public-GET-SHA256",
+    "run_id": 43001538293,
+    "manifest": "docs/qissa/season2/story1_settlement_story5_fork_approved_2026-11-11.json",
+    "publication_change": false
+  }
 }
