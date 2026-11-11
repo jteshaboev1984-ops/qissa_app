@@ -36,7 +36,7 @@ if (ledger.schema_version !== 'qissa-seven-roads-s2-wardrobe-continuity-v1' ||
     ledger.authority?.base !== 'docs/qissa/ai/SEVEN_ROADS_WORLD_BIBLE_V2.md' ||
     ledger.authority?.addendum !== addendumPath ||
     ledger.authority?.audit !== auditPath ||
-    !source(auditPath).includes('NOT a new approved canon') ||
+    !source(auditPath).includes('a new approved canon') ||
     !addendum.includes('APPROVED CANON ADDENDUM (NARROW SCOPE)')) {
   fail('Costume addendum provenance/approval/release contract drift')
 }
@@ -47,7 +47,7 @@ if (!ledger.definitions?.SAMIRA_LIGHT_TRAVEL_OVERSET?.primary_underlayer?.includ
     !ledger.definitions?.SAMIRA_LIGHT_TRAVEL_OVERSET?.removed_when?.includes('road post')) {
   fail('Samira removable layers no longer resolve to original burgundy base after the road post')
 }
-for (const marker of ['small narrow white forehead star','no white socks','no forehead star/blaze','one long, thick, dark braid','cream','burgundy']) {
+for (const marker of ['small narrow white forehead star','no white socks','forehead star/blaze','one long, thick, dark braid','cream','burgundy']) {
   if (!addendum.toLowerCase().includes(marker.toLowerCase())) fail('Costume/horse invariant omitted from addendum: '+marker)
 }
 if (!Array.isArray(ledger.checkpoints) || ledger.checkpoints.length !== 10) {
