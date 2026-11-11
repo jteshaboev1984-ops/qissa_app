@@ -349,6 +349,37 @@ for (const storyNumber of expectedStories) {
         }
       }
     }
+    // Two owner-approved, independently byte-verified 2026-11-11 art slots.
+    // Extend the locked historical Tier A map, never rewrite it.
+    if ((storyNumber === 1 && index === 2) ||
+        (storyNumber === 5 && index === 0)) {
+      const latest = readJson(
+        'docs/qissa/season2/story1_settlement_story5_fork_approved_2026-11-11.json',
+      )
+      const asset = latest.assets?.find((item) => item.story_number === storyNumber)
+      if (
+        latest.owner_status !== 'APPROVED' ||
+        latest.publication_state !== 'unpublished' ||
+        latest.remote_integrity_proof?.status !== 'success' ||
+        latest.storage?.bucket !== 'story-images' ||
+        asset?.slot?.part_id !== part.part_id ||
+        asset?.slot?.kind !== 'shared' ||
+        asset?.slot?.phase !== (storyNumber === 1 ? 'post_choice_text' : 'story_text') ||
+        asset?.verified_remote_sha256 !== asset?.approved_webp?.sha256 ||
+        asset?.verified_size !== asset?.approved_webp?.bytes ||
+        asset?.integrated_ru_blob_sha !== entry.github_blob_sha ||
+        asset?.verified_mime !== 'image/webp'
+      ) {
+        fail(`Story ${storyNumber}: owner-approved 11-Nov scene remote integrity and exact slot contract invalid`)
+      } else {
+        mappedSlots.set(asset.slot.slot_id, {
+          slot_id: asset.slot.slot_id,
+          asset_id: asset.slot.asset_id,
+          phase: asset.slot.phase,
+          after_text: asset.slot.after_text_ru,
+        })
+      }
+    }
     if ((part.image_slots ?? []).length !== mappedSlots.size) {
       fail(`Story ${storyNumber} ${part.part_id}: image slot count drifted`)
     }
