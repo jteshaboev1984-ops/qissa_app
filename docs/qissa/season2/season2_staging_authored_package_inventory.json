@@ -30,17 +30,17 @@
       "story_id": "seven_roads_dve_bashni",
       "story_version": "interactive-v6",
       "package_path": "src/data/authored/staging/season2Story3TwoTowers.ru.json",
-      "github_blob_sha": "8b9ea5d89115fc6d0bc90d3521875ee9eec76b7f",
+      "github_blob_sha": "e889df65f5d5f877aedf7b71d7bb1cc487a0f3e3",
       "source_sha256": "df509cbbb333f8f6b218207adc1575539b78193fa15b05d82168a97e5a5d9f76",
       "part_count": 3,
       "decision_count": 3,
       "choice_count": 6,
-      "tier_a_image_count": 4,
+      "tier_a_image_count": 5,
       "cover_state": "shared-season-cover-hosted-verified",
       "localization_state": "ru+uz-staging",
       "publication_state": "not-published",
       "uz_overlay_path": "src/data/authored/staging/season2Story3TwoTowers.uz.json",
-      "visual_expansion": "Four independently hosted shared story images: owner's APPROVED Sarvan yard, unchanged niche, market and guardhouse map. Exact RU/UZ anchors; remote WebP SHA verified in Actions run 42796256497. Earlier DRAFT remains excluded. Shared cover unchanged; season unpublished."
+      "visual_expansion": "Five owner-approved shared narrative images in Story 3: Sarvan family reunion BEFORE existing old caravan yard, niche, market and guardhouse map. New scene independently verified by GET body SHA-256 in GitHub Actions run 43066802210; approved older art unchanged. All RU/UZ story prose, branching choices and publication flags preserved."
     },
     {
       "story_number": 4,
