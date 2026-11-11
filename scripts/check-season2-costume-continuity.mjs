@@ -36,7 +36,7 @@ if (ledger.schema_version !== 'qissa-seven-roads-s2-wardrobe-continuity-v1' ||
     ledger.authority?.base !== 'docs/qissa/ai/SEVEN_ROADS_WORLD_BIBLE_V2.md' ||
     ledger.authority?.addendum !== addendumPath ||
     ledger.authority?.audit !== auditPath ||
-    !source(auditPath).includes('NON-CANON') ||
+    !source(auditPath).includes('NOT a new approved canon') ||
     !addendum.includes('APPROVED CANON ADDENDUM (NARROW SCOPE)')) {
   fail('Costume addendum provenance/approval/release contract drift')
 }
