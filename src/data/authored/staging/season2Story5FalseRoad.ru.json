@@ -24,11 +24,11 @@
     "master_style_id": "seven_roads_painterly_v1",
     "editorial_master_style_reference": "/QISSA/visual_refs/seven_roads_v1/QISSA_MASTER_REFERENCE_user_selected.png",
     "runtime_asset_storage": "supabase://story-images/seven-roads/season2_tier_a_v1/",
-    "planned_asset_count": 3,
-    "shared_asset_count": 2,
+    "planned_asset_count": 4,
+    "shared_asset_count": 3,
     "choice_asset_count": 0,
     "cover_asset_count": 1,
-    "visible_assets_per_playthrough": 3,
+    "visible_assets_per_playthrough": 4,
     "rule": "Episode package inside Season 2. Do not create an episode-specific cover. The product uses one shared Season 2 cover; scene illustrations render only at their locked exact anchors.",
     "production_prompt_pack_ref": "/QISSA/production/seven_roads/season2_visual_final/"
   },
@@ -51,6 +51,7 @@
       "visual_state": "S2-ST5-P1",
       "illustration_refs": [
         "seven_roads_s2_story5_red_hill_recon_01_APPROVED",
+        "seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED",
         "seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED"
       ],
       "image_slots": [
@@ -64,6 +65,17 @@
           "runtime_url": null,
           "phase": "story_text",
           "after_text": "— Разведка их нашла."
+        },
+        {
+          "slot_id": "S2-ST5-BLANK-FORK",
+          "anchor_key": "s2_st5_blank_wooden_fork",
+          "kind": "shared",
+          "scene_key": "seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED",
+          "status": "approved",
+          "asset_id": "seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED",
+          "runtime_url": null,
+          "phase": "story_text",
+          "after_text": "— Они открыты. Выбирайте."
         },
         {
           "slot_id": "S2-ST5-TIERA-REAL-REINFORCEMENT",
