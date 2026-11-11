@@ -118,7 +118,7 @@ for (const basePart of base.parts) {
 
 if (decisionCount !== 3) fail(`expected 3 decisions, got ${decisionCount}`)
 if (choiceCount !== 6) fail(`expected 6 choices, got ${choiceCount}`)
-if (anchorCount !== 3) fail(`expected 3 shared anchors, got ${anchorCount}`)
+if (anchorCount !== 4) fail(`expected 4 shared anchors, got ${anchorCount}`)
 
 const corpus = (overlay.parts ?? []).flatMap((part) => [
   part.title,
@@ -168,5 +168,5 @@ if (errors.length > 0) {
 
 console.log('[season2-story1-uz] PASS')
 console.log('[season2-story1-uz] 3/3 parts, 3 decisions, 6 choices aligned')
-console.log('[season2-story1-uz] 3/3 original + approved rescue image anchors validated')
+console.log('[season2-story1-uz] 4/4 original + approved rescue + settlement image anchors validated')
 console.log('[season2-story1-uz] Uzbek Latin-script continuity markers validated')
