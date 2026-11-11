@@ -9,6 +9,7 @@ if (process.env.GITHUB_ACTIONS === 'true') {
   await import('./verify-season2-story3-yard-webp.mjs')
   await import('./verify-season2-story1-kamran-webp.mjs')
   await import('./verify-season2-story1-settlement-story5-fork-webps.mjs')
+  await import('./verify-season2-story3-sarvan-family-webp.mjs')
 }
 
 const root = process.cwd()
@@ -245,6 +246,37 @@ for (const storyNumber of expectedStories) {
         asset?.hosting !== 'hosted_verified'
       ) {
         fail('Story 3: final courtyard art requires owner approval, verified remote SHA and exact shared slot')
+      } else {
+        mappedSlots.set(asset.slot_id, {
+          slot_id: asset.slot_id,
+          asset_id: asset.asset_id,
+          phase: asset.phase,
+          after_text: asset.after_text_ru,
+        })
+      }
+    }
+    // Additional S2E3 Sarvan FAMILY arrival: independent remote WebP GET/SHA
+    // and the owner-approved bilingual paragraph, without editing historical maps.
+    if (storyNumber === 3 && index === 0) {
+      const family = readJson(
+        'docs/qissa/season2/story3_sarvan_family_return_approved_2026-11-11.json',
+      )
+      const asset = family.asset
+      if (
+        family.status !== 'owner_approved_supabase_sha_verified' ||
+        family.owner_decision !== 'approved_after_visual_and_literary_check' ||
+        family.publication_state !== 'unpublished' ||
+        family.remote_integrity_proof?.status !== 'success' ||
+        family.remote_integrity_proof?.actual_sha256 !== asset?.webp?.sha256 ||
+        family.remote_integrity_proof?.actual_bytes !== asset?.webp?.bytes ||
+        family.integrated_ru_blob_sha !== entry.github_blob_sha ||
+        asset?.slot_id !== 'S2-ST3-SARVAN-FAMILY-RETURN' ||
+        asset?.part_id !== part.part_id ||
+        asset?.phase !== 'story_text' ||
+        asset?.kind !== 'shared' ||
+        asset?.hosting !== 'hosted_verified'
+      ) {
+        fail('Story 3: Sarvan family arrival requires owner approval and verified independent remote SHA')
       } else {
         mappedSlots.set(asset.slot_id, {
           slot_id: asset.slot_id,
@@ -580,6 +612,7 @@ console.log('[season2-staging-packages] all six non-live episodes have RU+UZ sta
 
 // Validate the additional bilingual S2E3 slots, gallery and immutable IDs.
 await import('./check-season2-story3-approved-art.mjs')
+await import('./check-season2-story3-family-approved-art.mjs')
 await import('./check-season2-story1-kamran-art.mjs')
 await import('./check-season2-2026-11-11-approved-art.mjs')
 await import('./check-season2-costume-continuity.mjs')
