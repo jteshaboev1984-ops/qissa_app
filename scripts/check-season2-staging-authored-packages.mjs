@@ -8,6 +8,7 @@ if (process.env.GITHUB_ACTIONS === 'true') {
   await import('./verify-season2-story3-approved-webps.mjs')
   await import('./verify-season2-story3-yard-webp.mjs')
   await import('./verify-season2-story1-kamran-webp.mjs')
+  await import('./verify-season2-story1-settlement-story5-fork-webps.mjs')
 }
 
 const root = process.cwd()
