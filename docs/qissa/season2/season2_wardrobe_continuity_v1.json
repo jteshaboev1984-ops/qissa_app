@@ -1,0 +1,211 @@
+{
+  "schema_version": "qissa-seven-roads-s2-wardrobe-continuity-v1",
+  "status": "owner-approved-visual-continuity-addendum",
+  "owner_approval": "2026-11-11: accepted removable practical travel outfit interpretation after full literature/image audit",
+  "language": "ru+uz",
+  "season_number": 2,
+  "publication_state": "unpublished",
+  "changes_runtime": false,
+  "authority": {
+    "base": "docs/qissa/ai/SEVEN_ROADS_WORLD_BIBLE_V2.md",
+    "historical": "docs/qissa/ai/SEVEN_ROADS_WORLD_BIBLE_V1.md",
+    "audit": "docs/qissa/season2/2026-11-11_temur_samira_costume_chronology_audit.md",
+    "addendum": "docs/qissa/ai/SEVEN_ROADS_COSTUME_CONTINUITY_V1.md",
+    "asset_refs": [
+      "QISSA_MASTER_REFERENCE_user_selected.png",
+      "01_heroes_horses_approved.png"
+    ],
+    "approved_art_ids": [
+      "seven_roads_s2_story3_sarvan_market_01_APPROVED",
+      "seven_roads_s2_story4_homecoming_01_APPROVED",
+      "seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED",
+      "seven_roads_s2_story7_return_to_ordan_01_APPROVED",
+      "seven_roads_s2_story7_morning_horses_01_APPROVED"
+    ]
+  },
+  "definitions": {
+    "TEMUR_TRAVEL_BASE": {
+      "character": "temur",
+      "primary": "deep teal knee-length Central Asian riding chapan/tunic with narrow muted-gold trim; beige trousers; brown boots",
+      "layers": "removable practical scarf/cape where context supports; small patterned blue cap typical in outdoor reference, may remove indoors",
+      "belt": "royal Rider belt and sheathed small curved sabre during explicitly official missions",
+      "weathering": "clean/repaired after home time; dusty after travel, do not keep Festival torn right sleeve for weeks"
+    },
+    "SAMIRA_TRAVEL_BASE": {
+      "character": "samira",
+      "primary": "deep burgundy knee-length Central Asian riding chapan/tunic with narrow muted-gold trim; cream/beige trousers; brown boots",
+      "layers": "light removable wrap when needed; long single dark braid, optional subtle circlet as reference-dependent headwear",
+      "weathering": "clean/repaired after home time; appropriate road dust thereafter, not permanently covered in Festival landslide mud"
+    },
+    "SAMIRA_LIGHT_TRAVEL_OVERSET": {
+      "character": "samira",
+      "primary_underlayer": "SAMIRA_TRAVEL_BASE",
+      "visible_overlayer": "loose light cream practical over-tunic/robe, worn over and concealing much of burgundy riding base, plus removable teal travel cloak/long drape; manually woven textile, not an entirely new compulsory base wardrobe",
+      "temporal_scope": "owner-approved S2E5 fork scene ONLY until Rustam road-post preparation interval",
+      "removed_when": "at road post, before departure to old watchtower; documented half-hour regroup/preparation, implied wardrobe action NOT literally described",
+      "forbidden": "do not imply permanent dress replacement, hidden chosen/safe route, modern fabric or new insignia"
+    },
+    "POST_TOWER_TRAVEL_WORN": {
+      "character": "both",
+      "visible": "same practical mission base clothing as after road-post preparation, road dust and creases; no invented bleeding, serious tears or injury",
+      "temporal_scope": "S2E6 tower conflict through S2E7 Ordan evening"
+    },
+    "ORDAN_NEXT_MORNING": {
+      "character": "both",
+      "visible": "cleaner hands/face and brushed garments after sleeping in Ordan; reuse established garments or carried layers",
+      "temuralternate": "existing approved E7 morning image shows muted warm inner tunic plus blue outer wrap: treat as possible garment-layer variation after overnight, NOT a new official permanent primary outfit"
+    }
+  },
+  "checkpoints": [
+    {
+      "id": "home_return_after_festival",
+      "story": 2,
+      "part_id": "story2_part_1_homecoming_aras",
+      "phase": "story_text",
+      "anchor_ru": "Через несколько недель после Праздника мужества дороги снова разошлись.",
+      "anchor_uz": "Jasorat bayramidan bir necha hafta o‘tib, yo‘llar yana ajraldi.",
+      "text_fact": "Several weeks after Festival, separate returns to homes establish opportunities for ordinary clothing care",
+      "visual_policy": "Neither Festival's permanent torn sleeve nor mud-stained outfit is mandatory now; continuity reset is permissible",
+      "state": "home_reset_possible",
+      "certainty": "text-fact + approved-visual-inference"
+    },
+    {
+      "id": "samira_cloak_packed",
+      "story": 2,
+      "part_id": "story2_part_7_samira_check_and_third_track",
+      "phase": "post_choice_text",
+      "anchor_ru": "Следом — вода, немного еды и плащ.",
+      "anchor_uz": "Keyin suv, ozgina ovqat va ustki kiyim.",
+      "text_fact": "Samira prepares travel supplies including an outer garment",
+      "visual_policy": "Removable outerwear established as category; its specific color and construction follow owner-approved visual addendum, not literal prose",
+      "state": "packed_outerwear",
+      "certainty": "text-fact + owner-visual-decision"
+    },
+    {
+      "id": "sarvan_home_wash",
+      "story": 3,
+      "part_id": "story3_part_1_old_yard_niche",
+      "phase": "story_text",
+      "anchor_ru": "— Вы с рассвета в дороге. Сначала умойтесь и поешьте. Рассказывать будете уже за столом.",
+      "anchor_uz": "— Tongdan beri yo‘ldasizlar. Avval yuvinib, ovqatlaninglar. Gapni dasturxon atrofida aytasizlar.",
+      "text_fact": "Samira's mother directs both children to wash and eat after all-day travel; home lodging follows",
+      "visual_policy": "After home/night, clean hands/face; clothing can be brushed or changed, but do not claim instant full wash+dry",
+      "state": "home_rest_cleaning_possible",
+      "certainty": "text-fact + reasonable visual inference"
+    },
+    {
+      "id": "aras_home_overnight",
+      "story": 4,
+      "part_id": "story4_part_1_false_notice_and_route_check",
+      "phase": "story_text",
+      "anchor_ru": "Мать пригласила Самиру остаться на ночь.",
+      "anchor_uz": "Onasi Samirani shu yerda tunab qolishga taklif qildi.",
+      "text_fact": "Samira is invited to overnight at Temur's home in Aras",
+      "visual_policy": "Fresh/refreshed base garments or carried layers can plausibly appear after this home rest",
+      "state": "home_rest_clothing_refresh_possible",
+      "certainty": "text-fact + reasonable visual inference"
+    },
+    {
+      "id": "ordan_mission_departs",
+      "story": 4,
+      "part_id": "story4_part_1_false_notice_and_route_check",
+      "phase": "story_text",
+      "anchor_ru": "На следующее утро Темур и Самира выехали в Ордан.",
+      "anchor_uz": "Ertasi tong Temur va Samira Ordan tomon yo‘lga chiqdi.",
+      "text_fact": "A documented next-morning departure to Ordan begins continuous travel",
+      "visual_policy": "Apply primary travel outfits, carrying weather layers and established riding kit; do not invent change during later road investigation",
+      "state": "mission_travel_base",
+      "certainty": "text-fact + costume canon"
+    },
+    {
+      "id": "fork_owner_approved_light_layer",
+      "story": 5,
+      "part_id": "story5_part_1_false_road",
+      "phase": "story_text",
+      "anchor_ru": "— Они открыты. Выбирайте.",
+      "anchor_uz": "— Ikkalasi ham ochiq. Tanlanglar.",
+      "image_slot_id": "S2-ST5-BLANK-FORK",
+      "asset_id": "seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED",
+      "text_fact": "Temur and Samira are halted with Rahim before two open alternatives; no outcome is established",
+      "visual_policy": "Samira wears light cream removable over-tunic + teal travel cloak OVER established burgundy base, largely covered; Temur keeps teal rider base. Children look toward different roads; adult looks at them. No route safety spoiler",
+      "state": "fork_light_travel_overset",
+      "certainty": "owner-approved visual interpretation, not explicit costume wording in prose"
+    },
+    {
+      "id": "post_rustam_departure",
+      "story": 5,
+      "part_id": "story5_part_1_false_road",
+      "phase": "post_choice_text",
+      "anchor_ru": "Они выехали из поста.",
+      "anchor_uz": "Ular postdan chiqib ketishdi.",
+      "image_slot_id": "S2-ST5-TIERA-REAL-REINFORCEMENT",
+      "asset_id": "seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED",
+      "text_fact": "After post preparation and approximately half an hour the group departs",
+      "visual_policy": "For continuity after E5 fork, Samira may stow removable cream over-tunic and teal cloak during the post's preparation window; later frames resume burgundy primary attire; no outfit-switch scene inserted in the text",
+      "state": "post_departs_burgundy_base",
+      "certainty": "owner-approved visual transition inferred from timed stop"
+    },
+    {
+      "id": "tower_conflict_return",
+      "story": 6,
+      "part_id": "story6_part_2_two_reinforcements",
+      "phase": "post_choice_text",
+      "anchor_ru": "Колонна продолжила путь в Ордан.",
+      "anchor_uz": "Karvon Ordan tomon yo‘lida davom etdi.",
+      "text_fact": "The convoy heads back to Ordan after the encounter; no home change occurs",
+      "visual_policy": "Samira wears burgundy base, Temur teal/established layers; clothing appropriately creased and dusty, not polished ceremonial",
+      "state": "after_tower_travel_worn",
+      "certainty": "text-fact + approved-visual-inference"
+    },
+    {
+      "id": "ordan_evening_arrival",
+      "story": 7,
+      "part_id": "story7_part_1_back_to_ordan",
+      "phase": "story_text",
+      "anchor_ru": "К воротам Орданы колонна подошла уже после заката.",
+      "anchor_uz": "Saf Ordan darvozasiga quyosh botgandan keyin yetib keldi.",
+      "text_fact": "Arrival at Ordan takes place after sunset the same mission",
+      "visual_policy": "Carry travel dust/creases into city; maintain established paired horses, Riders' belts, nonspoiler staging",
+      "state": "after_tower_travel_worn",
+      "certainty": "text-fact + owner-art-continuity"
+    },
+    {
+      "id": "ordan_next_morning_rest",
+      "story": 7,
+      "part_id": "story7_part_1_back_to_ordan",
+      "phase": "story_text",
+      "anchor_ru": "Утром он проснулся от стука ведра во дворе.",
+      "anchor_uz": "Ertalab hovlida chelakning taqillashidan uyg‘ondi.",
+      "text_fact": "Temur slept in Ordan and wakes the following morning",
+      "visual_policy": "Faces can be refreshed, outerwear re-layered; existing E7 morning horses approved look may show Temur's warm inner garment and blue cloak as an overnight layer variation",
+      "state": "ordan_next_morning",
+      "certainty": "text-fact + approved-image-based-interpretation"
+    }
+  ],
+  "nonnegotiable": [
+    "No overwriting or regenerating owner-approved images merely to impose wardrobe rule",
+    "No newly invented permanent alternative primary costume without another explicit owner/canon decision",
+    "No royal badge or sabre whenever the text has explicitly removed them",
+    "No fantasy transformation or immediate full costume swap in the battle",
+    "Do not change characters' faces, ages, braid, horse identity and coat or saddle blanket",
+    "No scene/choice spoiler from costume or geography",
+    "No Season 2 publication flags or runtime media changes from editorial sidecar"
+  ],
+  "editorial_preflight_fields": [
+    "story_number",
+    "part_id",
+    "phase",
+    "after_text_ru",
+    "after_text_uz",
+    "narrative_day_and_time",
+    "present_characters",
+    "primary_outfit",
+    "removable_layers",
+    "wear_state",
+    "last_home_or_rest_anchor",
+    "horse_pairings",
+    "reference_art",
+    "plot_spoiler_risk",
+    "owner_review_status"
+  ]
+}
