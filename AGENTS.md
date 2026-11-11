@@ -126,3 +126,21 @@ At the end of each task, report:
 - what was intentionally not implemented;
 - commands run;
 - remaining risks.
+
+## Development chat coordination (staged; not product Story Agent)
+
+After the architect activates the future ChatGPT Projects workflow, follow docs/ops/CHAT_PROTOCOL.md and docs/ops/WORKSTREAMS.md for chat commands, workstream ownership and verified GitHub handoffs. docs/ops/PROJECT_INSTRUCTIONS.md contains ready-to-paste ChatGPT Project instructions; committing these files does not configure ChatGPT automatically.
+
+Keep the existing product, literary and child-safety restrictions above. For actual current implementation and permitted release status, also verify the later owner-approved closed-beta docs, release/branch strategy, current PR/CI, and the latest relevant Issue **comments**. Never infer current status from an older narrative or a static label. On material conflict, surface it rather than silently broadening product scope.
+
+These coordination rules do not authorize new paid Story AI/TTS calls, editing main, story publication, production deployments or family-data operations. Continue existing chats until the architect explicitly performs cutover.
+
+## Interpreting historical MVP instructions against current implementation
+
+Some sections above describe the **initial mock-only prototype**, not the currently approved implementation. Do not reverse existing approved behavior on the basis of older text.
+
+- "safe AI-only story generation" describes the original AI-generator concept, **not** all of present QISSA: the authored Seven Roads line exists separately from `product/ai-generator-legacy`. Consult `docs/qissa/2026-09-25_PRODUCT_BRANCH_STRATEGY.md` and owner-approved canon/release checkpoints.
+- "Do not connect real AI, TTS, Supabase, or payments unless explicitly requested" was an **initial integration restriction**, not proof that a backend is absent. Approved Supabase Edge Functions `story-generate`, `story-state` and `audio-request` are already deployed, with a guarded fallback/listening flow. Preserve them. No NEW paid Story AI/provider TTS, payment processing or production integration is authorized without owner GO.
+- Original mock-only QA notes and early beta plans must be checked against later owner-approved launch records, release branches and story source locks. Current code for an unreleased world, season, language or provider is not evidence of public release.
+- Published story versions and choice IDs, World Bible V2, approved text source hashes, child-safety policies and the Seven Roads release-branch strategy are binding. A GitHub merge does not itself prove paid Story AI or external family-beta acceptance.
+- If apparent product-policy conflicts remain after checking newer approved documents, surface exact evidence to the architect; do not silently rewrite or discard safety restrictions.
