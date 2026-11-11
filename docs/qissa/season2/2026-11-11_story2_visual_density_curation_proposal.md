@@ -53,7 +53,7 @@ Do not add pictures to the other two Story 2 decisions or to other episodes for 
 1. Use a **versioned reversible runtime visual-curation allowlist** for Story 2. Do not delete image bytes from Supabase, approved PNG/WebP from Library, registry URLs, old V4 source-image mappings, owners' approvals or image-anchor provenance.
 2. Preserve full canonical RU/UZ JSON prose, names, choice IDs, state patches, base package and historical image manifests. Apply curation to **both language render paths** after canonical validation and before reader + gallery construction, keeping the displayed story version/progress keys unchanged.
 3. Update derived displayed-image counts only for the curated view. Distinguish archived **28 approved** from **15 currently active distinct**; all 28 original files should stay addressable and recoverable.
-4. Ensure disabled images do not appear in Reading, Gallery, "already seen" backfill, replay/resume or Ukrainian/localization fallbacks; never leak unselected branch art. Listening remains unchanged; shared Season 2 cover unchanged.
+4. Ensure disabled images do not appear in Reading, Gallery, "already seen" backfill, replay/resume or Uzbek localization/fallback; never leak unselected branch art. Listening remains unchanged; shared Season 2 cover unchanged.
 5. Verify all four Choice3×Choice4 combinations in RU and UZ; exact anchor sequence; rendered viewport; Gallery unlocking; resume; TypeScript; build; Story 2 smoke, Season 2 smoke and CI. Do not merge until all required checks pass **and the owner approves the exact curation**.
 
 ## 6. Global editorial guidance, not an arithmetic quota
