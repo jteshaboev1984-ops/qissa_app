@@ -68,7 +68,7 @@ export function SeasonOverview({
       const priorEpisodesCompleted = episodeEntries
         .slice(0, index)
         .every((previous) => previous.completed)
-      const legacyEpisode2Resume = item.entry.number === 2
+      const legacyEpisode2Resume = Boolean(item.progress)
 
       return priorEpisodesCompleted || legacyEpisode2Resume
     }
@@ -145,12 +145,12 @@ export function SeasonOverview({
           <div className="px-1">
             <p className="q-label mb-1">{copy.openSeasonPath}</p>
             <h2 className="q-heading text-2xl font-bold">
-              {language === 'uz' ? '7 qism' : '7 серий'}
+              {language === 'uz' ? `${episodeEntries.length} qism` : `${episodeEntries.length} серий`}
             </h2>
             <p className="mt-1 text-sm leading-6 text-[#6c6252]">
               {language === 'uz'
-                ? 'Bitta umumiy hikoya yetti qismda davom etadi. Har bir qismdagi o‘qish joyi va tanlovlar alohida saqlanadi.'
-                : 'Одна общая история продолжается через семь серий. Прогресс чтения и выборы каждой серии сохраняются.'}
+                ? 'Bitta umumiy hikoya bir necha qismda davom etadi. Har bir qismdagi o‘qish joyi va tanlovlar alohida saqlanadi.'
+                : 'Одна общая история продолжается в нескольких сериях. Прогресс чтения и выборы каждой серии сохраняются.'}
             </p>
           </div>
 
@@ -159,8 +159,7 @@ export function SeasonOverview({
               const priorEpisodesCompleted = episodeEntries
                 .slice(0, index)
                 .every((previous) => previous.completed)
-              const legacyEpisode2Resume =
-                item.entry.number === 2 && Boolean(item.progress)
+              const legacyEpisode2Resume = Boolean(item.progress)
               const available = priorEpisodesCompleted || legacyEpisode2Resume
               const current =
                 !allCompleted &&
@@ -334,17 +333,22 @@ export function SeasonOverview({
     )
   }
   const progress = authoredStoryPersistence.load(story)
-  const reading = sevenRoadsStory1ReadingState(progress)
-  const coverUrl = resolveAuthoredStoryAssetUrl(
-    story.cover_illustration.asset_id,
-    story.cover_illustration.runtime_url,
-  )
+  const reading = season.number === 1
+    ? sevenRoadsStory1ReadingState(progress)
+    : !progress
+      ? { state: 'new' as const, currentEpisode: 1, completedEpisodes: 0 }
+      : progress.completed
+        ? { state: 'completed' as const, currentEpisode: story.parts.length, completedEpisodes: story.parts.length }
+        : { state: 'in_progress' as const, currentEpisode: progress.current_part_index + 1, completedEpisodes: progress.current_part_index }
+  const coverUrl = season.coverAssetId
+    ? resolveAuthoredStoryAssetUrl(season.coverAssetId, null)
+    : resolveAuthoredStoryAssetUrl(story.cover_illustration.asset_id, story.cover_illustration.runtime_url)
 
   const primaryLabel =
     reading.state === 'new'
       ? copy.startSeason
       : reading.state === 'completed'
-        ? copy.openSeasonResult
+        ? (season.number === 1 ? copy.openSeasonResult : copy.open)
         : copy.continue
 
   return (
@@ -389,9 +393,15 @@ export function SeasonOverview({
       <section className="relative z-10 rounded-t-4xl bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 sm:px-5">
         <div className="px-1">
           <p className="q-label mb-1">{copy.openSeasonPath}</p>
-          <h2 className="q-heading text-2xl font-bold">{copy.sixEpisodes}</h2>
+          <h2 className="q-heading text-2xl font-bold">
+            {season.number === 1 ? copy.sixEpisodes : language === 'uz' ? `${seasonStory.episodes.length} qism` : `${seasonStory.episodes.length} частей`}
+          </h2>
           <p className="mt-1 text-sm leading-6 text-[#6c6252]">
-            {copy.seasonDescription}
+            {season.number === 1
+              ? copy.seasonDescription
+              : language === 'uz'
+                ? 'Har bir qismdagi o‘qish joyi va tanlovlar saqlanadi.'
+                : 'Прогресс чтения и выборы сохраняются в каждой части.'}
           </p>
           <p className="mt-2 text-xs leading-5 text-[#817662]">
             {copy.seasonReplayHint}
