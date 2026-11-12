@@ -9,6 +9,7 @@ import { sevenRoadsUiAssets } from '../data/sevenRoadsUiAssets'
 import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import { authoredIllustrationDiscovery } from '../lib/authoredIllustrationDiscovery'
+import { isSeasonCompleted, isSeasonUnlocked } from '../features/publishedStories/fourSeasonUnlock'
 import {
   formatSevenRoadsEpisodeLabel,
   formatSevenRoadsEpisodeProgress,
