@@ -129,16 +129,16 @@ export function PublishedStoriesShell({
 
   const backgroundUrl = tab === 'home' ? sevenRoadsUiAssets.home : sevenRoadsUiAssets.library
 
+
   const homeAction = (() => {
     if (reading.state === 'new') {
       return {
         eyebrow: language === 'uz' ? 'Hikoyani boshlash' : 'Начать историю',
         title: sevenRoadsSeason1.title,
         subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, 1),
-        action: () => onOpenSeason(sevenRoadsSeason1.number),
+        action: () => onOpenSeason(1),
       }
     }
-
     if (reading.state !== 'completed') {
       return {
         eyebrow: copy.continue,
@@ -147,62 +147,30 @@ export function PublishedStoriesShell({
         action: onContinueStory,
       }
     }
-
-    if (season2 && season2Primary?.authoredStory) {
-      if (season2AllCompleted) {
-        return {
-          eyebrow: language === 'uz' ? '2-mavsum tugadi' : 'Сезон 2 завершён',
-          title: formatSevenRoadsSeasonLabel(language, 2),
-          subtitle:
-            language === 'uz'
-              ? '7 qismning barchasi tugadi'
-              : 'Все 7 серий завершены',
-          action: () => onOpenSeason(2),
-        }
-      }
-
-      if (season2StartedIncomplete) {
-        return {
-          eyebrow: copy.continue,
-          title:
-            season2StartedIncomplete.entry.title ??
-            season2StartedIncomplete.authoredStory?.title ??
-            formatSevenRoadsSeasonLabel(language, 2),
-          subtitle: formatSevenRoadsSeasonEpisodeContext(
-            language,
-            2,
-            season2StartedIncomplete.entry.number,
-            7,
-          ),
-          action: () => onOpenSeason(2),
-        }
-      }
-
-      if (season2CompletedCount > 0 && season2FirstIncomplete) {
-        return {
-          eyebrow: language === 'uz' ? 'Keyingi qism' : 'Следующая серия',
-          title:
-            season2FirstIncomplete.entry.title ??
-            season2FirstIncomplete.authoredStory?.title ??
-            formatSevenRoadsSeasonLabel(language, 2),
-          subtitle: formatSevenRoadsSeasonEpisodeContext(
-            language,
-            2,
-            season2FirstIncomplete.entry.number,
-            7,
-          ),
-          action: () => onOpenSeason(2),
-        }
-      }
-
+    if (homeSeason && homeActiveStory) {
+      const done = isSeasonCompleted(homeSeason)
+      const activeProgress = homeActiveStory.authoredStory
+        ? authoredStoryPersistence.load(homeActiveStory.authoredStory)
+        : null
+      const total = homeSeason.presentation === 'single-cover-episode-list'
+        ? homeSeasonStories.length
+        : homeActiveStory.authoredStory?.parts.length ?? 0
+      const position = homeSeason.presentation === 'single-cover-episode-list'
+        ? homeActiveStory.number
+        : Math.min(total, (activeProgress?.current_part_index ?? 0) + 1)
       return {
-        eyebrow: language === 'uz' ? 'Yangi mavsum' : 'Новый сезон',
-        title: formatSevenRoadsSeasonLabel(language, 2),
-        subtitle: language === 'uz' ? '7 qism' : '7 серий',
-        action: () => onOpenSeason(2),
+        eyebrow: done
+          ? (language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён')
+          : activeProgress
+            ? copy.continue
+            : (language === 'uz' ? 'Keyingi mavsum' : 'Следующий сезон'),
+        title: homeSeason.title ?? formatSevenRoadsSeasonLabel(language, homeSeason.number),
+        subtitle: done
+          ? (language === 'uz' ? 'Barcha qismlar tugadi' : 'Все части завершены')
+          : formatSevenRoadsSeasonEpisodeContext(language, homeSeason.number, position, total),
+        action: () => onOpenSeason(homeSeason.number),
       }
     }
-
     return {
       eyebrow: language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён',
       title: sevenRoadsSeason1.title,
