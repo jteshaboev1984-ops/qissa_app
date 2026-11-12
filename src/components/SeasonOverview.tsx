@@ -394,7 +394,7 @@ export function SeasonOverview({
         <div className="px-1">
           <p className="q-label mb-1">{copy.openSeasonPath}</p>
           <h2 className="q-heading text-2xl font-bold">
-            {season.number === 1 ? copy.sixEpisodes : language === 'uz' ? `${seasonStory.episodes.length} qism` : `${seasonStory.episodes.length} частей`}
+            {season.number === 1 ? copy.sixEpisodes : language === 'uz' ? `${seasonStory.episodes.length} qism` : seasonStory.episodes.length === 3 ? '3 части' : `${seasonStory.episodes.length} частей`}
           </h2>
           <p className="mt-1 text-sm leading-6 text-[#6c6252]">
             {season.number === 1
