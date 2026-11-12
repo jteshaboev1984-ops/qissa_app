@@ -43,8 +43,8 @@ for (const text of [
   'getSeasonStoryByNumber(season, selectedStoryNumber)',
   'seasonStory?.authoredStory',
   'onLanguageChange={changeLanguage}',
-  "nextSeason.number === 2",
-  "if (!firstStoryProgress?.completed) return",
+  "isSeasonUnlocked(seasons, nextSeason.number)",
+  "if (!isSeasonUnlocked(seasons, nextSeason.number)) return",
   "nextStory?.completionScope === 'story' ? 'story' : 'season'",
   "authoredStoryPersistence.clearAll()",
   "authoredReadingPosition.clearAll()",
@@ -265,7 +265,7 @@ requireText('season overview', overview, "season.presentation === 'single-cover-
 requireText('season overview', overview, 'seasonStory?.authoredStory')
 requireText('season overview', overview, 'seasonStory.episodes.map')
 requireText('season overview', overview, '{copy.openSeasonPath}')
-requireText('season overview', overview, '{copy.sixEpisodes}')
+requireText('season overview', overview, 'copy.sixEpisodes')
 requireText('season overview', overview, 'resolveAuthoredStoryAssetUrl')
 requireText('season overview', overview, 'sticky top-0 z-30')
 requireText('season overview', overview, "publishedStories.length > 1 || seasonStory.completionScope === 'story'")
