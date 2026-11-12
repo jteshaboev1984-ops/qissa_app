@@ -1,0 +1,105 @@
+{
+  "version": "four-season-editorial-timeline-draft-1",
+  "decision_date": "2026-11-12",
+  "scope": "seven_roads",
+  "status": "owner-approved-four-season-order; targeted wording draft; not wired or published",
+  "historical_product_model": "docs/qissa/season2/season2_product_model.json",
+  "canonical_literary_snapshots": "immutable; no changes",
+  "seasons": [
+    {
+      "number": 1,
+      "title_ru": "Праздник мужества",
+      "title_uz": "Jasorat bayrami",
+      "source_stories": [
+        "seven_roads_prazdnik_muzhestva"
+      ],
+      "display_episodes": 6,
+      "internal_parts": 7,
+      "narrative_unique_images": 26,
+      "chronological_position": "baseline"
+    },
+    {
+      "number": 2,
+      "title_ru": "Тайна восточного каравана",
+      "title_uz": "Sharqiy karvon siri",
+      "source_stories": [
+        "seven_roads_tayna_vostochnogo_karavana"
+      ],
+      "display_episodes": 10,
+      "internal_parts": 10,
+      "narrative_unique_images": 28,
+      "chronological_position": "several weeks after season 1; ends on departure morning D0"
+    },
+    {
+      "number": 3,
+      "title_ru": "Королевское серебро",
+      "title_uz": "Qirollik kumushi",
+      "source_stories": [
+        "seven_roads_korolevskoe_serebro"
+      ],
+      "display_episodes": 3,
+      "internal_parts": 3,
+      "narrative_unique_images": 4,
+      "chronological_position": "D1 silver convoy ambush and Kamran arrest; D2 father learns and chooses to target the road"
+    },
+    {
+      "number": 4,
+      "title_ru": null,
+      "title_uz": null,
+      "working_label_ru": "Продолжение расследования",
+      "source_stories": [
+        "seven_roads_dve_bashni",
+        "seven_roads_chelovek_kotorogo_zhdut",
+        "seven_roads_lozhnaya_doroga",
+        "seven_roads_dve_podmogi",
+        "seven_roads_obratno_v_ordan"
+      ],
+      "display_episodes": 5,
+      "internal_parts": 9,
+      "narrative_unique_images": 22,
+      "chronological_position": "D3 arrival Sarvan; then old yard, return to Aras, Ordan convoy, attempted release and return"
+    }
+  ],
+  "draft_wording_replacements": [
+    {
+      "season": 3,
+      "path_ru": "src/data/authored/staging/season2Story1RoyalSilver.ru.json",
+      "path_uz": "src/data/authored/staging/season2Story1RoyalSilver.uz.json",
+      "part_id": "story1_part_1_royal_silver_ambush",
+      "field": "story_text",
+      "ru": {
+        "from": "Прошла примерно неделя после Праздника мужества.",
+        "to": "На следующий день после отъезда Темура и Самиры из Араса в Сарван в другой части королевства началась история, о которой они пока ничего не знали."
+      },
+      "uz": {
+        "from": "Jasorat bayramidan taxminan bir hafta o‘tdi.",
+        "to": "Temur va Samira Arasdan Sarvanga jo‘nab ketganlarining ertasi kuni qirollikning boshqa bir joyida ular hali bilmagan voqea boshlandi."
+      }
+    },
+    {
+      "season": 4,
+      "path_ru": "src/data/authored/staging/season2Story3TwoTowers.ru.json",
+      "path_uz": "src/data/authored/staging/season2Story3TwoTowers.uz.json",
+      "part_id": "story3_part_1_old_yard_niche",
+      "field": "story_text",
+      "ru": {
+        "from": "К вечеру дорога поднялась на последний невысокий холм.",
+        "to": "На третий день после отъезда из Араса дорога к вечеру поднялась на последний невысокий холм."
+      },
+      "uz": {
+        "from": "Kechga yaqin yo‘l oxirgi past tepalikka ko‘tarildi.",
+        "to": "Arasdan jo‘nab ketganlarining uchinchi kuni, kechga yaqin yo‘l oxirgi past tepalikka ko‘tarildi."
+      }
+    }
+  ],
+  "release_safeguards": {
+    "no_runtime_changes": true,
+    "do_not_publish": true,
+    "do_not_edit_historical_literary_or_approval_hashes": true,
+    "keep_story_ids_versions_choices_and_progress": true,
+    "do_not_remove_images": true,
+    "cover_plan": "Season 2 legacy story cover available; separate Season 3/4 cover decision required before public switch",
+    "ui_regressions": "Legacy two-season browser paths and season2 checks must be migrated deliberately, not blindly renamed",
+    "cross_season_choice": "Season 4 'Две башни' inherits Season 2 Sarvan choice; 'Две подмоги' inherits Season 4 'Ложная дорога' choice"
+  }
+}
