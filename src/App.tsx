@@ -15,6 +15,7 @@ import { publishedStoriesConsent } from './lib/publishedStoriesConsent'
 import { authoredStoryPersistence } from './lib/authoredStoryPersistence'
 import { authoredReadingPosition } from './lib/authoredReadingPosition'
 import { authoredIllustrationDiscovery } from './lib/authoredIllustrationDiscovery'
+import { isSeasonUnlocked } from './features/publishedStories/fourSeasonUnlock'
 import { sevenRoadsLanguagePreference } from './lib/sevenRoadsLanguagePreference'
 import { sevenRoadsReaderPreferences } from './lib/sevenRoadsReaderPreferences'
 import type { AuthoredStoryPackage } from './features/authoredStory/types'
@@ -215,26 +216,28 @@ function App() {
   const episodeTitles = seasonStory.episodes.map((episode) => episode.title)
 
   const inheritedSelectedChoices = useMemo<Record<string, string>>(() => {
-    if (season.number !== 2) return {}
+    if (season.number !== 4) return {}
 
     const inheritedFrom =
-      seasonStory.number === 3
-        ? { episode: 2, decisionId: 'story2_choice_3_sarvan_check' }
-        : seasonStory.number === 6
-          ? { episode: 5, decisionId: 'story5_choice_1_road_post_approach' }
+      seasonStory.number === 1
+        ? { sourceSeason: 2, sourceStory: 1, decisionId: 'story2_choice_3_sarvan_check' }
+        : seasonStory.number === 4
+          ? { sourceSeason: 4, sourceStory: 3, decisionId: 'story5_choice_1_road_post_approach' }
           : null
 
     if (!inheritedFrom) return {}
-
-    const sourceStory = getSeasonStoryByNumber(season, inheritedFrom.episode)?.authoredStory
+    const sourceSeason = seasons.find((item) => item.number === inheritedFrom.sourceSeason)
+    if (!sourceSeason) return {}
+    const sourceStory = getSeasonStoryByNumber(
+      sourceSeason,
+      inheritedFrom.sourceStory,
+    )?.authoredStory
     if (!sourceStory) return {}
 
     const sourceProgress = authoredStoryPersistence.load(sourceStory)
     const inheritedChoice = sourceProgress?.selected_choices[inheritedFrom.decisionId]
-    if (!inheritedChoice) return {}
-
-    return { [inheritedFrom.decisionId]: inheritedChoice }
-  }, [season, seasonStory.number])
+    return inheritedChoice ? { [inheritedFrom.decisionId]: inheritedChoice } : {}
+  }, [season, seasonStory.number, seasons])
 
   const changeLanguage = (nextLanguage: typeof language) => {
     setLanguage(nextLanguage)
@@ -298,7 +301,7 @@ function App() {
             completionScope={seasonStory.completionScope}
             readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
-            showCover={season.presentation !== 'single-cover-episode-list'}
+            showCover={season.number === 1}
             completionSummary={
               seasonStory.completionScope === 'season'
                 ? copy.completionSummary
@@ -347,7 +350,7 @@ function App() {
             completionScope={seasonStory.completionScope}
             readerUnit={seasonStory.readerUnit}
             episodeTitles={episodeTitles}
-            showCover={season.presentation !== 'single-cover-episode-list'}
+            showCover={season.number === 1}
             completionSummary={
               seasonStory.completionScope === 'season'
                 ? copy.completionSummary
@@ -365,7 +368,7 @@ function App() {
             onBack={() => {
               const returnToSeason =
                 requestedEpisodeNumber != null ||
-                season.presentation === 'single-cover-episode-list'
+                season.number !== 1
               navigateBack(
                 returnToSeason
                   ? { view: 'season', requestedEpisodeNumber: null }
@@ -459,14 +462,7 @@ function App() {
           ) ?? season
         const nextStory = getPrimaryPublishedSeasonStory(nextSeason)
 
-        if (nextSeason.number === 2) {
-          const firstSeason = getSevenRoadsSeason1(language)
-          const firstStory = getPrimaryPublishedSeasonStory(firstSeason)
-          const firstStoryProgress = firstStory?.authoredStory
-            ? authoredStoryPersistence.load(firstStory.authoredStory)
-            : null
-          if (!firstStoryProgress?.completed) return
-        }
+        if (!isSeasonUnlocked(seasons, nextSeason.number)) return
 
         navigateTo({
           view: nextStory?.completionScope === 'story' ? 'story' : 'season',
