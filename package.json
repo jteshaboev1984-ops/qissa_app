@@ -63,6 +63,7 @@
     "check:season2-story1-uz": "node scripts/check-season2-story1-uz.mjs",
     "check:season2-uz-overlays": "node scripts/check-season2-uz-overlays.mjs",
     "check:season2-release-wiring": "node scripts/check-season2-release-wiring.mjs",
+    "check:four-seasons": "node scripts/check-four-season-layout.mjs",
     "smoke:season2-release-browser": "node scripts/smoke-season2-release-browser.mjs",
     "ops:upload-season2-tier-a-assets": "node scripts/upload-season2-tier-a-runtime-assets.mjs",
     "smoke:story2-assets-live": "node scripts/smoke-story2-assets-live.mjs",
