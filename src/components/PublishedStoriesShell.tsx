@@ -33,6 +33,7 @@ type LibraryNotice =
   | { kind: 'locked-season'; seasonNumber: number }
   | {
       kind: 'locked-art'
+      seasonNumber: number
       episodeNumber: number
       storyNumber?: number
       storyAsEpisode?: boolean
@@ -257,8 +258,8 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? 'Bu mavsum “Jasorat bayrami” tugagandan keyin ochiladi.'
-                    : 'Этот сезон откроется после завершения «Праздника мужества».'}
+                    ? 'Bu mavsum oldingi mavsum tugagandan keyin ochiladi.'
+                    : 'Этот сезон откроется после завершения предыдущего сезона.'}
                 </p>
                 <button type="button" className="q-primary mt-5 w-full" onClick={closeNotice}>
                   {language === 'uz' ? 'Tushunarli' : 'Понятно'}
@@ -272,7 +273,7 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? `Bu lavha ${notice.storyNumber ? (notice.storyAsEpisode ? `2-mavsumning ${notice.storyNumber}-qismida, ` : `${notice.storyNumber}-hikoyada, `) : ''}${notice.readerUnit === 'part' ? `ichki ${notice.episodeNumber}-qismdagi` : `${notice.episodeNumber}-qismdagi`} shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
+                    ? `Bu lavha ${notice.storyNumber ? (notice.storyAsEpisode ? `${notice.seasonNumber}-mavsumning ${notice.storyNumber}-qismida, ` : `${notice.storyNumber}-hikoyada, `) : ''}${notice.readerUnit === 'part' ? `ichki ${notice.episodeNumber}-qismdagi` : `${notice.episodeNumber}-qismdagi`} shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
                     : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? (notice.storyAsEpisode ? `серии ${notice.storyNumber}, ` : `сказки ${notice.storyNumber}, `) : ''}${notice.readerUnit === 'part' ? `части ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
@@ -460,7 +461,7 @@ export function PublishedStoriesShell({
 
                       const seasonStoryProgress =
                         authoredStoryPersistence.load(authoredStory)
-                      const locked = season.number === 2 && !season2Unlocked
+                      const locked = !isSeasonUnlocked(sevenRoadsSeasons, season.number)
                       const publishedSeasonStories = getPublishedSeasonStories(season)
                       const singleCoverEpisodeList =
                         season.presentation === 'single-cover-episode-list'
@@ -486,7 +487,7 @@ export function PublishedStoriesShell({
                           const priorEpisodesCompleted = seasonEpisodeStates
                             .slice(0, index)
                             .every((previous) => previous.completed)
-                          const legacyEpisode2Resume = item.entry.number === 2
+                          const legacyEpisode2Resume = Boolean(item.progress)
                           return priorEpisodesCompleted || legacyEpisode2Resume
                         }) ??
                         seasonEpisodeStates.find((item) => !item.completed) ??
@@ -614,7 +615,7 @@ export function PublishedStoriesShell({
                         .map((season) => {
                           const gallery = buildSeasonGallery(season)
                           const primaryGalleryStory = getPrimaryPublishedSeasonStory(season)
-                          const galleryLocked = season.number === 2 && !season2Unlocked
+                          const galleryLocked = !isSeasonUnlocked(sevenRoadsSeasons, season.number)
                           const galleryTitle =
                             gallery.storyCount === 1
                               ? primaryGalleryStory?.title ??
@@ -831,6 +832,7 @@ export function PublishedStoriesShell({
                                                       onClick={() =>
                                                         setNotice({
                                                           kind: 'locked-art',
+                                                          seasonNumber: season.number,
                                                           episodeNumber: episode.episodeNumber,
                                                           storyNumber:
                                                             gallery.storyCount > 1
