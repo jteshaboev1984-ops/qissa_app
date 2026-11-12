@@ -433,7 +433,7 @@ try {
   await reloadAndWait()
   await waitFor(bodyHas('Королевское серебро'), 'Season 3 home unlocked')
   await clickButtonContaining('Королевское серебро')
-  await waitFor(bodyHas('3 частей'), 'Season 3 three-part overview')
+  await waitFor(bodyHas('3 части'), 'Season 3 three-part overview')
   await clickButtonContaining('Начать сезон')
   await waitFor(bodyHas('На следующий день после отъезда Темура и Самиры из Араса в Сарван'),
     'Russian Season 3 chronological introduction')
