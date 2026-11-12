@@ -63,43 +63,24 @@ export function PublishedStoriesShell({
   const story = season1Story?.authoredStory ?? null
   const progress = story ? authoredStoryPersistence.load(story) : null
   const reading = sevenRoadsStory1ReadingState(progress)
-  const season2 = sevenRoadsSeasons.find((season) => season.number === 2) ?? null
-  const season2Stories = season2 ? getPublishedSeasonStories(season2) : []
-  const season2Entries = season2Stories.map((entry) => {
-    const authoredStory = entry.authoredStory
-    const progress = authoredStory
-      ? authoredStoryPersistence.load(authoredStory)
-      : null
-    return {
-      entry,
-      authoredStory,
-      progress,
-      completed: Boolean(progress?.completed),
-    }
-  })
-  const season2Unlocked = reading.state === 'completed'
-  const season2AllCompleted =
-    season2Entries.length === 7 && season2Entries.every((item) => item.completed)
-  const season2CompletedCount = season2Entries.filter((item) => item.completed).length
-  const season2CanResumeAt = (index: number) => {
-    const item = season2Entries[index]
-    if (!item?.progress || item.completed) return false
 
-    const priorEpisodesCompleted = season2Entries
-      .slice(0, index)
-      .every((previous) => previous.completed)
-    const legacyEpisode2Resume = item.entry.number === 2
-
-    return priorEpisodesCompleted || legacyEpisode2Resume
-  }
-  const season2StartedIncomplete =
-    season2Entries.find((item, index) => !item.completed && season2CanResumeAt(index)) ?? null
-  const season2FirstIncomplete =
-    season2Entries.find((item) => !item.completed) ?? null
-  const season2Primary =
-    season2StartedIncomplete ??
-    season2FirstIncomplete ??
-    season2Entries.at(-1) ??
+  const unlockedLaterSeasons = sevenRoadsSeasons.filter(
+    (season) => season.number > 1 && isSeasonUnlocked(sevenRoadsSeasons, season.number),
+  )
+  const homeSeason =
+    unlockedLaterSeasons.find((season) => !isSeasonCompleted(season)) ??
+    unlockedLaterSeasons.at(-1) ??
+    null
+  const homeSeasonStories = homeSeason ? getPublishedSeasonStories(homeSeason) : []
+  const homeActiveStory =
+    homeSeasonStories.find((entry) => {
+      const current = entry.authoredStory && authoredStoryPersistence.load(entry.authoredStory)
+      return current && !current.completed
+    }) ??
+    homeSeasonStories.find((entry) =>
+      !entry.authoredStory || !authoredStoryPersistence.load(entry.authoredStory)?.completed,
+    ) ??
+    homeSeasonStories.at(-1) ??
     null
 
   const [libraryView, setLibraryView] = useState<LibraryView>('seasons')
