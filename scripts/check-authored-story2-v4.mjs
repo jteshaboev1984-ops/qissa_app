@@ -485,11 +485,11 @@ for (const [key, expected] of Object.entries({
   }
 }
 
-if (!seasonsSource.includes("id: 'seven-roads-season-2'")) {
+if (!seasonsSource.includes('getSevenRoadsSeason2')) {
   fail('Season 2 shell entry is missing')
 }
-if (!seasonsSource.includes("id: `seven-roads-season-2-story-${index + 1}`")) {
-  fail('Season 2 must derive stable episode wrapper ids from episode order')
+if (!seasonsSource.includes('singlePackageSeason(')) {
+  fail('Season 2 must use a stable single-package season wrapper')
 }
 if (!seasonsSource.includes("status: 'published'")) {
   fail('Story 2 release requires published Season 2/story state')
@@ -497,8 +497,8 @@ if (!seasonsSource.includes("status: 'published'")) {
 if (!seasonsSource.includes("taynaVostochnogoKaravanaV4ByLanguage[language]")) {
   fail('Season 2 must resolve the published Story 2 package by language')
 }
-if (!seasonsSource.includes("completionScope: 'episode'")) {
-  fail('Season 2 Story 2 wrapper must use episode-level completion semantics')
+if (!seasonsSource.includes("completionScope: 'season'")) {
+  fail('Season 2 Story 2 wrapper must now use season-level completion semantics')
 }
 if (!seasonsSource.includes("readerUnit: 'part'")) {
   fail('Story 2 must retain part-level reader progress')
@@ -536,5 +536,5 @@ console.log('[story2-v4] 5 deferred Choice-3 payoff segments')
 console.log('[story2-v4] all 16 paths preserve the exact 26-image reader sequence without branch leaks')
 console.log('[story2-v4] Choice 3 deferred payoff text is present only on the selected path')
 console.log('[story2-v4] critical road-seal canon and app-layout manifest are locked')
-console.log('[story2-v4] Season 2 publishes Story 2 as episode #2 with RU/UZ package resolution')
-console.log('[story2-v4] Season 2 uses episode-level completion with part-level reader progress; standalone preview retains story-scope completion')
+console.log('[story2-v4] Season 2 presents Story 2 as a standalone 10-part season with RU/UZ resolution')
+console.log('[story2-v4] Season 2 uses season-level completion with part-level reader progress; standalone preview retains story-scope completion')
