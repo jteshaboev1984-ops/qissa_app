@@ -589,7 +589,7 @@ export function PublishedStoriesShell({
                             </p>
                             <h3 className="mt-1 font-serif text-[1.75rem] font-bold leading-[1.05] text-white drop-shadow-md">
                               {singleCoverEpisodeList
-                                ? formatSevenRoadsSeasonLabel(language, season.number)
+                                ? season.title ?? formatSevenRoadsSeasonLabel(language, season.number)
                                 : season.title ?? primaryStory.title ?? authoredStory.title}
                             </h3>
                           </div>
