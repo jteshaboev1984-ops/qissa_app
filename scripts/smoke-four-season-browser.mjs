@@ -442,7 +442,7 @@ try {
   await reloadAndWait()
   await waitFor(bodyHas('Qirollik kumushi'), 'Season 3 Uzbek home')
   await clickButtonContaining('Qirollik kumushi')
-  await clickButtonContaining('Mavsumni boshlash')
+  await clickButtonContaining('Davom etish')
   await waitFor(bodyHas('Temur va Samira Arasdan Sarvanga jo‘nab ketganlarining ertasi kuni'),
     'Uzbek Season 3 chronological introduction')
 
