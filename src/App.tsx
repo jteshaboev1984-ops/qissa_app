@@ -220,7 +220,7 @@ function App() {
 
     const inheritedFrom =
       seasonStory.number === 1
-        ? { sourceSeason: 2, sourceStory: 1, decisionId: 'story2_choice_3_sarvan_check' }
+        ? { sourceSeason: 3, sourceStory: 1, decisionId: 'story2_choice_3_sarvan_check' }
         : seasonStory.number === 4
           ? { sourceSeason: 4, sourceStory: 3, decisionId: 'story5_choice_1_road_post_approach' }
           : null
