@@ -408,7 +408,7 @@ try {
   await waitFor(bodyHas('Тайна восточного каравана'), 'Season 2 resume home')
   await clickButtonContaining('Библиотека')
   await waitFor(bodyHas('Королевское серебро'), 'four season cards')
-  await waitFor(bodyHas('Продолжение расследования'), 'Season 4 card')
+  await waitFor(bodyHas('Королевский пленник'), 'Season 4 card')
   await assertViewportMatrix('four-season library')
   await clickButtonContaining('Королевское серебро')
   await waitFor(bodyHas('Этот сезон откроется после завершения предыдущего сезона.'),
@@ -451,8 +451,8 @@ try {
     completed: true, currentPartIndex: episode1.parts.length - 1,
   }))
   await reloadAndWait()
-  await waitFor(bodyHas('Продолжение расследования'), 'Season 4 home unlocked')
-  await clickButtonContaining('Продолжение расследования')
+  await waitFor(bodyHas('Королевский пленник'), 'Season 4 home unlocked')
+  await clickButtonContaining('Королевский пленник')
   await waitFor(bodyHas('5 серий'), 'Season 4 five-episode overview')
   await waitFor(bodyHas('Две башни'), 'Season 4 first episode')
   await assertViewportMatrix('Season 4 overview')
@@ -467,8 +467,8 @@ try {
 
   await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`)
   await reloadAndWait()
-  await waitFor(bodyHas('Tergov davom etadi'), 'Uzbek Season 4 home')
-  await clickButtonContaining('Tergov davom etadi')
+  await waitFor(bodyHas('Qirollik asiri'), 'Uzbek Season 4 home')
+  await clickButtonContaining('Qirollik asiri')
   await clickButtonContaining('Davom etish')
   await waitFor(bodyHas('Arasdan jo‘nab ketganlarining uchinchi kuni'),
     'Uzbek Season 4 chronological introduction')
