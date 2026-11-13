@@ -43,6 +43,7 @@ assert(seasonSource.includes('const storyIds = [') &&
   seasonSource.indexOf("'seven_roads_dve_podmogi'") &&
   seasonSource.indexOf("'seven_roads_dve_podmogi'") <
   seasonSource.indexOf("'seven_roads_obratno_v_ordan'"), 'Season 4 must keep all five story packages in canonical order')
+assert(seasonSource.includes("language === 'uz' ? 'Qirollik asiri' : 'Королевский пленник'"), 'approved Season 4 RU/UZ title is missing')
 assert(story1.parts.length === 7 && story2.parts.length === 10, 'Season 1/2 parts must remain unchanged')
 assert(staged[0].ru.parts.length === 3, 'Season 3 is three parts')
 assert(staged.slice(1).reduce((n, item) => n + item.ru.parts.length, 0) === 9, 'Season 4 is nine internal parts in five episodes')
