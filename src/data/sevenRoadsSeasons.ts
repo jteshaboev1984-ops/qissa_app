@@ -134,8 +134,8 @@ export const getSevenRoadsSeason4 = (language: SevenRoadsLanguage): PublishedSea
     worldId: 'seven_roads',
     worldTitle: getSevenRoadsCopy(language).worldTitle,
     number: 4,
-    // Working title until the owner approves the permanent Season 4 name.
-    title: language === 'uz' ? 'Tergov davom etadi' : 'Продолжение расследования',
+    // Owner-approved Season 4 title in both reading languages.
+    title: language === 'uz' ? 'Qirollik asiri' : 'Королевский пленник',
     status: 'published',
     presentation: 'single-cover-episode-list',
     coverAssetId: 'seven_roads_season2_cover_v1',
