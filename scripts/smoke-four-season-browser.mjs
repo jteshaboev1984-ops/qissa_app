@@ -344,18 +344,17 @@ try {
   }
 
 
-  // The five canonical stories are sequenced within Season 4. A reader may
-  // reopen an already-started later story without replaying earlier chapters.
+  // Series are chronological, except that a started legacy package may resume.
+  const season3StoryTitlesRu = ['Тайна восточного каравана', 'Две башни']
   const season4StoryTitlesRu = [
-    'Две башни',
     'Человек, которого ждут',
     'Ложная дорога',
     'Две подмоги',
     'Обратно в Ордан',
   ]
-  const assertSeason4StoryAccess = async (expected, label) => {
+  const assertStoryAccess = async (titles, expected, label) => {
     const actual = await evaluate(
-      '(() => { const titles = ' + JSON.stringify(season4StoryTitlesRu) +
+      '(() => { const titles = ' + JSON.stringify(titles) +
         '; return titles.map((title) => { ' +
         'const text = [...document.querySelectorAll("p")].find(' +
         '(node) => node.textContent?.trim() === title); ' +
@@ -369,6 +368,11 @@ try {
         ', got ' + JSON.stringify(actual),
     )
   }
+
+  const assertSeason3StoryAccess = (expected, label) =>
+    assertStoryAccess(season3StoryTitlesRu, expected, label)
+  const assertSeason4StoryAccess = (expected, label) =>
+    assertStoryAccess(season4StoryTitlesRu, expected, label)
 
   const season2CoverPresentExpression = `(() => {
     const token = 'seven_roads_season2_cover_v1'
@@ -450,7 +454,8 @@ try {
   await waitFor(bodyHas('Королевское серебро'), 'Season 2 still leads on Home')
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Тайна восточного каравана')
-  await waitFor(bodyHas('10 частей'), 'Season 3 Caravan ten-part overview')
+  await waitFor(bodyHas('2 серии'), 'Season 3 Caravan and Two Towers overview')
+  await assertSeason3StoryAccess([true, false], 'Two Towers locked before Caravan completion')
   await assertViewportMatrix('Season 3 Caravan ten-part overview')
   await clickButtonContaining('Продолжить')
   await waitFor(bodyHas('8 / 10'), 'resume legacy Caravan part 8 in Season 3')
@@ -463,7 +468,7 @@ try {
   await reloadAndWait()
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Королевское серебро')
-  await waitFor(bodyHas('3 части'), 'Season 2 Royal Silver three-part overview')
+  await waitFor(bodyHas('3 серии'), 'Season 2 Royal Silver uses unified series label')
   await clickButtonContaining('Начать сезон')
   await waitFor(bodyHas('Прошла примерно неделя после Праздника мужества.'),
     'Russian Season 2 original Royal Silver opening')
@@ -484,7 +489,7 @@ try {
   await reloadAndWait()
   await waitFor(bodyHas('Тайна восточного каравана'), 'Season 3 home unlocked')
   await clickButtonContaining('Тайна восточного каравана')
-  await waitFor(bodyHas('10 частей'), 'Season 3 Caravan ten-part overview after Season 2')
+  await waitFor(bodyHas('2 серии'), 'Season 3 two-series overview after Season 2')
   await clickButtonContaining('Продолжить')
   await waitFor(bodyHas('8 / 10'), 'Season 3 Caravan resumes saved part 8')
   await reloadAndWait()
@@ -626,7 +631,7 @@ try {
   await waitFor('document.getElementById("gallery-season-4") !== null',
     'Season 4 gallery expanded')
   const lastGalleryRow = await evaluate(
-    'document.querySelector(\'[aria-controls="gallery-season-4-story-5-episode-1"]\')?.innerText',
+    'document.querySelector(\'[aria-controls="gallery-season-4-story-4-episode-1"]\')?.innerText',
   )
   const finalPart = episode7.parts[0]
   const finaleSceneCount = finalPart.image_slots.length +
@@ -634,18 +639,18 @@ try {
   assert(finaleSceneCount > 0 && lastGalleryRow?.includes('0 / ' + finaleSceneCount),
     'unread final story must show zero unlocked gallery illustrations')
   await evaluate(
-    'document.querySelector(\'[aria-controls="gallery-season-4-story-5-episode-1"]\').click()',
+    'document.querySelector(\'[aria-controls="gallery-season-4-story-4-episode-1"]\').click()',
   )
-  await waitFor('document.getElementById("gallery-season-4-story-5-episode-1") !== null',
+  await waitFor('document.getElementById("gallery-season-4-story-4-episode-1") !== null',
     'unread final story gallery placeholders expanded')
   const finaleLockedItems = await evaluate(
-    '(() => { const panel = document.getElementById("gallery-season-4-story-5-episode-1"); ' +
+    '(() => { const panel = document.getElementById("gallery-season-4-story-4-episode-1"); ' +
       'return [...panel.querySelectorAll("button")].filter((button) => ' +
       'button.getAttribute("aria-label")?.includes("ещё не открыта")).length; })()',
   )
   assert(finaleLockedItems === finaleSceneCount,
     'final story gallery leaked art before the reader reached it')
-  await clickAriaButton('Сцена части 1 ещё не открыта')
+  await clickAriaButton('Сцена главы 1 ещё не открыта')
   await waitFor(bodyHas('Сцена ещё скрыта'), 'locked illustration explains spoiler protection')
 
 
@@ -653,8 +658,8 @@ try {
 
   assert(browserErrors.length === 0,
     'browser runtime exceptions: ' + browserErrors.join(' | '))
-  console.log('[four-season-browser] PASS: 4 seasons, 6/3/10/5 reading units, Royal Silver → Caravan → Prisoner RU+UZ chronology')
-  console.log('[four-season-browser] accurate prerequisite labels, five-story unlocks, late legacy resume, both False Road choices, RU/UZ persistence, migrated gallery art and finale spoiler locks verified')
+  console.log('[four-season-browser] PASS: 4 seasons with 6/3/2/4 series, Sarvan conclusion moved into Caravan season, RU+UZ')
+  console.log('[four-season-browser] accurate prerequisite labels, four-series prisoner unlocks, late legacy resume, both False Road choices, RU/UZ persistence, migrated gallery art and finale spoiler locks verified')
 } finally {
   cleanup()
 }
