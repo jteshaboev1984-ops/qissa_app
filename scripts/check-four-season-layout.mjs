@@ -32,7 +32,14 @@ assert(seasonSource.includes('getSevenRoadsSeason1(language)') &&
   seasonSource.includes('getSevenRoadsSeason2(language)') &&
   seasonSource.includes('getSevenRoadsSeason3(language)') &&
   seasonSource.includes('getSevenRoadsSeason4(language)'), 'exactly four seasons must appear in sequence')
-assert(seasonSource.includes("'seven_roads_story2_cover_v1'"), 'Story 2 own cover preserved for Season 2')
+const season2Source = seasonSource.split('export const getSevenRoadsSeason2 =')[1]?.split('export const getSevenRoadsSeason3 =')[0] ?? ''
+const season3Source = seasonSource.split('export const getSevenRoadsSeason3 =')[1]?.split('export const getSevenRoadsSeason4 =')[0] ?? ''
+assert(season2Source.includes("requireStagedStory(language, 'seven_roads_korolevskoe_serebro')") &&
+  season2Source.includes("'seven_roads_season2_cover_v1'"),
+  'Season 2 must be Royal Silver with its original approved cover')
+assert(season3Source.includes('taynaVostochnogoKaravanaV4ByLanguage[language]') &&
+  season3Source.includes("'seven_roads_story2_cover_v1'"),
+  'Season 3 must be Eastern Caravan with the original Caravan cover')
 assert(seasonSource.includes('singlePackageSeason('), 'Season 2 and 3 must retain part-level reading')
 assert(seasonSource.includes('const storyIds = [') &&
   seasonSource.indexOf("'seven_roads_dve_bashni'") <
@@ -44,20 +51,22 @@ assert(seasonSource.includes('const storyIds = [') &&
   seasonSource.indexOf("'seven_roads_dve_podmogi'") <
   seasonSource.indexOf("'seven_roads_obratno_v_ordan'"), 'Season 4 must keep all five story packages in canonical order')
 assert(seasonSource.includes("language === 'uz' ? 'Qirollik asiri' : 'Королевский пленник'"), 'approved Season 4 RU/UZ title is missing')
-assert(story1.parts.length === 7 && story2.parts.length === 10, 'Season 1/2 parts must remain unchanged')
-assert(staged[0].ru.parts.length === 3, 'Season 3 is three parts')
+assert(story1.parts.length === 7 && story2.parts.length === 10, 'Season 1 and original Caravan package must remain unchanged')
+assert(staged[0].ru.parts.length === 3, 'Season 2 Royal Silver is three parts')
 assert(staged.slice(1).reduce((n, item) => n + item.ru.parts.length, 0) === 9, 'Season 4 is nine internal parts in five episodes')
 assert(story2.story_id === 'seven_roads_tayna_vostochnogo_karavana' &&
   story2.story_version === 'interactive-v4-continuity-sync', 'legacy Season 2 story persistence key changed')
 
+// The original source order is Royal Silver (about one week after the Festival),
+// then Eastern Caravan (several weeks after the Festival). Do not retime Royal Silver.
+assert(staged[0].ru.parts[0].story_text.includes('Прошла примерно неделя после Праздника мужества.') &&
+  staged[0].uz.parts[0].story_text.includes('Jasorat bayramidan taxminan bir hafta o‘tdi.'),
+  'Royal Silver original RU/UZ opening must stay unchanged')
+assert(story2.parts[0].story_text.startsWith('Через несколько недель после Праздника мужества'),
+  'Eastern Caravan original opening must remain several weeks after the Festival')
+assert(!chronoSource.includes('seven_roads_korolevskoe_serebro:'),
+  'Royal Silver must not receive an artificial post-Caravan temporal overlay')
 const edits = [
-  {
-    package: staged[0],
-    baseRu: 'Прошла примерно неделя после Праздника мужества.',
-    baseUz: 'Jasorat bayramidan taxminan bir hafta o‘tdi.',
-    newRu: 'На следующий день после отъезда Темура и Самиры из Араса в Сарван',
-    newUz: 'Temur va Samira Arasdan Sarvanga jo‘nab ketganlarining ertasi kuni',
-  },
   {
     package: staged[1],
     baseRu: 'К вечеру дорога поднялась на последний невысокий холм.',
@@ -88,7 +97,7 @@ assert(staged[1].ru.external_choice_context?.[0]?.source_story_id === story2.sto
   'Season 4 Two Towers must still inherit Season 2 Sarvan investigation decision')
 assert(staged[4].ru.external_choice_context?.[0]?.source_story_id === staged[3].ru.story_id,
   'Season 4 Two Reinforcements must still inherit False Road decision')
-assert(app.includes('sourceSeason: 2, sourceStory: 1') &&
+assert(app.includes('sourceSeason: 3, sourceStory: 1') &&
   app.includes('sourceSeason: 4, sourceStory: 3') &&
   app.includes('story2_choice_3_sarvan_check') &&
   app.includes('story5_choice_1_road_post_approach'), 'cross-season choice inheritance mapping missing')
@@ -100,7 +109,7 @@ assert(app.includes('isSeasonUnlocked(seasons, nextSeason.number)') &&
 assert(overview.includes('seasonStory.episodes.length') &&
   overview.includes('episodeEntries.length') &&
   overview.includes('season.number === 1'),
-  'overview must render seasons with 6, 10, 3, and 5 units')
+  'overview must render seasons with 6, 3, 10, and 5 units')
 assert(shell.includes('homeActiveStory') && shell.includes('unlockedLaterSeasons'),
   'Home must resume the next incomplete season')
 assert(shell.includes('authoredIllustrationDiscovery.buildGalleryEpisodes'),
@@ -118,6 +127,6 @@ if (failures.length) {
   failures.forEach((error) => console.error('[four-seasons] ' + error))
   process.exit(1)
 }
-console.log('[four-seasons] PASS: 4 seasons (6/10/3/5 reader units), strict D0–D3 chronology RU/UZ')
+console.log('[four-seasons] PASS: 4 seasons (6/3/10/5 units), Royal Silver → Caravan → Prisoner in RU/UZ')
 console.log('[four-seasons] unchanged historical packages, story IDs, choice inheritance and existing images')
 console.log('[four-seasons] old progress access, Home/Library/Gallery unlocks and season navigation verified')
