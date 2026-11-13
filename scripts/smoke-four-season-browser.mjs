@@ -455,6 +455,8 @@ try {
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Тайна восточного каравана')
   await waitFor(bodyHas('2 серии'), 'Season 3 Caravan and Two Towers overview')
+  assert(await evaluate(bodyHas('10 глав')), 'Caravan series must display 10 chapters')
+  assert(await evaluate(bodyHas('3 главы')), 'Two Towers series must display 3 chapters')
   await assertSeason3StoryAccess([true, false], 'Two Towers locked before Caravan completion')
   await assertViewportMatrix('Season 3 Caravan ten-part overview')
   await clickButtonContaining('Продолжить')

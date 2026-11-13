@@ -45,6 +45,20 @@ export function SeasonOverview({
     return `${count} ${noun}`
   }
 
+  const chapterCountLabel = (count: number) => {
+    if (language === 'uz') return `${count} bob`
+    const lastTwo = count % 100
+    const last = count % 10
+    const noun = lastTwo >= 11 && lastTwo <= 14
+      ? 'глав'
+      : last === 1
+        ? 'глава'
+        : last >= 2 && last <= 4
+          ? 'главы'
+          : 'глав'
+    return `${count} ${noun}`
+  }
+
   if (season.presentation === 'single-cover-episode-list') {
     const episodeEntries = publishedStories
       .slice()
@@ -209,6 +223,9 @@ export function SeasonOverview({
                     </p>
                     <p className="font-bold leading-6 text-[#342f25]">
                       {item.entry.title ?? item.authoredStory.title}
+                    </p>
+                    <p className="mt-0.5 text-[0.67rem] font-medium text-[#756a56]">
+                      {chapterCountLabel(item.authoredStory.parts.length)}
                     </p>
                   </div>
                   <span className="flex-none text-xs font-semibold text-[#817662]">
