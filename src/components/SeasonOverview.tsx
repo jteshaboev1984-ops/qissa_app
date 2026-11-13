@@ -31,6 +31,19 @@ export function SeasonOverview({
   if (!seasonStory || !story || season.status !== 'published') return null
 
   const copy = getSevenRoadsCopy(language)
+  const seriesCountLabel = (count: number) => {
+    if (language === 'uz') return `${count} qism`
+    const lastTwo = count % 100
+    const last = count % 10
+    const noun = lastTwo >= 11 && lastTwo <= 14
+      ? 'серий'
+      : last === 1
+        ? 'серия'
+        : last >= 2 && last <= 4
+          ? 'серии'
+          : 'серий'
+    return `${count} ${noun}`
+  }
 
   if (season.presentation === 'single-cover-episode-list') {
     const episodeEntries = publishedStories
@@ -145,7 +158,7 @@ export function SeasonOverview({
           <div className="px-1">
             <p className="q-label mb-1">{copy.openSeasonPath}</p>
             <h2 className="q-heading text-2xl font-bold">
-              {language === 'uz' ? `${episodeEntries.length} qism` : `${episodeEntries.length} серий`}
+              {seriesCountLabel(episodeEntries.length)}
             </h2>
             <p className="mt-1 text-sm leading-6 text-[#6c6252]">
               {language === 'uz'
@@ -394,7 +407,7 @@ export function SeasonOverview({
         <div className="px-1">
           <p className="q-label mb-1">{copy.openSeasonPath}</p>
           <h2 className="q-heading text-2xl font-bold">
-            {season.number === 1 ? copy.sixEpisodes : language === 'uz' ? `${seasonStory.episodes.length} qism` : `${seasonStory.episodes.length} серии`}
+            {seriesCountLabel(season.number === 1 ? 6 : seasonStory.episodes.length)}
           </h2>
           <p className="mt-1 text-sm leading-6 text-[#6c6252]">
             {season.number === 1
