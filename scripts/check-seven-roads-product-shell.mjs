@@ -265,7 +265,7 @@ requireText('season overview', overview, "season.presentation === 'single-cover-
 requireText('season overview', overview, 'seasonStory?.authoredStory')
 requireText('season overview', overview, 'seasonStory.episodes.map')
 requireText('season overview', overview, '{copy.openSeasonPath}')
-requireText('season overview', overview, 'copy.sixEpisodes')
+requireText('season overview', overview, 'seriesCountLabel')
 requireText('season overview', overview, 'resolveAuthoredStoryAssetUrl')
 requireText('season overview', overview, 'sticky top-0 z-30')
 requireText('season overview', overview, "publishedStories.length > 1 || seasonStory.completionScope === 'story'")
