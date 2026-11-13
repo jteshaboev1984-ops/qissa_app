@@ -88,21 +88,24 @@ const requireStagedStory = (
   return applyFourSeasonChronology(story)
 }
 
+// Royal Silver happens around one week after the Festival. The later caravan
+// story takes place several weeks after it and supplies the seal-imprint clue.
 export const getSevenRoadsSeason2 = (language: SevenRoadsLanguage): PublishedSeason =>
   singlePackageSeason(
     language,
     2,
-    taynaVostochnogoKaravanaV4ByLanguage[language],
-    'seven_roads_story2_cover_v1',
+    requireStagedStory(language, 'seven_roads_korolevskoe_serebro'),
+    // Approved shared artwork; a dedicated Season 2 cover is still an art follow-up.
+    'seven_roads_season2_cover_v1',
   )
 
 export const getSevenRoadsSeason3 = (language: SevenRoadsLanguage): PublishedSeason =>
   singlePackageSeason(
     language,
     3,
-    requireStagedStory(language, 'seven_roads_korolevskoe_serebro'),
-    // Existing verified artwork only; dedicated Season 3 cover remains an art follow-up.
-    'seven_roads_season2_cover_v1',
+    taynaVostochnogoKaravanaV4ByLanguage[language],
+    // Preserve the caravan's own verified illustration; unchanged story progress keys.
+    'seven_roads_story2_cover_v1',
   )
 
 export const getSevenRoadsSeason4 = (language: SevenRoadsLanguage): PublishedSeason => {
