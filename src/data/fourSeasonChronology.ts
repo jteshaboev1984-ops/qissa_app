@@ -1,18 +1,10 @@
 import type { AuthoredStoryPackage } from '../features/authoredStory/types'
 
-// Presentation-only temporal edit. Keep the historically approved literary packages,
-// original blob hashes, story IDs/versions, illustration anchors and progress keys intact.
+// The original Royal Silver opening ("about one week after the Festival")
+// remains unchanged. Only Two Towers needs a presentation-time timing clarification
+// after the Eastern Caravan. Preserve approved literary packages, original blob
+// hashes, story IDs/versions, illustration anchors and progress keys.
 const patches: Record<string, Record<'ru' | 'uz', { from: string; to: string }>> = {
-  seven_roads_korolevskoe_serebro: {
-    ru: {
-      from: 'Прошла примерно неделя после Праздника мужества.',
-      to: 'На следующий день после отъезда Темура и Самиры из Араса в Сарван в другой части королевства началась история, о которой они пока ничего не знали.',
-    },
-    uz: {
-      from: 'Jasorat bayramidan taxminan bir hafta o‘tdi.',
-      to: 'Temur va Samira Arasdan Sarvanga jo‘nab ketganlarining ertasi kuni qirollikning boshqa bir joyida ular hali bilmagan voqea boshlandi.',
-    },
-  },
   seven_roads_dve_bashni: {
     ru: {
       from: 'К вечеру дорога поднялась на последний невысокий холм.',
