@@ -595,12 +595,66 @@ try {
   await waitFor(inheritedFalseRoad + ' === "story5_choice_1b_open_ridge"',
     'Two Reinforcements must persist inherited open-ridge choice')
 
+  // Gallery must restore scenes from completed historical Caravan progress while
+  // keeping unseen Season 4 finale art behind spoiler placeholders.
+  await reloadAndWait()
+  await clickButtonContaining('Библиотека')
+  await clickButtonContaining('Галерея')
+  await waitFor(bodyHas('Тайна восточного каравана'), 'four-season gallery titles')
+  await clickButtonContaining('Тайна восточного каравана')
+  await waitFor('document.getElementById("gallery-season-3") !== null',
+    'Season 3 Caravan gallery expanded')
+  const caravanFirstPart = await evaluate(
+    'document.querySelector(\'[aria-controls="gallery-season-3-story-1-episode-1"]\')?.innerText',
+  )
+  const caravanSceneCount = episode2.parts[0].image_slots.length
+  assert(caravanFirstPart?.includes(caravanSceneCount + ' / ' + caravanSceneCount),
+    'completed legacy Caravan Part 1 images were not restored in gallery')
+  await evaluate(
+    'document.querySelector(\'[aria-controls="gallery-season-3-story-1-episode-1"]\').click()',
+  )
+  await waitFor('document.getElementById("gallery-season-3-story-1-episode-1") !== null',
+    'Caravan gallery Part 1 expanded')
+  const caravanVisibleScenes = await evaluate(
+    '[...document.querySelectorAll("#gallery-season-3-story-1-episode-1 img")].filter(' +
+    '(image) => image.src.includes("/story2_v2/")).length',
+  )
+  assert(caravanVisibleScenes === caravanSceneCount,
+    'completed Caravan gallery images are missing from their original public asset paths')
+
+  await clickButtonContaining('Королевский пленник')
+  await waitFor('document.getElementById("gallery-season-4") !== null',
+    'Season 4 gallery expanded')
+  const lastGalleryRow = await evaluate(
+    'document.querySelector(\'[aria-controls="gallery-season-4-story-5-episode-1"]\')?.innerText',
+  )
+  const finalPart = episode7.parts[0]
+  const finaleSceneCount = finalPart.image_slots.length +
+    (finalPart.decision?.choices?.filter((choice) => choice.illustration).length ?? 0)
+  assert(finaleSceneCount > 0 && lastGalleryRow?.includes('0 / ' + finaleSceneCount),
+    'unread final story must show zero unlocked gallery illustrations')
+  await evaluate(
+    'document.querySelector(\'[aria-controls="gallery-season-4-story-5-episode-1"]\').click()',
+  )
+  await waitFor('document.getElementById("gallery-season-4-story-5-episode-1") !== null',
+    'unread final story gallery placeholders expanded')
+  const finaleLockedItems = await evaluate(
+    '(() => { const panel = document.getElementById("gallery-season-4-story-5-episode-1"); ' +
+      'return [...panel.querySelectorAll("button")].filter((button) => ' +
+      'button.getAttribute("aria-label")?.includes("ещё не открыта")).length; })()',
+  )
+  assert(finaleLockedItems === finaleSceneCount,
+    'final story gallery leaked art before the reader reached it')
+  await clickAriaButton('Сцена части 1 ещё не открыта')
+  await waitFor(bodyHas('Сцена ещё скрыта'), 'locked illustration explains spoiler protection')
+
+
 
 
   assert(browserErrors.length === 0,
     'browser runtime exceptions: ' + browserErrors.join(' | '))
   console.log('[four-season-browser] PASS: 4 seasons, 6/3/10/5 reading units, Royal Silver → Caravan → Prisoner RU+UZ chronology')
-  console.log('[four-season-browser] correct prerequisite labels, five-story unlocks, late legacy resume, both inherited False Road choices, RU/UZ persistence and 360/390/430px verified')
+  console.log('[four-season-browser] accurate prerequisite labels, five-story unlocks, late legacy resume, both False Road choices, RU/UZ persistence, migrated gallery art and finale spoiler locks verified')
 } finally {
   cleanup()
 }
