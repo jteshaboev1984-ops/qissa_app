@@ -395,6 +395,19 @@ try {
   await setJson(progressKey(season1), makeProgress(season1, {
     completed: true, currentPartIndex: season1.parts.length - 1,
   }))
+  await reloadAndWait()
+  await waitFor(bodyHas('Королевское серебро'), 'Season 2 Royal Silver home unlocked')
+  await clickButtonContaining('Библиотека')
+  await waitFor(bodyHas('Тайна восточного каравана'), 'four season cards')
+  await waitFor(bodyHas('Королевский пленник'), 'Season 4 card')
+  await assertViewportMatrix('four-season library')
+  await clickButtonContaining('Тайна восточного каравана')
+  await waitFor(bodyHas('Этот сезон откроется после завершения предыдущего сезона.'),
+    'Season 3 Caravan locked for a new reader before Season 2 completion')
+  await clickExactButton('Понятно')
+
+  // Previously saved Caravan progress remains accessible even when its
+  // new Season 2 prerequisite (Royal Silver) has not yet been completed.
   await setJson(progressKey(episode2), makeProgress(episode2, {
     currentPartIndex: 7,
     selectedChoices: {
@@ -405,23 +418,47 @@ try {
     `localStorage.getItem(${JSON.stringify(progressKey(episode2))})`,
   )
   await reloadAndWait()
-  await waitFor(bodyHas('Тайна восточного каравана'), 'Season 2 resume home')
+  await waitFor(bodyHas('Королевское серебро'), 'Season 2 still leads on Home')
   await clickButtonContaining('Библиотека')
-  await waitFor(bodyHas('Королевское серебро'), 'four season cards')
-  await waitFor(bodyHas('Королевский пленник'), 'Season 4 card')
-  await assertViewportMatrix('four-season library')
-  await clickButtonContaining('Королевское серебро')
-  await waitFor(bodyHas('Этот сезон откроется после завершения предыдущего сезона.'),
-    'Season 3 locked before Season 2 completion')
-  await clickExactButton('Понятно')
   await clickButtonContaining('Тайна восточного каравана')
-  await waitFor(bodyHas('10 частей'), 'Season 2 ten-part overview')
-  await assertViewportMatrix('Season 2 ten-part overview')
+  await waitFor(bodyHas('10 частей'), 'Season 3 Caravan ten-part overview')
+  await assertViewportMatrix('Season 3 Caravan ten-part overview')
   await clickButtonContaining('Продолжить')
-  await waitFor(bodyHas('8 / 10'), 'resume legacy Caravan part 8')
+  await waitFor(bodyHas('8 / 10'), 'resume legacy Caravan part 8 in Season 3')
   assert((await evaluate(`localStorage.getItem(${JSON.stringify(progressKey(episode2))})`)) === legacyProgressBefore,
-    'opening migrated Story 2 changed its persisted progress')
-  await assertViewportMatrix('Season 2 resumed reader')
+    'opening migrated Caravan changed its persisted progress')
+  await assertViewportMatrix('Season 3 resumed reader')
+
+  // Royal Silver is Season 2 again, with its original week-after-Festival
+  // opening in both languages (no artificial post-Caravan timing rewrite).
+  await reloadAndWait()
+  await clickButtonContaining('Библиотека')
+  await clickButtonContaining('Королевское серебро')
+  await waitFor(bodyHas('3 части'), 'Season 2 Royal Silver three-part overview')
+  await clickButtonContaining('Начать сезон')
+  await waitFor(bodyHas('Прошла примерно неделя после Праздника мужества.'),
+    'Russian Season 2 original Royal Silver opening')
+
+  await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`)
+  await reloadAndWait()
+  await waitFor(bodyHas('Qirollik kumushi'), 'Season 2 Royal Silver Uzbek home')
+  await clickButtonContaining('Qirollik kumushi')
+  await clickButtonContaining('Davom etish')
+  await waitFor(bodyHas('Jasorat bayramidan taxminan bir hafta o‘tdi.'),
+    'Uzbek Season 2 original Royal Silver opening')
+
+  // Finishing Season 2 correctly makes Season 3 the next reading step.
+  await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'ru')`)
+  await setJson(progressKey(episode1), makeProgress(episode1, {
+    completed: true, currentPartIndex: episode1.parts.length - 1,
+  }))
+  await reloadAndWait()
+  await waitFor(bodyHas('Тайна восточного каравана'), 'Season 3 home unlocked')
+  await clickButtonContaining('Тайна восточного каравана')
+  await waitFor(bodyHas('10 частей'), 'Season 3 Caravan ten-part overview after Season 2')
+  await clickButtonContaining('Продолжить')
+  await waitFor(bodyHas('8 / 10'), 'Season 3 Caravan resumes saved part 8')
+  await reloadAndWait()
 
   await setJson(progressKey(episode2), makeProgress(episode2, {
     completed: true,
@@ -431,27 +468,7 @@ try {
     },
   }))
   await reloadAndWait()
-  await waitFor(bodyHas('Королевское серебро'), 'Season 3 home unlocked')
-  await clickButtonContaining('Королевское серебро')
-  await waitFor(bodyHas('3 части'), 'Season 3 three-part overview')
-  await clickButtonContaining('Начать сезон')
-  await waitFor(bodyHas('На следующий день после отъезда Темура и Самиры из Араса в Сарван'),
-    'Russian Season 3 chronological introduction')
-
-  await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`)
-  await reloadAndWait()
-  await waitFor(bodyHas('Qirollik kumushi'), 'Season 3 Uzbek home')
-  await clickButtonContaining('Qirollik kumushi')
-  await clickButtonContaining('Davom etish')
-  await waitFor(bodyHas('Temur va Samira Arasdan Sarvanga jo‘nab ketganlarining ertasi kuni'),
-    'Uzbek Season 3 chronological introduction')
-
-  await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'ru')`)
-  await setJson(progressKey(episode1), makeProgress(episode1, {
-    completed: true, currentPartIndex: episode1.parts.length - 1,
-  }))
-  await reloadAndWait()
-  await waitFor(bodyHas('Королевский пленник'), 'Season 4 home unlocked')
+  await waitFor(bodyHas('Королевский пленник'), 'Season 4 home unlocked after Caravan')
   await clickButtonContaining('Королевский пленник')
   await waitFor(bodyHas('5 серий'), 'Season 4 five-episode overview')
   await waitFor(bodyHas('Две башни'), 'Season 4 first episode')
@@ -463,7 +480,7 @@ try {
     `localStorage.getItem(${JSON.stringify(progressKey(episode3))})`,
   )
   assert(inheritedProgress?.includes('"story2_choice_3_sarvan_check"'),
-    'Season 4 first episode did not inherit saved Season 2 Sarvan choice')
+    'Season 4 first episode did not inherit saved Season 3 Caravan choice')
 
   await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`)
   await reloadAndWait()
@@ -475,8 +492,8 @@ try {
 
   assert(browserErrors.length === 0,
     'browser runtime exceptions: ' + browserErrors.join(' | '))
-  console.log('[four-season-browser] PASS: 4 seasons, 6/10/3/5 reading units, chronological RU+UZ transitions')
-  console.log('[four-season-browser] old Story 2 progress resumed, Season 4 inherited its choice, and 360/390/430px layouts fit')
+  console.log('[four-season-browser] PASS: 4 seasons, 6/3/10/5 reading units, Royal Silver → Caravan → Prisoner RU+UZ chronology')
+  console.log('[four-season-browser] original Royal Silver timing, legacy Caravan progress, Season 4 choice inheritance and 360/390/430px layouts verified')
 } finally {
   cleanup()
 }
