@@ -845,9 +845,9 @@ export function PublishedStoriesShell({
                                                       }
                                                       aria-label={
                                                         language === 'uz'
-                                                          ? `${episode.episodeNumber}-qism lavhasi hali ochilmagan`
+                                                          ? episode.readerUnit === 'part' ? `${episode.episodeNumber}-bob lavhasi hali ochilmagan` : `${episode.episodeNumber}-qism lavhasi hali ochilmagan`
                                                           : episode.readerUnit === 'part'
-                                                            ? `Сцена части ${episode.episodeNumber} ещё не открыта`
+                                                            ? `Сцена главы ${episode.episodeNumber} ещё не открыта`
                                                             : `Сцена серии ${episode.episodeNumber} ещё не открыта`
                                                       }
                                                     >
