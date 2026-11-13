@@ -269,11 +269,11 @@ export function SeasonOverview({
           <p className="mt-3 text-sm leading-6 text-[#6c6252]">
             {publishedStories.length > 1
               ? language === 'uz'
-                ? 'Bu mavsum bir nechta alohida hikoyadan iborat. Har bir hikoya o‘z o‘qish joyi va tanlovlarini alohida saqlaydi.'
-                : 'Этот сезон состоит из нескольких отдельных сказок. У каждой сказки свой прогресс чтения и свои сохранённые выборы.'
+                ? 'Mavsum seriyalardan iborat. Uzun seriyada boblar bor. O‘qilgan joy va tanlovlar saqlanadi.'
+                : 'Сезон состоит из серий. В длинной серии есть главы. Прогресс и выборы сохраняются.'
               : language === 'uz'
-                ? `Bu hikoya ${story.parts.length} qismdan iborat. O‘qilgan joy va tanlovlar saqlanadi.`
-                : `Эта сказка состоит из ${story.parts.length} частей. Прогресс чтения и выборы сохраняются.`}
+                ? `Bu seriya ${story.parts.length} bobdan iborat. O‘qilgan joy va tanlovlar saqlanadi.`
+                : `Эта серия состоит из ${story.parts.length} глав. Прогресс чтения и выборы сохраняются.`}
           </p>
         </div>
 
@@ -394,14 +394,14 @@ export function SeasonOverview({
         <div className="px-1">
           <p className="q-label mb-1">{copy.openSeasonPath}</p>
           <h2 className="q-heading text-2xl font-bold">
-            {season.number === 1 ? copy.sixEpisodes : language === 'uz' ? `${seasonStory.episodes.length} qism` : seasonStory.episodes.length === 3 ? '3 части' : `${seasonStory.episodes.length} частей`}
+            {season.number === 1 ? copy.sixEpisodes : language === 'uz' ? `${seasonStory.episodes.length} qism` : `${seasonStory.episodes.length} серии`}
           </h2>
           <p className="mt-1 text-sm leading-6 text-[#6c6252]">
             {season.number === 1
               ? copy.seasonDescription
               : language === 'uz'
-                ? 'Har bir qismdagi o‘qish joyi va tanlovlar saqlanadi.'
-                : 'Прогресс чтения и выборы сохраняются в каждой части.'}
+                ? 'Har bir seriyadagi o‘qish joyi va tanlovlar saqlanadi.'
+                : 'Прогресс чтения и выборы сохраняются в каждой серии.'}
           </p>
           <p className="mt-2 text-xs leading-5 text-[#817662]">
             {copy.seasonReplayHint}

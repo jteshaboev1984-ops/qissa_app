@@ -251,9 +251,9 @@ const StoryBlocks = ({
             asset={block.slot}
             alt={
               language === 'uz'
-                ? `${episodeNumber}-qism lavhasi`
+                ? readerUnit === 'part' ? `${episodeNumber}-bob lavhasi` : `${episodeNumber}-qism lavhasi`
                 : readerUnit === 'part'
-                  ? `Сцена части ${episodeNumber}`
+                  ? `Сцена главы ${episodeNumber}`
                   : `Сцена серии ${episodeNumber}`
             }
             showPlaceholder={showMissingAssetPlaceholders}
