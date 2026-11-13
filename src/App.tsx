@@ -88,10 +88,12 @@ function App() {
   }
 
   const copy = getSevenRoadsCopy(language)
-  const nextSeasonPublished = seasons.some(
-    (candidate) =>
-      candidate.number === season.number + 1 && candidate.status === 'published',
-  )
+  const nextSeasonPublished =
+    season.stories[season.stories.length - 1]?.number === seasonStory.number &&
+    seasons.some(
+      (candidate) =>
+        candidate.number === season.number + 1 && candidate.status === 'published',
+    )
 
   const [consentAccepted, setConsentAccepted] = useState(
     () => Boolean(publishedStoriesConsent.load()),
@@ -216,13 +218,11 @@ function App() {
   const episodeTitles = seasonStory.episodes.map((episode) => episode.title)
 
   const inheritedSelectedChoices = useMemo<Record<string, string>>(() => {
-    if (season.number !== 4) return {}
-
     const inheritedFrom =
-      seasonStory.number === 1
+      season.number === 3 && seasonStory.number === 2
         ? { sourceSeason: 3, sourceStory: 1, decisionId: 'story2_choice_3_sarvan_check' }
-        : seasonStory.number === 4
-          ? { sourceSeason: 4, sourceStory: 3, decisionId: 'story5_choice_1_road_post_approach' }
+        : season.number === 4 && seasonStory.number === 3
+          ? { sourceSeason: 4, sourceStory: 2, decisionId: 'story5_choice_1_road_post_approach' }
           : null
 
     if (!inheritedFrom) return {}

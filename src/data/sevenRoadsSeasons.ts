@@ -6,6 +6,8 @@ import { getSeason2ReleaseCandidateStories } from './season2StagingAuthoredStori
 import { applyFourSeasonChronology } from './fourSeasonChronology'
 import type { PublishedSeason, PublishedSeasonStory } from '../features/publishedStories/types'
 import {
+  formatSevenRoadsEpisodeLabel,
+  formatSevenRoadsPartLabel,
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
@@ -53,7 +55,7 @@ export const getSevenRoadsSeason1 = (language: SevenRoadsLanguage): PublishedSea
 
 const singlePackageSeason = (
   language: SevenRoadsLanguage,
-  number: 2 | 3,
+  number: 2,
   authoredStory: NonNullable<PublishedSeasonStory['authoredStory']>,
   coverAssetId: string,
 ): PublishedSeason => ({
@@ -71,8 +73,8 @@ const singlePackageSeason = (
     status: 'published',
     authoredStory,
     completionScope: 'season',
-    readerUnit: 'part',
-    episodes: authoredStory.parts.map((part, index) => ({ number: index + 1, title: part.title })),
+    readerUnit: 'episode',
+    episodes: authoredStory.parts.map((_, index) => ({ number: index + 1, title: formatSevenRoadsEpisodeLabel(language, index + 1) })),
   }],
 })
 
@@ -99,18 +101,39 @@ export const getSevenRoadsSeason2 = (language: SevenRoadsLanguage): PublishedSea
     'seven_roads_season2_cover_v1',
   )
 
-export const getSevenRoadsSeason3 = (language: SevenRoadsLanguage): PublishedSeason =>
-  singlePackageSeason(
-    language,
-    3,
+// The Sarvan investigation resolves the Caravan thread before the prisoner arc.
+export const getSevenRoadsSeason3 = (language: SevenRoadsLanguage): PublishedSeason => {
+  const authoredPackages = [
     taynaVostochnogoKaravanaV4ByLanguage[language],
-    // Preserve the caravan's own verified illustration; unchanged story progress keys.
-    'seven_roads_story2_cover_v1',
-  )
+    requireStagedStory(language, 'seven_roads_dve_bashni'),
+  ]
+  return {
+    id: 'seven-roads-season-3',
+    worldId: 'seven_roads',
+    worldTitle: getSevenRoadsCopy(language).worldTitle,
+    number: 3,
+    title: authoredPackages[0].title,
+    status: 'published',
+    presentation: 'single-cover-episode-list',
+    coverAssetId: 'seven_roads_story2_cover_v1',
+    stories: authoredPackages.map((authoredStory, index) => ({
+      id: `seven-roads-season-3-story-${index + 1}`,
+      number: index + 1,
+      title: authoredStory.title,
+      status: 'published',
+      authoredStory,
+      completionScope: 'episode',
+      readerUnit: 'part',
+      episodes: authoredStory.parts.map((_, partIndex) => ({
+        number: partIndex + 1,
+        title: formatSevenRoadsPartLabel(language, partIndex + 1),
+      })),
+    })),
+  }
+}
 
 export const getSevenRoadsSeason4 = (language: SevenRoadsLanguage): PublishedSeason => {
   const storyIds = [
-    'seven_roads_dve_bashni',
     'seven_roads_chelovek_kotorogo_zhdut',
     'seven_roads_lozhnaya_doroga',
     'seven_roads_dve_podmogi',
@@ -126,9 +149,9 @@ export const getSevenRoadsSeason4 = (language: SevenRoadsLanguage): PublishedSea
       authoredStory,
       completionScope: 'episode',
       readerUnit: 'part',
-      episodes: authoredStory.parts.map((part, partIndex) => ({
+      episodes: authoredStory.parts.map((_, partIndex) => ({
         number: partIndex + 1,
-        title: part.title,
+        title: formatSevenRoadsPartLabel(language, partIndex + 1),
       })),
     }
   })
