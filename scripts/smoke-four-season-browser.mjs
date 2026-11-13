@@ -494,77 +494,97 @@ try {
   await waitFor(bodyHas('8 / 10'), 'Season 3 Caravan resumes saved part 8')
   await reloadAndWait()
 
+
   await setJson(progressKey(episode2), makeProgress(episode2, {
-    completed: true,
-    currentPartIndex: episode2.parts.length - 1,
+    completed: true, currentPartIndex: episode2.parts.length - 1,
     selectedChoices: {
       story2_choice_3_sarvan_check: 'story2_choice_3a_old_sarvan_yard',
     },
   }))
   await reloadAndWait()
-  await waitFor(bodyHas('Королевский пленник'), 'Season 4 home unlocked after Caravan')
-  await clickButtonContaining('Королевский пленник')
-  await waitFor(bodyHas('5 серий'), 'Season 4 five-episode overview')
-  await waitFor(bodyHas('Две башни'), 'Season 4 first episode')
-  await assertViewportMatrix('Season 4 overview')
-  await assertSeason4StoryAccess([true, false, false, false, false],
-    'fresh Season 4 reader must see only the first story as playable')
-  await clickButtonContaining('Начать сезон')
+  await clickButtonContaining('Библиотека')
+  await waitFor(bodyHas('После сезона 3'), 'Season 4 waits for Sarvan investigation')
+  await clickButtonContaining('Тайна восточного каравана')
+  await waitFor(bodyHas('2 серии'), 'Caravan and Two Towers now form Season 3')
+  await assertSeason3StoryAccess([true, true], 'Caravan completion unlocks Two Towers')
+  await assertViewportMatrix('two-series Caravan overview')
+  await clickButtonContaining('Две башни')
   await waitFor(bodyHas('На третий день после отъезда из Араса'),
-    'Russian Season 4 chronological introduction')
+    'Russian Two Towers in Season 3')
   const inheritedProgress = await evaluate(
-    `localStorage.getItem(${JSON.stringify(progressKey(episode3))})`,
+    'localStorage.getItem(' + JSON.stringify(progressKey(episode3)) + ')',
   )
   assert(inheritedProgress?.includes('"story2_choice_3_sarvan_check"'),
-    'Season 4 first episode did not inherit saved Season 3 Caravan choice')
+    'Two Towers lost the saved Caravan choice in Season 3')
 
-  await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'uz')`)
+  await evaluate('localStorage.setItem(' + JSON.stringify(languageKey) + ', "uz")')
   await reloadAndWait()
-  await waitFor(bodyHas('Qirollik asiri'), 'Uzbek Season 4 home')
-  await clickButtonContaining('Qirollik asiri')
-  await clickButtonContaining('Davom etish')
+  await clickButtonContaining('Kutubxona')
+  await clickButtonContaining('Sharqiy karvon siri')
+  await clickButtonContaining('Ikki minora')
   await waitFor(bodyHas('Arasdan jo‘nab ketganlarining uchinchi kuni'),
-    'Uzbek Season 4 chronological introduction')
-
+    'Uzbek Two Towers in Season 3')
   const inheritedChoiceAfterLocale = await evaluate(
     '(() => { const raw = localStorage.getItem(' +
       JSON.stringify(progressKey(episode3)) +
       '); return raw && JSON.parse(raw).selected_choices.story2_choice_3_sarvan_check; })()',
   )
   assert(inheritedChoiceAfterLocale === 'story2_choice_3a_old_sarvan_yard',
-    'changing RU to UZ lost the saved Season 3 → Season 4 choice')
+    'switching RU/UZ removed the Caravan choice from Two Towers')
 
-  // Unlock exactly one following Story 4 episode after the first one is completed.
-  await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'ru')`)
+  await evaluate('localStorage.setItem(' + JSON.stringify(languageKey) + ', "ru")')
   await setJson(progressKey(episode3), makeProgress(episode3, {
-    completed: true,
-    currentPartIndex: episode3.parts.length - 1,
+    completed: true, currentPartIndex: episode3.parts.length - 1,
     selectedChoices: {
       story2_choice_3_sarvan_check: 'story2_choice_3a_old_sarvan_yard',
     },
   }))
   await reloadAndWait()
-  await clickButtonContaining('Библиотека')
+  await waitFor(bodyHas('Королевский пленник'), 'Season 4 unlocked after Two Towers')
   await clickButtonContaining('Королевский пленник')
-  await waitFor(bodyHas('5 серий'), 'Season 4 overview after first story completion')
-  await assertSeason4StoryAccess([true, true, false, false, false],
-    'finishing Two Towers unlocks only Waited Man')
+  await waitFor(bodyHas('4 серии'), 'four-series prisoner season overview')
+  await assertSeason4StoryAccess([true, false, false, false],
+    'only Waited Man available at the start of Season 4')
+  await assertViewportMatrix('Season 4 four-series overview')
+  await clickButtonContaining('Начать сезон')
+  await waitFor(bodyHas('На следующий день после событий в Сарване'),
+    'Russian prisoner arc begins with Waited Man')
 
-  // Progress created under the historic seven-episode layout can resume even
-  // in a later story when the new prerequisite chain is not yet complete.
-  await setJson(progressKey(episode7), makeProgress(episode7, { currentPartIndex: 0 }))
+  await evaluate('localStorage.setItem(' + JSON.stringify(languageKey) + ', "uz")')
   await reloadAndWait()
-  await clickButtonContaining('Библиотека')
-  await clickButtonContaining('Королевский пленник')
-  await waitFor(bodyHas('5 серий'), 'Season 4 overview with existing final-story progress')
-  await assertSeason4StoryAccess([true, true, false, false, true],
-    'previously started Back to Ordan must remain accessible')
-  await evaluate(`localStorage.removeItem(${JSON.stringify(progressKey(episode7))})`)
+  await clickButtonContaining('Qirollik asiri')
+  await clickButtonContaining('Kutilayotgan odam')
+  await waitFor(bodyHas('Sarvandagi voqealardan keyingi kuni'),
+    'Uzbek prisoner arc begins with Waited Man')
+  await evaluate('localStorage.setItem(' + JSON.stringify(languageKey) + ', "ru")')
 
-  // Both False Road decisions must reach Two Reinforcements in the live reader.
+  // Finishing the first prisoner series unlocks only False Road.
   await setJson(progressKey(episode4), makeProgress(episode4, {
     completed: true, currentPartIndex: episode4.parts.length - 1,
   }))
+  await reloadAndWait()
+  await clickButtonContaining('Библиотека')
+  await clickButtonContaining('Королевский пленник')
+  await waitFor(bodyHas('4 серии'), 'Season 4 after Waited Man')
+  await assertSeason4StoryAccess([true, true, false, false],
+    'finishing Waited Man unlocks only False Road')
+
+  // Preexisting final-story reading position remains available in the new
+  // four-series layout, even if earlier prerequisites were not completed.
+  await setJson(progressKey(episode7), makeProgress(episode7, { currentPartIndex: 0 }))
+  const legacyFinalBefore = await evaluate(
+    'localStorage.getItem(' + JSON.stringify(progressKey(episode7)) + ')',
+  )
+  await reloadAndWait()
+  await clickButtonContaining('Библиотека')
+  await clickButtonContaining('Королевский пленник')
+  await assertSeason4StoryAccess([true, true, false, true],
+    'old Back to Ordan progress still allows resume')
+  assert((await evaluate('localStorage.getItem(' + JSON.stringify(progressKey(episode7)) + ')')) === legacyFinalBefore,
+    'moving a season changed historical final-story progress')
+  await evaluate('localStorage.removeItem(' + JSON.stringify(progressKey(episode7)) + ')')
+
+  // Both False Road choices must carry into Two Reinforcements.
   await setJson(progressKey(episode5), makeProgress(episode5, {
     completed: true, currentPartIndex: episode5.parts.length - 1,
     selectedChoices: {
@@ -574,16 +594,14 @@ try {
   await reloadAndWait()
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Королевский пленник')
-  await waitFor(bodyHas('5 серий'), 'Season 4 overview after False Road')
-  await assertSeason4StoryAccess([true, true, true, true, false],
-    'Two Reinforcements unlocked without exposing the finale')
+  await assertSeason4StoryAccess([true, true, true, false],
+    'Two Reinforcements unlocked without exposing finale')
   await clickButtonContaining('Две подмоги')
-  await waitFor(bodyHas('Две подмоги'), 'Two Reinforcements reader for forest-edge choice')
   const inheritedFalseRoad = '(() => { const raw = localStorage.getItem(' +
     JSON.stringify(progressKey(episode6)) +
     '); return raw && JSON.parse(raw).selected_choices.story5_choice_1_road_post_approach; })()'
   await waitFor(inheritedFalseRoad + ' === "story5_choice_1a_forest_edge"',
-    'Two Reinforcements must persist inherited forest-edge choice')
+    'Two Reinforcements inherited forest-edge route choice')
 
   await setJson(progressKey(episode5), makeProgress(episode5, {
     completed: true, currentPartIndex: episode5.parts.length - 1,
@@ -591,14 +609,13 @@ try {
       story5_choice_1_road_post_approach: 'story5_choice_1b_open_ridge',
     },
   }))
-  await evaluate(`localStorage.removeItem(${JSON.stringify(progressKey(episode6))})`)
+  await evaluate('localStorage.removeItem(' + JSON.stringify(progressKey(episode6)) + ')')
   await reloadAndWait()
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Королевский пленник')
   await clickButtonContaining('Две подмоги')
-  await waitFor(bodyHas('Две подмоги'), 'Two Reinforcements reader for open-ridge choice')
   await waitFor(inheritedFalseRoad + ' === "story5_choice_1b_open_ridge"',
-    'Two Reinforcements must persist inherited open-ridge choice')
+    'Two Reinforcements inherited open-ridge route choice')
 
   // Gallery must restore scenes from completed historical Caravan progress while
   // keeping unseen Season 4 finale art behind spoiler placeholders.
