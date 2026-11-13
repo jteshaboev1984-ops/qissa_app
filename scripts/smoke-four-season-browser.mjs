@@ -343,6 +343,33 @@ try {
     }
   }
 
+
+  // The five canonical stories are sequenced within Season 4. A reader may
+  // reopen an already-started later story without replaying earlier chapters.
+  const season4StoryTitlesRu = [
+    'Две башни',
+    'Человек, которого ждут',
+    'Ложная дорога',
+    'Две подмоги',
+    'Обратно в Ордан',
+  ]
+  const assertSeason4StoryAccess = async (expected, label) => {
+    const actual = await evaluate(
+      '(() => { const titles = ' + JSON.stringify(season4StoryTitlesRu) +
+        '; return titles.map((title) => { ' +
+        'const text = [...document.querySelectorAll("p")].find(' +
+        '(node) => node.textContent?.trim() === title); ' +
+        'const card = text?.closest("button, [aria-disabled=true]"); ' +
+        'return card ? card.tagName === "BUTTON" && !card.disabled : null;' +
+        ' }); })()',
+    )
+    assert(
+      JSON.stringify(actual) === JSON.stringify(expected),
+      label + ': expected ' + JSON.stringify(expected) +
+        ', got ' + JSON.stringify(actual),
+    )
+  }
+
   const season2CoverPresentExpression = `(() => {
     const token = 'seven_roads_season2_cover_v1'
     const imageMatch = [...document.images].some((img) => img.src.includes(token))
@@ -401,6 +428,8 @@ try {
   await waitFor(bodyHas('Тайна восточного каравана'), 'four season cards')
   await waitFor(bodyHas('Королевский пленник'), 'Season 4 card')
   await assertViewportMatrix('four-season library')
+  assert(await evaluate(bodyHas('После сезона 2')), 'locked Season 3 label must name its actual prerequisite')
+  assert(await evaluate(bodyHas('После сезона 3')), 'locked Season 4 label must name its actual prerequisite')
   await clickButtonContaining('Тайна восточного каравана')
   await waitFor(bodyHas('Этот сезон откроется после завершения предыдущего сезона.'),
     'Season 3 Caravan locked for a new reader before Season 2 completion')
@@ -473,6 +502,8 @@ try {
   await waitFor(bodyHas('5 серий'), 'Season 4 five-episode overview')
   await waitFor(bodyHas('Две башни'), 'Season 4 first episode')
   await assertViewportMatrix('Season 4 overview')
+  await assertSeason4StoryAccess([true, false, false, false, false],
+    'fresh Season 4 reader must see only the first story as playable')
   await clickButtonContaining('Начать сезон')
   await waitFor(bodyHas('На третий день после отъезда из Араса'),
     'Russian Season 4 chronological introduction')
@@ -490,10 +521,86 @@ try {
   await waitFor(bodyHas('Arasdan jo‘nab ketganlarining uchinchi kuni'),
     'Uzbek Season 4 chronological introduction')
 
+  const inheritedChoiceAfterLocale = await evaluate(
+    '(() => { const raw = localStorage.getItem(' +
+      JSON.stringify(progressKey(episode3)) +
+      '); return raw && JSON.parse(raw).selected_choices.story2_choice_3_sarvan_check; })()',
+  )
+  assert(inheritedChoiceAfterLocale === 'story2_choice_3a_old_sarvan_yard',
+    'changing RU to UZ lost the saved Season 3 → Season 4 choice')
+
+  // Unlock exactly one following Story 4 episode after the first one is completed.
+  await evaluate(`localStorage.setItem(${JSON.stringify(languageKey)}, 'ru')`)
+  await setJson(progressKey(episode3), makeProgress(episode3, {
+    completed: true,
+    currentPartIndex: episode3.parts.length - 1,
+    selectedChoices: {
+      story2_choice_3_sarvan_check: 'story2_choice_3a_old_sarvan_yard',
+    },
+  }))
+  await reloadAndWait()
+  await clickButtonContaining('Библиотека')
+  await clickButtonContaining('Королевский пленник')
+  await waitFor(bodyHas('5 серий'), 'Season 4 overview after first story completion')
+  await assertSeason4StoryAccess([true, true, false, false, false],
+    'finishing Two Towers unlocks only Waited Man')
+
+  // Progress created under the historic seven-episode layout can resume even
+  // in a later story when the new prerequisite chain is not yet complete.
+  await setJson(progressKey(episode7), makeProgress(episode7, { currentPartIndex: 0 }))
+  await reloadAndWait()
+  await clickButtonContaining('Библиотека')
+  await clickButtonContaining('Королевский пленник')
+  await waitFor(bodyHas('5 серий'), 'Season 4 overview with existing final-story progress')
+  await assertSeason4StoryAccess([true, true, false, false, true],
+    'previously started Back to Ordan must remain accessible')
+  await evaluate(`localStorage.removeItem(${JSON.stringify(progressKey(episode7))})`)
+
+  // Both False Road decisions must reach Two Reinforcements in the live reader.
+  await setJson(progressKey(episode4), makeProgress(episode4, {
+    completed: true, currentPartIndex: episode4.parts.length - 1,
+  }))
+  await setJson(progressKey(episode5), makeProgress(episode5, {
+    completed: true, currentPartIndex: episode5.parts.length - 1,
+    selectedChoices: {
+      story5_choice_1_road_post_approach: 'story5_choice_1a_forest_edge',
+    },
+  }))
+  await reloadAndWait()
+  await clickButtonContaining('Библиотека')
+  await clickButtonContaining('Королевский пленник')
+  await waitFor(bodyHas('5 серий'), 'Season 4 overview after False Road')
+  await assertSeason4StoryAccess([true, true, true, true, false],
+    'Two Reinforcements unlocked without exposing the finale')
+  await clickButtonContaining('Две подмоги')
+  await waitFor(bodyHas('Две подмоги'), 'Two Reinforcements reader for forest-edge choice')
+  const inheritedFalseRoad = '(() => { const raw = localStorage.getItem(' +
+    JSON.stringify(progressKey(episode6)) +
+    '); return raw && JSON.parse(raw).selected_choices.story5_choice_1_road_post_approach; })()'
+  await waitFor(inheritedFalseRoad + ' === "story5_choice_1a_forest_edge"',
+    'Two Reinforcements must persist inherited forest-edge choice')
+
+  await setJson(progressKey(episode5), makeProgress(episode5, {
+    completed: true, currentPartIndex: episode5.parts.length - 1,
+    selectedChoices: {
+      story5_choice_1_road_post_approach: 'story5_choice_1b_open_ridge',
+    },
+  }))
+  await evaluate(`localStorage.removeItem(${JSON.stringify(progressKey(episode6))})`)
+  await reloadAndWait()
+  await clickButtonContaining('Библиотека')
+  await clickButtonContaining('Королевский пленник')
+  await clickButtonContaining('Две подмоги')
+  await waitFor(bodyHas('Две подмоги'), 'Two Reinforcements reader for open-ridge choice')
+  await waitFor(inheritedFalseRoad + ' === "story5_choice_1b_open_ridge"',
+    'Two Reinforcements must persist inherited open-ridge choice')
+
+
+
   assert(browserErrors.length === 0,
     'browser runtime exceptions: ' + browserErrors.join(' | '))
   console.log('[four-season-browser] PASS: 4 seasons, 6/3/10/5 reading units, Royal Silver → Caravan → Prisoner RU+UZ chronology')
-  console.log('[four-season-browser] original Royal Silver timing, legacy Caravan progress, Season 4 choice inheritance and 360/390/430px layouts verified')
+  console.log('[four-season-browser] correct prerequisite labels, five-story unlocks, late legacy resume, both inherited False Road choices, RU/UZ persistence and 360/390/430px verified')
 } finally {
   cleanup()
 }

@@ -494,8 +494,8 @@ export function PublishedStoriesShell({
                         null
                       const progressLabel = locked
                         ? language === 'uz'
-                          ? '1-hikoyadan keyin'
-                          : 'После сказки 1'
+                          ? `${season.number - 1}-mavsumdan keyin`
+                          : `После сезона ${season.number - 1}`
                         : season.number === 1
                           ? (() => {
                               const state =
