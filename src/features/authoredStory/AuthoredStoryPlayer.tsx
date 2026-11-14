@@ -566,6 +566,9 @@ export function AuthoredStoryPlayer({
         } as Record<string, number>)[story.story_id] ?? 0
       : 0
   const globalReaderEpisodeNumber = seasonEpisodeOffset + readerProgress.current
+  const totalSeasonEpisodes = ({
+    1: 5, 2: 4, 3: 11, 4: 10,
+  } as Record<number, number>)[seasonNumber] ?? readerProgress.total
   const canContinue =
     !isReviewingPreviousPart && canAdvanceAuthoredStory(story, progress)
   const previousReviewPartIndex =
@@ -575,8 +578,9 @@ export function AuthoredStoryPlayer({
   const nextReviewPartIndex =
     !historicalReplay &&
     isReviewingPreviousPart &&
-    readerProgress.current < persistedReaderProgress.current
-      ? firstPartIndexForEpisode(story, readerProgress.current + 1)
+    reviewPartIndex != null &&
+    reviewPartIndex + 1 <= progress.current_part_index
+      ? reviewPartIndex + 1
       : null
 
   const openReviewPart = (partIndex: number | null) => {
@@ -638,7 +642,7 @@ export function AuthoredStoryPlayer({
   const readerProgressLabel =
     readerUnit === 'part'
       ? formatSevenRoadsPartProgress(language, readerProgress.current, readerProgress.total)
-      : formatSevenRoadsEpisodeProgress(language, globalReaderEpisodeNumber, readerProgress.total + seasonEpisodeOffset)
+      : formatSevenRoadsEpisodeProgress(language, globalReaderEpisodeNumber, totalSeasonEpisodes)
   const completionLabel =
     completionScope === 'episode'
       ? formatSevenRoadsEpisodeCompleted(language, seasonEpisodeOffset + readerProgress.total)
