@@ -500,8 +500,8 @@ if (!seasonsSource.includes("taynaVostochnogoKaravanaV4ByLanguage[language]")) {
 if (!seasonsSource.includes("completionScope: 'season'")) {
   fail('Season 2 Story 2 wrapper must now use season-level completion semantics')
 }
-if (!seasonsSource.includes("readerUnit: 'part'")) {
-  fail('Story 2 must retain part-level reader progress')
+if (!seasonsSource.includes("withReadingSeries(taynaVostochnogoKaravanaV4ByLanguage[language], 'caravan', 0)")) {
+  fail('Caravan must expose eight new reading series without rewriting the original ten source parts')
 }
 for (const marker of [
   'storyNumber={2}',
