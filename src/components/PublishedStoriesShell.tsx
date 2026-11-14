@@ -10,11 +10,11 @@ import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import { authoredIllustrationDiscovery } from '../lib/authoredIllustrationDiscovery'
 import { isSeasonCompleted, isSeasonUnlocked } from '../features/publishedStories/fourSeasonUnlock'
+import { activeSeasonEpisode as findActiveSeasonEpisode, getSeasonEpisodeStates } from '../features/publishedStories/episodeProgress'
 import {
   formatSevenRoadsEpisodeLabel,
   formatSevenRoadsEpisodeProgress,
   formatSevenRoadsPartLabel,
-  formatSevenRoadsPartProgress,
   formatSevenRoadsSeasonEpisodeContext,
   formatSevenRoadsSeasonLabel,
   formatSevenRoadsStoryLabel,
@@ -22,7 +22,6 @@ import {
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
 import {
-  sevenRoadsStory1EpisodeNumber,
   sevenRoadsStory1ReadingState,
 } from '../features/publishedStories/sevenRoadsProgress'
 
@@ -63,7 +62,7 @@ export function PublishedStoriesShell({
   const season1Story = getPrimaryPublishedSeasonStory(sevenRoadsSeason1)
   const story = season1Story?.authoredStory ?? null
   const progress = story ? authoredStoryPersistence.load(story) : null
-  const reading = sevenRoadsStory1ReadingState(progress)
+  const reading = sevenRoadsStory1ReadingState(progress, story?.reader_layout?.episode_by_part)
 
   const unlockedLaterSeasons = sevenRoadsSeasons.filter(
     (season) => season.number > 1 && isSeasonUnlocked(sevenRoadsSeasons, season.number),
@@ -73,6 +72,8 @@ export function PublishedStoriesShell({
     unlockedLaterSeasons.at(-1) ??
     null
   const homeSeasonStories = homeSeason ? getPublishedSeasonStories(homeSeason) : []
+  const homeEpisodeStates = homeSeason ? getSeasonEpisodeStates(homeSeason) : []
+  const homeActiveEpisode = findActiveSeasonEpisode(homeEpisodeStates)
   const homeActiveStory =
     homeSeasonStories.find((entry) => {
       const current = entry.authoredStory && authoredStoryPersistence.load(entry.authoredStory)
@@ -106,15 +107,14 @@ export function PublishedStoriesShell({
         authoredStory,
         seasonStory.episodes.map((episode) => episode.title),
         storyProgress,
-        season.number === 1 && seasonStory.number === 1
-          ? sevenRoadsStory1EpisodeNumber
-          : undefined,
+        (partIndex) => authoredStory.reader_layout?.episode_by_part[partIndex] ?? partIndex + 1,
       )
 
       return storyEpisodes.map((episode) => ({
         ...episode,
         storyId: seasonStory.id,
         storyNumber: seasonStory.number,
+        seasonEpisodeNumber: seasonStory.episodes[episode.episodeNumber - 1]?.seasonNumber ?? episode.episodeNumber,
         storyTitle: seasonStory.title ?? authoredStory.title,
         readerUnit: seasonStory.readerUnit,
       }))
@@ -144,7 +144,7 @@ export function PublishedStoriesShell({
       return {
         eyebrow: copy.continue,
         title: currentEpisodeTitle,
-        subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, reading.currentEpisode, 6),
+        subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, reading.currentEpisode, 5),
         action: onContinueStory,
       }
     }
@@ -154,11 +154,12 @@ export function PublishedStoriesShell({
         ? authoredStoryPersistence.load(homeActiveStory.authoredStory)
         : null
       const total = homeSeason.presentation === 'single-cover-episode-list'
-        ? homeSeasonStories.length
-        : homeActiveStory.authoredStory?.parts.length ?? 0
+        ? homeEpisodeStates.length
+        : homeActiveStory.episodes.length
       const position = homeSeason.presentation === 'single-cover-episode-list'
-        ? homeActiveStory.number
-        : Math.min(total, (activeProgress?.current_part_index ?? 0) + 1)
+        ? homeActiveEpisode?.episode.seasonNumber ?? 1
+        : homeActiveStory.authoredStory?.reader_layout?.episode_by_part[activeProgress?.current_part_index ?? 0] ??
+          Math.min(total, (activeProgress?.current_part_index ?? 0) + 1)
       return {
         eyebrow: done
           ? (language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён')
@@ -462,36 +463,13 @@ export function PublishedStoriesShell({
                       const seasonStoryProgress =
                         authoredStoryPersistence.load(authoredStory)
                       const locked = !isSeasonUnlocked(sevenRoadsSeasons, season.number)
-                      const publishedSeasonStories = getPublishedSeasonStories(season)
                       const singleCoverEpisodeList =
                         season.presentation === 'single-cover-episode-list'
                       const seasonEpisodeStates = singleCoverEpisodeList
-                        ? publishedSeasonStories.map((entry) => {
-                            const packageStory = entry.authoredStory
-                            const packageProgress = packageStory
-                              ? authoredStoryPersistence.load(packageStory)
-                              : null
-                            return {
-                              entry,
-                              progress: packageProgress,
-                              completed: Boolean(packageProgress?.completed),
-                            }
-                          })
+                        ? getSeasonEpisodeStates(season)
                         : []
-                      const completedEpisodeCount = seasonEpisodeStates.filter(
-                        (item) => item.completed,
-                      ).length
-                      const activeSeasonEpisode =
-                        seasonEpisodeStates.find((item, index) => {
-                          if (!item.progress || item.completed) return false
-                          const priorEpisodesCompleted = seasonEpisodeStates
-                            .slice(0, index)
-                            .every((previous) => previous.completed)
-                          const legacyEpisode2Resume = Boolean(item.progress)
-                          return priorEpisodesCompleted || legacyEpisode2Resume
-                        }) ??
-                        seasonEpisodeStates.find((item) => !item.completed) ??
-                        null
+                      const completedEpisodeCount = seasonEpisodeStates.filter((item) => item.completed).length
+                      const activeSeasonEpisode = findActiveSeasonEpisode(seasonEpisodeStates)
                       const progressLabel = locked
                         ? language === 'uz'
                           ? `${season.number - 1}-mavsumdan keyin`
@@ -499,7 +477,7 @@ export function PublishedStoriesShell({
                         : season.number === 1
                           ? (() => {
                               const state =
-                                sevenRoadsStory1ReadingState(seasonStoryProgress)
+                                sevenRoadsStory1ReadingState(seasonStoryProgress, authoredStory.reader_layout?.episode_by_part)
                               return state.state === 'completed'
                                 ? copy.completed
                                 : state.state === 'in_progress'
@@ -519,7 +497,7 @@ export function PublishedStoriesShell({
                               : activeSeasonEpisode?.progress
                                 ? formatSevenRoadsEpisodeProgress(
                                     language,
-                                    activeSeasonEpisode.entry.number,
+                                    activeSeasonEpisode.episode.seasonNumber,
                                     seasonEpisodeStates.length,
                                   )
                                 : completedEpisodeCount > 0 && activeSeasonEpisode
@@ -735,7 +713,7 @@ export function PublishedStoriesShell({
                                               {gallery.storyCount > 1 ? (
                                                 <p className="text-[0.58rem] font-bold uppercase tracking-[0.12em] text-[#9a8055]">
                                                   {season.presentation === 'single-cover-episode-list'
-                                                    ? formatSevenRoadsEpisodeLabel(language, episode.storyNumber)
+                                                    ? episode.storyTitle
                                                     : formatSevenRoadsStoryLabel(language, episode.storyNumber)} · {episode.storyTitle}
                                                 </p>
                                               ) : null}
