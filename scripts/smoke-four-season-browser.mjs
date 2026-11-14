@@ -345,11 +345,11 @@ try {
 
 
   // Series are chronological, except that a started legacy package may resume.
-  const season3StoryTitlesRu = ['Тайна восточного каравана', 'Две башни']
+  const season3StoryTitlesRu = ['Дом и караван', 'Две башни']
   const season4StoryTitlesRu = [
-    'Человек, которого ждут',
-    'Ложная дорога',
-    'Две подмоги',
+    'Дорога в Ордан',
+    'Северная дорога',
+    'Ложная подмога',
     'Обратно в Ордан',
   ]
   const assertStoryAccess = async (titles, expected, label) => {
@@ -357,7 +357,7 @@ try {
       '(() => { const titles = ' + JSON.stringify(titles) +
         '; return titles.map((title) => { ' +
         'const text = [...document.querySelectorAll("p")].find(' +
-        '(node) => node.textContent?.trim() === title); ' +
+        '(node) => node.textContent?.trim() === title && node.closest("button, [aria-disabled=true]")); ' +
         'const card = text?.closest("button, [aria-disabled=true]"); ' +
         'return card ? card.tagName === "BUTTON" && !card.disabled : null;' +
         ' }); })()',
@@ -447,22 +447,24 @@ try {
       story2_choice_3_sarvan_check: 'story2_choice_3a_old_sarvan_yard',
     },
   }))
-  const legacyProgressBefore = await evaluate(
-    `localStorage.getItem(${JSON.stringify(progressKey(episode2))})`,
-  )
   await reloadAndWait()
   await waitFor(bodyHas('Королевское серебро'), 'Season 2 still leads on Home')
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Тайна восточного каравана')
-  await waitFor(bodyHas('2 серии'), 'Season 3 Caravan and Two Towers overview')
-  assert(await evaluate(bodyHas('10 глав')), 'Caravan series must display 10 chapters')
-  assert(await evaluate(bodyHas('3 главы')), 'Two Towers series must display 3 chapters')
+  await waitFor(bodyHas('11 серий'), 'Season 3 Caravan and Two Towers overview')
+  assert(await evaluate(bodyHas('Побег Надира')), 'Caravan series must be individually listed')
+  assert(await evaluate(bodyHas('Три столба')), 'Two Towers concluding series must be listed')
   await assertSeason3StoryAccess([true, false], 'Two Towers locked before Caravan completion')
   await assertViewportMatrix('Season 3 Caravan ten-part overview')
   await clickButtonContaining('Продолжить')
-  await waitFor(bodyHas('8 / 10'), 'resume legacy Caravan part 8 in Season 3')
-  assert((await evaluate(`localStorage.getItem(${JSON.stringify(progressKey(episode2))})`)) === legacyProgressBefore,
-    'opening migrated Caravan changed its persisted progress')
+  await waitFor(bodyHas('6 / 8'), 'resume legacy Caravan part 8 in Season 3')
+  const migratedCaravan = await evaluate(
+    'JSON.parse(localStorage.getItem(' + JSON.stringify(progressKey(episode2)) + '))',
+  )
+  assert(migratedCaravan?.layout_version === 'series-30-v1' &&
+    migratedCaravan?.selected_choices?.story2_choice_3_sarvan_check === 'story2_choice_3a_old_sarvan_yard' &&
+    migratedCaravan?.current_part_index >= 7,
+    'Caravan legacy migration lost its place or chosen Sarvan route')
   await assertViewportMatrix('Season 3 resumed reader')
 
   // Royal Silver is Season 2 again, with its original week-after-Festival
@@ -470,7 +472,7 @@ try {
   await reloadAndWait()
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Королевское серебро')
-  await waitFor(bodyHas('3 серии'), 'Season 2 Royal Silver uses unified series label')
+  await waitFor(bodyHas('10 серий'), 'Season 2 Royal Silver uses unified series label')
   await clickButtonContaining('Начать сезон')
   await waitFor(bodyHas('Прошла примерно неделя после Праздника мужества.'),
     'Russian Season 2 original Royal Silver opening')
@@ -491,9 +493,9 @@ try {
   await reloadAndWait()
   await waitFor(bodyHas('Тайна восточного каравана'), 'Season 3 home unlocked')
   await clickButtonContaining('Тайна восточного каравана')
-  await waitFor(bodyHas('2 серии'), 'Season 3 two-series overview after Season 2')
+  await waitFor(bodyHas('11 серий'), 'Season 3 two-series overview after Season 2')
   await clickButtonContaining('Продолжить')
-  await waitFor(bodyHas('8 / 10'), 'Season 3 Caravan resumes saved part 8')
+  await waitFor(bodyHas('6 / 8'), 'Season 3 Caravan resumes saved part 8')
   await reloadAndWait()
 
 
@@ -507,7 +509,7 @@ try {
   await clickButtonContaining('Библиотека')
   await waitFor(bodyHas('После сезона 3'), 'Season 4 waits for Sarvan investigation')
   await clickButtonContaining('Тайна восточного каравана')
-  await waitFor(bodyHas('2 серии'), 'Caravan and Two Towers now form Season 3')
+  await waitFor(bodyHas('11 серий'), 'Caravan and Two Towers now form Season 3')
   await assertSeason3StoryAccess([true, true], 'Caravan completion unlocks Two Towers')
   await assertViewportMatrix('two-series Caravan overview')
   await clickButtonContaining('Две башни')
@@ -544,7 +546,7 @@ try {
   await reloadAndWait()
   await waitFor(bodyHas('Королевский пленник'), 'Season 4 unlocked after Two Towers')
   await clickButtonContaining('Королевский пленник')
-  await waitFor(bodyHas('4 серии'), 'four-series prisoner season overview')
+  await waitFor(bodyHas('10 серий'), 'four-series prisoner season overview')
   await assertSeason4StoryAccess([true, false, false, false],
     'only Waited Man available at the start of Season 4')
   await assertViewportMatrix('Season 4 four-series overview')
@@ -555,7 +557,7 @@ try {
   await evaluate('localStorage.setItem(' + JSON.stringify(languageKey) + ', "uz")')
   await reloadAndWait()
   await clickButtonContaining('Qirollik asiri')
-  await clickButtonContaining('Kutilayotgan odam')
+  await clickButtonContaining('Ordanga yo‘l')
   await waitFor(bodyHas('Sarvandagi voqealardan keyingi kuni'),
     'Uzbek prisoner arc begins with Waited Man')
   await evaluate('localStorage.setItem(' + JSON.stringify(languageKey) + ', "ru")')
@@ -567,7 +569,7 @@ try {
   await reloadAndWait()
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Королевский пленник')
-  await waitFor(bodyHas('4 серии'), 'Season 4 after Waited Man')
+  await waitFor(bodyHas('10 серий'), 'Season 4 after Waited Man')
   await assertSeason4StoryAccess([true, true, false, false],
     'finishing Waited Man unlocks only False Road')
 
@@ -598,7 +600,7 @@ try {
   await clickButtonContaining('Королевский пленник')
   await assertSeason4StoryAccess([true, true, true, false],
     'Two Reinforcements unlocked without exposing finale')
-  await clickButtonContaining('Две подмоги')
+  await clickButtonContaining('Ложная подмога')
   const inheritedFalseRoad = '(() => { const raw = localStorage.getItem(' +
     JSON.stringify(progressKey(episode6)) +
     '); return raw && JSON.parse(raw).selected_choices.story5_choice_1_road_post_approach; })()'
@@ -615,7 +617,7 @@ try {
   await reloadAndWait()
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Королевский пленник')
-  await clickButtonContaining('Две подмоги')
+  await clickButtonContaining('Ложная подмога')
   await waitFor(inheritedFalseRoad + ' === "story5_choice_1b_open_ridge"',
     'Two Reinforcements inherited open-ridge route choice')
 
@@ -631,7 +633,7 @@ try {
   const caravanFirstPart = await evaluate(
     'document.querySelector(\'[aria-controls="gallery-season-3-story-1-episode-1"]\')?.innerText',
   )
-  const caravanSceneCount = episode2.parts[0].image_slots.length
+  const caravanSceneCount = episode2.parts[0].image_slots.length + episode2.parts[1].image_slots.length
   assert(caravanFirstPart?.includes(caravanSceneCount + ' / ' + caravanSceneCount),
     'completed legacy Caravan Part 1 images were not restored in gallery')
   await evaluate(
@@ -653,8 +655,10 @@ try {
     'document.querySelector(\'[aria-controls="gallery-season-4-story-4-episode-1"]\')?.innerText',
   )
   const finalPart = episode7.parts[0]
-  const finaleSceneCount = finalPart.image_slots.length +
-    (finalPart.decision?.choices?.filter((choice) => choice.illustration).length ?? 0)
+  const finaleBeforeSplit = finalPart.story_text.split('Ответ из Араса пришёл после полудня.')[0]
+  const finaleSceneCount = finalPart.image_slots.filter((slot) =>
+    slot.phase === 'story_text' && finaleBeforeSplit.includes(slot.after_text),
+  ).length
   assert(finaleSceneCount > 0 && lastGalleryRow?.includes('0 / ' + finaleSceneCount),
     'unread final story must show zero unlocked gallery illustrations')
   await evaluate(
@@ -669,7 +673,7 @@ try {
   )
   assert(finaleLockedItems === finaleSceneCount,
     'final story gallery leaked art before the reader reached it')
-  await clickAriaButton('Сцена главы 1 ещё не открыта')
+  await clickAriaButton('Сцена серии 9 ещё не открыта')
   await waitFor(bodyHas('Сцена ещё скрыта'), 'locked illustration explains spoiler protection')
 
 
@@ -677,8 +681,8 @@ try {
 
   assert(browserErrors.length === 0,
     'browser runtime exceptions: ' + browserErrors.join(' | '))
-  console.log('[four-season-browser] PASS: 4 seasons with 6/3/2/4 series, Sarvan conclusion moved into Caravan season, RU+UZ')
-  console.log('[four-season-browser] accurate prerequisite labels, four-series prisoner unlocks, late legacy resume, both False Road choices, RU/UZ persistence, migrated gallery art and finale spoiler locks verified')
+  console.log('[four-season-browser] PASS: 4 seasons with 5/4/11/10 series, Sarvan conclusion moved into Caravan season, RU+UZ')
+  console.log('[four-season-browser] accurate prerequisite labels, ten-series prisoner unlocks, late legacy resume, both False Road choices, RU/UZ persistence, migrated gallery art and finale spoiler locks verified')
 } finally {
   cleanup()
 }
