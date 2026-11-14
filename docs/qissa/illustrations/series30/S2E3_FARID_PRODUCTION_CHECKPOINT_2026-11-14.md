@@ -22,7 +22,7 @@
 - **Supabase Storage upload: NOT DONE; public URL: NOT VERIFIED; reader/gallery integration: NOT DONE; runtime QA: PENDING.**
 
 ## S2E3-A02 — «Возница и Данияр: после нападения»
-- Состояние: **композиция согласована, изображение ещё не создано**; две попытки генерации завершились ошибкой сервиса. Не считать art approved и не повторять генерацию без нового пользовательского запроса.
+- Состояние: **композиция согласована, новый кандидат сгенерирован 2026-11-14, ОЖИДАЕТ ХУДОЖЕСТВЕННОЙ ПРИЁМКИ владельца**. Две предыдущие попытки завершились ошибками, третья — успешной. Draft PNG: `S2E3-A02_after_attack_owner_review.png` (1672×941, 2,909,256 байт; SHA-256 `a7f7cf71f57dde5f5c3187306e21fedee014e91755a8ff4340cbdce6b1c0cb2c`), доступен в чате как файл. **Это не APPROVED asset; мастер, WebP, Supabase URL и runtime integration — не выполнены**.
 - `kind=shared`; `phase=story_text`.
 - Точный RU `after_text`: `— Пока не знаю. Но я ещё подумаю.`
 - Точный UZ `after_text`: `— Hozircha bilmayman. Lekin yana o‘ylab ko‘raman.`
