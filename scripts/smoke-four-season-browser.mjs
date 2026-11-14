@@ -472,7 +472,7 @@ try {
   await reloadAndWait()
   await clickButtonContaining('Библиотека')
   await clickButtonContaining('Королевское серебро')
-  await waitFor(bodyHas('10 серий'), 'Season 2 Royal Silver uses unified series label')
+  await waitFor(bodyHas('4 серии'), 'Season 2 Royal Silver uses unified series label')
   await clickButtonContaining('Начать сезон')
   await waitFor(bodyHas('Прошла примерно неделя после Праздника мужества.'),
     'Russian Season 2 original Royal Silver opening')
