@@ -240,7 +240,7 @@
           "qa_status": "pending"
         }
       ],
-      "notes": "Stage 1: A01 (Farid gate arrest) owner-approved after RU/UZ verification, PNG/WebP/hash in QISSA Library; Supabase URL NOT uploaded/verified, runtime NOT integrated, QA pending. A02 (driver-Danyar dry-dust dialogue; no repeat of departing wagon) scene approved but image NOT generated due to service errors; exact RU/UZ anchors confirmed, do not retry without new request. A03 (Kamran reaction to capital trial) scene approved, NOT generated. See S2E3_FARID_PRODUCTION_CHECKPOINT_2026-11-14.md."
+      "notes": "Stage 1: A01 Farid gate arrest owner-approved and PNG/WebP/hash stored in QISSA Library; Supabase URL NOT uploaded/verified, runtime NOT integrated, QA pending. A02 driver-Danyar after-attack conversation: generated on 2026-11-14 as DRAFT candidate, PNG 1672x941, SHA-256 a7f7cf71f57dde5f5c3187306e21fedee014e91755a8ff4340cbdce6b1c0cb2c; OWNER ART ACCEPTANCE PENDING, NOT APPROVED, not in asset_ids; no WebP/storage/runtime. A02 exact RU/UZ anchors verified. A03 scene approved for production, NOT generated. See S2E3_FARID_PRODUCTION_CHECKPOINT_2026-11-14.md."
     },
     {
       "season": 2,
