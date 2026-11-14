@@ -299,7 +299,7 @@ for (const text of [
 requireText('reader', player, "story.language === 'uz' ? 'uz' : 'ru'")
 requireText('reader', player, 'getSevenRoadsCopy(language)')
 requireText('reader', player, 'language={language}')
-requireText('reader', player, 'formatSevenRoadsEpisodeProgress(language, globalReaderEpisodeNumber, readerProgress.total + seasonEpisodeOffset)')
+requireText('reader', player, 'formatSevenRoadsEpisodeProgress(language, globalReaderEpisodeNumber, totalSeasonEpisodes)')
 requireText('reader', player, 'formatSevenRoadsPartProgress(language, readerProgress.current, readerProgress.total)')
 requireText('reader', player, 'formatSevenRoadsSeasonCompleted(language, seasonNumber)')
 requireText('reader', player, 'formatSevenRoadsStoryCompleted(language, storyNumber)')

@@ -457,7 +457,7 @@ try {
   await assertSeason3StoryAccess([true, false], 'Two Towers locked before Caravan completion')
   await assertViewportMatrix('Season 3 Caravan ten-part overview')
   await clickButtonContaining('Продолжить')
-  await waitFor(bodyHas('6 / 8'), 'resume legacy Caravan part 8 in Season 3')
+  await waitFor(bodyHas('6 / 11'), 'resume legacy Caravan part 8 in Season 3')
   const migratedCaravan = await evaluate(
     'JSON.parse(localStorage.getItem(' + JSON.stringify(progressKey(episode2)) + '))',
   )
@@ -495,7 +495,7 @@ try {
   await clickButtonContaining('Тайна восточного каравана')
   await waitFor(bodyHas('11 серий'), 'Season 3 two-series overview after Season 2')
   await clickButtonContaining('Продолжить')
-  await waitFor(bodyHas('6 / 8'), 'Season 3 Caravan resumes saved part 8')
+  await waitFor(bodyHas('6 / 11'), 'Season 3 Caravan resumes saved part 8')
   await reloadAndWait()
 
 
