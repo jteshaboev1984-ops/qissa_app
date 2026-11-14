@@ -141,9 +141,9 @@ for (const language of ['ru', 'uz']) {
       assert.equal(story.parts.filter(p => p.part_id === part.part_id).length, 1,
         key + ': original part ID must survive exactly once')
     }
-    assert.deepEqual(
-      story.parts.flatMap(p => p.decision ? [p.decision.decision_id] : []),
-      original.parts.flatMap(p => p.decision ? [p.decision.decision_id] : []),
+    assert.equal(
+      JSON.stringify(story.parts.flatMap(p => p.decision ? [p.decision.decision_id] : [])),
+      JSON.stringify(original.parts.flatMap(p => p.decision ? [p.decision.decision_id] : [])),
       key + ': decision positions/order must survive split',
     )
     for (const part of story.parts) {
