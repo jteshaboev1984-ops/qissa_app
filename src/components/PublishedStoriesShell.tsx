@@ -274,8 +274,8 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? `Bu lavha ${notice.storyNumber ? `${notice.seasonNumber}-mavsumning ${notice.storyNumber}-qismida, ` : ''}${notice.readerUnit === 'part' ? `${notice.episodeNumber}-bobdagi` : `${notice.episodeNumber}-qismdagi`} shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
-                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? `серии ${notice.storyNumber}, ` : ''}${notice.readerUnit === 'part' ? `главы ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
+                    ? `Bu lavha ${notice.storyNumber && !notice.storyAsEpisode ? `${notice.seasonNumber}-mavsumning ${notice.storyNumber}-qismida, ` : ''}${notice.readerUnit === 'part' ? `${notice.episodeNumber}-bobdagi` : `${notice.episodeNumber}-qismdagi`} shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
+                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber && !notice.storyAsEpisode ? `серии ${notice.storyNumber}, ` : ''}${notice.readerUnit === 'part' ? `главы ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
                   {reading.state === 'in_progress' ? (
@@ -812,7 +812,7 @@ export function PublishedStoriesShell({
                                                         setNotice({
                                                           kind: 'locked-art',
                                                           seasonNumber: season.number,
-                                                          episodeNumber: episode.episodeNumber,
+                                                          episodeNumber: episode.seasonEpisodeNumber,
                                                           storyNumber:
                                                             gallery.storyCount > 1
                                                               ? episode.storyNumber
@@ -824,10 +824,10 @@ export function PublishedStoriesShell({
                                                       }
                                                       aria-label={
                                                         language === 'uz'
-                                                          ? episode.readerUnit === 'part' ? `${episode.episodeNumber}-bob lavhasi hali ochilmagan` : `${episode.episodeNumber}-qism lavhasi hali ochilmagan`
+                                                          ? episode.readerUnit === 'part' ? `${episode.seasonEpisodeNumber}-bob lavhasi hali ochilmagan` : `${episode.seasonEpisodeNumber}-qism lavhasi hali ochilmagan`
                                                           : episode.readerUnit === 'part'
-                                                            ? `Сцена главы ${episode.episodeNumber} ещё не открыта`
-                                                            : `Сцена серии ${episode.episodeNumber} ещё не открыта`
+                                                            ? `Сцена главы ${episode.seasonEpisodeNumber} ещё не открыта`
+                                                            : `Сцена серии ${episode.seasonEpisodeNumber} ещё не открыта`
                                                       }
                                                     >
                                                       <img
