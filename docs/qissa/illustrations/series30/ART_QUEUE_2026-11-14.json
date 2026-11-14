@@ -240,7 +240,7 @@
           "qa_status": "pending"
         }
       ],
-      "notes": "Missing all story illustrations in reader series. S2E3-A01 accepted on owner conditional text-match approval; PNG/WebP and metadata saved to QISSA Library, not yet uploaded to Supabase or integrated. S2E3-A02/A03 remain pending review."
+      "notes": "Stage 1: A01 (Farid gate arrest) owner-approved after RU/UZ verification, PNG/WebP/hash in QISSA Library; Supabase URL NOT uploaded/verified, runtime NOT integrated, QA pending. A02 (driver-Danyar dry-dust dialogue; no repeat of departing wagon) scene approved but image NOT generated due to service errors; exact RU/UZ anchors confirmed, do not retry without new request. A03 (Kamran reaction to capital trial) scene approved, NOT generated. See S2E3_FARID_PRODUCTION_CHECKPOINT_2026-11-14.md."
     },
     {
       "season": 2,
