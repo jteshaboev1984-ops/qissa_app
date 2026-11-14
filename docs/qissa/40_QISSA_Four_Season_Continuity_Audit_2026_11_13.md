@@ -1,5 +1,7 @@
 # QISSA: literary continuity and series nomenclature
 
+> **Исторический документ от 13 ноября 2026.** Содержит прежнюю 15-серийную структуру и уровень «глав». **Текущая утверждённая структура в PR #334 — 5 / 4 / 11 / 10 = 30 серий, интерфейс «сезон → серия → страницы»** без внутренних глав. Новая схема определена `src/data/sevenRoadsReadingSeries.ts`; актуальный художественный план — [`41_QISSA_30_Series_Illustration_Production_Plan_2026_11_14.md`](41_QISSA_30_Series_Illustration_Production_Plan_2026_11_14.md). Ниже сохранён исходный хронологический аудит как историческая фиксация решения о порядке пакетов.
+
 Date: 2026-11-13
 Scope: PR #334, `qissa/four-seasons-chronological-runtime-20261112`.
 Decision: preserve original approved authored text, story IDs, versions,
