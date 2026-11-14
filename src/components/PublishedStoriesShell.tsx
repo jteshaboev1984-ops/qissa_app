@@ -503,7 +503,7 @@ export function PublishedStoriesShell({
                                 : completedEpisodeCount > 0 && activeSeasonEpisode
                                   ? formatSevenRoadsEpisodeProgress(
                                       language,
-                                      activeSeasonEpisode.entry.number,
+                                      activeSeasonEpisode.episode.seasonNumber,
                                       seasonEpisodeStates.length,
                                     )
                                   : language === 'uz'
@@ -512,10 +512,11 @@ export function PublishedStoriesShell({
                             : seasonStoryProgress?.completed
                               ? copy.completed
                               : seasonStoryProgress
-                                ? formatSevenRoadsPartProgress(
+                                ? formatSevenRoadsEpisodeProgress(
                                     language,
-                                    (seasonStoryProgress.current_part_index ?? 0) + 1,
-                                    authoredStory.parts.length,
+                                    authoredStory.reader_layout?.episode_by_part[seasonStoryProgress.current_part_index] ??
+                                      (seasonStoryProgress.current_part_index + 1),
+                                    getPrimaryPublishedSeasonStory(season)?.episodes.length ?? 1,
                                   )
                                 : language === 'uz'
                                   ? 'Boshlanmagan'
