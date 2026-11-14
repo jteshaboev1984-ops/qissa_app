@@ -217,10 +217,30 @@
       "stage_1_new_shared_scene_count": 3,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 3,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": "Missing all story illustrations in reader series."
+      "artwork_acceptance": "in_progress",
+      "asset_ids": [
+        "seven_roads_s2e3_farid_gate_arrest_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S2E3-A01",
+          "asset_id": "seven_roads_s2e3_farid_gate_arrest_01_APPROVED",
+          "phase": "story_text",
+          "kind": "shared",
+          "ru_after_text": "— Фарид.",
+          "uz_after_text": "— Farid.",
+          "acceptance": "owner_approved",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_farid_gate_arrest_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_farid_gate_arrest_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_farid_gate_arrest_01_APPROVED.metadata.json",
+          "master_sha256": "b685be81a6acf81a17abc428e0bf10671797483eac63c2afa29d4139e03218c9",
+          "webp_sha256": "00f1c705bbd1c446c354a00852039b57a867ff7166839dc88da5170e03c9a8b1",
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "pending"
+        }
+      ],
+      "notes": "Missing all story illustrations in reader series. S2E3-A01 accepted on owner conditional text-match approval; PNG/WebP and metadata saved to QISSA Library, not yet uploaded to Supabase or integrated. S2E3-A02/A03 remain pending review."
     },
     {
       "season": 2,
