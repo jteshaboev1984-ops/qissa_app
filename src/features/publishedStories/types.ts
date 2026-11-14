@@ -4,7 +4,10 @@ export type PublishedSeasonStatus = 'published' | 'coming_soon'
 export type PublishedStoryStatus = 'published' | 'coming_soon'
 
 export interface PublishedSeasonEpisode {
+  /** Episode ordinal inside its original literary package. */
   number: number
+  /** Continuous ordinal visible within the season. */
+  seasonNumber: number
   title: string
 }
 

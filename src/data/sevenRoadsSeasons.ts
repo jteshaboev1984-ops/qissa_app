@@ -4,18 +4,12 @@ import {
 } from './authoredStories'
 import { getSeason2ReleaseCandidateStories } from './season2StagingAuthoredStories'
 import { applyFourSeasonChronology } from './fourSeasonChronology'
+import { withReadingSeries } from './sevenRoadsReadingSeries'
 import type { PublishedSeason, PublishedSeasonStory } from '../features/publishedStories/types'
 import {
-  formatSevenRoadsEpisodeLabel,
-  formatSevenRoadsPartLabel,
   getSevenRoadsCopy,
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
-
-const episodeTitles: Record<SevenRoadsLanguage, string[]> = {
-  ru: ['Праздник мужества', 'Восточный лес', 'Дорога Самиры', 'Заран', 'Обратная дорога', 'Возвращение'],
-  uz: ['Jasorat bayrami', 'Sharqiy o‘rmon', 'Samiraning yo‘li', 'Zaran', 'Qaytish yo‘li', 'Qaytish'],
-}
 
 export const getPublishedSeasonStories = (season: PublishedSeason): PublishedSeasonStory[] =>
   season.stories.filter((story) => story.status === 'published' && Boolean(story.authoredStory))
@@ -32,7 +26,9 @@ export const getPrimaryPublishedSeasonStory = (
 
 export const getSevenRoadsSeason1 = (language: SevenRoadsLanguage): PublishedSeason => {
   const copy = getSevenRoadsCopy(language)
-  const authoredStory = prazdnikMuzhestvaV3ByLanguage[language]
+  const { story: authoredStory, episodes } = withReadingSeries(
+    prazdnikMuzhestvaV3ByLanguage[language], 'festival', 0,
+  )
   return {
     id: 'seven-roads-season-1',
     worldId: 'seven_roads',
@@ -48,7 +44,7 @@ export const getSevenRoadsSeason1 = (language: SevenRoadsLanguage): PublishedSea
       authoredStory,
       completionScope: 'season',
       readerUnit: 'episode',
-      episodes: episodeTitles[language].map((title, index) => ({ number: index + 1, title })),
+      episodes,
     }],
   }
 }
@@ -58,7 +54,9 @@ const singlePackageSeason = (
   number: 2,
   authoredStory: NonNullable<PublishedSeasonStory['authoredStory']>,
   coverAssetId: string,
-): PublishedSeason => ({
+): PublishedSeason => {
+  const { story, episodes } = withReadingSeries(authoredStory, 'silver', 0)
+  return ({
   id: `seven-roads-season-${number}`,
   worldId: 'seven_roads',
   worldTitle: getSevenRoadsCopy(language).worldTitle,
@@ -71,12 +69,13 @@ const singlePackageSeason = (
     number: 1,
     title: authoredStory.title,
     status: 'published',
-    authoredStory,
+    authoredStory: story,
     completionScope: 'season',
     readerUnit: 'episode',
-    episodes: authoredStory.parts.map((_, index) => ({ number: index + 1, title: formatSevenRoadsEpisodeLabel(language, index + 1) })),
+    episodes,
   }],
 })
+}
 
 const getStagedStoriesById = (language: SevenRoadsLanguage) =>
   new Map(getSeason2ReleaseCandidateStories(language).map((story) => [story.story_id, story]))
@@ -101,58 +100,50 @@ export const getSevenRoadsSeason2 = (language: SevenRoadsLanguage): PublishedSea
     'seven_roads_season2_cover_v1',
   )
 
-// The Sarvan investigation resolves the Caravan thread before the prisoner arc.
+// All 30 series are presentation-only; the eight original literary packages remain intact.
 export const getSevenRoadsSeason3 = (language: SevenRoadsLanguage): PublishedSeason => {
-  const authoredPackages = [
-    taynaVostochnogoKaravanaV4ByLanguage[language],
-    requireStagedStory(language, 'seven_roads_dve_bashni'),
-  ]
+  const caravan = withReadingSeries(taynaVostochnogoKaravanaV4ByLanguage[language], 'caravan', 0)
+  const towers = withReadingSeries(requireStagedStory(language, 'seven_roads_dve_bashni'), 'towers', 8)
   return {
     id: 'seven-roads-season-3',
     worldId: 'seven_roads',
     worldTitle: getSevenRoadsCopy(language).worldTitle,
     number: 3,
-    title: authoredPackages[0].title,
+    title: caravan.story.title,
     status: 'published',
     presentation: 'single-cover-episode-list',
     coverAssetId: 'seven_roads_story2_cover_v1',
-    stories: authoredPackages.map((authoredStory, index) => ({
+    stories: [caravan, towers].map((item, index) => ({
       id: `seven-roads-season-3-story-${index + 1}`,
       number: index + 1,
-      title: authoredStory.title,
+      title: item.story.title,
       status: 'published',
-      authoredStory,
+      authoredStory: item.story,
       completionScope: 'episode',
-      readerUnit: 'part',
-      episodes: authoredStory.parts.map((_, partIndex) => ({
-        number: partIndex + 1,
-        title: formatSevenRoadsPartLabel(language, partIndex + 1),
-      })),
+      readerUnit: 'episode',
+      episodes: item.episodes,
     })),
   }
 }
 
 export const getSevenRoadsSeason4 = (language: SevenRoadsLanguage): PublishedSeason => {
-  const storyIds = [
-    'seven_roads_chelovek_kotorogo_zhdut',
-    'seven_roads_lozhnaya_doroga',
-    'seven_roads_dve_podmogi',
-    'seven_roads_obratno_v_ordan',
-  ]
-  const stories: PublishedSeasonStory[] = storyIds.map((id, index) => {
-    const authoredStory = requireStagedStory(language, id)
+  const entries = [
+    { id: 'seven_roads_chelovek_kotorogo_zhdut', key: 'waited', offset: 0 },
+    { id: 'seven_roads_lozhnaya_doroga', key: 'falseRoad', offset: 4 },
+    { id: 'seven_roads_dve_podmogi', key: 'reinforcements', offset: 6 },
+    { id: 'seven_roads_obratno_v_ordan', key: 'ordan', offset: 8 },
+  ] as const
+  const stories: PublishedSeasonStory[] = entries.map((entry, index) => {
+    const { story, episodes } = withReadingSeries(requireStagedStory(language, entry.id), entry.key, entry.offset)
     return {
       id: `seven-roads-season-4-story-${index + 1}`,
       number: index + 1,
-      title: authoredStory.title,
+      title: story.title,
       status: 'published',
-      authoredStory,
+      authoredStory: story,
       completionScope: 'episode',
-      readerUnit: 'part',
-      episodes: authoredStory.parts.map((_, partIndex) => ({
-        number: partIndex + 1,
-        title: formatSevenRoadsPartLabel(language, partIndex + 1),
-      })),
+      readerUnit: 'episode',
+      episodes,
     }
   })
   return {
@@ -160,7 +151,6 @@ export const getSevenRoadsSeason4 = (language: SevenRoadsLanguage): PublishedSea
     worldId: 'seven_roads',
     worldTitle: getSevenRoadsCopy(language).worldTitle,
     number: 4,
-    // Owner-approved Season 4 title in both reading languages.
     title: language === 'uz' ? 'Qirollik asiri' : 'Королевский пленник',
     status: 'published',
     presentation: 'single-cover-episode-list',
