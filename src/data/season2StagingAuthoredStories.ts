@@ -79,12 +79,12 @@ for (const story of season2StagingRussianStories) {
 }
 
 /**
- * Season 2 release-candidate registry.
+ * Historical authored-package registry (its Season 2 filename is retained).
  *
- * These packages stay separate to preserve per-episode progress and the
- * already-live Episode 2 storage key. The user-facing Season 2 surface may
- * compose them into one shared-cover / seven-episode season, but they must
- * not be flattened into one authored package.
+ * The approved four-season presentation uses Royal Silver in Season 2,
+ * Caravan followed by Two Towers in Season 3, and the four prisoner-series
+ * packages in Season 4. Keep each package separate: moving its presentation
+ * must never change story_id, story_version, choices or saved reading progress.
  */
 export const season2StagingAuthoredStoriesRu =
   season2StagingRussianStories

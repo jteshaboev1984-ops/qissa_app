@@ -63,7 +63,9 @@
     "check:season2-story1-uz": "node scripts/check-season2-story1-uz.mjs",
     "check:season2-uz-overlays": "node scripts/check-season2-uz-overlays.mjs",
     "check:season2-release-wiring": "node scripts/check-season2-release-wiring.mjs",
+    "check:four-seasons": "node scripts/check-four-season-layout.mjs && npm run check:reading-series-30",
     "smoke:season2-release-browser": "node scripts/smoke-season2-release-browser.mjs",
+    "smoke:four-season-browser": "node scripts/smoke-four-season-browser.mjs",
     "ops:upload-season2-tier-a-assets": "node scripts/upload-season2-tier-a-runtime-assets.mjs",
     "smoke:story2-assets-live": "node scripts/smoke-story2-assets-live.mjs",
     "check:story2-bundle-closed": "node scripts/check-story2-production-bundle-closed.mjs",
@@ -79,7 +81,8 @@
     "check:season2-listening-paths": "node scripts/check-season2-listening-paths.mjs",
     "review:season2-listening-paths": "node scripts/check-season2-listening-paths.mjs --write listening-review",
     "check:season2-story6-approved-art": "node scripts/check-season2-story6-approved-art.mjs",
-    "verify:season2-story6-public-art": "node scripts/check-season2-story6-approved-art.mjs --verify-public"
+    "verify:season2-story6-public-art": "node scripts/check-season2-story6-approved-art.mjs --verify-public",
+    "check:reading-series-30": "node scripts/check-reading-series-30.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

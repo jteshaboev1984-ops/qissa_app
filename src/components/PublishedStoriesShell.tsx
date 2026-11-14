@@ -9,11 +9,12 @@ import { sevenRoadsUiAssets } from '../data/sevenRoadsUiAssets'
 import { resolveAuthoredStoryAssetUrl } from '../data/authoredStoryAssets'
 import { authoredStoryPersistence } from '../lib/authoredStoryPersistence'
 import { authoredIllustrationDiscovery } from '../lib/authoredIllustrationDiscovery'
+import { isSeasonCompleted, isSeasonUnlocked } from '../features/publishedStories/fourSeasonUnlock'
+import { activeSeasonEpisode as findActiveSeasonEpisode, getSeasonEpisodeStates } from '../features/publishedStories/episodeProgress'
 import {
   formatSevenRoadsEpisodeLabel,
   formatSevenRoadsEpisodeProgress,
   formatSevenRoadsPartLabel,
-  formatSevenRoadsPartProgress,
   formatSevenRoadsSeasonEpisodeContext,
   formatSevenRoadsSeasonLabel,
   formatSevenRoadsStoryLabel,
@@ -21,7 +22,6 @@ import {
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
 import {
-  sevenRoadsStory1EpisodeNumber,
   sevenRoadsStory1ReadingState,
 } from '../features/publishedStories/sevenRoadsProgress'
 
@@ -32,6 +32,7 @@ type LibraryNotice =
   | { kind: 'locked-season'; seasonNumber: number }
   | {
       kind: 'locked-art'
+      seasonNumber: number
       episodeNumber: number
       storyNumber?: number
       storyAsEpisode?: boolean
@@ -61,44 +62,27 @@ export function PublishedStoriesShell({
   const season1Story = getPrimaryPublishedSeasonStory(sevenRoadsSeason1)
   const story = season1Story?.authoredStory ?? null
   const progress = story ? authoredStoryPersistence.load(story) : null
-  const reading = sevenRoadsStory1ReadingState(progress)
-  const season2 = sevenRoadsSeasons.find((season) => season.number === 2) ?? null
-  const season2Stories = season2 ? getPublishedSeasonStories(season2) : []
-  const season2Entries = season2Stories.map((entry) => {
-    const authoredStory = entry.authoredStory
-    const progress = authoredStory
-      ? authoredStoryPersistence.load(authoredStory)
-      : null
-    return {
-      entry,
-      authoredStory,
-      progress,
-      completed: Boolean(progress?.completed),
-    }
-  })
-  const season2Unlocked = reading.state === 'completed'
-  const season2AllCompleted =
-    season2Entries.length === 7 && season2Entries.every((item) => item.completed)
-  const season2CompletedCount = season2Entries.filter((item) => item.completed).length
-  const season2CanResumeAt = (index: number) => {
-    const item = season2Entries[index]
-    if (!item?.progress || item.completed) return false
+  const reading = sevenRoadsStory1ReadingState(progress, story?.reader_layout?.episode_by_part)
 
-    const priorEpisodesCompleted = season2Entries
-      .slice(0, index)
-      .every((previous) => previous.completed)
-    const legacyEpisode2Resume = item.entry.number === 2
-
-    return priorEpisodesCompleted || legacyEpisode2Resume
-  }
-  const season2StartedIncomplete =
-    season2Entries.find((item, index) => !item.completed && season2CanResumeAt(index)) ?? null
-  const season2FirstIncomplete =
-    season2Entries.find((item) => !item.completed) ?? null
-  const season2Primary =
-    season2StartedIncomplete ??
-    season2FirstIncomplete ??
-    season2Entries.at(-1) ??
+  const unlockedLaterSeasons = sevenRoadsSeasons.filter(
+    (season) => season.number > 1 && isSeasonUnlocked(sevenRoadsSeasons, season.number),
+  )
+  const homeSeason =
+    unlockedLaterSeasons.find((season) => !isSeasonCompleted(season)) ??
+    unlockedLaterSeasons.at(-1) ??
+    null
+  const homeSeasonStories = homeSeason ? getPublishedSeasonStories(homeSeason) : []
+  const homeEpisodeStates = homeSeason ? getSeasonEpisodeStates(homeSeason) : []
+  const homeActiveEpisode = findActiveSeasonEpisode(homeEpisodeStates)
+  const homeActiveStory =
+    homeSeasonStories.find((entry) => {
+      const current = entry.authoredStory && authoredStoryPersistence.load(entry.authoredStory)
+      return current && !current.completed
+    }) ??
+    homeSeasonStories.find((entry) =>
+      !entry.authoredStory || !authoredStoryPersistence.load(entry.authoredStory)?.completed,
+    ) ??
+    homeSeasonStories.at(-1) ??
     null
 
   const [libraryView, setLibraryView] = useState<LibraryView>('seasons')
@@ -123,15 +107,14 @@ export function PublishedStoriesShell({
         authoredStory,
         seasonStory.episodes.map((episode) => episode.title),
         storyProgress,
-        season.number === 1 && seasonStory.number === 1
-          ? sevenRoadsStory1EpisodeNumber
-          : undefined,
+        (partIndex) => authoredStory.reader_layout?.episode_by_part[partIndex] ?? partIndex + 1,
       )
 
       return storyEpisodes.map((episode) => ({
         ...episode,
         storyId: seasonStory.id,
         storyNumber: seasonStory.number,
+        seasonEpisodeNumber: seasonStory.episodes[episode.episodeNumber - 1]?.seasonNumber ?? episode.episodeNumber,
         storyTitle: seasonStory.title ?? authoredStory.title,
         readerUnit: seasonStory.readerUnit,
       }))
@@ -147,80 +130,49 @@ export function PublishedStoriesShell({
 
   const backgroundUrl = tab === 'home' ? sevenRoadsUiAssets.home : sevenRoadsUiAssets.library
 
+
   const homeAction = (() => {
     if (reading.state === 'new') {
       return {
         eyebrow: language === 'uz' ? 'Hikoyani boshlash' : 'Начать историю',
         title: sevenRoadsSeason1.title,
         subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, 1),
-        action: () => onOpenSeason(sevenRoadsSeason1.number),
+        action: () => onOpenSeason(1),
       }
     }
-
     if (reading.state !== 'completed') {
       return {
         eyebrow: copy.continue,
         title: currentEpisodeTitle,
-        subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, reading.currentEpisode, 6),
+        subtitle: formatSevenRoadsSeasonEpisodeContext(language, 1, reading.currentEpisode, 5),
         action: onContinueStory,
       }
     }
-
-    if (season2 && season2Primary?.authoredStory) {
-      if (season2AllCompleted) {
-        return {
-          eyebrow: language === 'uz' ? '2-mavsum tugadi' : 'Сезон 2 завершён',
-          title: formatSevenRoadsSeasonLabel(language, 2),
-          subtitle:
-            language === 'uz'
-              ? '7 qismning barchasi tugadi'
-              : 'Все 7 серий завершены',
-          action: () => onOpenSeason(2),
-        }
-      }
-
-      if (season2StartedIncomplete) {
-        return {
-          eyebrow: copy.continue,
-          title:
-            season2StartedIncomplete.entry.title ??
-            season2StartedIncomplete.authoredStory?.title ??
-            formatSevenRoadsSeasonLabel(language, 2),
-          subtitle: formatSevenRoadsSeasonEpisodeContext(
-            language,
-            2,
-            season2StartedIncomplete.entry.number,
-            7,
-          ),
-          action: () => onOpenSeason(2),
-        }
-      }
-
-      if (season2CompletedCount > 0 && season2FirstIncomplete) {
-        return {
-          eyebrow: language === 'uz' ? 'Keyingi qism' : 'Следующая серия',
-          title:
-            season2FirstIncomplete.entry.title ??
-            season2FirstIncomplete.authoredStory?.title ??
-            formatSevenRoadsSeasonLabel(language, 2),
-          subtitle: formatSevenRoadsSeasonEpisodeContext(
-            language,
-            2,
-            season2FirstIncomplete.entry.number,
-            7,
-          ),
-          action: () => onOpenSeason(2),
-        }
-      }
-
+    if (homeSeason && homeActiveStory) {
+      const done = isSeasonCompleted(homeSeason)
+      const activeProgress = homeActiveStory.authoredStory
+        ? authoredStoryPersistence.load(homeActiveStory.authoredStory)
+        : null
+      const total = homeSeason.presentation === 'single-cover-episode-list'
+        ? homeEpisodeStates.length
+        : homeActiveStory.episodes.length
+      const position = homeSeason.presentation === 'single-cover-episode-list'
+        ? homeActiveEpisode?.episode.seasonNumber ?? 1
+        : homeActiveStory.authoredStory?.reader_layout?.episode_by_part[activeProgress?.current_part_index ?? 0] ??
+          Math.min(total, (activeProgress?.current_part_index ?? 0) + 1)
       return {
-        eyebrow: language === 'uz' ? 'Yangi mavsum' : 'Новый сезон',
-        title: formatSevenRoadsSeasonLabel(language, 2),
-        subtitle: language === 'uz' ? '7 qism' : '7 серий',
-        action: () => onOpenSeason(2),
+        eyebrow: done
+          ? (language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён')
+          : activeProgress
+            ? copy.continue
+            : (language === 'uz' ? 'Keyingi mavsum' : 'Следующий сезон'),
+        title: homeSeason.title ?? formatSevenRoadsSeasonLabel(language, homeSeason.number),
+        subtitle: done
+          ? (language === 'uz' ? 'Barcha qismlar tugadi' : 'Все части завершены')
+          : formatSevenRoadsSeasonEpisodeContext(language, homeSeason.number, position, total),
+        action: () => onOpenSeason(homeSeason.number),
       }
     }
-
     return {
       eyebrow: language === 'uz' ? 'Mavsum tugadi' : 'Сезон завершён',
       title: sevenRoadsSeason1.title,
@@ -307,8 +259,8 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? 'Bu mavsum “Jasorat bayrami” tugagandan keyin ochiladi.'
-                    : 'Этот сезон откроется после завершения «Праздника мужества».'}
+                    ? 'Bu mavsum oldingi mavsum tugagandan keyin ochiladi.'
+                    : 'Этот сезон откроется после завершения предыдущего сезона.'}
                 </p>
                 <button type="button" className="q-primary mt-5 w-full" onClick={closeNotice}>
                   {language === 'uz' ? 'Tushunarli' : 'Понятно'}
@@ -322,8 +274,8 @@ export function PublishedStoriesShell({
                 </h2>
                 <p className="mt-3 text-sm leading-6 text-[#675e4f]">
                   {language === 'uz'
-                    ? `Bu lavha ${notice.storyNumber ? (notice.storyAsEpisode ? `2-mavsumning ${notice.storyNumber}-qismida, ` : `${notice.storyNumber}-hikoyada, `) : ''}${notice.readerUnit === 'part' ? `ichki ${notice.episodeNumber}-qismdagi` : `${notice.episodeNumber}-qismdagi`} shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
-                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber ? (notice.storyAsEpisode ? `серии ${notice.storyNumber}, ` : `сказки ${notice.storyNumber}, `) : ''}${notice.readerUnit === 'part' ? `части ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
+                    ? `Bu lavha ${notice.storyNumber && !notice.storyAsEpisode ? `${notice.seasonNumber}-mavsumning ${notice.storyNumber}-qismida, ` : ''}${notice.readerUnit === 'part' ? `${notice.episodeNumber}-bobdagi` : `${notice.episodeNumber}-qismdagi`} shu joyni o‘qigach ochiladi. Shunda galereya voqealarni oldindan ko‘rsatmaydi.`
+                    : `Она откроется после того, как эта сцена появится во время чтения ${notice.storyNumber && !notice.storyAsEpisode ? `серии ${notice.storyNumber}, ` : ''}${notice.readerUnit === 'part' ? `главы ${notice.episodeNumber}` : `серии ${notice.episodeNumber}`}. Так Галерея не показывает сюжет заранее.`}
                 </p>
                 <div className="mt-5 grid gap-2.5">
                   {reading.state === 'in_progress' ? (
@@ -510,45 +462,22 @@ export function PublishedStoriesShell({
 
                       const seasonStoryProgress =
                         authoredStoryPersistence.load(authoredStory)
-                      const locked = season.number === 2 && !season2Unlocked
-                      const publishedSeasonStories = getPublishedSeasonStories(season)
+                      const locked = !isSeasonUnlocked(sevenRoadsSeasons, season.number)
                       const singleCoverEpisodeList =
                         season.presentation === 'single-cover-episode-list'
                       const seasonEpisodeStates = singleCoverEpisodeList
-                        ? publishedSeasonStories.map((entry) => {
-                            const packageStory = entry.authoredStory
-                            const packageProgress = packageStory
-                              ? authoredStoryPersistence.load(packageStory)
-                              : null
-                            return {
-                              entry,
-                              progress: packageProgress,
-                              completed: Boolean(packageProgress?.completed),
-                            }
-                          })
+                        ? getSeasonEpisodeStates(season)
                         : []
-                      const completedEpisodeCount = seasonEpisodeStates.filter(
-                        (item) => item.completed,
-                      ).length
-                      const activeSeasonEpisode =
-                        seasonEpisodeStates.find((item, index) => {
-                          if (!item.progress || item.completed) return false
-                          const priorEpisodesCompleted = seasonEpisodeStates
-                            .slice(0, index)
-                            .every((previous) => previous.completed)
-                          const legacyEpisode2Resume = item.entry.number === 2
-                          return priorEpisodesCompleted || legacyEpisode2Resume
-                        }) ??
-                        seasonEpisodeStates.find((item) => !item.completed) ??
-                        null
+                      const completedEpisodeCount = seasonEpisodeStates.filter((item) => item.completed).length
+                      const activeSeasonEpisode = findActiveSeasonEpisode(seasonEpisodeStates)
                       const progressLabel = locked
                         ? language === 'uz'
-                          ? '1-hikoyadan keyin'
-                          : 'После сказки 1'
+                          ? `${season.number - 1}-mavsumdan keyin`
+                          : `После сезона ${season.number - 1}`
                         : season.number === 1
                           ? (() => {
                               const state =
-                                sevenRoadsStory1ReadingState(seasonStoryProgress)
+                                sevenRoadsStory1ReadingState(seasonStoryProgress, authoredStory.reader_layout?.episode_by_part)
                               return state.state === 'completed'
                                 ? copy.completed
                                 : state.state === 'in_progress'
@@ -568,13 +497,13 @@ export function PublishedStoriesShell({
                               : activeSeasonEpisode?.progress
                                 ? formatSevenRoadsEpisodeProgress(
                                     language,
-                                    activeSeasonEpisode.entry.number,
+                                    activeSeasonEpisode.episode.seasonNumber,
                                     seasonEpisodeStates.length,
                                   )
                                 : completedEpisodeCount > 0 && activeSeasonEpisode
                                   ? formatSevenRoadsEpisodeProgress(
                                       language,
-                                      activeSeasonEpisode.entry.number,
+                                      activeSeasonEpisode.episode.seasonNumber,
                                       seasonEpisodeStates.length,
                                     )
                                   : language === 'uz'
@@ -583,10 +512,11 @@ export function PublishedStoriesShell({
                             : seasonStoryProgress?.completed
                               ? copy.completed
                               : seasonStoryProgress
-                                ? formatSevenRoadsPartProgress(
+                                ? formatSevenRoadsEpisodeProgress(
                                     language,
-                                    (seasonStoryProgress.current_part_index ?? 0) + 1,
-                                    authoredStory.parts.length,
+                                    authoredStory.reader_layout?.episode_by_part[seasonStoryProgress.current_part_index] ??
+                                      (seasonStoryProgress.current_part_index + 1),
+                                    getPrimaryPublishedSeasonStory(season)?.episodes.length ?? 1,
                                   )
                                 : language === 'uz'
                                   ? 'Boshlanmagan'
@@ -638,7 +568,7 @@ export function PublishedStoriesShell({
                             </p>
                             <h3 className="mt-1 font-serif text-[1.75rem] font-bold leading-[1.05] text-white drop-shadow-md">
                               {singleCoverEpisodeList
-                                ? formatSevenRoadsSeasonLabel(language, season.number)
+                                ? season.title ?? formatSevenRoadsSeasonLabel(language, season.number)
                                 : season.title ?? primaryStory.title ?? authoredStory.title}
                             </h3>
                           </div>
@@ -664,7 +594,7 @@ export function PublishedStoriesShell({
                         .map((season) => {
                           const gallery = buildSeasonGallery(season)
                           const primaryGalleryStory = getPrimaryPublishedSeasonStory(season)
-                          const galleryLocked = season.number === 2 && !season2Unlocked
+                          const galleryLocked = !isSeasonUnlocked(sevenRoadsSeasons, season.number)
                           const galleryTitle =
                             gallery.storyCount === 1
                               ? primaryGalleryStory?.title ??
@@ -784,7 +714,7 @@ export function PublishedStoriesShell({
                                               {gallery.storyCount > 1 ? (
                                                 <p className="text-[0.58rem] font-bold uppercase tracking-[0.12em] text-[#9a8055]">
                                                   {season.presentation === 'single-cover-episode-list'
-                                                    ? formatSevenRoadsEpisodeLabel(language, episode.storyNumber)
+                                                    ? episode.storyTitle
                                                     : formatSevenRoadsStoryLabel(language, episode.storyNumber)} · {episode.storyTitle}
                                                 </p>
                                               ) : null}
@@ -881,7 +811,8 @@ export function PublishedStoriesShell({
                                                       onClick={() =>
                                                         setNotice({
                                                           kind: 'locked-art',
-                                                          episodeNumber: episode.episodeNumber,
+                                                          seasonNumber: season.number,
+                                                          episodeNumber: episode.seasonEpisodeNumber,
                                                           storyNumber:
                                                             gallery.storyCount > 1
                                                               ? episode.storyNumber
@@ -893,10 +824,10 @@ export function PublishedStoriesShell({
                                                       }
                                                       aria-label={
                                                         language === 'uz'
-                                                          ? `${episode.episodeNumber}-qism lavhasi hali ochilmagan`
+                                                          ? episode.readerUnit === 'part' ? `${episode.seasonEpisodeNumber}-bob lavhasi hali ochilmagan` : `${episode.seasonEpisodeNumber}-qism lavhasi hali ochilmagan`
                                                           : episode.readerUnit === 'part'
-                                                            ? `Сцена части ${episode.episodeNumber} ещё не открыта`
-                                                            : `Сцена серии ${episode.episodeNumber} ещё не открыта`
+                                                            ? `Сцена главы ${episode.seasonEpisodeNumber} ещё не открыта`
+                                                            : `Сцена серии ${episode.seasonEpisodeNumber} ещё не открыта`
                                                       }
                                                     >
                                                       <img

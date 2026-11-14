@@ -33,12 +33,12 @@ const ru = {
   nextRoad: 'Следующая дорога',
   collection: 'Коллекция',
   libraryBody: 'Истории, сезоны и сохранённый путь.',
-  episodesChoices: '6 серий · 4 выбора',
+  episodesChoices: '5 серий · 4 выбора',
   nextSeasonLater: 'Новый путь откроется позже.',
   home: 'Главная',
   library: 'Библиотека',
   openSeasonPath: 'Путь сезона',
-  sixEpisodes: '6 серий',
+  sixEpisodes: '5 серий',
   seasonDescription:
     'Первый путь Темура и Самиры по Королевству семи дорог. Выборы ребёнка сохраняются и смогут влиять на события следующих сезонов.',
   seasonReplayHint:
@@ -77,15 +77,15 @@ const ru = {
   tapToReturn: 'Коснитесь экрана, чтобы вернуться',
   previousPage: 'Предыдущая страница',
   nextPage: 'Следующая страница',
-  partNavigation: 'Навигация по страницам и частям',
+  partNavigation: 'Навигация по страницам и главам',
   episodeNavigation: 'Навигация по страницам и сериям',
-  previousReadPart: 'Предыдущая прочитанная часть',
-  nextReadPart: 'Следующая прочитанная часть',
+  previousReadPart: 'Предыдущая прочитанная глава',
+  nextReadPart: 'Следующая прочитанная глава',
   previousReadEpisode: 'Предыдущая прочитанная серия',
   nextReadEpisode: 'Следующая прочитанная серия',
-  reviewingPart: 'Просмотр прочитанной части',
+  reviewingPart: 'Просмотр прочитанной главы',
   reviewingPartBody: 'Это только просмотр. Текущий прогресс и сохранённые выборы не изменятся.',
-  returnToCurrentPart: 'Вернуться к текущей части',
+  returnToCurrentPart: 'Вернуться к текущей главе',
   yourChoice: 'Твой выбор',
   choiceMemoryHint:
     'QISSA запомнит этот выбор. В следующих сказках он может повлиять на привычки героев и их отношения.',
@@ -144,12 +144,12 @@ const uz = {
   nextRoad: 'Keyingi yo‘l',
   collection: 'To‘plam',
   libraryBody: 'Hikoyalar, mavsumlar va saqlangan yo‘l.',
-  episodesChoices: '6 qism · 4 tanlov',
+  episodesChoices: '5 qism · 4 tanlov',
   nextSeasonLater: 'Yangi yo‘l keyinroq ochiladi.',
   home: 'Bosh sahifa',
   library: 'Kutubxona',
   openSeasonPath: 'Mavsum qismlari',
-  sixEpisodes: '6 qism',
+  sixEpisodes: '5 qism',
   seasonDescription:
     'Temur va Samiraning Yetti yo‘l qirolligidagi ilk safari. Bolaning tanlovlari saqlanadi va keyingi mavsumlarda voqealarga ta’sir qilishi mumkin.',
   seasonReplayHint:
@@ -188,15 +188,15 @@ const uz = {
   tapToReturn: 'Qaytish uchun ekranga teging',
   previousPage: 'Oldingi sahifa',
   nextPage: 'Keyingi sahifa',
-  partNavigation: 'Sahifalar va qismlar bo‘yicha navigatsiya',
+  partNavigation: 'Sahifalar va boblar bo‘yicha navigatsiya',
   episodeNavigation: 'Sahifalar va qismlar bo‘yicha navigatsiya',
-  previousReadPart: 'Oldingi o‘qilgan qism',
-  nextReadPart: 'Keyingi o‘qilgan qism',
+  previousReadPart: 'Oldingi o‘qilgan bob',
+  nextReadPart: 'Keyingi o‘qilgan bob',
   previousReadEpisode: 'Oldingi o‘qilgan qism',
   nextReadEpisode: 'Keyingi o‘qilgan qism',
-  reviewingPart: 'O‘qilgan qismni ko‘rish',
+  reviewingPart: 'O‘qilgan bobni ko‘rish',
   reviewingPartBody: 'Bu faqat ko‘rish rejimi. Hozirgi jarayon va saqlangan tanlovlar o‘zgarmaydi.',
-  returnToCurrentPart: 'Hozirgi qismga qaytish',
+  returnToCurrentPart: 'Hozirgi bobga qaytish',
   yourChoice: 'Sening tanloving',
   choiceMemoryHint:
     'QISSA bu tanlovni eslab qoladi. Bu tanlov keyingi hikoyalarda qahramonlarning odatlari va o‘zaro munosabatlariga ta’sir qilishi mumkin.',
@@ -247,15 +247,15 @@ export const formatSevenRoadsEpisodeLabel = (
 export const formatSevenRoadsPartLabel = (
   language: SevenRoadsLanguage,
   partNumber: number,
-) => language === 'uz' ? `${partNumber}-qism` : `Часть ${partNumber}`
+) => language === 'uz' ? `${partNumber}-bob` : `Глава ${partNumber}`
 
 export const formatSevenRoadsPartProgress = (
   language: SevenRoadsLanguage,
   partNumber: number,
   total: number,
 ) => language === 'uz'
-  ? `${partNumber}-qism / ${total}`
-  : `Часть ${partNumber} / ${total}`
+  ? `${partNumber}-bob / ${total}`
+  : `Глава ${partNumber} / ${total}`
 
 export const formatSevenRoadsEpisodeProgress = (
   language: SevenRoadsLanguage,

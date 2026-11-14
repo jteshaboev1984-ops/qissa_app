@@ -119,6 +119,12 @@ export interface AuthoredStoryPackage {
   cover_illustration: AuthoredStoryCoverIllustration
   external_choice_context?: AuthoredStoryExternalChoiceContext[]
   parts: AuthoredStoryPart[]
+  /** Presentation-only map; original authored JSON and story identity remain unchanged. */
+  reader_layout?: {
+    version: 'series-30-v1'
+    episode_by_part: number[]
+    source_part_by_part: number[]
+  }
 }
 
 export interface AuthoredStoryChoiceHistoryEntry {
@@ -140,6 +146,7 @@ export interface AuthoredStoryProgress {
   story_id: string
   story_version: string
   current_part_index: number
+  layout_version?: string
   selected_choices: Record<string, string>
   shown_resolution_decisions: string[]
   choice_history: AuthoredStoryChoiceHistoryEntry[]

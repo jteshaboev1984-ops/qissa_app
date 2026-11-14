@@ -123,17 +123,14 @@ const readerPartProgress = (
   story: AuthoredStoryPackage,
   internalPartNumber: number,
 ): { current: number; total: number } => {
-  if (
-    story.story_id === 'seven_roads_prazdnik_muzhestva' &&
-    story.story_version === 'interactive-v3' &&
-    story.parts.length === 7
-  ) {
-    return {
-      current: internalPartNumber <= 2 ? 1 : internalPartNumber - 1,
-      total: 6,
-    }
+  const layout = story.reader_layout
+  if (layout) {
+    const index = Math.max(0, Math.min(internalPartNumber - 1, story.parts.length - 1))
+    return { current: layout.episode_by_part[index] ?? 1, total: Math.max(...layout.episode_by_part) }
   }
-
+  if (story.story_id === 'seven_roads_prazdnik_muzhestva' && story.parts.length === 7) {
+    return { current: internalPartNumber <= 2 ? 1 : internalPartNumber - 1, total: 6 }
+  }
   return { current: internalPartNumber, total: story.parts.length }
 }
 
@@ -251,9 +248,9 @@ const StoryBlocks = ({
             asset={block.slot}
             alt={
               language === 'uz'
-                ? `${episodeNumber}-qism lavhasi`
+                ? readerUnit === 'part' ? `${episodeNumber}-bob lavhasi` : `${episodeNumber}-qism lavhasi`
                 : readerUnit === 'part'
-                  ? `Сцена части ${episodeNumber}`
+                  ? `Сцена главы ${episodeNumber}`
                   : `Сцена серии ${episodeNumber}`
             }
             showPlaceholder={showMissingAssetPlaceholders}
@@ -558,6 +555,20 @@ export function AuthoredStoryPlayer({
   const readerProgress = readerPartProgress(story, currentPartNumber)
   const persistedReaderProgress = readerPartProgress(story, persistedPartNumber)
   const readerEpisodeTitle = episodeTitles?.[readerProgress.current - 1] ?? part.title
+  const seasonEpisodeOffset = seasonNumber === 3
+    ? story.story_id === 'seven_roads_dve_bashni' ? 8 : 0
+    : seasonNumber === 4
+      ? ({
+          seven_roads_chelovek_kotorogo_zhdut: 0,
+          seven_roads_lozhnaya_doroga: 4,
+          seven_roads_dve_podmogi: 6,
+          seven_roads_obratno_v_ordan: 8,
+        } as Record<string, number>)[story.story_id] ?? 0
+      : 0
+  const globalReaderEpisodeNumber = seasonEpisodeOffset + readerProgress.current
+  const totalSeasonEpisodes = ({
+    1: 5, 2: 4, 3: 11, 4: 10,
+  } as Record<number, number>)[seasonNumber] ?? readerProgress.total
   const canContinue =
     !isReviewingPreviousPart && canAdvanceAuthoredStory(story, progress)
   const previousReviewPartIndex =
@@ -567,8 +578,9 @@ export function AuthoredStoryPlayer({
   const nextReviewPartIndex =
     !historicalReplay &&
     isReviewingPreviousPart &&
-    readerProgress.current < persistedReaderProgress.current
-      ? firstPartIndexForEpisode(story, readerProgress.current + 1)
+    reviewPartIndex != null &&
+    reviewPartIndex + 1 <= progress.current_part_index
+      ? reviewPartIndex + 1
       : null
 
   const openReviewPart = (partIndex: number | null) => {
@@ -630,16 +642,16 @@ export function AuthoredStoryPlayer({
   const readerProgressLabel =
     readerUnit === 'part'
       ? formatSevenRoadsPartProgress(language, readerProgress.current, readerProgress.total)
-      : formatSevenRoadsEpisodeProgress(language, readerProgress.current, readerProgress.total)
+      : formatSevenRoadsEpisodeProgress(language, globalReaderEpisodeNumber, totalSeasonEpisodes)
   const completionLabel =
     completionScope === 'episode'
-      ? formatSevenRoadsEpisodeCompleted(language, storyNumber)
+      ? formatSevenRoadsEpisodeCompleted(language, seasonEpisodeOffset + readerProgress.total)
       : completionScope === 'story'
         ? formatSevenRoadsStoryCompleted(language, storyNumber)
         : formatSevenRoadsSeasonCompleted(language, seasonNumber)
   const completionEyebrow =
     completionScope === 'episode'
-      ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsEpisodeLabel(language, storyNumber)} · ${story.title}`
+      ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsEpisodeLabel(language, seasonEpisodeOffset + readerProgress.total)} · ${story.title}`
       : completionScope === 'story'
         ? `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${formatSevenRoadsStoryLabel(language, storyNumber)} · ${story.title}`
         : `QISSA · ${formatSevenRoadsSeasonLabel(language, seasonNumber)} · ${story.title}`
@@ -1087,7 +1099,7 @@ export function AuthoredStoryPlayer({
           <section className="q-stone-panel space-y-4 p-5 text-center">
             <div>
               <p className="q-label mb-1">
-                {formatSevenRoadsEpisodeCompleted(language, readerProgress.current)}
+                {formatSevenRoadsEpisodeCompleted(language, globalReaderEpisodeNumber)}
               </p>
               <p className="text-sm leading-6 text-[#625846]">
                 {copy.episodeFinishedBody}

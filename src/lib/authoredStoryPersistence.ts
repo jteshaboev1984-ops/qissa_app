@@ -46,7 +46,12 @@ const load = (
     const raw = storage.getItem(storageKey(story))
     if (!raw) return null
     const parsed: unknown = JSON.parse(raw)
-    return isAuthoredStoryProgress(parsed, story) ? parsed : null
+    if (!isAuthoredStoryProgress(parsed, story)) return null
+    const layout = story.reader_layout
+    if (!layout || parsed.layout_version === layout.version) return parsed
+    // Conservatively map the first unread original part to its first display fragment.
+    const mapped = layout.source_part_by_part.findIndex((source) => source === parsed.current_part_index)
+    return { ...parsed, current_part_index: mapped >= 0 ? mapped : 0, layout_version: layout.version }
   } catch {
     return null
   }
@@ -60,7 +65,10 @@ const save = (
   if (!storage) return
 
   try {
-    storage.setItem(storageKey(story), JSON.stringify(progress))
+    storage.setItem(storageKey(story), JSON.stringify({
+      ...progress,
+      layout_version: story.reader_layout?.version ?? progress.layout_version,
+    }))
   } catch {
     // The current page can continue even if local persistence is unavailable.
   }

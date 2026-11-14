@@ -106,13 +106,13 @@ if (!publishedTypes.includes('coverAssetId?: string | null')) {
 if (!seasonOverview.includes("season.presentation === 'single-cover-episode-list'")) {
   fail('SeasonOverview is missing the one-cover episode-list renderer')
 }
-if (!seasonOverview.includes('formatSevenRoadsEpisodeLabel(language, item.entry.number)')) {
+if (!seasonOverview.includes('formatSevenRoadsEpisodeLabel(language, item.episode.seasonNumber)')) {
   fail('SeasonOverview must label rows as episodes, not story cards')
 }
-if (!seasonOverview.includes('priorEpisodesCompleted')) {
+if (!seasonOverview.includes('getSeasonEpisodeStates(season)')) {
   fail('SeasonOverview must gate future episodes sequentially')
 }
-if (!seasonOverview.includes('Boolean(item.progress)')) {
+if (!seasonOverview.includes('item.started')) {
   fail('SeasonOverview must preserve access to already-started legacy Story 2 progress')
 }
 
