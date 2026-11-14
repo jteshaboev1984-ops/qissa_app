@@ -80,6 +80,9 @@ jobs:
       - name: Validate Seven Roads season product shell
         run: npm run check:seven-roads-shell
 
+      - name: Validate all 30 reading series and branch-preserved RU/UZ text
+        run: npm run check:four-seasons
+
       - name: Typecheck app
         run: npm run typecheck
 
