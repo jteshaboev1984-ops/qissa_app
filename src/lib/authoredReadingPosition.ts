@@ -7,6 +7,7 @@ export interface AuthoredReadingPosition {
   story_version: string
   part_index: number
   scroll_y: number
+  layout_version?: string
   updated_at: string
 }
 
@@ -48,7 +49,12 @@ const load = (
       typeof candidate.updated_at !== 'string'
     ) return null
 
-    return candidate as AuthoredReadingPosition
+    const layout = story.reader_layout
+    if (!layout || candidate.layout_version === layout.version) return candidate as AuthoredReadingPosition
+    const mapped = layout.source_part_by_part.findIndex((source) => source === candidate.part_index)
+    // Old pixel coordinates are not stable after text is split; retain the story
+    // position but restart the affected literary fragment rather than skipping text.
+    return mapped < 0 ? null : { ...candidate, part_index: mapped, scroll_y: 0, layout_version: layout.version }
   } catch {
     return null
   }
@@ -67,6 +73,7 @@ const save = (
     story_version: story.story_version,
     part_index: partIndex,
     scroll_y: Math.max(0, Math.round(scrollY)),
+    layout_version: story.reader_layout?.version,
     updated_at: new Date().toISOString(),
   }
 
