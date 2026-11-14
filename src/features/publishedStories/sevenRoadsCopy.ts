@@ -33,12 +33,12 @@ const ru = {
   nextRoad: 'Следующая дорога',
   collection: 'Коллекция',
   libraryBody: 'Истории, сезоны и сохранённый путь.',
-  episodesChoices: '6 серий · 4 выбора',
+  episodesChoices: '5 серий · 4 выбора',
   nextSeasonLater: 'Новый путь откроется позже.',
   home: 'Главная',
   library: 'Библиотека',
   openSeasonPath: 'Путь сезона',
-  sixEpisodes: '6 серий',
+  sixEpisodes: '5 серий',
   seasonDescription:
     'Первый путь Темура и Самиры по Королевству семи дорог. Выборы ребёнка сохраняются и смогут влиять на события следующих сезонов.',
   seasonReplayHint:
@@ -144,12 +144,12 @@ const uz = {
   nextRoad: 'Keyingi yo‘l',
   collection: 'To‘plam',
   libraryBody: 'Hikoyalar, mavsumlar va saqlangan yo‘l.',
-  episodesChoices: '6 qism · 4 tanlov',
+  episodesChoices: '5 qism · 4 tanlov',
   nextSeasonLater: 'Yangi yo‘l keyinroq ochiladi.',
   home: 'Bosh sahifa',
   library: 'Kutubxona',
   openSeasonPath: 'Mavsum qismlari',
-  sixEpisodes: '6 qism',
+  sixEpisodes: '5 qism',
   seasonDescription:
     'Temur va Samiraning Yetti yo‘l qirolligidagi ilk safari. Bolaning tanlovlari saqlanadi va keyingi mavsumlarda voqealarga ta’sir qilishi mumkin.',
   seasonReplayHint:
