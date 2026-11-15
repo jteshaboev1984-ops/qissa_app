@@ -95,6 +95,22 @@ for (const fixture of fixtures) {
     assert.equal(JSON.stringify(input), originalJson, 'overlay may not mutate literary source object')
     assert.equal(applied.story_id, input.story_id)
     assert.equal(applied.story_version, input.story_version)
+    const addedCount = Object.keys(fixture.expected).length
+    assert.equal(applied.illustration_plan.planned_asset_count,
+      input.illustration_plan.planned_asset_count + addedCount,
+      'runtime illustration_plan count must increase with new approved scenes')
+    assert.equal(applied.illustration_plan.shared_asset_count,
+      input.illustration_plan.shared_asset_count + addedCount)
+    assert.equal(applied.illustration_plan.visible_assets_per_playthrough,
+      input.illustration_plan.visible_assets_per_playthrough + addedCount)
+    const actualAssetIds = new Set([
+      applied.cover_illustration.asset_id,
+      ...applied.parts.flatMap(p => p.image_slots.map(s => s.asset_id)),
+      ...applied.parts.flatMap(p => (p.decision?.choices ?? [])
+        .flatMap(ch => ch.illustration ? [ch.illustration.asset_id] : [])),
+    ])
+    assert.equal(applied.illustration_plan.planned_asset_count, actualAssetIds.size,
+      'engine validation would reject runtime package: wrong planned_asset_count')
     assert.equal(applied.parts.length, input.parts.length)
     for (let i = 0; i < input.parts.length; i++) {
       const before = input.parts[i], after = applied.parts[i]
