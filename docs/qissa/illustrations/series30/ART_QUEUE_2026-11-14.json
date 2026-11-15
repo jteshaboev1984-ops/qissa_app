@@ -583,11 +583,16 @@
           "master_sha256": "95e571eabd5014d7630d26fb581b1a85f8644ea9a62ce54e52ae3b934884e2ab",
           "webp_sha256": "ecd4faa7dfb4921e240289dd3d90c50fd8e649c513b3b5bdba9e8868aaace262",
           "webp_bytes": 333144,
-          "storage_status": "public_bucket_metadata_confirmed; independent_SHA_CI_pending",
-          "runtime_status": "wired_in_unpublished_PR_pending_CI",
-          "qa_status": "RU_UZ_anchors_and_placement_preflight_passed; remote_ci_and_browser_pending",
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
+          "qa_status": "anchor_split_gallery_and_browser_CI_passed; human_live_pixel_review_pending",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.webp",
-          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.webp"
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_ci_run_43712069452",
+          "qa_ci_runs": {
+            "seven_roads_ci": 43712069452,
+            "season2_browser_ci": 43712069466
+          }
         },
         {
           "candidate_id": "S4E2-A03",
@@ -609,7 +614,7 @@
           "qa_status": "art_ru_uz_visual_consistency_passed; supabase_and_runtime_pending"
         }
       ],
-      "notes": "Stage 1 S4E2 art now 3/3 owner-accepted: A01 final horse V2 hosted and runtime in unpublished PR; A02 blue triangle WebP uploaded to public bucket 2026-11-15, code wired for RU/UZ and remote SHA+browser CI pending; A03 Farid sees rider belts accepted after correction of Danyar/Samira hats, exact RU/UZ text and approved character refs checked, PNG/WebP/metadata archived in QISSA Library, NOT uploaded or runtime integrated. Two extra stage2 scenes remain, and no production deploy/merge."
+      "notes": "Stage 1 S4E2 3/3 artworks owner-accepted: A01 final V2 bay horse hosted and integrated, A02 blue-triangle merchant tag hosted and integrated with public GET/MIME/size/SHA256 and exact RU/UZ placement/gallery/browser CI PASS (43712069452, 43712069466). A03 corrected Farid prisoner belt-glance scene art accepted and master PNG+WebP+metadata stored in QISSA Library, NOT uploaded to Supabase or runtime integrated. Stage2 two extra scenes remain; no deploy/merge."
     },
     {
       "season": 4,
