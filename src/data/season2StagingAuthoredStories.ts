@@ -16,6 +16,7 @@ import {
   type AuthoredStoryLocalizationOverlay,
 } from '../features/authoredStory/localizePackage'
 import type { AuthoredStoryPackage } from '../features/authoredStory/types'
+import { withSeries30ApprovedSceneSlots } from './series30ApprovedSceneSlots'
 
 const coerce = (value: unknown): AuthoredStoryPackage =>
   value as AuthoredStoryPackage
@@ -27,7 +28,7 @@ const season2StagingRussianStories: readonly AuthoredStoryPackage[] = [
   coerce(rawSeason2Story5FalseRoadRu),
   coerce(rawSeason2Story6TwoReinforcementsRu),
   coerce(rawSeason2Story7BackToOrdanRu),
-]
+].map(withSeries30ApprovedSceneSlots)
 
 
 const season2StagingUzPairs = [
@@ -45,13 +46,14 @@ const season2StagingUzbekStories: readonly AuthoredStoryPackage[] =
       coerce(rawBase),
       rawOverlay as AuthoredStoryLocalizationOverlay,
     )
-    const validationErrors = validateAuthoredStoryPackage(localized)
+    const withScenes = withSeries30ApprovedSceneSlots(localized)
+    const validationErrors = validateAuthoredStoryPackage(withScenes)
     if (validationErrors.length > 0) {
       throw new Error(
         `Invalid Season 2 Uzbek staging package (${localized.story_id}): ${validationErrors.join('; ')}`,
       )
     }
-    return localized
+    return withScenes
   })
 
 for (const story of season2StagingRussianStories) {
