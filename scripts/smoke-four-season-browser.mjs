@@ -261,7 +261,18 @@ try {
       if (await evaluate(expression)) return
       await sleep(100)
     }
-    throw new Error(`Timed out waiting for ${label}`)
+    let diagnostic = null
+    try {
+      diagnostic = await evaluate(`(() => ({
+        title: document.title,
+        url: location.href,
+        bodyText: document.body?.innerText?.slice(0, 2400) ?? '',
+        rootHtml: document.querySelector('#root')?.innerHTML?.slice(0, 650) ?? '',
+      }))()`)
+    } catch (error) {
+      diagnostic = { diagnosticError: String(error) }
+    }
+    throw new Error(`Timed out waiting for ${label}; browser errors: ${JSON.stringify(browserErrors.slice(-5))}; page: ${JSON.stringify(diagnostic)}`)
   }
 
   const bodyHas = (text) =>
