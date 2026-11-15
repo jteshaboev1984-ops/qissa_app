@@ -536,10 +536,11 @@
       "stage_1_new_shared_scene_count": 3,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 5,
-      "artwork_acceptance": "in_progress",
+      "artwork_acceptance": "stage_1_art_complete; runtime_partial",
       "asset_ids": [
         "seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED",
-        "seven_roads_s4e2_blue_triangle_merchants_02_APPROVED"
+        "seven_roads_s4e2_blue_triangle_merchants_02_APPROVED",
+        "seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -582,12 +583,33 @@
           "master_sha256": "95e571eabd5014d7630d26fb581b1a85f8644ea9a62ce54e52ae3b934884e2ab",
           "webp_sha256": "ecd4faa7dfb4921e240289dd3d90c50fd8e649c513b3b5bdba9e8868aaace262",
           "webp_bytes": 333144,
+          "storage_status": "public_bucket_metadata_confirmed; independent_SHA_CI_pending",
+          "runtime_status": "wired_in_unpublished_PR_pending_CI",
+          "qa_status": "RU_UZ_anchors_and_placement_preflight_passed; remote_ci_and_browser_pending",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.webp"
+        },
+        {
+          "candidate_id": "S4E2-A03",
+          "asset_id": "seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED",
+          "kind": "shared",
+          "phase": "story_text",
+          "ru_after_text": "Задержался.",
+          "uz_after_text": "Bir zum ushlanib qoldi.",
+          "acceptance": "owner_conditional_approved_after_text_reference_review_2026-11-15",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED.metadata.json",
+          "master_sha256": "b7a00697eaa8b3c6b0f02f458b0391b8be2fbcc7a25d6e7c85f79d27161440e4",
+          "webp_sha256": "c2bd15783a78bd8ad1c9203c590a3ed6a3fb08b64b889000310e2c733f689b69",
+          "png_bytes": 2573138,
+          "webp_bytes": 285206,
           "storage_status": "not_uploaded",
           "runtime_status": "not_integrated",
-          "qa_status": "owner_acceptance_and_exact_RU_UZ_anchors_passed; storage_and_runtime_pending"
+          "qa_status": "art_ru_uz_visual_consistency_passed; supabase_and_runtime_pending"
         }
       ],
-      "notes": "S4E2 stage1: A01 final V2 bay horse owner-approved, remote SHA validated and integrated in draft; A02 blue-triangle merchant/tag/two sacks owner-approved 2026-11-15; PNG master (1672x941), WebP, metadata, hashes saved in QISSA Library, NOT yet uploaded to Supabase or wired into runtime. A03 'Farid notices Rider belts' storyboard prepared but no accepted image. Stage2 two additional shared images not started. No deployment or merge."
+      "notes": "Stage 1 S4E2 art now 3/3 owner-accepted: A01 final horse V2 hosted and runtime in unpublished PR; A02 blue triangle WebP uploaded to public bucket 2026-11-15, code wired for RU/UZ and remote SHA+browser CI pending; A03 Farid sees rider belts accepted after correction of Danyar/Samira hats, exact RU/UZ text and approved character refs checked, PNG/WebP/metadata archived in QISSA Library, NOT uploaded or runtime integrated. Two extra stage2 scenes remain, and no production deploy/merge."
     },
     {
       "season": 4,
