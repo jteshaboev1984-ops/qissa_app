@@ -1,6 +1,6 @@
 # QISSA — S2E1 «Королевское серебро» / storyboard этапа 1
 
-Дата: 2026-11-15. **Две сцены предложены, НЕ утверждены; изображения НЕ генерировались.** PR #334, layout `series-30-v1`.
+Дата: 2026-11-15. **Обе сцены художественно приняты владельцем по условию соответствия тексту и канону; PNG/WebP/metadata сохранены в QISSA Library. Supabase и runtime ещё не интегрированы.** PR #334, layout `series-30-v1`.
 
 ## Объём и исходная база
 - Reader: сезон 2, серия 1, «Королевское серебро» (UZ: `Qirollik kumushi`).
@@ -12,7 +12,7 @@
 
 ## Предлагаемая сцена S2E1-A01 — «Старая застёжка Данияра»
 
-- **Stage:** stage_1; **kind:** shared; **status:** scene_proposed / owner_scene_review_pending.
+- **Stage:** stage_1; **kind:** shared; **status:** owner_conditionally_accepted / library_stored / storage_pending.
 - **Phase:** `story_text`.
 - **Exact RU after_text:** `— Иначе пояс мне пришлось бы украсть.`
 - **Exact UZ after_text:** `— Bo‘lmasa bu kamarni o‘g‘irlashimga to‘g‘ri kelardi.`
@@ -23,7 +23,7 @@
 
 ## Предлагаемая сцена S2E1-A02 — «Птицы взлетели»
 
-- **Stage:** stage_1; **kind:** shared; **status:** scene_proposed / owner_scene_review_pending.
+- **Stage:** stage_1; **kind:** shared; **status:** owner_conditionally_accepted / library_stored / storage_pending.
 - **Phase:** `story_text`.
 - **Exact RU after_text:** `Птицы, которые только что шумели над травой, вдруг разлетелись.`
 - **Exact UZ after_text:** `Hozirgina o‘tlar ustida shovqin solib yurgan qushlar birdan uchib ketdi.`
@@ -55,3 +55,10 @@
 - Только после приёмки рисунка: мастер PNG, оптимизированный WebP, SHA-256, QISSA Library, Supabase upload и независимая проверка HTTP/MIME/bytes/SHA; затем добавить слот в `src/data/series30ApprovedSceneSlots.ts` и ссылку в `authoredStoryAssets.ts` (SHA-locked authored JSON не менять).
 - CI: `check:reading-series-30`, `check:four-seasons`, `typecheck`, `build`, gallery locks и browser smoke RU/UZ.
 - Никакого merge PR и деплоя без разрешения владельца.
+
+## Обновление художественной приёмки — 2026-11-15
+
+- **S2E1-A01**: `seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED` — изображены два всадника на спокойной дороге; Данияр на сером коне, светлая туника, кожаная экипировка, синий шарф, старый пояс/сабля; молодой стражник в шлеме и дорожной форме как у остальных стражников. Владелец: «если все норм принимаем и работай далее»; визуальная и литературная проверка пройдена. PNG/WebP/SHA метаданные в `/QISSA/production/seven_roads/series30/stage1/S2E1/`. WebP SHA256 `ba0584477aff699603f93ad4290a35736cb60121a5ee0fdcdef8266bad270912`, 310478 байт, 1672×941.
+- **S2E1-A02**: `seven_roads_s2e1_startled_birds_02_APPROVED` — птицы вспархивают из дорожных кустов, Данияр с настороженным лицом на сером коне, молодой стражник в неизменной дорожной форме; верёвки, нападающих, Камрана и событий после начала нападения нет. Принято на основании того же владельческого условия после точной RU/UZ/visual QA. PNG/WebP/SHA метаданные в той же Library-папке. WebP SHA256 `758067051d45229dac9fb503d3c0f8143a85c7fc04e1af97d856d12ca0cae27e`, 328322 байт, 1672×941.
+
+**НЕ выполнено:** загрузка обеих WebP в Supabase Storage, публичная GET/MIME/bytes/SHA-проверка, добавление в `series30ApprovedSceneSlots.ts`/`authoredStoryAssets.ts`, runtime/галерея/браузер/CI. Без фактической загрузки и проверки не утверждать техническую готовность. Исходные RU/UZ литературные JSON/выборы/прогресс и существующие картинки не менялись. PR остаётся Draft; merge/deploy запрещены.
