@@ -145,3 +145,8 @@ assert.equal(verifiedAnchors, 6)
 console.log('[series30-art] PASS: 3 owner-approved assets, 6 unique RU/UZ anchors')
 console.log('[series30-art] Correct reader episodes (S2E3 x2 / S4E2 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
+
+if (process.env.GITHUB_ACTIONS === 'true') {
+  await import('./verify-series30-approved-public-webps.mjs')
+}
+
