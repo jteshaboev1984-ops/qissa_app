@@ -22,11 +22,15 @@
 - **Supabase Storage upload: NOT DONE; public URL: NOT VERIFIED; reader/gallery integration: NOT DONE; runtime QA: PENDING.**
 
 ## S2E3-A02 — «Возница и Данияр: после нападения»
-- Состояние: **композиция согласована, новый кандидат сгенерирован 2026-11-14, ОЖИДАЕТ ХУДОЖЕСТВЕННОЙ ПРИЁМКИ владельца**. Две предыдущие попытки завершились ошибками, третья — успешной. Draft PNG: `S2E3-A02_after_attack_owner_review.png` (1672×941, 2,909,256 байт; SHA-256 `a7f7cf71f57dde5f5c3187306e21fedee014e91755a8ff4340cbdce6b1c0cb2c`), доступен в чате как файл. **Это не APPROVED asset; мастер, WebP, Supabase URL и runtime integration — не выполнены**.
-- `kind=shared`; `phase=story_text`.
-- Точный RU `after_text`: `— Пока не знаю. Но я ещё подумаю.`
-- Точный UZ `after_text`: `— Hozircha bilmayman. Lekin yana o‘ylab ko‘raman.`
-- Якоря уникальны (1 совпадение каждый). Возница уже спрыгнул с козел, серьёзно объясняет нападение сухой пылью; Данияр отвечает удивлённым скептическим взглядом. **На переднем плане диалог двух людей.** Повозка лишь незначительным фрагментом на дальнем плане, без сцены движения, чтобы не повторять утверждённое изображение её выезда (прямое требование владельца). Не показывать преждевременную улыбку молодого стражника: она появляется в следующем абзаце.
+- **Художественная приёмка владельца: OWNER_APPROVED 2026-11-15**, оригинал и WebP сохранены в QISSA Library. Эта иллюстрация существенно отличается от утверждённого выезда повозки: крупная сцена диалога с возницей и Данияром, повозка лишь на дальнем плане.
+- `kind=shared`; `phase=story_text`; `part_id=story1_part_3_network_sign`.
+- **RU exact after_text:** `— Пока не знаю. Но я ещё подумаю.`
+- **UZ exact after_text:** `— Hozircha bilmayman. Lekin yana o‘ylab ko‘raman.`
+- **Asset ID:** `seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED`.
+- **Master PNG:** 1672×941, 2 909 256 B, SHA-256 `a7f7cf71f57dde5f5c3187306e21fedee014e91755a8ff4340cbdce6b1c0cb2c`.
+- **WebP:** 303 376 B, SHA-256 `853e88ca1394cc61c7b8857145ad12adf22e70b12d02eadfd211a1f85d077849`.
+- **Library directory:** `/QISSA/production/seven_roads/series30/stage1/S2E3/`; stored under immutable asset ID with `.png`, `.webp`, `.metadata.json` suffixes.
+- **Supabase Storage: NOT UPLOADED; Public URL: NOT VERIFIED; runtime/gallery integration: NOT DONE; QA: PENDING.**
 
 ## S2E3-A03 — «В столице»
 - Состояние: композиция согласована, ещё не создано.
