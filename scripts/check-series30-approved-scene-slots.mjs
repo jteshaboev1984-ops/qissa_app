@@ -5,7 +5,7 @@ import ts from 'typescript'
 
 // Check the actual TypeScript runtime overlay and the real reader split adapter.
 // The authored literary packages and historical RU blob hashes stay immutable.
-const transpileExports = (file) => {
+const transpileExports = (file, globals = {}) => {
   const source = fs.readFileSync(file, 'utf8')
   const compiled = ts.transpileModule(source, {
     compilerOptions: {
@@ -17,7 +17,7 @@ const transpileExports = (file) => {
   const errors = (compiled.diagnostics ?? []).filter((d) => d.category === ts.DiagnosticCategory.Error)
   assert.equal(errors.length, 0, file + ': TypeScript errors')
   const exports = {}
-  vm.runInNewContext(compiled.outputText, { exports, console }, { filename: file })
+  vm.runInNewContext(compiled.outputText, { exports, console, ...globals }, { filename: file })
   return exports
 }
 
@@ -32,6 +32,19 @@ const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'))
 const pars = (text) => text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean)
 const assetsSource = fs.readFileSync('src/data/authoredStoryAssets.ts', 'utf8')
 const queue = read('docs/qissa/illustrations/series30/ART_QUEUE_2026-11-14.json')
+
+const galleryStore = new Map()
+const fakeLocalStorage = {
+  getItem: (key) => galleryStore.get(key) ?? null,
+  setItem: (key, value) => { galleryStore.set(key, String(value)) },
+  removeItem: (key) => { galleryStore.delete(key) },
+  get length() { return galleryStore.size },
+  key: (index) => [...galleryStore.keys()][index] ?? null,
+}
+const { authoredIllustrationDiscovery } = transpileExports(
+  'src/lib/authoredIllustrationDiscovery.ts',
+  { window: { localStorage: fakeLocalStorage } },
+)
 
 const fixtures = [
   {
@@ -124,7 +137,14 @@ for (const fixture of fixtures) {
           'previously approved slot lost ' + old.slot_id)
       }
     }
-    const { story } = withReadingSeries(applied, fixture.key, 0)
+    const { story, episodes } = withReadingSeries(applied, fixture.key, 0)
+    // The live gallery should contain every image in its reader episode, but
+    // should keep new images locked until the child actually sees them.
+    authoredIllustrationDiscovery.clear(story)
+    const episodeForPart = (index) => story.reader_layout.episode_by_part[index]
+    const galleryBefore = authoredIllustrationDiscovery.buildGalleryEpisodes(
+      story, episodes.map(e => e.title), null, episodeForPart,
+    )
     for (const [id, expectedEpisode] of Object.entries(fixture.expected)) {
       const located = story.parts.flatMap((p, index) => p.image_slots
         .filter((slot) => slot.slot_id === id)
@@ -133,6 +153,9 @@ for (const fixture of fixtures) {
       const item = located[0]
       assert.equal(story.reader_layout.episode_by_part[item.index], expectedEpisode,
         fixture.key + '/' + language + ': wrong virtual episode for ' + id)
+      const galleryItem = galleryBefore[expectedEpisode - 1].items.find(g => g.assetId === item.slot.asset_id)
+      assert.ok(galleryItem, id + '/' + language + ': missing from correct gallery episode')
+      assert.equal(galleryItem.unlocked, false, 'new illustration spoiled before reading')
       assert.equal(item.slot.kind, 'shared')
       assert.equal(item.slot.phase, 'story_text')
       assert.equal(pars(item.part[item.slot.phase]).filter((p) => p === item.slot.after_text).length, 1,
@@ -140,6 +163,22 @@ for (const fixture of fixtures) {
       assert.ok(assetsSource.includes("'" + item.slot.asset_id + "'"),
         id + ': missing authoredStoryAssets registry entry')
       verifiedAnchors++
+    }
+    const sceneAssetId = story.parts.flatMap(p => p.image_slots)
+      .find(slot => slot.slot_id === Object.keys(fixture.expected)[0])?.asset_id
+    assert.ok(sceneAssetId)
+    authoredIllustrationDiscovery.markSeen(story, sceneAssetId)
+    const galleryAfter = authoredIllustrationDiscovery.buildGalleryEpisodes(
+      story, episodes.map(e => e.title), null, episodeForPart,
+    )
+    assert.equal(galleryAfter.flatMap(e => e.items).find(g => g.assetId === sceneAssetId)?.unlocked, true,
+      'gallery did not unlock after StoryImage observation')
+    const otherNewIds = story.parts.flatMap(p => p.image_slots.map(s => s.asset_id))
+      .filter(assetId => assetId !== sceneAssetId &&
+        series30ApprovedScenes.some(scene => scene.asset_id === assetId))
+    for (const other of otherNewIds) {
+      assert.equal(galleryAfter.flatMap(e => e.items).find(g => g.assetId === other)?.unlocked, false,
+        'gallery leaked another unread new illustration')
     }
     const allSlotIds = applied.parts.flatMap(p => p.image_slots.map(s => s.slot_id))
     assert.equal(allSlotIds.length, new Set(allSlotIds).size, 'duplicate slot ID')
