@@ -609,12 +609,15 @@
           "webp_sha256": "c2bd15783a78bd8ad1c9203c590a3ed6a3fb08b64b889000310e2c733f689b69",
           "png_bytes": 2573138,
           "webp_bytes": 285206,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "art_ru_uz_visual_consistency_passed; supabase_and_runtime_pending"
+          "storage_status": "public_bucket_object_metadata_confirmed",
+          "runtime_status": "wired_in_unpublished_PR_awaiting_CI",
+          "qa_status": "owner_art_and_anchor_passed; remote_ci_browser_pending",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED.webp",
+          "remote_sha256_verification": "pending_independent_GET_hash_in_CI"
         }
       ],
-      "notes": "Stage 1 S4E2 3/3 artworks owner-accepted: A01 final V2 bay horse hosted and integrated, A02 blue-triangle merchant tag hosted and integrated with public GET/MIME/size/SHA256 and exact RU/UZ placement/gallery/browser CI PASS (43712069452, 43712069466). A03 corrected Farid prisoner belt-glance scene art accepted and master PNG+WebP+metadata stored in QISSA Library, NOT uploaded to Supabase or runtime integrated. Stage2 two extra scenes remain; no deploy/merge."
+      "notes": "S4E2 stage 1: all three new scenes approved. A01 horse v2 and A02 blue triangle hosted and independently verified by CI; A03 Farid belt glance uploaded 2026-11-15 as public WebP (285206 B) in story-images, metadata confirmed and newly wired to RU/UZ reader. Await independent GET/SHA, 12 anchors, gallery and browser CI on updated PR. Source texts/choices/progress untouched. Two extra S4E2 stage-2 scenes remain. No merge or deploy."
     },
     {
       "season": 4,
