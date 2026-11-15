@@ -219,7 +219,8 @@
       "total_new_shared_scene_count": 3,
       "artwork_acceptance": "in_progress",
       "asset_ids": [
-        "seven_roads_s2e3_farid_gate_arrest_01_APPROVED"
+        "seven_roads_s2e3_farid_gate_arrest_01_APPROVED",
+        "seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -238,9 +239,26 @@
           "storage_status": "not_uploaded",
           "runtime_status": "not_integrated",
           "qa_status": "pending"
+        },
+        {
+          "candidate_id": "S2E3-A02",
+          "asset_id": "seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED",
+          "phase": "story_text",
+          "kind": "shared",
+          "ru_after_text": "— Пока не знаю. Но я ещё подумаю.",
+          "uz_after_text": "— Hozircha bilmayman. Lekin yana o‘ylab ko‘raman.",
+          "acceptance": "owner_approved",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED.metadata.json",
+          "master_sha256": "a7f7cf71f57dde5f5c3187306e21fedee014e91755a8ff4340cbdce6b1c0cb2c",
+          "webp_sha256": "853e88ca1394cc61c7b8857145ad12adf22e70b12d02eadfd211a1f85d077849",
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "pending"
         }
       ],
-      "notes": "Stage 1: A01 Farid gate arrest owner-approved and PNG/WebP/hash stored in QISSA Library; Supabase URL NOT uploaded/verified, runtime NOT integrated, QA pending. A02 driver-Danyar after-attack conversation: generated on 2026-11-14 as DRAFT candidate, PNG 1672x941, SHA-256 a7f7cf71f57dde5f5c3187306e21fedee014e91755a8ff4340cbdce6b1c0cb2c; OWNER ART ACCEPTANCE PENDING, NOT APPROVED, not in asset_ids; no WebP/storage/runtime. A02 exact RU/UZ anchors verified. A03 scene approved for production, NOT generated. See S2E3_FARID_PRODUCTION_CHECKPOINT_2026-11-14.md."
+      "notes": "S2E3 stage 1: A01 gate arrest and A02 driver-Danyar dry-dust dialogue have both been individually OWNER-APPROVED, PNG masters + WebP + SHA-256 metadata verified and stored in QISSA Library; public Supabase Storage NOT uploaded, runtime/gallery NOT integrated, QA pending. A02 avoids duplicating departing wagon composition. A03 trial-in-capital reaction scene approved for generation but final image not yet approved. See S2E3_FARID_PRODUCTION_CHECKPOINT_2026-11-14.md."
     },
     {
       "season": 2,
