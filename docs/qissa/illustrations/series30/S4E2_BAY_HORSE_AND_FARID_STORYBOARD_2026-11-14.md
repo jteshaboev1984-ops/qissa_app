@@ -50,7 +50,7 @@
 Владелец подтвердил: «вроде ок. принимаем». Asset ID: `seven_roads_s4e2_blue_triangle_merchants_02_APPROVED`. PNG: 1672×941, 2804310 байт, SHA-256 `95e571eabd5014d7630d26fb581b1a85f8644ea9a62ce54e52ae3b934884e2ab`. WebP: 333144 байт, SHA-256 `ecd4faa7dfb4921e240289dd3d90c50fd8e649c513b3b5bdba9e8868aaace262`. Файлы + метаданные сохранены в QISSA Library: `/QISSA/production/seven_roads/series30/stage1/S4E2/`. **В Supabase не загружено, runtime не интегрирован, новая иллюстрация не опубликована.** Исторические строки выше — журнал попыток до принятия.
 
 ## Кандидат S4E2-A03 — «Взгляд на пояса»
-- **Статус: GENERATED_CANDIDATE / OWNER_ART_REVIEW_PENDING.** Phase `story_text`, kind `shared`, stage `stage_1`.
+- **Статус: OWNER_CONDITIONAL_ACCEPTED / MASTER_WEBP_STORED / STORAGE_NOT_UPLOADED.** Phase `story_text`, kind `shared`, stage `stage_1`.
 - **RU exact after_text:** `Задержался.`
 - **UZ exact after_text:** `Bir zum ushlanib qoldi.`
 - Сюжет: в орданском дворе тюремного/дорожного караула Данияр показал Темуре и Самире пленника, которого стража знает под именем «Фарид». Тот движется между двумя охранниками, **руки связаны впереди**. Камран сначала узнаёт Данияра, затем его взгляд останавливается на свежих широких поясах Всадников короля у детей. Дети ещё НЕ знают его истинное имя.
@@ -64,6 +64,18 @@
 - Проверено: Темур и Самира выглядят примерно 12-летними, в teal/бордовом наряде и широких поясах Всадников короля; молодой безбородый Камран в сером плаще со связанными впереди руками проходит между ДВУМЯ стражниками; Данияр в ярко-синем шарфе рядом, двор обычного тюремного караула. Нет будущей тюремной повозки и спойлеров.
 - Замечания по визуальному канону: на Данияре появилась шапка, отсутствующая в утверждённой иллюстрации погони; на Самире — головной убор вместо открытых волос с одной косой. Попытка узкой коррекции дала **не ту сцену** (повторила S4E2-A02), поэтому была отклонена. Этот первый кадр A03 сохраняется для оценки владельцем, но **НЕ утверждён**.
 - Точные RU/UZ якоря `Задержался.` / `Bir zum ushlanib qoldi.` сверены с последним блоком S4E2 до S4E3. PNG — только draft; `_APPROVED` мастер, WebP, Supabase и runtime не создавались.
+
+### Приёмка исправленного изображения — 2026-11-15
+
+Владелец указал: если последнее изображение совпадает с текстом и картинками серии, принять и продолжить. Проверка последней исправленной версии `золотые_пояса_во_дворе.png` выполнена по RU/UZ `interactive-v4`, World Bible V2, утверждённой погоне Данияра и изображениям Темура и Самиры: возраст детей ~12 лет, teal/бордовый костюм и широкие пояса, Самира с одной косой; Данияр с синим шарфом и без новой шапки; Камран молод, без бороды, со связанными спереди руками между двумя стражниками, в обычном дворе караула. Нет преждевременной перевозки или сюжетных спойлеров. **Принято условно на основе указания владельца.**
+
+- Asset: `seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED`
+- PNG 1672×941, 2573138 bytes, SHA256 `b7a00697eaa8b3c6b0f02f458b0391b8be2fbcc7a25d6e7c85f79d27161440e4`
+- WebP 1672×941, 285206 bytes, SHA256 `c2bd15783a78bd8ad1c9203c590a3ed6a3fb08b64b889000310e2c733f689b69`
+- Location: `/QISSA/production/seven_roads/series30/stage1/S4E2/` (master, WebP, metadata persisted in Library).
+- `phase=story_text`, RU anchor `Задержался.`, UZ `Bir zum ushlanib qoldi.`, both occur once before the S4E2/S4E3 virtual split.
+- Supabase object upload **NOT VERIFIED / NOT UPLOADED**, no runtime integration; do not add asset to reader until upload confirmed.
+- A02 blue-triangle image has independently appeared in Supabase Storage metadata (filename, 333144 bytes, MIME image/webp) and was wired to draft reader; GitHub CI remote GET/SHA checks pending.
 
 ## Проверка перед генерацией и интеграцией
 Для каждого кандидата: отдельно согласовать сцену → изготовить одно изображение с реальными визуальными references → художественная приёмка владельцем → PNG-мастер и WebP/хеши/Library → подтверждённый URL Supabase → RU slot + UZ overlay якорь → check:reading-series-30, gallery, RU/UZ, мобильный smoke.
