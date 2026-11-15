@@ -183,10 +183,50 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": "Stage1 storyboard proposed in S2E1_ROYAL_SILVER_STORYBOARD_2026-11-15.md; owner scene approval pending, NO artwork generated. S2E1-A01 Danyar's old Rider belt and banter (RU/UZ unique paragraph 19); S2E1-A02 sudden birds above roadside bushes (unique paragraph 39), both before existing approved attack at paragraph 60. Existing images and original source hashes stay unchanged."
+      "artwork_acceptance": "stage_1_art_accepted_storage_pending",
+      "asset_ids": [
+        "seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED",
+        "seven_roads_s2e1_startled_birds_02_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S2E1-A01",
+          "asset_id": "seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED",
+          "phase": "story_text",
+          "kind": "shared",
+          "ru_after_text": "— Иначе пояс мне пришлось бы украсть.",
+          "uz_after_text": "— Bo‘lmasa bu kamarni o‘g‘irlashimga to‘g‘ri kelardi.",
+          "acceptance": "owner_conditional_approved_after_text_and_visual_canon_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E1/seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E1/seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E1/seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED.metadata.json",
+          "master_sha256": "7b0a3c62c50e6c3f4f3a058acb8dd707975e915d11f6dcc10bcb6adf73964eae",
+          "webp_sha256": "ba0584477aff699603f93ad4290a35736cb60121a5ee0fdcdef8266bad270912",
+          "webp_bytes": 310478,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "visual_and_text_check_passed_storage_and_runtime_QA_pending"
+        },
+        {
+          "candidate_id": "S2E1-A02",
+          "asset_id": "seven_roads_s2e1_startled_birds_02_APPROVED",
+          "phase": "story_text",
+          "kind": "shared",
+          "ru_after_text": "Птицы, которые только что шумели над травой, вдруг разлетелись.",
+          "uz_after_text": "Hozirgina o‘tlar ustida shovqin solib yurgan qushlar birdan uchib ketdi.",
+          "acceptance": "owner_conditional_approved_after_text_and_visual_canon_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E1/seven_roads_s2e1_startled_birds_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E1/seven_roads_s2e1_startled_birds_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E1/seven_roads_s2e1_startled_birds_02_APPROVED.metadata.json",
+          "master_sha256": "63c65085f327f380053019cf444ea61057d420488101d44e0250149cd37e0562",
+          "webp_sha256": "758067051d45229dac9fb503d3c0f8143a85c7fc04e1af97d856d12ca0cae27e",
+          "webp_bytes": 328322,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "visual_and_text_check_passed_storage_and_runtime_QA_pending"
+        }
+      ],
+      "notes": "S2E1 A01/A02 owner conditionally accepted after RU/UZ anchor + visual canon QA 2026-11-15. PNG masters, optimized WebPs, SHA-256 metadata stored in QISSA Library. Supabase upload is NOT completed/verified; DO NOT add runtime overlays or claim CI passed. Two current shared images remain pending runtime integration. Existing attack image preserved."
     },
     {
       "season": 2,
