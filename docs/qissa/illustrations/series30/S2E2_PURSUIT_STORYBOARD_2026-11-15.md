@@ -42,3 +42,10 @@
 После приёмки двух новых кадров S2E1 предприняты три попытки S2E2-A01 через первый генератор. **Все три отклонены**: ошибочно повторили S2E1 (всадники беседуют на открытой дороге), не показали внешний складской район. Эти варианты НЕ каноничны, НЕ утверждены, НЕ сохраняются как `APPROVED`, НЕ подключаются к runtime.
 
 Новый кандидат заказан через Canva с прямым референсом утверждённого Данияра и уточнённой сценой складов; **пиксельная художественная приёмка ещё не выполнена**. Прежде чем присваивать `APPROVED`, проверить: две фигуры на лошадях в тесном караванном складском районе, внимание к узким проходам, зерновые мешки и шкуры, отсутствие тёмного коня/Камрана и любых результатов следующей развилки. До успеха оставить queue `not_started` и zero new approved assets для S2E2.
+
+## Художественная приёмка S2E2-A01 — 2026-11-15
+
+- **ACCEPTED (owner's standing conditional instruction)**: final approved candidate `seven_roads_s2e2_missing_dark_horse_01_APPROVED`. The frame depicts Danyar in the approved blue scarf on his dapple-gray horse, alongside a young helmeted guard, searching different narrow passages between warehouse walls. Grain sacks and workers unloading grain, hanging hides, and warm outer-caravan-yard light are visible. Kamran and his dark horse are not visible. No branch resolution, capture, or later plot objects are shown. No repeat of the earlier open-road chase or roadside dialogue.
+- `story_id=seven_roads_korolevskoe_serebro`, `story_version=interactive-v5`, `part_id=story1_part_2_kamran_pursuit`, `phase=story_text`, exact RU `Тёмного коня нигде не было.`, exact UZ `Qoramtir ot ko‘rinmasdi.`
+- Master PNG (1672×941) and WebP 319176 bytes stored at `/QISSA/production/seven_roads/series30/stage1/S2E2/`; WebP SHA256 `9d9ebef90cf3f39ed802aa0ce6e7bb57a0b3472c003c5f071dbd4b6b91cc685e`, PNG SHA256 `fca7714d035d3558041cf9c02ac79ac5ac7a7db50dbc187a497a2f857e08de2d`.
+- **Not yet done:** Supabase Storage upload, remote GET/MIME/byte/SHA check, `series30ApprovedSceneSlots.ts` and `authoredStoryAssets.ts` integration, RU/UZ gallery/browser CI. Literary JSON and existing images untouched. PR remains Draft, no merge or deploy.
