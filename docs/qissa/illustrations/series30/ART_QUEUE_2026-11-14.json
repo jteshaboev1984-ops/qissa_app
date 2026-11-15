@@ -568,7 +568,7 @@
           }
         }
       ],
-      "notes": "S4E2 Stage 1: A01 bay horse scene FINAL owner-approved V2 (three pillars, correct horses), restored in QISSA Library and linked to _APPROVED_v2.webp (do not use superseded v1). Public bucket remote GET/MIME/bytes/SHA256 verified, bilingual anchored runtime and gallery checks + browser CI pass (CI 43694219403, 43694219482). Not deployed or merged. A02 blue-triangle scene/A03 Rider belts are storyboard-proposed, not art-approved."
+      "notes": "S4E2 Stage 1: A01 bay horse scene FINAL owner-approved V2 (three pillars, correct horses), restored in QISSA Library and linked to _APPROVED_v2.webp (do not use superseded v1). Public bucket remote GET/MIME/bytes/SHA256 verified, bilingual anchored runtime and gallery checks + browser CI pass (CI 43694219403, 43694219482). Not deployed or merged. A02 blue-triangle scene/A03 Rider belts are storyboard-proposed, not art-approved. S4E2-A02 (blue triangle) new corrected candidate 2026-11-15 generated after rejecting previous off-canon drafts; internal scene QA passed; awaiting owner artwork acceptance, NO approved asset_id, NOT uploaded/integrated. Candidate SHA-256 95e571eabd5014d7630d26fb581b1a85f8644ea9a62ce54e52ae3b934884e2ab; exact RU/UZ anchors documented in storyboard. S4E2-A03 storyboard only."
     },
     {
       "season": 4,
