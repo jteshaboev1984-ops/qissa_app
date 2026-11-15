@@ -44,6 +44,17 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     },
   },
   {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_3_network_sign',
+    slot_id: 'SERIES30-S2E3-A03',
+    anchor_key: 'series30_s2e3_capital_trial_glance',
+    asset_id: 'seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED',
+    // The Silver S2E3/S2E4 split is inside this post-choice phase.
+    // This anchor is before the split and remains visible only in S2E3.
+    phase: 'post_choice_text',
+    after_text: { ru: 'Данияр заметил этот взгляд.', uz: 'Daniyar bu qarashni payqadi.' },
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A01',
