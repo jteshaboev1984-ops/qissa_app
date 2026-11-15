@@ -80,6 +80,12 @@ export const withSeries30ApprovedSceneSlots = (
 
   return {
     ...original,
+    illustration_plan: {
+      ...original.illustration_plan,
+      planned_asset_count: original.illustration_plan.planned_asset_count + additions.length,
+      shared_asset_count: original.illustration_plan.shared_asset_count + additions.length,
+      visible_assets_per_playthrough: original.illustration_plan.visible_assets_per_playthrough + additions.length,
+    },
     parts: original.parts.map((part) => {
       const scenes = additions.filter((scene) => scene.part_id === part.part_id)
       if (scenes.length === 0) return part
