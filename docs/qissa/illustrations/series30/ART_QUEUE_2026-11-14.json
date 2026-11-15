@@ -220,7 +220,8 @@
       "artwork_acceptance": "in_progress",
       "asset_ids": [
         "seven_roads_s2e3_farid_gate_arrest_01_APPROVED",
-        "seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED"
+        "seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED",
+        "seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -272,9 +273,28 @@
             "seven_roads_ci": 43694219403,
             "season2_browser_ci": 43694219482
           }
+        },
+        {
+          "candidate_id": "S2E3-A03",
+          "asset_id": "seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED",
+          "phase": "post_choice_text",
+          "kind": "shared",
+          "ru_after_text": "Данияр заметил этот взгляд.",
+          "uz_after_text": "Daniyar bu qarashni payqadi.",
+          "acceptance": "owner_conditional_approved_after_text_and_visual_reference_QA",
+          "approval_notes": "Revised from-back view of young dark-haired Camran/Kamran has no incorrect adult beard or face; Danyar in blue observes commandant's capital-trial announcement; accepted under owner's earlier 'if sources/refs match, accept' approval.",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED.metadata.json",
+          "master_sha256": "01509051f2ef227cb01ca19ac13fa5ee9b78b2613ab2e7186173632b68c3ed3b",
+          "webp_sha256": "b9c8f1ea0b446c4ac3daaa7c4bbea3ff14995256048b173ffc4d8741fb1d16dd",
+          "webp_bytes": 286370,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "source_ru_uz_and_visual_canon_passed; remote_art_and_reader_checks_pending"
         }
       ],
-      "notes": "S2E3 Stage 1: A01 gate arrest + A02 driver conversation owner-approved and integrated into unpublished PR via additive RU/UZ story overlay. Verified public bucket GET, MIME, byte size & SHA-256 in CI; bilingual anchors/virtual split/gallery tests and Season 2/browser checks pass (CI 43694219403, 43694219482). No deployment or merge. A03 prison scene not finally art-approved or integrated."
+      "notes": "Stage 1 S2E3: 3 of 3 approved narrative scenes prepared. A01 gate arrest and A02 driver conversation are hosted and integrated in draft PR, independently remote SHA verified, all CI green. A03 capital-trial reaction re-evaluated against exact RU/UZ post_choice anchor and canon; owner conditional approval applies; from-behind Kamran depiction is source-compliant. A03 original PNG/WebP/metadata stored in QISSA Library, but NOT uploaded to Supabase and NOT integrated. Do not deploy/merge."
     },
     {
       "season": 2,
