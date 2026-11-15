@@ -4,6 +4,17 @@
 Исходный литературный пакет: `seven_roads_korolevskoe_serebro` / `interactive-v5`, `part_id=story1_part_3_network_sign`.
 **Не изменять литературный текст, choices, прогресс и существующие утверждённые изображения.**
 
+## Текущее состояние по результатам CI — 15 ноября 2026 г.
+
+**S2E3 Этап 1: 3/3 изображения приняты, находятся в Library и подключены в неопубликованном PR #334.**
+WebP A01/A02/A03 сохранены в публичном `story-images`; независимый `GET + MIME + bytes + SHA-256` подтвердил все три файла (и отдельную S4E2 A01 v2) в workflow [43698397387](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/43698397387). Браузерные проверки пройдены в [43698397401](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/43698397401).
+
+Новые слоты внедрены **не правкой исходных SHA-locked литературных JSON**, а через `src/data/series30ApprovedSceneSlots.ts` и `src/data/authoredStoryAssets.ts`. Сюжет, `story_id`, `story_version`, выборы и существующий прогресс не изменены.
+
+A03: `phase=post_choice_text`, RU `Данияр заметил этот взгляд.`, UZ `Daniyar bu qarashni payqadi.`, находится в читательской серии S2E3 до виртуального разреза S2E4. Публичный asset: `https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED.webp`. SHA256: `b9c8f1ea0b446c4ac3daaa7c4bbea3ff14995256048b173ffc4d8741fb1d16dd`.
+
+**Примечание:** разделы ниже исторические checkpoints до загрузки. Указанные в них статусы `NOT uploaded`, `NOT integrated` для A01–A03 устарели. Специальная ручная проверка пикселей в живой браузерной сессии ещё не проводилась. **Релиз, merge PR и публикация не разрешены и не выполнялись.**
+
 ## Актуальная проверка
 - Исходные RU/UZ JSON прочитаны по HEAD `670fa9ba23eb43a1143154e3b483116e18f03502`.
 - Виртуальная граница S2E3/S2E4: `post_choice_text` **перед** RU `К вечеру Ордан снова выглядел обычным.` / UZ `Kechga kelib Ordan yana odatdagidek ko‘rina boshladi.`.
