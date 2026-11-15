@@ -72,3 +72,10 @@
 - Добавлены два проверенных публичных WebP URL в `src/data/authoredStoryAssets.ts`; исходные литературные JSON не меняются.
 - Исправлен порядок gallery `story_text`: разговор → птицы → уже существующее нападение; добавлена RU/UZ regression-проверка в `check-series30-approved-scene-slots.mjs`.
 - Runtime CI/build/browser smoke выполняются на этой ветке; **не объявлять их пройденными до подтверждения результатов**. PR не объединять и приложение не публиковать.
+
+## Завершение техприёмки — 2026-11-15
+
+- **Seven Roads CI #43737791879 — SUCCESS**: `check:four-seasons`, `check:reading-series-30`, `typecheck`, `build`, browser `smoke:four-season-browser`, подтверждённый порядок галереи S2E1 и защита закрытых изображений.
+- **Season 2 Tier A Slot Check #43737791878 — SUCCESS**: RU/UZ якоря, сериализация, сборка, браузерная проверка.
+- Верифицированы обе новые WebP в общем комплекте **8/8 по HTTP/MIME/bytes/SHA256**. Две новые позиции S2E1 считаются **owner accepted / storage verified / runtime integrated / CI passed**.
+- **S2E1 этап 1: 2/2 завершено**. Литературные RU/UZ JSON, выборы, progress keys, существующие иллюстрации не изменялись. PR остаётся Draft, приложение не опубликовано.
