@@ -42,10 +42,17 @@ Instead:
 | S2E3-A02 | `story_text` | `— Пока не знаю. Но я ещё подумаю.` | `— Hozircha bilmayman. Lekin yana o‘ylab ko‘raman.` | S2E3 |
 | S4E2-A01 | `story_text` | `Гнедой промчался мимо.` | `To‘riq ot ularning yonidan chopib o‘tdi.` | S4E2 |
 
-### Remaining release gates
+### Verified QA status — 2026-11-15
 
-- [ ] CI finished successfully on the **final integration commit**, including independent WebP GET/SHA.
-- [ ] Browser smoke: RU and UZ, both choices, 360/390/430px; gallery visibility before/after reading; saved progress.
-- [ ] No production deployment/PR merge unless explicitly permitted.
+- [x] **GitHub Seven Roads CI** successful on source/test commit `228aab487aa95c47d140ca8cb86070193035148c`: workflow run [43694219403](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/43694219403).
+- [x] **Season 2 Tier A Slot Check / browser workflow** successful: [43694219482](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/43694219482). Earlier browser failure was traced to a missing runtime-only `illustration_plan.planned_asset_count` increment and fixed without mutating any authored literary source.
+- [x] Three uploaded public WebPs independently fetched on GitHub CI and verified with `GET`, `image/webp`, bytes and SHA-256.
+- [x] Actual TypeScript 30-series adapter and approved scene overlay checked for six RU/UZ anchors, correct episode splits and untouched prose/choices/IDs.
+- [x] Gallery discovery tested: approved scene entries appear in the correct gallery episode, remain locked until `markSeen()`, and other new unseen images remain locked.
+- [x] Existing four-season browser smoke passed RU/UZ, 360/390/430 mobile widths, legacy resume, inherited branches and finale spoiler locks.
+- [ ] **Illustration-specific human browser screenshot review** (exact new scene pixels, placement beside paragraph, and tap-to-fullscreen in a live test session) not yet independently performed.
+- [ ] **Production deploy and PR merge** not authorized. Keep PR #334 draft.
+
+No new literary text, decision fields, progress keys or original authored RU/UZ file hashes were changed.
 
 **Other images not approved or added:** S2E3-A03 (jail conversation), S4E2-A02 (blue-triangle cargo tag), S4E2-A03 (Farid recognizes Rider belts). All stay in scene-production queue; do not invent assets or URL links.
