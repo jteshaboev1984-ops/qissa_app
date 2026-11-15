@@ -538,7 +538,8 @@
       "total_new_shared_scene_count": 5,
       "artwork_acceptance": "in_progress",
       "asset_ids": [
-        "seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED"
+        "seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED",
+        "seven_roads_s4e2_blue_triangle_merchants_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -566,9 +567,27 @@
             "seven_roads_ci": 43694219403,
             "season2_browser_ci": 43694219482
           }
+        },
+        {
+          "candidate_id": "S4E2-A02",
+          "asset_id": "seven_roads_s4e2_blue_triangle_merchants_02_APPROVED",
+          "kind": "shared",
+          "phase": "story_text",
+          "ru_after_text": "На них были такие же знаки.",
+          "uz_after_text": "Ularda ham xuddi shunday belgilar bor edi.",
+          "acceptance": "owner_approved_2026-11-15",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.metadata.json",
+          "master_sha256": "95e571eabd5014d7630d26fb581b1a85f8644ea9a62ce54e52ae3b934884e2ab",
+          "webp_sha256": "ecd4faa7dfb4921e240289dd3d90c50fd8e649c513b3b5bdba9e8868aaace262",
+          "webp_bytes": 333144,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "owner_acceptance_and_exact_RU_UZ_anchors_passed; storage_and_runtime_pending"
         }
       ],
-      "notes": "S4E2 Stage 1: A01 bay horse scene FINAL owner-approved V2 (three pillars, correct horses), restored in QISSA Library and linked to _APPROVED_v2.webp (do not use superseded v1). Public bucket remote GET/MIME/bytes/SHA256 verified, bilingual anchored runtime and gallery checks + browser CI pass (CI 43694219403, 43694219482). Not deployed or merged. A02 blue-triangle scene/A03 Rider belts are storyboard-proposed, not art-approved. S4E2-A02 (blue triangle) new corrected candidate 2026-11-15 generated after rejecting previous off-canon drafts; internal scene QA passed; awaiting owner artwork acceptance, NO approved asset_id, NOT uploaded/integrated. Candidate SHA-256 95e571eabd5014d7630d26fb581b1a85f8644ea9a62ce54e52ae3b934884e2ab; exact RU/UZ anchors documented in storyboard. S4E2-A03 storyboard only."
+      "notes": "S4E2 stage1: A01 final V2 bay horse owner-approved, remote SHA validated and integrated in draft; A02 blue-triangle merchant/tag/two sacks owner-approved 2026-11-15; PNG master (1672x941), WebP, metadata, hashes saved in QISSA Library, NOT yet uploaded to Supabase or wired into runtime. A03 'Farid notices Rider belts' storyboard prepared but no accepted image. Stage2 two additional shared images not started. No deployment or merge."
     },
     {
       "season": 4,
