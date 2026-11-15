@@ -258,7 +258,7 @@
           "qa_status": "pending"
         }
       ],
-      "notes": "S2E3 stage 1: A01 gate arrest and A02 driver-Danyar dry-dust dialogue have both been individually OWNER-APPROVED, PNG masters + WebP + SHA-256 metadata verified and stored in QISSA Library; public Supabase Storage NOT uploaded, runtime/gallery NOT integrated, QA pending. A02 avoids duplicating departing wagon composition. A03 trial-in-capital reaction scene approved for generation but final image not yet approved. See S2E3_FARID_PRODUCTION_CHECKPOINT_2026-11-14.md."
+      "notes": "Stage 1 S2E3: A01 and A02 individually owner-approved and PNG/WebP/metadata stored in QISSA Library; Supabase URL not uploaded/verified, runtime/gallery not integrated, QA pending. A03 scene's RU/UZ anchors verified but FOUR image candidates produced 2026-11-15 failed visual-canon QA (Kamran wrongly aged/bearded, invented banner in one candidate); NO A03 asset approved or stored. Alternative back-view storyboard pending owner review. See S2E3_FARID_PRODUCTION_CHECKPOINT_2026-11-14.md."
     },
     {
       "season": 2,
