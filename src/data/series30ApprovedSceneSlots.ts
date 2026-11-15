@@ -57,6 +57,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
+    slot_id: 'SERIES30-S4E2-A03',
+    anchor_key: 'series30_s4e2_farid_rider_belts_glance',
+    asset_id: 'seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Задержался.',
+      uz: 'Bir zum ushlanib qoldi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A02',
     anchor_key: 'series30_s4e2_blue_triangle_trade_tag',
     asset_id: 'seven_roads_s4e2_blue_triangle_merchants_02_APPROVED',
