@@ -131,6 +131,8 @@ const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED.webp',
   'seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED.webp',
+  'seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED.webp',
   'seven_roads_s4e2_blue_triangle_merchants_02_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.webp',
   // The final accepted horse illustration is the immutable v2 upload.
