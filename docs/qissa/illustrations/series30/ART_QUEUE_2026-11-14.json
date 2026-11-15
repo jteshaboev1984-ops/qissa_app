@@ -236,9 +236,13 @@
           "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_farid_gate_arrest_01_APPROVED.metadata.json",
           "master_sha256": "b685be81a6acf81a17abc428e0bf10671797483eac63c2afa29d4139e03218c9",
           "webp_sha256": "00f1c705bbd1c446c354a00852039b57a867ff7166839dc88da5170e03c9a8b1",
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "pending"
+          "storage_status": "public_bucket_object_metadata_confirmed",
+          "runtime_status": "wired_in_draft_pr_awaiting_ci_and_browser_smoke",
+          "qa_status": "source_anchor_preflight_passed; automation_not_yet_confirmed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e3_farid_gate_arrest_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e3_farid_gate_arrest_01_APPROVED.webp",
+          "webp_bytes": 532314,
+          "remote_sha256_verification": "pending_independent_GET_hash"
         },
         {
           "candidate_id": "S2E3-A02",
@@ -253,12 +257,16 @@
           "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E3/seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED.metadata.json",
           "master_sha256": "a7f7cf71f57dde5f5c3187306e21fedee014e91755a8ff4340cbdce6b1c0cb2c",
           "webp_sha256": "853e88ca1394cc61c7b8857145ad12adf22e70b12d02eadfd211a1f85d077849",
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "pending"
+          "storage_status": "public_bucket_object_metadata_confirmed",
+          "runtime_status": "wired_in_draft_pr_awaiting_ci_and_browser_smoke",
+          "qa_status": "source_anchor_preflight_passed; automation_not_yet_confirmed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED.webp",
+          "webp_bytes": 303376,
+          "remote_sha256_verification": "pending_independent_GET_hash"
         }
       ],
-      "notes": "Stage 1 S2E3: A01 and A02 individually owner-approved and PNG/WebP/metadata stored in QISSA Library; Supabase URL not uploaded/verified, runtime/gallery not integrated, QA pending. A03 scene's RU/UZ anchors verified but FOUR image candidates produced 2026-11-15 failed visual-canon QA (Kamran wrongly aged/bearded, invented banner in one candidate); NO A03 asset approved or stored. Alternative back-view storyboard pending owner review. See S2E3_FARID_PRODUCTION_CHECKPOINT_2026-11-14.md."
+      "notes": "S2E3 Stage 1: A01 gate arrest + A02 driver dialogue individually owner-approved, PNG/WebP in QISSA Library and user-uploaded WebPs confirmed by Supabase public-bucket object metadata (exact names/MIME/sizes). Both added as read-anchored shared slots through nonliterary 30-series additive runtime overlay (original authored RU/UZ packages and SHA locks untouched). CI/browser smoke and independent GET/SHA still pending. A03 jail scene remains unapproved and absent from runtime."
     },
     {
       "season": 2,
@@ -506,17 +514,22 @@
           "ru_after_text": "Гнедой промчался мимо.",
           "uz_after_text": "To‘riq ot ularning yonidan chopib o‘tdi.",
           "acceptance": "owner_approved_after_text_reference_QA",
-          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED.png",
-          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED.webp",
-          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED.metadata.json",
-          "master_sha256": "8ea1c59484dd1b868d7e5f7a8541366cc1ae85cd1b3b680981a20cc9678639cf",
-          "webp_sha256": "555863f6b343baa00995d5a782e42ad7d2e8fafa82d6b72085b4eb3a289fe600",
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "visual_content_passed; runtime_gallery_pending"
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp",
+          "master_sha256": "675839596404a57d47edc76807fd99e1ea883d26a2f24cb054f883dd43afc446",
+          "webp_sha256": "4a7aa0f82c50c9e5160cc38f29c1ab8660d54bc8debcc00b3504aec89df797c0",
+          "storage_status": "public_bucket_object_metadata_confirmed",
+          "runtime_status": "wired_in_draft_pr_awaiting_ci_and_browser_smoke",
+          "qa_status": "source_anchor_preflight_passed; automation_not_yet_confirmed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp",
+          "webp_bytes": 566016,
+          "remote_sha256_verification": "pending_independent_GET_hash",
+          "asset_revision": "owner_final_v2_supersedes_v1"
         }
       ],
-      "notes": "Stage 1 S4E2: A01 'Гнедой промчался мимо' accepted after owner-requested RU/UZ and approved-reference QA; exactly THREE stone pillars matching approved scene, horse already veered from clay-jug wagon and passes safely by the boy, Samira on Bulut, Temur at a distance on Shamol. Approved PNG/WebP/metadata and QA report are in QISSA Library, no Supabase upload/runtime/gallery integration yet. A02 blue-triangle cargo tag and A03 Kamran notices rider belts: scene-proposed, not generated or accepted. Additional two stage-2 scenes: unstarted. See S4E2_BAY_HORSE_AND_FARID_STORYBOARD_2026-11-14.md and S4E2_A01_QA_ACCEPTANCE.md in Library."
+      "notes": "S4E2 Stage 1: A01 owner-accepted horse scene FINAL V2 (three pillars, correct horses and characters), PNG/WebP v2 in QISSA Library, user-uploaded 566016-byte public-bucket Storage object confirmed. Logical asset ID unchanged; resolver targets immutable _APPROVED_v2.webp, not superseded v1. Added as shared anchored runtime overlay. CI/browser smoke and independent GET/SHA pending. A02 blue-triangle cargo tag and A03 Farid/Rider-belt encounter still only storyboard, not generated. Stage 2 untouched."
     },
     {
       "season": 4,
