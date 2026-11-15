@@ -28,14 +28,24 @@
 - **Зачем:** яркое начало полностью неиллюстрированной серии, движение и проявление характера героев без выдуманного спасения сверх текста; не повторяет уже утверждённый статичный кадр трёх столбов.
 
 ## Кандидат S4E2-A02 — «Синий треугольник»
-- **Статус: scene_proposed; 2 draft attempts rejected in internal QA, owner art approval pending.** Phase `story_text`, kind `shared`, stage `stage_1`.
+- **Статус: GENERATED_CANDIDATE / OWNER_REVIEW_PENDING.** Phase `story_text`, kind `shared`, stage `stage_1`.
 - **RU exact after_text:** `На них были такие же знаки.`
 - **UZ exact after_text:** `Ularda ham xuddi shunday belgilar bor edi.`
 - Сюжет: после инцидента с лошадью к торговцу с мешками приходит незнакомый человек, держит небольшую деревянную бирку с **синим треугольником**. Торговец смотрит на бирку и на такие же отметки на двух мешках. Самира замечает сцену; она позже сравнит её с условными жетонами сети, но в кадре **нельзя заранее отождествлять** эти бытовые отметки со знаком разбойников.
 - **Композиция:** средний план у телеги с тканью/мешками на придорожной площадке; деревянная бирка в руке незнакомца и такие же простые синие треугольники на мешках видны сразу, без макро-детализации «таинственной печати». Самира наблюдает из небольшого отдаления. Торговец ещё проверяет соответствие, не показывать завершённую отправку мешков на другой телеге до того, как текст об этом расскажет.
 - **Зачем:** спокойная сцена-наблюдение после скачки, вводящая наглядную идею метки как средства узнавания; отдельный визуальный фокус от ранее изображённых трёх каменных столбов.
 
-**2026-11-15 QA:** Attempt #1 portrayed the merchant, visitor, wooden tag and two sacks correctly, but showed four rather than three stone pillars and visitor clothing too similar to Danyar's signature blue. Attempt #2 wrongly depicted Temur/Samira pointing to a giant blue triangle on a mountain; rejected as a different scene. Another attempt reproduced an unrelated prison scene. **No image accepted or uploaded.** Reattempt must show exactly three stone pillars matching approved location, unambiguous blue triangles solely on small tag and two sacks, merchant checking markings, visitor distinctly not Danyar, Samira observing without horses, no later transfer of sacks.\n\n## Кандидат S4E2-A03 — «Взгляд на пояса»
+**2026-11-15 QA:** Attempt #1 portrayed the merchant, visitor, wooden tag and two sacks correctly, but showed four rather than three stone pillars and visitor clothing too similar to Danyar's signature blue. Attempt #2 wrongly depicted Temur/Samira pointing to a giant blue triangle on a mountain; rejected as a different scene. Another attempt reproduced an unrelated prison scene. **No image accepted or uploaded.** Reattempt must show exactly three stone pillars matching approved location, unambiguous blue triangles solely on small tag and two sacks, merchant checking markings, visitor distinctly not Danyar, Samira observing without horses, no later transfer of sacks.
+
+### Новый кандидат 2026-11-15 — **не APPROVED**
+
+- Драфт: `S4E2_A02_blue_triangle_candidate_unapproved_2026-11-15.png` (локально создан, **не загружен** в Supabase и не интегрирован).
+- Generation ID `17ca2dc4-828e-4ce1-ab27-ada7df04dcef`; **1672×941**, **2 804 310 bytes**, SHA-256 `95e571eabd5014d7630d26fb581b1a85f8644ea9a62ce54e52ae3b934884e2ab`.
+- Сверка: после отвода гнедого к другой стойке незнакомец в коричневой одежде предъявляет небольшую деревянную бирку с **одним** синим треугольником; торговец изучает **два** мешка с одинаковыми знаками; Самира с косой, в бордовых дорожных одеждах, наблюдает, не вмешиваясь. Мешки ещё не переданы, новых символов/сюжетов нет.
+- Избран тесный ракурс торговой телеги: каменные столбы **не в кадре**, поэтому не добавляется четвёртый и не противоречит ранее утверждённой расстановке. Сохранены золотистая осенняя палитра и деревянный придорожный навес. Данияр, Темур и лошади в кадре не требуются; незнакомец не должен выглядеть как Данияр.
+- **Internal scene/composition QA: pass (предварительно)**; финальная художественная приёмка изображения владельцем: **PENDING**. Не создавать asset `_APPROVED`, WebP/Supabase и image-slot до владельческого решения.
+
+## Кандидат S4E2-A03 — «Взгляд на пояса»
 - **Статус: scene_proposed, owner_approval_pending.** Phase `story_text`, kind `shared`, stage `stage_1`.
 - **RU exact after_text:** `Задержался.`
 - **UZ exact after_text:** `Bir zum ushlanib qoldi.`
