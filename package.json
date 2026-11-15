@@ -82,7 +82,7 @@
     "review:season2-listening-paths": "node scripts/check-season2-listening-paths.mjs --write listening-review",
     "check:season2-story6-approved-art": "node scripts/check-season2-story6-approved-art.mjs",
     "verify:season2-story6-public-art": "node scripts/check-season2-story6-approved-art.mjs --verify-public",
-    "check:reading-series-30": "node scripts/check-reading-series-30.mjs"
+    "check:reading-series-30": "node scripts/check-reading-series-30.mjs && node scripts/check-series30-approved-scene-slots.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
