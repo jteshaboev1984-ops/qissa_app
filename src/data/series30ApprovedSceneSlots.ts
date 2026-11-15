@@ -57,6 +57,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
+    slot_id: 'SERIES30-S4E2-A02',
+    anchor_key: 'series30_s4e2_blue_triangle_trade_tag',
+    asset_id: 'seven_roads_s4e2_blue_triangle_merchants_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'На них были такие же знаки.',
+      uz: 'Ularda ham xuddi shunday belgilar bor edi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A01',
     anchor_key: 'series30_s4e2_bay_horse_escape',
     asset_id: 'seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED',
