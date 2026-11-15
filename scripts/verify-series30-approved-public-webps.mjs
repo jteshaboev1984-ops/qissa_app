@@ -26,6 +26,11 @@ const assets = [
     sha256: 'ecd4faa7dfb4921e240289dd3d90c50fd8e649c513b3b5bdba9e8868aaace262',
   },
   {
+    name: 'seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED.webp',
+    size: 285206,
+    sha256: 'c2bd15783a78bd8ad1c9203c590a3ed6a3fb08b64b889000310e2c733f689b69',
+  },
+  {
     // Do not point to the superseded non-v2 horse artwork.
     name: 'seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp',
     size: 566016,
@@ -49,4 +54,4 @@ for (const asset of assets) {
   assert.equal(sha256, asset.sha256, `Remote WebP differs from approved master derivative: ${asset.name}`)
   console.log(`[series30-art-remote] OK ${asset.name} (${bytes.length} bytes)`)
 }
-console.log('[series30-art-remote] PASS 5/5 remote GET, MIME, byte lengths and SHA256')
+console.log('[series30-art-remote] PASS 6/6 remote GET, MIME, byte lengths and SHA256')
