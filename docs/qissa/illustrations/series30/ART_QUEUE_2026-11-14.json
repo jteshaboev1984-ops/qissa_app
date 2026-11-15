@@ -256,10 +256,31 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": "Stage 1: one nonduplicative shared scene proposed (S2E2-A01 'Исчезнувший тёмный конь'). Exact RU story_text after_text 'Тёмного коня нигде не было.'; UZ 'Qoramtir ot ko‘rinmasdi.'; both unique and before chase-search choice. Depicts Danyar and guard scanning grain/skin warehouses at Ordan's outer caravan quarter; no Kamran/dark horse shown, no branch spoilers. Existing two approved rescue/pursuit scenes preserved. Owner scene approval pending, no new asset, no runtime change. See S2E2_PURSUIT_STORYBOARD_2026-11-15.md."
+      "artwork_acceptance": "stage_1_art_accepted_storage_pending",
+      "asset_ids": [
+        "seven_roads_s2e2_missing_dark_horse_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S2E2-A01",
+          "asset_id": "seven_roads_s2e2_missing_dark_horse_01_APPROVED",
+          "phase": "story_text",
+          "kind": "shared",
+          "ru_after_text": "Тёмного коня нигде не было.",
+          "uz_after_text": "Qoramtir ot ko‘rinmasdi.",
+          "acceptance": "owner_conditional_approved_after_visual_and_literary_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E2/seven_roads_s2e2_missing_dark_horse_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E2/seven_roads_s2e2_missing_dark_horse_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E2/seven_roads_s2e2_missing_dark_horse_01_APPROVED.metadata.json",
+          "master_sha256": "fca7714d035d3558041cf9c02ac79ac5ac7a7db50dbc187a497a2f857e08de2d",
+          "webp_sha256": "9d9ebef90cf3f39ed802aa0ce6e7bb57a0b3472c003c5f071dbd4b6b91cc685e",
+          "webp_bytes": 319176,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "visual_and_text_check_passed_storage_and_runtime_QA_pending"
+        }
+      ],
+      "notes": "S2E2-A01 approved under owner's conditional acceptance rule after scene and exact RU/UZ check. Warehouse setting: narrow grain warehouse passages, drying hides, sacks/workers; Danyar on gray horse + young guard in canonical helmet; no Kamran or missing dark horse, no future choice spoilers. Original PNG + optimized WebP + SHA metadata are stored in QISSA Library; user needs to upload WebP to story-images/seven-roads/season2_tier_a_v2/. Do not wire runtime until public GET/MIME/bytes/SHA256 validated. Previously rejected S2E1-like road conversation attempts stay rejected."
     },
     {
       "season": 2,
