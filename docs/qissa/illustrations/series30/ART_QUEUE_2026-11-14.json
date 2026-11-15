@@ -493,10 +493,30 @@
       "stage_1_new_shared_scene_count": 3,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 5,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": "Missing all story illustrations in reader series. Three stage-1 scenes proposed and exact RU/UZ anchors independently verified, NOT YET OWNER-APPROVED, NOT GENERATED: A01 runaway bay horse at road post; A02 merchant's ordinary blue-triangle cargo tag; A03 imprisoned Farid/Kamran notices Rider belts at Ordan. See S4E2_BAY_HORSE_AND_FARID_STORYBOARD_2026-11-14.md. Preserve distinct Shamol/Bulut/third bay horse; do not spoiler future prison wagon."
+      "artwork_acceptance": "in_progress",
+      "asset_ids": [
+        "seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S4E2-A01",
+          "asset_id": "seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED",
+          "phase": "story_text",
+          "kind": "shared",
+          "ru_after_text": "Гнедой промчался мимо.",
+          "uz_after_text": "To‘riq ot ularning yonidan chopib o‘tdi.",
+          "acceptance": "owner_approved_after_text_reference_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED.metadata.json",
+          "master_sha256": "8ea1c59484dd1b868d7e5f7a8541366cc1ae85cd1b3b680981a20cc9678639cf",
+          "webp_sha256": "555863f6b343baa00995d5a782e42ad7d2e8fafa82d6b72085b4eb3a289fe600",
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "visual_content_passed; runtime_gallery_pending"
+        }
+      ],
+      "notes": "Stage 1 S4E2: A01 'Гнедой промчался мимо' accepted after owner-requested RU/UZ and approved-reference QA; exactly THREE stone pillars matching approved scene, horse already veered from clay-jug wagon and passes safely by the boy, Samira on Bulut, Temur at a distance on Shamol. Approved PNG/WebP/metadata and QA report are in QISSA Library, no Supabase upload/runtime/gallery integration yet. A02 blue-triangle cargo tag and A03 Kamran notices rider belts: scene-proposed, not generated or accepted. Additional two stage-2 scenes: unstarted. See S4E2_BAY_HORSE_AND_FARID_STORYBOARD_2026-11-14.md and S4E2_A01_QA_ACCEPTANCE.md in Library."
     },
     {
       "season": 4,
