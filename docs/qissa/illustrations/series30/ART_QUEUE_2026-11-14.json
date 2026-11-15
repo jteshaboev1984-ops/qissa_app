@@ -183,7 +183,7 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_art_accepted_storage_pending",
+      "artwork_acceptance": "stage_1_approved_runtime_wired_ci_pending",
       "asset_ids": [
         "seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED",
         "seven_roads_s2e1_startled_birds_02_APPROVED"
@@ -203,9 +203,15 @@
           "master_sha256": "7b0a3c62c50e6c3f4f3a058acb8dd707975e915d11f6dcc10bcb6adf73964eae",
           "webp_sha256": "ba0584477aff699603f93ad4290a35736cb60121a5ee0fdcdef8266bad270912",
           "webp_bytes": 310478,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "visual_and_text_check_passed_storage_and_runtime_QA_pending"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
+          "qa_status": "awaiting_reader_gallery_and_browser_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_ci_run_43737453360",
+          "qa_ci_runs": {
+            "remote_webp_verification": 43737453360
+          }
         },
         {
           "candidate_id": "S2E1-A02",
@@ -221,12 +227,18 @@
           "master_sha256": "63c65085f327f380053019cf444ea61057d420488101d44e0250149cd37e0562",
           "webp_sha256": "758067051d45229dac9fb503d3c0f8143a85c7fc04e1af97d856d12ca0cae27e",
           "webp_bytes": 328322,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "visual_and_text_check_passed_storage_and_runtime_QA_pending"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
+          "qa_status": "awaiting_reader_gallery_and_browser_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e1_startled_birds_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e1_startled_birds_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_ci_run_43737453360",
+          "qa_ci_runs": {
+            "remote_webp_verification": 43737453360
+          }
         }
       ],
-      "notes": "S2E1 A01/A02 owner conditionally accepted after RU/UZ anchor + visual canon QA 2026-11-15. PNG masters, optimized WebPs, SHA-256 metadata stored in QISSA Library. Supabase upload is NOT completed/verified; DO NOT add runtime overlays or claim CI passed. Two current shared images remain pending runtime integration. Existing attack image preserved."
+      "notes": "S2E1 A01/A02 accepted and stored as PNG/WebP in QISSA Library; user uploaded to Supabase story-images/season2_tier_a_v2 2026-11-15, and independent CI 43737453360 confirmed public GET, MIME, bytes and SHA256 for both. Non-literary scene overlay and asset registry wired for RU/UZ (S2E1). New runtime CI/gallery/browser verdict pending. Original source literary hashes, choices, story IDs, progress keys and existing attack image remain unchanged. PR stays Draft/no merge or deploy."
     },
     {
       "season": 2,

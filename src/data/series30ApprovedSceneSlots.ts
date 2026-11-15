@@ -24,6 +24,30 @@ type Series30ApprovedScene = {
 export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
     story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_1_royal_silver_ambush',
+    slot_id: 'SERIES30-S2E1-A01',
+    anchor_key: 'series30_s2e1_danyar_old_belt_dialogue',
+    asset_id: 'seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: '— Иначе пояс мне пришлось бы украсть.',
+      uz: '— Bo‘lmasa bu kamarni o‘g‘irlashimga to‘g‘ri kelardi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_1_royal_silver_ambush',
+    slot_id: 'SERIES30-S2E1-A02',
+    anchor_key: 'series30_s2e1_startled_birds',
+    asset_id: 'seven_roads_s2e1_startled_birds_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Птицы, которые только что шумели над травой, вдруг разлетелись.',
+      uz: 'Hozirgina o‘tlar ustida shovqin solib yurgan qushlar birdan uchib ketdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_korolevskoe_serebro',
     part_id: 'story1_part_3_network_sign',
     slot_id: 'SERIES30-S2E3-A01',
     anchor_key: 'series30_s2e3_farid_gate_arrest',
@@ -152,7 +176,16 @@ export const withSeries30ApprovedSceneSlots = (
         })
         references.push(scene.asset_id)
       }
-      return { ...part, image_slots: slots, illustration_refs: references }
+      // The gallery uses image_slots order. Keep it chronological even when
+      // newly approved early scenes were added after an existing late scene.
+      const orderedSlots = slots.sort((a, b) => {
+        const phaseA = a.phase === 'story_text' ? 0 : 1
+        const phaseB = b.phase === 'story_text' ? 0 : 1
+        if (phaseA !== phaseB) return phaseA - phaseB
+        const sourceParagraphs = paragraphs(part[a.phase])
+        return sourceParagraphs.indexOf(a.after_text) - sourceParagraphs.indexOf(b.after_text)
+      })
+      return { ...part, image_slots: orderedSlots, illustration_refs: references }
     }),
   }
 }

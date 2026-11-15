@@ -92,6 +92,9 @@ jobs:
           VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
         run: npm run build
 
+      - name: Smoke chronological 30-series browser including RU/UZ and gallery locks
+        run: npm run smoke:four-season-browser
+
       - name: Verify published Story 2 is present in production bundle
         run: npm run check:story2-bundle-open
 

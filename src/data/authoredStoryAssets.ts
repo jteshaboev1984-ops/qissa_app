@@ -125,6 +125,10 @@ const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
   ])
 
 const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED.webp',
+  'seven_roads_s2e1_startled_birds_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e1_startled_birds_02_APPROVED.webp',
   'seven_roads_s2e3_farid_gate_arrest_01_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e3_farid_gate_arrest_01_APPROVED.webp',
   'seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED':
