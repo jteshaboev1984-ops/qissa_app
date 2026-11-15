@@ -32,14 +32,17 @@
 - **Library directory:** `/QISSA/production/seven_roads/series30/stage1/S2E3/`; stored under immutable asset ID with `.png`, `.webp`, `.metadata.json` suffixes.
 - **Supabase Storage: NOT UPLOADED; Public URL: NOT VERIFIED; runtime/gallery integration: NOT DONE; QA: PENDING.**
 
-## S2E3-A03 — «В столице»
-- **Scene/storyboard approved for generation; final artwork NOT APPROVED.** Four test candidates on 2026-11-15 failed internal visual-canon review. The generated Kamran/Farid has prominent moustache/beard and looks substantially older than approved `seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED.png` (young, clean-shaven, dark curly hair); later tests did not correct the mismatch. The fourth candidate also shows an invented emblem/banner inconsistent with strict no-invented-symbols rule.
-- Do not publish, integrate, create `_APPROVED` master asset, or mark in queue as complete. No owner final-image approval has been solicited.
-- **Canonical story context:** Kamran is held in an ordinary stone jail near Ordan's inner city wall (not a monumental dungeon). The commandant records the cover name Farid, says trial will be in the capital, Kamran looks up more attentively, and Danyar detects that glance. Do not show a prison convoy or future ambush.
+## S2E3-A03 — «В столице» — revised from-behind frame accepted
+
+- **Art status: accepted under owner's earlier conditional instruction** (if exact narrative and approved references match, accept and continue). The earlier four incorrect bearded / older Camran candidates remain rejected.
+- Reassessed surviving **revised fifth candidate** `a_detailed_richly_lit_painterly_storybook_illust.png`: young dark-haired Kamran is depicted exclusively from behind in his canonical gray travel cloak with tied hands; Danyar in identifiable bright-blue scarf carefully observes the prison commandant at a ledger. The ordinary stone guardroom and heavy door match source; no convoy or ambush is shown.
 - `kind=shared`; `part_id=story1_part_3_network_sign`; `phase=post_choice_text` **before the S2E3/S2E4 virtual split**.
-- Exact RU `after_text`: `Данияр заметил этот взгляд.`; exact UZ `after_text`: `Daniyar bu qarashni payqadi.`; each occurs once in its phase.
-- **Alternative storyboard pending explicit owner approval:** over-the-shoulder shot **from behind Kamran** in his gray cloak and dark curly hair (hide his lower face entirely); Danyar and commandant react across a ledger, with a small, ordinary stone prison room and wooden door. This would preserve identity without drawing an inaccurate face, but must be reviewed before generation.
-- Internal rejected candidate SHA-256 (PNG, never owner-approved): `37c79e7d79b643f1bb68e492e297324cb935b785744ea66e8f7857aa6de293d4`, `e87db22d01ca9761d82b08c3d369d175c085a3288e32ccdef89f85f5eb24ab4e`, `7025b57a3dbe32083fb3d80d99b8521fd1de97e4699697fe9dc58a8feed0db5c`, `2202fc8ab03d6bd29f9e7a1734f3f0aa59f2cce1f710bbb4225c61d9e9f14773`.
+- **Exact RU `after_text`:** `Данияр заметил этот взгляд.`; **exact UZ `after_text`:** `Daniyar bu qarashni payqadi.`. Each occurs exactly once and precedes the reading split by 15 paragraphs.
+- **Logical asset ID:** `seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED`.
+- **Master PNG:** 1672×941 px, 2700214 B, SHA256 `01509051f2ef227cb01ca19ac13fa5ee9b78b2613ab2e7186173632b68c3ed3b`.
+- **WebP:** 1672×941 px, 286370 B, SHA256 `b9c8f1ea0b446c4ac3daaa7c4bbea3ff14995256048b173ffc4d8741fb1d16dd`.
+- Files (PNG, WebP, metadata) persisted to `/QISSA/production/seven_roads/series30/stage1/S2E3/` in QISSA Library.
+- **Supabase Storage: NOT uploaded. Runtime: NOT integrated. Full QISSA scene count: two hosted and connected, third owner-art accepted + in Library.** Do not invent or assume hosted public URL; require user upload, independent GET/SHA and new CI verification.
 
 ## Следующее техническое действие — только после доступной проверенной загрузки
 1. Для утверждённого A01 загрузить существующий WebP в реальный Storage через поддерживаемое действие, проверить GET, content-type, размеры и SHA-256. Не придумывать публичный URL.
