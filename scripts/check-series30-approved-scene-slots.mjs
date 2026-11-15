@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 5)
+assert.equal(series30ApprovedScenes.length, 6)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -55,7 +55,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
     key: 'waited',
-    expected: { 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2 },
+    expected: { 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2 },
   },
 ]
 
@@ -209,9 +209,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 10)
-console.log('[series30-art] PASS: 5 owner-approved assets, 10 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E3 x3 / S4E2 x2), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 12)
+console.log('[series30-art] PASS: 6 owner-approved assets, 12 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E3 x3 / S4E2 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
