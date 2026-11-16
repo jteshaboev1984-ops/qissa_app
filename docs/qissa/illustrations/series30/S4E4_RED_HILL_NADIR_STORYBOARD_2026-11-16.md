@@ -47,3 +47,9 @@
 
 - ImageGen ignored the tightly scoped two wooden tokens and Nadyr's water buckets scene, returning instead S4E3 prison wagon/road fork with invented decorative signpost and guards. **REJECTED**; no asset or status changed. S4E4 Stage1 **0/2**, Stage2 still 2 planned. Do not use this image, no Storage/upload/runtime.
 - Source and anchor details above remain unchanged; original `seven_roads_s2_story4_nadir_contact_01_APPROVED` still preserved. On retry use a clean visual context focused only on hands with wooden tokens (twin tower silhouette, no invented heraldry) and two buckets at Hamid's courtyard.
+
+## S4E4-A01 — две новые генерации REJECTED (2026-11-16)
+
+- После успешной художественной приёмки S4E3 и отдельного поручения **только** о двух деревянных жетонах, обе новые попытки ImageGen ошибочно воспроизвели Данияра, закрытую тюремную повозку и дорогу S4E3. Вторая добавила неканоничный деревянный дорожный указатель с символом трёх столбов. **Обе REJECTED.**
+- Ни в одном кадре нет основной сцены S4E4: рук Надира и незнакомца, деревянных жетонов с двумя башнями и стоящих рядом двух ведер. Не приписывать кадры S4E4, не загружать в Storage и не интегрировать.
+- С учётом предыдущего аналогичного сбоя уже **три** неудачные генерации A01. Следующая попытка должна быть в действительно отдельном, не наследующем предыдущие кадры контексте либо с другой разрешённой художественной процедурой; только крупный план рук и жетонов, без конвоя, стражников, лошадей, тюремной повозки и дорожных указателей. Исходные точные RU/UZ якоря и утверждённая квота без изменений. **S4E4-A01 0/1, S4E4-A02 0/1, всего Stage1 S4E4 0/2.**

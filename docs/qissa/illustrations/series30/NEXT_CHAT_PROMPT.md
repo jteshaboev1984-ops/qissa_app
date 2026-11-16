@@ -1,3 +1,9 @@
+## 2026-11-16 further S4E4 A01 blocker + verified S4E3 art checkpoint
+
+- S4E3-A01 `seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.webp` **361280 bytes**, sha256 `f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7`, PNG master 1672x941 in Library `/QISSA/production/seven_roads/series30/stage1/S4E3/`. Stage1 ART accepted 1/1, **Storage still pending**; upload only final WebP before independent public SHA and RU/UZ reader wiring. GitHub CI #43872352025 Seven Roads SUCCESS, #43872352020 Tier A SUCCESS on art-only documentation checkpoint (not new asset runtime).
+- S4E4-A01 **three total misgenerated candidates REJECTED**, two recent attempts repeated S4E3 Danyar/wagon/fork rather than two wooden tokens and two buckets, second invented three-pillar sign. No accepted S4E4 art, S4E4 Stage1 0/2. Storyboard `docs/qissa/illustrations/series30/S4E4_RED_HILL_NADIR_STORYBOARD_2026-11-16.md` updated. Do not repeatedly retry this same generation context; use truly isolated art generation and inspect actual RU/UZ, approved tokens/people before acceptance.
+- Total Stage1 20/29 artistic accepted, 19/29 fully integrated. Never merge/deploy/alter authored stories, choices or progress.
+
 # QISSA checkpoint 2026-11-16 — S4E3-A01 now accepted, Storage pending
 
 - PR #334 Draft branch `qissa/four-seasons-chronological-runtime-20261112`. Recheck actual HEAD and CI. Stage1 **20/29 artistically accepted**, **19/29 Storage SHA verified + RU/UZ reader fully integrated**. Stage2 still 19, cover 1, four seasons 5/4/11/10.
