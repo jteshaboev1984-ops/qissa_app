@@ -64,3 +64,11 @@
 - **REJECTED candidate #3**: генератор снова изобразил лесной эпизод S2E4 с четырьмя всадниками, включая Данияра на сером коне. Это не Темур в городском караванном дворе; не принять и не регистрировать как ассет.
 - Canva для сцены S3E3 ранее сообщила `quota_exceeded`; Gamma для отдельного кадра вернула **HTTP 402 Insufficient credits** (на момент ответа у workspace 68 кредитов, но генерация не разрешена). Исполнение отложено только для этого одного кадра, не для проекта в целом. Не вводить пользователя в заблуждение о наличии A02.
 - Следующее художественное действие: изолированная генерация после устранения контекстного смешения / сброса контекста визуального генератора с точным storyboard выше. Сохранять как APPROVED только новое изображение Темура с поясом, одной саблей в ножнах, внутри городского караванного двора Араса, до выбора расследования. Принятый A01 и все более ранние файлы не менять.
+
+## S3E3-A01 Storage verification and runtime wiring — 2026-11-16
+
+- Uploaded `seven_roads_s3e3_morning_alarm_window_01_APPROVED.webp` found in Supabase `story-images/seven-roads/season2_tier_a_v2/`; size **249700**, MIME **image/webp**.
+- Independent CI **Season 2 Tier A Slot Check #43824224155** verified public GET/MIME/length/SHA-256 `60ce0110b06f70885e7ab8c2e0e3e744ecea4a19b0517c8d955a593b94a91271`; all **12/12** approved WebPs matched. No remote file missing.
+- Added `SERIES30-S3E3-A01` to `src/data/series30ApprovedSceneSlots.ts` and URL to `src/data/authoredStoryAssets.ts`. RU anchor `Люди двигались в сторону центра города.`; UZ `Odamlar shahar markazi tomon ketayotgandi.`; in `story_text` of authored `story2_part_5_first_investigation`, reader episode **S3E3** before previously approved wax discovery frame.
+- Added RU/UZ reader/gallery regression for correct image order and exclusion from S3E4. **Runtime CI/browser result pending** for new commit, do not claim success prematurely.
+- S3E3-A02 remains **NOT APPROVED**; no substitutions or duplicate accepted art. Source literary RU/UZ JSON, choices and progress remain unchanged, PR Draft, no merge/deploy.

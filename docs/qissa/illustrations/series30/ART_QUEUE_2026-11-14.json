@@ -505,7 +505,7 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_partial_art_accepted_storage_pending",
+      "artwork_acceptance": "stage_1_partial_runtime_wired_ci_pending",
       "asset_ids": [
         "seven_roads_s3e3_morning_alarm_window_01_APPROVED"
       ],
@@ -524,12 +524,18 @@
           "master_sha256": "f7a9db4557d5522f4772ce2ed5968ddda5b5c8738cb81ab2215a76b57224e3f6",
           "webp_sha256": "60ce0110b06f70885e7ab8c2e0e3e744ecea4a19b0517c8d955a593b94a91271",
           "webp_bytes": 249700,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "visual_and_literary_passed_storage_runtime_pending"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
+          "qa_status": "pending_reader_gallery_browser_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e3_morning_alarm_window_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e3_morning_alarm_window_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_ci_run_43824224155",
+          "qa_ci_runs": {
+            "remote_webp_verification": 43824224155
+          }
         }
       ],
-      "notes": "S3E3-A01 accepted under user's standing conditional approval: canonical 12-year-old Temur in turquoise-blue clothing observes Aras citizens heading to center from his home window in early morning before learning of robbery; no investigation spoilers. PNG/WebP/SHA metadata in QISSA Library, WebP size 249700 and SHA256 60ce0110b06f70885e7ab8c2e0e3e744ecea4a19b0517c8d955a593b94a91271. Await Supabase upload and CI verification before runtime. S3E3-A02 remains not accepted: two failed ImageGen candidates (wrong tracks/camp with Samira, then reused S2E4 father map). Do not adopt. Original accepted treasury wax clue image remains unchanged."
+      "notes": "S3E3 stage1 A01 visually accepted, master PNG/WebP/SHA in QISSA Library; uploaded 2026-11-16 to story-images/seven-roads/season2_tier_a_v2, 249700 bytes, image/webp. Remote public HTTP/MIME/bytes/SHA256 match in CI #43824224155 (12/12). Additive RU/UZ scene slot linked to story2_part_5_first_investigation after unique alarm-window anchor; runtime/gallery/browser QA pending. Stage1 A02 not accepted due to three off-scene image generations: Samira campsite/hoofprints, reused Kamran father-map, reused S2E4 Danyar/oak riders. No source literary JSON, choices, old images or persisted progress altered. PR Draft/no merge/deploy."
     },
     {
       "season": 3,
