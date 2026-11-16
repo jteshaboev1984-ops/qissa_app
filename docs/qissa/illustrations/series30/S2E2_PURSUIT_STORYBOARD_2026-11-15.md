@@ -56,3 +56,10 @@
 - GitHub Actions **Seven Roads CI #43789957810**: публичный HTTP GET/MIME/bytes/SHA256 совпали, полный комплект **9/9**.
 - Добавлены `SERIES30-S2E2-A01` после RU `Тёмного коня нигде не было.` / UZ `Qoramtir ot ko‘rinmasdi.`, URL в asset registry и RU/UZ regression-тест галереи: спасение → погоня → отсутствие тёмного коня.
 - Проверки читателя, CI и браузера на новом HEAD выполняются. Исходные литературные JSON/выборы/ключи прогресса и старые изображения не изменялись. PR остаётся Draft, без merge и публикации.
+
+## Итог технической приёмки — 2026-11-16
+
+- Seven Roads CI #43790217518 — SUCCESS: check:reading-series-30, check:four-seasons, typecheck, build, smoke:four-season-browser.
+- Season 2 Tier A Slot Check #43790217561 — SUCCESS. RU/UZ gallery confirms rescue → pursuit → missing dark horse.
+- 9/9 public WebPs verified: HTTP/MIME/bytes/SHA256, including S2E2-A01; nine accepted new assets / 18 bilingual anchors.
+- S2E2 stage1 1/1 complete. S2E2 stage2 still requires one additional scene. PR remains Draft, no merge/deploy.
