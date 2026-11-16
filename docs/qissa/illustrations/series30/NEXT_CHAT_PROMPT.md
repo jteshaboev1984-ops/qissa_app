@@ -1,3 +1,21 @@
+# QISSA current 30-series illustration handoff — 2026-11-16
+
+**HEAD before this change:** `c158247ec613d3d2dcac9753eb33818a4d9d6b5d`, branch `qissa/four-seasons-chronological-runtime-20261112`, PR #334 Draft, repo `jteshaboev1984-ops/qissa_app`. Always re-read actual HEAD, CI and ART_QUEUE.
+
+**Approved scope unchanged:** seasons 5/4/11/10 = 30, Stage 1 **29 new story illustrations**, Stage 2 **19**, plus S4 cover **1**.
+
+**Current Stage 1:** **18/29 artistically approved**, **17/29** verified uploaded and wired RU+UZ; **1 newly approved S3E11-A02** pending Storage. S3E11-A01 `seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.webp` uploaded and integrated, CI Seven Roads #43853872463 and Tier A #43853872542 SUCCESS, **17/17 remote WebP**, **34/34 RU/UZ anchors**, gallery and browser smoke.
+
+**User upload next:** `seven_roads_s3e11_bulut_apple_evening_02_APPROVED.webp` (214508 bytes, SHA256 `b7e9000bc9a9ac5febed08ca1e93a352b8bf70bc8f5c39ebab6fac139e9056e2`) from QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E11/` to Supabase bucket `story-images` path `seven-roads/season2_tier_a_v2/`. PNG 1584×891, WebP, SHA metadata and raw file are available in Library. After upload verify storage.objects and independent public remote SHA CI **before** adding runtime A02.
+
+**S3E11-A02 anchor:** authored `seven_roads_dve_bashni` original `story3_part_3_three_pillars`, `phase=post_choice_text`, RU `Булут потянулся к яблоку в её руке.` / UZ `Bulut uning qo‘lidagi olmaga cho‘zildi.`, virtual episode S3E11. Add slot only via `src/data/series30ApprovedSceneSlots.ts` + URL registry `src/data/authoredStoryAssets.ts`. Gallery expected sequence **S3E11 A01 guard enters → existing two drawings map → S3E11 A02 apple**; verify RU/UZ, locks, no spoilers, typecheck/build/browser CI. Prior A02 ImageGen candidates (gate route, Nadir chase, water trough) were all REJECTED.
+
+**Next new Stage 1 scene** after S3E11: S4E1-A01 `Утренний выезд в Ордан`, prepared `docs/qissa/illustrations/series30/S4E1_ROAD_TO_ORDAN_STORYBOARD_2026-11-16.md`. Temur on Shamol nearly black white forehead star teal saddlecloth, Samira on Bulut grey dapple no star burgundy saddlecloth, one adult senior guard mounted behind, dawn on wide road leaving Aras. Previous wrong candidate repeated S3E10 water trough and was REJECTED. Stage1 S4E1 0/1. Further queue S4E3, S4E4, S4E5, S4E6, S4E8, S4E9, S4E10. Do not revise 29+19+1.
+
+**Never** change authored RU/UZ literature, choices, progress, existing APPROVED assets; don't merge PR or deploy. All art before runtime: exact bilingual literary QA → actual approved reference QA → single image → self reject wrong composition → PNG/WebP/SHA/QISSA Library → confirmed Supabase upload → independent SHA verification → additive reader overlay → focused CI/gallery/browser.
+
+## Earlier handoff history
+
 ## Additional checkpoint 2026-11-16 — S4E1-A01 rejected
 
 - `docs/qissa/illustrations/series30/S4E1_ROAD_TO_ORDAN_STORYBOARD_2026-11-16.md` created and source RU/UZ verified. ImageGen candidate #1 incorrectly repeated **S3E10 guard and children at water trough**; REJECTED, not in Library or runtime. S4E1 0/1 Stage1, 1 more Stage2 planned. For future generation use completely isolated prompt and APPROVED horses sheet; do not reuse stale water-trough composition.
