@@ -400,9 +400,10 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 4,
-      "artwork_acceptance": "stage_1_partial_runtime_wired_ci_pending",
+      "artwork_acceptance": "stage_1_art_accepted_A01_integrated_A02_storage_pending",
       "asset_ids": [
-        "seven_roads_s2e4_missing_kamran_oak_01_APPROVED"
+        "seven_roads_s2e4_missing_kamran_oak_01_APPROVED",
+        "seven_roads_s2e4_western_road_map_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -421,16 +422,36 @@
           "webp_bytes": 283010,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
           "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
-          "qa_status": "pending_runtime_gallery_browser_CI",
+          "qa_status": "RU_UZ_gallery_virtual_split_and_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e4_missing_kamran_oak_01_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_missing_kamran_oak_01_APPROVED.webp",
           "remote_sha256_verification": "passed_ci_run_43804819808",
           "qa_ci_runs": {
-            "remote_webp_verification": 43804819808
+            "remote_webp_verification": 43804819808,
+            "seven_roads_ci": 43805029277,
+            "season2_tier_a_ci": 43805029409
           }
+        },
+        {
+          "candidate_id": "S2E4-A02",
+          "asset_id": "seven_roads_s2e4_western_road_map_02_APPROVED",
+          "kind": "shared",
+          "phase": "post_choice_text",
+          "ru_after_text": "Потом провёл пальцем по дороге на запад.",
+          "uz_after_text": "Keyin barmog‘ini g‘arbga ketadigan yo‘l bo‘ylab yurgizdi.",
+          "acceptance": "owner_conditional_approved_after_literary_visual_and_character_reference_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E4/seven_roads_s2e4_western_road_map_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E4/seven_roads_s2e4_western_road_map_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S2E4/seven_roads_s2e4_western_road_map_02_APPROVED.metadata.json",
+          "master_sha256": "b2d4d7271972726357f01b4d6098c53ed45f9cfc62b6d2b6ef3e35d30daf47ea",
+          "webp_sha256": "fc44e2f2d002bf08db2d063ed804c3135392fef3e9e702e4ea7514f15131dcc7",
+          "webp_bytes": 192494,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "art_accepted_storage_and_runtime_QA_pending"
         }
       ],
-      "notes": "S2E4-A01 finally accepted: exactly four mounted riders at oak clearing at dusk, without Kamran, fire or settlement structures. PNG/WebP/sha256 in QISSA Library. Await Supabase upload before runtime. S2E4-A02 not accepted yet; previous wrong generated image mixed Daniyar and children under oak and is rejected. On 2026-11-16 Storage object confirmed 283010 bytes image/webp; remote SHA256/GET verified by Seven Roads CI #43804819808, complete 10/10 collection. Runtime slot added via post-choice RU/UZ split-aware overlay; gallery/browser CI pending. S2E4-A02 stage 1 still not accepted."
+      "notes": "S2E4-A01 finally accepted: exactly four mounted riders at oak clearing at dusk, without Kamran, fire or settlement structures. PNG/WebP/sha256 in QISSA Library. Await Supabase upload before runtime. S2E4-A02 not accepted yet; previous wrong generated image mixed Daniyar and children under oak and is rejected. On 2026-11-16 Storage object confirmed 283010 bytes image/webp; remote SHA256/GET verified by Seven Roads CI #43804819808, complete 10/10 collection. Runtime slot added via post-choice RU/UZ split-aware overlay; gallery/browser CI pending. S2E4-A02 stage 1 still not accepted. CI #43805029277 and #43805029409 PASS S2E4-A01 (10/10 Storage SHA, 20 RU/UZ anchors, four-series reader, gallery locked/unlocked, typecheck, build, browser). S2E4-A02 accepted after inspecting correct canonical father at map and 2 adult companions, files PNG/WebP/SHA in QISSA Library; Storage upload pending, do not wire A02 prematurely. Stage1 visual 2/2 accepted; stage2 2 more."
     },
     {
       "season": 3,
