@@ -784,7 +784,7 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_partial_art_accepted_storage_pending",
+      "artwork_acceptance": "stage_1_partial_runtime_wired_ci_pending",
       "asset_ids": [
         "seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED"
       ],
@@ -804,12 +804,19 @@
           "master_sha256": "88aa705ecbc231493aae37707b8a1b4d1c6a6b21ba542f4d19852fa42d6eb084",
           "webp_sha256": "1da88ca11053d3847e697a8863b83a1abdfcbcb6af3afbc9dbeb8f94a72c86a7",
           "webp_bytes": 216852,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "visual_literary_canon_passed_storage_runtime_pending"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
+          "qa_status": "pending_reader_gallery_browser_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_ci_run_43853456629",
+          "qa_ci_runs": {
+            "remote_webp_verification": 43853456629,
+            "second_run": 43853456607
+          }
         }
       ],
-      "notes": "2026-11-16: S3E11-A01 accepted under standing owner instruction after RU/UZ exact anchors, guardroom interior and character/costume canon QA. Five figures: 12-year-old Temur and Samira, local captain and younger guard inside, arriving SENIOR Aras guard at doorway holding folded blank paper, sketches/three pillars not shown. All front belt buckles, side sheathed sabers, no wax seal, city fountain, courier, spoilers, new symbols. One earlier outdoor wax-letter image rejected. Correct standalone result cropped only 44 px on both sides and 50 px bottom to remove faint border pseudo-lettering (final 1584×891 16:9). 216852-byte WebP SHA256 1da88ca..., PNG master SHA256 88aa705e..., plus raw original and metadata in QISSA Library. Not uploaded to Storage, not wired to reader. S3E11-A02 still not accepted; previous two candidates wrong. No source literary changes or merge/deploy. Additional S3E11-A02 ImageGen candidate 2026-11-16 REJECTED: incorrectly repeated S3E10 daytime guard/watering trough, no evening courtyard, apple, gray Bulut, dark Shamol or Temur sitting on low wall. No image accepted/stored/registered. Earlier A02 #1 and #2 also rejected."
+      "notes": "2026-11-16: S3E11-A01 accepted under standing owner instruction after RU/UZ exact anchors, guardroom interior and character/costume canon QA. Five figures: 12-year-old Temur and Samira, local captain and younger guard inside, arriving SENIOR Aras guard at doorway holding folded blank paper, sketches/three pillars not shown. All front belt buckles, side sheathed sabers, no wax seal, city fountain, courier, spoilers, new symbols. One earlier outdoor wax-letter image rejected. Correct standalone result cropped only 44 px on both sides and 50 px bottom to remove faint border pseudo-lettering (final 1584×891 16:9). 216852-byte WebP SHA256 1da88ca..., PNG master SHA256 88aa705e..., plus raw original and metadata in QISSA Library. Not uploaded to Storage, not wired to reader. S3E11-A02 still not accepted; previous two candidates wrong. No source literary changes or merge/deploy. Additional S3E11-A02 ImageGen candidate 2026-11-16 REJECTED: incorrectly repeated S3E10 daytime guard/watering trough, no evening courtyard, apple, gray Bulut, dark Shamol or Temur sitting on low wall. No image accepted/stored/registered. Earlier A02 #1 and #2 also rejected. Uploaded in Supabase on 2026-11-16T10:56:01Z 216852 bytes image/webp; Seven Roads CI #43853456629 and Tier A #43853456607 SUCCESS public GET/MIME/length/SHA256 17/17. RU/UZ additive overlay A01 and gallery order guard arrival → existing unfolded drawing wired in unpublished PR, new reader/browser CI still pending. A02 not accepted; stage1 artwork 1/2."
     },
     {
       "season": 4,

@@ -173,6 +173,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     },
   },
   {
+    story_id: 'seven_roads_dve_bashni',
+    part_id: 'story3_part_3_three_pillars',
+    slot_id: 'SERIES30-S3E11-A01',
+    anchor_key: 'series30_s3e11_senior_guard_arrival',
+    asset_id: 'seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Через некоторое время пришёл старший стражник из Араса.',
+      uz: 'Birozdan keyin Arasdan kelgan katta qo‘riqchi kirdi.',
+    },
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A03',

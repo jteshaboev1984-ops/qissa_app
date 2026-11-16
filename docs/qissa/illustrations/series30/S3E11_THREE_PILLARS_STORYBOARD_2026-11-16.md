@@ -60,3 +60,11 @@
 - ImageGen candidate #3 **REJECTED**: повтор дневной S3E10 с молодым стражником у каменного водопоя. Нет вечернего двора Самиры, яблока, светло-серого Булута, почти чёрного Шамола, сидящего Темура; **не использовать**.
 - Корректные точные якоря остаются RU `Булут потянулся к яблоку в её руке.` / UZ `Bulut uning qo‘lidagi olmaga cho‘zildi.` после общего слияния двух вариантов выбора, `story3_part_3_three_pillars/post_choice_text`.
 - S3E11 Stage1 **1/2 художественно принято** (только A01), **0/2 технически интегрировано** до загрузки A01. Три A02 кандидата неверны; не подменять кадр другим сюжетом.
+
+## Техническое подключение S3E11-A01 — 2026-11-16
+
+- Supabase Storage `story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.webp` подтверждён: **216852 байт**, `image/webp`.
+- GitHub Actions Seven Roads **#43853456629** и Season 2 Tier A **#43853456607** SUCCESS: public HTTP GET, MIME, bytes, SHA256 `1da88ca11053d3847e697a8863b83a1abdfcbcb6af3afbc9dbeb8f94a72c86a7`, **17/17** файлов.
+- Добавлен additive slot `SERIES30-S3E11-A01` к `story3_part_3_three_pillars`, `story_text`, после RU `Через некоторое время пришёл старший стражник из Араса.` / UZ `Birozdan keyin Arasdan kelgan katta qo‘riqchi kirdi.`, читательская **S3E11**. Asset URL добавлен в `authoredStoryAssets.ts`.
+- Regression дополнен проверкой галереи S3E11: **прибывший стражник с закрытым листом → ранее утверждённая карта двух рисунков**, без переноса в S3E10. Новая CI/browser на изменённом коммите ещё не подтверждена. S3E11-A02 остаётся непринятым.
+- Старые изображения, литературные RU/UZ JSON, выборы, story IDs и сохранённый прогресс не трогать. PR Draft, нет merge/deploy.
