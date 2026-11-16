@@ -1006,10 +1006,31 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 1,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": "2026-11-16 S4E3 road fork storyboard grounded in RU/UZ authored source, verified unique anchor and virtual split. Planned A01 only: heavy closed two-horse prison wagon turns from Aras main road onto old patrol road, accompanied by Danyar on gray horse and adult mounted guards, before any ambush. Existing approved false notice and wagon rear-door lock must be preserved; no new art accepted, Storage/runtime not touched. See docs/qissa/illustrations/series30/S4E3_FALSE_NOTICE_ROAD_FORK_STORYBOARD_2026-11-16.md. 2026-11-16 S4E3-A01 ImageGen candidate #1 REVIEW, NOT APPROVED: correct road fork, closed two-horse prison wagon and Danyar (blue scarf, gray horse), but ~7 guards instead of six and brown uniforms instead of approved blue official cloaks. PNG 1672x941 SHA256 04148be4a7ff2eff1d3ea104693f88301450bb1cf20905f3eca2dafcafa22174 in QISSA Library /QISSA/production/seven_roads/series30/review/S4E3/seven_roads_s4e3_prison_wagon_road_fork_REVIEW_v1.png, no WebP/Storage/runtime. Candidate #2 attempted uniform/count repair but returned S4E1 three riders and unhelmeted guard, REJECTED. Stage1 S4E3 still 0/1, preserve existing approved false Aras notice and wagon lock scenes. 2026-11-16 S4E3-A01 candidate REVIEW_v2 corrects blue-and-gold uniforms, Danyar blue scarf/gray horse, closed wagon and fork but still has 7 guards vs exactly 6 planned. PNG 1672x941 SHA256 7b3f3278224bc7cfa1a9feb62f4de2303dcbb7d87adfe596651138da7806e6cb in QISSA Library /QISSA/production/seven_roads/series30/review/S4E3/seven_roads_s4e3_prison_wagon_road_fork_REVIEW_v2.png, no WebP/Storage/runtime. Subsequent 2 ImageGen edit attempts REJECTED: first returned a scene with symbolic road signs, lost Danyar identity and convoy count; second returned brown-horse armored knight, visible prisoner, wrong guard count/road geometry. Do not reuse either. Stage1 still 0/1 pending proper visual correction."
+      "artwork_acceptance": "stage_1_art_accepted_storage_pending",
+      "asset_ids": [
+        "seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S4E3-A01",
+          "asset_id": "seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED",
+          "kind": "shared",
+          "phase": "story_text",
+          "ru_after_text": "На развилке повозка оставила главную дорогу на Арас и свернула на старую патрульную.",
+          "uz_after_text": "Ayrilishda arava Arasga boradigan asosiy yo‘ldan chiqib, eski patrul yo‘liga burildi.",
+          "acceptance": "standing_owner_approval_after_exact_story_and_visual_canon_QA_2026_11_16",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E3/seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E3/seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E3/seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.metadata.json",
+          "master_sha256": "749d9596566972e6d8efa224769b4e6d49979d6cb3599c55bd6caaf307de7346",
+          "webp_sha256": "f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7",
+          "webp_bytes": 361280,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "literary_visual_passed_storage_runtime_pending"
+        }
+      ],
+      "notes": "2026-11-16 S4E3 road fork storyboard grounded in RU/UZ authored source, verified unique anchor and virtual split. Planned A01 only: heavy closed two-horse prison wagon turns from Aras main road onto old patrol road, accompanied by Danyar on gray horse and adult mounted guards, before any ambush. Existing approved false notice and wagon rear-door lock must be preserved; no new art accepted, Storage/runtime not touched. See docs/qissa/illustrations/series30/S4E3_FALSE_NOTICE_ROAD_FORK_STORYBOARD_2026-11-16.md. 2026-11-16 S4E3-A01 ImageGen candidate #1 REVIEW, NOT APPROVED: correct road fork, closed two-horse prison wagon and Danyar (blue scarf, gray horse), but ~7 guards instead of six and brown uniforms instead of approved blue official cloaks. PNG 1672x941 SHA256 04148be4a7ff2eff1d3ea104693f88301450bb1cf20905f3eca2dafcafa22174 in QISSA Library /QISSA/production/seven_roads/series30/review/S4E3/seven_roads_s4e3_prison_wagon_road_fork_REVIEW_v1.png, no WebP/Storage/runtime. Candidate #2 attempted uniform/count repair but returned S4E1 three riders and unhelmeted guard, REJECTED. Stage1 S4E3 still 0/1, preserve existing approved false Aras notice and wagon lock scenes. 2026-11-16 S4E3-A01 candidate REVIEW_v2 corrects blue-and-gold uniforms, Danyar blue scarf/gray horse, closed wagon and fork but still has 7 guards vs exactly 6 planned. PNG 1672x941 SHA256 7b3f3278224bc7cfa1a9feb62f4de2303dcbb7d87adfe596651138da7806e6cb in QISSA Library /QISSA/production/seven_roads/series30/review/S4E3/seven_roads_s4e3_prison_wagon_road_fork_REVIEW_v2.png, no WebP/Storage/runtime. Subsequent 2 ImageGen edit attempts REJECTED: first returned a scene with symbolic road signs, lost Danyar identity and convoy count; second returned brown-horse armored knight, visible prisoner, wrong guard count/road geometry. Do not reuse either. Stage1 still 0/1 pending proper visual correction. 2026-11-16 new S4E3-A01 edit based directly on REVIEW_v2 removed precisely one partially visible blue guard rider behind left wagon edge, preserving all other scene details. FINAL exactly SIX mounted blue-and-gold royal guards + Danyar on gray dapple horse with dark hair, short beard and bright blue scarf, wagon driver, exactly two draft horses and sealed closed prison wagon turning onto old patrol road, no visible prisoner, text or future ambush. Under standing owner instruction accepted after visual/text canon QA. New PNG 1672×941, sha256 749d9596566972e6d8efa224769b4e6d49979d6cb3599c55bd6caaf307de7346, optimized WebP 361280 bytes sha256 f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7, metadata saved in QISSA Library /QISSA/production/seven_roads/series30/stage1/S4E3/. Earlier REVIEW_v1/v2 preserved but NOT approved; wrong rerolls remain rejected. Await user upload to Supabase before remote SHA check and bilingual reader. Stage1 S4E3 artistic 1/1 accepted, runtime 0/1."
     },
     {
       "season": 4,

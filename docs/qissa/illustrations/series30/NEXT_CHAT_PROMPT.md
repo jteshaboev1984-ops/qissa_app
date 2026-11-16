@@ -1,3 +1,12 @@
+# QISSA checkpoint 2026-11-16 — S4E3-A01 now accepted, Storage pending
+
+- PR #334 Draft branch `qissa/four-seasons-chronological-runtime-20261112`. Recheck actual HEAD and CI. Stage1 **20/29 artistically accepted**, **19/29 Storage SHA verified + RU/UZ reader fully integrated**. Stage2 still 19, cover 1, four seasons 5/4/11/10.
+- **S4E3-A01 owner-standing approval after corrected QA:** `seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED`, WebP **361280 bytes**, SHA256 `f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7`, master PNG 1672×941 SHA256 `749d9596566972e6d8efa224769b4e6d49979d6cb3599c55bd6caaf307de7346`; all files in QISSA Library `/QISSA/production/seven_roads/series30/stage1/S4E3/`. Scene: Danyar on gray horse, blue scarf; exactly 6 blue/gold mounted guards, 2 draft horses, wagon driver, closed prison wagon turning uphill onto old patrol road. Earlier REVIEWs wrong (7 guards) and other candidates REJECTED. Upload ONLY final `seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.webp` to Supabase `story-images/seven-roads/season2_tier_a_v2/`. File not yet uploaded; do not add reader URL until Storage verification. RU unique `На развилке повозка оставила главную дорогу на Арас и свернула на старую патрульную.`; UZ `Ayrilishda arava Arasga boradigan asosiy yo‘ldan chiqib, eski patrul yo‘liga burildi.` source part `story4_part_2_nadir_red_hill_clue/story_text`, virtual S4E3.
+- Next art **S4E4-A01** two small wooden network tokens being checked in Hamid's yard, **S4E4-A02** Nadir hangs corked flask with concealed note on LEFT REAR hook of Hamid's ordinary wagon. Stage1 S4E4 still **0/2**. Storyboard `docs/qissa/illustrations/series30/S4E4_RED_HILL_NADIR_STORYBOARD_2026-11-16.md`. Previous image generator mistakenly repeated S4E3 prisoner wagon—REJECTED. Use isolated composition; no invented faces/flags/signs.
+- S4E1 and earlier accepted art intact; latest CI Seven Roads #43870781090 and Tier A #43870783394 both SUCCESS. Never modify authored RU/UZ JSON, choices, family progress, other approved images; never merge/deploy/publish without explicit owner approval.
+
+## Previous checkpoints
+
 # QISSA — verified production checkpoint 2026-11-16
 
 - Repo `jteshaboev1984-ops/qissa_app`, Draft PR #334 branch `qissa/four-seasons-chronological-runtime-20261112`. Recheck exact HEAD, CI and queue before writes. Fixed Stage1 29, Stage2 19, fourth season cover 1; 5/4/11/10 30 episodes.
