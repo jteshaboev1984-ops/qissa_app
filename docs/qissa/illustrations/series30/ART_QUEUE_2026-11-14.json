@@ -256,7 +256,7 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_art_accepted_storage_pending",
+      "artwork_acceptance": "stage_1_runtime_wired_ci_pending",
       "asset_ids": [
         "seven_roads_s2e2_missing_dark_horse_01_APPROVED"
       ],
@@ -275,12 +275,18 @@
           "master_sha256": "fca7714d035d3558041cf9c02ac79ac5ac7a7db50dbc187a497a2f857e08de2d",
           "webp_sha256": "9d9ebef90cf3f39ed802aa0ce6e7bb57a0b3472c003c5f071dbd4b6b91cc685e",
           "webp_bytes": 319176,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "visual_and_text_check_passed_storage_and_runtime_QA_pending"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
+          "qa_status": "pending_runtime_gallery_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e2_missing_dark_horse_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e2_missing_dark_horse_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_ci_run_43789957810",
+          "qa_ci_runs": {
+            "remote_webp_verification": 43789957810
+          }
         }
       ],
-      "notes": "S2E2-A01 approved under owner's conditional acceptance rule after scene and exact RU/UZ check. Warehouse setting: narrow grain warehouse passages, drying hides, sacks/workers; Danyar on gray horse + young guard in canonical helmet; no Kamran or missing dark horse, no future choice spoilers. Original PNG + optimized WebP + SHA metadata are stored in QISSA Library; user needs to upload WebP to story-images/seven-roads/season2_tier_a_v2/. Do not wire runtime until public GET/MIME/bytes/SHA256 validated. Previously rejected S2E1-like road conversation attempts stay rejected."
+      "notes": "S2E2-A01 approved under owner's conditional acceptance rule after scene and exact RU/UZ check. Warehouse setting: narrow grain warehouse passages, drying hides, sacks/workers; Danyar on gray horse + young guard in canonical helmet; no Kamran or missing dark horse, no future choice spoilers. Original PNG + optimized WebP + SHA metadata are stored in QISSA Library; user needs to upload WebP to story-images/seven-roads/season2_tier_a_v2/. Do not wire runtime until public GET/MIME/bytes/SHA256 validated. Previously rejected S2E1-like road conversation attempts stay rejected. User uploaded to Supabase 2026-11-16; storage.objects image/webp 319176 bytes. Independent CI #43789957810 confirmed public GET/MIME/size/SHA 9/9. Runtime overlay and registry wired, RU/UZ gallery/browser CI pending. No literary JSON, choice or progress changes."
     },
     {
       "season": 2,

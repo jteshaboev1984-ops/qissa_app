@@ -49,3 +49,10 @@
 - `story_id=seven_roads_korolevskoe_serebro`, `story_version=interactive-v5`, `part_id=story1_part_2_kamran_pursuit`, `phase=story_text`, exact RU `Тёмного коня нигде не было.`, exact UZ `Qoramtir ot ko‘rinmasdi.`
 - Master PNG (1672×941) and WebP 319176 bytes stored at `/QISSA/production/seven_roads/series30/stage1/S2E2/`; WebP SHA256 `9d9ebef90cf3f39ed802aa0ce6e7bb57a0b3472c003c5f071dbd4b6b91cc685e`, PNG SHA256 `fca7714d035d3558041cf9c02ac79ac5ac7a7db50dbc187a497a2f857e08de2d`.
 - **Not yet done:** Supabase Storage upload, remote GET/MIME/byte/SHA check, `series30ApprovedSceneSlots.ts` and `authoredStoryAssets.ts` integration, RU/UZ gallery/browser CI. Literary JSON and existing images untouched. PR remains Draft, no merge or deploy.
+
+## Интеграция после загрузки — 2026-11-16
+
+- Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e2_missing_dark_horse_01_APPROVED.webp`: MIME `image/webp`, 319176 байт.
+- GitHub Actions **Seven Roads CI #43789957810**: публичный HTTP GET/MIME/bytes/SHA256 совпали, полный комплект **9/9**.
+- Добавлены `SERIES30-S2E2-A01` после RU `Тёмного коня нигде не было.` / UZ `Qoramtir ot ko‘rinmasdi.`, URL в asset registry и RU/UZ regression-тест галереи: спасение → погоня → отсутствие тёмного коня.
+- Проверки читателя, CI и браузера на новом HEAD выполняются. Исходные литературные JSON/выборы/ключи прогресса и старые изображения не изменялись. PR остаётся Draft, без merge и публикации.

@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 8)
+assert.equal(series30ApprovedScenes.length, 9)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -53,6 +53,7 @@ const fixtures = [
     expected: {
       'SERIES30-S2E1-A01': 1,
       'SERIES30-S2E1-A02': 1,
+      'SERIES30-S2E2-A01': 2,
       'SERIES30-S2E3-A01': 3,
       'SERIES30-S2E3-A02': 3,
       'SERIES30-S2E3-A03': 3,
@@ -154,6 +155,15 @@ for (const fixture of fixtures) {
     if (fixture.key === 'silver') {
       const s2e1GalleryOrder = galleryBefore[0].items.map((entry) => entry.assetId)
       assert.deepEqual(
+        galleryBefore[1].items.map(item => item.assetId).join('|'),
+        [
+          'seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED',
+          'seven_roads_s2_story1_danyar_pursuit_01_APPROVED',
+          'seven_roads_s2e2_missing_dark_horse_01_APPROVED',
+        ].join('|'),
+        language + ': S2E2 gallery must show rescue, pursuit and missing dark horse in sequence',
+      )
+      assert.deepEqual(
         s2e1GalleryOrder.slice(0, 3).join('|'),
         [
           'seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED',
@@ -221,6 +231,7 @@ for (const fixture of fixtures) {
 for (const scene of series30ApprovedScenes) {
   const match = queue.episodes.find(e =>
     scene.slot_id.startsWith('SERIES30-S2E1-') ? e.season === 2 && e.episode === 1 :
+    scene.slot_id.startsWith('SERIES30-S2E2-') ? e.season === 2 && e.episode === 2 :
     scene.slot_id.startsWith('SERIES30-S2E3-') ? e.season === 2 && e.episode === 3 :
     scene.slot_id.startsWith('SERIES30-S4E2-') ? e.season === 4 && e.episode === 2 : false,
   )
@@ -230,9 +241,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 16)
-console.log('[series30-art] PASS: 8 owner-approved assets, 16 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E3 x3 / S4E2 x3), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 18)
+console.log('[series30-art] PASS: 9 owner-approved assets, 18 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S4E2 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {

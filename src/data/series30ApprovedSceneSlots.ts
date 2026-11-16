@@ -48,6 +48,15 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   },
   {
     story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_2_kamran_pursuit',
+    slot_id: 'SERIES30-S2E2-A01',
+    anchor_key: 'series30_s2e2_missing_dark_horse',
+    asset_id: 'seven_roads_s2e2_missing_dark_horse_01_APPROVED',
+    phase: 'story_text',
+    after_text: { ru: 'Тёмного коня нигде не было.', uz: 'Qoramtir ot ko‘rinmasdi.' },
+  },
+  {
+    story_id: 'seven_roads_korolevskoe_serebro',
     part_id: 'story1_part_3_network_sign',
     slot_id: 'SERIES30-S2E3-A01',
     anchor_key: 'series30_s2e3_farid_gate_arrest',
