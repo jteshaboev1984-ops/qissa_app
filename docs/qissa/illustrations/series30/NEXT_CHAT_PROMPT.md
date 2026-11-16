@@ -1,3 +1,7 @@
+## S4E3 road-fork storyboard ready (2026-11-16)
+
+- New verified storyboard: `docs/qissa/illustrations/series30/S4E3_FALSE_NOTICE_ROAD_FORK_STORYBOARD_2026-11-16.md`. Stage 1 requires ONE new illustration, not yet generated: closed prison wagon turns onto old patrol road, Danyar on gray horse and guards; unique literal RU/UZ anchors in source `story4_part_2_nadir_red_hill_clue/story_text`, before the S4E4 virtual split. Preserve existing approved notice and wagon-door scenes. S4E3 remains 0/1 art accepted.
+
 ## 2026-11-16 latest S4E1 checkpoint — REVIEW and blockers
 
 - S3E11-A02 `seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3` was EXPLICITLY owner accepted: visually near-WHITE Bulut, not gray. 1672×941 PNG SHA `b2345196103b382d92f082d62b7f8761a9c7b4ed5ab84964510fb57ab526f6c8`; WebP **267928 bytes**, SHA `1b982536b64a0289b3ee2cbb6a5ee553aad864a3eac2ae3744366f819435937b`, in QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E11/`; **STORAGE NOT YET UPLOADED, no runtime**. Accepted 18/29, integrated 17/29.
