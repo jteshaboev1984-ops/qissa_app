@@ -161,6 +161,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     },
   },
   {
+    story_id: 'seven_roads_dve_bashni',
+    part_id: 'story3_part_2_courier_route',
+    slot_id: 'SERIES30-S3E10-A02',
+    anchor_key: 'series30_s3e10_young_guard_water_trough',
+    asset_id: 'seven_roads_s3e10_young_guard_water_trough_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'К ним подошёл молодой стражник.',
+      uz: 'Ularning oldiga yosh qo‘riqchi keldi.',
+    },
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A03',

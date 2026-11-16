@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 15)
+assert.equal(series30ApprovedScenes.length, 16)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -69,7 +69,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story3TwoTowers',
     key: 'towers',
-    expected: { 'SERIES30-S3E10-A01': 2 },
+    expected: { 'SERIES30-S3E10-A01': 2, 'SERIES30-S3E10-A02': 2 },
   },
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
@@ -170,6 +170,7 @@ for (const fixture of fixtures) {
         [
           'seven_roads_s2_story3_sarvan_market_01_APPROVED',
           'seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2',
+          'seven_roads_s3e10_young_guard_water_trough_02_APPROVED',
         ].join('|'),
         language + ': S3E10 gallery must show existing Sarvan market before route-study scene',
       )
@@ -325,9 +326,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 30)
-console.log('[series30-art] PASS: 15 owner-approved assets, 30 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x1 / S4E2 x3), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 32)
+console.log('[series30-art] PASS: 16 owner-approved assets, 32 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S4E2 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
