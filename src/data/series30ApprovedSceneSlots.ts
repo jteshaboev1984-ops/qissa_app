@@ -199,6 +199,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
+    slot_id: 'SERIES30-S4E1-A01',
+    anchor_key: 'series30_s4e1_dawn_departure_to_ordan',
+    asset_id: 'seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'На следующее утро Темур и Самира выехали в Ордан.',
+      uz: 'Ertasi tong Temur va Samira Ordan tomon yo‘lga chiqdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A03',
     anchor_key: 'series30_s4e2_farid_rider_belts_glance',
     asset_id: 'seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED',

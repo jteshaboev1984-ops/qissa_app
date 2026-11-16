@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 18)
+assert.equal(series30ApprovedScenes.length, 19)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -74,7 +74,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
     key: 'waited',
-    expected: { 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2 },
+    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2 },
   },
 ]
 
@@ -164,6 +164,18 @@ for (const fixture of fixtures) {
     const galleryBefore = authoredIllustrationDiscovery.buildGalleryEpisodes(
       story, episodes.map(e => e.title), null, episodeForPart,
     )
+    if (fixture.key === 'waited') {
+      const firstSeries = galleryBefore[0].items.map(item => item.assetId)
+      const homecoming = firstSeries.indexOf('seven_roads_s2_story4_homecoming_01_APPROVED')
+      const departure = firstSeries.indexOf('seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED')
+      const pillars = firstSeries.indexOf('seven_roads_s2_story4_three_pillars_01_APPROVED')
+      assert.ok(homecoming >= 0 && departure > homecoming && pillars > departure,
+        language + ': S4E1 gallery must show homecoming → morning departure → existing three pillars')
+      assert.ok(
+        galleryBefore[1].items.every(item => item.assetId !== 'seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED'),
+        language + ': S4E1 departure must not leak into S4E2',
+      )
+    }
     if (fixture.key === 'towers') {
       assert.equal(
         galleryBefore[2].items.map(item => item.assetId).join('|'),
@@ -338,6 +350,7 @@ for (const scene of series30ApprovedScenes) {
     scene.slot_id.startsWith('SERIES30-S3E6-') ? e.season === 3 && e.episode === 6 :
     scene.slot_id.startsWith('SERIES30-S3E10-') ? e.season === 3 && e.episode === 10 :
     scene.slot_id.startsWith('SERIES30-S3E11-') ? e.season === 3 && e.episode === 11 :
+    scene.slot_id.startsWith('SERIES30-S4E1-') ? e.season === 4 && e.episode === 1 :
     scene.slot_id.startsWith('SERIES30-S4E2-') ? e.season === 4 && e.episode === 2 : false,
   )
   assert.ok(match?.asset_ids.includes(scene.asset_id),
@@ -346,9 +359,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 36)
-console.log('[series30-art] PASS: 18 owner-approved assets, 36 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E2 x3), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 38)
+console.log('[series30-art] PASS: 19 owner-approved assets, 38 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {

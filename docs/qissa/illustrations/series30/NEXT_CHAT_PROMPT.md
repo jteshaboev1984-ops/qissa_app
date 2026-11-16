@@ -1,3 +1,9 @@
+## 2026-11-16 latest S4E1 Storage and runtime checkpoint
+
+- User uploaded final `seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED.webp` to `story-images/seven-roads/season2_tier_a_v2/`. Public bytes 326202, SHA256 `998a4ad57d178ef87439f253a0fb2ee005d54109b681ae9c7023738ad2090107`; Seven Roads #43868285579 and Tier A #43868285540 SUCCESS: all **19/19** remote WebPs.
+- New additive `SERIES30-S4E1-A01` RU/UZ slot and public asset registry wired to original `story4_part_1_false_notice_and_route_check/story_text` after RU `На следующее утро Темур и Самира выехали в Ордан.` / UZ `Ertasi tong Temur va Samira Ordan tomon yo‘lga chiqdi.`. Gallery regression homecoming → dawn departure → old three pillars, and no S4E2 spill; final reader/typecheck/build/browser CI still PENDING new commit.
+- Stage1 19/29 artistically accepted; 18 completed through S3E11; **S4E1 A01 reader wired pending CI**. S4E3 artwork `seven_roads_s4e3_prison_wagon_road_fork_REVIEW_v1.png` still REVIEW (extra guard, brown guard uniforms); attempted regeneration repeated S4E1 and was REJECTED. Keep ART_QUEUE S4E3 0/1. Do not merge/deploy/change authored stories or progress.
+
 # QISSA — verified checkpoint 2026-11-16
 
 - Repository `jteshaboev1984-ops/qissa_app`, Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`. Recheck HEAD after this commit. Fixed plan Stage1 **29**, Stage2 **19**, 1 season 4 cover, 5/4/11/10 = 30 reader episodes.

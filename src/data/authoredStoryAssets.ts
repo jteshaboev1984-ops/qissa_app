@@ -125,6 +125,8 @@ const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
   ])
 
 const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED.webp',
   'seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3.webp',
   'seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED':
