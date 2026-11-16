@@ -57,6 +57,7 @@
     "check:story1-authoring-map": "node scripts/check-story1-authoring-map.mjs",
     "check:season2-authoring-maps": "node scripts/check-season2-authoring-maps.mjs",
     "check:season2-staging-packages": "node scripts/check-season2-staging-authored-packages.mjs",
+    "check:season2-costume-continuity": "node scripts/check-season2-costume-continuity.mjs",
     "check:season2-product-model": "node scripts/check-season2-product-model.mjs",
     "check:season2-cover": "node scripts/check-season2-cover.mjs",
     "check:season2-story1-uz": "node scripts/check-season2-story1-uz.mjs",

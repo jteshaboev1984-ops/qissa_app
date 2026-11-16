@@ -1,6 +1,6 @@
 # QISSA — Chat work protocol v1
 
-Status: STAGED FOR CUTOVER. Development chat coordination only. Not the in-product Story Agent, a running agent server, or an automatic background executor.
+Status: CUTOVER AUTHORIZED 2026-11-16; **ChatGPT Project settings still require owner installation** before these new-chat commands are operational. Development chat coordination only; not an in-product Story Agent or background executor.
 
 ## 1. Two modes
 

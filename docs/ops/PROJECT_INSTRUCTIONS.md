@@ -1,4 +1,4 @@
-# QISSA — paste into ChatGPT Project instructions AT CUTOVER
+# QISSA — ChatGPT Project settings text (owner installation required)
 
 This file is a template for the user's own **QISSA ChatGPT Project → Project instructions**. GitHub does not automatically change that setting. Install it only when the architect closes the previous chat workflow.
 

@@ -27,4 +27,4 @@ PR #321 and the original literary proposals have changed status during 2026-11-0
 
 Seven Roads changes branch from product/seven-roads and return through protected PR+CI. Preserve product/ai-generator-legacy as separate product line. Follow the documented release-branch strategy, never merge direct from the persistent product branch when auto-delete applies. Normal CI is deterministic/provider-free. Paid Story AI, TTS, live production testing, beta access or production changes need the architect's explicit authorization.
 
-Until the architect's cutover, this registry is NOT a replacement for existing chats. Do not halt old chats or change their in-progress PRs. Only one active responsible writing workstream per source area once the new chat model is activated.
+Owner authorized cutover on 2026-11-16. Old chats become historical; do not resume them as competing writers. Each new chat must verify actual current PRs and source approvals. Only one responsible writing workstream per source area.

@@ -1,0 +1,54 @@
+{
+  "schema_version": "qissa-season2-story1-kamran-approved-art-v1",
+  "issue": 318,
+  "owner_status": "APPROVED",
+  "scene": "Kamran cuts fallen roadblock strap to free comrade",
+  "season_number": 2,
+  "story_number": 1,
+  "story_id": "seven_roads_korolevskoe_serebro",
+  "publication_state": "unpublished",
+  "visual_canon": "seven_roads_painterly_v1",
+  "library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
+  "slot": {
+    "slot_id": "S2-ST1-KAMRAN-RESCUE",
+    "anchor_key": "s2_st1_kamran_rescue",
+    "part_id": "story1_part_2_kamran_pursuit",
+    "phase": "story_text",
+    "kind": "shared",
+    "asset_id": "seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED",
+    "after_text_ru": "Он спрыгнул рядом со своим человеком, вытащил нож и разрезал ремень.",
+    "after_text_uz": "U o‘z odamining yoniga sakrab tushdi, pichog‘ini olib tasmani kesdi."
+  },
+  "source_png": {
+    "filename": "seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED.png",
+    "width": 1671,
+    "height": 941,
+    "bytes": 3025214,
+    "sha256": "22b44a5f7aa13b8ec252b055a9af7e4c2946cfa7826e1c86c072ec485106c559"
+  },
+  "approved_webp": {
+    "filename": "seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED.webp",
+    "width": 1671,
+    "height": 941,
+    "bytes": 363060,
+    "sha256": "83449a2612dba73bac37ff7b4d153733d54d5040dbdda62c29a062b628de8d34"
+  },
+  "storage": {
+    "bucket": "story-images",
+    "object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED.webp",
+    "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED.webp",
+    "verified_mime": "image/webp",
+    "verified_size": 363060
+  },
+  "remote_integrity_proof": {
+    "status": "success",
+    "method": "HTTP GET on GitHub hosted runner + SHA-256",
+    "run_id": 42820501437,
+    "job_id": 129844543199,
+    "verifier": "scripts/verify-season2-story1-kamran-webp.mjs",
+    "actual_sha256": "83449a2612dba73bac37ff7b4d153733d54d5040dbdda62c29a062b628de8d34"
+  },
+  "integration_scope": "One shared art slot in Part 2; no story/choices/other episodes changes. Season 2 remains unpublished.",
+  "integrated_ru_blob_sha": "365545ca0e725c7f17fa3f8e1223494fb57e7ba7",
+  "integrated_uz_blob_sha": "974a153faa3edcd6d24210b76c177ed3b7f18b86"
+}

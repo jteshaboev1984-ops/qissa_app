@@ -1,0 +1,69 @@
+{
+  "schema_version": "qissa-season2-story3-sarvan-family-return-approved-1",
+  "issue": 318,
+  "owner_decision": "approved_after_visual_and_literary_check",
+  "approval_date": "2026-11-11",
+  "story_number": 3,
+  "story_id": "seven_roads_dve_bashni",
+  "part_id": "story3_part_1_old_yard_niche",
+  "status": "owner_approved_supabase_sha_verified",
+  "publication_state": "unpublished",
+  "visual_canon": "seven_roads_painterly_v1",
+  "historical_preflight": "docs/qissa/season2/2026-11-11_story3_sarvan_family_homecoming_preflight.md",
+  "original_library_root": "/QISSA/production/seven_roads/season2_visual_final/tier_a_story_frames/",
+  "asset": {
+    "slot_id": "S2-ST3-SARVAN-FAMILY-RETURN",
+    "anchor_key": "s2_st3_sarvan_family_return",
+    "part_id": "story3_part_1_old_yard_niche",
+    "kind": "shared",
+    "phase": "story_text",
+    "asset_id": "seven_roads_s2_story3_sarvan_family_return_01_APPROVED",
+    "after_text_ru": "Из дома вышла её мать и сразу обняла Самиру.",
+    "after_text_uz": "Uydan onasi chiqib, darrov Samirani quchoqladi.",
+    "master_png": {
+      "filename": "seven_roads_s2_story3_sarvan_family_return_01_APPROVED.png",
+      "width": 1671,
+      "height": 941,
+      "bytes": 2804447,
+      "sha256": "b1c8c8da2dff6ac45dc4c9db7eeda876380c5ce6d28aa03f589b6a1d003a3fb1"
+    },
+    "webp": {
+      "filename": "seven_roads_s2_story3_sarvan_family_return_01_APPROVED.webp",
+      "width": 1536,
+      "height": 864,
+      "bytes": 309590,
+      "sha256": "80fc64dd30872423662729d2aa0e5713e6190232e3368094251650cd39fd2943"
+    },
+    "storage_bucket": "story-images",
+    "storage_object_path": "seven-roads/season2_tier_a_v2/seven_roads_s2_story3_sarvan_family_return_01_APPROVED.webp",
+    "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story3_sarvan_family_return_01_APPROVED.webp",
+    "hosting": "hosted_verified",
+    "verified_content_type": "image/webp",
+    "visual_acceptance": "Temur and Samira circa twelve. Samira hugs her mother before introduction/washing/dinner; father nearby; Temur dismounted with two distinct saddled horses. Small white forehead star on dark Shamol; gray Bulut. Some lower horse legs outside frame; do not claim complete hidden anatomy."
+  },
+  "remote_integrity_proof": {
+    "method": "independent GitHub-hosted public Supabase HTTP GET of actual response bytes; SHA-256 computed from downloaded body (not metadata)",
+    "status": "success",
+    "run_id": 43066802210,
+    "job_id": 130683824903,
+    "executed_script": "scripts/verify-season2-story3-sarvan-family-webp.mjs",
+    "url": "https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/43066802210",
+    "content_type": "image/webp",
+    "actual_bytes": 309590,
+    "actual_sha256": "80fc64dd30872423662729d2aa0e5713e6190232e3368094251650cd39fd2943"
+  },
+  "previous_ru_blob_sha": "8b9ea5d89115fc6d0bc90d3521875ee9eec76b7f",
+  "previous_uz_blob_sha": "5d1e2acdac664a108774931aa5fa1c4dc914cffd",
+  "integrated_ru_blob_sha": "e889df65f5d5f877aedf7b71d7bb1cc487a0f3e3",
+  "integrated_uz_blob_sha": "e20325c91dae8cc88e45265069313785017b7e49",
+  "locked_existing_story3_slots": [
+    "S2-ST3-SARVAN-YARD",
+    "S2-ST3-TIERA-NICHE",
+    "S2-ST3-SARVAN-MARKET",
+    "S2-ST3-GUARDHOUSE-MAP"
+  ],
+  "expected_story3_gallery_image_count": 5,
+  "semantic_integrity": "Checked deep JSON equivalence after stripping only added RU illustration_refs, image_slots, illustration plan counts and one UZ image_anchor_text entry. All prose, choices, decision IDs, state, part identities and prior image slots unchanged.",
+  "review_gate": "New owner-approved image is inserted before Sarvan yard; previous approved Sarvan courtyard and niche, market, map preserved. Gallery remains locked until reached in reader.",
+  "publication_guard": "Season 2 MUST remain unpublished; no release flags, authoredStories.ts, external data or other episodes changed."
+}

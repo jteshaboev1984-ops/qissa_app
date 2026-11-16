@@ -2,6 +2,16 @@ import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 
+// GitHub Actions must independently hash the uploaded public Story 3 WebPs.
+// Keep local literary/anchor validation offline-capable.
+if (process.env.GITHUB_ACTIONS === 'true') {
+  await import('./verify-season2-story3-approved-webps.mjs')
+  await import('./verify-season2-story3-yard-webp.mjs')
+  await import('./verify-season2-story1-kamran-webp.mjs')
+  await import('./verify-season2-story1-settlement-story5-fork-webps.mjs')
+  await import('./verify-season2-story3-sarvan-family-webp.mjs')
+}
+
 const root = process.cwd()
 const readJson = (relative) =>
   JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'))
@@ -188,6 +198,122 @@ for (const storyNumber of expectedStories) {
         }
       }
     }
+    // S2E1 new owner-approved rescue frame augments the immutable Tier A source
+    // map; require independent public WebP verification and exact text anchor.
+    if (storyNumber === 1 && index === 1) {
+      const proof = readJson(
+        'docs/qissa/season2/story1_kamran_rescue_approved_2026-11-10.json',
+      )
+      const asset = proof.slot
+      if (
+        proof.owner_status !== 'APPROVED' ||
+        proof.publication_state !== 'unpublished' ||
+        proof.storage?.bucket !== 'story-images' ||
+        proof.remote_integrity_proof?.status !== 'success' ||
+        proof.remote_integrity_proof?.actual_sha256 !== proof.approved_webp?.sha256 ||
+        proof.approved_webp?.bytes !== 363060 ||
+        asset?.slot_id !== 'S2-ST1-KAMRAN-RESCUE' ||
+        asset?.part_id !== part.part_id ||
+        asset?.kind !== 'shared' ||
+        asset?.phase !== 'story_text'
+      ) {
+        fail('Story 1: Kamran rescue requires owner approval, hosted SHA and exact shared anchor')
+      } else {
+        mappedSlots.set(asset.slot_id, {
+          slot_id: asset.slot_id,
+          asset_id: asset.asset_id,
+          phase: asset.phase,
+          after_text: asset.after_text_ru,
+        })
+      }
+    }
+    // S2E3 old Sarvan courtyard: newly owner-approved and remotely SHA-verified.
+    // The immutable original Tier A map continues to describe the original niche.
+    if (storyNumber === 3 && index === 0) {
+      const yard = readJson(
+        'docs/qissa/season2/story3_sarvan_yard_approved_2026-11-10.json',
+      )
+      const asset = yard.asset
+      if (
+        yard.owner_decision !== 'approved_corrected_empty_stalls' ||
+        yard.status !== 'owner_approved_supabase_sha_verified' ||
+        yard.publication_state !== 'unpublished' ||
+        yard.remote_integrity_proof?.status !== 'success' ||
+        yard.remote_integrity_proof?.actual_sha256 !== asset?.webp?.sha256 ||
+        asset?.slot_id !== 'S2-ST3-SARVAN-YARD' ||
+        asset?.part_id !== part.part_id ||
+        asset?.phase !== 'story_text' ||
+        asset?.hosting !== 'hosted_verified'
+      ) {
+        fail('Story 3: final courtyard art requires owner approval, verified remote SHA and exact shared slot')
+      } else {
+        mappedSlots.set(asset.slot_id, {
+          slot_id: asset.slot_id,
+          asset_id: asset.asset_id,
+          phase: asset.phase,
+          after_text: asset.after_text_ru,
+        })
+      }
+    }
+    // Additional S2E3 Sarvan FAMILY arrival: independent remote WebP GET/SHA
+    // and the owner-approved bilingual paragraph, without editing historical maps.
+    if (storyNumber === 3 && index === 0) {
+      const family = readJson(
+        'docs/qissa/season2/story3_sarvan_family_return_approved_2026-11-11.json',
+      )
+      const asset = family.asset
+      if (
+        family.status !== 'owner_approved_supabase_sha_verified' ||
+        family.owner_decision !== 'approved_after_visual_and_literary_check' ||
+        family.publication_state !== 'unpublished' ||
+        family.remote_integrity_proof?.status !== 'success' ||
+        family.remote_integrity_proof?.actual_sha256 !== asset?.webp?.sha256 ||
+        family.remote_integrity_proof?.actual_bytes !== asset?.webp?.bytes ||
+        family.integrated_ru_blob_sha !== entry.github_blob_sha ||
+        asset?.slot_id !== 'S2-ST3-SARVAN-FAMILY-RETURN' ||
+        asset?.part_id !== part.part_id ||
+        asset?.phase !== 'story_text' ||
+        asset?.kind !== 'shared' ||
+        asset?.hosting !== 'hosted_verified'
+      ) {
+        fail('Story 3: Sarvan family arrival requires owner approval and verified independent remote SHA')
+      } else {
+        mappedSlots.set(asset.slot_id, {
+          slot_id: asset.slot_id,
+          asset_id: asset.asset_id,
+          phase: asset.phase,
+          after_text: asset.after_text_ru,
+        })
+      }
+    }
+    // Story 3: two separately owner-approved, already uploaded shared frames
+    // supplement the immutable original Tier A source map. The draft
+    // caravan-yard frame is deliberately excluded until owner approval.
+    if (storyNumber === 3 && (index === 1 || index === 2)) {
+      const expansion = readJson(
+        'docs/qissa/season2/story3_approved_illustrations_2026-11-09.json',
+      )
+      if (
+        expansion.approval !== 'owner_approved_market_and_guardhouse_only' ||
+        expansion.bucket !== 'story-images' ||
+        expansion.prefix !== 'seven-roads/season2_tier_a_v2/' ||
+        !['storage_metadata_confirmed_sha_pending', 'sha_verified'].includes(expansion.remote_state) ||
+        expansion.assets?.length !== 2
+      ) {
+        fail('Story 3: approved shared image expansion manifest invalid')
+      } else {
+        for (const asset of expansion.assets.filter(
+          (asset) => asset.part_id === part.part_id,
+        )) {
+          mappedSlots.set(asset.slot_id, {
+            slot_id: asset.slot_id,
+            asset_id: asset.asset_id,
+            phase: asset.phase,
+            after_text: asset.after_text_ru,
+          })
+        }
+      }
+    }
     // Story 4: the two additional hosted/owner-approved frames augment
     // the original locked Tier A map, as in the Episode 7 expansion.
     if (storyNumber === 4 && index === 0) {
@@ -253,6 +379,37 @@ for (const storyNumber of expectedStories) {
             after_text: asset.after_text_ru,
           })
         }
+      }
+    }
+    // Two owner-approved, independently byte-verified 2026-11-11 art slots.
+    // Extend the locked historical Tier A map, never rewrite it.
+    if ((storyNumber === 1 && index === 2) ||
+        (storyNumber === 5 && index === 0)) {
+      const latest = readJson(
+        'docs/qissa/season2/story1_settlement_story5_fork_approved_2026-11-11.json',
+      )
+      const asset = latest.assets?.find((item) => item.story_number === storyNumber)
+      if (
+        latest.owner_status !== 'APPROVED' ||
+        latest.publication_state !== 'unpublished' ||
+        latest.remote_integrity_proof?.status !== 'success' ||
+        latest.storage?.bucket !== 'story-images' ||
+        asset?.slot?.part_id !== part.part_id ||
+        asset?.slot?.kind !== 'shared' ||
+        asset?.slot?.phase !== (storyNumber === 1 ? 'post_choice_text' : 'story_text') ||
+        asset?.verified_remote_sha256 !== asset?.approved_webp?.sha256 ||
+        asset?.verified_size !== asset?.approved_webp?.bytes ||
+        asset?.integrated_ru_blob_sha !== entry.github_blob_sha ||
+        asset?.verified_mime !== 'image/webp'
+      ) {
+        fail(`Story ${storyNumber}: owner-approved 11-Nov scene remote integrity and exact slot contract invalid`)
+      } else {
+        mappedSlots.set(asset.slot.slot_id, {
+          slot_id: asset.slot.slot_id,
+          asset_id: asset.slot.asset_id,
+          phase: asset.slot.phase,
+          after_text: asset.slot.after_text_ru,
+        })
       }
     }
     if ((part.image_slots ?? []).length !== mappedSlots.size) {
@@ -452,3 +609,10 @@ console.log('[season2-staging-packages] 6/6 Russian staging packages are structu
 console.log('[season2-staging-packages] revised Story 6 has one battle choice; historic extraction maps remain archived, while all other episode choices match locked source maps')
 console.log('[season2-staging-packages] locked Tier A plus verified Episode 4, 6 and 7 expansions (including E4 Part 2) resolve through hosted asset registry')
 console.log('[season2-staging-packages] all six non-live episodes have RU+UZ staging and are wired in the validated release candidate')
+
+// Validate the additional bilingual S2E3 slots, gallery and immutable IDs.
+await import('./check-season2-story3-approved-art.mjs')
+await import('./check-season2-story3-family-approved-art.mjs')
+await import('./check-season2-story1-kamran-art.mjs')
+await import('./check-season2-2026-11-11-approved-art.mjs')
+await import('./check-season2-costume-continuity.mjs')
