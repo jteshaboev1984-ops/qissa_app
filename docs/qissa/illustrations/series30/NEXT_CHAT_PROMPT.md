@@ -1,32 +1,27 @@
-# QISSA — продолжение производства 30 серий «Семь дорог»
+# QISSA — продолжение иллюстрирования 30 серий «Семь дорог»
 
-**Дата актуализации:** 2026-11-16. **Граница:** сохранять continuity, не начинать проект заново.
+Дата актуализации: 2026-11-16. Продолжать текущий проект, не начинать заново.
 
-## Репозиторий и ограничения
+**Репозиторий** https://github.com/jteshaboev1984-ops/qissa_app · **PR #334** Draft, open · **ветка** `qissa/four-seasons-chronological-runtime-20261112`. Перед работой читать фактический HEAD.
 
-- GitHub: https://github.com/jteshaboev1984-ops/qissa_app
-- PR #334 (Draft, open): https://github.com/jteshaboev1984-ops/qissa_app/pull/334
-- Ветка: `qissa/four-seasons-chronological-runtime-20261112`. Проверить актуальный HEAD перед изменениями.
-- План неизменен: четыре сезона 5/4/11/10 = 30 серий; **29 новых иллюстраций Stage 1**, 19 Stage 2 и отдельная обложка сезона 4.
-- НЕЛЬЗЯ менять authored RU/UZ JSON, сюжетные выборы, прогресс, существующие принятые изображения, публиковать приложение или объединять PR.
+**План (не пересматривать):** 4 сезона = 5/4/11/10 = 30 серий. Stage 1 = 29 новых сюжетных WebP, Stage 2 = 19, отдельно 1 обложка S4. Исходные литературные RU/UZ JSON, варианты выбора, прогресс и ранее утверждённые изображения запрещено менять. Не объединять PR, не публиковать и не развёртывать без разрешения.
 
-## Подтверждённое состояние на 2026-11-16
+## Подтверждённое состояние
 
-**14/29 Stage 1 художественно принято.** Из них 13/29 загружены в Supabase, проверены по публичным HTTP/MIME/байтам/SHA и подключены к RU/UZ чтению. Сцена **S3E3-A02** полностью интегрирована; Seven Roads CI **#43827195071 — SUCCESS**, Season 2 Tier A Slot Check **#43827195114 — SUCCESS**, весь комплект **13/13 WebP**, **26/26 bilingual anchors**, gallery/reading 30/4 seasons/typecheck/build/browser smoke PASS. Первоначальный тестовый дефект `slice(0,2)` исправлен на `slice(0,3)`. S3E3 Stage1 **2/2 COMPLETED**.
+- **15/29** новых Stage1 изображений художественно принято.
+- **14/29** (включая S3E6-A01) загружены в Supabase Storage и подключены через `src/data/series30ApprovedSceneSlots.ts` / `src/data/authoredStoryAssets.ts`. GitHub Actions **Seven Roads CI #43834685592** и **Season 2 Tier A Slot Check #43834685439** SUCCESS, **14/14** remote WebP SHA, **28/28** RU/UZ anchors, reader/gallery/choice locks, typecheck/build/browser smoke. S3E6 Stage1 1/1 завершён.
+- **15-й S3E10-A01** «Запомнить путь к воротам»: owner-conditionally approved, но **не загружен в Supabase, не включён в runtime**. WebP `seven_roads_s3e10_memorize_route_gate_01_APPROVED.webp` **323922 bytes**, SHA256 `f6019df65fe015de03ff439a59738ea133c778c865ea4ec2de24b6d49b8d2c96`. PNG/WebP/metadata в QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E10/`. User upload `story-images/seven-roads/season2_tier_a_v2/`; проверить фактический Storage, независимый remote hash через GitHub CI перед runtime.
+- S3E10-A01 authored `story_id=seven_roads_dve_bashni`, `part_id=story3_part_2_courier_route`, `phase=story_text`, virtual episode S3E10; RU `Темур несколько раз оглянулся, запоминая повороты и приметные места.`, UZ `Temur burilishlar va ko‘zga tashlanadigan joylarni eslab qolish uchun bir necha marta ortiga qaradi.`.
+- **S3E10-A02** ещё НЕ принят; три новых генерации ошибочны (две повторяют изучение ворот, третья — побег Надира S3E6). Должен быть **юный стражник у каменной поилки рядом с караулом**, подходит к Темуру и Самире **до** объяснения про коричневого коня и курьера. RU `К ним подошёл молодой стражник.` / UZ `Ularning oldiga yosh qo‘riqchi keldi.`, same source part/phase/virtual episode.
+- Следующие арт-сцены после S3E10: S3E11-A01 и A02 (точный storyboard уже подготовлен), затем S4 по `ART_QUEUE`. При неудачной генерации не утверждать похожие кадры.
 
-**14-й принятый кадр S3E6-A01** `seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED.webp` (267232 байта, SHA256 `4fb68e473f6a11573278142fad86c908e6d427b873b9952dbda839a94e96bf14`) сохранён PNG/WebP/metadata в QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E6/`. **Его ещё нужно загрузить** в Supabase bucket `story-images`, путь `seven-roads/season2_tier_a_v2/` с точным именем. Пока нет подтверждённого Storage, runtime слот не подключать. После загрузки выполнить независимый remote SHA checker + RU/UZ overlay `story2_part_8_stop_nadir`, `phase=story_text`, anchors RU `Он проскочил между двумя повозками и вылетел через боковой проезд за мастерские.` / UZ `U ikki arava orasidan o‘tib, ustaxonalar ortidagi yon yo‘lakka chiqdi.`, затем полные проверки и обе старые choice-картинки оставить.
+## Основные документы
+1. `docs/qissa/41_QISSA_30_Series_Illustration_Production_Plan_2026_11_14.md`
+2. `docs/qissa/illustrations/series30/ART_QUEUE_2026-11-14.json`
+3. `docs/qissa/illustrations/series30/PRODUCTION_RUNBOOK.md`
+4. `docs/qissa/illustrations/series30/S3E10_COURIER_STORYBOARD_2026-11-16.md`
+5. `docs/qissa/illustrations/series30/S3E11_THREE_PILLARS_STORYBOARD_2026-11-16.md`
+6. `docs/qissa/illustrations/series30/S3E6_NADIR_ESCAPE_STORYBOARD_2026-11-16.md`
+7. `docs/qissa/ai/SEVEN_ROADS_WORLD_BIBLE_V2.md`, `src/data/sevenRoadsReadingSeries.ts`, original RU/UZ authored JSON, Library visual refs.
 
-**S3E10 «Курьер», Stage1 0/2.** Storyboard `docs/qissa/illustrations/series30/S3E10_COURIER_STORYBOARD_2026-11-16.md`: A01 дети учат маршрут к арасским воротам (без погони), A02 молодой стражник подходит к водопою. Оба с уникальными RU/UZ якорями. Генератор в трёх попытках снова показал побег Надира со стражниками, все три кадра **REJECTED**, не сохранялись. В следующий раз лучше изолировать визуальный контекст и использовать Library refs `seven_roads_s2_story3_sarvan_market_01_APPROVED.png` и `seven_roads_s2_story3_sarvan_old_caravan_yard_01_APPROVED.png`, а также `01_heroes_horses_approved.png`. Если не удаётся — оставить как блокер, не выдавать похожую сцену за утверждённую.
-
-Далее по плану: **S3E11** (2), S4E1 и остальные S4 по `ART_QUEUE`, строго 29 + 19 + 1 обложка, без пересмотра количества. Для каждой иллюстрации: прочитать точный RU/UZ абзац и соседние события, проверить визуальные канонические референсы в QISSA Library, сгенерировать только один кадр, самостоятельно отбраковывать неправильный, только после художественной приёмки PNG/WebP/SHA/Library/Storage/reader/CI.
-
-## Нужные документы
-- `docs/qissa/41_QISSA_30_Series_Illustration_Production_Plan_2026_11_14.md`
-- `docs/qissa/illustrations/series30/ART_QUEUE_2026-11-14.json`
-- `docs/qissa/illustrations/series30/PRODUCTION_RUNBOOK.md`
-- `docs/qissa/illustrations/series30/S3E3_MORNING_AFTER_THEFT_STORYBOARD_2026-11-16.md`
-- `docs/qissa/illustrations/series30/S3E6_NADIR_ESCAPE_STORYBOARD_2026-11-16.md`
-- `docs/qissa/ai/SEVEN_ROADS_WORLD_BIBLE_V2.md`
-- `src/data/sevenRoadsReadingSeries.ts` и `src/data/authoredStoryAssets.ts`.
-
-**Все дальнейшие изменения строго в рабочей ветке PR, без merge/deploy.**
+Прежде каждой генерацией читать тексты и видеть реальные утверждённые изображения из QISSA Library, затем только одну иллюстрацию за раз. Сохранение после приёмки: PNG → WebP → SHA256 → Library → user Supabase Storage upload → independent remote GET/MIME/bytes/SHA → additive runtime overlay → RU/UZ/gallery/CI/browser. Никогда не записывать неподтверждённое как APPROVED.

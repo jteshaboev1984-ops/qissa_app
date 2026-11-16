@@ -55,3 +55,8 @@
 - Добавлен `SERIES30-S3E6-A01` по точным RU/UZ якорям в `story2_part_8_stop_nadir/story_text` и ссылка в `authoredStoryAssets.ts` (виртуальная S3E6).
 - Регрессионный тест требует увидеть новый кадр после старого `seven_roads_story2_p7_img_03_v1`; два прежних варианта `seven_roads_story2_p8a_img_01_v1`/`seven_roads_story2_p8b_img_01_v1` сохраняются, новый кадр не должен попадать в S3E5.
 - Новой runtime CI/браузерной проверки пока нет. Литературные JSON, выборы, сохранённый прогресс и существующие иллюстрации не менялись. PR Draft, без merge/deploy.
+
+## Final technical QA — 2026-11-16
+
+- **Seven Roads CI #43834685592** and **Season 2 Tier A Slot Check #43834685439** — SUCCESS; 14/14 WebP public GET/MIME/bytes/SHA256, 28/28 bilingual anchors, story2_part_8_stop_nadir correctly S3E6, original branch pictures preserved, 5/4/11/10 reader, typecheck, build, browser smoke PASS.
+- S3E6-A01 stage1 **1/1 completed**, no authored literary changes, no merge/deploy.
