@@ -1,3 +1,7 @@
+## 2026-11-16 S4E1 image generation blocker
+
+Two more S4E1-A01 renderings REJECTED: stable/apple repeats, not riders on Aras–Ordan road; one wrong chestnut horse. Together with earlier water trough repeat three rejected attempts. No S4E1 asset in library or runtime. S3E11-A02 approved in QISSA Library but pending Storage: `seven_roads_s3e11_bulut_apple_evening_02_APPROVED.webp` 214508 bytes SHA256 `b7e9000bc9a9ac5febed08ca1e93a352b8bf70bc8f5c39ebab6fac139e9056e2`. Overall Stage1 18/29 artistically accepted, 17/29 Storage/reader integrated. Do not merge/deploy or change literary texts/choices/progress.
+
 # QISSA current 30-series illustration handoff — 2026-11-16
 
 **HEAD before this change:** `c158247ec613d3d2dcac9753eb33818a4d9d6b5d`, branch `qissa/four-seasons-chronological-runtime-20261112`, PR #334 Draft, repo `jteshaboev1984-ops/qissa_app`. Always re-read actual HEAD, CI and ART_QUEUE.
