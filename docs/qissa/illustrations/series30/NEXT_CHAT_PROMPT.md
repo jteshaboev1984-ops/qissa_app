@@ -1,3 +1,13 @@
+# QISSA — verified checkpoint 2026-11-16
+
+- Repository `jteshaboev1984-ops/qissa_app`, Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`. Recheck HEAD after this commit. Fixed plan Stage1 **29**, Stage2 **19**, 1 season 4 cover, 5/4/11/10 = 30 reader episodes.
+- **19/29 Stage1 art approved**, of which **18/29 Supabase Storage SHA verified and RU/UZ reader integrated**; **S3E11 2/2 CLOSED**, CI Seven Roads **#43865327367** and Tier A **#43865326852** both SUCCESS after correcting test harness phase: **18/18** WebP and **36/36** anchors, typecheck/build/browser/gallery PASS.
+- **One approved WebP pending user upload:** S4E1-A01 `seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED.webp`, **326202 bytes**, SHA256 `998a4ad57d178ef87439f253a0fb2ee005d54109b681ae9c7023738ad2090107`, PNG master 1672×941 SHA256 `31de773a6339d896436e25881d4ab20eecfb19cc0466b9965dcb5de6dc52e62b`. Library `/QISSA/production/seven_roads/series30/stage1/S4E1/`. Owner explicitly approved image: Temur on near-black Shamol (small white star, teal cloth), Samira on WHITE Bulut (maroon cloth), helmeted senior guard on solid chestnut horse at dawn leaving Aras. User upload to Supabase `story-images/seven-roads/season2_tier_a_v2/` with filename preserved; only THEN remote SHA and additive S4E1 scene anchor (RU `На следующее утро Темур и Самира выехали в Ордан.`, UZ `Ertasi tong Temur va Samira Ordan tomon yo‘lga chiqdi.`). Do NOT wire before Storage verification.
+- **Next artwork S4E3-A01** road fork per `docs/qissa/illustrations/series30/S4E3_FALSE_NOTICE_ROAD_FORK_STORYBOARD_2026-11-16.md`: first image `seven_roads_s4e3_prison_wagon_road_fork_REVIEW_v1.png` (Library `/QISSA/production/seven_roads/series30/review/S4E3/`, sha `04148be4a7ff2eff1d3ea104693f88301450bb1cf20905f3eca2dafcafa22174`) correctly shows Danyar and closed prison wagon at turn, BUT wrong guard uniform (brown instead of blue) and ~7 mounted guards instead of six — **NOT APPROVED**. A second repair generation repeated S4E1 entirely, REJECTED. S4E3 stage1 0/1; do not upload or integrate either.
+- No authorship text RU/UZ, story/choice IDs, family progress or previous approved art changes. No PR merge, no deployment, no publication. Scope remains artwork and surgical runtime overlay only.
+
+## Historical notes
+
 # QISSA — current 2026-11-16 production checkpoint
 
 Repo `jteshaboev1984-ops/qissa_app`, PR #334 Draft on `qissa/four-seasons-chronological-runtime-20261112`. Always recheck actual HEAD and CI. Confirmed plan 5/4/11/10 = 30 episodes; Stage 1 29 new story frames, Stage 2 19, Season4 cover separately. Do not modify literary RU/UZ JSON, choice/story IDs, progress or prior approved art; no merge/deploy.

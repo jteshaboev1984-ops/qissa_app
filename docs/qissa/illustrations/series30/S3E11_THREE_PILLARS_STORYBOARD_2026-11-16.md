@@ -103,3 +103,8 @@
 - User-uploaded WHITE Bulut v3 WebP `seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3.webp` found in Supabase `story-images/seven-roads/season2_tier_a_v2/`, 267928 bytes, MIME image/webp. GitHub Actions **Seven Roads CI #43864305432** and **Tier A #43864305168** SUCCESS: public GET/MIME/length/SHA256 verified **18/18**; SHA `1b982536b64a0289b3ee2cbb6a5ee553aad864a3eac2ae3744366f819435937b`.
 - S3E11-A02 additive slot added to original `story3_part_3_three_pillars/post_choice_text` after unique RU `Булут потянулся к яблоку в её руке.`, UZ `Bulut uning qo‘lidagi olmaga cho‘zildi.`; gallery order **senior guard arrives → approved map drawing → white Bulut apple**. Runtime reader CI/browser on this new commit still pending; do not claim full completion prematurely.
 - Old incorrect coat v1 remains REJECTED, grey v2 REVIEW, both excluded. Original authored text, choice IDs and progress remain unchanged; PR Draft, no merge/deploy.
+
+## S3E11 Stage1 fully completed — 2026-11-16
+
+- After S3E11-A02 owner-approved WHITE Bulut v3 upload and integration, final **Seven Roads CI #43865327367** / **Season 2 Tier A Slot Check #43865326852** both SUCCESS. Initial test harness wrongly expected all new slots in `story_text` except Farid A03; repaired to permit `SERIES30-S3E11-A02` in canonical `post_choice_text` without changing the authored source or reader image anchor.
+- **18/18** approved new WebP remote public GET/MIME/length/SHA-256, **36/36** unique RU/UZ anchors, original art and branch choice gallery locks, 5/4/11/10 reader layout, typecheck/build and browser smoke PASS. S3E11 stage1 **2/2 artistically approved and technically integrated**, no merge/deploy.

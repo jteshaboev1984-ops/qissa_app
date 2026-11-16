@@ -32,3 +32,9 @@
 Генерировать одну сцену; сравнить с реальными каноническими PNG прежде статуса APPROVED. При сюжете или реквизите, противоречащем тексту, ставить REJECTED. После художественной приёмки: PNG → WebP → SHA256 → QISSA Library → проверенный user upload Supabase `story-images/seven-roads/season2_tier_a_v2/` → независимый HTTP/MIME/bytes/SHA CI → additive overlay `series30ApprovedSceneSlots.ts` и URL `authoredStoryAssets.ts` → RU/UZ/gallery/5-4-11-10/typecheck/build/browser smoke CI.
 
 Нельзя менять литературные RU/UZ JSON, выборы, story/choice IDs, существующие утверждённые кадры, сохранённый прогресс, merge/deploy без отдельного разрешения.
+
+## New illustration S4E3-A01: REVIEW only, 2026-11-16
+
+- Candidate #1 depicts correct story moment (closed prison wagon pulled by two horses turning toward uphill old patrol road, Danyar with dark hair/short beard and bright blue scarf on gray horse), but **NOT APPROVED**: around seven mounted guards instead of six, and their cloaks are brown instead of established blue guard uniform from `seven_roads_s2_story4_wagon_lock_dawn_01_APPROVED.png`. No literary spoilers visible.
+- `seven_roads_s4e3_prison_wagon_road_fork_REVIEW_v1.png` 1672×941, PNG SHA256 `04148be4a7ff2eff1d3ea104693f88301450bb1cf20905f3eca2dafcafa22174` and metadata saved in QISSA Library `/QISSA/production/seven_roads/series30/review/S4E3/`. **No approved WebP, no Storage, no runtime**.
+- Candidate #2 after attempting uniform/cast correction **REJECTED**: generated S4E1 children riding near-black and white horses with an unhelmeted escort (wrong story entirely). Do not reuse or upload. S4E3 stage1 remains **0/1**. Next edit must keep the prison wagon/road fork and Danyar but correct guard colors/count; use isolated composition to avoid repeating S4E1.
