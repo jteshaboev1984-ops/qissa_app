@@ -69,3 +69,11 @@
 - PNG-мастер, WebP и metadata.json сохранены в QISSA Library `/QISSA/production/seven_roads/series30/stage1/S2E4/`.
 - **Storage ещё не загружен, runtime-слот A02 ещё не подключён**. Пользователь должен загрузить WebP по имени `seven_roads_s2e4_western_road_map_02_APPROVED.webp` в бакет `story-images` под префиксом `seven-roads/season2_tier_a_v2/`, затем независимая проверка SHA/читателя/галереи/CI.
 - S2E4-A01 отдельно успешно интегрирован: Seven Roads CI **#43805029277** и Tier A **#43805029409** — SUCCESS, 10/10 WebP и 20 RU/UZ anchors, gallery/virtual series split, typecheck/build/browser. Этап 1 S2E4 **2/2 художественно принят, 1/2 технически интегрирован**. Старый кадр логова не заменён; stage2 2 новых иллюстрации сохраняется.
+
+## Техническая интеграция S2E4-A02 после загрузки — 2026-11-16
+
+- Supabase SQL `storage.objects` подтверждает `seven-roads/season2_tier_a_v2/seven_roads_s2e4_western_road_map_02_APPROVED.webp`, MIME `image/webp`, размер 192494 байта.
+- GitHub Actions **Seven Roads CI #43806638375**: S2E4-A02 прошёл независимую публичную проверку **GET/MIME/bytes/SHA-256**, общий набор **11/11**. Сравнена SHA256 `fc44e2f2d002bf08db2d063ed804c3135392fef3e9e702e4ea7514f15131dcc7`.
+- Добавлены `SERIES30-S2E4-A02` и публичный asset URL в scene-only overlay; якорь в исходной фазе `post_choice_text` после фразы о дороге на запад, отображение в **S2E4** (`story_text`) после виртуального разреза, **не S2E3**.
+- Проверяется галерея RU/UZ: дуб → существующее поселение → карта западной дороги; без спойлеров до чтения. Новый runtime CI/browser ещё не подтверждён.
+- Исходные RU/UZ литературные файлы, варианты выбора, story IDs, сохранённый прогресс и старые изображения не изменены. PR остаётся Draft; merge/deploy не выполнять.

@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 10)
+assert.equal(series30ApprovedScenes.length, 11)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -58,6 +58,7 @@ const fixtures = [
       'SERIES30-S2E3-A02': 3,
       'SERIES30-S2E3-A03': 3,
       'SERIES30-S2E4-A01': 4,
+      'SERIES30-S2E4-A02': 4,
     },
   },
   {
@@ -160,6 +161,7 @@ for (const fixture of fixtures) {
         [
           'seven_roads_s2e4_missing_kamran_oak_01_APPROVED',
           'seven_roads_s2_story1_hidden_network_settlement_01_APPROVED',
+          'seven_roads_s2e4_western_road_map_02_APPROVED',
         ].join('|'),
         language + ': S2E4 gallery must show the forest rendezvous before the hidden settlement',
       )
@@ -190,7 +192,7 @@ for (const fixture of fixtures) {
       const item = located[0]
       assert.equal(story.reader_layout.episode_by_part[item.index], expectedEpisode,
         fixture.key + '/' + language + ': wrong virtual episode for ' + id)
-      if (id === 'SERIES30-S2E4-A01') {
+      if (id === 'SERIES30-S2E4-A01' || id === 'SERIES30-S2E4-A02') {
         const splitAt = story.parts.findIndex(p =>
           pars(p.story_text).includes(language === 'ru'
             ? 'К вечеру Ордан снова выглядел обычным.'
@@ -263,9 +265,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 20)
-console.log('[series30-art] PASS: 10 owner-approved assets, 20 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x1 / S4E2 x3), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 22)
+console.log('[series30-art] PASS: 11 owner-approved assets, 22 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S4E2 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {

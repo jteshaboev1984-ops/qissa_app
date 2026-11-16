@@ -99,6 +99,20 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     after_text: { ru: 'Камрана среди них не было.', uz: 'Kamran ular orasida yo‘q edi.' },
   },
   {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_3_network_sign',
+    slot_id: 'SERIES30-S2E4-A02',
+    anchor_key: 'series30_s2e4_western_road_map',
+    asset_id: 'seven_roads_s2e4_western_road_map_02_APPROVED',
+    // The virtual S2E3/S2E4 reader split moves this post-choice section
+    // into the story_text phase of the display part for S2E4.
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Потом провёл пальцем по дороге на запад.',
+      uz: 'Keyin barmog‘ini g‘arbga ketadigan yo‘l bo‘ylab yurgizdi.',
+    },
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A03',
