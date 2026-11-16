@@ -1,3 +1,8 @@
+## Additional checkpoint 2026-11-16 — S4E1-A01 rejected
+
+- `docs/qissa/illustrations/series30/S4E1_ROAD_TO_ORDAN_STORYBOARD_2026-11-16.md` created and source RU/UZ verified. ImageGen candidate #1 incorrectly repeated **S3E10 guard and children at water trough**; REJECTED, not in Library or runtime. S4E1 0/1 Stage1, 1 more Stage2 planned. For future generation use completely isolated prompt and APPROVED horses sheet; do not reuse stale water-trough composition.
+- S3E11 A01 accepted but still pending Supabase Storage; see links/sha in prior handoff. S3E11 A02 3 failed attempts and remains 0/1. Total artistically accepted remains 17/29 and integrated 16/29; no more images accepted in this checkpoint.
+
 ## New status 2026-11-16 — S3E11 A02 rejected; S4E1 prepared
 
 - Stage 1 **17/29 artistically accepted**, **16/29 verified uploaded + runtime integrated**; S3E11-A01 newly accepted WebP 216852 bytes SHA `1da88ca11053d3847e697a8863b83a1abdfcbcb6af3afbc9dbeb8f94a72c86a7` in Library, **NOT in Storage yet**.
