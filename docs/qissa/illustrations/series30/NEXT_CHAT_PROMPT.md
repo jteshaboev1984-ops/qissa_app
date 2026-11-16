@@ -1,3 +1,9 @@
+## Immediate 2026-11-16 owner correction — S3E11-A02 REJECTED
+
+- Previous accepted color of Bulut was **wrong**: cream-white instead of canonical silver/light-gray dapple, pale mane. Owner flagged. Withdraw prior A02 approval; old files moved+renamed REJECTED in QISSA Library. NEVER upload old `seven_roads_s3e11_bulut_apple_evening_02_APPROVED.webp`, SHA b7e9000bc9a9ac5febed08ca1e93a352b8bf70bc8f5c39ebab6fac139e9056e2.
+- A new color-corrected REVIEW v2 PNG was created, stored in `/QISSA/production/seven_roads/series30/review/S3E11/seven_roads_s3e11_bulut_apple_evening_02_GREY_REVIEW_v2.png` (1584x891, SHA 3fe08ab700054f71a78067c2c7e046fe742411313d3dac8bad9bdb313f283dd6). **Awaiting artistic review; NOT APPROVED, no WebP, no Storage/runtime**.
+- Stage1 artistically accepted **17/29**, all 17 integrated. S3E11 A01 complete; A02 pending corrected acceptance. S4E1 still 0/1. No source JSON/choices/progress change or merge/deploy.
+
 ## 2026-11-16 S4E1 image generation blocker
 
 Two more S4E1-A01 renderings REJECTED: stable/apple repeats, not riders on Aras–Ordan road; one wrong chestnut horse. Together with earlier water trough repeat three rejected attempts. No S4E1 asset in library or runtime. S3E11-A02 approved in QISSA Library but pending Storage: `seven_roads_s3e11_bulut_apple_evening_02_APPROVED.webp` 214508 bytes SHA256 `b7e9000bc9a9ac5febed08ca1e93a352b8bf70bc8f5c39ebab6fac139e9056e2`. Overall Stage1 18/29 artistically accepted, 17/29 Storage/reader integrated. Do not merge/deploy or change literary texts/choices/progress.

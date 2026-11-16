@@ -784,10 +784,9 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_art_accepted_A01_integrated_A02_storage_pending",
+      "artwork_acceptance": "stage_1_partial_A01_integrated_A02_rejected_revision_review",
       "asset_ids": [
-        "seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED",
-        "seven_roads_s3e11_bulut_apple_evening_02_APPROVED"
+        "seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -817,29 +816,9 @@
             "seven_roads_ci": 43853872463,
             "season2_tier_a_ci": 43853872542
           }
-        },
-        {
-          "candidate_id": "S3E11-A02",
-          "asset_id": "seven_roads_s3e11_bulut_apple_evening_02_APPROVED",
-          "kind": "shared",
-          "phase": "post_choice_text",
-          "ru_after_text": "Булут потянулся к яблоку в её руке.",
-          "uz_after_text": "Bulut uning qo‘lidagi olmaga cho‘zildi.",
-          "acceptance": "owner_standing_conditional_approval_after_literary_visual_canon_QA",
-          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E11/seven_roads_s3e11_bulut_apple_evening_02_APPROVED.png",
-          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E11/seven_roads_s3e11_bulut_apple_evening_02_APPROVED.webp",
-          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E11/seven_roads_s3e11_bulut_apple_evening_02_APPROVED.metadata.json",
-          "source_raw_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E11/seven_roads_s3e11_bulut_apple_evening_02_SOURCE_RAW.png",
-          "master_sha256": "6f68aea2d7f05fb62fe7bd8a16f04d55031f5dceecb639bd4baf875f2ce752ab",
-          "webp_sha256": "b7e9000bc9a9ac5febed08ca1e93a352b8bf70bc8f5c39ebab6fac139e9056e2",
-          "webp_bytes": 214508,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "visual_and_RU_UZ_literary_canon_passed_storage_runtime_pending",
-          "postproduction": "outer crop 44px from both sides and 50px bottom, maintaining 16:9; final 1584x891"
         }
       ],
-      "notes": "2026-11-16: S3E11-A01 accepted under standing owner instruction after RU/UZ exact anchors, guardroom interior and character/costume canon QA. Five figures: 12-year-old Temur and Samira, local captain and younger guard inside, arriving SENIOR Aras guard at doorway holding folded blank paper, sketches/three pillars not shown. All front belt buckles, side sheathed sabers, no wax seal, city fountain, courier, spoilers, new symbols. One earlier outdoor wax-letter image rejected. Correct standalone result cropped only 44 px on both sides and 50 px bottom to remove faint border pseudo-lettering (final 1584×891 16:9). 216852-byte WebP SHA256 1da88ca..., PNG master SHA256 88aa705e..., plus raw original and metadata in QISSA Library. Not uploaded to Storage, not wired to reader. S3E11-A02 still not accepted; previous two candidates wrong. No source literary changes or merge/deploy. Additional S3E11-A02 ImageGen candidate 2026-11-16 REJECTED: incorrectly repeated S3E10 daytime guard/watering trough, no evening courtyard, apple, gray Bulut, dark Shamol or Temur sitting on low wall. No image accepted/stored/registered. Earlier A02 #1 and #2 also rejected. Uploaded in Supabase on 2026-11-16T10:56:01Z 216852 bytes image/webp; Seven Roads CI #43853456629 and Tier A #43853456607 SUCCESS public GET/MIME/length/SHA256 17/17. RU/UZ additive overlay A01 and gallery order guard arrival → existing unfolded drawing wired in unpublished PR, new reader/browser CI still pending. A02 not accepted; stage1 artwork 1/2. A01 runtime completed Seven Roads #43853872463 and Tier A #43853872542 SUCCESS: 17/17 public SHA, 34 bilingual anchors, 5/4/11/10 reader, gallery, typecheck/build/browser smoke. New S3E11-A02 artistically accepted 2026-11-16 after verifying exact RU/UZ post-choice anchor and approved horse character sheet: Bulut grey dapple burgundy cloth WITHOUT star reaching Samira's apple, Shamol near-black small white forehead star teal cloth; 12yo Temur seated at stable low wall; evening window light, Samira one braid, front belt buckle and side sheathed sword. Original PNG final 1584x891 / 214508 byte WebP and SHA metadata/raw PNG uploaded to QISSA Library. A02 not in Supabase yet and not wired. S3E11 Stage1 art 2/2 accepted; technical 1/2 integrated; no literary/choice/progress changes."
+      "notes": "2026-11-16: S3E11-A01 accepted under standing owner instruction after RU/UZ exact anchors, guardroom interior and character/costume canon QA. Five figures: 12-year-old Temur and Samira, local captain and younger guard inside, arriving SENIOR Aras guard at doorway holding folded blank paper, sketches/three pillars not shown. All front belt buckles, side sheathed sabers, no wax seal, city fountain, courier, spoilers, new symbols. One earlier outdoor wax-letter image rejected. Correct standalone result cropped only 44 px on both sides and 50 px bottom to remove faint border pseudo-lettering (final 1584×891 16:9). 216852-byte WebP SHA256 1da88ca..., PNG master SHA256 88aa705e..., plus raw original and metadata in QISSA Library. Not uploaded to Storage, not wired to reader. S3E11-A02 still not accepted; previous two candidates wrong. No source literary changes or merge/deploy. Additional S3E11-A02 ImageGen candidate 2026-11-16 REJECTED: incorrectly repeated S3E10 daytime guard/watering trough, no evening courtyard, apple, gray Bulut, dark Shamol or Temur sitting on low wall. No image accepted/stored/registered. Earlier A02 #1 and #2 also rejected. Uploaded in Supabase on 2026-11-16T10:56:01Z 216852 bytes image/webp; Seven Roads CI #43853456629 and Tier A #43853456607 SUCCESS public GET/MIME/length/SHA256 17/17. RU/UZ additive overlay A01 and gallery order guard arrival → existing unfolded drawing wired in unpublished PR, new reader/browser CI still pending. A02 not accepted; stage1 artwork 1/2. A01 runtime completed Seven Roads #43853872463 and Tier A #43853872542 SUCCESS: 17/17 public SHA, 34 bilingual anchors, 5/4/11/10 reader, gallery, typecheck/build/browser smoke. New S3E11-A02 artistically accepted 2026-11-16 after verifying exact RU/UZ post-choice anchor and approved horse character sheet: Bulut grey dapple burgundy cloth WITHOUT star reaching Samira's apple, Shamol near-black small white forehead star teal cloth; 12yo Temur seated at stable low wall; evening window light, Samira one braid, front belt buckle and side sheathed sword. Original PNG final 1584x891 / 214508 byte WebP and SHA metadata/raw PNG uploaded to QISSA Library. A02 not in Supabase yet and not wired. S3E11 Stage1 art 2/2 accepted; technical 1/2 integrated; no literary/choice/progress changes. OWNER CORRECTION 2026-11-16: owner spotted Bulut color drift in purported accepted S3E11-A02; direct comparison to approved horse sheet confirms light-gray dapple Bulut had been painted too close to cream-white with overly pale mane and insufficient gray contrast. Shamol's white forehead star enlarged. Previous A02 art acceptance REVOKED, NOT uploaded to Supabase and never wired runtime. Old PNG/WebP/metadata/raw moved to QISSA Library /QISSA/production/seven_roads/series30/rejected/S3E11-A02_2026-11-16/ and renamed *_REJECTED. Removed A02 asset_id and anchor from approved queue, do not upload old SHA b7e9000bc9a9ac5febed08ca1e93a352b8bf70bc8f5c39ebab6fac139e9056e2. New color-corrected candidate PNG 1584x891 saved as review NOT APPROVED, sha256 3fe08ab700054f71a78067c2c7e046fe742411313d3dac8bad9bdb313f283dd6, Library /QISSA/production/seven_roads/series30/review/S3E11/seven_roads_s3e11_bulut_apple_evening_02_GREY_REVIEW_v2.png, awaits exact artistic acceptance; no WebP upload or runtime until approval. Overall 17/29 artistically accepted and all 17 integrated."
     },
     {
       "season": 4,
