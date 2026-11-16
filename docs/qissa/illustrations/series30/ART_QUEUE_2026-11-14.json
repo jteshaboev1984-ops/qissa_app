@@ -709,31 +709,10 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_partial_art_accepted_storage_pending",
-      "asset_ids": [
-        "seven_roads_s3e10_memorize_route_gate_01_APPROVED"
-      ],
-      "exact_anchor_pairs": [
-        {
-          "candidate_id": "S3E10-A01",
-          "asset_id": "seven_roads_s3e10_memorize_route_gate_01_APPROVED",
-          "kind": "shared",
-          "phase": "story_text",
-          "ru_after_text": "Темур несколько раз оглянулся, запоминая повороты и приметные места.",
-          "uz_after_text": "Temur burilishlar va ko‘zga tashlanadigan joylarni eslab qolish uchun bir necha marta ortiga qaradi.",
-          "acceptance": "conditional_owner_approval_after_literary_visual_and_character_QA",
-          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_memorize_route_gate_01_APPROVED.png",
-          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_memorize_route_gate_01_APPROVED.webp",
-          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_memorize_route_gate_01_APPROVED.metadata.json",
-          "master_sha256": "e34175f997a7329780d8c295b5055318a2fcaf79fa12118a555c27d9508bc80e",
-          "webp_sha256": "f6019df65fe015de03ff439a59738ea133c778c865ea4ec2de24b6d49b8d2c96",
-          "webp_bytes": 323922,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "visual_literary_canon_passed_storage_runtime_pending"
-        }
-      ],
-      "notes": "2026-11-16 Stage1 S3E10-A01 accepted: canonical 12-year-old Temur in turquoise and Samira in burgundy with one braid, both King's Rider belts and ceremonial swords sheathed, walking through Sarvan stone lane toward Aras road gate. Samira points to route, Temur memorizes by looking back; no chase, Nadir, riders or spoilers. PNG 1672×941/WebP 323922 bytes/SHA metadata in QISSA Library. Storage not uploaded, runtime not integrated. S3E10-A02 not approved: three incorrect generated candidates reproduced gates/route study or the S3E6 Nadir chase instead of young guard approaching city watering trough. None in Library, queue or runtime."
+      "artwork_acceptance": "not_started",
+      "asset_ids": [],
+      "exact_anchor_pairs": [],
+      "notes": "2026-11-16 OWNER QA WITHDRAWS former S3E10-A01 approval. The original image depicts ceremonial belt buckles on BACKS, not fronts, saber hilts behind hips with sheaths incorrectly worn toward rear; missed character accessories. The originally approved-named PNG/WebP/metadata were moved from Library stage1/S3E10 into /QISSA/production/seven_roads/series30/rejected/S3E10-A01_2026-11-16/ and renamed *_REJECTED.*. Supabase: not uploaded; runtime: never integrated. Two in-chat repair candidates also rejected: one had generated writing/watermarks and noncanonical banners; the other altered plot blocking, costumes and character roles. Do not reuse previous SHA f6019df65fe015de03ff439a59738ea133c778c865ea4ec2de24b6d49b8d2c96. Stage1 S3E10 now 0/2; global accepted 14/29, integrated 14/29."
     },
     {
       "season": 3,
