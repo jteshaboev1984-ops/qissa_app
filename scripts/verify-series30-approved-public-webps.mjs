@@ -6,6 +6,11 @@ import { createHash } from 'node:crypto'
 const base = 'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/'
 const assets = [
   {
+    name: 'seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.webp',
+    size: 216852,
+    sha256: '1da88ca11053d3847e697a8863b83a1abdfcbcb6af3afbc9dbeb8f94a72c86a7',
+  },
+  {
     name: 'seven_roads_s3e10_young_guard_water_trough_02_APPROVED.webp',
     size: 243188,
     sha256: 'c9dfc2162dd0c17d3b5d893d632b1da30c26ecbabe0f825b656727752a5437bf',
@@ -104,4 +109,4 @@ for (const asset of assets) {
   assert.equal(sha256, asset.sha256, `Remote WebP differs from approved master derivative: ${asset.name}`)
   console.log(`[series30-art-remote] OK ${asset.name} (${bytes.length} bytes)`)
 }
-console.log('[series30-art-remote] PASS 16/16 remote GET, MIME, byte lengths and SHA256')
+console.log('[series30-art-remote] PASS 17/17 remote GET, MIME, byte lengths and SHA256')
