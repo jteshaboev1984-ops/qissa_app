@@ -161,7 +161,7 @@ for (const fixture of fixtures) {
     )
     if (fixture.key === 'caravan') {
       assert.equal(
-        galleryBefore[2].items.slice(0, 2).map(item => item.assetId).join('|'),
+        galleryBefore[2].items.slice(0, 3).map(item => item.assetId).join('|'),
         [
           'seven_roads_s3e3_morning_alarm_window_01_APPROVED',
           'seven_roads_story2_p5_img_01_v1',

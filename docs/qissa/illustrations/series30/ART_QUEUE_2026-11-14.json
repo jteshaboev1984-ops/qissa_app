@@ -610,10 +610,31 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 1,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_1_art_accepted_storage_pending",
+      "asset_ids": [
+        "seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E6-A01",
+          "asset_id": "seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED",
+          "kind": "shared",
+          "phase": "story_text",
+          "ru_after_text": "Он проскочил между двумя повозками и вылетел через боковой проезд за мастерские.",
+          "uz_after_text": "U ikki arava orasidan o‘tib, ustaxonalar ortidagi yon yo‘lakka chiqdi.",
+          "acceptance": "owner_conditional_approved_after_visual_and_literary_canon_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E6/seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E6/seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E6/seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED.metadata.json",
+          "master_sha256": "9ae98c88558e11e98ee795075c1e17e58e6ef8dc8fd4432832bae71a40158ef5",
+          "webp_sha256": "4fb68e473f6a11573278142fad86c908e6d427b873b9952dbda839a94e96bf14",
+          "webp_bytes": 267232,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "art_literary_canon_passed_storage_runtime_pending"
+        }
+      ],
+      "notes": "2026-11-16 S3E6-A01 owner-conditionally approved after RU/UZ literary and visual QA. Canonical young Nadir (dark curly hair, no beard, brown scarf, grey-brown travel clothes) runs on foot between exactly two wagons toward side workshop alley; Temur and Samira observe from courtyard. No guards/capture/arrows/horse/new choice outcome. Master 1672x941 PNG + 267232-byte WebP with SHA metadata stored QISSA Library; file not yet in Supabase Storage, runtime not integrated. Previously rejected three Temur-only generations remain rejected; older two choice illustrations preserved unchanged."
     },
     {
       "season": 3,
