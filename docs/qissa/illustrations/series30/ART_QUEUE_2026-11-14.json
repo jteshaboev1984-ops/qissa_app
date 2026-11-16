@@ -505,10 +505,31 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_1_partial_art_accepted_storage_pending",
+      "asset_ids": [
+        "seven_roads_s3e3_morning_alarm_window_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E3-A01",
+          "asset_id": "seven_roads_s3e3_morning_alarm_window_01_APPROVED",
+          "kind": "shared",
+          "phase": "story_text",
+          "ru_after_text": "Люди двигались в сторону центра города.",
+          "uz_after_text": "Odamlar shahar markazi tomon ketayotgandi.",
+          "acceptance": "owner_conditional_approved_after_text_and_visual_canon_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E3/seven_roads_s3e3_morning_alarm_window_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E3/seven_roads_s3e3_morning_alarm_window_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E3/seven_roads_s3e3_morning_alarm_window_01_APPROVED.metadata.json",
+          "master_sha256": "f7a9db4557d5522f4772ce2ed5968ddda5b5c8738cb81ab2215a76b57224e3f6",
+          "webp_sha256": "60ce0110b06f70885e7ab8c2e0e3e744ecea4a19b0517c8d955a593b94a91271",
+          "webp_bytes": 249700,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "visual_and_literary_passed_storage_runtime_pending"
+        }
+      ],
+      "notes": "S3E3-A01 accepted under user's standing conditional approval: canonical 12-year-old Temur in turquoise-blue clothing observes Aras citizens heading to center from his home window in early morning before learning of robbery; no investigation spoilers. PNG/WebP/SHA metadata in QISSA Library, WebP size 249700 and SHA256 60ce0110b06f70885e7ab8c2e0e3e744ecea4a19b0517c8d955a593b94a91271. Await Supabase upload and CI verification before runtime. S3E3-A02 remains not accepted: two failed ImageGen candidates (wrong tracks/camp with Samira, then reused S2E4 father map). Do not adopt. Original accepted treasury wax clue image remains unchanged."
     },
     {
       "season": 3,
