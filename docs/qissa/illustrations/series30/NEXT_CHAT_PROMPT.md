@@ -34,3 +34,10 @@
 - Сцены S2E1 (2), S2E2 (1), S2E3 (3), S2E4 (2), S4E2 (3), S3E3-A01 (1): 12/12 runtime integrated. Совпадающие RU/UZ anchors **24/24**, галерея блокирует ещё не прочитанные сцены; reading 30, 4 seasons 5/4/11/10, typecheck/build/browser smoke PASS.
 - S3E3-A02 accepted **only in Library**; not yet uploaded/verified, do not wire prematurely. 13/29 art accepted, 12/29 fully integrated.
 - PR Draft, merge and deploy not authorised.
+
+## Дополнение: S3E6 «Побег Надира», 2026-11-16
+
+- Создан `docs/qissa/illustrations/series30/S3E6_NADIR_ESCAPE_STORYBOARD_2026-11-16.md` с точным RU/UZ эпизодом, одним новым shared кадром, тремя реально просмотренными эталонами и запретом повторять branch-исходы. План S3E6: **Stage1 1**, Stage2 0.
+- Новый кадр **S3E6-A01 пока НЕ принят**: 3 изображения не соответствуют сцене (все три с Темуром в караванном дворе, без бегущего Надира). Не использовать и не сохранять как APPROVED.
+- После загрузки S3E3-A02 интегрировать его прежде следующего runtime шага. Потом создать S3E6-A01 через изолированный арт-процесс с главным героем Надиром (молодой, тёмные кудрявые волосы, серо-коричневая дорожная одежда); он бежит пешком между двумя повозками к боковому проходу за мастерскими. RU `Он проскочил между двумя повозками и вылетел через боковой проезд за мастерские.` / UZ `U ikki arava orasidan o‘tib, ustaxonalar ortidagi yon yo‘lakka chiqdi.`, authored `story2_part_8_stop_nadir` story_text, reader S3E6. Никаких стражников/стрел/задержания, исходы веток сохраняются.
+- Следующий арт-приоритет после S3E6: S3E10 (2), S3E11 (2), затем четвёртый сезон. План 29+19+обложка не менять.
