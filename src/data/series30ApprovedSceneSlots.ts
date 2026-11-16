@@ -185,6 +185,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     },
   },
   {
+    story_id: 'seven_roads_dve_bashni',
+    part_id: 'story3_part_3_three_pillars',
+    slot_id: 'SERIES30-S3E11-A02',
+    anchor_key: 'series30_s3e11_bulut_apple_evening',
+    asset_id: 'seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Булут потянулся к яблоку в её руке.',
+      uz: 'Bulut uning qo‘lidagi olmaga cho‘zildi.',
+    },
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A03',

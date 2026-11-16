@@ -97,3 +97,9 @@
 - Master PNG **1672×941**, sha256 `b2345196103b382d92f082d62b7f8761a9c7b4ed5ab84964510fb57ab526f6c8`; optimized WebP **267928 bytes**, sha256 `1b982536b64a0289b3ee2cbb6a5ee553aad864a3eac2ae3744366f819435937b`. PNG, WebP, metadata stored in QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E11/`.
 - Unchanged authored unique anchors `story3_part_3_three_pillars` / `post_choice_text`: RU `Булут потянулся к яблоку в её руке.` / UZ `Bulut uning qo‘lidagi olmaga cho‘zildi.`, virtual reader S3E11. Stage1 **2/2 art accepted**, **1/2 runtime integrated**.
 - **Supabase Storage not uploaded yet.** Next: upload EXACT `seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3.webp` under `story-images/seven-roads/season2_tier_a_v2/`, verify public GET/MIME/bytes/SHA before any additive reader asset overlay/CI. No literary text/choice/progress edits; PR #334 Draft, no merge/deploy.
+
+## S3E11-A02 white v3 — Storage and additive integration (2026-11-16)
+
+- User-uploaded WHITE Bulut v3 WebP `seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3.webp` found in Supabase `story-images/seven-roads/season2_tier_a_v2/`, 267928 bytes, MIME image/webp. GitHub Actions **Seven Roads CI #43864305432** and **Tier A #43864305168** SUCCESS: public GET/MIME/length/SHA256 verified **18/18**; SHA `1b982536b64a0289b3ee2cbb6a5ee553aad864a3eac2ae3744366f819435937b`.
+- S3E11-A02 additive slot added to original `story3_part_3_three_pillars/post_choice_text` after unique RU `Булут потянулся к яблоку в её руке.`, UZ `Bulut uning qo‘lidagi olmaga cho‘zildi.`; gallery order **senior guard arrives → approved map drawing → white Bulut apple**. Runtime reader CI/browser on this new commit still pending; do not claim full completion prematurely.
+- Old incorrect coat v1 remains REJECTED, grey v2 REVIEW, both excluded. Original authored text, choice IDs and progress remain unchanged; PR Draft, no merge/deploy.

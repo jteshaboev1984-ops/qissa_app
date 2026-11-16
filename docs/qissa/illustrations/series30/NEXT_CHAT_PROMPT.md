@@ -1,3 +1,17 @@
+# QISSA — current 2026-11-16 production checkpoint
+
+Repo `jteshaboev1984-ops/qissa_app`, PR #334 Draft on `qissa/four-seasons-chronological-runtime-20261112`. Always recheck actual HEAD and CI. Confirmed plan 5/4/11/10 = 30 episodes; Stage 1 29 new story frames, Stage 2 19, Season4 cover separately. Do not modify literary RU/UZ JSON, choice/story IDs, progress or prior approved art; no merge/deploy.
+
+**Stage1 ART ACCEPTED: 19/29.** In Supabase and independently remotely SHA-verified: **18/29**; S3E11-A02 WHITE Bulut v3 just wired into RU/UZ reader overlay; its new runtime/gallery/browser CI pending. Two earlier SHA-only CI runs **#43864305432/#43864305168 SUCCESS**, 18/18 files. S3E11 exact 36 RU/UZ anchors expected when new runtime CI passes.
+
+**Only file awaiting user upload:** S4E1-A01 `seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED.webp`, **326202 bytes**, SHA256 `998a4ad57d178ef87439f253a0fb2ee005d54109b681ae9c7023738ad2090107`; PNG 1672×941 (sha `31de773a6339d896436e25881d4ab20eecfb19cc0466b9965dcb5de6dc52e62b`), metadata in Library `/QISSA/production/seven_roads/series30/stage1/S4E1/`. User explicitly approved final three-rider dawn Aras→Ordan image (Temur/Shamol near-black teal cloth, Samira/Bulut white maroon cloth, senior helmeted guard on solid brown horse). Previous `S4E1...REVIEW_v1` NOT APPROVED. Upload only final APPROVED WebP to Supabase bucket `story-images` folder `seven-roads/season2_tier_a_v2/`; confirm actual storage then add remote SHA CI and S4E1 bilingual scene overlay. S4E1 source part `story4_part_1_false_notice_and_route_check/story_text`, RU `На следующее утро Темур и Самира выехали в Ордан.`, UZ `Ertasi tong Temur va Samira Ordan tomon yo‘lga chiqdi.`. Do not wire until upload verification.
+
+S3E11-A02 completed artistic and byte proof: WHITE Bulut v3 `seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3.webp` (267928 bytes, SHA256 `1b982536b64a0289b3ee2cbb6a5ee553aad864a3eac2ae3744366f819435937b`) in Storage; new S3E11 overlay `SERIES30-S3E11-A02` after original post-choice apple anchor; gallery order arriving guard → existing map → apple. Must finish reader/gallery/browser CI on new commit before marking S3E11 `stage_1_complete`.
+
+Next art Stage1: S4E3 road fork per `docs/qissa/illustrations/series30/S4E3_FALSE_NOTICE_ROAD_FORK_STORYBOARD_2026-11-16.md`, heavy closed two-horse prison wagon turns onto patrol road from Aras road, Danyar in signature blue scarf on gray horse, mounted guard escort, before ambush; exact RU/UZ story paragraphs and approved image refs in storyboard. S4E3 0/1 as of this checkpoint. One image at a time, reject any off-scene output. S4E1 Stage2 count unchanged.
+
+## Historical context (older checkpoints, may refer to superseded image status)
+
 ## S4E3 road-fork storyboard ready (2026-11-16)
 
 - New verified storyboard: `docs/qissa/illustrations/series30/S4E3_FALSE_NOTICE_ROAD_FORK_STORYBOARD_2026-11-16.md`. Stage 1 requires ONE new illustration, not yet generated: closed prison wagon turns onto old patrol road, Danyar on gray horse and guards; unique literal RU/UZ anchors in source `story4_part_2_nadir_red_hill_clue/story_text`, before the S4E4 virtual split. Preserve existing approved notice and wagon-door scenes. S4E3 remains 0/1 art accepted.

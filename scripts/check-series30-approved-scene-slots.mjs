@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 17)
+assert.equal(series30ApprovedScenes.length, 18)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -69,7 +69,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story3TwoTowers',
     key: 'towers',
-    expected: { 'SERIES30-S3E10-A01': 2, 'SERIES30-S3E10-A02': 2, 'SERIES30-S3E11-A01': 3 },
+    expected: { 'SERIES30-S3E10-A01': 2, 'SERIES30-S3E10-A02': 2, 'SERIES30-S3E11-A01': 3, 'SERIES30-S3E11-A02': 3 },
   },
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
@@ -170,6 +170,7 @@ for (const fixture of fixtures) {
         [
           'seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED',
           'seven_roads_s2_story3_guardhouse_two_drawings_map_01_APPROVED',
+          'seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3',
         ].join('|'),
         language + ': S3E11 gallery must show arriving guard before existing unfolded-map scene',
       )
@@ -177,6 +178,11 @@ for (const fixture of fixtures) {
         galleryBefore[1].items.some(item => item.assetId === 'seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED'),
         false,
         language + ': S3E11 arrival leaked into S3E10',
+      )
+      assert.equal(
+        galleryBefore[1].items.some(item => item.assetId === 'seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3'),
+        false,
+        language + ': S3E11 Bulut apple leaked into S3E10',
       )
       assert.equal(
         galleryBefore[1].items.map(item => item.assetId).join('|'),
@@ -340,9 +346,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 34)
-console.log('[series30-art] PASS: 17 owner-approved assets, 34 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x1 / S4E2 x3), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 36)
+console.log('[series30-art] PASS: 18 owner-approved assets, 36 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E2 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
