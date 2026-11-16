@@ -42,3 +42,8 @@
 Перед генерацией каждого кадра просмотреть доступные утверждённые изображения и RU/UZ соседние абзацы; один кадр за раз. Если отсутствует необходимый персонажный референс — использовать close-up, не придумывать лицо. При изображении неверного эпизода или символики ставить **REJECTED**. Точно сохранить stage1 quota 2; stage2 ещё 2 по последующему плану.
 
 Только при принятии: master PNG → оптимизированный WebP → SHA256 → QISSA Library → подтверждённая Supabase Storage загрузка `story-images/seven-roads/season2_tier_a_v2/` → независимая проверка публичных bytes/MIME/SHA в CI → additive scene overlay `src/data/series30ApprovedSceneSlots.ts` + URL `src/data/authoredStoryAssets.ts` → RU/UZ/галерея/S4E4 only/choice unlocks/typecheck/build/browser smoke. Не изменять литературные JSON, выборы, ID, прогресс, старые approved кадры, не merge/deploy.
+
+## First art attempt S4E4-A01 REJECTED — 2026-11-16
+
+- ImageGen ignored the tightly scoped two wooden tokens and Nadyr's water buckets scene, returning instead S4E3 prison wagon/road fork with invented decorative signpost and guards. **REJECTED**; no asset or status changed. S4E4 Stage1 **0/2**, Stage2 still 2 planned. Do not use this image, no Storage/upload/runtime.
+- Source and anchor details above remain unchanged; original `seven_roads_s2_story4_nadir_contact_01_APPROVED` still preserved. On retry use a clean visual context focused only on hands with wooden tokens (twin tower silhouette, no invented heraldry) and two buckets at Hamid's courtyard.

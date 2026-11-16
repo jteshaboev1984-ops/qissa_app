@@ -65,3 +65,9 @@
 - Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED.webp` confirmed `image/webp`, 326202 bytes, SHA256 `998a4ad57d178ef87439f253a0fb2ee005d54109b681ae9c7023738ad2090107` via independent GitHub Actions Seven Roads **#43868285579** and Season 2 Tier A **#43868285540**, both SUCCESS, **19/19** public WebP GET/MIME/bytes/SHA.
 - Added additive runtime `SERIES30-S4E1-A01` after the exact RU `На следующее утро Темур и Самира выехали в Ордан.` / UZ `Ertasi tong Temur va Samira Ordan tomon yo‘lga chiqdi.` in `story4_part_1_false_notice_and_route_check/story_text`. Registered public URL without changing authored RU/UZ JSON, choice IDs, saved progress or old asset IDs.
 - Regression checks for S4E1 RU/UZ gallery **homecoming → dawn departure → existing three pillars**, no leakage into S4E2 and existing locked/unlocked behavior; CI on this new commit is still pending. Old `REVIEW_v1` remains NOT APPROVED. Stage 1 S4E1 1/1 artistic approval, runtime wiring pending final CI. Stage2 count unchanged at 1.
+
+## S4E1-A01 completed in reading-series CI — 2026-11-16
+
+- Public Storage and SHA verified earlier: 326202 bytes and SHA256 `998a4ad57d178ef87439f253a0fb2ee005d54109b681ae9c7023738ad2090107`; all 19/19 public WebP checks.
+- New PR commit `ebc15903b5fd85108bab123fef4092a6aa4601d5` with owner-approved S4E1 scene overlay, asset registry, gallery regression. **Seven Roads CI #43868768235 SUCCESS** and **Season 2 Tier A Slot Check #43868768338 SUCCESS** after re-running failed browser smoke job due transient Chrome DevTools startup/DBus failure. **38/38 RU/UZ anchors**, source/choice IDs intact, gallery homecoming → morning departure → existing three pillars, typecheck, build and browser smoke passed.
+- Stage 1 S4E1 **1/1 artistic and technical COMPLETE**, stage2 quota **1 image** unchanged; no PR merge/deploy or progress writes.

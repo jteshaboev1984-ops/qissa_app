@@ -1,3 +1,13 @@
+# QISSA — verified production checkpoint 2026-11-16
+
+- Repo `jteshaboev1984-ops/qissa_app`, Draft PR #334 branch `qissa/four-seasons-chronological-runtime-20261112`. Recheck exact HEAD, CI and queue before writes. Fixed Stage1 29, Stage2 19, fourth season cover 1; 5/4/11/10 30 episodes.
+- **Stage1 19/29 ART APPROVED and 19/29 technically uploaded SHA verified + RU/UZ reader integrated.** S4E1-A01 `seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED.webp` 326202 bytes SHA256 `998a4ad57d178ef87439f253a0fb2ee005d54109b681ae9c7023738ad2090107` uploaded and in reader. **Seven Roads #43868768235 SUCCESS, Tier A #43868768338 SUCCESS** after Chrome DevTools transient rerun. 19/19 remote WebPs, 38/38 anchors, gallery homecoming → dawn departure → old three pillars, typecheck/build/browser smoke PASS. **No currently accepted WebP awaits user upload.**
+- S4E3-A01 remains 0/1. `seven_roads_s4e3_prison_wagon_road_fork_REVIEW_v2.png` in QISSA Library `/QISSA/production/seven_roads/series30/review/S4E3/` 1672x941 SHA256 `7b3f3278224bc7cfa1a9feb62f4de2303dcbb7d87adfe596651138da7806e6cb` looks correct road fork, Danyar/gray horse, blue uniform but **still 7 guards vs 6**. Not accepted, NO WebP/Storage/runtime. Other ImageGen attempts with missing Danyar/invented road signs/visible prisoner were rejected; do not reuse.
+- S4E4 «Красный холм» now has explicit storyboard `docs/qissa/illustrations/series30/S4E4_RED_HILL_NADIR_STORYBOARD_2026-11-16.md`: Stage1 2 shots A01 close-up of Nadyr's wooden two-tower token being inspected (source story_text), A02 Nadyr hangs flask on rear left hook of Hamid cargo wagon (source post_choice_text); exact RU/UZ anchors verified, original Nadir contact asset preserved. First new A01 generation wrongly repeated prison wagon and made signs, REJECTED. Stage1 0/2, Stage2 2.
+- All published text source hashes, choices, IDs, legacy approved art and user progress unchanged. PR Draft, NO merge/deploy/publishing.
+
+## Historical checkpoint notes
+
 ## 2026-11-16 latest S4E1 Storage and runtime checkpoint
 
 - User uploaded final `seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED.webp` to `story-images/seven-roads/season2_tier_a_v2/`. Public bytes 326202, SHA256 `998a4ad57d178ef87439f253a0fb2ee005d54109b681ae9c7023738ad2090107`; Seven Roads #43868285579 and Tier A #43868285540 SUCCESS: all **19/19** remote WebPs.
