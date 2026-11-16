@@ -1,3 +1,9 @@
+## 2026-11-16 latest S4E1 checkpoint — REVIEW and blockers
+
+- S3E11-A02 `seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3` was EXPLICITLY owner accepted: visually near-WHITE Bulut, not gray. 1672×941 PNG SHA `b2345196103b382d92f082d62b7f8761a9c7b4ed5ab84964510fb57ab526f6c8`; WebP **267928 bytes**, SHA `1b982536b64a0289b3ee2cbb6a5ee553aad864a3eac2ae3744366f819435937b`, in QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E11/`; **STORAGE NOT YET UPLOADED, no runtime**. Accepted 18/29, integrated 17/29.
+- S4E1-A01 new dawn road candidate is saved **REVIEW, not approved**: three mounted riders correct, but senior guard clothing/headgear differs from approved S3E11-A01. `/QISSA/production/seven_roads/series30/review/S4E1/seven_roads_s4e1_dawn_road_three_riders_REVIEW_v1.png`, SHA `221f6d73f9e294446e9a3801fd564cbf588535478653d71f098382695ac9a67e`. Correct senior guard in bronze helmet, brown armor, grey beard, refer to `seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.png`. Two edit attempts misfired (fabricated dashboard, previous apple scene), REJECTED. Do not accept based on scene alone. **Stage1 S4E1 0/1**.
+- No merge/deploy, authored stories/choices/progress unchanged.
+
 # QISSA — CURRENT 2026-11-16 HANDOFF — S3E11-A02 WHITE V3 APPROVED
 
 - Repo `jteshaboev1984-ops/qissa_app`, Draft PR #334 branch `qissa/four-seasons-chronological-runtime-20261112`, recheck HEAD/CI before actions. Earlier notes below are historical and may describe now-withdrawn v1/v2 approvals.
