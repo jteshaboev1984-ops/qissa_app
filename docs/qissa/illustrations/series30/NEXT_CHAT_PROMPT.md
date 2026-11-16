@@ -35,3 +35,7 @@
 ## Correction of S3E10-A01 visual acceptance (2026-11-16)
 
 Previous approval was revoked after the owner found belts worn back-to-front and saber scabbards attached toward the rear. The source is archived REJECTED in Library; not in Supabase, not in runtime. S3E10 remains 0/2; overall artistic acceptance 14/29. Do not upload the old file; create a new correctly equipped scene with Samira pointing, Temur looking back, front-facing belt buckles and properly sheathed sabers on accessible hips.
+
+## S3E10-A01 — новый кандидат принят, 2026-11-16
+
+Вместо отозванного v1 создан **отдельный** корректный `seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2`. Подтверждены: два ребёнка в канонических костюмах/головных аксессуарах, Самира указывает дорогу, Темур оглядывается, центральные пряжки спереди, ножны закреплены сбоку, надписей и неканоничных символов нет. В QISSA Library сохранены PNG, WebP (290850 байт, SHA256 `e63df78fe3da90648d688cd052443ace83248f1a9582cc2896b3b9bb5aadea09`) и metadata. Только ЭТУ новую v2 необходимо загрузить в `story-images/seven-roads/season2_tier_a_v2/`, после чего проверить Storage/remote SHA и интегрировать RU/UZ. **15/29 художественно приняты, 14/29 технически интегрированы; S3E10-A02 не принята**. Не путать со старым запрещённым `_REJECTED`.

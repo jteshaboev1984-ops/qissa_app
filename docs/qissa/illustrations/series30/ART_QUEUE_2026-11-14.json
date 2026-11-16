@@ -709,10 +709,31 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": "2026-11-16 OWNER QA WITHDRAWS former S3E10-A01 approval. The original image depicts ceremonial belt buckles on BACKS, not fronts, saber hilts behind hips with sheaths incorrectly worn toward rear; missed character accessories. The originally approved-named PNG/WebP/metadata were moved from Library stage1/S3E10 into /QISSA/production/seven_roads/series30/rejected/S3E10-A01_2026-11-16/ and renamed *_REJECTED.*. Supabase: not uploaded; runtime: never integrated. Two in-chat repair candidates also rejected: one had generated writing/watermarks and noncanonical banners; the other altered plot blocking, costumes and character roles. Do not reuse previous SHA f6019df65fe015de03ff439a59738ea133c778c865ea4ec2de24b6d49b8d2c96. Stage1 S3E10 now 0/2; global accepted 14/29, integrated 14/29."
+      "artwork_acceptance": "stage_1_partial_art_accepted_storage_pending",
+      "asset_ids": [
+        "seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E10-A01",
+          "asset_id": "seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2",
+          "kind": "shared",
+          "phase": "story_text",
+          "ru_after_text": "Темур несколько раз оглянулся, запоминая повороты и приметные места.",
+          "uz_after_text": "Temur burilishlar va ko‘zga tashlanadigan joylarni eslab qolish uchun bir necha marta ortiga qaradi.",
+          "acceptance": "owner_standing_conditional_approval_after_visual_and_RU_UZ_canon_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2.metadata.json",
+          "master_sha256": "07d3e2c21c716090e1043507c1926cae94d8cd09ba3a341f1a253f8f2c83b748",
+          "webp_sha256": "e63df78fe3da90648d688cd052443ace83248f1a9582cc2896b3b9bb5aadea09",
+          "webp_bytes": 290850,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "text_and_visual_passed_storage_and_runtime_pending"
+        }
+      ],
+      "notes": "2026-11-16 S3E10-A01 v2 accepted after owner detected back-facing belt buckles and rear-mounted sabers in withdrawn v1. New candidate shows Samira pointing toward Aras road gate and Temur looking back; both child characters in canonical blue patterned cap/teal and jeweled circlet/burgundy respectively. Belt clasps clearly on front abdomen and sabers secured in accessible side scabbards. No text/flags/extra symbols, no chase or spoilers. Master 1672×941 PNG (sha 07d3e2c...), 290850-byte WebP (sha e63df78...), metadata uploaded to QISSA Library. Older v1 remains REJECTED archived and MUST NOT be reused. Await user-uploaded v2 WebP before public GET/SHA validation and RU/UZ reader integration. S3E10-A02 still not accepted. Existing authored texts, choice IDs, old art and family progress unchanged, PR Draft."
     },
     {
       "season": 3,
