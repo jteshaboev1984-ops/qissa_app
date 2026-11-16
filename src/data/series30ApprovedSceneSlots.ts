@@ -149,6 +149,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     },
   },
   {
+    story_id: 'seven_roads_dve_bashni',
+    part_id: 'story3_part_2_courier_route',
+    slot_id: 'SERIES30-S3E10-A01',
+    anchor_key: 'series30_s3e10_memorize_route_gate',
+    asset_id: 'seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Темур несколько раз оглянулся, запоминая повороты и приметные места.',
+      uz: 'Temur burilishlar va ko‘zga tashlanadigan joylarni eslab qolish uchun bir necha marta ortiga qaradi.',
+    },
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A03',
