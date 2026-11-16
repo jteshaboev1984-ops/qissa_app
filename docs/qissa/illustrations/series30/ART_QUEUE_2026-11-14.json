@@ -709,9 +709,10 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_partial_runtime_wired_ci_pending",
+      "artwork_acceptance": "stage_1_art_accepted_A01_integrated_A02_storage_pending",
       "asset_ids": [
-        "seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2"
+        "seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2",
+        "seven_roads_s3e10_young_guard_water_trough_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -730,17 +731,38 @@
           "webp_bytes": 290850,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
           "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
-          "qa_status": "pending_reader_gallery_browser_CI",
+          "qa_status": "RU_UZ_reader_gallery_typecheck_build_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2.webp",
           "remote_sha256_verification": "passed_ci_run_43847309019",
           "qa_ci_runs": {
             "remote_webp_verification": 43847309019,
-            "remote_webp_second_run": 43847309010
+            "remote_webp_second_run": 43847309010,
+            "seven_roads_ci": 43847796923,
+            "season2_tier_a_ci": 43847796845
           }
+        },
+        {
+          "candidate_id": "S3E10-A02",
+          "asset_id": "seven_roads_s3e10_young_guard_water_trough_02_APPROVED",
+          "kind": "shared",
+          "phase": "story_text",
+          "ru_after_text": "К ним подошёл молодой стражник.",
+          "uz_after_text": "Ularning oldiga yosh qo‘riqchi keldi.",
+          "acceptance": "owner_standing_conditional_approval_after_canon_story_and_artifact_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_young_guard_water_trough_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_young_guard_water_trough_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_young_guard_water_trough_02_APPROVED.metadata.json",
+          "master_sha256": "d2bfcf267453239fc689ca8cfd5b6992f59c17930355a2a15d8de34b1469c9ea",
+          "webp_sha256": "c9dfc2162dd0c17d3b5d893d632b1da30c26ecbabe0f825b656727752a5437bf",
+          "webp_bytes": 243188,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "art_visual_literary_and_crop_checked_storage_runtime_pending",
+          "postproduction": "cropped 30 px left/right and 35 px bottom from first scene-correct candidate to remove generator border pseudo-letters; 1611 x 906 px"
         }
       ],
-      "notes": "2026-11-16 S3E10-A01 v2 accepted after owner detected back-facing belt buckles and rear-mounted sabers in withdrawn v1. New candidate shows Samira pointing toward Aras road gate and Temur looking back; both child characters in canonical blue patterned cap/teal and jeweled circlet/burgundy respectively. Belt clasps clearly on front abdomen and sabers secured in accessible side scabbards. No text/flags/extra symbols, no chase or spoilers. Master 1672×941 PNG (sha 07d3e2c...), 290850-byte WebP (sha e63df78...), metadata uploaded to QISSA Library. Older v1 remains REJECTED archived and MUST NOT be reused. Await user-uploaded v2 WebP before public GET/SHA validation and RU/UZ reader integration. S3E10-A02 still not accepted. Existing authored texts, choice IDs, old art and family progress unchanged, PR Draft. User uploaded corrected v2 at 2026-11-16T10:14:32Z. Supabase Storage object 290850 bytes image/webp. GitHub Actions #43847309019 and #43847309010 successful, independent public HTTP/MIME/bytes/SHA256 verified 15/15. Runtime additive bilingual scene overlay and asset URL wired, S3E10 gallery/browser CI pending; prior REJECTED v1 not reused. Stage1 A02 still not yet accepted as of this checkpoint."
+      "notes": "2026-11-16 S3E10-A01 v2 accepted after owner detected back-facing belt buckles and rear-mounted sabers in withdrawn v1. New candidate shows Samira pointing toward Aras road gate and Temur looking back; both child characters in canonical blue patterned cap/teal and jeweled circlet/burgundy respectively. Belt clasps clearly on front abdomen and sabers secured in accessible side scabbards. No text/flags/extra symbols, no chase or spoilers. Master 1672×941 PNG (sha 07d3e2c...), 290850-byte WebP (sha e63df78...), metadata uploaded to QISSA Library. Older v1 remains REJECTED archived and MUST NOT be reused. Await user-uploaded v2 WebP before public GET/SHA validation and RU/UZ reader integration. S3E10-A02 still not accepted. Existing authored texts, choice IDs, old art and family progress unchanged, PR Draft. User uploaded corrected v2 at 2026-11-16T10:14:32Z. Supabase Storage object 290850 bytes image/webp. GitHub Actions #43847309019 and #43847309010 successful, independent public HTTP/MIME/bytes/SHA256 verified 15/15. Runtime additive bilingual scene overlay and asset URL wired, S3E10 gallery/browser CI pending; prior REJECTED v1 not reused. Stage1 A02 still not yet accepted as of this checkpoint. S3E10 A01 v2 finalized: Seven Roads CI #43847796923 + Season 2 Tier A #43847796845 SUCCESS (15/15 WebP SHA; 30 bilingual anchors; gallery, typecheck/build/browser). S3E10 A02 new independent composition shows young helmeted guard newly approaching Temur and Samira at Sarvan guardhouse water trough before any courier news; rejected two rerolls that introduced wax-sealed scroll, invented banners and horses. Correct first shot was cropped ONLY at outer border by 30px sides/35px bottom to eliminate fake generator lettering; passed final crop review with children's canon caps, burgundy/teal, front rider belt buckles and sheathed side sabres intact. Final A02 PNG 1611×906, WebP 243188 bytes SHA256 c9dfc2162dd0c17d3b5d893d632b1da30c26ecbabe0f825b656727752a5437bf in QISSA Library. A02 not uploaded, not yet in runtime; stage1 S3E10 art 2/2 accepted, tech 1/2 integrated. Superseded S3E10-A01 v1 remains rejected."
     },
     {
       "season": 3,

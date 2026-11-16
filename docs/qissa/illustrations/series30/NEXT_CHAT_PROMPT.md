@@ -1,3 +1,17 @@
+# QISSA — актуальная передача работы 30 иллюстрированных серий
+
+**Приоритет: эта запись проверена 2026-11-16 на PR #334 HEAD 713f9205fbf327058626733103167358226fe3e3.** Старые разделы ниже считать историческими там, где есть противоречия.
+
+- GitHub `jteshaboev1984-ops/qissa_app`, рабочий Draft PR #334, ветка `qissa/four-seasons-chronological-runtime-20261112`. Перед изменениями проверить новый HEAD и CI.
+- Не менять утверждённый план 5/4/11/10 = 30 серий, Stage1 29 + Stage2 19 + 1 обложка четвёртого сезона.
+- **16/29 Stage1 художественно принято. 15/29 технически интегрировано и проверено** (все предыдущие 14 + S3E10-A01 исправленная `APPROVED_v2`). `#43847796923` Seven Roads и `#43847796845` Tier A успешны: 15/15 remote WebP SHA, 30/30 RU/UZ anchors, корректная галерея, typecheck/build/browser smoke.
+- **S3E10-A02 «Стражник принёс известие» только что принято, но НЕ загружено в Supabase и НЕ подключено к читателю**. QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E10/seven_roads_s3e10_young_guard_water_trough_02_APPROVED.webp`, 243188 байт, SHA256 `c9dfc2162dd0c17d3b5d893d632b1da30c26ecbabe0f825b656727752a5437bf`. PNG мастер 1611×906, metadata. Сцена: Темур/Самира и молодой стражник у каменной поилки караула, до его сообщения. RU anchor `К ним подошёл молодой стражник.`; UZ `Ularning oldiga yosh qo‘riqchi keldi.`; `story_id=seven_roads_dve_bashni`, `part_id=story3_part_2_courier_route`, `phase=story_text`, virtual episode S3E10. После пользовательской загрузки в `story-images/seven-roads/season2_tier_a_v2/`: remote GET/MIME/byte/SHA; `series30ApprovedSceneSlots.ts`, `authoredStoryAssets.ts`, gallery RU/UZ и CI.
+- Старый S3E10-A01 `APPROVED` был **отозван** из-за поясов и ножен сзади; хранится лишь в Library `rejected`, никогда не подключался. Исправленный `APPROVED_v2` уже в runtime. Повторные ошибки A02 с восковым письмом/знамёнами REJECTED; финальная версия A02 получена из первого сюжетно правильного кадра с обрезкой только 35 px нижней границы и 30 px краёв для удаления псевдобукв.
+- Далее S3E11 «Три столба»: storyboard `docs/qissa/illustrations/series30/S3E11_THREE_PILLARS_STORYBOARD_2026-11-16.md`, Stage1 A01 взрослый стражник приносит **закрытый лист** с рисунками в караул Сарвана (не раскрывать знак), A02 поздний вечер и Булут тянется к яблоку Самиры, рядом Шамол, Темур на низкой стене. Сохранять канон коней, расположение ножен, возраст 12 лет. Ранее две неверные генерации S3E11-A02 — REJECTED.
+- После каждой художественной приёмки: PNG → WebP → sha256 → QISSA Library → подтверждённая Storage загрузка → независимый remote SHA → RU/UZ overlay → CI/gallery/browser. Исходные литературные RU/UZ JSON SHA-protected, story/choice IDs, progress keys и существующие утверждённые изображения не изменять. Без owner-specific разрешения НЕ объединять PR, НЕ публиковать и НЕ развёртывать приложение.
+
+## Исторические чекпоинты (для следа, не как текущее состояние)
+
 # QISSA — продолжение иллюстрирования 30 серий «Семь дорог»
 
 Дата актуализации: 2026-11-16. Продолжать текущий проект, не начинать заново.
