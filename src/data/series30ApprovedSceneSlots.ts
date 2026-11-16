@@ -125,6 +125,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     },
   },
   {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_5_first_investigation',
+    slot_id: 'SERIES30-S3E3-A02',
+    anchor_key: 'series30_s3e3_temur_caravan_courtyard',
+    asset_id: 'seven_roads_s3e3_temur_caravan_courtyard_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Темур остановился посреди двора.',
+      uz: 'Temur hovli o‘rtasida to‘xtadi.',
+    },
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A03',

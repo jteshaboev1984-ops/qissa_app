@@ -81,3 +81,11 @@
 - PNG original 1672×941, 2895415 bytes, SHA-256 `2b8ff34e83a7dbd40b09c1fa2f3905ea38d5d489369745669afd9c3602bb0b48`; optimized WebP **299718** bytes, SHA-256 `ba66f3835ed7acea64dfcf3da17985f131a93d813310e5d9930d284bd1701c14`; metadata JSON. All stored in QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E3/`.
 - **A02 Storage NOT uploaded yet, runtime NOT integrated.** After user uploads exactly `seven_roads_s3e3_temur_caravan_courtyard_02_APPROVED.webp` to `story-images/seven-roads/season2_tier_a_v2/`, verify public GET/MIME/bytes/SHA and then wire additive overlay and gallery, rerun both CI workflows.
 - S3E3 Stage1 **2/2 art accepted**, **1/2 technically complete**, no alteration of literary JSON, choices, progress keys or pre-existing art. PR remains Draft without merge/deploy.
+
+## Загрузка и техническая интеграция S3E3-A02 — 2026-11-16
+
+- Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e3_temur_caravan_courtyard_02_APPROVED.webp` найден; **299718 байт**, MIME `image/webp`.
+- GitHub Actions **Season 2 Tier A Slot Check #43826262741**: независимая проверка HTTP GET/MIME/length/SHA256 `ba66f3835ed7acea64dfcf3da17985f131a93d813310e5d9930d284bd1701c14` прошла, весь пакет **13/13** WebP.
+- `SERIES30-S3E3-A02` добавлен после RU `Темур остановился посреди двора.` и UZ `Temur hovli o‘rtasida to‘xtadi.`, в исходный `story2_part_5_first_investigation/story_text`, виртуальный читательский эпизод **S3E3**. В asset registry добавлен проверенный публичный WebP.
+- Расширен RU/UZ regression-тест галереи: **утренний колокол → существующая сцена сургуча → Темур с поясом во дворе**, никаких картинок будущих серий. Новый runtime CI ещё не проверен.
+- Старые отклонённые кадры не используются, литературные RU/UZ JSON, выборы, ключи прогресса и ранее принятые изображения неизменны, PR Draft, без merge/deploy.

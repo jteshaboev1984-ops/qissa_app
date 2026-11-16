@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 12)
+assert.equal(series30ApprovedScenes.length, 13)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -64,7 +64,7 @@ const fixtures = [
   {
     base: 'src/data/authored/taynaVostochnogoKaravanaV4',
     key: 'caravan',
-    expected: { 'SERIES30-S3E3-A01': 3 },
+    expected: { 'SERIES30-S3E3-A01': 3, 'SERIES30-S3E3-A02': 3 },
   },
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
@@ -165,6 +165,7 @@ for (const fixture of fixtures) {
         [
           'seven_roads_s3e3_morning_alarm_window_01_APPROVED',
           'seven_roads_story2_p5_img_01_v1',
+          'seven_roads_s3e3_temur_caravan_courtyard_02_APPROVED',
         ].join('|'),
         language + ': S3E3 must show alarm before existing wax clue scene',
       )
@@ -286,9 +287,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 24)
-console.log('[series30-art] PASS: 12 owner-approved assets, 24 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x1 / S4E2 x3), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 26)
+console.log('[series30-art] PASS: 13 owner-approved assets, 26 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S4E2 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
