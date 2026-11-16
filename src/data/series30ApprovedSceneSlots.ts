@@ -137,6 +137,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     },
   },
   {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_8_stop_nadir',
+    slot_id: 'SERIES30-S3E6-A01',
+    anchor_key: 'series30_s3e6_nadir_runs_between_wagons',
+    asset_id: 'seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Он проскочил между двумя повозками и вылетел через боковой проезд за мастерские.',
+      uz: 'U ikki arava orasidan o‘tib, ustaxonalar ortidagi yon yo‘lakka chiqdi.',
+    },
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A03',

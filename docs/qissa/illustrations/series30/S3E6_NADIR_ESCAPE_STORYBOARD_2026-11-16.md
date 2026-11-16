@@ -47,3 +47,11 @@
 - Литературные якоря из RU/UZ `story2_part_8_stop_nadir/story_text`: RU `Он проскочил между двумя повозками и вылетел через боковой проезд за мастерские.`, UZ `U ikki arava orasidan o‘tib, ustaxonalar ortidagi yon yo‘lakka chiqdi.`. Virtual reader series **S3E6**. Эпизод сохраняет старую общую иллюстрацию с подковой и оба старых альтернативных исхода выбора.
 - PNG **1672×941**, SHA256 `9ae98c88558e11e98ee795075c1e17e58e6ef8dc8fd4432832bae71a40158ef5`; WebP **267232 байта**, SHA256 `4fb68e473f6a11573278142fad86c908e6d427b873b9952dbda839a94e96bf14`. PNG/WebP/metadata сохранены в QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E6/`.
 - **Ожидает пользовательской загрузки WebP в Supabase** по пути `story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED.webp`. Пока нет remote SHA proof, не добавлять в runtime. Старые ошибки не интегрированы.
+
+## Подключение S3E6-A01 после фактической загрузки — 2026-11-16
+
+- В Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED.webp` подтверждены MIME `image/webp`, размер 267232 байта.
+- Независимая GitHub Actions **Season 2 Tier A Slot Check #43834345451**: публичный GET, MIME, bytes и SHA256 `4fb68e473f6a11573278142fad86c908e6d427b873b9952dbda839a94e96bf14` **совпали**, проверены все **14/14** WebP.
+- Добавлен `SERIES30-S3E6-A01` по точным RU/UZ якорям в `story2_part_8_stop_nadir/story_text` и ссылка в `authoredStoryAssets.ts` (виртуальная S3E6).
+- Регрессионный тест требует увидеть новый кадр после старого `seven_roads_story2_p7_img_03_v1`; два прежних варианта `seven_roads_story2_p8a_img_01_v1`/`seven_roads_story2_p8b_img_01_v1` сохраняются, новый кадр не должен попадать в S3E5.
+- Новой runtime CI/браузерной проверки пока нет. Литературные JSON, выборы, сохранённый прогресс и существующие иллюстрации не менялись. PR Draft, без merge/deploy.
