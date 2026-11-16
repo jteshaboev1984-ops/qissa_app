@@ -54,3 +54,9 @@
 - **Итог PNG-мастер 1584×891** SHA256 `88aa705ecbc231493aae37707b8a1b4d1c6a6b21ba542f4d19852fa42d6eb084`; **WebP 216852 байта** SHA256 `1da88ca11053d3847e697a8863b83a1abdfcbcb6af3afbc9dbeb8f94a72c86a7`. PNG/WebP/metadata и исходный необрезанный SOURCE_RAW.png загружены в QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E11/`.
 - Exact anchor `story3_part_3_three_pillars/story_text`: RU `Через некоторое время пришёл старший стражник из Араса.`, UZ `Birozdan keyin Arasdan kelgan katta qo‘riqchi kirdi.`, virtual reader **S3E11**.
 - **Storage не загружен, runtime не подключён.** После пользовательской загрузки только `seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.webp` в `story-images/seven-roads/season2_tier_a_v2/`: независимый remote hash/HTTP, scene overlay/asset registry и RU/UZ gallery/CI; A02 пока остаётся not approved. S3E11 Stage1 **1/2 художественно принято**.
+
+## S3E11-A02 — третья отклонённая попытка, 2026-11-16
+
+- ImageGen candidate #3 **REJECTED**: повтор дневной S3E10 с молодым стражником у каменного водопоя. Нет вечернего двора Самиры, яблока, светло-серого Булута, почти чёрного Шамола, сидящего Темура; **не использовать**.
+- Корректные точные якоря остаются RU `Булут потянулся к яблоку в её руке.` / UZ `Bulut uning qo‘lidagi olmaga cho‘zildi.` после общего слияния двух вариантов выбора, `story3_part_3_three_pillars/post_choice_text`.
+- S3E11 Stage1 **1/2 художественно принято** (только A01), **0/2 технически интегрировано** до загрузки A01. Три A02 кандидата неверны; не подменять кадр другим сюжетом.

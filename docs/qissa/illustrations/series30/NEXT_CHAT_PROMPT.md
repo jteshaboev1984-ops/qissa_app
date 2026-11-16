@@ -1,3 +1,9 @@
+## New status 2026-11-16 — S3E11 A02 rejected; S4E1 prepared
+
+- Stage 1 **17/29 artistically accepted**, **16/29 verified uploaded + runtime integrated**; S3E11-A01 newly accepted WebP 216852 bytes SHA `1da88ca11053d3847e697a8863b83a1abdfcbcb6af3afbc9dbeb8f94a72c86a7` in Library, **NOT in Storage yet**.
+- S3E11-A02 still not accepted. Three generated candidates rejected, most recent incorrectly repeated **daytime S3E10 guard/watering trough** rather than Bulut/Shamol/apple at Samira's stable at dusk. No wrong images in Library/registry/runtime. Storyboard updated with exact anchors.
+- Next production scene optionally **S4E1-A01 «Утренний выезд в Ордан»**, prepared storyboard `docs/qissa/illustrations/series30/S4E1_ROAD_TO_ORDAN_STORYBOARD_2026-11-16.md`: Temur on almost-black Shamol with white star/teal saddlecloth, Samira on gray-dapple Bulut without star/burgundy saddlecloth, one senior guard behind, departing Aras on broad road at dawn, before three pillars and before S4E2 bay horse. Exact RU/UZ anchors in storyboard. Stage1 S4E1 currently 0/1.
+
 # QISSA Seven Roads 30-series continuation — verified 2026-11-16
 
 **Current branch:** `qissa/four-seasons-chronological-runtime-20261112`, Draft PR #334 in `jteshaboev1984-ops/qissa_app`. Last verified commit `1b6fed13459357c795960751f41ddca4cae6fc64` (recheck live HEAD).
