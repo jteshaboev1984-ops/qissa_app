@@ -125,6 +125,8 @@ const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
   ])
 
 const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_s2e4_missing_kamran_oak_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_missing_kamran_oak_01_APPROVED.webp',
   'seven_roads_s2e2_missing_dark_horse_01_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e2_missing_dark_horse_01_APPROVED.webp',
   'seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED':

@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 9)
+assert.equal(series30ApprovedScenes.length, 10)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -57,6 +57,7 @@ const fixtures = [
       'SERIES30-S2E3-A01': 3,
       'SERIES30-S2E3-A02': 3,
       'SERIES30-S2E3-A03': 3,
+      'SERIES30-S2E4-A01': 4,
     },
   },
   {
@@ -154,6 +155,14 @@ for (const fixture of fixtures) {
     )
     if (fixture.key === 'silver') {
       const s2e1GalleryOrder = galleryBefore[0].items.map((entry) => entry.assetId)
+      assert.equal(
+        galleryBefore[3].items.map(item => item.assetId).join('|'),
+        [
+          'seven_roads_s2e4_missing_kamran_oak_01_APPROVED',
+          'seven_roads_s2_story1_hidden_network_settlement_01_APPROVED',
+        ].join('|'),
+        language + ': S2E4 gallery must show the forest rendezvous before the hidden settlement',
+      )
       assert.deepEqual(
         galleryBefore[1].items.map(item => item.assetId).join('|'),
         [
@@ -181,6 +190,18 @@ for (const fixture of fixtures) {
       const item = located[0]
       assert.equal(story.reader_layout.episode_by_part[item.index], expectedEpisode,
         fixture.key + '/' + language + ': wrong virtual episode for ' + id)
+      if (id === 'SERIES30-S2E4-A01') {
+        const splitAt = story.parts.findIndex(p =>
+          pars(p.story_text).includes(language === 'ru'
+            ? 'К вечеру Ордан снова выглядел обычным.'
+            : 'Kechga kelib Ordan yana odatdagidek ko‘rina boshladi.'))
+        assert.equal(item.index, splitAt,
+          'S2E4 opening image must be in the part created by the virtual split')
+        assert.equal(item.slot.phase, 'story_text',
+          'S2E4 image must render during the newly split story_text')
+        assert.equal(galleryBefore[2].items.some(entry => entry.assetId === item.slot.asset_id),
+          false, 'S2E4 image leaked into S2E3 gallery')
+      }
       if (id === 'SERIES30-S2E3-A03') {
         // The picture must follow the commandant's capital-trial reveal,
         // but precede the virtual series boundary and remain in post-choice content.
@@ -233,6 +254,7 @@ for (const scene of series30ApprovedScenes) {
     scene.slot_id.startsWith('SERIES30-S2E1-') ? e.season === 2 && e.episode === 1 :
     scene.slot_id.startsWith('SERIES30-S2E2-') ? e.season === 2 && e.episode === 2 :
     scene.slot_id.startsWith('SERIES30-S2E3-') ? e.season === 2 && e.episode === 3 :
+    scene.slot_id.startsWith('SERIES30-S2E4-') ? e.season === 2 && e.episode === 4 :
     scene.slot_id.startsWith('SERIES30-S4E2-') ? e.season === 4 && e.episode === 2 : false,
   )
   assert.ok(match?.asset_ids.includes(scene.asset_id),
@@ -241,9 +263,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 18)
-console.log('[series30-art] PASS: 9 owner-approved assets, 18 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S4E2 x3), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 20)
+console.log('[series30-art] PASS: 10 owner-approved assets, 20 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x1 / S4E2 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {

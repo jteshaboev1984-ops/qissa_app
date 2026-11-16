@@ -400,7 +400,7 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 4,
-      "artwork_acceptance": "stage_1_partial_art_accepted_storage_pending",
+      "artwork_acceptance": "stage_1_partial_runtime_wired_ci_pending",
       "asset_ids": [
         "seven_roads_s2e4_missing_kamran_oak_01_APPROVED"
       ],
@@ -419,12 +419,18 @@
           "master_sha256": "e4e8d021b6917447bd87c536eb338d416cfc882a450e74442020bd20acea54f0",
           "webp_sha256": "07e04b97bb508e2cfef5e50bb2b0d5f876a48cbbb7ea14e3bf9d9fee5007f462",
           "webp_bytes": 283010,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "art_accepted_storage_runtime_pending"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
+          "qa_status": "pending_runtime_gallery_browser_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e4_missing_kamran_oak_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_missing_kamran_oak_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_ci_run_43804819808",
+          "qa_ci_runs": {
+            "remote_webp_verification": 43804819808
+          }
         }
       ],
-      "notes": "S2E4-A01 finally accepted: exactly four mounted riders at oak clearing at dusk, without Kamran, fire or settlement structures. PNG/WebP/sha256 in QISSA Library. Await Supabase upload before runtime. S2E4-A02 not accepted yet; previous wrong generated image mixed Daniyar and children under oak and is rejected."
+      "notes": "S2E4-A01 finally accepted: exactly four mounted riders at oak clearing at dusk, without Kamran, fire or settlement structures. PNG/WebP/sha256 in QISSA Library. Await Supabase upload before runtime. S2E4-A02 not accepted yet; previous wrong generated image mixed Daniyar and children under oak and is rejected. On 2026-11-16 Storage object confirmed 283010 bytes image/webp; remote SHA256/GET verified by Seven Roads CI #43804819808, complete 10/10 collection. Runtime slot added via post-choice RU/UZ split-aware overlay; gallery/browser CI pending. S2E4-A02 stage 1 still not accepted."
     },
     {
       "season": 3,

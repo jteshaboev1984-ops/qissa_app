@@ -88,6 +88,17 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     after_text: { ru: 'Данияр заметил этот взгляд.', uz: 'Daniyar bu qarashni payqadi.' },
   },
   {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_3_network_sign',
+    slot_id: 'SERIES30-S2E4-A01',
+    anchor_key: 'series30_s2e4_missing_kamran_oak',
+    asset_id: 'seven_roads_s2e4_missing_kamran_oak_01_APPROVED',
+    // The reader moves post-choice narrative after the S2E3/S2E4
+    // boundary into a new story_text part for Episode 4.
+    phase: 'post_choice_text',
+    after_text: { ru: 'Камрана среди них не было.', uz: 'Kamran ular orasida yo‘q edi.' },
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_1_false_notice_and_route_check',
     slot_id: 'SERIES30-S4E2-A03',
