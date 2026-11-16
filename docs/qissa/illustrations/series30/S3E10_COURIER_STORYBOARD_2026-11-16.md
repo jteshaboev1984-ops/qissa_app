@@ -91,3 +91,8 @@
 - **Tier A #43850481407 — FAILURE** только на запуске Chrome DevTools endpoint браузерного smoke (dbus errors), не проверке WebP; новая CI-проверка должна переподтвердить браузерный тест.
 - Новый scene-only slot `SERIES30-S3E10-A02` в `story3_part_2_courier_route/story_text` после RU `К ним подошёл молодой стражник.` / UZ `Ularning oldiga yosh qo‘riqchi keldi.`, reader S3E10. Asset registry дополнен проверенным публичным URL.
 - Gallery regression ожидает последовательность `market → S3E10-A01 corrected v2 → S3E10-A02`, запрещает утечку в S3E9/S3E11. Новый runtime CI/bilingual browser пока ожидает завершения. Исходные литература/выборы/прогресс/старые картинки без изменений, PR Draft без merge/deploy.
+
+## Итог технической приёмки S3E10 — 2026-11-16
+
+- После подключения S3E10-A02 пройдены **Seven Roads CI #43850831913** и **Season 2 Tier A Slot Check #43850831761**, оба SUCCESS: **16/16** публичных WebP по SHA-256/HTTP/MIME/длине, **32/32** уникальных RU/UZ якорей, порядок галереи «рынок → маршрут → стражник», typecheck/build и браузерный smoke-test.
+- S3E10 Stage1 **2/2 художественно принято, 2/2 технически интегрировано**. Исправленная A01 только `APPROVED_v2`; старая ошибочная версия остаётся REJECTED. Исходные тексты/выборы/прогресс неизменны, PR Draft без merge/deploy.

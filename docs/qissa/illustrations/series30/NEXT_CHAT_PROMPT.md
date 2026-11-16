@@ -1,3 +1,20 @@
+# QISSA Seven Roads 30-series continuation — verified 2026-11-16
+
+**Current branch:** `qissa/four-seasons-chronological-runtime-20261112`, Draft PR #334 in `jteshaboev1984-ops/qissa_app`. Last verified commit `1b6fed13459357c795960751f41ddca4cae6fc64` (recheck live HEAD).
+
+**Approved plan fixed:** four seasons 5/4/11/10; Stage1 29 new shared illustrations, Stage2 19, season 4 cover separately. Maintain original RU/UZ literary hashes, approved canon/story/choice IDs and saved progress. Never merge or deploy without explicit approval.
+
+**Verified art progress:** **17/29** Stage1 artistically accepted; **16/29** uploaded to Supabase, remote SHA verified and RU/UZ reader integrated; **1 S3E11-A01** newly accepted but awaits Storage/reader. S3E10 Stage1 **2/2 COMPLETE**: remote 16/16 WebP and 32/32 RU/UZ anchors; Seven Roads CI **#43850831913** SUCCESS and Season 2 Tier A **#43850831761** SUCCESS, gallery and browser smoke PASS.
+
+**Upload next:** `seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.webp`, **216852 bytes**, SHA256 `1da88ca11053d3847e697a8863b83a1abdfcbcb6af3afbc9dbeb8f94a72c86a7`. QISSA Library `/QISSA/production/seven_roads/series30/stage1/S3E11/` contains final PNG (1584x891), WebP, metadata and source raw PNG. Upload exact file to Supabase `story-images/seven-roads/season2_tier_a_v2/`; then confirm Storage name/MIME/bytes, independent SHA in GitHub CI, additive bilingual slot in `src/data/series30ApprovedSceneSlots.ts` + URL `src/data/authoredStoryAssets.ts`, check correct gallery position S3E11 before existing published map, full CI/browser. No literary changes.
+
+**S3E11-A01** exact source `src/data/authored/staging/season2Story3TwoTowers.ru.json` / `.uz.json`, story ID `seven_roads_dve_bashni`, part `story3_part_3_three_pillars`, `story_text` after RU `Через некоторое время пришёл старший стражник из Араса.` / UZ `Birozdan keyin Arasdan kelgan katta qo‘riqchi kirdi.`. Final is an arriving senior guard with **unopened sketches** inside Sarvan guardroom; no wax seal or drawn pillar sign shown. Previous outdoor scene was REJECTED.
+
+**Continue creation:** S3E11-A02 `Булут и яблоко`, 1 new Stage1 art, not yet accepted. Storyboard: `docs/qissa/illustrations/series30/S3E11_THREE_PILLARS_STORYBOARD_2026-11-16.md`. Evening at Samira's house stable: 12-year-old Samira in burgundy offers apple to dapple-gray Bulut (NO white star, burgundy saddlecloth), nearly-black Shamol behind with small white forehead star and teal saddlecloth; 12-year-old Temur sits on low wall. Original RU `Булут потянулся к яблоку в её руке.`, UZ `Bulut uning qo‘lidagi olmaga cho‘zildi.`, phase `post_choice_text`. DO NOT show third horse or departure to Ordan, road, captures or spoilers. Two earlier generated wrong scenes were REJECTED. Verify full RU/UZ fragment & actual Library horse refs before regeneration. Then continue S4 stage1 queue in order.
+
+**Required rules:** read AGENTS.md, relevant specs, actual CI, ART_QUEUE, storyboards, World Bible and visual refs before generating. Each new image must be reviewed, rejected if wrong; only accepted file: source PNG → optimized WebP → SHA → QISSA Library → verified Supabase Storage → additive reader scene → CI/gallery/browser. No changes to authored literature, choices, persisted progress, merge, deploy or payment features.
+
+## Historical handoff (older)
 ## Художественная проверка S3E11 (дополнение 2026-11-16)
 
 - **S3E11-A01 всё ещё не принято:** ImageGen нарисовал уличный водопой с письмом и красной печатью — REJECTED, а Canva с утверждённым интерьером `MAHbEh3EeZI` ответила `quota_exceeded`. Не интегрировать. S3E11 Stage1 0/2.

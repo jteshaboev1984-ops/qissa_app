@@ -709,7 +709,7 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_runtime_wired_ci_pending",
+      "artwork_acceptance": "stage_1_complete",
       "asset_ids": [
         "seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2",
         "seven_roads_s3e10_young_guard_water_trough_02_APPROVED"
@@ -738,8 +738,8 @@
           "qa_ci_runs": {
             "remote_webp_verification": 43847309019,
             "remote_webp_second_run": 43847309010,
-            "seven_roads_ci": 43847796923,
-            "season2_tier_a_ci": 43847796845
+            "seven_roads_ci": 43850831913,
+            "season2_tier_a_ci": 43850831761
           }
         },
         {
@@ -758,17 +758,19 @@
           "webp_bytes": 243188,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
           "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_PR",
-          "qa_status": "pending_reader_gallery_browser_CI",
+          "qa_status": "RU_UZ_reader_gallery_typecheck_build_browser_CI_passed",
           "postproduction": "cropped 30 px left/right and 35 px bottom from first scene-correct candidate to remove generator border pseudo-letters; 1611 x 906 px",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e10_young_guard_water_trough_02_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e10_young_guard_water_trough_02_APPROVED.webp",
           "remote_sha256_verification": "passed_ci_run_43850481378",
           "qa_ci_runs": {
-            "remote_webp_verification": 43850481378
+            "remote_webp_verification": 43850481378,
+            "seven_roads_ci": 43850831913,
+            "season2_tier_a_ci": 43850831761
           }
         }
       ],
-      "notes": "2026-11-16 S3E10-A01 v2 accepted after owner detected back-facing belt buckles and rear-mounted sabers in withdrawn v1. New candidate shows Samira pointing toward Aras road gate and Temur looking back; both child characters in canonical blue patterned cap/teal and jeweled circlet/burgundy respectively. Belt clasps clearly on front abdomen and sabers secured in accessible side scabbards. No text/flags/extra symbols, no chase or spoilers. Master 1672×941 PNG (sha 07d3e2c...), 290850-byte WebP (sha e63df78...), metadata uploaded to QISSA Library. Older v1 remains REJECTED archived and MUST NOT be reused. Await user-uploaded v2 WebP before public GET/SHA validation and RU/UZ reader integration. S3E10-A02 still not accepted. Existing authored texts, choice IDs, old art and family progress unchanged, PR Draft. User uploaded corrected v2 at 2026-11-16T10:14:32Z. Supabase Storage object 290850 bytes image/webp. GitHub Actions #43847309019 and #43847309010 successful, independent public HTTP/MIME/bytes/SHA256 verified 15/15. Runtime additive bilingual scene overlay and asset URL wired, S3E10 gallery/browser CI pending; prior REJECTED v1 not reused. Stage1 A02 still not yet accepted as of this checkpoint. S3E10 A01 v2 finalized: Seven Roads CI #43847796923 + Season 2 Tier A #43847796845 SUCCESS (15/15 WebP SHA; 30 bilingual anchors; gallery, typecheck/build/browser). S3E10 A02 new independent composition shows young helmeted guard newly approaching Temur and Samira at Sarvan guardhouse water trough before any courier news; rejected two rerolls that introduced wax-sealed scroll, invented banners and horses. Correct first shot was cropped ONLY at outer border by 30px sides/35px bottom to eliminate fake generator lettering; passed final crop review with children's canon caps, burgundy/teal, front rider belt buckles and sheathed side sabres intact. Final A02 PNG 1611×906, WebP 243188 bytes SHA256 c9dfc2162dd0c17d3b5d893d632b1da30c26ecbabe0f825b656727752a5437bf in QISSA Library. A02 not uploaded, not yet in runtime; stage1 S3E10 art 2/2 accepted, tech 1/2 integrated. Superseded S3E10-A01 v1 remains rejected. 2026-11-16 S3E10-A02 user upload confirmed in Supabase Storage at 10:34:57Z, image/webp, 243188 bytes. Independent Seven Roads CI #43850481378 SUCCESS verified HTTP GET, MIME, bytes, sha256 and entire 16/16 collection. Tier A CI #43850481407 failed due only to runner Chrome DevTools startup/dbus errors in browser smoke, not image SHA. Runtime bilingual overlay wired on next commit; gallery/reader full CI pending. Both stage1 S3E10 images accepted, no text/choice/progress changes."
+      "notes": "2026-11-16 S3E10-A01 v2 accepted after owner detected back-facing belt buckles and rear-mounted sabers in withdrawn v1. New candidate shows Samira pointing toward Aras road gate and Temur looking back; both child characters in canonical blue patterned cap/teal and jeweled circlet/burgundy respectively. Belt clasps clearly on front abdomen and sabers secured in accessible side scabbards. No text/flags/extra symbols, no chase or spoilers. Master 1672×941 PNG (sha 07d3e2c...), 290850-byte WebP (sha e63df78...), metadata uploaded to QISSA Library. Older v1 remains REJECTED archived and MUST NOT be reused. Await user-uploaded v2 WebP before public GET/SHA validation and RU/UZ reader integration. S3E10-A02 still not accepted. Existing authored texts, choice IDs, old art and family progress unchanged, PR Draft. User uploaded corrected v2 at 2026-11-16T10:14:32Z. Supabase Storage object 290850 bytes image/webp. GitHub Actions #43847309019 and #43847309010 successful, independent public HTTP/MIME/bytes/SHA256 verified 15/15. Runtime additive bilingual scene overlay and asset URL wired, S3E10 gallery/browser CI pending; prior REJECTED v1 not reused. Stage1 A02 still not yet accepted as of this checkpoint. S3E10 A01 v2 finalized: Seven Roads CI #43847796923 + Season 2 Tier A #43847796845 SUCCESS (15/15 WebP SHA; 30 bilingual anchors; gallery, typecheck/build/browser). S3E10 A02 new independent composition shows young helmeted guard newly approaching Temur and Samira at Sarvan guardhouse water trough before any courier news; rejected two rerolls that introduced wax-sealed scroll, invented banners and horses. Correct first shot was cropped ONLY at outer border by 30px sides/35px bottom to eliminate fake generator lettering; passed final crop review with children's canon caps, burgundy/teal, front rider belt buckles and sheathed side sabres intact. Final A02 PNG 1611×906, WebP 243188 bytes SHA256 c9dfc2162dd0c17d3b5d893d632b1da30c26ecbabe0f825b656727752a5437bf in QISSA Library. A02 not uploaded, not yet in runtime; stage1 S3E10 art 2/2 accepted, tech 1/2 integrated. Superseded S3E10-A01 v1 remains rejected. 2026-11-16 S3E10-A02 user upload confirmed in Supabase Storage at 10:34:57Z, image/webp, 243188 bytes. Independent Seven Roads CI #43850481378 SUCCESS verified HTTP GET, MIME, bytes, sha256 and entire 16/16 collection. Tier A CI #43850481407 failed due only to runner Chrome DevTools startup/dbus errors in browser smoke, not image SHA. Runtime bilingual overlay wired on next commit; gallery/reader full CI pending. Both stage1 S3E10 images accepted, no text/choice/progress changes. Final independent runtime CI #43850831913 Seven Roads SUCCESS and #43850831761 Season 2 Tier A SUCCESS: 16/16 WebP SHA, 32/32 bilingual anchors, full 5/4/11/10 reader/gallery, typecheck, build, browser smoke. S3E10 Stage 1 art 2/2 + technical 2/2 COMPLETE."
     },
     {
       "season": 3,
@@ -782,10 +784,32 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 0,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_1_partial_art_accepted_storage_pending",
+      "asset_ids": [
+        "seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E11-A01",
+          "asset_id": "seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED",
+          "kind": "shared",
+          "phase": "story_text",
+          "ru_after_text": "Через некоторое время пришёл старший стражник из Араса.",
+          "uz_after_text": "Birozdan keyin Arasdan kelgan katta qo‘riqchi kirdi.",
+          "acceptance": "owner_standing_conditional_approval_after_literary_and_visual_canon_QA",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E11/seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E11/seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E11/seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.metadata.json",
+          "source_raw_library_path": "/QISSA/production/seven_roads/series30/stage1/S3E11/seven_roads_s3e11_senior_guard_sketches_arrival_01_SOURCE_RAW.png",
+          "master_sha256": "88aa705ecbc231493aae37707b8a1b4d1c6a6b21ba542f4d19852fa42d6eb084",
+          "webp_sha256": "1da88ca11053d3847e697a8863b83a1abdfcbcb6af3afbc9dbeb8f94a72c86a7",
+          "webp_bytes": 216852,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated",
+          "qa_status": "visual_literary_canon_passed_storage_runtime_pending"
+        }
+      ],
+      "notes": "2026-11-16: S3E11-A01 accepted under standing owner instruction after RU/UZ exact anchors, guardroom interior and character/costume canon QA. Five figures: 12-year-old Temur and Samira, local captain and younger guard inside, arriving SENIOR Aras guard at doorway holding folded blank paper, sketches/three pillars not shown. All front belt buckles, side sheathed sabers, no wax seal, city fountain, courier, spoilers, new symbols. One earlier outdoor wax-letter image rejected. Correct standalone result cropped only 44 px on both sides and 50 px bottom to remove faint border pseudo-lettering (final 1584×891 16:9). 216852-byte WebP SHA256 1da88ca..., PNG master SHA256 88aa705e..., plus raw original and metadata in QISSA Library. Not uploaded to Storage, not wired to reader. S3E11-A02 still not accepted; previous two candidates wrong. No source literary changes or merge/deploy."
     },
     {
       "season": 4,
