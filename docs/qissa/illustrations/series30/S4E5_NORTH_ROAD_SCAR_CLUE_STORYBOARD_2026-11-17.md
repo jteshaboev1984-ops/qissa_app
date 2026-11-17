@@ -72,3 +72,7 @@
 
 - The accepted `seven_roads_s4e5_said_stone_ridge_map_02_APPROVED.webp` is now in Supabase `story-images/seven-roads/season2_tier_a_v2/`: storage.objects reports **407158 bytes**, `image/webp`, created 2026-11-17T06:16:41Z. Additive `SERIES30-S4E5-A02` bilingual anchor, asset URL, and reader/gallery tests added to Draft PR #334; public GET/MIME/bytes/SHA, full QA/browser CI **pending**. Gallery must order approved scar clue → existing Red Hill reconnaissance → approved Stone Ridge map, and S4E6 must not display the S4E5 map.
 - Stage1 remains **25/29 art accepted** (includes owner-approved S4E6); **23/29 verified integrated** until new S4E5-A02 CI succeeds. No authored RU/UZ JSON, choice IDs, saved progress, merge or deploy changed.
+
+## 2026-11-17 S4E5-A02 verified runtime completion
+
+- Seven Roads [#44033034453](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44033034453) SUCCESS, Tier A [#44033034457](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44033034457) SUCCESS: 24/24 public WebP GET/MIME/bytes/SHA, 48/48 unique RU/UZ anchors, correct S4E5 gallery order, S4E6 isolation, typecheck/build/browser smoke PASS. S4E5 Stage1 **2/2 art accepted and fully integrated**.
