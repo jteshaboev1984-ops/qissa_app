@@ -1,3 +1,9 @@
+## 2026-11-17 S4E5-A01 first visual candidate REVIEW — pending owner acceptance
+
+- In Draft PR #334, qissa/four-seasons-chronological-runtime-20261112. S4E5 `Северная дорога` A01 from `seven_roads_lozhnaya_doroga/story5_part_1_false_road/story_text` RU `Он провёл пальцем от левой брови к виску.` / UZ `U barmog‘ini chap qoshidan chakkasigacha yurgizdi.` (unique once each, paragraph 35; S4E6 split is at paragraph 124).
+- One ImageGen visual candidate `seven_roads_s4e5_nadir_scar_clue_briefing_REVIEW_v1` id `dbbb9fe9-f7de-4827-bcc6-514fb91a3438` in QISSA Library `/QISSA/production/seven_roads/series30/review/S4E5/`, 1672×941 PNG 2637739 bytes SHA256 `f3e1468701792c539bc901be019491a15444c64a727ab0d2795a7de1f1bfe4d2`. **REVIEW only**; do not mark accepted or integrate unless owner approves the actual art, with attention to guards' costume canon.
+- S4E5 Stage1 quota 2; A02 not selected. S4E4-A02 **already owner-approved** and its production WebP is ready in QISSA Library, but it awaits upload to Supabase, so overall Stage1 remains **22/29 accepted, 21/29 technically integrated**. No merge/deploy/prose/progress edits.
+
 ## 2026-11-17 S4E4-A02 fully art-approved / Library saved; Storage upload pending
 
 - In Draft PR #334 (`qissa/four-seasons-chronological-runtime-20261112`) owner explicitly approved mirrored **S4E4-A02 REVIEW_v2**. Permanent final asset `seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED`, PNG master / WebP / metadata in QISSA Library `/QISSA/production/seven_roads/series30/stage1/S4E4/`. Exact 1672×941 master PNG **2431372** bytes SHA256 `e7b72f74267cb7280a4a69b97c66e0f50c1c1500f8a46664a6a83031646812a8`; optimized WebP **369590** bytes SHA256 `6a853a94b7600fa6750a34fbeb0f081c197169bab34401cb2308f3a882ffdc7b`.
