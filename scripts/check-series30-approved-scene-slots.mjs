@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 24)
+assert.equal(series30ApprovedScenes.length, 25)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -50,7 +50,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story5FalseRoad',
     key: 'falseRoad',
-    expected: { 'SERIES30-S4E5-A01': 1, 'SERIES30-S4E5-A02': 1 },
+    expected: { 'SERIES30-S4E5-A01': 1, 'SERIES30-S4E5-A02': 1, 'SERIES30-S4E6-A01': 2 },
   },
   {
     base: 'src/data/authored/staging/season2Story1RoyalSilver',
@@ -285,6 +285,30 @@ for (const fixture of fixtures) {
       assert.equal(mapGallery[0].items.find(item => item.assetId === 'seven_roads_s2_story5_red_hill_recon_01_APPROVED')?.unlocked,
         false, language + ': seeing map must not unlock unread Red Hill reconnaissance')
       authoredIllustrationDiscovery.clear(story)
+      const s4e6 = galleryBefore[1].items.map(item => item.assetId)
+      const northRidge = s4e6.indexOf('seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED')
+      const fork = s4e6.indexOf('seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED')
+      const realHelp = s4e6.indexOf('seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED')
+      assert.ok(northRidge >= 0 && fork > northRidge && realHelp > fork,
+        language + ': S4E6 gallery must show northern ridge → existing fork → real reinforcement')
+      assert.equal(galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED'),
+        false, language + ': S4E6 ridge leaked backwards into S4E5')
+      const ridgeSlot = story.parts.flatMap(p => p.image_slots).find(s => s.slot_id === 'SERIES30-S4E6-A01')
+      assert.equal(ridgeSlot?.kind, 'shared', language + ': ridge must be shared by both choice routes')
+      assert.equal(ridgeSlot?.phase, 'story_text', language + ': ridge must display before choice')
+      assert.equal(galleryBefore[1].items.find(item => item.assetId === 'seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED')?.unlocked,
+        false, language + ': S4E6 ridge must remain spoiler-locked before reading')
+      authoredIllustrationDiscovery.markSeen(story, 'seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED')
+      const ridgeSeen = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(ridgeSeen[1].items.find(item => item.assetId === 'seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED')?.unlocked,
+        true, language + ': ridge should unlock after being seen')
+      assert.equal(ridgeSeen[1].items.find(item => item.assetId === 'seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED')?.unlocked,
+        false, language + ': ridge cannot reveal later fork before it is read')
+      assert.equal(ridgeSeen[1].items.find(item => item.assetId === 'seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED')?.unlocked,
+        false, language + ': ridge cannot reveal future post-choice event')
+      authoredIllustrationDiscovery.clear(story)
       assert.equal(galleryBefore[1].items.some(item => item.assetId === 'seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED'),
         false, language + ': S4E5 scar clue must never leak into S4E6')
       const scarSlot = story.parts.flatMap(part => part.image_slots).find(s => s.slot_id === 'SERIES30-S4E5-A01')
@@ -480,7 +504,8 @@ for (const scene of series30ApprovedScenes) {
     scene.slot_id.startsWith('SERIES30-S4E2-') ? e.season === 4 && e.episode === 2 :
     scene.slot_id.startsWith('SERIES30-S4E3-') ? e.season === 4 && e.episode === 3 :
     scene.slot_id.startsWith('SERIES30-S4E4-') ? e.season === 4 && e.episode === 4 :
-    scene.slot_id.startsWith('SERIES30-S4E5-') ? e.season === 4 && e.episode === 5 : false,
+    scene.slot_id.startsWith('SERIES30-S4E5-') ? e.season === 4 && e.episode === 5 :
+    scene.slot_id.startsWith('SERIES30-S4E6-') ? e.season === 4 && e.episode === 6 : false,
   )
   assert.ok(match?.asset_ids.includes(scene.asset_id),
     'approved asset missing from production queue: ' + scene.asset_id)
@@ -488,9 +513,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 48)
-console.log('[series30-art] PASS: 24 owner-approved assets, 48 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 50)
+console.log('[series30-art] PASS: 25 owner-approved assets, 50 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {

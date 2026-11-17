@@ -304,6 +304,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'U barmog‘ini Tosh tizmasi bo‘ylab yurgizdi.',
     },
   },
+  {
+    story_id: 'seven_roads_lozhnaya_doroga',
+    part_id: 'story5_part_1_false_road',
+    slot_id: 'SERIES30-S4E6-A01',
+    anchor_key: 'series30_s4e6_north_stone_ridge_riders',
+    asset_id: 'seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Они уже находились по северную сторону Каменного гребня; Красный холм остался за ним и отсюда не был виден.',
+      uz: 'Ular allaqachon Tosh tizmasining shimoliy tomonida edi; Qizil tepalik tizma ortida qolgan va bu yerdan ko‘rinmasdi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>
