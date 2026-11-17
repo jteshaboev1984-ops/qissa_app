@@ -1,3 +1,9 @@
+## 2026-11-17 S4E6-A01 art approved; S4E5-A02 hosted and runtime CI pending
+
+- PR #334 Draft / `qissa/four-seasons-chronological-runtime-20261112`. Latest owner-accepted S4E6-A01 final ImageGen `30d91217-dc88-46a5-80b7-5bd2792e99b9`, white-appearing softly dappled Bulut with **dark gray mane/tail** (older gray/white-maned renders rejected). Final `seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED` in QISSA Library `/QISSA/production/seven_roads/series30/stage1/S4E6/`: PNG 1670×941 **2903929 bytes**, SHA256 `ac8e97a5eff85abb71ee2b23318c698eedd93c816d71358d6bc85f4e180842e6`; WebP **476610 bytes**, SHA256 `685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816`; metadata. Supabase S4E6 object still **absent**; no S4E6 runtime slot, await user upload plus independent SHA.
+- S4E5-A02 `seven_roads_s4e5_said_stone_ridge_map_02_APPROVED` **now present** in Supabase Storage (407158 bytes, image/webp); additive `SERIES30-S4E5-A02` reader/gallery wiring and 24/24 remote SHA verifier submitted in Draft PR, code CI pending; exact RU `Он провёл пальцем вдоль Каменного гребня.` / UZ `U barmog‘ini Tosh tizmasi bo‘ylab yurgizdi.`. S4E5 gallery scar clue → Red Hill recon → map, S4E6 no leak, 48/48 anchors expected.
+- Stage1 **25/29 artistic accepted**, **23/29 technically integrated until CI passes S4E5-A02**. S4E5 Stage1 2/2 artistically approved, S4E6 1/1 art approved (0/1 wired). Next Stage1 S4E8 (two new shared frames), subject to exact RU/UZ authored source, branch avoidance, World Bible/master-approved reference checks. Do not merge/deploy/publish or edit literary text/story/choice IDs/saved progress.
+
 ## 2026-11-17 S4E6-A01 new north-ridge scenic REVIEW candidate / owner art acceptance pending
 
 - Draft PR #334, `qissa/four-seasons-chronological-runtime-20261112`. S4E5-A02 already ART APPROVED with master PNG/WebP/metadata in QISSA Library; Storage upload not present. Total Stage1 **24/29 artistic accepted, 23/29 technically integrated**.

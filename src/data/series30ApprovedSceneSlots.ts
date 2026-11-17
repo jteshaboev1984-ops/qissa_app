@@ -292,6 +292,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'U barmog‘ini chap qoshidan chakkasigacha yurgizdi.',
     },
   },
+  {
+    story_id: 'seven_roads_lozhnaya_doroga',
+    part_id: 'story5_part_1_false_road',
+    slot_id: 'SERIES30-S4E5-A02',
+    anchor_key: 'series30_s4e5_said_stone_ridge_map',
+    asset_id: 'seven_roads_s4e5_said_stone_ridge_map_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Он провёл пальцем вдоль Каменного гребня.',
+      uz: 'U barmog‘ini Tosh tizmasi bo‘ylab yurgizdi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>

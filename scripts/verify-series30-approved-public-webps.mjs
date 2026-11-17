@@ -5,6 +5,11 @@ import { createHash } from 'node:crypto'
 // This runs only on CI, never during local/offline reading-series preflight.
 const base = 'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/'
 const assets = [
+  {
+    name: 'seven_roads_s4e5_said_stone_ridge_map_02_APPROVED.webp',
+    size: 407158,
+    sha256: '695169ea30439c45bb18745bc562c685359f583d27c28a76683ccf9a88b5ff10',
+  },
   { name: 'seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED.webp', size: 454554,
     sha256: '733a1d9003653b0d97072a50948721d3334dff215a25f16083dd529c53af4ed7' },
   { name: 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED.webp', size: 369590,
@@ -133,4 +138,4 @@ for (const asset of assets) {
   assert.equal(sha256, asset.sha256, `Remote WebP differs from approved master derivative: ${asset.name}`)
   console.log(`[series30-art-remote] OK ${asset.name} (${bytes.length} bytes)`)
 }
-console.log('[series30-art-remote] PASS 23/23 remote GET, MIME, byte lengths and SHA256')
+console.log('[series30-art-remote] PASS 24/24 remote GET, MIME, byte lengths and SHA256')
