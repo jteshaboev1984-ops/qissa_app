@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 26)
+assert.equal(series30ApprovedScenes.length, 27)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -84,7 +84,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story7BackToOrdan',
     key: 'ordan',
-    expected: { 'SERIES30-S4E9-A01': 1 },
+    expected: { 'SERIES30-S4E9-A01': 1, 'SERIES30-S4E10-A01': 2 },
   },
 ]
 
@@ -199,6 +199,47 @@ for (const fixture of fixtures) {
         galleryBefore[0].items.find(item => item.assetId === 'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED')?.unlocked,
         false, language + ': S4E9 notice must be locked until seen',
       )
+
+      // Existing seal-comparison image is earlier in S4E10. The accepted Farid
+      // encounter follows the source post-choice text and precedes the ending hook.
+      const s4e10Gallery = galleryBefore[1].items.map(item => item.assetId)
+      assert.equal(
+        s4e10Gallery.join('|'),
+        [
+          'seven_roads_s2_story7_aras_seal_comparison_01_APPROVED',
+          'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED',
+          'seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED',
+        ].join('|'),
+        language + ': S4E10 gallery chronology must show seal → prison window → ending hook',
+      )
+      assert.equal(
+        galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED'),
+        false, language + ': S4E10 prison encounter leaked into S4E9',
+      )
+      assert.equal(
+        galleryBefore[1].items.find(item => item.assetId === 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED')?.unlocked,
+        false, language + ': unread S4E10 prison encounter must stay locked',
+      )
+      const prisonSlot = story.parts.flatMap(part => part.image_slots).find(slot =>
+        slot.slot_id === 'SERIES30-S4E10-A01')
+      assert.equal(prisonSlot?.phase, 'post_choice_text',
+        language + ': S4E10 scene must render only in post-choice narrative')
+      assert.equal(prisonSlot?.kind, 'shared',
+        language + ': S4E10 prison scene must be available on both routes')
+      authoredIllustrationDiscovery.markSeen(story, 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED')
+      const prisonSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(
+        prisonSeenGallery[1].items.find(item => item.assetId === 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED')?.unlocked,
+        true, language + ': prison image did not unlock after it was seen',
+      )
+      assert.equal(
+        prisonSeenGallery[1].items.find(item =>
+          item.assetId === 'seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED')?.unlocked,
+        false, language + ': reading prison scene prematurely unlocked future ending',
+      )
+      authoredIllustrationDiscovery.clear(story)
     }
     if (fixture.key === 'waited') {
       const firstSeries = galleryBefore[0].items.map(item => item.assetId)
@@ -491,7 +532,7 @@ for (const fixture of fixtures) {
       assert.ok(galleryItem, id + '/' + language + ': missing from correct gallery episode')
       assert.equal(galleryItem.unlocked, false, 'new illustration spoiled before reading')
       assert.equal(item.slot.kind, 'shared')
-      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02'].includes(id) ? 'post_choice_text' : 'story_text')
+      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
       assert.equal(pars(item.part[item.slot.phase]).filter((p) => p === item.slot.after_text).length, 1,
         id + '/' + language + ': anchor missing or repeated')
       assert.ok(assetsSource.includes("'" + item.slot.asset_id + "'"),
@@ -537,7 +578,8 @@ for (const scene of series30ApprovedScenes) {
     scene.slot_id.startsWith('SERIES30-S4E4-') ? e.season === 4 && e.episode === 4 :
     scene.slot_id.startsWith('SERIES30-S4E5-') ? e.season === 4 && e.episode === 5 :
     scene.slot_id.startsWith('SERIES30-S4E6-') ? e.season === 4 && e.episode === 6 :
-    scene.slot_id.startsWith('SERIES30-S4E9-') ? e.season === 4 && e.episode === 9 : false,
+    scene.slot_id.startsWith('SERIES30-S4E9-') ? e.season === 4 && e.episode === 9 :
+    scene.slot_id.startsWith('SERIES30-S4E10-') ? e.season === 4 && e.episode === 10 : false,
   )
   assert.ok(match?.asset_ids.includes(scene.asset_id),
     'approved asset missing from production queue: ' + scene.asset_id)
@@ -545,9 +587,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 52)
-console.log('[series30-art] PASS: 26 owner-approved assets, 52 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E9 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 54)
+console.log('[series30-art] PASS: 27 owner-approved assets, 54 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {

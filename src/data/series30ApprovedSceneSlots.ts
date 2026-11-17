@@ -328,6 +328,19 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'Hamma tugatgach, u Arasdan kelgan yo‘l xabarnomasini stolga qo‘ydi.',
     },
   },
+  {
+    story_id: 'seven_roads_obratno_v_ordan',
+    part_id: 'story7_part_1_back_to_ordan',
+    slot_id: 'SERIES30-S4E10-A01',
+    anchor_key: 'series30_s4e10_farid_danyar_prison_window',
+    asset_id: 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED',
+    // This post-choice scene belongs to the virtual S4E10 reader episode.
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Данияр остановился.',
+      uz: 'Daniyar to‘xtadi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>

@@ -36,3 +36,10 @@ Owner explicitly replied **«принимаем. работай далее»** t
 - RU/UZ exact unique `post_choice_text` anchor above remains valid. Prepare `SERIES30-S4E10-A01` as **additive overlay in** `src/data/series30ApprovedSceneSlots.ts` and URL in `src/data/authoredStoryAssets.ts` **only after** actual public GET + MIME `image/webp` + byte count 356286 + SHA256 verification. Ensure slot mapped to display episode S4E10 (after the virtual split), `kind=shared`, no spoiler leak before choice.
 - Update QA counts from 26/52 to 27/54; assert S4E10 gallery and chronological ordering with existing seal-comparison/ending-hook art; browser smoke and independent SHA must pass. Preserve existing RU/UZ stories, old progress, all IDs and 26 approved runtime images.
 - Status now **art accepted 27/29**, **technically integrated 26/29**; S4E8 remains blocked at 0/2. **PR #334 Draft only**, no merge/deploy/publish.
+
+## 2026-11-17 — Storage object appeared; draft runtime wire, exact CI pending
+
+- Owner confirmed file uploaded; `storage.objects` in QISSA Supabase project shows exact object `seven-roads/season2_tier_a_v2/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.webp`, content type `image/webp` and **356286 bytes**. Original approved derivative hash `b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3`; independently verified remote SHA **only upon passing the PR CI remote-public-WebP script**.
+- Additive runtime slot `SERIES30-S4E10-A01` anchors post-choice text uniquely in both RU/UZ; story_id `seven_roads_obratno_v_ordan`, part_id `story7_part_1_back_to_ordan`, same non-branch scene for both paths; virtual reader episode S4E10.
+- Required QA: S4E10 gallery ordering existing Aras seal comparison → **Farid/Daniyar window** → existing ending hook; S4E9 contains **no S4E10 art**; unread scene locked; after seen only this scene unlocked, later ending hook remains locked. 27 approved hosted assets, 54 unique RU/UZ text anchors; reader-split, typecheck/build/browser CI and full public GET/MIME/size/SHA to verify.
+- **ART accepted 27/29**, TECH still **26/29 until CI success**. No merge/deploy/publish.
