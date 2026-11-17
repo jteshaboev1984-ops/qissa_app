@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 21)
+assert.equal(series30ApprovedScenes.length, 22)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -74,7 +74,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
     key: 'waited',
-    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4 },
+    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4 },
   },
 ]
 
@@ -201,14 +201,26 @@ for (const fixture of fixtures) {
         [
           'seven_roads_s2_story4_nadir_contact_01_APPROVED',
           'seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED',
+          'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED',
         ].join('|'),
-        language + ': S4E4 gallery must keep existing Nadir contact before new wooden-token verification',
+        language + ': S4E4 gallery must keep Nadir contact → wooden tokens → rear-hook flask',
       )
       assert.equal(
         galleryBefore[2].items.some(item => item.assetId === 'seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED'),
         false,
         language + ': S4E4 wooden-token image leaked into S4E3',
       )
+      assert.equal(galleryBefore[2].items.some(item => item.assetId === 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED'),
+        false, language + ': S4E4 flask must not leak into S4E3')
+      const s4e4FlaskSlot = story.parts.flatMap(part => part.image_slots).find(slot =>
+        slot.slot_id === 'SERIES30-S4E4-A02')
+      assert.equal(s4e4FlaskSlot?.kind, 'shared',
+        language + ': S4E4 flask must be available on both choices')
+      assert.equal(s4e4FlaskSlot?.phase, 'post_choice_text',
+        language + ': S4E4 flask must be after the choice')
+      assert.equal(
+        galleryBefore[3].items.find(item => item.assetId === 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED')?.unlocked,
+        false, language + ': S4E4 post-choice flask must remain spoiler-locked')
       const s4e4TokenSlot = story.parts.flatMap(part => part.image_slots).find(slot => slot.slot_id === 'SERIES30-S4E4-A01')
       assert.equal(s4e4TokenSlot?.kind, 'shared', language + ': S4E4 token image must be shared between choices')
       assert.equal(s4e4TokenSlot?.phase, 'story_text', language + ': S4E4 token scene must appear before choice')
@@ -231,6 +243,16 @@ for (const fixture of fixtures) {
         false,
         language + ': seeing S4E4 token scene must not unlock unrelated S4E3 road fork',
       )
+      assert.equal(galleryOnToken[3].items.find(item => item.assetId === 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED')?.unlocked,
+        false, language + ': reading wooden-token scene must not unlock future flask')
+      authoredIllustrationDiscovery.markSeen(story, 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED')
+      const galleryOnFlask = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(galleryOnFlask[3].items.find(item => item.assetId === 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED')?.unlocked,
+        true, language + ': viewing S4E4 flask must unlock it')
+      assert.equal(galleryOnFlask[2].items.some(item => item.assetId === 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED'),
+        false, language + ': S4E4 flask never appears in S4E3')
       authoredIllustrationDiscovery.clear(story)
     }
     if (fixture.key === 'towers') {
@@ -418,9 +440,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 42)
-console.log('[series30-art] PASS: 21 owner-approved assets, 42 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 44)
+console.log('[series30-art] PASS: 22 owner-approved assets, 44 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {

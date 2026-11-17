@@ -268,6 +268,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'Notanish odam umumiy belgini solishtirdi, ikki minora tushirilgan nishonchani ag‘dardi va qaytarib berdi.',
     },
   },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_2_nadir_red_hill_clue',
+    slot_id: 'SERIES30-S4E4-A02',
+    anchor_key: 'series30_s4e4_nadir_flask_left_rear_hook',
+    asset_id: 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Повесил флягу на левый задний крюк — это и был условленный знак.',
+      uz: 'Suv idishini chap orqa ilgakka osdi. Bu oldindan kelishilgan ishora edi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>

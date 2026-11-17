@@ -1,3 +1,9 @@
+## 2026-11-17 S4E4-A02 uploaded and runtime wired CI pending; S4E5-A01 costume-corrected REVIEW_v2
+
+- Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`. S4E4-A02 uploaded approved WebP exists in Supabase Storage (`369590` bytes / `image/webp`, expected SHA256 `6a853a94b7600fa6750a34fbeb0f081c197169bab34401cb2308f3a882ffdc7b`). Additive bilingual `SERIES30-S4E4-A02` `post_choice_text` slot and URL wired, with S4E4 gallery expected Nadir contact → wooden tokens → flask; no S4E3 spill. Full public GET/SHA and browser CI pending. Stage1 **22/29 art accepted, 21/29 integrated** until CI passes.
+- S4E5-A01 revision of visual candidate **REVIEW_v2** `seven_roads_s4e5_nadir_scar_clue_briefing_REVIEW_v2.png`, 1672x941, 2818865 bytes SHA256 `d5fdb33ec1d764966d8b7919babcc5e81af23e89361cad2286c6400fb58769ae`. In QISSA Library `/QISSA/production/seven_roads/series30/review/S4E5/`, not APPROVED, no WebP/Storage/runtime. Compared with approved Said ref (short salt-pepper hair, dark burgundy/charcoal without turban), kids' ref (Temur teal, Samira cream/teal travel overlay), and exact RU/UZ scene (Nadir gestures but has no scar). Rahim's precise garment not text-fixed; practical guard outfit only. **Owner artistic decision pending**.
+- No literary RU/UZ edits, ID changes, progress changes, older art replacements, merge or deploy.
+
 ## 2026-11-17 S4E5-A01 first visual candidate REVIEW — pending owner acceptance
 
 - In Draft PR #334, qissa/four-seasons-chronological-runtime-20261112. S4E5 `Северная дорога` A01 from `seven_roads_lozhnaya_doroga/story5_part_1_false_road/story_text` RU `Он провёл пальцем от левой брови к виску.` / UZ `U barmog‘ini chap qoshidan chakkasigacha yurgizdi.` (unique once each, paragraph 35; S4E6 split is at paragraph 124).
