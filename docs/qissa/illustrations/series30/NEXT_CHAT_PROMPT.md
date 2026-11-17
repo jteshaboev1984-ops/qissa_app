@@ -1,3 +1,10 @@
+## 2026-11-17 S4E4-A01 verified runtime checkpoint
+
+- Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112` — **S4E4-A01 owner-approved asset integrated and independently verified**. Approved WebP `seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp`, Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp`, **346950 bytes**, SHA256 `7ded6261bbb78d8dc94de6d922f238057a7cc54ea01e5f0fe37cc027fc3c45e6`.
+- Integration commit `717a7319e2b19097ea010e3ae8a278ed046a8f6c`; Seven Roads CI [#44015567471](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44015567471) SUCCESS, Season 2 Tier A [#44015567549](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44015567549) SUCCESS: **21/21** public GET/MIME/bytes/SHA, **42/42** exact RU/UZ anchors, 30 series and 136 choice paths, S4E4 gallery existing Nadir meeting → new wooden token verification, no S4E3 leak, gallery lock/unlock, typecheck, build and browser smoke.
+- Stage1 **21/29 artistically approved and 21/29 fully integrated**. S4E4 Stage1 **1/2 approved/integrated**; S4E4-A02 **0/1 not generated or approved**. Next storyboard target `S4E4-A02`: Nadir discreetly hangs a corked flask with hidden note on Hamid cargo wagon's LEFT REAR hook, following approved storyboard `S4E4_RED_HILL_NADIR_STORYBOARD_2026-11-16.md`; must not resemble Danyar's prison wagon or show the note being picked up.
+- No authored RU/UZ JSON, story IDs, choices, existing art, saved progress changes; no merge/deploy/publish. Recheck HEAD and CI in next task; previous notes below are historical.
+
 ## 2026-11-17 S4E4-A01 runtime wiring / CI pending
 
 - Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`. User uploaded `seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp` to Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp`; storage.objects confirms `image/webp` and **346950 bytes** on 2026-11-17 at 04:10:31Z. Final expected approved SHA256 `7ded6261bbb78d8dc94de6d922f238057a7cc54ea01e5f0fe37cc027fc3c45e6`. Actual remote GET and SHA verification pending CI.
