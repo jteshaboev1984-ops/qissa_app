@@ -1302,7 +1302,7 @@
           "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E9/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.metadata.json",
           "master_sha256": "d1a4b66e4bce85988a1e79bf2cb789d7b428ac23d38db9d04e381451a3ca8e76",
           "png_bytes": 2520635,
-          "webp_sha256": "be8fc1eb2651e2555c5c2a802b707703781f4b4fb0e8182bbb02a72edfda70",
+          "webp_sha256": "be8fc1eb2651e2555c5c2c5a802b707703781f4b4fb0e8182bbb02a72edfda70",
           "webp_bytes": 350378,
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp",
           "storage_status": "storage_objects_verified_MIME_bytes_SHA_pending_CI",

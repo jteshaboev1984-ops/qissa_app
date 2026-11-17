@@ -8,7 +8,7 @@ const assets = [
   {
     name: 'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp',
     size: 350378,
-    sha256: 'be8fc1eb2651e2555c5c2a802b707703781f4b4fb0e8182bbb02a72edfda70',
+    sha256: 'be8fc1eb2651e2555c5c2c5a802b707703781f4b4fb0e8182bbb02a72edfda70',
   },
   {
     name: 'seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED.webp',
