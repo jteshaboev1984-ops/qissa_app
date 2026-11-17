@@ -256,6 +256,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'Ayrilishda arava Arasga boradigan asosiy yo‘ldan chiqib, eski patrul yo‘liga burildi.',
     },
   },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_2_nadir_red_hill_clue',
+    slot_id: 'SERIES30-S4E4-A01',
+    anchor_key: 'series30_s4e4_nadir_wooden_tokens',
+    asset_id: 'seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Незнакомец сверил общий знак, перевернул жетон с двумя башнями и вернул его.',
+      uz: 'Notanish odam umumiy belgini solishtirdi, ikki minora tushirilgan nishonchani ag‘dardi va qaytarib berdi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>

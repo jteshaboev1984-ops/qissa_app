@@ -125,6 +125,8 @@ const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
   ])
 
 const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp',
   'seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.webp',
   'seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED':

@@ -1,3 +1,9 @@
+## 2026-11-17 S4E4-A01 runtime wiring / CI pending
+
+- Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`. User uploaded `seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp` to Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp`; storage.objects confirms `image/webp` and **346950 bytes** on 2026-11-17 at 04:10:31Z. Final expected approved SHA256 `7ded6261bbb78d8dc94de6d922f238057a7cc54ea01e5f0fe37cc027fc3c45e6`. Actual remote GET and SHA verification pending CI.
+- Additive runtime `SERIES30-S4E4-A01` for `seven_roads_chelovek_kotorogo_zhdut/story4_part_2_nadir_red_hill_clue/story_text`; exact RU/UZ anchor unique. S4E4 gallery order must be existing Nadir contact → new wooden-token image, with no S4E3 spill; 21 assets/42 anchors expected. Check `check:four-seasons`, `check:reading-series-30`, typecheck, build, browser smoke, and public WebP GET/MIME/bytes/SHA in CI before closing.
+- Until successful CI, Stage1 21/29 art accepted, 20/29 fully integrated; S4E4 1/2 accepted, A02 0/1. No authored JSON/IDs/progress changes; no merge/deploy.
+
 ## 2026-11-17 S4E4-A01 owner-approved; WebP ready in Library, Storage upload pending
 
 - Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`. Owner expressly approved current S4E4-A01 image (ImageGen `e119e63f-e0d2-4754-920e-1fa41b762f63`). New permanent asset id `seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED` (image unchanged, no re-generation).

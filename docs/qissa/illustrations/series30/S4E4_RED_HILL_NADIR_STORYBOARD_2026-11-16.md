@@ -1,3 +1,5 @@
+> **2026-11-17 S4E4-A01 integration checkpoint, CI pending:** the user-uploaded approved WebP exists in Supabase `story-images` at `seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp`, 346950 bytes / `image/webp`. Additive `SERIES30-S4E4-A01` now targets the exact RU/UZ `story4_part_2_nadir_red_hill_clue/story_text` token-check anchors after the existing Nadir meeting; the S4E3 road-fork gallery must remain unaffected. Independent public SHA, 21/21 registry check, browser/gallery and QA CI **pending**. No literary source files, choices, progress, existing approved assets changed. No merge/deploy.
+
 # QISSA — S4E4 «Красный холм»: Stage 1 storyboard
 
 **Дата:** 2026-11-16; дополнено 2026-11-17. **Статус:** S4E4-A01 художественно принят владельцем, PNG/WebP/metadata сохранены в QISSA Library; Storage и runtime ещё не интегрированы. S4E4-A02 не начат. Утверждённая квота S4E4: Stage1 **2 общих изображения**, Stage2 **2 общих изображения**; сохранять план 29+19+отдельная обложка, сезоны 5/4/11/10.
