@@ -1,3 +1,8 @@
+## 2026-11-17 S4E4-A02 corrected orientation, REVIEW_v2 pending owner decision
+
+- Owner flagged `REVIEW_v1` right-side flask as non-canonical. `REVIEW_v2` is byte-for-byte horizontally mirrored v1, changing left/right handedness without introducing new scene elements. PNG 1672×941, 2431372 bytes, SHA256 `e7b72f74267cb7280a4a69b97c66e0f50c1c1500f8a46664a6a83031646812a8`; QISSA Library `/QISSA/production/seven_roads/series30/review/S4E4/seven_roads_s4e4_nadir_flask_left_rear_hook_REVIEW_v2.png` and metadata JSON. Owner visual acceptance pending; do not auto-integrate.
+- Keep exact RU/UZ `post_choice_text` anchors with **LEFT REAR hook** of Hamid's cargo cart. No story/choice ID edits, no approved WebP, no Storage/runtime, no merge/deploy. Stage1 remains **21/29 integrated**, S4E4-A02 not accepted.
+
 ## 2026-11-17 S4E4-A02 new REVIEW_v1 candidate — owner decision pending
 
 - PR #334 Draft, `qissa/four-seasons-chronological-runtime-20261112`; S4E4-A01 remains owner-approved and integrated, total Stage1 **21/29** verified, all previous Seven Roads + Tier A CI green on `46b9788d0da7632592ef85e4455e4da447cab81c`.
