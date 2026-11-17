@@ -1,3 +1,9 @@
+## 2026-11-17 S4E4-A02 new REVIEW_v1 candidate — owner decision pending
+
+- PR #334 Draft, `qissa/four-seasons-chronological-runtime-20261112`; S4E4-A01 remains owner-approved and integrated, total Stage1 **21/29** verified, all previous Seven Roads + Tier A CI green on `46b9788d0da7632592ef85e4455e4da447cab81c`.
+- New S4E4-A02 `seven_roads_s4e4_nadir_flask_left_rear_hook_REVIEW_v1`, ImageGen id `299dc770-ef43-4b38-ad31-5a9b7d11652f`, 1672×941 PNG 2555139 bytes SHA256 `ee7b3bcf60a0194460621019fadc61435a0d1cf573cb23586155223451bc021c`. **REVIEW only** in QISSA Library `/QISSA/production/seven_roads/series30/review/S4E4/` with metadata JSON, image shown to owner for art acceptance. Inspect left-rear-hook legibility and garment simplicity before approving. No WebP/Storage/runtime for A02.
+- Scene uses `seven_roads_chelovek_kotorogo_zhdut` / `story4_part_2_nadir_red_hill_clue` / `post_choice_text` exact unique RU `Повесил флягу на левый задний крюк — это и был условленный знак.` and UZ `Suv idishini chap orqa ilgakka osdi. Bu oldindan kelishilgan ishora edi.`. Next step owner approve or request targeted revision. Never auto-approve or integrate. No merge/deploy/publish.
+
 ## 2026-11-17 S4E4-A01 verified runtime checkpoint
 
 - Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112` — **S4E4-A01 owner-approved asset integrated and independently verified**. Approved WebP `seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp`, Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp`, **346950 bytes**, SHA256 `7ded6261bbb78d8dc94de6d922f238057a7cc54ea01e5f0fe37cc027fc3c45e6`.
