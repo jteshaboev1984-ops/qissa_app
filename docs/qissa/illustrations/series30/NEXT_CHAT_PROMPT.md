@@ -1,3 +1,10 @@
+## 2026-11-17 S4E4-A01 owner-approved; WebP ready in Library, Storage upload pending
+
+- Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`. Owner expressly approved current S4E4-A01 image (ImageGen `e119e63f-e0d2-4754-920e-1fa41b762f63`). New permanent asset id `seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED` (image unchanged, no re-generation).
+- All THREE production files verified in QISSA Library: `/QISSA/production/seven_roads/series30/stage1/S4E4/`; PNG 1672×941, **2533096 bytes**, SHA256 `f462f15fcd824b229846f489ad6dcba38f6850bca54e57aa52ae87efded8956e`; WebP 1672×941, **346950 bytes**, SHA256 `7ded6261bbb78d8dc94de6d922f238057a7cc54ea01e5f0fe37cc027fc3c45e6`; metadata JSON. Supabase Storage object **not yet present**; do not claim public upload.
+- Required user upload: bucket `story-images` / path `seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp`. On upload, independent remote WebP SHA proof first, then additive `series30ApprovedSceneSlots.ts` / `authoredStoryAssets.ts`, RU/UZ split + gallery ordering (existing Nadir contact first, new wooden tokens second), absence from S4E3, browser/typecheck/build CI. No changes to authored story JSON or progress.
+- Stage1 now **21/29 artistic accepted**, **20/29 Storage SHA verified + runtime integrated**; S4E4 Stage1 **1/2 art approved, 0/2 wired**; A02 still unstarted. S4E3 remains completed, CI on prior HEAD green; no merge/deploy/publish.
+
 ## 2026-11-17 S4E4-A01 first correct-content REVIEW candidate (not approved)
 
 - An original 1672×941 PNG candidate was rendered once in the current chat, generation id `e119e63f-e0d2-4754-920e-1fa41b762f63`, SHA256 `f462f15fcd824b229846f489ad6dcba38f6850bca54e57aa52ae87efded8956e`. Preliminary scene QA passed: four hands, two wooden tokens, twin towers, two water buckets, blurred caravan yard; no wagon, guards or road fork. Actual approval and style-master comparison remain pending; review image is in the current chat, not stored as APPROVED.

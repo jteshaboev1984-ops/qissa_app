@@ -1,6 +1,6 @@
 # QISSA — S4E4 «Красный холм»: Stage 1 storyboard
 
-**Дата:** 2026-11-16. **Статус:** RU/UZ фрагменты и точные якоря проверены, иллюстрации **ещё не приняты**. Утверждённая квота S4E4: Stage1 **2 общих изображения**, Stage2 **2 общих изображения**; сохранять план 29+19+отдельная обложка, сезоны 5/4/11/10.
+**Дата:** 2026-11-16; дополнено 2026-11-17. **Статус:** S4E4-A01 художественно принят владельцем, PNG/WebP/metadata сохранены в QISSA Library; Storage и runtime ещё не интегрированы. S4E4-A02 не начат. Утверждённая квота S4E4: Stage1 **2 общих изображения**, Stage2 **2 общих изображения**; сохранять план 29+19+отдельная обложка, сезоны 5/4/11/10.
 
 ## Источник литературной истины
 
@@ -59,3 +59,11 @@
 - Generated **one** independent candidate in current chat. ImageGen generation ID: `e119e63f-e0d2-4754-920e-1fa41b762f63`. Local review attachment: 1672×941 PNG, 2533096 bytes, SHA256 `f462f15fcd824b229846f489ad6dcba38f6850bca54e57aa52ae87efded8956e`. File exists as a chat output; **not archived as APPROVED in production Library**, not uploaded to Storage.
 - Preliminary visual QA: tight close-up; exactly two pairs of adult hands; exactly two wooden tokens (second largely turned away); a visible carved **two-tower** emblem; exactly two wooden water buckets; blurred Hamid-style caravan yard with bales and wooden shelter. No faces, prison wagon, royal guards, road fork or invented signposts. The three historical wagon-repeat candidates remain rejected.
 - **REVIEW / owner artistic approval pending.** The actual old master-ref pixels were not available for a side-by-side paint-style comparison, so final approval of visual continuity remains with the owner. No permanent asset ID, WebP, queue acceptance, Storage, runtime slot or count increase. S4E4 Stage1 **0/2**. Do not promote to APPROVED automatically.
+
+## S4E4-A01 — explicit owner approval и производственные файлы (2026-11-17)
+
+- Владелец явно утвердил **именно текущий** визуальный кандидат; никаких изменений пикселей PNG, повторной генерации либо ретуши нет. Candidate `e119e63f-e0d2-4754-920e-1fa41b762f63` → `seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED`.
+- Permanent QISSA Library: `/QISSA/production/seven_roads/series30/stage1/S4E4/` содержит final PNG, WebP и metadata JSON под одним `asset_id`. PNG 1672×941, **2533096** bytes, SHA256 `f462f15fcd824b229846f489ad6dcba38f6850bca54e57aa52ae87efded8956e`; optimized WebP same dimensions **346950** bytes, SHA256 `7ded6261bbb78d8dc94de6d922f238057a7cc54ea01e5f0fe37cc027fc3c45e6` (Pillow WebP quality 92/method 6). Metadata uploaded and file integrity verified locally.
+- User upload target: Supabase Storage bucket `story-images`, object `seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp`. Read-only Supabase `storage.objects` check on 2026-11-17 returned **no such object**. This is a planned object path, not a confirmed public URL. **Do not** add to runtime registry until independent public GET/MIME/bytes/SHA succeeds.
+- Exact RU/UZ anchored `story4_part_2_nadir_red_hill_clue/story_text` paragraph 40 checked 1/1 in each source. In virtual S4E4 only, after already-approved `seven_roads_s2_story4_nadir_contact_01_APPROVED`; no spill to S4E3, no choice-dependent changes. Historical authored JSON and approved Nadir contact remain unchanged.
+- Accounting: S4E4 Stage1 **1/2 ART approved, 0/2 technically integrated**, S4E4-A02 still unstarted; whole Stage1 **21/29 artistically accepted, 20/29 fully integrated**. No merge/deploy/publish or saved-progress updates.
