@@ -1,3 +1,5 @@
+> **2026-11-17 runtime update (CI pending):** final owner-approved S4E3-A01 WebP is present in Supabase Storage metadata (361280 bytes, image/webp, upload 02:09:35Z). Additive series30 slot and asset URL now wired in Draft PR #334 for virtual S4E3 after exact RU/UZ road-fork anchors. Independent public GET/SHA and reader/gallery/browser CI are pending; do not claim fully integrated until green. No authored JSON, old approved artwork or progress changed.
+
 # QISSA — S4E3 «Ложное уведомление» — Stage 1 storyboard
 
 **Дата:** 2026-11-16. **Статус:** текст и визуальные референсы проверены, новый кадр **не генерировался и не принят**. Stage 1: **ровно 1 новая общая иллюстрация**, Stage 2: **0** (согласно ART_QUEUE). Четыре сезона 5/4/11/10 и общий план 29+19+обложка неизменны.

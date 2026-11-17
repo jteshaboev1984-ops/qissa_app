@@ -1,3 +1,9 @@
+## 2026-11-17 S4E3 runtime wiring checkpoint — CI pending
+
+- PR #334 Draft. The **user upload is confirmed by Supabase storage.objects** at `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.webp`: 361280 bytes; `image/webp`; uploaded 2026-11-17 02:09:35Z. Final expected SHA256 `f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7`; independent public HTTP GET/SHA via Seven Roads CI pending.
+- Added runtime scene to exact S4E3 RU/UZ `story4_part_2_nadir_red_hill_clue/story_text` road-fork anchors; expected S4E3 gallery false notice → wagon lock → road fork; **must not** leak into S4E4. New QA checks and remote verifier count 20/20.
+- Stage1 **20/29 artistic accepted**, **19/29 fully verified integrated until new CI succeeds**. S4E4 Stage1 **0/2**, do not reuse 3 rejected wagon outputs. No merge/deploy/literary/progress edits.
+
 ## 2026-11-16 further S4E4 A01 blocker + verified S4E3 art checkpoint
 
 - S4E3-A01 `seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.webp` **361280 bytes**, sha256 `f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7`, PNG master 1672x941 in Library `/QISSA/production/seven_roads/series30/stage1/S4E3/`. Stage1 ART accepted 1/1, **Storage still pending**; upload only final WebP before independent public SHA and RU/UZ reader wiring. GitHub CI #43872352025 Seven Roads SUCCESS, #43872352020 Tier A SUCCESS on art-only documentation checkpoint (not new asset runtime).

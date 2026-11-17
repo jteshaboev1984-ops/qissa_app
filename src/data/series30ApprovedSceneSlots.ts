@@ -244,6 +244,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'To‘riq ot ularning yonidan chopib o‘tdi.',
     },
   },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_2_nadir_red_hill_clue',
+    slot_id: 'SERIES30-S4E3-A01',
+    anchor_key: 'series30_s4e3_prison_wagon_road_fork',
+    asset_id: 'seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'На развилке повозка оставила главную дорогу на Арас и свернула на старую патрульную.',
+      uz: 'Ayrilishda arava Arasga boradigan asosiy yo‘ldan chiqib, eski patrul yo‘liga burildi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>
