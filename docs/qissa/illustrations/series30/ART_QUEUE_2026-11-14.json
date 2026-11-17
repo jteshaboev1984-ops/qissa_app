@@ -1284,7 +1284,7 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_art_approved_runtime_wired_ci_pending",
+      "artwork_acceptance": "stage_1_complete",
       "asset_ids": [
         "seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED"
       ],
@@ -1305,13 +1305,19 @@
           "webp_sha256": "be8fc1eb2651e2555c5c2c5a802b707703781f4b4fb0e8182bbb02a72edfda70",
           "webp_bytes": 350378,
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp",
-          "storage_status": "storage_objects_verified_MIME_bytes_SHA_pending_CI",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_CI_pending",
-          "qa_status": "pending",
-          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR",
+          "qa_status": "RU_UZ_S4E9_gallery_order_S4E10_isolation_spoiler_locks_browser_CI_passed",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_ci_run_44077007213",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44077007213,
+            "seven_roads_ci": 44077007213,
+            "season2_tier_a_ci": 44077007190
+          }
         }
       ],
-      "notes": "2026-11-17 S4E9-A01 owner explicitly accepted REVIEW_v1. Canon and exact RU/UZ unique story_text anchor verified before S4E9/S4E10 virtual split. Master PNG/WebP/metadata stored in QISSA Library stage1/S4E9; user uploaded WebP and Supabase storage.objects confirmed correct object image/webp 350378 bytes. Additive RU/UZ reader slot, URL and CI remote SHA/gallery checks committed in Draft PR #334, CI pending. S4E8 remains 0/2 withdrawn and not wired. No authored text/IDs/saved progress/merge/deploy changed."
+      "notes": "2026-11-17 S4E9-A01 owner explicitly accepted REVIEW_v1. Canon and exact RU/UZ unique story_text anchor verified before S4E9/S4E10 virtual split. Master PNG/WebP/metadata stored in QISSA Library stage1/S4E9; user uploaded WebP and Supabase storage.objects confirmed correct object image/webp 350378 bytes. Additive RU/UZ reader slot, URL and CI remote SHA/gallery checks committed in Draft PR #334, CI pending. S4E8 remains 0/2 withdrawn and not wired. No authored text/IDs/saved progress/merge/deploy changed. 2026-11-17 final CI at exact HEAD 930d3fde58cd6a86b2b905b7fdc686ad0673a90f: Seven Roads CI #44077007213 SUCCESS on targeted Chrome-smoke rerun, Season2 Tier A #44077007190 SUCCESS. 26/26 remote public WebP GET/MIME/bytes/SHA verified; 52/52 RU/UZ exact anchors; S4E9 correct gallery order return→notice→morning horses, S4E10 seal comparison segregated, unread gallery remains spoiler-locked, typecheck/build/browser smoke passed. Stage1 total 26/29 art accepted and integrated."
     },
     {
       "season": 4,
@@ -1328,7 +1334,7 @@
       "artwork_acceptance": "not_started",
       "asset_ids": [],
       "exact_anchor_pairs": [],
-      "notes": ""
+      "notes": "2026-11-17 S4E10-A01 proposed 'Взгляд через решётку' new 1672×941 2663911-byte PNG SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; ImageGen 71956e59-acac-4990-a0e4-1e4578354197; source post_choice_text full exact RU `Данияр остановился.` / UZ `Daniyar to‘xtadi.` unique 1/1 after literary choice. Farid (alias Kamran) in prison courtyard on low stone bench through barred window, Daniyar blue scarf outside. Real approved Kamran/Farid character sheet and S2E3 Farid arrest PNG inspected. Candidate is REVIEW only in QISSA Library /QISSA/production/seven_roads/series30/review/S4E10/; NO owner acceptance, WebP, storage, runtime, asset_id, counter update."
     }
   ]
 }

@@ -28,3 +28,7 @@
 - User-uploaded Storage: `story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp`; Supabase `storage.objects` read shows **image/webp, 350378 bytes**. Independent public GET/MIME/bytes/**SHA256** included in CI, verify success on exact HEAD before declaring technical completion.
 - Planned additive `SERIES30-S4E9-A01` anchored before S4E10 virtual split in both languages, `kind=shared`; preserve original authored RU/UZ, story/choice IDs and saved progress. Library gallery expected `existing return to Ordan → new suspicious notice → existing morning horses`, S4E10 seal comparison never leaks into S4E9.
 - S4E8 not accepted, not connected. No merge/deploy/publish.
+
+## 2026-11-17 — Stage1 S4E9-A01 fully integrated and verified
+
+Owner-art accepted; PNG/WebP/metadata in QISSA Library stage1/S4E9, Supabase public file 350378 bytes SHA256 `be8fc1eb2651e2555c5c2c5a802b707703781f4b4fb0e8182bbb02a72edfda70`. CI on HEAD `930d3fde58cd6a86b2b905b7fdc686ad0673a90f`: [Seven Roads #44077007213](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44077007213) SUCCESS after retry of intermittent Chrome DevTools launch failure; [Season 2 Tier A #44077007190](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44077007190) SUCCESS. Public 26/26 SHA verified, RU/UZ 52/52 anchors, S4E9 gallery return→notice→morning horses, S4E10 excluded, browser gallery lock, typecheck/build PASS. **Stage1 26/29 accepted and integrated.** S4E8 remains revoked/blocked. No source/choice/progress/merge/deploy changes.
