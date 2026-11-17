@@ -1,3 +1,8 @@
+## 2026-11-17 S4E4-A01 first correct-content REVIEW candidate (not approved)
+
+- An original 1672×941 PNG candidate was rendered once in the current chat, generation id `e119e63f-e0d2-4754-920e-1fa41b762f63`, SHA256 `f462f15fcd824b229846f489ad6dcba38f6850bca54e57aa52ae87efded8956e`. Preliminary scene QA passed: four hands, two wooden tokens, twin towers, two water buckets, blurred caravan yard; no wagon, guards or road fork. Actual approval and style-master comparison remain pending; review image is in the current chat, not stored as APPROVED.
+- S4E4 Stage1 **0/2 accepted** (one new candidate for owner review). Do not upload, integrate or increment accepted counts without explicit owner artistic decision. S4E3 fully integrated **20/29 total** remains unchanged. PR Draft, no merge/deploy.
+
 ## 2026-11-17 verified S4E3 integration checkpoint
 
 - Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`; latest integration code commit `b4cc776aebe5ce5452b60a1924eaeaa73b483c28`. User-uploaded S4E3-A01 public WebP confirmed via actual CI GET, MIME `image/webp`, **361280 bytes**, SHA256 `f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7`.
