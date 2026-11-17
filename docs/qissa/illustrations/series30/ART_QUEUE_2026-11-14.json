@@ -1199,7 +1199,7 @@
       "artwork_acceptance": "not_started",
       "asset_ids": [],
       "exact_anchor_pairs": [],
-      "notes": ""
+      "notes": "2026-11-17 Stage1 S4E6-A01 new single image candidate owner REVIEW (not approved). From story5 falseRoad interactive-v4 RU/UZ at story5_part_1_false_road/story_text paragraph125, first paragraph after virtual S4E5/S4E6 split at paragraph124: RU \"Они уже находились по северную сторону Каменного гребня; Красный холм остался за ним и отсюда не был виден.\"; UZ \"Ular allaqachon Tosh tizmasining shimoliy tomonida edi; Qizil tepalik tizma ortida qolgan va bu yerdan ko‘rinmasdi.\"; both occur exactly once. Three riders Temur (dark bay Shamol, teal tack), Samira (dapple gray Bulut, burgundy blanket), Rahim on unnamed brown horse, backs, wide northern Stone Ridge and distant Eastern Forest with NO visible Red Hill, fork signpost, branch route consequence or invented attackers. ImageGen id 0c89ce6a-d5cd-4033-9bea-ba6b08bcd333; PNG 1671x941 3146922 bytes SHA256 8d1fbee37a7267c6678b970851ab2d1350413ffb205669e88608df336fe1556d. PNG and metadata in QISSA Library /QISSA/production/seven_roads/series30/review/S4E6/. Preliminary scene/canon check passed; owner art acceptance pending. Previous approved fork image remains at story_text \"— Они открыты. Выбирайте.\" and real reinforcements later post_choice. No approved S4E6 asset/Storage/runtime, stage1 accepted/integrated remains 24/29 art, 23/29 integrated."
     },
     {
       "season": 4,
