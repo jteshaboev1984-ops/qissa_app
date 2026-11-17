@@ -389,7 +389,7 @@ for (const fixture of fixtures) {
       assert.ok(galleryItem, id + '/' + language + ': missing from correct gallery episode')
       assert.equal(galleryItem.unlocked, false, 'new illustration spoiled before reading')
       assert.equal(item.slot.kind, 'shared')
-      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E11-A02'].includes(id) ? 'post_choice_text' : 'story_text')
+      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02'].includes(id) ? 'post_choice_text' : 'story_text')
       assert.equal(pars(item.part[item.slot.phase]).filter((p) => p === item.slot.after_text).length, 1,
         id + '/' + language + ': anchor missing or repeated')
       assert.ok(assetsSource.includes("'" + item.slot.asset_id + "'"),
