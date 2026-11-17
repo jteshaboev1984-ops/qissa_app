@@ -39,3 +39,7 @@
 - Supabase `storage.objects` independently confirms the owner uploaded `seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED.webp` into `story-images/seven-roads/season2_tier_a_v2/` at **2026-11-17 06:56:10Z**, `image/webp`, **476610 bytes**. SHA-256 expected `685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816` from owner-approved final WebP. Public remote GET/SHA requires CI before status closure.
 - Draft PR #334: additive `SERIES30-S4E6-A01` RU/UZ `seven_roads_lozhnaya_doroga/story5_part_1_false_road/story_text` after unique exact paragraph 125 about Stone Ridge northern side. Code/registry/25th public-verification asset and S4E6 reader/gallery/seen/unseen/S4E5 isolation checks added. Must still pass 25/25 public WebPs, 50/50 bilingual anchors, four-seasons/reading-series/typecheck/build/browser.
 - Stage1 stays **25/29 artistic accepted, 24/29 fully integrated until CI**. S4E8 artistic A01 still REVIEW-only; do not register/upload it without owner approval. No literary JSON/IDs/progress/merge/deploy.
+
+## 2026-11-17 — S4E6-A01 integration confirmed green
+
+- Seven Roads [#44035389651](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44035389651) and Tier A [#44035389446](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44035389446) SUCCESS; 25/25 approved public WebPs GET/MIME/byte/SHA, 50/50 bilingual scene anchors, S4E6 gallery chronological and no S4E5 contamination, typecheck/build/browser smoke PASS. S4E6 Stage1 **1/1 art accepted and integrated**.
