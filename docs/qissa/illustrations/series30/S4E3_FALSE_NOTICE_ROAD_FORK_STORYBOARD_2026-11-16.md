@@ -1,4 +1,4 @@
-> **2026-11-17 runtime update (CI pending):** final owner-approved S4E3-A01 WebP is present in Supabase Storage metadata (361280 bytes, image/webp, upload 02:09:35Z). Additive series30 slot and asset URL now wired in Draft PR #334 for virtual S4E3 after exact RU/UZ road-fork anchors. Independent public GET/SHA and reader/gallery/browser CI are pending; do not claim fully integrated until green. No authored JSON, old approved artwork or progress changed.
+> **2026-11-17 verified runtime checkpoint:** S4E3-A01 is uploaded (361280 bytes, image/webp, SHA256 f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7). Seven Roads CI #44002012158 and Season 2 Tier A #44002011982 both SUCCESS; public GET/MIME/bytes/SHA, 20/20 remote assets, 40/40 RU/UZ anchors, S4E3 gallery false notice → wagon lock → road fork, no S4E4 spill, typecheck, build and browser smoke confirmed. Stage1 S4E3 fully integrated, Stage1 total **20/29**. Unpublished Draft PR only; literary JSON, existing art and progress unchanged.
 
 # QISSA — S4E3 «Ложное уведомление» — Stage 1 storyboard
 

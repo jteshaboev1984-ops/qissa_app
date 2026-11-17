@@ -1,8 +1,9 @@
-## 2026-11-17 S4E3 runtime wiring checkpoint — CI pending
+## 2026-11-17 verified S4E3 integration checkpoint
 
-- PR #334 Draft. The **user upload is confirmed by Supabase storage.objects** at `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.webp`: 361280 bytes; `image/webp`; uploaded 2026-11-17 02:09:35Z. Final expected SHA256 `f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7`; independent public HTTP GET/SHA via Seven Roads CI pending.
-- Added runtime scene to exact S4E3 RU/UZ `story4_part_2_nadir_red_hill_clue/story_text` road-fork anchors; expected S4E3 gallery false notice → wagon lock → road fork; **must not** leak into S4E4. New QA checks and remote verifier count 20/20.
-- Stage1 **20/29 artistic accepted**, **19/29 fully verified integrated until new CI succeeds**. S4E4 Stage1 **0/2**, do not reuse 3 rejected wagon outputs. No merge/deploy/literary/progress edits.
+- Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`; latest integration code commit `b4cc776aebe5ce5452b60a1924eaeaa73b483c28`. User-uploaded S4E3-A01 public WebP confirmed via actual CI GET, MIME `image/webp`, **361280 bytes**, SHA256 `f00477166ae90ae020dfc108756a833f7db1b034c9fecb92612a9a56d3decab7`.
+- CI Seven Roads `44002012158` SUCCESS; Season 2 Tier A `44002011982` SUCCESS. **20/20** public art SHA; **40/40** RU/UZ anchors; S4E3 gallery is existing false notice → existing wagon lock → new road fork, no S4E4 leak; `check:reading-series-30`, `check:four-seasons`, typecheck, build and browser smoke PASS.
+- Stage1 **20/29 artistic accepted and fully technically integrated**. S4E3 Stage1 **1/1 closed**. S4E4 `Красный холм` Stage1 **0/2**, first art target A01 two hands pairs checking two wooden tokens beside two water buckets at Hamid caravan yard; three prior prison-wagon repeats rejected. Do not integrate S4E4 without owner art acceptance.
+- Literary RU/UZ sources, choice/story IDs, saved progress and previously approved assets unchanged. No merge, deploy or production publish.
 
 ## 2026-11-16 further S4E4 A01 blocker + verified S4E3 art checkpoint
 
