@@ -1331,10 +1331,34 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 3,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": "2026-11-17 S4E10-A01 proposed 'Взгляд через решётку' new 1672×941 2663911-byte PNG SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; ImageGen 71956e59-acac-4990-a0e4-1e4578354197; source post_choice_text full exact RU `Данияр остановился.` / UZ `Daniyar to‘xtadi.` unique 1/1 after literary choice. Farid (alias Kamran) in prison courtyard on low stone bench through barred window, Daniyar blue scarf outside. Real approved Kamran/Farid character sheet and S2E3 Farid arrest PNG inspected. Candidate is REVIEW only in QISSA Library /QISSA/production/seven_roads/series30/review/S4E10/; NO owner acceptance, WebP, storage, runtime, asset_id, counter update."
+      "artwork_acceptance": "stage_1_art_approved_storage_pending",
+      "asset_ids": [
+        "seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S4E10-A01",
+          "asset_id": "seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED",
+          "kind": "shared",
+          "phase": "post_choice_text",
+          "ru_after_text": "Данияр остановился.",
+          "uz_after_text": "Daniyar to‘xtadi.",
+          "acceptance": "explicit_owner_art_approved_2026_11_17",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E10/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E10/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E10/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.metadata.json",
+          "master_sha256": "352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f",
+          "png_bytes": 2663911,
+          "webp_sha256": "b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3",
+          "webp_bytes": 356286,
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.webp",
+          "storage_status": "NOT_UPLOADED_as_verified_2026_11_17",
+          "runtime_status": "NOT_WIRED_until_public_GET_MIME_BYTES_SHA256_verification",
+          "qa_status": "owner_art_approved;_source_RU_UZ_anchor_unique;_remote_and_runtime_QA_pending",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.webp"
+        }
+      ],
+      "notes": "2026-11-17 S4E10-A01 proposed 'Взгляд через решётку' new 1672×941 2663911-byte PNG SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; ImageGen 71956e59-acac-4990-a0e4-1e4578354197; source post_choice_text full exact RU `Данияр остановился.` / UZ `Daniyar to‘xtadi.` unique 1/1 after literary choice. Farid (alias Kamran) in prison courtyard on low stone bench through barred window, Daniyar blue scarf outside. Real approved Kamran/Farid character sheet and S2E3 Farid arrest PNG inspected. Candidate is REVIEW only in QISSA Library /QISSA/production/seven_roads/series30/review/S4E10/; NO owner acceptance, WebP, storage, runtime, asset_id, counter update. 2026-11-17 NEWER CHECKPOINT: owner explicitly accepted S4E10-A01 v1 in conversation; approved asset_id seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.png. Original review candidate preserved EXACT bitstream SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; 2663911 bytes, 1672x941. WebP q90 m6 356286 bytes sha256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Master PNG + WebP + metadata in Library stage1/S4E10, separate from REVIEW. Direct read from project Supabase storage.objects shows target path ABSENT; current tools do not provide authenticated binary Supabase Storage upload. Therefore no hosted_verified slot/URL runtime or CI remote SHA until actual upload; code remains at 26/29 integrated, artistic accepted count now 27/29. Existing S4E8-A01/A02 0/2 withdrawn and blocked. No changes authored RU/UZ, IDs, saved progress, prior approved assets, merge/deploy/publish."
     }
   ]
 }

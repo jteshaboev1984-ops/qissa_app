@@ -24,3 +24,15 @@
 - Реальные пиксели кандидатного PNG визуально изучены, очевидных существенных ошибок масштаба, личности и ракурса не выявлено. Финальная художественная приёмка — **только явным решением владельца**.
 - Архив REVIEW PNG+metadata `/QISSA/production/seven_roads/series30/review/S4E10/`.
 - **S4E10-A01 0/1 art accepted, NOT uploaded/NOT wired; S4E8 still 0/2**. После возможного принятия: master/WebP → Library → подтверждённый Storage upload → независимый SHA → additive RU/UZ overlay → CI. Не выполнять merge/deploy/publish.
+
+## OWNER ART ACCEPTED 2026-11-17 — S4E10-A01, production WebP pending upload
+
+Owner explicitly replied **«принимаем. работай далее»** to the S4E10-A01 review image. This accepts **this concrete rendered v1 artwork** only. No advance approval of other images or release.
+
+- Official asset_id: `seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED`.
+- Approved pixel-identical original master PNG `/QISSA/production/seven_roads/series30/stage1/S4E10/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.png` (1672×941, 2663911 bytes, SHA256 `352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f`).
+- WebP `/QISSA/production/seven_roads/series30/stage1/S4E10/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.webp` (quality 90, method 6, 356286 bytes, SHA256 `b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3`). Metadata adjacent. Both real files saved to QISSA Library, original REVIEW remains for historical comparison.
+- Exact desired Supabase storage bucket `story-images`; object path `seven-roads/season2_tier_a_v2/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.webp`. SQL read of `storage.objects` for this filename returned **zero records**; not uploaded. Available connector lacks binary Supabase Storage upload and there is no authorized substitute. **Never fabricate a successful upload or insert storage metadata without binary**.
+- RU/UZ exact unique `post_choice_text` anchor above remains valid. Prepare `SERIES30-S4E10-A01` as **additive overlay in** `src/data/series30ApprovedSceneSlots.ts` and URL in `src/data/authoredStoryAssets.ts` **only after** actual public GET + MIME `image/webp` + byte count 356286 + SHA256 verification. Ensure slot mapped to display episode S4E10 (after the virtual split), `kind=shared`, no spoiler leak before choice.
+- Update QA counts from 26/52 to 27/54; assert S4E10 gallery and chronological ordering with existing seal-comparison/ending-hook art; browser smoke and independent SHA must pass. Preserve existing RU/UZ stories, old progress, all IDs and 26 approved runtime images.
+- Status now **art accepted 27/29**, **technically integrated 26/29**; S4E8 remains blocked at 0/2. **PR #334 Draft only**, no merge/deploy/publish.
