@@ -1,3 +1,9 @@
+## 2026-11-17 S4E5-A01 verified integration; S4E5-A02 facial QA pending
+
+- Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`. Owner-uploaded S4E5-A01 WebP remotely verified by **Seven Roads CI #44026077486** and **Tier A CI #44026077444** — both SUCCESS. Public GET/MIME/size **454554 bytes**/SHA256 `733a1d9003653b0d97072a50948721d3334dff215a25f16083dd529c53af4ed7`, 23/23 approved WebP hashes and 46/46 RU/UZ anchored scenes; S4E5 gallery order new scar clue before red hill recon, S4E6 unaffected; typecheck/build/browser smoke pass.
+- Stage1 **23/29 artistic accepted + technically integrated**, S4E5 **1/2 accepted and integrated**. Second S4E5-A02 map scene `seven_roads_s4e5_said_stone_ridge_map_REVIEW_v1` failed visual hero-face QA: Temur/Samira older elongated faces vs approved character sheet and master. New `REVIEW_v2` generated `d0947ea0-4d46-4c4b-abc7-07408d14b786`, 1671×941 PNG **2669635 bytes**, SHA256 `9dd7d91096fe6a13b61777ab40ab041afcc766111d4c79086ae7df9ed0410273`, QISSA Library `/QISSA/production/seven_roads/series30/review/S4E5/`. **Still needs owner confirmation of exact face/canon continuity; do not approve/upload/wire it without explicit owner action.**
+- Neither authored RU/UZ story text nor any existing choice/story IDs or saved progress modified. No merge, deploy, or publication.
+
 ## 2026-11-17 S4E5-A01 upload confirmed / reader wiring CI pending; S4E5-A02 faces fail review v1
 
 - Draft PR #334 `qissa/four-seasons-chronological-runtime-20261112`. Owner-uploaded **S4E5-A01** WebP `seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED.webp` is present in Supabase `story-images`, `454554` bytes and `image/webp`; expected SHA256 `733a1d9003653b0d97072a50948721d3334dff215a25f16083dd529c53af4ed7`. Runtime and remote verifier wired on branch; independent GET/MIME/bytes/SHA, typecheck/build/browser CI pending.
