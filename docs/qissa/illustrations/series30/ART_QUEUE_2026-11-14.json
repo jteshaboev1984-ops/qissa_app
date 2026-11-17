@@ -1284,10 +1284,34 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_1_art_approved_runtime_wired_ci_pending",
+      "asset_ids": [
+        "seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S4E9-A01",
+          "asset_id": "seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED",
+          "kind": "shared",
+          "phase": "story_text",
+          "ru_after_text": "Когда все закончили, он положил на стол дорожное уведомление из Араса.",
+          "uz_after_text": "Hamma tugatgach, u Arasdan kelgan yo‘l xabarnomasini stolga qo‘ydi.",
+          "acceptance": "explicit_owner_art_approved_2026_11_17",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E9/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E9/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage1/S4E9/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.metadata.json",
+          "master_sha256": "d1a4b66e4bce85988a1e79bf2cb789d7b428ac23d38db9d04e381451a3ca8e76",
+          "png_bytes": 2520635,
+          "webp_sha256": "be8fc1eb2651e2555c5c2a802b707703781f4b4fb0e8182bbb02a72edfda70",
+          "webp_bytes": 350378,
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp",
+          "storage_status": "storage_objects_verified_MIME_bytes_SHA_pending_CI",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_CI_pending",
+          "qa_status": "pending",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp"
+        }
+      ],
+      "notes": "2026-11-17 S4E9-A01 owner explicitly accepted REVIEW_v1. Canon and exact RU/UZ unique story_text anchor verified before S4E9/S4E10 virtual split. Master PNG/WebP/metadata stored in QISSA Library stage1/S4E9; user uploaded WebP and Supabase storage.objects confirmed correct object image/webp 350378 bytes. Additive RU/UZ reader slot, URL and CI remote SHA/gallery checks committed in Draft PR #334, CI pending. S4E8 remains 0/2 withdrawn and not wired. No authored text/IDs/saved progress/merge/deploy changed."
     },
     {
       "season": 4,

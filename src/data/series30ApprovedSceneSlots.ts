@@ -316,6 +316,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'Ular allaqachon Tosh tizmasining shimoliy tomonida edi; Qizil tepalik tizma ortida qolgan va bu yerdan ko‘rinmasdi.',
     },
   },
+  {
+    story_id: 'seven_roads_obratno_v_ordan',
+    part_id: 'story7_part_1_back_to_ordan',
+    slot_id: 'SERIES30-S4E9-A01',
+    anchor_key: 'series30_s4e9_said_suspicious_road_notice',
+    asset_id: 'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Когда все закончили, он положил на стол дорожное уведомление из Араса.',
+      uz: 'Hamma tugatgach, u Arasdan kelgan yo‘l xabarnomasini stolga qo‘ydi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>

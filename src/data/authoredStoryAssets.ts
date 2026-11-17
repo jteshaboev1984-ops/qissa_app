@@ -125,6 +125,8 @@ const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
   ])
 
 const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp',
   'seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED.webp',
   'seven_roads_s4e5_said_stone_ridge_map_02_APPROVED':

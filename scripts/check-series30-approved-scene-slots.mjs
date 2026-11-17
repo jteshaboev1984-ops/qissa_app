@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 25)
+assert.equal(series30ApprovedScenes.length, 26)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -80,6 +80,11 @@ const fixtures = [
     base: 'src/data/authored/staging/season2Story4WaitedMan',
     key: 'waited',
     expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4 },
+  },
+  {
+    base: 'src/data/authored/staging/season2Story7BackToOrdan',
+    key: 'ordan',
+    expected: { 'SERIES30-S4E9-A01': 1 },
   },
 ]
 
@@ -169,6 +174,32 @@ for (const fixture of fixtures) {
     const galleryBefore = authoredIllustrationDiscovery.buildGalleryEpisodes(
       story, episodes.map(e => e.title), null, episodeForPart,
     )
+
+    if (fixture.key === 'ordan') {
+      // The new scene is BEFORE the Aras reply and before the S4E9/S4E10 split.
+      const s4e9Gallery = galleryBefore[0].items.map(item => item.assetId)
+      assert.deepEqual(
+        s4e9Gallery.join('|'),
+        [
+          'seven_roads_s2_story7_return_to_ordan_01_APPROVED',
+          'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED',
+          'seven_roads_s2_story7_morning_horses_01_APPROVED',
+        ].join('|'),
+        language + ': S4E9 must show return → suspicious notice → morning horses',
+      )
+      assert.equal(
+        galleryBefore[1].items.some(item => item.assetId === 'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED'),
+        false, language + ': S4E9 notice leaked into S4E10 seal comparison',
+      )
+      assert.equal(
+        galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s2_story7_aras_seal_comparison_01_APPROVED'),
+        false, language + ': future S4E10 seal comparison spoiled in S4E9',
+      )
+      assert.equal(
+        galleryBefore[0].items.find(item => item.assetId === 'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED')?.unlocked,
+        false, language + ': S4E9 notice must be locked until seen',
+      )
+    }
     if (fixture.key === 'waited') {
       const firstSeries = galleryBefore[0].items.map(item => item.assetId)
       const homecoming = firstSeries.indexOf('seven_roads_s2_story4_homecoming_01_APPROVED')
@@ -505,7 +536,8 @@ for (const scene of series30ApprovedScenes) {
     scene.slot_id.startsWith('SERIES30-S4E3-') ? e.season === 4 && e.episode === 3 :
     scene.slot_id.startsWith('SERIES30-S4E4-') ? e.season === 4 && e.episode === 4 :
     scene.slot_id.startsWith('SERIES30-S4E5-') ? e.season === 4 && e.episode === 5 :
-    scene.slot_id.startsWith('SERIES30-S4E6-') ? e.season === 4 && e.episode === 6 : false,
+    scene.slot_id.startsWith('SERIES30-S4E6-') ? e.season === 4 && e.episode === 6 :
+    scene.slot_id.startsWith('SERIES30-S4E9-') ? e.season === 4 && e.episode === 9 : false,
   )
   assert.ok(match?.asset_ids.includes(scene.asset_id),
     'approved asset missing from production queue: ' + scene.asset_id)
@@ -513,9 +545,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 50)
-console.log('[series30-art] PASS: 25 owner-approved assets, 50 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 52)
+console.log('[series30-art] PASS: 26 owner-approved assets, 52 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E9 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
