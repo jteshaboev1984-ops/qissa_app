@@ -1,3 +1,10 @@
+## 2026-11-17 S4E5-A01 upload confirmed / reader wiring CI pending; S4E5-A02 faces fail review v1
+
+- Draft PR #334 `qissa/four-seasons-chronological-runtime-20261112`. Owner-uploaded **S4E5-A01** WebP `seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED.webp` is present in Supabase `story-images`, `454554` bytes and `image/webp`; expected SHA256 `733a1d9003653b0d97072a50948721d3334dff215a25f16083dd529c53af4ed7`. Runtime and remote verifier wired on branch; independent GET/MIME/bytes/SHA, typecheck/build/browser CI pending.
+- New `SERIES30-S4E5-A01` anchored to exact one-off bilingual S4E5 `story5_part_1_false_road/story_text` scar gesture before split to S4E6. Keep existing Red Hill image afterward; prevent S4E6/gallery spoiler leak.
+- Owner noticed S4E5-A02 `REVIEW_v1` kids' faces diverge from approved master/character sheet. Actual visual comparison confirms angular, older teen-looking Temur and Samira; **reject v1 for artistic approval**, no production asset/Storage. A fresh `seven_roads_s4e5_said_stone_ridge_map_REVIEW_v2` generated with rounder childlike faces, PNG 1671x941 2669635 bytes SHA256 `9dd7d91096fe6a13b61777ab40ab041afcc766111d4c79086ae7df9ed0410273`; in QISSA Library review/S4E5; **owner art decision pending**; no accepted-count increase.
+- Stage1 **23/29 artistic accepted**, **22/29 fully verified integrated** until S4E5-A01 CI green. No authored RU/UZ JSON, story/choice IDs, progress or prior approved art changed; no merge/deploy.
+
 ## 2026-11-17 S4E5-A02 map candidate REVIEW_v1 submitted after S4E5-A01 acceptance
 
 - Draft PR #334. S4E5-A01 owner conditionally accepted after actual wardrobe ref comparison; final PNG/WebP/metadata in QISSA Library stage1/S4E5, awaiting user upload to Storage. Its artistic acceptance count increased to Stage1 **23/29**, technically integrated remains **22/29**.

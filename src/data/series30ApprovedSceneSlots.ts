@@ -280,6 +280,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'Suv idishini chap orqa ilgakka osdi. Bu oldindan kelishilgan ishora edi.',
     },
   },
+  {
+    story_id: 'seven_roads_lozhnaya_doroga',
+    part_id: 'story5_part_1_false_road',
+    slot_id: 'SERIES30-S4E5-A01',
+    anchor_key: 'series30_s4e5_nadir_scar_clue_briefing',
+    asset_id: 'seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Он провёл пальцем от левой брови к виску.',
+      uz: 'U barmog‘ini chap qoshidan chakkasigacha yurgizdi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>

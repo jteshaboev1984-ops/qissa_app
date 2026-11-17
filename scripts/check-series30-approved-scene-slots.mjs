@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 22)
+assert.equal(series30ApprovedScenes.length, 23)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -47,6 +47,11 @@ const { authoredIllustrationDiscovery } = transpileExports(
 )
 
 const fixtures = [
+  {
+    base: 'src/data/authored/staging/season2Story5FalseRoad',
+    key: 'falseRoad',
+    expected: { 'SERIES30-S4E5-A01': 1 },
+  },
   {
     base: 'src/data/authored/staging/season2Story1RoyalSilver',
     key: 'silver',
@@ -255,6 +260,29 @@ for (const fixture of fixtures) {
         false, language + ': S4E4 flask never appears in S4E3')
       authoredIllustrationDiscovery.clear(story)
     }
+    if (fixture.key === 'falseRoad') {
+      const s4e5 = galleryBefore[0].items.map(item => item.assetId)
+      const scarIndex = s4e5.indexOf('seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED')
+      const reconIndex = s4e5.indexOf('seven_roads_s2_story5_red_hill_recon_01_APPROVED')
+      assert.ok(scarIndex >= 0 && reconIndex > scarIndex,
+        language + ': S4E5 gallery must show scar clue before existing Red Hill reconnaissance')
+      assert.equal(galleryBefore[1].items.some(item => item.assetId === 'seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED'),
+        false, language + ': S4E5 scar clue must never leak into S4E6')
+      const scarSlot = story.parts.flatMap(part => part.image_slots).find(s => s.slot_id === 'SERIES30-S4E5-A01')
+      assert.equal(scarSlot?.kind, 'shared', language + ': scar clue must be branch-neutral')
+      assert.equal(scarSlot?.phase, 'story_text', language + ': scar clue is before route choice')
+      assert.equal(galleryBefore[0].items.find(item => item.assetId === 'seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED')?.unlocked,
+        false, language + ': S4E5 scar clue must remain locked before reading')
+      authoredIllustrationDiscovery.markSeen(story, 'seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED')
+      const seenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(seenGallery[0].items.find(item => item.assetId === 'seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED')?.unlocked,
+        true, language + ': S4E5 new image must unlock after being seen')
+      assert.equal(seenGallery[0].items.find(item => item.assetId === 'seven_roads_s2_story5_red_hill_recon_01_APPROVED')?.unlocked,
+        false, language + ': S4E5 scar clue must not reveal the later Red Hill scene')
+      authoredIllustrationDiscovery.clear(story)
+    }
     if (fixture.key === 'towers') {
       assert.equal(
         galleryBefore[2].items.map(item => item.assetId).join('|'),
@@ -432,7 +460,8 @@ for (const scene of series30ApprovedScenes) {
     scene.slot_id.startsWith('SERIES30-S4E1-') ? e.season === 4 && e.episode === 1 :
     scene.slot_id.startsWith('SERIES30-S4E2-') ? e.season === 4 && e.episode === 2 :
     scene.slot_id.startsWith('SERIES30-S4E3-') ? e.season === 4 && e.episode === 3 :
-    scene.slot_id.startsWith('SERIES30-S4E4-') ? e.season === 4 && e.episode === 4 : false,
+    scene.slot_id.startsWith('SERIES30-S4E4-') ? e.season === 4 && e.episode === 4 :
+    scene.slot_id.startsWith('SERIES30-S4E5-') ? e.season === 4 && e.episode === 5 : false,
   )
   assert.ok(match?.asset_ids.includes(scene.asset_id),
     'approved asset missing from production queue: ' + scene.asset_id)
@@ -440,9 +469,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 44)
-console.log('[series30-art] PASS: 22 owner-approved assets, 44 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 46)
+console.log('[series30-art] PASS: 23 owner-approved assets, 46 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
