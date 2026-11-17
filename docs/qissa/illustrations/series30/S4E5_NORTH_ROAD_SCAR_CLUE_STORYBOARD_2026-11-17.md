@@ -39,3 +39,13 @@
 - Зафиксирован финальный asset `seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED`. PNG **1672×941**, **2818865 bytes**, SHA256 `d5fdb33ec1d764966d8b7919babcc5e81af23e89361cad2286c6400fb58769ae` — те же пиксели `REVIEW_v2`; WebP quality92/method6 **454554 bytes**, SHA256 `733a1d9003653b0d97072a50948721d3334dff215a25f16083dd529c53af4ed7`; metadata JSON. Все три файла сохранены в QISSA Library `/QISSA/production/seven_roads/series30/stage1/S4E5/`.
 - Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED.webp`: объекта **не найдено** в `storage.objects`. Публичный GET/MIME/bytes/SHA и runtime **не подтверждены**. После пользовательской загрузки проводить независимую проверку и additive wiring `SERIES30-S4E5-A01`; exact RU/UZ anchors story_text paragraph 35, only S4E5 before split S4E6, preserve existing red hill recon image at p50.
 - Stage1 **23/29 художественно принято, 22/29 интегрировано**. S4E5 1/2 art; 0/2 technical integration. A02 ещё не принят. No merge/deploy/publish, no prose/choice/progress changes.
+
+## S4E5-A02 — один новый кандидат «Каменный гребень на карте», REVIEW_v1 (2026-11-17)
+
+- `story_id=seven_roads_lozhnaya_doroga`, `part_id=story5_part_1_false_road`, `story_text`; виртуальная **S4E5** до абзаца 124 границы S4E6. После слов Саида о северной пограничной дороге:
+  - RU exact anchor `Он провёл пальцем вдоль Каменного гребня.`
+  - UZ exact anchor `U barmog‘ini Tosh tizmasi bo‘ylab yurgizdi.`
+  - Каждый anchor встречается 1/1, абзац 69 (0-based).
+- Сцена меняет план после разговорной S4E5-A01: крупно карта с **Каменным гребнем**, пальцем показывает Саид (темная угольно-бордовая форма как approved Said reference). Темур и Самира наблюдают за картой; костюмы совместимы с принятым S4E5-A01 и ранее утверждённой развилкой. Простая рукописная карта без читаемых современных надписей, без показа последствий выбора/засады; никакой тюремной повозки, неоправданных новых гербов или дорожных знаков.
+- `seven_roads_s4e5_said_stone_ridge_map_REVIEW_v1.png`, 1672×941, **2735433 bytes**, SHA256 `384d8c38afdf57643fcefe25ed7a7058578f548629ab286a0639c6d7f7e39428`, generation id `e3e82d3b-5297-4ece-bea2-a3c2961332d5`. `PNG` + metadata `JSON` сохранены в Library `/QISSA/production/seven_roads/series30/review/S4E5/`. **REVIEW, owner acceptance pending**. Не называть APPROVED, не создавать runtime/Storage/WebP до принятия.
+- S4E5 Stage1: **1/2 artistic accepted** (A01), A02 review only; **0/2 integrated** until user uploads A01 approved WebP and SHA verified. Всего Stage1 **23/29 artistic accepted, 22/29 integrated**. No authored JSON/choice/progress changes, no merge/deploy.
