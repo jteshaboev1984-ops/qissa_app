@@ -71,3 +71,7 @@
 4. Башня и повозка не выдерживают геометрию предыдущего и последующего уже утверждённых кадров
 
 **Решение:** снят `asset_id` и его `exact_anchor_pairs` из ART_QUEUE. Stage1 — **25/29 artistically accepted, 25/29 fully integrated**. S4E8 0/2. Никакого S4E8 runtime не было. Новый кандидат должен пройти проверку хронологии и изображения в единой перспективе до отдельной приёмки. Нет merge/deploy/publish и никаких правок прозы/ID/progress.
+
+### 2026-11-17 — THREE failed re-renders after owner rejection
+
+Generation ids `c0827826-a739-44c8-87fe-a3e6cb3435de`, `630d13c7-b357-4b3c-8426-ff84932c3363`, `2c6a29b0-92fd-48d5-886e-cd13330a1ce1` repeated the same spatial wrongness (clean tower top, implausible size/depth relationships, unclear guard-vs-bandit grouping). None art-approved. Compare actual owner-approved before/after images with the withdrawn v3 contact sheet archived in Library. See detailed audit doc for acceptance criteria.

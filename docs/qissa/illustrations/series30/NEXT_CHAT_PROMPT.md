@@ -1,3 +1,10 @@
+## 2026-11-17 S4E8-A01 art INVALIDATED / source-image spatial audit required
+
+- Draft PR #334 `qissa/four-seasons-chronological-runtime-20261112`. Owner rejected previously conditionally approved S4E8-A01 v3; `asset_id=seven_roads_s4e8_children_watchtower_two_fronts_01_APPROVED` is now WITHDRAWN despite its historical name. Do not upload, wire, replace or count that Library PNG/WebP. Queue S4E8 has 0 asset_ids and 0 anchors. Stage1 **25/29 art accepted, 25/29 integrated**.
+- See **`docs/qissa/illustrations/series30/S4E8_A01_SPATIAL_CONTINUITY_AUDIT_2026-11-17.md`** for exact before/after approved visual comparison, battle force allocation, scale and location gate. Actual verified contact sheet archived in QISSA Library `/QISSA/production/seven_roads/series30/review/S4E8/S4E8_A01_approved_before_rejected_v3_approved_after_comparison.png` SHA256 `a8e830074595f70146e23152e1c967ac6e16eb3e301442488e26471e3f84e1b3`.
+- **Three further ImageGen renders FAILED self-QA**, generated `c0827826-a739-44c8-87fe-a3e6cb3435de`, `630d13c7-b357-4b3c-8426-ff84932c3363`, `2c6a29b0-92fd-48d5-886e-cd13330a1ce1`. They repeated wrong clean tower/horse perspective and guard-side ambiguity. NONE art-approved, not archived as production, do not reuse. Need fundamentally different geometry controlled by approved real source image, not another free scene prompt; hold further automatic generation until blocking/continuity is sound.
+- Exact future anchor §47 RU/UZ valid, but **no S4E8 runtime slot**. Existing other 25 approved images remain unchanged. No merge/deploy/prose/IDs/progress edits.
+
 ## 2026-11-17 IMPORTANT: S4E8-A01 v3 ART ACCEPTANCE REVOKED by owner
 
 - Draft PR #334 `qissa/four-seasons-chronological-runtime-20261112`, no merge/deploy. Owner explicitly rejected S4E8-A01 v3 after earlier conditional acceptance: **wrong human-to-horse scale, giant cart horses vs tiny fighters, illogical battle sides, inconsistent approved watchtower/wagon geometries and scene geography**.
