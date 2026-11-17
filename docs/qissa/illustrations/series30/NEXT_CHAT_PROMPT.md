@@ -1,3 +1,10 @@
+## LATEST VERIFIED 2026-11-17 — S4E10-A01 accepted AND fully integrated, Stage1 27/29
+
+- Repo `jteshaboev1984-ops/qissa_app`, Draft PR #334, branch `qissa/four-seasons-chronological-runtime-20261112`. Exact **code HEAD `afd100545c3216d387aedcf27063f1bc5a7ca998`** passed [Seven Roads CI #44084019282](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44084019282) and [Season 2 Tier A #44084019325](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44084019325). Documentation-only closure checkpoint advances Git HEAD; reverify the HEAD and CI in next session.
+- **Stage1 27/29 artistic accepted / 27/29 integrated**. S4E10-A01 `seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED` (owner explicitly accepted) stored Library `/QISSA/production/seven_roads/series30/stage1/S4E10/`, WebP **356286 bytes**, remote SHA256 **`b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3`**. Public remote 27/27 WebPs exactly verified, 54/54 RU/UZ unique anchors; the new slot `SERIES30-S4E10-A01` is displayed in virtual S4E10 **post-choice** after seal comparison and before existing ending hook. RU/UZ browser/gallery locks pass. No authored JSON/IDs/progress changes.
+- Remaining Stage1 **S4E8-A01 and S4E8-A02** only. S4E8 previously withdrawn by owner (invalid geometry and unrealistic combat scene); **0/2** art and technical; do not reuse ANY rejected art, including historic `APPROVED` filenames. S4E8-A02 cannot be started before a new approved A01, per owner instruction. Do not assume a decision to restart from this 'continue' request, which concerned S4E10 upload/integration.
+- Stage2 `19` images and separate season-4 cover are future, unapproved individual art. No merge/deploy/publish without distinct owner approval.
+
 ## CURRENT 2026-11-17 — S4E10-A01 ART APPROVED / STORAGE NOT UPLOADED / INTEGRATION BLOCKED
 
 - Draft PR #334 `qissa/four-seasons-chronological-runtime-20261112`. At this checkpoint the latest verified parent HEAD is `be3a3e17c1f783e8bf3b5f3db76a452627a82113` (the documentation-only commit below will advance it). CI on that parent: Seven Roads #44077846477 and Season 2 Tier A #44077846421 SUCCESS.
