@@ -113,6 +113,16 @@ Positive values:
 - calm conflict resolution;
 - dignity of every person.
 
+## Story Writing & Editorial Gate
+
+- First distinguish the audience and mode: RU/UZ bedtime 5–7 and the authored Seven Roads adventure have different duration, ending, and choice rules. Never copy numeric targets between them.
+- Before drafting, verify approved prose/canon, prior choices, the hero's goal, causal events, character knowledge, and important objects' owners and locations.
+- Write stories, not process reports: clear orientation, concrete action, lively dialogue, memorable characters, natural read-aloud rhythm, and values shown through choices and actions. No repetitive reassurance, lectures, artificial filler, or child-visible AI/safety jargon.
+- The child chooses the **hero's** action at explicit decision points. Both choices must matter; shared continuation must remain true after either. No replayed choice, invented memory, or silent retcon.
+- Bedtime closes the local problem calmly; serialized adventure may retain explicit open arcs. Write RU and UZ as natural prose in each language without renaming established canon.
+- Review complete rendered routes and both languages. Green CI or word counts never equal literary approval; owner-approved literary text, IDs, and progress stay frozen unless expressly changed.
+- Record recurring owner feedback and proposed rules with scope in [Feedback → Rules Register](docs/qissa/QISSA_FEEDBACK_TO_RULES_REGISTER_2026-11-17.md). Keep detailed guidance in [Story AI](docs/qissa/ai/07_STORY_AI_NARRATIVE_MODEL.md), [Literary workflow](docs/qissa/ai/13_CANON_AND_LITERARY_ACCEPTANCE_WORKFLOW_V2.md), and [World Bible V2](docs/qissa/ai/SEVEN_ROADS_WORLD_BIBLE_V2.md), not here.
+
 ## Development Style
 
 Work surgically.
