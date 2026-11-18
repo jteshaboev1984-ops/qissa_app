@@ -115,11 +115,11 @@ Positive values:
 
 ## Story Writing & Editorial Gate
 
-- Identify age/mode first: 5–7 RU/UZ bedtime and Seven Roads adventure have different duration, endings and choice contracts.
-- Draft from approved canon and remembered choices: map the hero's goal, causal steps, character knowledge, key objects, each choice's consequences and a plausible shared continuation.
-- Write vivid, natural RU and UZ prose: clear orientation, action, dialogue and age-appropriate emotion. The child chooses the hero's action at explicit points; choices must matter. No moralizing, filler, safety/AI meta-text or replayed choice.
-- Close bedtime gently; adventure may keep established open arcs. Never silently change approved prose, IDs, choices or progress.
-- Review full rendered routes and both languages; CI and word counts are not literary approval. Log verified feedback and proposed rules in the [QISSA register](docs/qissa/QISSA_FEEDBACK_TO_RULES_REGISTER_2026-11-17.md); full contracts live in [Narrative Model](docs/qissa/ai/07_STORY_AI_NARRATIVE_MODEL.md) and [literary workflow](docs/qissa/ai/13_CANON_AND_LITERARY_ACCEPTANCE_WORKFLOW_V2.md).
+- Identify the audience and format first: RU/UZ bedtime 5–7 and the authored Seven Roads adventure have different story duration, choice and ending contracts.
+- Before drafting or reviewing, verify approved RU/UZ canon, previous choices, causality, chronology, what each character knows and who holds key objects. Choices must lead to genuine consequences and a believable shared continuation, not replay the selected action.
+- Write natural, engaging prose with clear orientation, action and dialogue; show values through characters rather than lectures, technical summaries or filler. The child chooses the hero's actions at explicit points; avoid automatic second-person child narration.
+- Keep bedtime resolution calm; serialized adventures may preserve intentional open arcs. Never silently rewrite approved literature, choice/part IDs, hashes or learner progress.
+- Check complete reader routes and both languages independently. Structural CI and word counts are **not** literary approval. Keep detailed evidence and scoped proposed rules in [the feedback register](docs/qissa/QISSA_FEEDBACK_TO_RULES_REGISTER_2026-11-17.md); see [Narrative Model](docs/qissa/ai/07_STORY_AI_NARRATIVE_MODEL.md) and [Literary Workflow](docs/qissa/ai/13_CANON_AND_LITERARY_ACCEPTANCE_WORKFLOW_V2.md).
 
 ## Development Style
 
