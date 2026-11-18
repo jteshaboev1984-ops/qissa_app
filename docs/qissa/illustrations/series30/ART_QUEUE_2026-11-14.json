@@ -692,10 +692,37 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_2_A01_owner_approved_library_stored",
+      "asset_ids": [
+        "seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E9-A01",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED",
+          "kind": "shared",
+          "part_id": "story3_part_1_old_yard_niche",
+          "phase": "story_text",
+          "ru_after_text": "Булут шагнул поперёк.",
+          "uz_after_text": "Bulut uning yo‘lini to‘sib qo‘ydi.",
+          "acceptance": "owner_explicit_approved_third_candidate_realistic_horse_blocking_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.metadata.json",
+          "master_bytes": 2692950,
+          "master_sha256": "5e12c595462e3124f37d9b45606a83e8e4a60440797d54ab05bed76f4ae61894",
+          "webp_bytes": 297866,
+          "webp_sha256": "f3122c3122cc4b57eee23e3f032a28bd8dc06c4536bfb515e2f323e485ea9e34",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
+          "qa_status": "not_started",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp"
+        }
+      ],
+      "notes": "2026-11-18 S3E9-A01 owner accepted final third version after correction of blotches and unrealistic startling pose. Bulut naturally blocks Shamol's access to trough while remaining relaxed; accepted exact PNG master preserved in QISSA Library with WebP/metadata. Verified unique shared RU/UZ story_text anchor in original story3_part_1_old_yard_niche before S3E9 choice. Storage public GET/SHA256, runtime and gallery QA NOT completed. S3E9-A02 remains planned only, not approved. Do not merge/deploy/publish without owner GO."
     },
     {
       "season": 3,
