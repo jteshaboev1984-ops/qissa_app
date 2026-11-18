@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 29)
+assert.equal(series30ApprovedScenes.length, 31)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -64,6 +64,8 @@ const fixtures = [
       'SERIES30-S2E3-A03': 3,
       'SERIES30-S2E4-A01': 4,
       'SERIES30-S2E4-A02': 4,
+      'SERIES30-S2E4-A03': 4,
+      'SERIES30-S2E4-A04': 4,
     },
   },
   {
@@ -547,10 +549,26 @@ for (const fixture of fixtures) {
         [
           'seven_roads_s2e4_missing_kamran_oak_01_APPROVED',
           'seven_roads_s2_story1_hidden_network_settlement_01_APPROVED',
+          'seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED',
+          'seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED',
           'seven_roads_s2e4_western_road_map_02_APPROVED',
         ].join('|'),
-        language + ': S2E4 gallery must show the forest rendezvous before the hidden settlement',
+        language + ': S2E4 chronology must show oak, settlement, father hears news, informant arrives, western map',
       )
+      const rescuedId = 'seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED'
+      const informantId = 'seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED'
+      assert.equal(galleryBefore[3].items.find(item => item.assetId === rescuedId)?.unlocked,
+        false, language + ': report scene leaked before reading')
+      assert.equal(galleryBefore[3].items.find(item => item.assetId === informantId)?.unlocked,
+        false, language + ': informant arrival leaked before reading')
+      authoredIllustrationDiscovery.markSeen(story, rescuedId)
+      const afterRescued = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart)
+      assert.equal(afterRescued[3].items.find(item => item.assetId === rescuedId)?.unlocked,
+        true, language + ': report scene must unlock on reading')
+      assert.equal(afterRescued[3].items.find(item => item.assetId === informantId)?.unlocked,
+        false, language + ': later informant must stay locked')
+      authoredIllustrationDiscovery.clear(story)
       assert.deepEqual(
         galleryBefore[1].items.map(item => item.assetId).join('|'),
         [
@@ -578,7 +596,7 @@ for (const fixture of fixtures) {
       const item = located[0]
       assert.equal(story.reader_layout.episode_by_part[item.index], expectedEpisode,
         fixture.key + '/' + language + ': wrong virtual episode for ' + id)
-      if (id === 'SERIES30-S2E4-A01' || id === 'SERIES30-S2E4-A02') {
+      if (['SERIES30-S2E4-A01','SERIES30-S2E4-A02','SERIES30-S2E4-A03','SERIES30-S2E4-A04'].includes(id)) {
         const splitAt = story.parts.findIndex(p =>
           pars(p.story_text).includes(language === 'ru'
             ? 'К вечеру Ордан снова выглядел обычным.'
@@ -663,9 +681,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 58)
-console.log('[series30-art] PASS: 29 owner-approved assets, 58 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 62)
+console.log('[series30-art] PASS: 31 owner-approved assets, 62 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
