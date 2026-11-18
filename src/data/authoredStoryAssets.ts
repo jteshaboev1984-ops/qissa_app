@@ -124,6 +124,68 @@ const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
       'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story4_nadir_contact_01_DRAFT_v2.webp'],
   ])
 
+const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED.webp',
+  'seven_roads_s4e8_wall_two_fronts_reverse_view_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e8_wall_two_fronts_reverse_view_01_APPROVED.webp',
+  'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.webp',
+  'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED.webp',
+  'seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED.webp',
+  'seven_roads_s4e5_said_stone_ridge_map_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e5_said_stone_ridge_map_02_APPROVED.webp',
+  'seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED.webp',
+  'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED.webp',
+  'seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED.webp',
+  'seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e3_prison_wagon_road_fork_01_APPROVED.webp',
+  'seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED.webp',
+  'seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e11_bulut_apple_evening_02_APPROVED_v3.webp',
+  'seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e11_senior_guard_sketches_arrival_01_APPROVED.webp',
+  'seven_roads_s3e10_young_guard_water_trough_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e10_young_guard_water_trough_02_APPROVED.webp',
+  'seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e10_memorize_route_gate_01_APPROVED_v2.webp',
+  'seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e6_nadir_runs_between_wagons_01_APPROVED.webp',
+  'seven_roads_s3e3_temur_caravan_courtyard_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e3_temur_caravan_courtyard_02_APPROVED.webp',
+  'seven_roads_s3e3_morning_alarm_window_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e3_morning_alarm_window_01_APPROVED.webp',
+  'seven_roads_s2e4_western_road_map_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_western_road_map_02_APPROVED.webp',
+  'seven_roads_s2e4_missing_kamran_oak_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_missing_kamran_oak_01_APPROVED.webp',
+  'seven_roads_s2e2_missing_dark_horse_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e2_missing_dark_horse_01_APPROVED.webp',
+  'seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e1_danyar_old_belt_dialogue_01_APPROVED.webp',
+  'seven_roads_s2e1_startled_birds_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e1_startled_birds_02_APPROVED.webp',
+  'seven_roads_s2e3_farid_gate_arrest_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e3_farid_gate_arrest_01_APPROVED.webp',
+  'seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e3_driver_danyar_after_attack_02_APPROVED.webp',
+  'seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e3_farid_capital_trial_glance_03_APPROVED.webp',
+  'seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED.webp',
+  'seven_roads_s4e2_blue_triangle_merchants_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_blue_triangle_merchants_02_APPROVED.webp',
+  // The final accepted horse illustration is the immutable v2 upload.
+  'seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp',
+}
+
 const season2SharedAssets: AuthoredStoryAssetRegistry = {
   'seven_roads_season2_cover_v1':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_v1/seven_roads_season2_cover_v1.webp',
@@ -137,6 +199,7 @@ export const resolveAuthoredStoryAssetUrl = (
     productionAssets[assetId] ??
     story2ProductionAssets[assetId] ??
     season2TierAProductionAssets[assetId] ??
+    series30ApprovedSceneAssets[assetId] ??
     season2SharedAssets[assetId]
   )?.trim()
   if (registered) return registered
@@ -151,5 +214,6 @@ export const authoredStoryAssetRegistry = {
     Object.keys(productionAssets).length +
     Object.keys(story2ProductionAssets).length +
     Object.keys(season2TierAProductionAssets).length +
+    Object.keys(series30ApprovedSceneAssets).length +
     Object.keys(season2SharedAssets).length,
 }

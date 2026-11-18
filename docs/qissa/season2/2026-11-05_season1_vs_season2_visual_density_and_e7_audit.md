@@ -1,5 +1,7 @@
 # QISSA | Seven Roads — cross-season illustration density audit and Episode 7 visual acceptance
 
+> **UPDATE 2026-11-14: ARCHIVE / SUPERSEDED FOR ART QUANTITY.** This is an older seven-authored-package Season 2 audit, not the approved 30-reader-series allocation. Current owner-approved scope and 29+19 work queue: [`../41_QISSA_30_Series_Illustration_Production_Plan_2026_11_14.md`](../41_QISSA_30_Series_Illustration_Production_Plan_2026_11_14.md) and [`../illustrations/series30/ART_QUEUE_2026-11-14.json`](../illustrations/series30/ART_QUEUE_2026-11-14.json). Keep earlier specific owner rejections and approved visual canon valid; do not restart cancelled wax macro artwork.
+
 > **CURRENT STATUS UPDATE — 2026-11-06.** The 2026-11-05 audit and proposals preserved below are a historical snapshot. Counts, the E7 wax-clue suggestion and its instruction to create E7 artwork are **superseded** by owner approvals and verified integration in [PR #313](https://github.com/jteshaboev1984-ops/qissa_app/pull/313), [PR #315](https://github.com/jteshaboev1984-ops/qissa_app/pull/315) and [PR #317](https://github.com/jteshaboev1984-ops/qissa_app/pull/317). Do not action old E7 prompts.
 
 ## Live visual inventory — 2026-11-06 (all seasons still as staged; S2 unpublished)

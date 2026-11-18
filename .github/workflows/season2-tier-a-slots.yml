@@ -19,6 +19,9 @@ on:
       - 'src/components/SeasonOverview.tsx'
       - 'src/App.tsx'
       - 'src/data/sevenRoadsSeasons.ts'
+      - 'src/data/sevenRoadsReadingSeries.ts'
+      - 'scripts/check-reading-series-30.mjs'
+      - 'scripts/check-four-season-layout.mjs'
       - 'docs/qissa/season2/season2_product_model.json'
       - 'docs/qissa/season2/season2_cover_v1_inventory.json'
       - 'scripts/check-season2-tier-a-visual-slots.mjs'
@@ -109,6 +112,9 @@ jobs:
 
       - name: Validate Seven Roads product shell
         run: npm run check:seven-roads-shell
+
+      - name: Validate all 30 reading series and branch-preserved RU/UZ text
+        run: npm run check:four-seasons
 
       - name: Typecheck app
         run: npm run typecheck

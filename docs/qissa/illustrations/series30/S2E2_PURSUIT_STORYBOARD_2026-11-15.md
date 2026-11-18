@@ -1,0 +1,65 @@
+# QISSA — S2E2 «Погоня»: storyboard этапа 1
+
+Дата: 2026-11-15. PR #334. **Статус: сцена предложена; изображения ещё нет, приёмка владельцем ожидается.**
+
+## Источник истины
+
+- Исходные RU/UZ: `src/data/authored/staging/season2Story1RoyalSilver.{ru,uz}.json`.
+- `story_id=seven_roads_korolevskoe_serebro`, `story_version=interactive-v5`.
+- Исходная часть: `part_id=story1_part_2_kamran_pursuit`, читательская серия **S2E2** без внутренних разрезов.
+- План: **1** новый shared-кадр этапа 1 (плюс 2 существующих = 3 для читателя; этап 2 добавит ещё 1).
+- Существующие сохранённые кадры:
+  - `seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED` — Камран освобождает застрявшего товарища;
+  - `seven_roads_s2_story1_danyar_pursuit_01_APPROVED` — Данияр преследует Камрана на открытой каменистой дороге.
+- Оба реальных визуальных оригинала просмотрены. **Не дублировать освобождение, галоп по открытой дороге, лицо Камрана крупным планом.**
+
+## Единственная предлагаемая новая сцена S2E2-A01 — «Исчезнувший тёмный конь»
+
+- **kind:** `shared`; **stage:** `stage_1`; **status:** `scene_proposed / owner_review_pending`.
+- **phase:** `story_text` — до второй сюжетной развилки о методе поиска.
+- **Exact RU `after_text`:** `Тёмного коня нигде не было.`
+- **Exact UZ `after_text`:** `Qoramtir ot ko‘rinmasdi.`
+- RU и UZ: каждый якорь уникален (1/1), позиция 96 (считая с нуля) в `part[1].story_text`.
+- **Непосредственный литературный контекст:** Камран только что свернул между складскими корпусами, Данияр заметил край серого плаща и предположил, что беглец бросит своего тёмного коня. Данияр с оставшимся стражником въехал во внешний караванный район Орданы: склады плотно стоят друг к другу, между ними узкие проходы; у одной стены сушатся шкуры, у другой рабочие разгружают мешки с зерном. Тёмного коня уже нигде не видно. Далее Данияр выбирает, как продолжать поиск.
+- **Композиция:** широкий, но не парадный план внешнего караванного района. Данияр на **сером коне**, со знакомым лицом, лёгкой дорожной одеждой, кожаным жилетом и **ярко-синим шарфом**, вместе с молодым стражником внимательно осматривают разветвлённые проходы между низкими зерновыми складами. Между складами идут занятые работой носильщики, у стены висят шкуры, рядом сложены мешки. Композиционный центр — пропавший след и множество одинаковых узких проходов, а не большая городская панорама. Важно избежать героического позирования и повторения галопа: лошади стоят либо движутся медленно. Тёмный конь **в кадре отсутствует**, Камран **не виден**.
+- **Зачем:** новая среда и смена действия от погони к внимательному поиску. Мост к будущей развилке без раскрытия правильного ответа.
+- **Строгие запреты:** не показывать оставленного между телегами тёмного коня, тёплое седло, глубокие отпечатки копыт, стражу у скотных ворот, пленение Камрана или результат одного из вариантов выбора — это пока не раскрыто; не рисовать королевскую денежную повозку и четыре сундука.
+
+## Канон и качество
+
+- Данияр: тот же узнаваемый **молодоватый взрослый** мужчина из `seven_roads_s2_story1_danyar_pursuit_01_APPROVED.png` (ветром растрёпанные тёмные волосы, короткая тёмная борода, яркий синий шарф, кожаная дорожная экипировка на светлом нижнем слое, старый пояс/сабля), на сером коне. **Не делать его стариком, не добавлять тяжёлую синюю королевскую мантию, не надевать неканоничную шапку.**
+- Не заменять молодого стражника Темуром: Темур и Самира отсутствуют в этом сюжетном эпизоде.
+- Художественный стиль: `seven_roads_painterly_v1`; пейзаж и архитектура в визуальной семье Орданы, без современных вывесок, логотипов, фэнтези-гербов.
+- Последовательность приёмки: одобрение storyboard -> **одна** генерация -> текстовая и визуальная QA -> художественная приёмка владельца -> PNG/WebP/Library -> подтверждённый Storage GET/SHA -> nonliterary runtime overlay и RU/UZ/gallery/browser CI.
+- Не менять исходные JSON, выборы, `story_id`, `story_version` или прогресс. Не деплоить и не merge PR без владельца.
+
+## Контекст производственной очереди
+
+По S2E1 два кадра уже подготовлены как storyboard, но художественный генератор текущего длинного чата несколько раз ошибся и перепутал сцены; ни одна попытка не принята. Подробности в `S2E1_ROYAL_SILVER_STORYBOARD_2026-11-15.md`. Для новых изображений следует использовать изолированный контекст сцены и проверять готовый рисунок против канонических оригиналов, а не повторять ошибку.
+
+## Попытки генерации — 2026-11-15
+
+После приёмки двух новых кадров S2E1 предприняты три попытки S2E2-A01 через первый генератор. **Все три отклонены**: ошибочно повторили S2E1 (всадники беседуют на открытой дороге), не показали внешний складской район. Эти варианты НЕ каноничны, НЕ утверждены, НЕ сохраняются как `APPROVED`, НЕ подключаются к runtime.
+
+Новый кандидат заказан через Canva с прямым референсом утверждённого Данияра и уточнённой сценой складов; **пиксельная художественная приёмка ещё не выполнена**. Прежде чем присваивать `APPROVED`, проверить: две фигуры на лошадях в тесном караванном складском районе, внимание к узким проходам, зерновые мешки и шкуры, отсутствие тёмного коня/Камрана и любых результатов следующей развилки. До успеха оставить queue `not_started` и zero new approved assets для S2E2.
+
+## Художественная приёмка S2E2-A01 — 2026-11-15
+
+- **ACCEPTED (owner's standing conditional instruction)**: final approved candidate `seven_roads_s2e2_missing_dark_horse_01_APPROVED`. The frame depicts Danyar in the approved blue scarf on his dapple-gray horse, alongside a young helmeted guard, searching different narrow passages between warehouse walls. Grain sacks and workers unloading grain, hanging hides, and warm outer-caravan-yard light are visible. Kamran and his dark horse are not visible. No branch resolution, capture, or later plot objects are shown. No repeat of the earlier open-road chase or roadside dialogue.
+- `story_id=seven_roads_korolevskoe_serebro`, `story_version=interactive-v5`, `part_id=story1_part_2_kamran_pursuit`, `phase=story_text`, exact RU `Тёмного коня нигде не было.`, exact UZ `Qoramtir ot ko‘rinmasdi.`
+- Master PNG (1672×941) and WebP 319176 bytes stored at `/QISSA/production/seven_roads/series30/stage1/S2E2/`; WebP SHA256 `9d9ebef90cf3f39ed802aa0ce6e7bb57a0b3472c003c5f071dbd4b6b91cc685e`, PNG SHA256 `fca7714d035d3558041cf9c02ac79ac5ac7a7db50dbc187a497a2f857e08de2d`.
+- **Not yet done:** Supabase Storage upload, remote GET/MIME/byte/SHA check, `series30ApprovedSceneSlots.ts` and `authoredStoryAssets.ts` integration, RU/UZ gallery/browser CI. Literary JSON and existing images untouched. PR remains Draft, no merge or deploy.
+
+## Интеграция после загрузки — 2026-11-16
+
+- Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e2_missing_dark_horse_01_APPROVED.webp`: MIME `image/webp`, 319176 байт.
+- GitHub Actions **Seven Roads CI #43789957810**: публичный HTTP GET/MIME/bytes/SHA256 совпали, полный комплект **9/9**.
+- Добавлены `SERIES30-S2E2-A01` после RU `Тёмного коня нигде не было.` / UZ `Qoramtir ot ko‘rinmasdi.`, URL в asset registry и RU/UZ regression-тест галереи: спасение → погоня → отсутствие тёмного коня.
+- Проверки читателя, CI и браузера на новом HEAD выполняются. Исходные литературные JSON/выборы/ключи прогресса и старые изображения не изменялись. PR остаётся Draft, без merge и публикации.
+
+## Итог технической приёмки — 2026-11-16
+
+- Seven Roads CI #43790217518 — SUCCESS: check:reading-series-30, check:four-seasons, typecheck, build, smoke:four-season-browser.
+- Season 2 Tier A Slot Check #43790217561 — SUCCESS. RU/UZ gallery confirms rescue → pursuit → missing dark horse.
+- 9/9 public WebPs verified: HTTP/MIME/bytes/SHA256, including S2E2-A01; nine accepted new assets / 18 bilingual anchors.
+- S2E2 stage1 1/1 complete. S2E2 stage2 still requires one additional scene. PR remains Draft, no merge/deploy.

@@ -4,6 +4,14 @@ import http from 'node:http'
 import os from 'node:os'
 import path from 'node:path'
 
+// The seven-episode visual layout is an archived test contract. The current
+// release candidate has four owner-approved chronological seasons. Run its
+// equivalent real-browser smoke while preserving this historical test body.
+if (fs.existsSync(path.join(process.cwd(), 'src/data/fourSeasonChronology.ts'))) {
+  await import('./smoke-four-season-browser.mjs')
+  process.exit(0)
+}
+
 const root = process.cwd()
 const dist = path.join(root, 'dist')
 if (!fs.existsSync(path.join(dist, 'index.html'))) {

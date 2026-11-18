@@ -13,6 +13,7 @@ import {
   type SevenRoadsLanguage,
 } from '../features/publishedStories/sevenRoadsCopy'
 import { sevenRoadsStory1ReadingState } from '../features/publishedStories/sevenRoadsProgress'
+import { activeSeasonEpisode, getSeasonEpisodeStates } from '../features/publishedStories/episodeProgress'
 
 export function SeasonOverview({
   language,
@@ -31,212 +32,114 @@ export function SeasonOverview({
   if (!seasonStory || !story || season.status !== 'published') return null
 
   const copy = getSevenRoadsCopy(language)
+  const seriesCountLabel = (count: number) => {
+    if (language === 'uz') return `${count} qism`
+    const lastTwo = count % 100
+    const last = count % 10
+    const noun = lastTwo >= 11 && lastTwo <= 14
+      ? 'серий'
+      : last === 1
+        ? 'серия'
+        : last >= 2 && last <= 4
+          ? 'серии'
+          : 'серий'
+    return `${count} ${noun}`
+  }
 
   if (season.presentation === 'single-cover-episode-list') {
-    const episodeEntries = publishedStories
-      .slice()
-      .sort((a, b) => a.number - b.number)
-      .map((entry) => {
-        const authoredStory = entry.authoredStory
-        if (!authoredStory) return null
-        const progress = authoredStoryPersistence.load(authoredStory)
-        return {
-          entry,
-          authoredStory,
-          progress,
-          completed: Boolean(progress?.completed),
-        }
-      })
-      .filter(
-        (
-          item,
-        ): item is {
-          entry: (typeof publishedStories)[number]
-          authoredStory: NonNullable<(typeof publishedStories)[number]['authoredStory']>
-          progress: ReturnType<typeof authoredStoryPersistence.load>
-          completed: boolean
-        } => Boolean(item),
-      )
-
-    if (episodeEntries.length === 0) return null
-
-    const allCompleted = episodeEntries.every((item) => item.completed)
-    const canResumeEpisodeAt = (index: number) => {
-      const item = episodeEntries[index]
-      if (!item?.progress || item.completed) return false
-
-      const priorEpisodesCompleted = episodeEntries
-        .slice(0, index)
-        .every((previous) => previous.completed)
-      const legacyEpisode2Resume = item.entry.number === 2
-
-      return priorEpisodesCompleted || legacyEpisode2Resume
-    }
-    const startedIncompleteIndex = episodeEntries.findIndex((_, index) =>
-      canResumeEpisodeAt(index),
-    )
-    const firstIncompleteIndex = episodeEntries.findIndex((item) => !item.completed)
-    const primaryIndex = allCompleted
-      ? episodeEntries.length - 1
-      : startedIncompleteIndex >= 0
-        ? startedIncompleteIndex
-        : Math.max(0, firstIncompleteIndex)
-    const primaryEpisode = episodeEntries[primaryIndex]
-    const seasonCoverUrl = season.coverAssetId
+    const entries = getSeasonEpisodeStates(season)
+    if (entries.length === 0) return null
+    const active = activeSeasonEpisode(entries)
+    if (!active) return null
+    const allCompleted = entries.every((episode) => episode.completed)
+    const cover = season.coverAssetId
       ? resolveAuthoredStoryAssetUrl(season.coverAssetId, null)
       : null
-    const primaryLabel = allCompleted
-      ? language === 'uz'
-        ? `${primaryEpisode.entry.number}-qismni ochish`
-        : `Открыть серию ${primaryEpisode.entry.number}`
-      : primaryIndex === 0 && !primaryEpisode.progress
-        ? copy.startSeason
-        : copy.continue
 
     return (
       <main className="mx-auto min-h-dvh max-w-[430px] bg-[#efe2cb] text-[#2d332f]">
         <section
           className="sticky top-0 z-30 flex h-[58dvh] min-h-[440px] max-h-[650px] flex-col bg-[#17383d] bg-cover bg-center text-white"
-          style={
-            seasonCoverUrl
-              ? { backgroundImage: `url("${seasonCoverUrl}")` }
-              : undefined
-          }
+          style={cover ? { backgroundImage: `url("${cover}")` } : undefined}
         >
           <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/5 to-[#102327]/94" />
-
           <div className="relative z-10 flex h-full flex-col px-4 pb-8 pt-[max(1rem,env(safe-area-inset-top))] sm:px-5">
-            <div>
-              <button
-                type="button"
-                className="rounded-full border border-white/28 bg-black/20 px-4 py-2.5 text-xs font-bold text-white/95 backdrop-blur-md active:scale-[0.98]"
-                onClick={onBack}
-              >
-                ← {copy.seasons}
-              </button>
-            </div>
-
+            <button type="button" className="self-start rounded-full border border-white/28 bg-black/20 px-4 py-2.5 text-xs font-bold text-white/95 backdrop-blur-md" onClick={onBack}>
+              ← {copy.seasons}
+            </button>
             <div className="flex-1" />
-
-            <div>
-              <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
-                {formatSevenRoadsSeasonLabel(language, season.number)}
-              </p>
-              <h1 className="mt-2 font-serif text-[2.35rem] font-bold leading-[1.02] tracking-[-0.035em] text-white drop-shadow-sm">
-                {season.title ?? formatSevenRoadsSeasonLabel(language, season.number)}
-              </h1>
-              <button
-                type="button"
-                className="mt-5 w-full rounded-full border border-[#f0d7a0]/80 bg-[#ecd09a] px-5 py-4 text-sm font-extrabold text-[#263f42] shadow-[0_16px_40px_-22px_rgba(0,0,0,.9)] transition active:scale-[0.98]"
-                onClick={() =>
-                  onRead(
-                    primaryEpisode.entry.number,
-                    allCompleted ? 1 : undefined,
-                  )
-                }
-              >
-                {primaryLabel}
-              </button>
-            </div>
+            <p className="text-[0.66rem] font-bold uppercase tracking-[0.16em] text-[#efd6a0]">
+              {formatSevenRoadsSeasonLabel(language, season.number)}
+            </p>
+            <h1 className="mt-2 font-serif text-[2.35rem] font-bold leading-[1.02] tracking-[-0.035em] text-white drop-shadow-sm">
+              {season.title}
+            </h1>
+            <button
+              type="button"
+              className="mt-5 w-full rounded-full border border-[#f0d7a0]/80 bg-[#ecd09a] px-5 py-4 text-sm font-extrabold text-[#263f42] shadow-[0_16px_40px_-22px_rgba(0,0,0,.9)]"
+              onClick={() => onRead(active.entry.number, active.completed ? active.episode.number : undefined)}
+            >
+              {allCompleted
+                ? language === 'uz' ? `${active.episode.seasonNumber}-qismni ochish` : `Открыть серию ${active.episode.seasonNumber}`
+                : active.started ? copy.continue : copy.startSeason}
+            </button>
           </div>
         </section>
-
         <section className="relative z-10 rounded-t-4xl bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 sm:px-5">
-          <div className="px-1">
-            <p className="q-label mb-1">{copy.openSeasonPath}</p>
-            <h2 className="q-heading text-2xl font-bold">
-              {language === 'uz' ? '7 qism' : '7 серий'}
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-[#6c6252]">
-              {language === 'uz'
-                ? 'Bitta umumiy hikoya yetti qismda davom etadi. Har bir qismdagi o‘qish joyi va tanlovlar alohida saqlanadi.'
-                : 'Одна общая история продолжается через семь серий. Прогресс чтения и выборы каждой серии сохраняются.'}
-            </p>
-          </div>
-
+          <p className="q-label mb-1">{copy.openSeasonPath}</p>
+          <h2 className="q-heading text-2xl font-bold">{seriesCountLabel(entries.length)}</h2>
+          <p className="mt-1 text-sm leading-6 text-[#6c6252]">
+            {language === 'uz'
+              ? 'Har bir qismda o‘qilgan joy va tanlovlar saqlanadi.'
+              : 'Прогресс чтения и выборы сохраняются по сериям.'}
+          </p>
           <div className="mt-4 space-y-2.5">
-            {episodeEntries.map((item, index) => {
-              const priorEpisodesCompleted = episodeEntries
-                .slice(0, index)
-                .every((previous) => previous.completed)
-              const legacyEpisode2Resume =
-                item.entry.number === 2 && Boolean(item.progress)
-              const available = priorEpisodesCompleted || legacyEpisode2Resume
-              const current =
-                !allCompleted &&
-                index === primaryIndex &&
-                available
-              const locked = !available
-
+            {entries.map((item, index) => {
+              const current = !allCompleted && active.episode.seasonNumber === item.episode.seasonNumber && item.available
+              const previous = entries[index - 1]
+              const groupStart = !previous || previous.entry.id !== item.entry.id
               const className = `w-full rounded-[1.35rem] border px-4 py-3.5 text-left shadow-[0_15px_36px_-32px_rgba(74,49,13,.8)] ${
                 current
                   ? 'border-[#1f6670]/65 bg-[#edf5f2] transition active:scale-[0.99]'
-                  : item.completed
+                  : item.completed || item.available
                     ? 'border-[#c9b27f] bg-[#fffaf0] transition active:scale-[0.99]'
-                    : available
-                      ? 'border-[#c9b27f] bg-[#fffaf0] transition active:scale-[0.99]'
-                      : 'border-[#d8c39a] bg-[#fffaf0]/72 opacity-65'
+                    : 'border-[#d8c39a] bg-[#fffaf0]/72 opacity-65'
               }`
-
               const body = (
                 <div className="flex items-center gap-3">
-                  <span
-                    className={`inline-flex h-8 w-8 flex-none items-center justify-center rounded-full border text-xs font-bold ${
-                      item.completed
-                        ? 'border-[#7aa49a] bg-[#dceae5] text-[#31543b]'
-                        : current
-                          ? 'border-[#1f6670] bg-[#1f6670] text-[#fff9ec]'
-                          : 'border-[#d0c1a4] bg-[#eee5d5] text-[#847b69]'
-                    }`}
-                  >
-                    {item.completed ? '✓' : item.entry.number}
+                  <span className={`inline-flex h-8 w-8 flex-none items-center justify-center rounded-full border text-xs font-bold ${
+                    item.completed ? 'border-[#7aa49a] bg-[#dceae5] text-[#31543b]'
+                      : current ? 'border-[#1f6670] bg-[#1f6670] text-[#fff9ec]'
+                        : 'border-[#d0c1a4] bg-[#eee5d5] text-[#847b69]'
+                  }`}>
+                    {item.completed ? '✓' : item.episode.seasonNumber}
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-[0.65rem] font-bold uppercase tracking-widest text-[#817662]">
-                      {formatSevenRoadsEpisodeLabel(language, item.entry.number)}
+                      {formatSevenRoadsEpisodeLabel(language, item.episode.seasonNumber)}
                     </p>
-                    <p className="font-bold leading-6 text-[#342f25]">
-                      {item.entry.title ?? item.authoredStory.title}
-                    </p>
+                    <p className="font-bold leading-6 text-[#342f25]">{item.episode.title}</p>
                   </div>
                   <span className="flex-none text-xs font-semibold text-[#817662]">
-                    {item.completed
-                      ? copy.open
-                      : item.progress
-                        ? copy.continueArrow
-                        : locked
-                          ? copy.ahead
-                          : copy.begin}
+                    {item.completed ? copy.open : item.started ? copy.continueArrow : item.available ? copy.begin : copy.ahead}
                   </span>
                 </div>
               )
-
-              if (!available) {
-                return (
-                  <div
-                    key={item.entry.id}
-                    className={className}
-                    aria-disabled="true"
-                  >
-                    {body}
-                  </div>
-                )
-              }
-
               return (
-                <button
-                  key={item.entry.id}
-                  type="button"
-                  className={className}
-                  onClick={() =>
-                    onRead(
-                      item.entry.number,
-                      item.completed ? 1 : undefined,
-                    )
-                  }
-                >
-                  {body}
-                </button>
+                <div key={`${item.entry.id}:${item.episode.number}`} className={groupStart ? 'pt-4 first:pt-0' : ''}>
+                  {groupStart && entries.length > item.entry.episodes.length ? (
+                    <p className="mb-2 px-1 text-xs font-bold uppercase tracking-[0.08em] text-[#756a56]">
+                      {item.entry.title}
+                    </p>
+                  ) : null}
+                  {item.available ? (
+                    <button type="button" className={className} onClick={() => onRead(item.entry.number, item.completed ? item.episode.number : undefined)}>
+                      {body}
+                    </button>
+                  ) : (
+                    <div className={className} aria-disabled="true">{body}</div>
+                  )}
+                </div>
               )
             })}
           </div>
@@ -270,11 +173,11 @@ export function SeasonOverview({
           <p className="mt-3 text-sm leading-6 text-[#6c6252]">
             {publishedStories.length > 1
               ? language === 'uz'
-                ? 'Bu mavsum bir nechta alohida hikoyadan iborat. Har bir hikoya o‘z o‘qish joyi va tanlovlarini alohida saqlaydi.'
-                : 'Этот сезон состоит из нескольких отдельных сказок. У каждой сказки свой прогресс чтения и свои сохранённые выборы.'
+                ? 'Mavsum seriyalardan iborat. Uzun seriyada boblar bor. O‘qilgan joy va tanlovlar saqlanadi.'
+                : 'Сезон состоит из серий. В длинной серии есть главы. Прогресс и выборы сохраняются.'
               : language === 'uz'
-                ? `Bu hikoya ${story.parts.length} qismdan iborat. O‘qilgan joy va tanlovlar saqlanadi.`
-                : `Эта сказка состоит из ${story.parts.length} частей. Прогресс чтения и выборы сохраняются.`}
+                ? `Bu seriya ${story.parts.length} bobdan iborat. O‘qilgan joy va tanlovlar saqlanadi.`
+                : `Эта серия состоит из ${story.parts.length} глав. Прогресс чтения и выборы сохраняются.`}
           </p>
         </div>
 
@@ -334,17 +237,22 @@ export function SeasonOverview({
     )
   }
   const progress = authoredStoryPersistence.load(story)
-  const reading = sevenRoadsStory1ReadingState(progress)
-  const coverUrl = resolveAuthoredStoryAssetUrl(
-    story.cover_illustration.asset_id,
-    story.cover_illustration.runtime_url,
-  )
+  const reading = season.number === 1
+    ? sevenRoadsStory1ReadingState(progress, story.reader_layout?.episode_by_part)
+    : !progress
+      ? { state: 'new' as const, currentEpisode: 1, completedEpisodes: 0 }
+      : progress.completed
+        ? { state: 'completed' as const, currentEpisode: seasonStory.episodes.length, completedEpisodes: seasonStory.episodes.length }
+        : { state: 'in_progress' as const, currentEpisode: story.reader_layout?.episode_by_part[progress.current_part_index] ?? progress.current_part_index + 1, completedEpisodes: Math.max(0, (story.reader_layout?.episode_by_part[progress.current_part_index] ?? progress.current_part_index + 1) - 1) }
+  const coverUrl = season.coverAssetId
+    ? resolveAuthoredStoryAssetUrl(season.coverAssetId, null)
+    : resolveAuthoredStoryAssetUrl(story.cover_illustration.asset_id, story.cover_illustration.runtime_url)
 
   const primaryLabel =
     reading.state === 'new'
       ? copy.startSeason
       : reading.state === 'completed'
-        ? copy.openSeasonResult
+        ? (season.number === 1 ? copy.openSeasonResult : copy.open)
         : copy.continue
 
   return (
@@ -389,9 +297,15 @@ export function SeasonOverview({
       <section className="relative z-10 rounded-t-4xl bg-[#efe2cb] px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-6 sm:px-5">
         <div className="px-1">
           <p className="q-label mb-1">{copy.openSeasonPath}</p>
-          <h2 className="q-heading text-2xl font-bold">{copy.sixEpisodes}</h2>
+          <h2 className="q-heading text-2xl font-bold">
+            {seriesCountLabel(seasonStory.episodes.length)}
+          </h2>
           <p className="mt-1 text-sm leading-6 text-[#6c6252]">
-            {copy.seasonDescription}
+            {season.number === 1
+              ? copy.seasonDescription
+              : language === 'uz'
+                ? 'Har bir seriyadagi o‘qish joyi va tanlovlar saqlanadi.'
+                : 'Прогресс чтения и выборы сохраняются в каждой серии.'}
           </p>
           <p className="mt-2 text-xs leading-5 text-[#817662]">
             {copy.seasonReplayHint}

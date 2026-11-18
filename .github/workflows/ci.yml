@@ -29,8 +29,8 @@ jobs:
       - name: Audit production dependencies
         run: npm run audit:prod
 
-      - name: Audit full dependency graph for high severity
-        run: npm run audit:all
+      - name: Audit full dependency graph (owner-accepted fixed-scope picomatch exception, Issue 336)
+        run: node scripts/check-known-build-dependency-advisory.mjs
 
       - name: Validate repository secret hygiene
         run: npm run check:secret-hygiene
@@ -80,6 +80,9 @@ jobs:
       - name: Validate Seven Roads season product shell
         run: npm run check:seven-roads-shell
 
+      - name: Validate all 30 reading series and branch-preserved RU/UZ text
+        run: npm run check:four-seasons
+
       - name: Typecheck app
         run: npm run typecheck
 
@@ -88,6 +91,9 @@ jobs:
           VITE_QISSA_STORY2_PREVIEW: false
           VITE_QISSA_STORY2_RUNTIME_ASSETS_READY: true
         run: npm run build
+
+      - name: Smoke chronological 30-series browser including RU/UZ and gallery locks
+        run: npm run smoke:four-season-browser
 
       - name: Verify published Story 2 is present in production bundle
         run: npm run check:story2-bundle-open
