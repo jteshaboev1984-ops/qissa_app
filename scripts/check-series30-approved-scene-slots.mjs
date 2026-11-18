@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 29)
+assert.equal(series30ApprovedScenes.length, 30)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -59,6 +59,7 @@ const fixtures = [
       'SERIES30-S2E1-A01': 1,
       'SERIES30-S2E1-A02': 1,
       'SERIES30-S2E2-A01': 2,
+      'SERIES30-S2E2-A02': 2,
       'SERIES30-S2E3-A01': 3,
       'SERIES30-S2E3-A02': 3,
       'SERIES30-S2E3-A03': 3,
@@ -555,11 +556,31 @@ for (const fixture of fixtures) {
         galleryBefore[1].items.map(item => item.assetId).join('|'),
         [
           'seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED',
+          'seven_roads_s2e2_east_gate_messenger_02_APPROVED',
           'seven_roads_s2_story1_danyar_pursuit_01_APPROVED',
           'seven_roads_s2e2_missing_dark_horse_01_APPROVED',
         ].join('|'),
-        language + ': S2E2 gallery must show rescue, pursuit and missing dark horse in sequence',
+        language + ': S2E2 gallery must show rescue, messenger, pursuit, then missing horse in sequence',
       )
+      const gateAsset = 'seven_roads_s2e2_east_gate_messenger_02_APPROVED'
+      const gatePart = story.parts.find(part =>
+        part.image_slots.some(slot => slot.slot_id === 'SERIES30-S2E2-A02'))
+      assert.equal(gatePart?.decision?.choices.length, 2,
+        language + ': S2E2-A02 must remain a shared pre-choice scene for both paths')
+      assert.equal(gatePart?.image_slots.find(slot => slot.slot_id === 'SERIES30-S2E2-A02')?.phase,
+        'story_text', language + ': S2E2-A02 unexpectedly shifted after choice')
+      assert.equal(galleryBefore[1].items.find(item => item.assetId === gateAsset)?.unlocked,
+        false, language + ': unread gate message leaked into S2E2 gallery')
+      authoredIllustrationDiscovery.markSeen(story, gateAsset)
+      const gateSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(gateSeenGallery[1].items.find(item => item.assetId === gateAsset)?.unlocked,
+        true, language + ': gate messenger did not unlock on reading')
+      assert.equal(gateSeenGallery[1].items.find(item =>
+        item.assetId === 'seven_roads_s2e2_missing_dark_horse_01_APPROVED')?.unlocked,
+        false, language + ': later missing-horse reveal was prematurely unlocked')
+      authoredIllustrationDiscovery.clear(story)
       assert.deepEqual(
         s2e1GalleryOrder.slice(0, 3).join('|'),
         [
@@ -663,9 +684,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 58)
-console.log('[series30-art] PASS: 29 owner-approved assets, 58 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 60)
+console.log('[series30-art] PASS: 30 owner-approved assets, 60 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
