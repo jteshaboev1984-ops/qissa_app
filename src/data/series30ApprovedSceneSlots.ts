@@ -341,6 +341,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'Daniyar to‘xtadi.',
     },
   },
+  {
+    story_id: 'seven_roads_dve_podmogi',
+    part_id: 'story6_part_2_two_reinforcements',
+    slot_id: 'SERIES30-S4E8-A01',
+    anchor_key: 'series30_s4e8_wall_two_fronts_reverse_view',
+    asset_id: 'seven_roads_s4e8_wall_two_fronts_reverse_view_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'У повозки один конвойный опустился на колено после сильного удара. Другой отбивался от двух противников. Третий разбойник искал путь к задней двери.',
+      uz: 'Arava yonida bir qo‘riqchi kuchli zarbadan so‘ng tiz cho‘kdi. Boshqasi ikki dushmanning zarbasini qaytarardi. Uchinchi bosqinchi orqa eshikka yo‘l izlar edi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>

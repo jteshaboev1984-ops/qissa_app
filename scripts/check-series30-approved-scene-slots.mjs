@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 27)
+assert.equal(series30ApprovedScenes.length, 28)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -85,6 +85,11 @@ const fixtures = [
     base: 'src/data/authored/staging/season2Story7BackToOrdan',
     key: 'ordan',
     expected: { 'SERIES30-S4E9-A01': 1, 'SERIES30-S4E10-A01': 2 },
+  },
+  {
+    base: 'src/data/authored/staging/season2Story6TwoReinforcements',
+    key: 'reinforcements',
+    expected: { 'SERIES30-S4E8-A01': 2 },
   },
 ]
 
@@ -175,6 +180,45 @@ for (const fixture of fixtures) {
       story, episodes.map(e => e.title), null, episodeForPart,
     )
 
+
+    if (fixture.key === 'reinforcements') {
+      const newAsset = 'seven_roads_s4e8_wall_two_fronts_reverse_view_01_APPROVED'
+      const scenePart = story.parts.find(p =>
+        pars(p.story_text).includes(language === 'ru'
+          ? 'У повозки один конвойный опустился на колено после сильного удара. Другой отбивался от двух противников. Третий разбойник искал путь к задней двери.'
+          : 'Arava yonida bir qo‘riqchi kuchli zarbadan so‘ng tiz cho‘kdi. Boshqasi ikki dushmanning zarbasini qaytarardi. Uchinchi bosqinchi orqa eshikka yo‘l izlar edi.'))
+      assert.ok(scenePart, language + ': missing new S4E8 anchor in reader text')
+      assert.ok(scenePart.story_text.includes(language === 'ru'
+        ? 'Рахим отвёл детей к невысокой каменной стене между башней и повозкой.'
+        : 'Rahim bolalarni minora bilan arava orasidagi past tosh devor yoniga olib bordi.'),
+        language + ': S4E8 image must follow low-wall split')
+      const wagonAnchor = language === 'ru' ? 'У повозки один конвойный опустился на колено после сильного удара. Другой отбивался от двух противников. Третий разбойник искал путь к задней двери.' : 'Arava yonida bir qo‘riqchi kuchli zarbadan so‘ng tiz cho‘kdi. Boshqasi ikki dushmanning zarbasini qaytarardi. Uchinchi bosqinchi orqa eshikka yo‘l izlar edi.'
+      const drawnSabre = language === 'ru'
+        ? 'Темур выхватил королевскую саблю.'
+        : 'Temur qirol sovg‘a qilgan qilichini sug‘urdi.'
+      assert.ok(scenePart.story_text.indexOf(wagonAnchor) < scenePart.story_text.indexOf(drawnSabre),
+        language + ': S4E8 image must appear before children draw sabres')
+      assert.equal(galleryBefore[0].items.some(item => item.assetId === newAsset), false,
+        language + ': S4E8 image leaked into S4E7')
+      assert.equal(galleryBefore[1].items.some(item => item.assetId === newAsset), true,
+        language + ': S4E8 new scene missing from its gallery')
+      assert.equal(galleryBefore[1].items.find(item => item.assetId === newAsset)?.unlocked, false,
+        language + ': unread S4E8 illustration leaked')
+      // Show the common battle scene before the branch; neither branch choice is selected here.
+      const sceneSlot = story.parts.flatMap(p => p.image_slots)
+        .find(slot => slot.slot_id === 'SERIES30-S4E8-A01')
+      assert.equal(sceneSlot?.kind, 'shared')
+      assert.equal(sceneSlot?.phase, 'story_text')
+      authoredIllustrationDiscovery.markSeen(story, newAsset)
+      const afterScene = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(afterScene[1].items.find(item => item.assetId === newAsset)?.unlocked, true,
+        language + ': S4E8 illustration did not unlock on viewing')
+      assert.equal(afterScene[0].items.some(item => item.assetId === newAsset), false,
+        language + ': S4E8 still leaked into S4E7 after viewing')
+      authoredIllustrationDiscovery.clear(story)
+    }
     if (fixture.key === 'ordan') {
       // The new scene is BEFORE the Aras reply and before the S4E9/S4E10 split.
       const s4e9Gallery = galleryBefore[0].items.map(item => item.assetId)
@@ -578,6 +622,7 @@ for (const scene of series30ApprovedScenes) {
     scene.slot_id.startsWith('SERIES30-S4E4-') ? e.season === 4 && e.episode === 4 :
     scene.slot_id.startsWith('SERIES30-S4E5-') ? e.season === 4 && e.episode === 5 :
     scene.slot_id.startsWith('SERIES30-S4E6-') ? e.season === 4 && e.episode === 6 :
+    scene.slot_id.startsWith('SERIES30-S4E8-') ? e.season === 4 && e.episode === 8 :
     scene.slot_id.startsWith('SERIES30-S4E9-') ? e.season === 4 && e.episode === 9 :
     scene.slot_id.startsWith('SERIES30-S4E10-') ? e.season === 4 && e.episode === 10 : false,
   )
@@ -587,9 +632,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 54)
-console.log('[series30-art] PASS: 27 owner-approved assets, 54 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 56)
+console.log('[series30-art] PASS: 28 owner-approved assets, 56 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x1 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {

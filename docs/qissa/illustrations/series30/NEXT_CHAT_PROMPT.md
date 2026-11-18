@@ -1,3 +1,11 @@
+## CURRENT 2026-11-18 — S4E8-A01 uploaded; integration drafted, CI pending
+
+- PR #334 branch `qissa/four-seasons-chronological-runtime-20261112`; prior code/doc HEAD `f19c410169715841b48e3906bd23075b2471755a` (record new HEAD after commit). Art accepted 28/29, technically 27/29 until CI.
+- User **uploaded the previously accepted final S4E8-A01**, not the rejected attempted sword edit. Supabase Storage object `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e8_wall_two_fronts_reverse_view_01_APPROVED.webp` exists, metadata says `image/webp`, **611862 bytes**. Master accepted derivative SHA256 `f09303958074b3c40e656bdf6b267b469633696a27a33c1b7192b477e488ea57`, remote SHA verification pending CI.
+- Additive `SERIES30-S4E8-A01` shared scene in `seven_roads_dve_podmogi/story6_part_2_two_reinforcements/story_text`, exact unique RU/UZ wagon-defense full paragraph after virtual S4E8 split, before children's sabres and branching. Test 28 hosted assets / 56 unique anchors and gallery split, locks, public SHA plus full browser/typecheck/build.
+- Historical old `seven_roads_s4e8_children_watchtower_two_fronts_01_APPROVED` remains **REVOKED**, prohibited. Owner rejected separate sword correction. A02 must not start until A01 integrated and verified; no literary JSON/choice IDs/progress, merge/deploy/publish.
+- Security caveat: at previous HEAD `f19c410...`, Seven Roads CI failed the `npm run audit:prod` gate (5 high severity reported), unrelated to documentation; do not disable/skip audit. Season 2 Tier A CI succeeded. Verify new PR CI and record failure reasons, do not claim GREEN without evidence.
+
 ## LATEST 2026-11-17 — S4E8-A01 NEW final owner-art accepted, WebP upload pending
 
 - Draft PR #334 `qissa/four-seasons-chronological-runtime-20261112`. Source HEAD before this document-only checkpoint `8f29e12b7f79942b870096edaca1d958c69d27da` (reverify latest head/CI).
