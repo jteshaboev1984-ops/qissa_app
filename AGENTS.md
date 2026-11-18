@@ -137,11 +137,11 @@ At the end of each task, report:
 
 ## Development chat coordination (staged; not product Story Agent)
 
-The architect authorized cutover on 2026-11-16. After the owner installs the new ChatGPT Project instructions, follow docs/ops/CHAT_PROTOCOL.md and docs/ops/WORKSTREAMS.md for chat commands, workstream ownership and verified GitHub handoffs. docs/ops/PROJECT_INSTRUCTIONS.md contains ready-to-paste ChatGPT Project instructions; committing these files does not configure ChatGPT automatically.
+The architect authorized cutover on 2026-11-16 and confirmed installing revised ChatGPT Project instructions on 2026-11-18. Follow `docs/ops/CHAT_PROTOCOL.md` and `docs/ops/WORKSTREAMS.md` for chat commands, ownership and verified GitHub handoffs. `docs/ops/PROJECT_INSTRUCTIONS.md` mirrors the owner-installed text; GitHub edits do not automatically update ChatGPT settings.
 
 Keep the existing product, literary and child-safety restrictions above. For actual current implementation and permitted release status, also verify the later owner-approved closed-beta docs, release/branch strategy, current PR/CI, and the latest relevant Issue **comments**. Never infer current status from an older narrative or a static label. On material conflict, surface it rather than silently broadening product scope.
 
-These coordination rules do not authorize new paid Story AI/TTS calls, editing main, story publication, production deployments or family-data operations. Cutover was authorized 2026-11-16. Existing chats become historical, not concurrent writers; installing GitHub documents does not update ChatGPT Project settings automatically.
+These coordination rules do not authorize new paid Story AI/TTS calls, editing main, story publication, production deployments or family-data operations. Old chats are historical, not concurrent writers. For new confirmed standing rules use [Rules Inbox](https://github.com/jteshaboev1984-ops/qissa_app/issues/340) and `docs/ops/RULES_MAINTENANCE.md`; do not convert one-off art work or hypotheses into rules.
 
 ## Interpreting historical MVP instructions against current implementation
 
