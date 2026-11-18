@@ -5,7 +5,7 @@
 ## Источники и границы
 
 - Постоянный [Rules Inbox](https://github.com/jteshaboev1984-ops/qissa_app/issues/340) — первичный журнал решений, **не** task tracker.
-- Действующий реестр: [docs/qissa/QISSA_FEEDBACK_TO_RULES_REGISTER_2026-11-17.md](../../qissa/QISSA_FEEDBACK_TO_RULES_REGISTER_2026-11-17.md) (ориентируйся на точный путь `docs/qissa/QISSA_FEEDBACK_TO_RULES_REGISTER_2026-11-17.md`).
+- Действующий реестр: [Реестр обратной связи](../qissa/QISSA_FEEDBACK_TO_RULES_REGISTER_2026-11-17.md).
 - Утверждённые предметные/продуктовые спецификации, `AGENTS.md`, `docs/ops/CHAT_PROTOCOL.md`, Issue/PR с последними комментариями и точным SHA имеют приоритет над датированными заметками.
 - Новые записи отсчитывать с момента создания Inbox; старый register — исходная историческая база. Не копировать всю историю обратно.
 - Никаких изменений утверждённых сказок, source hashes, визуального канона, платных Story AI/TTS, данных семей, production.
