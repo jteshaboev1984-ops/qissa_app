@@ -658,10 +658,37 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 1,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_2_A01_owner_approved_library_stored",
+      "asset_ids": [
+        "seven_roads_s3e7_captain_stops_writing_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E7-A01",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e7_captain_stops_writing_01_APPROVED",
+          "kind": "shared",
+          "part_id": "story2_part_9_interrogation_and_sarvan_token",
+          "phase": "story_text",
+          "ru_after_text": "Капитан перестал писать.",
+          "uz_after_text": "Sardor yozishni to‘xtatdi.",
+          "acceptance": "owner_explicit_approved_final_window_geography_revision_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E7/seven_roads_s3e7_captain_stops_writing_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E7/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E7/seven_roads_s3e7_captain_stops_writing_01_APPROVED.metadata.json",
+          "master_bytes": 2438971,
+          "master_sha256": "98b5a05ae14506d9f5e6f0175a68808446e66e4fa5b54bf830d691ff90bb54f1",
+          "webp_bytes": 239958,
+          "webp_sha256": "22e92a47aad3f49f3bc1c7c27d5814bcafdf7f6872b36bf6b1fb22a723c42d65",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
+          "qa_status": "not_started",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp"
+        }
+      ],
+      "notes": "2026-11-18: owner explicitly approved second S3E7-A01 image after requested review/correction of guardroom-window exterior. Final accepted PNG byte-preserved in QISSA Library; WebP and SHA256 metadata stored. Unique shared RU/UZ story_text anchors in story2_part_9_interrogation_and_sarvan_token, after Nadir capture, pre-S3E8. Supabase upload/public hash/runtime/QA pending. No changes to literature, IDs, earlier frames or progress."
     },
     {
       "season": 3,
