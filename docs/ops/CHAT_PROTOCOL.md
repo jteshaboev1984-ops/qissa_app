@@ -1,6 +1,6 @@
 # QISSA — Chat work protocol v1
 
-Status: CUTOVER AUTHORIZED 2026-11-16; **ChatGPT Project settings still require owner installation** before these new-chat commands are operational. Development chat coordination only; not an in-product Story Agent or background executor.
+Status: CUTOVER AUTHORIZED 2026-11-16; **owner confirmed updated ChatGPT Project settings installed 2026-11-18**. Development chat coordination only; not an in-product Story Agent or background executor.
 
 ## 1. Two modes
 
@@ -36,7 +36,7 @@ Never change child safety/product policy, release published story, merge to main
 
 No invisible multi-agent team, background autonomy or real-time cross-chat coordination is claimed. GitHub Issues/MD/PRs carry confirmed progress across chat limits; menus are chat-local. When starting a new chat, send START for a fresh menu or any direct request for immediate execution.
 
-Existing QISSA work continues in current chats while this documentation is staged. The architect will stop asking old chats for new work **only after** the technical foundation and project instructions are ready. At cutover re-check all heads and checkpoints. Do not create parallel competing source edits.
+The cutover is completed according to the owner. Previous QISSA chats are historical and should not be resumed as concurrent writers. Always re-check current HEADs and Issue checkpoints; do not create parallel competing source edits.
 
 ## 5. Forward-safe coordination and cutover
 
@@ -47,7 +47,7 @@ Existing QISSA work continues in current chats while this documentation is stage
 - **Cheap QA:** reuse already verified exact-SHA checks on unchanged code, target new checks to changed files, and keep Story AI/TTS provider-free by default. Free use depends on available platform quotas; do not create billable usage without consent.
 - **Lost connectivity:** if relevant repositories, CI or official status cannot be checked, say what is unknown; do not invent a fresh task menu or call an unverified test successful.
 
-### Cutover sequence (owner-controlled)
+### Historical cutover sequence (owner-confirmed; do not repeat)
 
 1. Keep the existing chats active while staging these docs. Do not install new project instructions in their shared ChatGPT Project early.
 2. Once the architect stops sending work to old chats, verify that in-flight updates have settled; refresh main, latest Issue comments, PR HEAD, source locks and this docs PR. Resolve any changed-base conflicts using normal reviewed PR edits, not force pushes.
@@ -55,3 +55,7 @@ Existing QISSA work continues in current chats while this documentation is stage
 4. The architect installs the approved text from docs/ops/PROJECT_INSTRUCTIONS.md into **QISSA ChatGPT Project settings**. GitHub commits do not update the ChatGPT UI.
 5. Test a new QISSA project chat: START STORY must show source-backed read-only choices; choose a still-open numbered task and verify correct scope; direct discussion must not write files; a concrete development request must not silently publish/merge; a new chat START must not inherit old menu choices.
 6. If a test fails, do not change product or release state; amend the coordination documentation in an isolated docs PR and retest before declaring the workflow operational.
+
+## 7. Rules maintenance (applies after docs PR merge)
+
+New owner-approved standing decisions belong in [Rules Inbox](https://github.com/jteshaboev1984-ops/qissa_app/issues/340), with source, scope and approval. Do not register every bug or one-off task. The review/deduplication/PR workflow is in `docs/ops/RULES_MAINTENANCE.md`. This is not authority to merge, deploy or change ChatGPT Settings. Recording a GitHub comment is an explicit write; do not do it during read-only START or audit turns. If GitHub write fails, say so.
