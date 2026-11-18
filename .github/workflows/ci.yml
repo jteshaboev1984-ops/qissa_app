@@ -29,8 +29,8 @@ jobs:
       - name: Audit production dependencies
         run: npm run audit:prod
 
-      - name: Audit full dependency graph for high severity
-        run: npm run audit:all
+      - name: Audit full dependency graph (owner-accepted fixed-scope picomatch exception, Issue 336)
+        run: node scripts/check-known-build-dependency-advisory.mjs
 
       - name: Validate repository secret hygiene
         run: npm run check:secret-hygiene
