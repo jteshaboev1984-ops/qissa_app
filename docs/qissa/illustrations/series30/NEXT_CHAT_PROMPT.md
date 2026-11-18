@@ -1,3 +1,10 @@
+## LATEST VERIFIED 2026-11-18 — Stage1 artwork 29/29 APPROVED; technology 28/29 pending S4E8-A02 upload
+
+- Exact previously viewed `S4E8-A02 REVIEW v1` approved by owner. New `seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED` PNG 2,197,221 bytes SHA256 `df510e99cf88cf722c0708ee10548d1321515c5916c2792f58049603d1d95678`; WebP **211566 bytes** SHA256 `514c8ad918280f0c3f174a1502a4b4e644ed123350ff9e4ca7ea02de17989fc9`; both + metadata actually in QISSA Library `/QISSA/production/seven_roads/series30/stage1/S4E8/`.
+- Supabase `story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED.webp` NOT yet uploaded/verified. Do **not** register URL, wire runtime or mark technical 29/29 before independent GET/MIME/bytes/SHA. RU/UZ one shared `post_choice_text` anchor in `seven_roads_dve_podmogi` unique, before future genuine badge comparison. Exact details in `docs/qissa/illustrations/series30/S4E8_A02_FALSE_GUARD_BADGE_STORYBOARD_2026-11-18.md` / `docs/qissa/illustrations/series30/ART_QUEUE_2026-11-14.json`.
+- **Stage1: 29/29 artistic / 28/29 technical (Draft PR only).** Next action: user upload precise WebP then additive bilingual overlay / remote CI. Other branch/canon/progress/merge/deploy unchanged. `npm audit:all` separate security advisory remains open.
+- PR #334 Draft/Open `qissa/four-seasons-chronological-runtime-20261112`; parent SHA `6a115931c71d88f287107b6aa7f3f24556b868ed`, verify new HEAD and CI after this documentation-only commit.
+
 ## LATEST VERIFIED 2026-11-18 — S4E8-A01 user-uploaded earlier approved image, RU/UZ runtime integrated (Tier A GREEN)
 
 - PR #334 branch `qissa/four-seasons-chronological-runtime-20261112`. Exact code HEAD **`2ed848d2e476cc9b22e268c647f1d8261f131c8a`** [Season 2 Tier A Slot Check #44234050689](https://github.com/jteshaboev1984-ops/qissa_app/actions/runs/44234050689) SUCCESS.
