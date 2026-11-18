@@ -353,6 +353,19 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
       uz: 'Arava yonida bir qo‘riqchi kuchli zarbadan so‘ng tiz cho‘kdi. Boshqasi ikki dushmanning zarbasini qaytarardi. Uchinchi bosqinchi orqa eshikka yo‘l izlar edi.',
     },
   },
+  {
+    story_id: 'seven_roads_dve_podmogi',
+    part_id: 'story6_part_2_two_reinforcements',
+    slot_id: 'SERIES30-S4E8-A02',
+    anchor_key: 'series30_s4e8_rustam_unstamped_guard_badge',
+    asset_id: 'seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED',
+    // Shared post-choice scene: both choices rejoin before Rustam checks the badge.
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Спереди он выглядел как настоящий знак дорожной стражи. Но с обратной стороны не было клейма мастерской.',
+      uz: 'Old tomondan u haqiqiy yo‘l qo‘riqchisi belgisiga o‘xshardi. Lekin orqasida ustaxona tamg‘asi yo‘q edi.',
+    },
+  },
 ]
 
 const paragraphs = (text: string): string[] =>

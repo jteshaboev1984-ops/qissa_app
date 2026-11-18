@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 28)
+assert.equal(series30ApprovedScenes.length, 29)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -89,7 +89,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story6TwoReinforcements',
     key: 'reinforcements',
-    expected: { 'SERIES30-S4E8-A01': 2 },
+    expected: { 'SERIES30-S4E8-A01': 2, 'SERIES30-S4E8-A02': 2 },
   },
 ]
 
@@ -204,6 +204,37 @@ for (const fixture of fixtures) {
         language + ': S4E8 new scene missing from its gallery')
       assert.equal(galleryBefore[1].items.find(item => item.assetId === newAsset)?.unlocked, false,
         language + ': unread S4E8 illustration leaked')
+      const badgeAsset = 'seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED'
+      const badgeAnchor = language === 'ru'
+        ? 'Спереди он выглядел как настоящий знак дорожной стражи. Но с обратной стороны не было клейма мастерской.'
+        : 'Old tomondan u haqiqiy yo‘l qo‘riqchisi belgisiga o‘xshardi. Lekin orqasida ustaxona tamg‘asi yo‘q edi.'
+      const badgePart = story.parts.find(part =>
+        pars(part.post_choice_text).includes(badgeAnchor))
+      assert.ok(badgePart, language + ': badge discovery must occur in post-choice text')
+      assert.equal(badgePart.decision?.choices.length, 2,
+        language + ': shared badge scene must follow either choice, not a branch resolution')
+      const badgeSlot = badgePart.image_slots.find(slot => slot.slot_id === 'SERIES30-S4E8-A02')
+      assert.equal(badgeSlot?.phase, 'post_choice_text',
+        language + ': badge discovery must not show before making the choice')
+      assert.equal(badgeSlot?.kind, 'shared',
+        language + ': badge discovery must be available after either choice')
+      assert.equal(galleryBefore[0].items.some(item => item.assetId === badgeAsset), false,
+        language + ': S4E8 post-choice badge leaked into S4E7')
+      const a01Index = galleryBefore[1].items.findIndex(item => item.assetId === newAsset)
+      const a02Index = galleryBefore[1].items.findIndex(item => item.assetId === badgeAsset)
+      assert.ok(a01Index >= 0 && a02Index > a01Index,
+        language + ': S4E8 gallery must show battle before post-choice badge discovery')
+      assert.equal(galleryBefore[1].items[a02Index].unlocked, false,
+        language + ': unread badge illustration leaked')
+      authoredIllustrationDiscovery.markSeen(story, badgeAsset)
+      const badgeSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(badgeSeenGallery[1].items[a02Index].unlocked, true,
+        language + ': post-choice badge image did not unlock after reading it')
+      assert.equal(badgeSeenGallery[1].items[a01Index].unlocked, false,
+        language + ': seeing badge incorrectly unlocked prior unread battle image')
+      authoredIllustrationDiscovery.clear(story)
       // Show the common battle scene before the branch; neither branch choice is selected here.
       const sceneSlot = story.parts.flatMap(p => p.image_slots)
         .find(slot => slot.slot_id === 'SERIES30-S4E8-A01')
@@ -576,7 +607,7 @@ for (const fixture of fixtures) {
       assert.ok(galleryItem, id + '/' + language + ': missing from correct gallery episode')
       assert.equal(galleryItem.unlocked, false, 'new illustration spoiled before reading')
       assert.equal(item.slot.kind, 'shared')
-      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
+      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
       assert.equal(pars(item.part[item.slot.phase]).filter((p) => p === item.slot.after_text).length, 1,
         id + '/' + language + ': anchor missing or repeated')
       assert.ok(assetsSource.includes("'" + item.slot.asset_id + "'"),
@@ -632,9 +663,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 56)
-console.log('[series30-art] PASS: 28 owner-approved assets, 56 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x1 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 58)
+console.log('[series30-art] PASS: 29 owner-approved assets, 58 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
