@@ -161,6 +161,10 @@ const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e3_temur_caravan_courtyard_02_APPROVED.webp',
   'seven_roads_s3e3_morning_alarm_window_01_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e3_morning_alarm_window_01_APPROVED.webp',
+  'seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.webp',
+  'seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.webp',
   'seven_roads_s2e4_western_road_map_02_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_western_road_map_02_APPROVED.webp',
   'seven_roads_s2e4_missing_kamran_oak_01_APPROVED':
