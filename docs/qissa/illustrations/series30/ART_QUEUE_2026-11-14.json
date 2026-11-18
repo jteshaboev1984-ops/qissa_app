@@ -400,10 +400,11 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 4,
-      "artwork_acceptance": "stage_1_runtime_wired_ci_pending",
+      "artwork_acceptance": "stage_1_complete_stage_2_A03_owner_approved_library_stored",
       "asset_ids": [
         "seven_roads_s2e4_missing_kamran_oak_01_APPROVED",
-        "seven_roads_s2e4_western_road_map_02_APPROVED"
+        "seven_roads_s2e4_western_road_map_02_APPROVED",
+        "seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -455,9 +456,32 @@
           "qa_ci_runs": {
             "remote_webp_verification": 43806638375
           }
+        },
+        {
+          "candidate_id": "S2E4-A03",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED",
+          "kind": "shared",
+          "phase": "post_choice_text",
+          "ru_after_text": "Только теперь главарь встал.",
+          "uz_after_text": "Shundan keyingina boshliq o‘rnidan turdi.",
+          "acceptance": "owner_explicit_approved_corrected_review_v2_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E4/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E4/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E4/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.metadata.json",
+          "master_bytes": 2548229,
+          "master_sha256": "e03dd88dbd9626ff75ad83698f7d73ebd4cafcecb57054e7bdf37382b588f991",
+          "webp_bytes": 254000,
+          "webp_sha256": "529fe3f272541c509abd2d87da4a8043c403c6ba37b3d0839ef17d6f82fc1d83",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
+          "qa_status": "not_started",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.webp"
         }
       ],
-      "notes": "2026-11-16: S2E4 Stage 1 visual acceptance 2/2, Stage 2 still planned 2 additional images. A01 four mounted riders at oak, uploaded/verified to Storage (283010 bytes, SHA256 07e04b97...), wired through RU/UZ virtual S2E4 scene overlay; CI #43805029277 and #43805029409 SUCCESS, 10/10 public asset SHA, 20 bilingual anchor tests and browser smoke. A02 father Kamran indicating western road on map in small house with 2 adult companions; canon/text QA accepted, master PNG/WebP/metadata in QISSA Library. A02 WebP 192494 bytes, SHA256 fc44e2f2..., NOT yet uploaded to Supabase and NOT yet wired to runtime. Rejected earlier candidate frames remain excluded. Existing old settlement image, authored RU/UZ JSON, choices, story IDs and saved progress unchanged. PR Draft, no merge/deploy. 2026-11-16 A02 public Storage object 192494 bytes image/webp, SHA256 matches master by independent Seven Roads CI run #43806638375, 11/11 assets. RU/UZ runtime overlay and gallery wired on branch; reader/browser CI pending."
+      "notes": "2026-11-16: S2E4 Stage 1 visual acceptance 2/2, Stage 2 still planned 2 additional images. A01 four mounted riders at oak, uploaded/verified to Storage (283010 bytes, SHA256 07e04b97...), wired through RU/UZ virtual S2E4 scene overlay; CI #43805029277 and #43805029409 SUCCESS, 10/10 public asset SHA, 20 bilingual anchor tests and browser smoke. A02 father Kamran indicating western road on map in small house with 2 adult companions; canon/text QA accepted, master PNG/WebP/metadata in QISSA Library. A02 WebP 192494 bytes, SHA256 fc44e2f2..., NOT yet uploaded to Supabase and NOT yet wired to runtime. Rejected earlier candidate frames remain excluded. Existing old settlement image, authored RU/UZ JSON, choices, story IDs and saved progress unchanged. PR Draft, no merge/deploy. 2026-11-16 A02 public Storage object 192494 bytes image/webp, SHA256 matches master by independent Seven Roads CI run #43806638375, 11/11 assets. RU/UZ runtime overlay and gallery wired on branch; reader/browser CI pending. 2026-11-18 Stage2 A03: owner accepted corrected v2 image with one fewer background person; source PNG byte-identical preserved, production WebP and metadata stored in Library at /stage2/S2E4/. Verified one exact RU/UZ post-choice text anchor after virtual S2E3/S2E4 split. Supabase not uploaded, public SHA/CI and runtime integration pending. S2E4-A04 planned only, not approved. Stage1 preserved; no literary or progress edits."
     },
     {
       "season": 3,
