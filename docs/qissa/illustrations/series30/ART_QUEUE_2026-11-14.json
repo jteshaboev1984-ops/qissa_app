@@ -256,9 +256,10 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_1_complete_stage_2_owner_approved_library_stored",
       "asset_ids": [
-        "seven_roads_s2e2_missing_dark_horse_01_APPROVED"
+        "seven_roads_s2e2_missing_dark_horse_01_APPROVED",
+        "seven_roads_s2e2_east_gate_messenger_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -286,9 +287,32 @@
             "seven_roads_ci": 43790217518,
             "season2_tier_a_ci": 43790217561
           }
+        },
+        {
+          "candidate_id": "S2E2-A02",
+          "asset_id": "seven_roads_s2e2_east_gate_messenger_02_APPROVED",
+          "phase": "story_text",
+          "kind": "shared",
+          "stage": "stage_2",
+          "ru_after_text": "Когда он добрался до восточных ворот, начальник караула выслушал его и сразу отправил двух городских стражников дальше: одного — к внешнему караванному двору, второго — к старым скотным воротам.",
+          "uz_after_text": "U sharqiy darvozaga yetib borgach, qorovul boshlig‘i gapini eshitdi va darrov ikki shahar qo‘riqchisini oldinga yubordi: birini tashqi karvon hovlisiga, ikkinchisini eski chorva darvozasiga.",
+          "acceptance": "owner_direct_approved_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.metadata.json",
+          "master_sha256": "35d102cc4108c50d6ddb505dd7e6e0cdb187c3593d12622359a1fa03db481191",
+          "master_bytes": 3095544,
+          "webp_sha256": "8390f8fc896a2f13aa958ab7026e0ad8e510083ba4e9ee2d04e26d4e522fbb0f",
+          "webp_bytes": 373000,
+          "width": 1672,
+          "height": 941,
+          "storage_status": "pending_user_upload_no_direct_storage_tool",
+          "runtime_status": "not_integrated_until_remote_GET_MIME_bytes_SHA256",
+          "qa_status": "not_started",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp"
         }
       ],
-      "notes": "S2E2-A01 approved under owner's conditional acceptance rule after scene and exact RU/UZ check. Warehouse setting: narrow grain warehouse passages, drying hides, sacks/workers; Danyar on gray horse + young guard in canonical helmet; no Kamran or missing dark horse, no future choice spoilers. Original PNG + optimized WebP + SHA metadata are stored in QISSA Library; user needs to upload WebP to story-images/seven-roads/season2_tier_a_v2/. Do not wire runtime until public GET/MIME/bytes/SHA256 validated. Previously rejected S2E1-like road conversation attempts stay rejected. User uploaded to Supabase 2026-11-16; storage.objects image/webp 319176 bytes. Independent CI #43789957810 confirmed public GET/MIME/size/SHA 9/9. Runtime overlay and registry wired, RU/UZ gallery/browser CI pending. No literary JSON, choice or progress changes. Runtime CI 2026-11-16: Seven Roads #43790217518 SUCCESS and Tier A #43790217561 SUCCESS; 9/9 remote SHA, 9 accepted art / 18 bilingual anchors, gallery chronological order and unread locks; typecheck/build/4-season browser smoke PASS. S2E2 stage1 1/1 complete."
+      "notes": "S2E2-A01 approved under owner's conditional acceptance rule after scene and exact RU/UZ check. Warehouse setting: narrow grain warehouse passages, drying hides, sacks/workers; Danyar on gray horse + young guard in canonical helmet; no Kamran or missing dark horse, no future choice spoilers. Original PNG + optimized WebP + SHA metadata are stored in QISSA Library; user needs to upload WebP to story-images/seven-roads/season2_tier_a_v2/. Do not wire runtime until public GET/MIME/bytes/SHA256 validated. Previously rejected S2E1-like road conversation attempts stay rejected. User uploaded to Supabase 2026-11-16; storage.objects image/webp 319176 bytes. Independent CI #43789957810 confirmed public GET/MIME/size/SHA 9/9. Runtime overlay and registry wired, RU/UZ gallery/browser CI pending. No literary JSON, choice or progress changes. Runtime CI 2026-11-16: Seven Roads #43790217518 SUCCESS and Tier A #43790217561 SUCCESS; 9/9 remote SHA, 9 accepted art / 18 bilingual anchors, gallery chronological order and unread locks; typecheck/build/4-season browser smoke PASS. S2E2 stage1 1/1 complete. Stage2 S2E2-A02 2026-11-18: owner explicitly approved east-gate messenger storyboard image; source PNG byte-preserved, WebP/metadata stored in QISSA Library; public Storage upload not performed (no file-upload action); GET/MIME/bytes/SHA256 and runtime RU/UZ gallery QA pending. Approved literature, choices, progress and existing images unchanged."
     },
     {
       "season": 2,
