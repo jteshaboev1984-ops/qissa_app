@@ -256,7 +256,7 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_complete_stage_2_owner_approved_library_stored",
+      "artwork_acceptance": "stage_1_complete_stage_2_owner_approved_stored_uploaded_runtime_wired_qa_pending",
       "asset_ids": [
         "seven_roads_s2e2_missing_dark_horse_01_APPROVED",
         "seven_roads_s2e2_east_gate_messenger_02_APPROVED"
@@ -306,13 +306,15 @@
           "webp_bytes": 373000,
           "width": 1672,
           "height": 941,
-          "storage_status": "pending_user_upload_no_direct_storage_tool",
-          "runtime_status": "not_integrated_until_remote_GET_MIME_bytes_SHA256",
-          "qa_status": "not_started",
-          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_Draft_PR_338_pending_CI",
+          "qa_status": "pending_exact_SHA_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44250975421_at_SHA_2a1004a97996eb0a7b30746f26b019d2573f5376"
         }
       ],
-      "notes": "S2E2-A01 approved under owner's conditional acceptance rule after scene and exact RU/UZ check. Warehouse setting: narrow grain warehouse passages, drying hides, sacks/workers; Danyar on gray horse + young guard in canonical helmet; no Kamran or missing dark horse, no future choice spoilers. Original PNG + optimized WebP + SHA metadata are stored in QISSA Library; user needs to upload WebP to story-images/seven-roads/season2_tier_a_v2/. Do not wire runtime until public GET/MIME/bytes/SHA256 validated. Previously rejected S2E1-like road conversation attempts stay rejected. User uploaded to Supabase 2026-11-16; storage.objects image/webp 319176 bytes. Independent CI #43789957810 confirmed public GET/MIME/size/SHA 9/9. Runtime overlay and registry wired, RU/UZ gallery/browser CI pending. No literary JSON, choice or progress changes. Runtime CI 2026-11-16: Seven Roads #43790217518 SUCCESS and Tier A #43790217561 SUCCESS; 9/9 remote SHA, 9 accepted art / 18 bilingual anchors, gallery chronological order and unread locks; typecheck/build/4-season browser smoke PASS. S2E2 stage1 1/1 complete. Stage2 S2E2-A02 2026-11-18: owner explicitly approved east-gate messenger storyboard image; source PNG byte-preserved, WebP/metadata stored in QISSA Library; public Storage upload not performed (no file-upload action); GET/MIME/bytes/SHA256 and runtime RU/UZ gallery QA pending. Approved literature, choices, progress and existing images unchanged."
+      "notes": "S2E2-A01 approved under owner's conditional acceptance rule after scene and exact RU/UZ check. Warehouse setting: narrow grain warehouse passages, drying hides, sacks/workers; Danyar on gray horse + young guard in canonical helmet; no Kamran or missing dark horse, no future choice spoilers. Original PNG + optimized WebP + SHA metadata are stored in QISSA Library; user needs to upload WebP to story-images/seven-roads/season2_tier_a_v2/. Do not wire runtime until public GET/MIME/bytes/SHA256 validated. Previously rejected S2E1-like road conversation attempts stay rejected. User uploaded to Supabase 2026-11-16; storage.objects image/webp 319176 bytes. Independent CI #43789957810 confirmed public GET/MIME/size/SHA 9/9. Runtime overlay and registry wired, RU/UZ gallery/browser CI pending. No literary JSON, choice or progress changes. Runtime CI 2026-11-16: Seven Roads #43790217518 SUCCESS and Tier A #43790217561 SUCCESS; 9/9 remote SHA, 9 accepted art / 18 bilingual anchors, gallery chronological order and unread locks; typecheck/build/4-season browser smoke PASS. S2E2 stage1 1/1 complete. Stage2 S2E2-A02 2026-11-18: owner explicitly approved east-gate messenger storyboard image; source PNG byte-preserved, WebP/metadata stored in QISSA Library; public Storage upload not performed (no file-upload action); GET/MIME/bytes/SHA256 and runtime RU/UZ gallery QA pending. Approved literature, choices, progress and existing images unchanged. 2026-11-18 follow-up: owner confirmed Supabase upload; read-only storage.objects MIME image/webp / size 373000; public GET/MIME/bytes/SHA verified on CI #44250975421 at 2a1004a; new shared RU/UZ reader scene overlay and gallery regression written in Draft PR #338; exact head CI pending, no publication."
     },
     {
       "season": 2,

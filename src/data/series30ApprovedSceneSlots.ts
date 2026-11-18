@@ -49,6 +49,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
     story_id: 'seven_roads_korolevskoe_serebro',
     part_id: 'story1_part_2_kamran_pursuit',
+    slot_id: 'SERIES30-S2E2-A02',
+    anchor_key: 'series30_s2e2_east_gate_messenger',
+    asset_id: 'seven_roads_s2e2_east_gate_messenger_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Когда он добрался до восточных ворот, начальник караула выслушал его и сразу отправил двух городских стражников дальше: одного — к внешнему караванному двору, второго — к старым скотным воротам.',
+      uz: 'U sharqiy darvozaga yetib borgach, qorovul boshlig‘i gapini eshitdi va darrov ikki shahar qo‘riqchisini oldinga yubordi: birini tashqi karvon hovlisiga, ikkinchisini eski chorva darvozasiga.',
+    },
+  },
+  {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_2_kamran_pursuit',
     slot_id: 'SERIES30-S2E2-A01',
     anchor_key: 'series30_s2e2_missing_dark_horse',
     asset_id: 'seven_roads_s2e2_missing_dark_horse_01_APPROVED',
