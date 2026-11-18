@@ -692,9 +692,10 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_2_A01_owner_approved_library_stored",
+      "artwork_acceptance": "stage_2_A01_A02_owner_approved_library_stored",
       "asset_ids": [
-        "seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED"
+        "seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED",
+        "seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -716,13 +717,38 @@
           "webp_sha256": "f3122c3122cc4b57eee23e3f032a28bd8dc06c4536bfb515e2f323e485ea9e34",
           "width": 1672,
           "height": 941,
+          "storage_status": "uploaded_metadata_confirmed_public_SHA256_pending",
+          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
+          "qa_status": "not_started",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp",
+          "storage_metadata_verification": "2026-11-18 12:17 UTC: storage.objects image/webp, 297866 bytes"
+        },
+        {
+          "candidate_id": "S3E9-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED",
+          "kind": "shared",
+          "part_id": "story3_part_1_old_yard_niche",
+          "phase": "story_text",
+          "ru_after_text": "Темур поднял лист и посмотрел сначала на рисунок, потом на настоящие ворота.",
+          "uz_after_text": "Temur varaqni ko‘tarib, avval rasmga, keyin haqiqiy darvozaga qaradi.",
+          "acceptance": "owner_explicit_approved_corrected_architecture_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.metadata.json",
+          "master_bytes": 3041537,
+          "master_sha256": "63248b3921ca461fc2c80f6115a833e163513180b254ccd6fd5ac2ea5c0465e9",
+          "webp_bytes": 390878,
+          "webp_sha256": "19fec07e85c9a31b11fc09dfc78b13d3e246fb27f358e7bf24305d61b8127f8e",
+          "width": 1670,
+          "height": 942,
           "storage_status": "not_uploaded",
           "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
           "qa_status": "not_started",
-          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp"
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.webp"
         }
       ],
-      "notes": "2026-11-18 S3E9-A01 owner accepted final third version after correction of blotches and unrealistic startling pose. Bulut naturally blocks Shamol's access to trough while remaining relaxed; accepted exact PNG master preserved in QISSA Library with WebP/metadata. Verified unique shared RU/UZ story_text anchor in original story3_part_1_old_yard_niche before S3E9 choice. Storage public GET/SHA256, runtime and gallery QA NOT completed. S3E9-A02 remains planned only, not approved. Do not merge/deploy/publish without owner GO."
+      "notes": "2026-11-18 S3E9-A01 owner accepted final third version after correction of blotches and unrealistic startling pose. Bulut naturally blocks Shamol's access to trough while remaining relaxed; accepted exact PNG master preserved in QISSA Library with WebP/metadata. Verified unique shared RU/UZ story_text anchor in original story3_part_1_old_yard_niche before S3E9 choice. Storage public GET/SHA256, runtime and gallery QA NOT completed. S3E9-A02 remains planned only, not approved. Do not merge/deploy/publish without owner GO. 2026-11-18 Stage2 S3E9-A02: owner accepted corrected two-narrow-towers open-gateway sketch scene. Unchanged source PNG 1670x942, WebP and SHA256 metadata stored in Library. Exact unique shared RU/UZ source paragraph verified. A01 Storage metadata image/webp and 297866 bytes independently queried, public SHA pending; A02 upload pending, no runtime. No merge/deploy."
     },
     {
       "season": 3,
