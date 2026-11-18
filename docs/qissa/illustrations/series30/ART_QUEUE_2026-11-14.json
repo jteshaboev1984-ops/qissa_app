@@ -578,10 +578,37 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 1,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_2_owner_approved_library_stored",
+      "asset_ids": [
+        "seven_roads_s3e4_old_passage_map_recollection_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E4-A01",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e4_old_passage_map_recollection_01_APPROVED",
+          "kind": "shared",
+          "phase": "post_choice_text",
+          "part_id": "story2_part_5_first_investigation",
+          "ru_after_text": "— Старый скотный проход у прежнего караванного двора.",
+          "uz_after_text": "— Eski karvonsaroydagi chorva o‘tish joyi.",
+          "acceptance": "owner_explicit_approved_corrected_temur_visual_reference_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E4/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E4/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E4/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.metadata.json",
+          "master_bytes": 2722202,
+          "master_sha256": "6e4d5008a1ca28f38672d8213111c5802af8d1a5fa31d018f09380bc7818e8d4",
+          "webp_bytes": 309568,
+          "webp_sha256": "3382fd3b75f81ef44557400dc3099df4057281fbc259daa2148e3a30dfd36079",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
+          "qa_status": "not_started",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp"
+        }
+      ],
+      "notes": "2026-11-18: S3E4-A01 approved by owner after regenerating Temur closer to established face/costume reference; original accepted PNG, WebP derivative, SHA256 metadata preserved in Library. Single RU/UZ post-choice exact anchor in original P5 after the S3E3→S3E4 virtual reader split. No Supabase upload / public hash verification / runtime / QA yet. Old story, existing scene IDs and family progress unchanged. Separate Draft PR from Stage2 A (#338/#339)."
     },
     {
       "season": 3,
