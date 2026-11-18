@@ -101,6 +101,30 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
     story_id: 'seven_roads_korolevskoe_serebro',
     part_id: 'story1_part_3_network_sign',
+    slot_id: 'SERIES30-S2E4-A03',
+    anchor_key: 'series30_s2e4_rescued_rider_report',
+    asset_id: 'seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Только теперь главарь встал.',
+      uz: 'Shundan keyingina boshliq o‘rnidan turdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_3_network_sign',
+    slot_id: 'SERIES30-S2E4-A04',
+    anchor_key: 'series30_s2e4_ordan_informant_arrival',
+    asset_id: 'seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'К вечеру в логово приехала женщина на гнедой лошади. Она жила в Ордане и собирала для сети дорожные сведения у внешних дворов.',
+      uz: 'Kechga yaqin yashirin joyga jigarrang ot mingan ayol keldi. U Ordanda yashar va tashqi hovlilardagi yo‘l ma’lumotlarini tarmoq uchun yig‘ardi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_3_network_sign',
     slot_id: 'SERIES30-S2E4-A02',
     anchor_key: 'series30_s2e4_western_road_map',
     asset_id: 'seven_roads_s2e4_western_road_map_02_APPROVED',
