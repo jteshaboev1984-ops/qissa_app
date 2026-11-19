@@ -1912,9 +1912,10 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 3,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_1_complete_and_stage_2_a02_owner_accepted_library_stored_a03_pending",
       "asset_ids": [
-        "seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED"
+        "seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED",
+        "seven_roads_s4e10_three_gazes_two_letters_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -1943,9 +1944,42 @@
             "seven_roads_ci": 44084019282,
             "season2_tier_a_ci": 44084019325
           }
+        },
+        {
+          "candidate_id": "S4E10-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e10_three_gazes_two_letters_02_APPROVED",
+          "kind": "shared",
+          "story_id": "seven_roads_obratno_v_ordan",
+          "story_version": "interactive-v17-visible-inherited-defect",
+          "part_id": "story7_part_1_back_to_ordan",
+          "phase": "story_text",
+          "ru_after_text": "Рустам придвинул оба письма к окну, совместил красные круги краями и чуть повернул их. Боковой свет лёг по рельефу, и мелкие края стали заметнее.",
+          "uz_after_text": "Rustam ikki xatni derazaga yaqinroq surdi, qizil doiralarni chetlari bilan tenglashtirib, birini sal burdi. Yon tomondan tushgan yorug‘lik bo‘rtma izlarni ko‘rsatdi va mayda chetlar aniqroq ko‘rina boshladi.",
+          "acceptance": "owner_explicit_approved_corrected_version_2026_11_19",
+          "art_scene": "Три взгляда над двумя письмами; Рустам сравнивает две печати при боковом свете, Темур и Самира наблюдают; по одной красной печати на лист",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.metadata.json",
+          "master_dimensions": "1448x1086",
+          "png_bytes": 2214074,
+          "master_sha256": "317807395a9f4ab588ce3dfd6fff6c0bb8cb90d9623d643e82f21ba81a5f7783",
+          "webp_dimensions": "1672x941",
+          "webp_bytes": 240168,
+          "webp_sha256": "c7fce1d3e54d0d32ee886c8bac0526e5566242f279f629490f8e07a2ccb004cc",
+          "derivative_note": "16:9 WebP is a top-aligned technical crop of owner-approved 4:3 PNG, visually checked for retaining heads, documents and window; immutable PNG original preserved. Crop is not an independent owner acceptance.",
+          "storage_status": "owner_uploaded_storage_metadata_image_webp_240168_confirmed_public_SHA_pending_CI",
+          "runtime_status": "wired_to_RU_UZ_reader_in_new_stacked_Draft_PR_pending_CI",
+          "qa_status": "pending_exact_SHA_public_GET_RU_UZ_reader_gallery_browser_CI",
+          "source_ru_blob_sha": "e5fde8ac773375a334ffab1c80fe621967674a3a",
+          "source_uz_blob_sha": "67101f138790269f3929f0c2ad3c4cd218242651",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.webp",
+          "notes": "Owner accepted corrected image in chat 2026-11-19. Prior rejected high Samira cap replaced with low burgundy embroidered cap/band, two letters each one seal. Stored immutable rendered PNG and technical 16:9 WebP in QISSA Library. No Supabase upload, public GET/SHA, runtime registration, CI or production. Reconcile this S4E10-only queue change with concurrent Draft PR #348; do not overwrite its unrelated stage2 episode records. 2026-11-19 owner uploaded to story-images exact storage object (SQL metadata confirms image/webp 240168); additive overlay and remote SHA CI proposed in stacked Draft PR, no publication.",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.webp",
+          "remote_sha256_verification": "pending_ci"
         }
       ],
-      "notes": "2026-11-17 S4E10-A01 proposed 'Взгляд через решётку' new 1672×941 2663911-byte PNG SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; ImageGen 71956e59-acac-4990-a0e4-1e4578354197; source post_choice_text full exact RU `Данияр остановился.` / UZ `Daniyar to‘xtadi.` unique 1/1 after literary choice. Farid (alias Kamran) in prison courtyard on low stone bench through barred window, Daniyar blue scarf outside. Real approved Kamran/Farid character sheet and S2E3 Farid arrest PNG inspected. Candidate is REVIEW only in QISSA Library /QISSA/production/seven_roads/series30/review/S4E10/; NO owner acceptance, WebP, storage, runtime, asset_id, counter update. 2026-11-17 NEWER CHECKPOINT: owner explicitly accepted S4E10-A01 v1 in conversation; approved asset_id seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.png. Original review candidate preserved EXACT bitstream SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; 2663911 bytes, 1672x941. WebP q90 m6 356286 bytes sha256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Master PNG + WebP + metadata in Library stage1/S4E10, separate from REVIEW. Direct read from project Supabase storage.objects shows target path ABSENT; current tools do not provide authenticated binary Supabase Storage upload. Therefore no hosted_verified slot/URL runtime or CI remote SHA until actual upload; code remains at 26/29 integrated, artistic accepted count now 27/29. Existing S4E8-A01/A02 0/2 withdrawn and blocked. No changes authored RU/UZ, IDs, saved progress, prior approved assets, merge/deploy/publish. 2026-11-17 owner-upload confirmation: Supabase storage.objects exact target name exists under story-images with MIME image/webp and size 356286. Additive S4E10-A01 runtime overlay, URL, 27th WebP SHA validator and bilingual reading-series/galleries QA added in Draft PR #334. Independent remote SHA+reader CI remains PENDING before count can be called technically complete; no authored RU/UZ/IDs/progress, merged or deployed. 2026-11-17 verified on exact code HEAD afd100545c3216d387aedcf27063f1bc5a7ca998: Seven Roads CI #44084019282 SUCCESS, Season2 TierA #44084019325 SUCCESS. Independent public GET verifies S4E10 WebP MIME image/webp, 356286 bytes and exact SHA256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Total 27/27 remote public WebP verified, 54/54 bilingual anchors; S4E10 gallery chronology seal comparison → prison-window scene → ending hook, S4E9 isolation, spoiler locks, typecheck, build and browser CI PASS. Overall Stage1 ART 27/29; TECH 27/29. No literary JSON/IDs/progress/merge/deploy changed. S4E8 remains revoked/unintegrated 0/2."
+      "notes": "2026-11-17 S4E10-A01 proposed 'Взгляд через решётку' new 1672×941 2663911-byte PNG SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; ImageGen 71956e59-acac-4990-a0e4-1e4578354197; source post_choice_text full exact RU `Данияр остановился.` / UZ `Daniyar to‘xtadi.` unique 1/1 after literary choice. Farid (alias Kamran) in prison courtyard on low stone bench through barred window, Daniyar blue scarf outside. Real approved Kamran/Farid character sheet and S2E3 Farid arrest PNG inspected. Candidate is REVIEW only in QISSA Library /QISSA/production/seven_roads/series30/review/S4E10/; NO owner acceptance, WebP, storage, runtime, asset_id, counter update. 2026-11-17 NEWER CHECKPOINT: owner explicitly accepted S4E10-A01 v1 in conversation; approved asset_id seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.png. Original review candidate preserved EXACT bitstream SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; 2663911 bytes, 1672x941. WebP q90 m6 356286 bytes sha256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Master PNG + WebP + metadata in Library stage1/S4E10, separate from REVIEW. Direct read from project Supabase storage.objects shows target path ABSENT; current tools do not provide authenticated binary Supabase Storage upload. Therefore no hosted_verified slot/URL runtime or CI remote SHA until actual upload; code remains at 26/29 integrated, artistic accepted count now 27/29. Existing S4E8-A01/A02 0/2 withdrawn and blocked. No changes authored RU/UZ, IDs, saved progress, prior approved assets, merge/deploy/publish. 2026-11-17 owner-upload confirmation: Supabase storage.objects exact target name exists under story-images with MIME image/webp and size 356286. Additive S4E10-A01 runtime overlay, URL, 27th WebP SHA validator and bilingual reading-series/galleries QA added in Draft PR #334. Independent remote SHA+reader CI remains PENDING before count can be called technically complete; no authored RU/UZ/IDs/progress, merged or deployed. 2026-11-17 verified on exact code HEAD afd100545c3216d387aedcf27063f1bc5a7ca998: Seven Roads CI #44084019282 SUCCESS, Season2 TierA #44084019325 SUCCESS. Independent public GET verifies S4E10 WebP MIME image/webp, 356286 bytes and exact SHA256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Total 27/27 remote public WebP verified, 54/54 bilingual anchors; S4E10 gallery chronology seal comparison → prison-window scene → ending hook, S4E9 isolation, spoiler locks, typecheck, build and browser CI PASS. Overall Stage1 ART 27/29; TECH 27/29. No literary JSON/IDs/progress/merge/deploy changed. S4E8 remains revoked/unintegrated 0/2. 2026-11-19 S4E10-A02 owner explicitly accepted corrected low-cap Samira and one seal per letter; exact 1448x1086 PNG 2214074 bytes sha317807... preserved in Library, cropped 16:9 WebP 240168 bytes shac7fce1... stored as technical derivative. RU/UZ unique source anchor confirmed in `seven_roads_obratno_v_ordan` story7 part1 story_text (not earlier story4). Storage upload/runtime/CI pending. Draft acceptance checkpoint isolated from #348; no release. 2026-11-19 integration branch based on PR #348 HEAD cb910999, isolated from PR #352. S4E10-A02 owner Storage metadata confirmed exact MIME/bytes; remote public SHA and bilingual/browser QA pending CI. Other Stage2 records from #348 preserved."
     }
   ]
 }
