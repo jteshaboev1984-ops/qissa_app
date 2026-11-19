@@ -667,11 +667,12 @@ try {
   )
   const finalPart = episode7.parts[0]
   const finaleBeforeSplit = finalPart.story_text.split('Ответ из Араса пришёл после полудня.')[0]
-  // The fixture is the unchanged literary JSON, while the actual S4E9 reader
-  // receives one owner-approved shared scene through series30ApprovedSceneSlots.
+  // The fixture is unchanged literary JSON; the actual S4E9 reader now has
+  // TWO additive owner-approved shared scene slots (Stage1 A01, Stage2 A02).
+  // S4E10 seals remain in the next virtual episode and must not be counted here.
   const finaleSceneCount = finalPart.image_slots.filter((slot) =>
     slot.phase === 'story_text' && finaleBeforeSplit.includes(slot.after_text),
-  ).length + 1
+  ).length + 2
   assert(finaleSceneCount > 0 && lastGalleryRow?.includes('0 / ' + finaleSceneCount),
     'unread final story must show zero unlocked gallery illustrations')
   await evaluate(
