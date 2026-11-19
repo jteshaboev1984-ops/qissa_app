@@ -1203,9 +1203,10 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_1_complete_stage_2_A02_owner_approved_library_stored",
       "asset_ids": [
-        "seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED"
+        "seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED",
+        "seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -1234,9 +1235,33 @@
             "seven_roads_ci": 44035389651,
             "season2_tier_a_ci": 44035389446
           }
+        },
+        {
+          "candidate_id": "S4E6-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED",
+          "kind": "shared",
+          "part_id": "story5_part_1_false_road",
+          "phase": "post_choice_text",
+          "ru_after_text": "Когда поднял голову, на свету стал заметен тонкий белый шрам от левой брови к виску.",
+          "uz_after_text": "Boshini ko‘targanda chap qoshidan chakkasigacha ketgan ingichka oq chandiq yorug‘likda ko‘rindi.",
+          "acceptance": "owner_explicit_approved_final_corrected_scar_short_hair_ruined_round_tower_2026-11-19",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.metadata.json",
+          "master_bytes": 2529975,
+          "master_sha256": "b44814f2e5d3363974d8f847f112a3453a7477afa14c3311d23a5b410bc57593",
+          "webp_bytes": 228042,
+          "webp_sha256": "d0707e808b2778f43ed02fbc3c320840afa0c23880386360ed254ebdfc559bf9",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
+          "qa_status": "not_started",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp"
         }
       ],
-      "notes": "2026-11-17 Stage1 S4E6-A01 new single image candidate owner REVIEW (not approved). From story5 falseRoad interactive-v4 RU/UZ at story5_part_1_false_road/story_text paragraph125, first paragraph after virtual S4E5/S4E6 split at paragraph124: RU \"Они уже находились по северную сторону Каменного гребня; Красный холм остался за ним и отсюда не был виден.\"; UZ \"Ular allaqachon Tosh tizmasining shimoliy tomonida edi; Qizil tepalik tizma ortida qolgan va bu yerdan ko‘rinmasdi.\"; both occur exactly once. Three riders Temur (dark bay Shamol, teal tack), Samira (dapple gray Bulut, burgundy blanket), Rahim on unnamed brown horse, backs, wide northern Stone Ridge and distant Eastern Forest with NO visible Red Hill, fork signpost, branch route consequence or invented attackers. ImageGen id 0c89ce6a-d5cd-4033-9bea-ba6b08bcd333; PNG 1671x941 3146922 bytes SHA256 8d1fbee37a7267c6678b970851ab2d1350413ffb205669e88608df336fe1556d. PNG and metadata in QISSA Library /QISSA/production/seven_roads/series30/review/S4E6/. Preliminary scene/canon check passed; owner art acceptance pending. Previous approved fork image remains at story_text \"— Они открыты. Выбирайте.\" and real reinforcements later post_choice. No approved S4E6 asset/Storage/runtime, stage1 accepted/integrated remains 24/29 art, 23/29 integrated. 2026-11-17 owner approved FINAL S4E6-A01 (ImageGen 30d91217-dc88-46a5-80b7-5bd2792e99b9), after rejecting earlier gray or fully-white-maned Bulut renderings. Light near-white, lightly dappled Bulut with charcoal-gray mane/tail, burgundy blanket; dark-bay Shamol with teal blanket; third horse, no Red Hill or signpost. Exact RU/UZ story_text paragraph125 after virtual S4E5/S4E6 split at124. Final unmodified PNG 1670x941 2903929 bytes SHA256 ac8e97a5eff85abb71ee2b23318c698eedd93c816d71358d6bc85f4e180842e6; q92 WebP 476610 bytes SHA256 685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816; PNG/WebP/metadata archived Library stage1/S4E6. No Supabase object (verified absence) nor runtime slot. S4E6 1/1 art accepted, 0/1 integrated. Overall Stage1 25/29 accepted, 23/29 verified integrated until CI S4E5 succeeds. 2026-11-17 owner-uploaded approved WebP found in Supabase storage.objects: image/webp 476610 bytes, created 06:56:10Z. Additive bilingual S4E6 reader slot, asset URL and gallery tests now in PR #334; independent public GET/bytes/SHA256/typecheck/build/browser CI pending. S4E6 technical integration not yet counted until checks pass. Stage1 25/29 artistic accepted, 24/29 fully integrated until CI green. S4E8-A01 is still unapproved and must not be wired. 2026-11-17 S4E6-A01 runtime CLOSED after Seven Roads CI #44035389651 and Tier A #44035389446 SUCCESS: public GET image/webp 476610 bytes exact SHA256 685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816, total 25/25 hosted images, 50/50 exact RU/UZ anchors; S4E6 gallery northern ridge → existing fork → real reinforcements, S4E5 no leak, seen/spoiler protection, typecheck/build/browser PASS. Total Stage1 25/29 art accepted AND integrated."
+      "notes": "2026-11-17 Stage1 S4E6-A01 new single image candidate owner REVIEW (not approved). From story5 falseRoad interactive-v4 RU/UZ at story5_part_1_false_road/story_text paragraph125, first paragraph after virtual S4E5/S4E6 split at paragraph124: RU \"Они уже находились по северную сторону Каменного гребня; Красный холм остался за ним и отсюда не был виден.\"; UZ \"Ular allaqachon Tosh tizmasining shimoliy tomonida edi; Qizil tepalik tizma ortida qolgan va bu yerdan ko‘rinmasdi.\"; both occur exactly once. Three riders Temur (dark bay Shamol, teal tack), Samira (dapple gray Bulut, burgundy blanket), Rahim on unnamed brown horse, backs, wide northern Stone Ridge and distant Eastern Forest with NO visible Red Hill, fork signpost, branch route consequence or invented attackers. ImageGen id 0c89ce6a-d5cd-4033-9bea-ba6b08bcd333; PNG 1671x941 3146922 bytes SHA256 8d1fbee37a7267c6678b970851ab2d1350413ffb205669e88608df336fe1556d. PNG and metadata in QISSA Library /QISSA/production/seven_roads/series30/review/S4E6/. Preliminary scene/canon check passed; owner art acceptance pending. Previous approved fork image remains at story_text \"— Они открыты. Выбирайте.\" and real reinforcements later post_choice. No approved S4E6 asset/Storage/runtime, stage1 accepted/integrated remains 24/29 art, 23/29 integrated. 2026-11-17 owner approved FINAL S4E6-A01 (ImageGen 30d91217-dc88-46a5-80b7-5bd2792e99b9), after rejecting earlier gray or fully-white-maned Bulut renderings. Light near-white, lightly dappled Bulut with charcoal-gray mane/tail, burgundy blanket; dark-bay Shamol with teal blanket; third horse, no Red Hill or signpost. Exact RU/UZ story_text paragraph125 after virtual S4E5/S4E6 split at124. Final unmodified PNG 1670x941 2903929 bytes SHA256 ac8e97a5eff85abb71ee2b23318c698eedd93c816d71358d6bc85f4e180842e6; q92 WebP 476610 bytes SHA256 685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816; PNG/WebP/metadata archived Library stage1/S4E6. No Supabase object (verified absence) nor runtime slot. S4E6 1/1 art accepted, 0/1 integrated. Overall Stage1 25/29 accepted, 23/29 verified integrated until CI S4E5 succeeds. 2026-11-17 owner-uploaded approved WebP found in Supabase storage.objects: image/webp 476610 bytes, created 06:56:10Z. Additive bilingual S4E6 reader slot, asset URL and gallery tests now in PR #334; independent public GET/bytes/SHA256/typecheck/build/browser CI pending. S4E6 technical integration not yet counted until checks pass. Stage1 25/29 artistic accepted, 24/29 fully integrated until CI green. S4E8-A01 is still unapproved and must not be wired. 2026-11-17 S4E6-A01 runtime CLOSED after Seven Roads CI #44035389651 and Tier A #44035389446 SUCCESS: public GET image/webp 476610 bytes exact SHA256 685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816, total 25/25 hosted images, 50/50 exact RU/UZ anchors; S4E6 gallery northern ridge → existing fork → real reinforcements, S4E5 no leak, seen/spoiler protection, typecheck/build/browser PASS. Total Stage1 25/29 art accepted AND integrated. 2026-11-19 Stage2 S4E6-A02: owner accepted final corrected image after two scar/geometry critiques; last PNG (not earlier draft) byte-preserved in QISSA Library with derived WebP/SHA256 metadata. Unique RU/UZ post_choice_text anchor in story5_part_1_false_road. Historical rejected variants do not count. No Supabase upload, remote hash, RU/UZ wiring or gallery QA. PR independent of Stage2 integration #348; no merge/deploy."
     },
     {
       "season": 4,
