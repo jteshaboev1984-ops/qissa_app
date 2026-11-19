@@ -23,6 +23,30 @@ type Series30ApprovedScene = {
 
 export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_2_nadir_red_hill_clue',
+    slot_id: 'SERIES30-S4E4-A03',
+    anchor_key: 'series30_s4e4_a03',
+    asset_id: 'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Только за дальним навесом, скрывшись за сложенными тюками, он развернул записку и прочитал сообщение.',
+      uz: 'Faqat uzoqdagi soyabon ortiga, taxlangan yuklar orasidagi pana joyga o‘tgach, u xatni ochib o‘qidi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_2_nadir_red_hill_clue',
+    slot_id: 'SERIES30-S4E4-A04',
+    anchor_key: 'series30_s4e4_a04',
+    asset_id: 'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'За воротами Орданы первым уже мчался гонец с предупреждением для Данияра.',
+      uz: 'Ordan darvozasidan avval Daniyarni ogohlantirishga ketgan chopar otilib chiqdi.',
+    },
+  },
+  {
     story_id: 'seven_roads_tayna_vostochnogo_karavana',
     part_id: 'story2_part_5_first_investigation',
     slot_id: 'SERIES30-S3E4-A01',

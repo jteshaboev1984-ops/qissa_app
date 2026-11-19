@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 41)
+assert.equal(series30ApprovedScenes.length, 43)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -82,7 +82,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
     key: 'waited',
-    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E1-A02': 1, 'SERIES30-S4E2-A04': 2, 'SERIES30-S4E2-A05': 2, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4 },
+    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E1-A02': 1, 'SERIES30-S4E2-A04': 2, 'SERIES30-S4E2-A05': 2, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4, 'SERIES30-S4E4-A03': 4, 'SERIES30-S4E4-A04': 4 },
   },
   {
     base: 'src/data/authored/staging/season2Story7BackToOrdan',
@@ -357,8 +357,10 @@ for (const fixture of fixtures) {
           'seven_roads_s2_story4_nadir_contact_01_APPROVED',
           'seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED',
           'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED',
+          'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED',
+          'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED',
         ].join('|'),
-        language + ': S4E4 gallery must keep Nadir contact → wooden tokens → rear-hook flask',
+        language + ': S4E4 gallery must show contact → tokens → flask → guard reads note → messenger leaves',
       )
       assert.equal(
         galleryBefore[2].items.some(item => item.assetId === 'seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED'),
@@ -408,6 +410,22 @@ for (const fixture of fixtures) {
         true, language + ': viewing S4E4 flask must unlock it')
       assert.equal(galleryOnFlask[2].items.some(item => item.assetId === 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED'),
         false, language + ': S4E4 flask never appears in S4E3')
+      for (const asset of ['seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED', 'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED']) {
+        assert.equal(galleryBefore[3].items.find(item => item.assetId === asset)?.unlocked,
+          false, language + ': new Stage2 S4E4 image must remain spoiler-locked')
+        assert.equal(galleryOnFlask[3].items.find(item => item.assetId === asset)?.unlocked,
+          false, language + ': seeing the flask must not unlock the later note or messenger')
+        assert.equal(galleryBefore[2].items.some(item => item.assetId === asset),
+          false, language + ': S4E4 Stage2 image leaked backward into S4E3')
+      }
+      authoredIllustrationDiscovery.markSeen(story, 'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED')
+      const galleryOnNote = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(galleryOnNote[3].items.find(item => item.assetId === 'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED')?.unlocked,
+        true, language + ': reading the note must unlock only its own illustration')
+      assert.equal(galleryOnNote[3].items.find(item => item.assetId === 'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED')?.unlocked,
+        false, language + ': note should not unlock later messenger')
       authoredIllustrationDiscovery.clear(story)
     }
     if (fixture.key === 'falseRoad') {
@@ -663,7 +681,7 @@ for (const fixture of fixtures) {
       assert.ok(galleryItem, id + '/' + language + ': missing from correct gallery episode')
       assert.equal(galleryItem.unlocked, false, 'new illustration spoiled before reading')
       assert.equal(item.slot.kind, 'shared')
-      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E5-A01', 'SERIES30-S3E5-A02', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
+      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E5-A01', 'SERIES30-S3E5-A02', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E4-A03', 'SERIES30-S4E4-A04', 'SERIES30-S4E8-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
       assert.equal(pars(item.part[item.slot.phase]).filter((p) => p === item.slot.after_text).length, 1,
         id + '/' + language + ': anchor missing or repeated')
       assert.ok(assetsSource.includes("'" + item.slot.asset_id + "'"),
@@ -723,9 +741,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 82)
-console.log('[series30-art] PASS: 41 hosted, owner-approved assets, 82 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 86)
+console.log('[series30-art] PASS: 43 hosted, owner-approved assets, 86 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x4 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
