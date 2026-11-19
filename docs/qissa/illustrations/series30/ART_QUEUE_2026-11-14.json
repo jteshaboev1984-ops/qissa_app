@@ -1832,7 +1832,7 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_2_A02_owner_approved_library_stored_uploaded_SHA_verified_runtime_wired_CI_pending",
+      "artwork_acceptance": "stage_2_A02_owner_approved_public_SHA_verified_runtime_integrated_QA_passed_Draft_unpublished",
       "asset_ids": [
         "seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED",
         "seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED"
@@ -1886,14 +1886,19 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_in_Draft_PR_348_pending_integrated_CI",
-          "qa_status": "pending_integrated_CI",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_f25313f9f1c1da8078bc7ea7285cd7f9670ed6d8",
+          "qa_status": "RU_UZ_virtual_S4E9_gallery_order_spoiler_locks_typecheck_build_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
-          "remote_sha256_verification": "passed_CI_44506373339_on_SHA_1b6f1ebe9b6ed0fb891ecea429ac2047bd807658"
+          "remote_sha256_verification": "passed_CI_44506373339_on_SHA_1b6f1ebe9b6ed0fb891ecea429ac2047bd807658",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44506373339,
+            "seven_roads_ci": 44507175426,
+            "season2_tier_a_ci": 44507175488
+          }
         }
       ],
-      "notes": "2026-11-17 S4E9-A01 owner explicitly accepted REVIEW_v1. Canon and exact RU/UZ unique story_text anchor verified before S4E9/S4E10 virtual split. Master PNG/WebP/metadata stored in QISSA Library stage1/S4E9; user uploaded WebP and Supabase storage.objects confirmed correct object image/webp 350378 bytes. Additive RU/UZ reader slot, URL and CI remote SHA/gallery checks committed in Draft PR #334, CI pending. S4E8 remains 0/2 withdrawn and not wired. No authored text/IDs/saved progress/merge/deploy changed. 2026-11-17 final CI at exact HEAD 930d3fde58cd6a86b2b905b7fdc686ad0673a90f: Seven Roads CI #44077007213 SUCCESS on targeted Chrome-smoke rerun, Season2 Tier A #44077007190 SUCCESS. 26/26 remote public WebP GET/MIME/bytes/SHA verified; 52/52 RU/UZ exact anchors; S4E9 correct gallery order return→notice→morning horses, S4E10 seal comparison segregated, unread gallery remains spoiler-locked, typecheck/build/browser smoke passed. Stage1 total 26/29 art accepted and integrated. 2026-11-19: S4E9-A02 owner explicitly accepted original S4E9 Nadir/Said witness dialogue image despite earlier noted style/age concern; original PNG byte-preserved, derivative WebP and metadata in QISSA Library. RU/UZ unique story_text paragraph anchors, still inside S4E9 before virtual cut at 'Ответ из Араса пришёл после полудня.' S4E10 not touched. No Supabase upload, remote hash, runtime, QA or release. 2026-11-19: S4E9-A02 owner-uploaded exact approved WebP 200440 bytes public SHA256 verified via CI #44506373339, additive RU/UZ scene overlaid in Draft PR #348, pending integrated CI, no release."
+      "notes": "2026-11-17 S4E9-A01 owner explicitly accepted REVIEW_v1. Canon and exact RU/UZ unique story_text anchor verified before S4E9/S4E10 virtual split. Master PNG/WebP/metadata stored in QISSA Library stage1/S4E9; user uploaded WebP and Supabase storage.objects confirmed correct object image/webp 350378 bytes. Additive RU/UZ reader slot, URL and CI remote SHA/gallery checks committed in Draft PR #334, CI pending. S4E8 remains 0/2 withdrawn and not wired. No authored text/IDs/saved progress/merge/deploy changed. 2026-11-17 final CI at exact HEAD 930d3fde58cd6a86b2b905b7fdc686ad0673a90f: Seven Roads CI #44077007213 SUCCESS on targeted Chrome-smoke rerun, Season2 Tier A #44077007190 SUCCESS. 26/26 remote public WebP GET/MIME/bytes/SHA verified; 52/52 RU/UZ exact anchors; S4E9 correct gallery order return→notice→morning horses, S4E10 seal comparison segregated, unread gallery remains spoiler-locked, typecheck/build/browser smoke passed. Stage1 total 26/29 art accepted and integrated. 2026-11-19: S4E9-A02 owner explicitly accepted original S4E9 Nadir/Said witness dialogue image despite earlier noted style/age concern; original PNG byte-preserved, derivative WebP and metadata in QISSA Library. RU/UZ unique story_text paragraph anchors, still inside S4E9 before virtual cut at 'Ответ из Араса пришёл после полудня.' S4E10 not touched. No Supabase upload, remote hash, runtime, QA or release. 2026-11-19: S4E9-A02 owner-uploaded exact approved WebP 200440 bytes public SHA256 verified via CI #44506373339, additive RU/UZ scene overlaid in Draft PR #348, pending integrated CI, no release. 2026-11-19 integrated final accepted S4E9-A02: 45 public WebP hashes and 90 bilingual anchored illustrations validated. Seven Roads #44507175426 and Tier A #44507175488 SUCCESS on exact code SHA f25313f9; Gallery locked until viewed, no leak into S4E10. Only Draft PR #348, no release."
     },
     {
       "season": 4,
