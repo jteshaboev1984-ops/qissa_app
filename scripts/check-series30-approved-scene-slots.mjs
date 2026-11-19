@@ -605,8 +605,8 @@ for (const fixture of fixtures) {
       const nadir = e2.indexOf('seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED')
       const farid = e2.indexOf('seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED')
       assert.ok(nadir >= 0 && farid > nadir, language + ': S4E2 Nadir waiting must precede Farid encounter')
-      assert.ok(arrival >= 0 && nadir > arrival,
-        language + ': S4E2 Ordan arrival must precede Nadir second day')
+      assert.ok(arrival > nadir && nadir >= 0,
+        language + ': S4E2 source order is Nadir second-day waiting then Temur and Samira arrive')
       assert.ok(!galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED'),
         language + ': S4E2 arrival leaked backward into S4E1')
       assert.equal(galleryBefore[1].items.find(item => item.assetId === 'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED')?.unlocked,
