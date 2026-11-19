@@ -28,3 +28,14 @@ Late afternoon/early evening in the **Ordan stable**, near a timber stall door. 
 `proposed_scene → owner_scene_approved → image_generated → owner_art_approved → master/WebP/metadata Library → verified public Storage GET/MIME/bytes/SHA → additive RU/UZ overlays → gallery/spoiler and browser QA → owner-gated release`.
 
 This document changes no approved original literature, decision/choice/part IDs, hashes, reader progress, previously accepted images, Supabase objects or production. Do not treat documentation as the image's approval.
+
+## First candidate rendered — REVIEW only (2026-11-19)
+
+Owner's follow-up requested the actual S4E10-A03 image. One 16:9 candidate was generated and **presented to the owner**; artistic acceptance is **NOT** implied.
+
+- Candidate: `seven_roads_s4e10_temur_shamol_stable_samira_A03_REVIEW_v1.png`
+- ImageGen ID: `59e60de7-491b-4824-ab8e-bf28927cb3d5`
+- PNG `1672×941`, `2,464,808` bytes; SHA256 `781101d0cc6cd33dfb46e7f6050eef235e45acfd0b19a101b625db98b91d9e07`
+- Library: `/QISSA/production/seven_roads/series30/review/S4E10/` with PNG and metadata JSON; **not** a production `APPROVED` file.
+- Compared real preceding S4E9 morning-horses PNG (outdoors, both horses, Samira offers water) with new storyboard setting (interior stable, Shamol reaches Temur's sleeve). Read the approved `01_heroes_horses_approved.png` character sheet for Temur, Samira and Shamol.
+- Owner review remains pending. No WebP, public Storage upload, reader slot, CI on art, merge or deployment for A03. Do not claim completed Stage2 A03 until an explicit reply accepts this exact image.
