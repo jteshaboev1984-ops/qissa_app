@@ -907,11 +907,12 @@
       "stage_1_new_shared_scene_count": 3,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 5,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_1_complete_stage_2_A04_owner_approved_library_stored",
       "asset_ids": [
         "seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED",
         "seven_roads_s4e2_blue_triangle_merchants_02_APPROVED",
-        "seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED"
+        "seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED",
+        "seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -990,9 +991,34 @@
             "seven_roads_ci": 43724832395,
             "season2_browser_ci": 43724832302
           }
+        },
+        {
+          "candidate_id": "S4E2-A04",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED",
+          "kind": "shared",
+          "part_id": "story4_part_1_false_notice_and_route_check",
+          "phase": "story_text",
+          "ru_after_text": "Во второй день он снова таскал тюки, носил воду и помогал у конюшен.",
+          "uz_after_text": "Ikkinchi kuni ham u yuk tashidi, suv olib keldi va otxonalarda yordam berdi.",
+          "acceptance": "owner_conditional_approved_after_real_pixel_reference_age_costume_review_2026-11-19",
+          "visual_review": "Compared actual approved S3E7 Nadir interrogation, S3E6 Nadir cart chase and final cleaned A04: curly dark hair, adolescent proportions, worn brown costume and burgundy scarf align; earlier speckled v1 not approved.",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.metadata.json",
+          "master_bytes": 2617865,
+          "master_sha256": "fb43bfeb937bae26c6adcd07ff2d1f3eea80de13529763f12ba54857d29f3a6f",
+          "webp_bytes": 262642,
+          "webp_sha256": "082c5bce29d694652d291dc976324539b27453ebe028b8b26d05ee3ffadedb3f",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "not_uploaded",
+          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
+          "qa_status": "not_started",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.webp"
         }
       ],
-      "notes": "S4E2 stage 1 3/3 owner-accepted scenes: A01 final horse V2, A02 blue triangle and A03 Farid notices new Rider belts. All PNG/WebP/metadata stored in QISSA Library, all corresponding WebPs publicly hosted; GET/MIME/bytes/SHA256 6/6 pass and bilingual text anchor, virtual split, gallery lock and browser smoke CI pass (run 43724832395, 43724832302). All 3 integrated in draft PR only. Stage2 adds 2 further scenes later. No deploy/merge."
+      "notes": "S4E2 stage 1 3/3 owner-accepted scenes: A01 final horse V2, A02 blue triangle and A03 Farid notices new Rider belts. All PNG/WebP/metadata stored in QISSA Library, all corresponding WebPs publicly hosted; GET/MIME/bytes/SHA256 6/6 pass and bilingual text anchor, virtual split, gallery lock and browser smoke CI pass (run 43724832395, 43724832302). All 3 integrated in draft PR only. Stage2 adds 2 further scenes later. No deploy/merge. 2026-11-19 Stage2 S4E2-A04: owner conditional approval satisfied by inspecting original pixels against approved Nadir S3E7/S3E6 references (age, curls, worn brown costume, maroon scarf); accepted cleaned revision, not previous speckled first candidate. Accepted original PNG byte-preserved, WebP and SHA256 metadata stored in QISSA Library /stage2/S4E2/. RU/UZ story_text anchor unique in S4E2 before S4E3 virtual boundary. A05 planned, not owner-approved. Storage upload, remote SHA, runtime, QA pending. No literary/progress change or deployment."
     },
     {
       "season": 4,
