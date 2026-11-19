@@ -23,6 +23,18 @@ type Series30ApprovedScene = {
 
 export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
+    story_id: 'seven_roads_obratno_v_ordan',
+    part_id: 'story7_part_1_back_to_ordan',
+    slot_id: 'SERIES30-S4E9-A02',
+    anchor_key: 'series30_s4e9_a02',
+    asset_id: 'seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Надир сразу перестал улыбаться.',
+      uz: 'Nadir darrov kulmay qo‘ydi.',
+    },
+  },
+  {
     story_id: 'seven_roads_lozhnaya_doroga',
     part_id: 'story5_part_1_false_road',
     slot_id: 'SERIES30-S4E6-A02',

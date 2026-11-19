@@ -1832,9 +1832,10 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_2_A02_owner_approved_library_stored_uploaded_SHA_verified_runtime_wired_CI_pending",
       "asset_ids": [
-        "seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED"
+        "seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED",
+        "seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -1863,9 +1864,36 @@
             "seven_roads_ci": 44077007213,
             "season2_tier_a_ci": 44077007190
           }
+        },
+        {
+          "candidate_id": "S4E9-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED",
+          "kind": "shared",
+          "part_id": "story7_part_1_back_to_ordan",
+          "phase": "story_text",
+          "ru_after_text": "Надир сразу перестал улыбаться.",
+          "uz_after_text": "Nadir darrov kulmay qo‘ydi.",
+          "acceptance": "owner_explicit_approved_shown_original_candidate_2026-11-19",
+          "acceptance_note": "Accepted as shown despite previous assistant review noting Nadirs apparently older face and tiny stippled fabric. Do not silently substitute a regenerated image.",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E9/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E9/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E9/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.metadata.json",
+          "master_bytes": 2460212,
+          "master_sha256": "deb7aa9f50e5f2cab37d184880383efd215bf89e1a5effcf436b11bdc3143c81",
+          "webp_bytes": 200440,
+          "webp_sha256": "adf8f08d2e24f3e86137baf3e61684e8834a19d4f7887ee9f0d6e8a9daf1a10e",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_in_Draft_PR_348_pending_integrated_CI",
+          "qa_status": "pending_integrated_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_44506373339_on_SHA_1b6f1ebe9b6ed0fb891ecea429ac2047bd807658"
         }
       ],
-      "notes": "2026-11-17 S4E9-A01 owner explicitly accepted REVIEW_v1. Canon and exact RU/UZ unique story_text anchor verified before S4E9/S4E10 virtual split. Master PNG/WebP/metadata stored in QISSA Library stage1/S4E9; user uploaded WebP and Supabase storage.objects confirmed correct object image/webp 350378 bytes. Additive RU/UZ reader slot, URL and CI remote SHA/gallery checks committed in Draft PR #334, CI pending. S4E8 remains 0/2 withdrawn and not wired. No authored text/IDs/saved progress/merge/deploy changed. 2026-11-17 final CI at exact HEAD 930d3fde58cd6a86b2b905b7fdc686ad0673a90f: Seven Roads CI #44077007213 SUCCESS on targeted Chrome-smoke rerun, Season2 Tier A #44077007190 SUCCESS. 26/26 remote public WebP GET/MIME/bytes/SHA verified; 52/52 RU/UZ exact anchors; S4E9 correct gallery order return→notice→morning horses, S4E10 seal comparison segregated, unread gallery remains spoiler-locked, typecheck/build/browser smoke passed. Stage1 total 26/29 art accepted and integrated."
+      "notes": "2026-11-17 S4E9-A01 owner explicitly accepted REVIEW_v1. Canon and exact RU/UZ unique story_text anchor verified before S4E9/S4E10 virtual split. Master PNG/WebP/metadata stored in QISSA Library stage1/S4E9; user uploaded WebP and Supabase storage.objects confirmed correct object image/webp 350378 bytes. Additive RU/UZ reader slot, URL and CI remote SHA/gallery checks committed in Draft PR #334, CI pending. S4E8 remains 0/2 withdrawn and not wired. No authored text/IDs/saved progress/merge/deploy changed. 2026-11-17 final CI at exact HEAD 930d3fde58cd6a86b2b905b7fdc686ad0673a90f: Seven Roads CI #44077007213 SUCCESS on targeted Chrome-smoke rerun, Season2 Tier A #44077007190 SUCCESS. 26/26 remote public WebP GET/MIME/bytes/SHA verified; 52/52 RU/UZ exact anchors; S4E9 correct gallery order return→notice→morning horses, S4E10 seal comparison segregated, unread gallery remains spoiler-locked, typecheck/build/browser smoke passed. Stage1 total 26/29 art accepted and integrated. 2026-11-19: S4E9-A02 owner explicitly accepted original S4E9 Nadir/Said witness dialogue image despite earlier noted style/age concern; original PNG byte-preserved, derivative WebP and metadata in QISSA Library. RU/UZ unique story_text paragraph anchors, still inside S4E9 before virtual cut at 'Ответ из Араса пришёл после полудня.' S4E10 not touched. No Supabase upload, remote hash, runtime, QA or release. 2026-11-19: S4E9-A02 owner-uploaded exact approved WebP 200440 bytes public SHA256 verified via CI #44506373339, additive RU/UZ scene overlaid in Draft PR #348, pending integrated CI, no release."
     },
     {
       "season": 4,

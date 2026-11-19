@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 44)
+assert.equal(series30ApprovedScenes.length, 45)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -87,7 +87,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story7BackToOrdan',
     key: 'ordan',
-    expected: { 'SERIES30-S4E9-A01': 1, 'SERIES30-S4E10-A01': 2 },
+    expected: { 'SERIES30-S4E9-A01': 1, 'SERIES30-S4E9-A02': 1, 'SERIES30-S4E10-A01': 2 },
   },
   {
     base: 'src/data/authored/staging/season2Story6TwoReinforcements',
@@ -262,8 +262,9 @@ for (const fixture of fixtures) {
           'seven_roads_s2_story7_return_to_ordan_01_APPROVED',
           'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED',
           'seven_roads_s2_story7_morning_horses_01_APPROVED',
+          'seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED',
         ].join('|'),
-        language + ': S4E9 must show return → suspicious notice → morning horses',
+        language + ': S4E9 must show return → suspicious notice → morning horses → Nadir as witness',
       )
       assert.equal(
         galleryBefore[1].items.some(item => item.assetId === 'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED'),
@@ -278,6 +279,20 @@ for (const fixture of fixtures) {
         false, language + ': S4E9 notice must be locked until seen',
       )
 
+      const witness = 'seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED'
+      assert.equal(galleryBefore[0].items.find(item => item.assetId === witness)?.unlocked,
+        false, language + ': unread S4E9 witness scene unlocked')
+      assert.equal(galleryBefore[1].items.some(item => item.assetId === witness),
+        false, language + ': S4E9 witness scene leaked into S4E10')
+      authoredIllustrationDiscovery.markSeen(story, witness)
+      const witnessSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(witnessSeenGallery[0].items.find(item => item.assetId === witness)?.unlocked,
+        true, language + ': witness image should unlock after being seen')
+      assert.equal(witnessSeenGallery[1].items.find(item => item.assetId === 'seven_roads_s2_story7_aras_seal_comparison_01_APPROVED')?.unlocked,
+        false, language + ': witness image must not unlock future S4E10 seal scene')
+      authoredIllustrationDiscovery.clear(story)
       // Existing seal-comparison image is earlier in S4E10. The accepted Farid
       // encounter follows the source post-choice text and precedes the ending hook.
       const s4e10Gallery = galleryBefore[1].items.map(item => item.assetId)
@@ -749,9 +764,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 88)
-console.log('[series30-art] PASS: 44 hosted, owner-approved assets, 88 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x4 / S4E5 x2 / S4E6 x2 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 90)
+console.log('[series30-art] PASS: 45 hosted, owner-approved assets, 90 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x4 / S4E5 x2 / S4E6 x2 / S4E8 x2 / S4E9 x2 / S4E10 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
