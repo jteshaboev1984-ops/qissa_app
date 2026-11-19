@@ -1,6 +1,16 @@
 export type AuthoredStoryAssetRegistry = Record<string, string>
 
 const productionAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_s3e4_old_passage_map_recollection_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp',
+  'seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp',
+  'seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp',
+  'seven_roads_s3e7_captain_stops_writing_01_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp',
+  'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp',
   'seven_roads_s2e2_east_gate_messenger_02_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp',
   'seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED':

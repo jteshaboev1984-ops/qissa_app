@@ -23,6 +23,66 @@ type Series30ApprovedScene = {
 
 export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_5_first_investigation',
+    slot_id: 'SERIES30-S3E4-A01',
+    anchor_key: 'series30_s3e4_a01',
+    asset_id: 'seven_roads_s3e4_old_passage_map_recollection_01_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: '— Старый скотный проход у прежнего караванного двора.',
+      uz: '— Eski karvonsaroydagi chorva o‘tish joyi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_7_samira_check_and_third_track',
+    slot_id: 'SERIES30-S3E5-A01',
+    anchor_key: 'series30_s3e5_a01',
+    asset_id: 'seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Самира сидела на Булуте у входа во двор.',
+      uz: 'Samira Bulutda hovli kirishida turardi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_7_samira_check_and_third_track',
+    slot_id: 'SERIES30-S3E5-A02',
+    anchor_key: 'series30_s3e5_a02',
+    asset_id: 'seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Он показал Самире рисунок знака, который сделал у капитана.',
+      uz: 'Temur sardorning oldida chizib olgan qaroqchilar belgisini Samiraga ko‘rsatdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_9_interrogation_and_sarvan_token',
+    slot_id: 'SERIES30-S3E7-A01',
+    anchor_key: 'series30_s3e7_a01',
+    asset_id: 'seven_roads_s3e7_captain_stops_writing_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Капитан перестал писать.',
+      uz: 'Sardor yozishni to‘xtatdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_1_false_notice_and_route_check',
+    slot_id: 'SERIES30-S4E2-A05',
+    anchor_key: 'series30_s4e2_a05',
+    asset_id: 'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Ордан встретил Темура и Самиру шумом тяжёлых колёс.',
+      uz: 'Ordan Temur bilan Samirani og‘ir g‘ildiraklarning shovqini bilan kutib oldi.',
+    },
+  },
+  {
     story_id: 'seven_roads_korolevskoe_serebro',
     part_id: 'story1_part_2_kamran_pursuit',
     slot_id: 'SERIES30-S2E2-A02',

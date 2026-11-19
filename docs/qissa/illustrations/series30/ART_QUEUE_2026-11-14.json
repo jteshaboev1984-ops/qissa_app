@@ -671,7 +671,7 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 1,
-      "artwork_acceptance": "stage_2_owner_approved_library_stored",
+      "artwork_acceptance": "stage_2_owner_approved_all_uploaded_runtime_wired_integrated_CI_pending",
       "asset_ids": [
         "seven_roads_s3e4_old_passage_map_recollection_01_APPROVED"
       ],
@@ -695,13 +695,15 @@
           "webp_sha256": "3382fd3b75f81ef44557400dc3099df4057281fbc259daa2148e3a30dfd36079",
           "width": 1672,
           "height": 941,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
-          "qa_status": "not_started",
-          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_Draft_PR_348_pending_integrated_CI",
+          "qa_status": "pending_integrated_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722"
         }
       ],
-      "notes": "2026-11-18: S3E4-A01 approved by owner after regenerating Temur closer to established face/costume reference; original accepted PNG, WebP derivative, SHA256 metadata preserved in Library. Single RU/UZ post-choice exact anchor in original P5 after the S3E3→S3E4 virtual reader split. No Supabase upload / public hash verification / runtime / QA yet. Old story, existing scene IDs and family progress unchanged. Separate Draft PR from Stage2 A (#338/#339)."
+      "notes": "2026-11-18: S3E4-A01 approved by owner after regenerating Temur closer to established face/costume reference; original accepted PNG, WebP derivative, SHA256 metadata preserved in Library. Single RU/UZ post-choice exact anchor in original P5 after the S3E3→S3E4 virtual reader split. No Supabase upload / public hash verification / runtime / QA yet. Old story, existing scene IDs and family progress unchanged. Separate Draft PR from Stage2 A (#338/#339). 2026-11-19: latest 5 owner-uploaded Stage2 WebPs confirmed exact public GET/MIME/bytes/SHA256 by CI #44465548262 at 3ac83c; added RU/UZ overlay in Draft PR #348 pending final QA; no deploy or main merge."
     },
     {
       "season": 3,
@@ -715,7 +717,7 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_2_A01_A02_owner_approved_library_stored",
+      "artwork_acceptance": "stage_2_owner_approved_all_uploaded_runtime_wired_integrated_CI_pending",
       "asset_ids": [
         "seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED",
         "seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED"
@@ -740,10 +742,12 @@
           "webp_sha256": "84ccf7e58b48acff2495453846578a6a0bcfe47efb369836a885ad815dfd76c6",
           "width": 1672,
           "height": 941,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
-          "qa_status": "not_started",
-          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_Draft_PR_348_pending_integrated_CI",
+          "qa_status": "pending_integrated_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722"
         },
         {
           "candidate_id": "S3E5-A02",
@@ -764,13 +768,15 @@
           "webp_sha256": "baafd722816ee46782929561017f516704ba750c8df053f80e1aece6531497f2",
           "width": 1672,
           "height": 941,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
-          "qa_status": "not_started",
-          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_Draft_PR_348_pending_integrated_CI",
+          "qa_status": "pending_integrated_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722"
         }
       ],
-      "notes": "2026-11-18 Stage2 S3E5-A01: owner accepted second revised version of children Temur and Samira at Aras old yard after pointing out previous candidate looked too adult. Original approved PNG preserved byte-for-byte; WebP + SHA256 metadata stored in QISSA Library. Anchor is unique RU/UZ in original story2_part_7_samira_check_and_third_track post_choice_text, preceding S3E5/S3E6 virtual split; shared across both routes. Supabase upload, public GET/MIME/bytes/SHA and runtime QA pending. S3E5-A02 owner approved and Library stored as original PNG, WebP, JSON metadata; no Storage upload, runtime wiring or QA for either Stage2 S3E5 asset. No changes to authored RU/UZ literature, old images, choice/part IDs or family progress."
+      "notes": "2026-11-18 Stage2 S3E5-A01: owner accepted second revised version of children Temur and Samira at Aras old yard after pointing out previous candidate looked too adult. Original approved PNG preserved byte-for-byte; WebP + SHA256 metadata stored in QISSA Library. Anchor is unique RU/UZ in original story2_part_7_samira_check_and_third_track post_choice_text, preceding S3E5/S3E6 virtual split; shared across both routes. Supabase upload, public GET/MIME/bytes/SHA and runtime QA pending. S3E5-A02 owner approved and Library stored as original PNG, WebP, JSON metadata; no Storage upload, runtime wiring or QA for either Stage2 S3E5 asset. No changes to authored RU/UZ literature, old images, choice/part IDs or family progress. 2026-11-19: latest 5 owner-uploaded Stage2 WebPs confirmed exact public GET/MIME/bytes/SHA256 by CI #44465548262 at 3ac83c; added RU/UZ overlay in Draft PR #348 pending final QA; no deploy or main merge."
     },
     {
       "season": 3,
@@ -830,7 +836,7 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 1,
-      "artwork_acceptance": "stage_2_A01_owner_approved_library_stored",
+      "artwork_acceptance": "stage_2_owner_approved_all_uploaded_runtime_wired_integrated_CI_pending",
       "asset_ids": [
         "seven_roads_s3e7_captain_stops_writing_01_APPROVED"
       ],
@@ -854,13 +860,15 @@
           "webp_sha256": "22e92a47aad3f49f3bc1c7c27d5814bcafdf7f6872b36bf6b1fb22a723c42d65",
           "width": 1672,
           "height": 941,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated_until_public_GET_MIME_bytes_SHA256",
-          "qa_status": "not_started",
-          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_Draft_PR_348_pending_integrated_CI",
+          "qa_status": "pending_integrated_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722"
         }
       ],
-      "notes": "2026-11-18: owner explicitly approved second S3E7-A01 image after requested review/correction of guardroom-window exterior. Final accepted PNG byte-preserved in QISSA Library; WebP and SHA256 metadata stored. Unique shared RU/UZ story_text anchors in story2_part_9_interrogation_and_sarvan_token, after Nadir capture, pre-S3E8. Supabase upload/public hash/runtime/QA pending. No changes to literature, IDs, earlier frames or progress."
+      "notes": "2026-11-18: owner explicitly approved second S3E7-A01 image after requested review/correction of guardroom-window exterior. Final accepted PNG byte-preserved in QISSA Library; WebP and SHA256 metadata stored. Unique shared RU/UZ story_text anchors in story2_part_9_interrogation_and_sarvan_token, after Nadir capture, pre-S3E8. Supabase upload/public hash/runtime/QA pending. No changes to literature, IDs, earlier frames or progress. 2026-11-19: latest 5 owner-uploaded Stage2 WebPs confirmed exact public GET/MIME/bytes/SHA256 by CI #44465548262 at 3ac83c; added RU/UZ overlay in Draft PR #348 pending final QA; no deploy or main merge."
     },
     {
       "season": 3,
@@ -1205,7 +1213,7 @@
       "stage_1_new_shared_scene_count": 3,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 5,
-      "artwork_acceptance": "stage_2_uploaded_frames_integrated_QA_passed_missing_uploads_still_pending",
+      "artwork_acceptance": "stage_2_owner_approved_all_uploaded_runtime_wired_integrated_CI_pending",
       "asset_ids": [
         "seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED",
         "seven_roads_s4e2_blue_triangle_merchants_02_APPROVED",
@@ -1343,13 +1351,15 @@
           "webp_sha256": "64f48cacfc600d50d2f8975c8b4c1af32242eb615b0c22a84239d6d4e33fdb0a",
           "width": 1671,
           "height": 941,
-          "storage_status": "not_uploaded",
-          "runtime_status": "not_integrated",
-          "qa_status": "not_started",
-          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp"
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_Draft_PR_348_pending_integrated_CI",
+          "qa_status": "pending_integrated_CI",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722"
         }
       ],
-      "notes": "S4E2 stage 1 3/3 owner-accepted scenes: A01 final horse V2, A02 blue triangle and A03 Farid notices new Rider belts. All PNG/WebP/metadata stored in QISSA Library, all corresponding WebPs publicly hosted; GET/MIME/bytes/SHA256 6/6 pass and bilingual text anchor, virtual split, gallery lock and browser smoke CI pass (run 43724832395, 43724832302). All 3 integrated in draft PR only. Stage2 adds 2 further scenes later. No deploy/merge. 2026-11-19 Stage2 S4E2-A04: owner conditional approval satisfied by inspecting original pixels against approved Nadir S3E7/S3E6 references (age, curls, worn brown costume, maroon scarf); accepted cleaned revision, not previous speckled first candidate. Accepted original PNG byte-preserved, WebP and SHA256 metadata stored in QISSA Library /stage2/S4E2/. RU/UZ story_text anchor unique in S4E2 before S4E3 virtual boundary. A05 planned, not owner-approved. Storage upload, remote SHA, runtime, QA pending. No literary/progress change or deployment. 2026-11-19 S4E2-A05 owner accepted first image as-is, immutable PNG/WebP/meta saved in QISSA Library; Storage not found, runtime blocked pending verified upload. 2026-11-19 integration checkpoint: 36/36 public WebPs verified by GitHub Actions #44462697595; source-locked bilingual 72 anchors, reading series, gallery and virtual splits + typecheck/build/browser PASS #44463569934 attempt 2 at c466b183; Tier A #44463569887 SUCCESS. Draft PR #348 only; other accepted images without public Storage remain not integrated, no merge/deploy."
+      "notes": "S4E2 stage 1 3/3 owner-accepted scenes: A01 final horse V2, A02 blue triangle and A03 Farid notices new Rider belts. All PNG/WebP/metadata stored in QISSA Library, all corresponding WebPs publicly hosted; GET/MIME/bytes/SHA256 6/6 pass and bilingual text anchor, virtual split, gallery lock and browser smoke CI pass (run 43724832395, 43724832302). All 3 integrated in draft PR only. Stage2 adds 2 further scenes later. No deploy/merge. 2026-11-19 Stage2 S4E2-A04: owner conditional approval satisfied by inspecting original pixels against approved Nadir S3E7/S3E6 references (age, curls, worn brown costume, maroon scarf); accepted cleaned revision, not previous speckled first candidate. Accepted original PNG byte-preserved, WebP and SHA256 metadata stored in QISSA Library /stage2/S4E2/. RU/UZ story_text anchor unique in S4E2 before S4E3 virtual boundary. A05 planned, not owner-approved. Storage upload, remote SHA, runtime, QA pending. No literary/progress change or deployment. 2026-11-19 S4E2-A05 owner accepted first image as-is, immutable PNG/WebP/meta saved in QISSA Library; Storage not found, runtime blocked pending verified upload. 2026-11-19 integration checkpoint: 36/36 public WebPs verified by GitHub Actions #44462697595; source-locked bilingual 72 anchors, reading series, gallery and virtual splits + typecheck/build/browser PASS #44463569934 attempt 2 at c466b183; Tier A #44463569887 SUCCESS. Draft PR #348 only; other accepted images without public Storage remain not integrated, no merge/deploy. 2026-11-19: latest 5 owner-uploaded Stage2 WebPs confirmed exact public GET/MIME/bytes/SHA256 by CI #44465548262 at 3ac83c; added RU/UZ overlay in Draft PR #348 pending final QA; no deploy or main merge."
     },
     {
       "season": 4,

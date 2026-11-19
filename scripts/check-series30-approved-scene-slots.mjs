@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 36)
+assert.equal(series30ApprovedScenes.length, 41)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -72,7 +72,7 @@ const fixtures = [
   {
     base: 'src/data/authored/taynaVostochnogoKaravanaV4',
     key: 'caravan',
-    expected: { 'SERIES30-S3E3-A01': 3, 'SERIES30-S3E3-A02': 3, 'SERIES30-S3E6-A01': 6 },
+    expected: { 'SERIES30-S3E3-A01': 3, 'SERIES30-S3E3-A02': 3, 'SERIES30-S3E4-A01': 4, 'SERIES30-S3E5-A01': 5, 'SERIES30-S3E5-A02': 5, 'SERIES30-S3E6-A01': 6, 'SERIES30-S3E7-A01': 7 },
   },
   {
     base: 'src/data/authored/staging/season2Story3TwoTowers',
@@ -82,7 +82,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
     key: 'waited',
-    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E1-A02': 1, 'SERIES30-S4E2-A04': 2, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4 },
+    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E1-A02': 1, 'SERIES30-S4E2-A04': 2, 'SERIES30-S4E2-A05': 2, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4 },
   },
   {
     base: 'src/data/authored/staging/season2Story7BackToOrdan',
@@ -543,6 +543,29 @@ for (const fixture of fixtures) {
         language + ': S3E3 alarm leaked past investigation split into S3E4',
       )
     }
+    if (fixture.key === 'caravan') {
+      const a01 = 'seven_roads_s3e4_old_passage_map_recollection_01_APPROVED'
+      const reunion = 'seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED'
+      const drawing = 'seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED'
+      const interrogation = 'seven_roads_s3e7_captain_stops_writing_01_APPROVED'
+      assert.ok(galleryBefore[3].items.some(item => item.assetId === a01),
+        language + ': S3E4 old passage image missing')
+      assert.ok(!galleryBefore[2].items.some(item => item.assetId === a01),
+        language + ': S3E4 old passage leaked into S3E3')
+      const s3e5 = galleryBefore[4].items.map(item => item.assetId)
+      assert.ok(s3e5.indexOf(reunion) >= 0 && s3e5.indexOf(drawing) > s3e5.indexOf(reunion),
+        language + ': S3E5 reunion must precede the drawing')
+      assert.ok(!galleryBefore[5].items.some(item => item.assetId === drawing),
+        language + ': S3E5 drawing leaked across S3E6 split')
+      assert.ok(galleryBefore[6].items.some(item => item.assetId === interrogation),
+        language + ': S3E7 interrogation scene missing')
+      assert.ok(!galleryBefore[5].items.some(item => item.assetId === interrogation),
+        language + ': S3E7 interrogation leaked into S3E6')
+      for (const asset of [a01,reunion,drawing,interrogation]) {
+        const current = galleryBefore.flatMap(e => e.items).find(item => item.assetId === asset)
+        assert.equal(current?.unlocked, false, language + ': unseen Stage2 image unlocked early: ' + asset)
+      }
+    }
     if (fixture.key === 'silver') {
       const s2e1GalleryOrder = galleryBefore[0].items.map((entry) => entry.assetId)
       assert.equal(
@@ -578,9 +601,16 @@ for (const fixture of fixtures) {
     }
     if (fixture.key === 'waited') {
       const e2 = galleryBefore[1].items.map(item => item.assetId)
+      const arrival = e2.indexOf('seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED')
       const nadir = e2.indexOf('seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED')
       const farid = e2.indexOf('seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED')
       assert.ok(nadir >= 0 && farid > nadir, language + ': S4E2 Nadir waiting must precede Farid encounter')
+      assert.ok(arrival >= 0 && nadir > arrival,
+        language + ': S4E2 Ordan arrival must precede Nadir second day')
+      assert.ok(!galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED'),
+        language + ': S4E2 arrival leaked backward into S4E1')
+      assert.equal(galleryBefore[1].items.find(item => item.assetId === 'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED')?.unlocked,
+        false, language + ': unread S4E2 arrival must remain locked')
       assert.equal(galleryBefore[2].items.some(item => item.assetId === 'seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED'), false,
         language + ': S4E2 waiting must not leak into S4E3')
       const e1 = galleryBefore[0].items.map(item => item.assetId)
@@ -633,7 +663,7 @@ for (const fixture of fixtures) {
       assert.ok(galleryItem, id + '/' + language + ': missing from correct gallery episode')
       assert.equal(galleryItem.unlocked, false, 'new illustration spoiled before reading')
       assert.equal(item.slot.kind, 'shared')
-      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
+      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E5-A01', 'SERIES30-S3E5-A02', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
       assert.equal(pars(item.part[item.slot.phase]).filter((p) => p === item.slot.after_text).length, 1,
         id + '/' + language + ': anchor missing or repeated')
       assert.ok(assetsSource.includes("'" + item.slot.asset_id + "'"),
@@ -670,7 +700,10 @@ for (const scene of series30ApprovedScenes) {
     scene.slot_id.startsWith('SERIES30-S2E3-') ? e.season === 2 && e.episode === 3 :
     scene.slot_id.startsWith('SERIES30-S2E4-') ? e.season === 2 && e.episode === 4 :
     scene.slot_id.startsWith('SERIES30-S3E3-') ? e.season === 3 && e.episode === 3 :
+    scene.slot_id.startsWith('SERIES30-S3E4-') ? e.season === 3 && e.episode === 4 :
+    scene.slot_id.startsWith('SERIES30-S3E5-') ? e.season === 3 && e.episode === 5 :
     scene.slot_id.startsWith('SERIES30-S3E6-') ? e.season === 3 && e.episode === 6 :
+    scene.slot_id.startsWith('SERIES30-S3E7-') ? e.season === 3 && e.episode === 7 :
     scene.slot_id.startsWith('SERIES30-S3E9-') ? e.season === 3 && e.episode === 9 :
     scene.slot_id.startsWith('SERIES30-S3E10-') ? e.season === 3 && e.episode === 10 :
     scene.slot_id.startsWith('SERIES30-S3E11-') ? e.season === 3 && e.episode === 11 :
@@ -690,9 +723,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 72)
-console.log('[series30-art] PASS: 36 hosted, owner-approved assets, 72 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E6 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x4 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 82)
+console.log('[series30-art] PASS: 41 hosted, owner-approved assets, 82 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
