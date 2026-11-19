@@ -5,6 +5,11 @@ import { createHash } from 'node:crypto'
 // This runs only on CI, never during local/offline reading-series preflight.
 const base = 'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/'
 const assets = [
+  { name: 'seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp', size: 309568, sha256: '3382fd3b75f81ef44557400dc3099df4057281fbc259daa2148e3a30dfd36079' },
+  { name: 'seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp', size: 302450, sha256: '84ccf7e58b48acff2495453846578a6a0bcfe47efb369836a885ad815dfd76c6' },
+  { name: 'seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp', size: 234486, sha256: 'baafd722816ee46782929561017f516704ba750c8df053f80e1aece6531497f2' },
+  { name: 'seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp', size: 239958, sha256: '22e92a47aad3f49f3bc1c7c27d5814bcafdf7f6872b36bf6b1fb22a723c42d65' },
+  { name: 'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp', size: 321738, sha256: '64f48cacfc600d50d2f8975c8b4c1af32242eb615b0c22a84239d6d4e33fdb0a' },
   { name: 'seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp', size: 373000, sha256: '8390f8fc896a2f13aa958ab7026e0ad8e510083ba4e9ee2d04e26d4e522fbb0f' },
   { name: 'seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.webp', size: 254000, sha256: '529fe3f272541c509abd2d87da4a8043c403c6ba37b3d0839ef17d6f82fc1d83' },
   { name: 'seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.webp', size: 297104, sha256: '87bb3a5e0f303770913e2e55e741708388b9c2e50fb85cac4a682014f3d81e5c' },
@@ -170,4 +175,4 @@ for (const asset of assets) {
   assert.equal(sha256, asset.sha256, `Remote WebP differs from approved master derivative: ${asset.name}`)
   console.log(`[series30-art-remote] OK ${asset.name} (${bytes.length} bytes)`)
 }
-console.log('[series30-art-remote] PASS 36/36 remote GET, MIME, byte lengths and SHA256')
+console.log('[series30-art-remote] PASS 41/41 remote GET, MIME, byte lengths and SHA256')
