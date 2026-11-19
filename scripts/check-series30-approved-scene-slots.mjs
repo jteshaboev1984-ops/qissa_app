@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 29)
+assert.equal(series30ApprovedScenes.length, 36)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -59,11 +59,14 @@ const fixtures = [
       'SERIES30-S2E1-A01': 1,
       'SERIES30-S2E1-A02': 1,
       'SERIES30-S2E2-A01': 2,
+      'SERIES30-S2E2-A02': 2,
       'SERIES30-S2E3-A01': 3,
       'SERIES30-S2E3-A02': 3,
       'SERIES30-S2E3-A03': 3,
       'SERIES30-S2E4-A01': 4,
       'SERIES30-S2E4-A02': 4,
+      'SERIES30-S2E4-A03': 4,
+      'SERIES30-S2E4-A04': 4,
     },
   },
   {
@@ -74,12 +77,12 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story3TwoTowers',
     key: 'towers',
-    expected: { 'SERIES30-S3E10-A01': 2, 'SERIES30-S3E10-A02': 2, 'SERIES30-S3E11-A01': 3, 'SERIES30-S3E11-A02': 3 },
+    expected: { 'SERIES30-S3E9-A01': 1, 'SERIES30-S3E9-A02': 1, 'SERIES30-S3E10-A01': 2, 'SERIES30-S3E10-A02': 2, 'SERIES30-S3E11-A01': 3, 'SERIES30-S3E11-A02': 3 },
   },
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
     key: 'waited',
-    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4 },
+    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E1-A02': 1, 'SERIES30-S4E2-A04': 2, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4 },
   },
   {
     base: 'src/data/authored/staging/season2Story7BackToOrdan',
@@ -547,6 +550,8 @@ for (const fixture of fixtures) {
         [
           'seven_roads_s2e4_missing_kamran_oak_01_APPROVED',
           'seven_roads_s2_story1_hidden_network_settlement_01_APPROVED',
+          'seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED',
+          'seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED',
           'seven_roads_s2e4_western_road_map_02_APPROVED',
         ].join('|'),
         language + ': S2E4 gallery must show the forest rendezvous before the hidden settlement',
@@ -555,6 +560,7 @@ for (const fixture of fixtures) {
         galleryBefore[1].items.map(item => item.assetId).join('|'),
         [
           'seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED',
+          'seven_roads_s2e2_east_gate_messenger_02_APPROVED',
           'seven_roads_s2_story1_danyar_pursuit_01_APPROVED',
           'seven_roads_s2e2_missing_dark_horse_01_APPROVED',
         ].join('|'),
@@ -569,6 +575,26 @@ for (const fixture of fixtures) {
         ].join('|'),
         language + ': S2E1 gallery must show dialogue, birds, then attack',
       )
+    }
+    if (fixture.key === 'waited') {
+      const e2 = galleryBefore[1].items.map(item => item.assetId)
+      const nadir = e2.indexOf('seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED')
+      const farid = e2.indexOf('seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED')
+      assert.ok(nadir >= 0 && farid > nadir, language + ': S4E2 Nadir waiting must precede Farid encounter')
+      assert.equal(galleryBefore[2].items.some(item => item.assetId === 'seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED'), false,
+        language + ': S4E2 waiting must not leak into S4E3')
+      const e1 = galleryBefore[0].items.map(item => item.assetId)
+      assert.ok(e1.indexOf('seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED') >= 0 &&
+        e1.indexOf('seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED') > e1.indexOf('seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED'),
+        language + ': S4E1 captain briefing must precede departure')
+    }
+    if (fixture.key === 'towers') {
+      for (const asset of ['seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED','seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED']) {
+        assert.ok(galleryBefore[0].items.some(item => item.assetId === asset),
+          language + ': S3E9 scene missing from S3E9 gallery')
+        assert.ok(!galleryBefore[1].items.some(item => item.assetId === asset),
+          language + ': S3E9 scene leaked into S3E10')
+      }
     }
     for (const [id, expectedEpisode] of Object.entries(fixture.expected)) {
       const located = story.parts.flatMap((p, index) => p.image_slots
@@ -607,7 +633,7 @@ for (const fixture of fixtures) {
       assert.ok(galleryItem, id + '/' + language + ': missing from correct gallery episode')
       assert.equal(galleryItem.unlocked, false, 'new illustration spoiled before reading')
       assert.equal(item.slot.kind, 'shared')
-      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
+      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S2E4-A03', 'SERIES30-S2E4-A04', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
       assert.equal(pars(item.part[item.slot.phase]).filter((p) => p === item.slot.after_text).length, 1,
         id + '/' + language + ': anchor missing or repeated')
       assert.ok(assetsSource.includes("'" + item.slot.asset_id + "'"),
@@ -663,9 +689,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 58)
-console.log('[series30-art] PASS: 29 owner-approved assets, 58 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 72)
+console.log('[series30-art] PASS: 36 hosted, owner-approved assets, 72 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E6 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x4 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
