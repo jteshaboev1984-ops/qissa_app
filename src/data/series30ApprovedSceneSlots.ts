@@ -520,6 +520,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
     story_id: 'seven_roads_obratno_v_ordan',
     part_id: 'story7_part_1_back_to_ordan',
+    slot_id: 'SERIES30-S4E10-A02',
+    anchor_key: 'series30_s4e10_three_gazes_two_letters',
+    asset_id: 'seven_roads_s4e10_three_gazes_two_letters_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Рустам придвинул оба письма к окну, совместил красные круги краями и чуть повернул их. Боковой свет лёг по рельефу, и мелкие края стали заметнее.',
+      uz: 'Rustam ikki xatni derazaga yaqinroq surdi, qizil doiralarni chetlari bilan tenglashtirib, birini sal burdi. Yon tomondan tushgan yorug‘lik bo‘rtma izlarni ko‘rsatdi va mayda chetlar aniqroq ko‘rina boshladi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_obratno_v_ordan',
+    part_id: 'story7_part_1_back_to_ordan',
     slot_id: 'SERIES30-S4E10-A01',
     anchor_key: 'series30_s4e10_farid_danyar_prison_window',
     asset_id: 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED',
