@@ -23,6 +23,15 @@ type Series30ApprovedScene = {
 
 export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
+    story_id: 'seven_roads_lozhnaya_doroga',
+    part_id: 'story5_part_1_false_road',
+    slot_id: 'SERIES30-S4E6-A02',
+    anchor_key: 'series30_s4e6_a02',
+    asset_id: 'seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {ru: 'Когда поднял голову, на свету стал заметен тонкий белый шрам от левой брови к виску.', uz: 'Boshini ko‘targanda chap qoshidan chakkasigacha ketgan ingichka oq chandiq yorug‘likda ko‘rindi.'},
+  },
+  {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',
     part_id: 'story4_part_2_nadir_red_hill_clue',
     slot_id: 'SERIES30-S4E4-A03',

@@ -1,6 +1,8 @@
 export type AuthoredStoryAssetRegistry = Record<string, string>
 
 const productionAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp',
   'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED.webp',
   'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED':
