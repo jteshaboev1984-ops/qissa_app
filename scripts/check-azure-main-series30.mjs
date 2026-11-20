@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import ts from 'typescript'
+import { planOfflineAzureUzBatch } from './lib/azure-uz-offline-batch-plan.mjs'
 
 const root = process.argv[2]
 if (!root || root.startsWith('-')) throw new Error('Usage: check-azure-main-series30.mjs <read-only-main-checkout>')
@@ -131,6 +132,7 @@ const assignmentsFor = (story) => {
   return states
 }
 let episodesRu=0,episodesUz=0,paths=0,entries=0
+const uzDrafts=[]
 const uniqueAudio = new Map()
 const inputCharacters = {ru:0,uz:0}
 const report=[]
@@ -148,6 +150,7 @@ for (const def of sources) {
     assert.equal(story.reader_layout?.version,'series-30-v1')
     const before=compileDraftAuthoredAudioManifest(current)
     const after=compileDraftAuthoredAudioManifest(story)
+    if (lang==='uz') uzDrafts.push(after)
     assert.equal(after.isApproved,false)
     assert.equal(after.isPublished,false)
     const assignments=assignmentsFor(current)
@@ -174,6 +177,23 @@ for (const def of sources) {
 assert.equal(episodesRu,30)
 assert.equal(episodesUz,30)
 assert.equal(report.length,16)
+const dryRun = planOfflineAzureUzBatch(uzDrafts,{
+  mode:'review_only',
+  voicePresets:['soft_female','calm_male'],
+  maxCharacterUnits:450000,
+  maxUniqueAssets:300,
+})
+assert.equal(dryRun.sourcePackages,8)
+assert.equal(dryRun.sourceSegmentCount,145)
+assert.equal(dryRun.uniqueMp3Candidates,282)
+assert.equal(dryRun.characterUnits,428918)
+assert.equal(dryRun.canExecute,false)
+assert.equal(dryRun.providerCallsMade,0)
+assert.equal(dryRun.approved,false)
+assert.equal(dryRun.published,false)
+assert.equal(JSON.stringify(dryRun).includes('—'),false,'Draft must not contain source prose')
+// Same exact text in different routes is one candidate per voice.
+assert.ok(dryRun.uniqueMp3Candidates < dryRun.sourceSegmentCount * 2)
 const charactersByLang = {ru:0,uz:0}
 const uniqueAssetsByLang = {ru:0,uz:0}
 for (const item of uniqueAudio.values()) {
@@ -194,6 +214,7 @@ console.log(JSON.stringify({
   distinctSpokenTextsByLanguage:uniqueAssetsByLang,
   uniqueAzureCharacterUnitsOneVoice:charactersByLang,
   uzPreflight:{plannedVoices:plannedUzVoices,plannedCharacterUnits:plannedUzUnits,operatorCap:maxUzUnits,providerCalled:false},
+  dryRunBatch:{candidateMp3:dryRun.uniqueMp3Candidates,sha256:dryRun.planSha256,canExecute:dryRun.canExecute,providerCallsMade:dryRun.providerCallsMade},
   allManifestCharacterUnits:inputCharacters,
   // Not a monetary quote. Azure billing depends on tier, region and provider policy.
   caveat:'Character units are UTF-16 JavaScript lengths, not guaranteed Azure billable characters or money.',
