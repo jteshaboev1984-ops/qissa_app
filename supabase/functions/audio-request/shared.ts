@@ -54,6 +54,10 @@ export const openAiApiKey = Deno.env.get('OPENAI_API_KEY')?.trim() || ''
 export const ttsEnabled = Deno.env.get('QISSA_TTS_ENABLED') === 'true'
 export const ttsModel = Deno.env.get('OPENAI_TTS_MODEL')?.trim() || 'gpt-4o-mini-tts'
 
+/** Cache identities include provider/model, never playback speed. */
+export const providerModelForVoice = (voice: JsonRecord): string =>
+  voice.provider === 'azure' ? 'azure-neural-v1' : ttsModel
+
 export const isRecord = (value: unknown): value is JsonRecord =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
