@@ -157,6 +157,8 @@ const season2TierAProductionAssets: AuthoredStoryAssetRegistry =
   ])
 
 const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
+  'seven_roads_s4e8_temur_trembling_palm_03_APPROVED':
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e8_temur_trembling_palm_03_APPROVED.webp',
   'seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.webp',
   'seven_roads_s4e10_three_gazes_two_letters_02_APPROVED':
