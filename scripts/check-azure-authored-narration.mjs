@@ -13,7 +13,25 @@ const plannerJs = transpile('src/features/authoredStory/authoredAudioPlan.ts')
   .replace(/from ['"]\.\/engine['"]/, `from '${engineUrl}'`)
 const moduleUrl = 'data:text/javascript;base64,' + Buffer.from(plannerJs).toString('base64')
 const { buildAuthoredAudioPlan, chunkNarrationText, nextAuthoredAudioSegment } = await import(moduleUrl)
+const manifestJs = transpile('src/features/authoredStory/audioManifest.ts')
+  .replace(/from ['"]\\.\\/authoredAudioPlan['"]/, `from '${moduleUrl}'`)
+const manifestUrl = 'data:text/javascript;base64,' + Buffer.from(manifestJs).toString('base64')
+const { compileDraftAuthoredAudioManifest } = await import(manifestUrl)
 const approved = JSON.parse(readFileSync('src/data/authored/prazdnikMuzhestvaV3.ru.json', 'utf8'))
+const rawManifest = compileDraftAuthoredAudioManifest(approved)
+assert.equal(rawManifest.isApproved, false)
+assert.equal(rawManifest.isPublished, false)
+assert.ok(rawManifest.scenariosChecked >= approved.parts.length)
+assert.ok(rawManifest.segments.length > 0)
+assert.ok(rawManifest.segments.every((s) => s.text.length <= 2500))
+for (const part of approved.parts.filter((p) => p.decision)) {
+  for (const choice of part.decision.choices) {
+    assert.ok(rawManifest.segments.some((item) =>
+      item.partId === part.part_id && item.choiceId === choice.choice_id &&
+      item.phase === 'choice_resolution'))
+  }
+}
+
 
 const decisionIndex = approved.parts.findIndex((p) => p.decision)
 assert.ok(decisionIndex >= 0, 'approved fixture needs a choice')
@@ -78,6 +96,18 @@ variant.parts[decisionIndex].conditional_segments = [
     text: 'PLATEAU ROUTE ONLY',
   },
 ]
+variant.external_choice_context = [{
+  decision_id: 'e5-route', allowed_choice_ids: ['forest', 'plateau'],
+  source_story_id: 'earlier-story', source_story_version: 'approved-version',
+}]
+const draftVariantManifest = compileDraftAuthoredAudioManifest(variant)
+assert.equal(draftVariantManifest.isApproved, false)
+assert.equal(draftVariantManifest.isPublished, false)
+assert.ok(draftVariantManifest.segments.some((s) => s.text.includes('FOREST ROUTE ONLY')))
+assert.ok(draftVariantManifest.segments.some((s) => s.text.includes('PLATEAU ROUTE ONLY')))
+const noContext = structuredClone(variant)
+delete noContext.external_choice_context
+assert.throws(() => compileDraftAuthoredAudioManifest(noContext), /Unknown inherited decision/)
 const inherited = (route) => buildAuthoredAudioPlan(variant, {
   ...progress,
   selected_choices: { 'e5-route': route },
@@ -100,4 +130,4 @@ assert.ok(chunks.every((x) => x.length <= 2500))
 assert.equal(chunks.join(' ').replace(/\s+/g, ' '), original)
 
 assert.throws(() => buildAuthoredAudioPlan(approved, { ...progress, story_version: 'other' }))
-console.log('Authored RU choice, inherited variant, no-replay and chunk tests passed (provider-free).')
+console.log('Authored RU choice, inherited variants, manifest enumeration, no-replay and chunk tests passed (provider-free).')
