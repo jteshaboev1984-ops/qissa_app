@@ -624,7 +624,7 @@ export function AuthoredStoryPlayer({
       </header>
 
       <AuthoredListeningControls
-        key={part.part_id}
+        key={`${story.story_id}:${story.story_version}:${story.source_literary_version}:${story.language}:${part.part_id}`}
         story={story}
         progress={progress}
       />
