@@ -108,6 +108,13 @@ assert.ok(draftVariantManifest.segments.some((s) => s.text.includes('PLATEAU ROU
 const noContext = structuredClone(variant)
 delete noContext.external_choice_context
 assert.throws(() => compileDraftAuthoredAudioManifest(noContext), /Unknown inherited decision/)
+const brokenAnchor = structuredClone(variant)
+brokenAnchor.parts[decisionIndex].conditional_segments[0].after_text = 'UNKNOWN EDITORIAL ANCHOR'
+assert.throws(() => compileDraftAuthoredAudioManifest(brokenAnchor), /Missing or ambiguous conditional anchor/)
+const brokenChoice = structuredClone(variant)
+brokenChoice.parts[decisionIndex].conditional_segments[0].when.choice_id = 'fictional_choice'
+assert.throws(() => compileDraftAuthoredAudioManifest(brokenChoice), /Unknown choice for conditional/)
+
 const inherited = (route) => buildAuthoredAudioPlan(variant, {
   ...progress,
   selected_choices: { 'e5-route': route },
