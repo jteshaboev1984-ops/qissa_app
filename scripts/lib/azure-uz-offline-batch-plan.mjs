@@ -38,7 +38,7 @@ export const planOfflineAzureUzBatch = (sources, config) => {
   }
   const voices = config.voicePresets.map((preset) => {
     const providerVoiceId = AZURE_UZ_DRAFT_VOICES[preset]
-    if (!providerVoiceId) throw new Error('Only the two pre-approved-for-candidacy Uzbek identifiers may be planned.')
+    if (!providerVoiceId) throw new Error('Only configured Uzbek voice candidate identifiers may be planned.')
     return { clientPresetId: preset, providerVoiceId }
   })
   const allSourceIdentities = new Set()
