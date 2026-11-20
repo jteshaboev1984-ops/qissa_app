@@ -113,7 +113,7 @@ requireCondition(
     /owned\.episode\.language/.test(cacheKeyBody) &&
     /voice\.id/.test(cacheKeyBody) &&
     /textVersion/.test(cacheKeyBody) &&
-    /ttsModel/.test(cacheKeyBody) &&
+    /providerModelForVoice\(voice\)/.test(cacheKeyBody) &&
     !/\bspeed\b/.test(cacheKeyBody),
   'Provider TTS cache identity must be independent of 0.8x/1.0x/1.2x playback speed.',
 )
