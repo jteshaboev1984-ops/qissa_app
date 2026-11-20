@@ -10,7 +10,7 @@ const ALLOWED_UZ_AZURE_VOICES = new Set([
 ])
 
 export const isSupportedAzureVoice = (language: string, voice: string): boolean =>
-  language === 'uz' && APPROVED_UZ_AZURE_VOICES.has(voice)
+  language === 'uz' && ALLOWED_UZ_AZURE_VOICES.has(voice)
 
 export const azureTtsConfigured = (): boolean =>
   Boolean(Deno.env.get('AZURE_SPEECH_KEY')?.trim() && /^[a-z0-9-]+$/.test(Deno.env.get('AZURE_SPEECH_REGION')?.trim() ?? ''))
