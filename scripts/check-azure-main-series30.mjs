@@ -112,6 +112,8 @@ const assignmentsFor = (story) => {
   return states
 }
 let episodesRu=0,episodesUz=0,paths=0,entries=0
+const uniqueAudio = new Map()
+const inputCharacters = {ru:0,uz:0}
 const report=[]
 for (const def of sources) {
   const ruBase=JSON.parse(blob(def.ru,def.ruHash))
@@ -131,6 +133,14 @@ for (const def of sources) {
     assert.equal(after.isPublished,false)
     const assignments=assignmentsFor(current)
     entries+=after.segments.length
+    for (const segment of after.segments) {
+      const textHash = createHash('sha256').update(segment.text,'utf8').digest('hex')
+      const cacheKey = lang + ':' + textHash
+      inputCharacters[lang] += segment.text.length
+      if (!uniqueAudio.has(cacheKey)) uniqueAudio.set(cacheKey,{
+        language:lang, textHash, characterUnits:segment.text.length,
+      })
+    }
     for (const selected of assignments) {
       const originalText=textOf(current,selected,before)
       const readingText=textOf(story,selected,after)
@@ -145,5 +155,23 @@ for (const def of sources) {
 assert.equal(episodesRu,30)
 assert.equal(episodesUz,30)
 assert.equal(report.length,16)
+const charactersByLang = {ru:0,uz:0}
+const uniqueAssetsByLang = {ru:0,uz:0}
+for (const item of uniqueAudio.values()) {
+  charactersByLang[item.language] += item.characterUnits
+  uniqueAssetsByLang[item.language] += 1
+}
+assert.ok(charactersByLang.uz>0 && charactersByLang.ru>0)
+assert.ok(charactersByLang.uz<=inputCharacters.uz)
+assert.ok(charactersByLang.ru<=inputCharacters.ru)
 console.log('[azure-series30] PASS: 30 RU + 30 UZ reader episodes, all fully-selected source paths')
-console.log(JSON.stringify({ episodesRu,episodesUz,paths,segments:entries,packages:report },null,2))
+console.log(JSON.stringify({
+  episodesRu,episodesUz,paths,
+  manifestSegmentEntries:entries,
+  distinctSpokenTextsByLanguage:uniqueAssetsByLang,
+  uniqueAzureCharacterUnitsOneVoice:charactersByLang,
+  allManifestCharacterUnits:inputCharacters,
+  // Not a monetary quote. Azure billing depends on tier, region and provider policy.
+  caveat:'Character units are UTF-16 JavaScript lengths, not guaranteed Azure billable characters or money.',
+  packages:report,
+},null,2))
