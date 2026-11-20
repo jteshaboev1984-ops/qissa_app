@@ -41,6 +41,7 @@ jobs:
       - name: Verify 12 real RU UZ listening routes and remove external fixtures
         run: |
           npm run check:azure-main-routes -- .qissa-main-fixtures
+          npm run check:azure-main-series30 -- .qissa-main-fixtures
           rm -rf .qissa-main-fixtures
 
       - name: Audit production dependencies
