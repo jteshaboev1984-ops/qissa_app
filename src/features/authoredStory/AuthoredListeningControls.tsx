@@ -252,8 +252,8 @@ export function AuthoredListeningControls({
             onChange={(event) => updateVoice(event.target.value as VoicePresetId)}
             className="rounded-lg border border-[#d9c9a5] bg-white p-2"
           >
-            <option value="soft_female">{isUz ? 'Madina / sokin' : 'Мягкий'}</option>
-            <option value="calm_male">{isUz ? 'Sardor / sokin' : 'Спокойный'}</option>
+            <option value="soft_female">{isUz ? 'Yumshoq' : 'Мягкий'}</option>
+            <option value="calm_male">{isUz ? 'Sokin' : 'Спокойный'}</option>
           </select>
         </label>
       </div>
