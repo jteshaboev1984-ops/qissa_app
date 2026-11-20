@@ -256,9 +256,10 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_2_approved_uploaded_integrated_SHA_verified_QA_passed_in_Draft_PR_348_unpublished",
       "asset_ids": [
-        "seven_roads_s2e2_missing_dark_horse_01_APPROVED"
+        "seven_roads_s2e2_missing_dark_horse_01_APPROVED",
+        "seven_roads_s2e2_east_gate_messenger_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -286,9 +287,39 @@
             "seven_roads_ci": 43790217518,
             "season2_tier_a_ci": 43790217561
           }
+        },
+        {
+          "candidate_id": "S2E2-A02",
+          "asset_id": "seven_roads_s2e2_east_gate_messenger_02_APPROVED",
+          "phase": "story_text",
+          "kind": "shared",
+          "stage": "stage_2",
+          "ru_after_text": "Когда он добрался до восточных ворот, начальник караула выслушал его и сразу отправил двух городских стражников дальше: одного — к внешнему караванному двору, второго — к старым скотным воротам.",
+          "uz_after_text": "U sharqiy darvozaga yetib borgach, qorovul boshlig‘i gapini eshitdi va darrov ikki shahar qo‘riqchisini oldinga yubordi: birini tashqi karvon hovlisiga, ikkinchisini eski chorva darvozasiga.",
+          "acceptance": "owner_direct_approved_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.metadata.json",
+          "master_sha256": "35d102cc4108c50d6ddb505dd7e6e0cdb187c3593d12622359a1fa03db481191",
+          "master_bytes": 3095544,
+          "webp_sha256": "8390f8fc896a2f13aa958ab7026e0ad8e510083ba4e9ee2d04e26d4e522fbb0f",
+          "webp_bytes": 373000,
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44462697595_at_SHA_8f3da3070381af00c5e35747a703ec8c2aee2eb5",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44462697595,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
         }
       ],
-      "notes": "S2E2-A01 approved under owner's conditional acceptance rule after scene and exact RU/UZ check. Warehouse setting: narrow grain warehouse passages, drying hides, sacks/workers; Danyar on gray horse + young guard in canonical helmet; no Kamran or missing dark horse, no future choice spoilers. Original PNG + optimized WebP + SHA metadata are stored in QISSA Library; user needs to upload WebP to story-images/seven-roads/season2_tier_a_v2/. Do not wire runtime until public GET/MIME/bytes/SHA256 validated. Previously rejected S2E1-like road conversation attempts stay rejected. User uploaded to Supabase 2026-11-16; storage.objects image/webp 319176 bytes. Independent CI #43789957810 confirmed public GET/MIME/size/SHA 9/9. Runtime overlay and registry wired, RU/UZ gallery/browser CI pending. No literary JSON, choice or progress changes. Runtime CI 2026-11-16: Seven Roads #43790217518 SUCCESS and Tier A #43790217561 SUCCESS; 9/9 remote SHA, 9 accepted art / 18 bilingual anchors, gallery chronological order and unread locks; typecheck/build/4-season browser smoke PASS. S2E2 stage1 1/1 complete."
+      "notes": "S2E2-A01 approved under owner's conditional acceptance rule after scene and exact RU/UZ check. Warehouse setting: narrow grain warehouse passages, drying hides, sacks/workers; Danyar on gray horse + young guard in canonical helmet; no Kamran or missing dark horse, no future choice spoilers. Original PNG + optimized WebP + SHA metadata are stored in QISSA Library; user needs to upload WebP to story-images/seven-roads/season2_tier_a_v2/. Do not wire runtime until public GET/MIME/bytes/SHA256 validated. Previously rejected S2E1-like road conversation attempts stay rejected. User uploaded to Supabase 2026-11-16; storage.objects image/webp 319176 bytes. Independent CI #43789957810 confirmed public GET/MIME/size/SHA 9/9. Runtime overlay and registry wired, RU/UZ gallery/browser CI pending. No literary JSON, choice or progress changes. Runtime CI 2026-11-16: Seven Roads #43790217518 SUCCESS and Tier A #43790217561 SUCCESS; 9/9 remote SHA, 9 accepted art / 18 bilingual anchors, gallery chronological order and unread locks; typecheck/build/4-season browser smoke PASS. S2E2 stage1 1/1 complete. Stage2 S2E2-A02 2026-11-18: owner explicitly approved east-gate messenger storyboard image; source PNG byte-preserved, WebP/metadata stored in QISSA Library; public Storage upload not performed (no file-upload action); GET/MIME/bytes/SHA256 and runtime RU/UZ gallery QA pending. Approved literature, choices, progress and existing images unchanged. 2026-11-18 follow-up: owner confirmed Supabase upload; read-only storage.objects MIME image/webp / size 373000; public GET/MIME/bytes/SHA verified on CI #44250975421 at 2a1004a; new shared RU/UZ reader scene overlay and gallery regression written in Draft PR #338; exact head CI pending, no publication. Final technical gate: 30/30 public WebPs and 60/60 unique bilingual scene anchors verified; Seven Roads CI #44251543313 and Tier A #44251543254 SUCCESS at e8cf7d41526298c4860ec5714103af006e9d6c9e; Typecheck/build/browser/route/gallery-unread checked. Remains Draft unpublished, no merge, no family-data or provider operations. 2026-11-19 integration checkpoint: 36/36 public WebPs verified by GitHub Actions #44462697595; source-locked bilingual 72 anchors, reading series, gallery and virtual splits + typecheck/build/browser PASS #44463569934 attempt 2 at c466b183; Tier A #44463569887 SUCCESS. Draft PR #348 only; other accepted images without public Storage remain not integrated, no merge/deploy. 2026-11-19: all accepted Stage2 assets in this episode uploaded and SHA-verified; RU/UZ reader, virtual-series boundaries and gallery tests PASS on exact code SHA adaa131 (Seven Roads #44466104408; Tier A #44466104403). Draft only, no Stage2 release."
     },
     {
       "season": 2,
@@ -400,10 +431,12 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 4,
-      "artwork_acceptance": "stage_1_runtime_wired_ci_pending",
+      "artwork_acceptance": "stage_2_approved_uploaded_integrated_SHA_verified_QA_passed_in_Draft_PR_348_unpublished",
       "asset_ids": [
         "seven_roads_s2e4_missing_kamran_oak_01_APPROVED",
-        "seven_roads_s2e4_western_road_map_02_APPROVED"
+        "seven_roads_s2e4_western_road_map_02_APPROVED",
+        "seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED",
+        "seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -455,9 +488,69 @@
           "qa_ci_runs": {
             "remote_webp_verification": 43806638375
           }
+        },
+        {
+          "candidate_id": "S2E4-A03",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED",
+          "kind": "shared",
+          "phase": "post_choice_text",
+          "ru_after_text": "Только теперь главарь встал.",
+          "uz_after_text": "Shundan keyingina boshliq o‘rnidan turdi.",
+          "acceptance": "owner_explicit_approved_corrected_review_v2_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E4/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E4/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E4/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.metadata.json",
+          "master_bytes": 2548229,
+          "master_sha256": "e03dd88dbd9626ff75ad83698f7d73ebd4cafcecb57054e7bdf37382b588f991",
+          "webp_bytes": 254000,
+          "webp_sha256": "529fe3f272541c509abd2d87da4a8043c403c6ba37b3d0839ef17d6f82fc1d83",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44462697595_at_SHA_8f3da3070381af00c5e35747a703ec8c2aee2eb5",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44462697595,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
+        },
+        {
+          "candidate_id": "S2E4-A04",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED",
+          "kind": "shared",
+          "phase": "post_choice_text",
+          "ru_after_text": "К вечеру в логово приехала женщина на гнедой лошади. Она жила в Ордане и собирала для сети дорожные сведения у внешних дворов.",
+          "uz_after_text": "Kechga yaqin yashirin joyga jigarrang ot mingan ayol keldi. U Ordanda yashar va tashqi hovlilardagi yo‘l ma’lumotlarini tarmoq uchun yig‘ardi.",
+          "acceptance": "owner_explicit_approved_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E4/seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E4/seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S2E4/seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.metadata.json",
+          "master_bytes": 2821862,
+          "master_sha256": "627192075cbc10bf6feb07dbd8d4696b41060b73de94074ab6b5d0cd93d831de",
+          "webp_bytes": 297104,
+          "webp_sha256": "87bb3a5e0f303770913e2e55e741708388b9c2e50fb85cac4a682014f3d81e5c",
+          "width": 1671,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44462697595_at_SHA_8f3da3070381af00c5e35747a703ec8c2aee2eb5",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44462697595,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
         }
       ],
-      "notes": "2026-11-16: S2E4 Stage 1 visual acceptance 2/2, Stage 2 still planned 2 additional images. A01 four mounted riders at oak, uploaded/verified to Storage (283010 bytes, SHA256 07e04b97...), wired through RU/UZ virtual S2E4 scene overlay; CI #43805029277 and #43805029409 SUCCESS, 10/10 public asset SHA, 20 bilingual anchor tests and browser smoke. A02 father Kamran indicating western road on map in small house with 2 adult companions; canon/text QA accepted, master PNG/WebP/metadata in QISSA Library. A02 WebP 192494 bytes, SHA256 fc44e2f2..., NOT yet uploaded to Supabase and NOT yet wired to runtime. Rejected earlier candidate frames remain excluded. Existing old settlement image, authored RU/UZ JSON, choices, story IDs and saved progress unchanged. PR Draft, no merge/deploy. 2026-11-16 A02 public Storage object 192494 bytes image/webp, SHA256 matches master by independent Seven Roads CI run #43806638375, 11/11 assets. RU/UZ runtime overlay and gallery wired on branch; reader/browser CI pending."
+      "notes": "2026-11-16: S2E4 Stage 1 visual acceptance 2/2, Stage 2 still planned 2 additional images. A01 four mounted riders at oak, uploaded/verified to Storage (283010 bytes, SHA256 07e04b97...), wired through RU/UZ virtual S2E4 scene overlay; CI #43805029277 and #43805029409 SUCCESS, 10/10 public asset SHA, 20 bilingual anchor tests and browser smoke. A02 father Kamran indicating western road on map in small house with 2 adult companions; canon/text QA accepted, master PNG/WebP/metadata in QISSA Library. A02 WebP 192494 bytes, SHA256 fc44e2f2..., NOT yet uploaded to Supabase and NOT yet wired to runtime. Rejected earlier candidate frames remain excluded. Existing old settlement image, authored RU/UZ JSON, choices, story IDs and saved progress unchanged. PR Draft, no merge/deploy. 2026-11-16 A02 public Storage object 192494 bytes image/webp, SHA256 matches master by independent Seven Roads CI run #43806638375, 11/11 assets. RU/UZ runtime overlay and gallery wired on branch; reader/browser CI pending. 2026-11-18 Stage2 A03: owner accepted corrected v2 image with one fewer background person; source PNG byte-identical preserved, production WebP and metadata stored in Library at /stage2/S2E4/. Verified one exact RU/UZ post-choice text anchor after virtual S2E3/S2E4 split. Supabase not uploaded, public SHA/CI and runtime integration pending. S2E4-A04 planned only, not approved. Stage1 preserved; no literary or progress edits. 2026-11-18 Stage2 A04: owner explicitly accepted one image of Ordan's woman informant arriving on a bay horse. Original PNG 1671x941 unchanged, WebP and metadata stored in Library /stage2/S2E4. Exact RU/UZ shared anchors occur once after S2E3/S2E4 virtual split. A03/A04 both approved and library-stored; neither uploaded or runtime-integrated yet. No release. 2026-11-18: owner-uploaded A03/A04 Supabase Storage; metadata image/webp sizes match, real public GET/bytes/SHA pass CI #44284472357 at 3ef8cae. New RU/UZ shared overlays, registry, sorted gallery checks on Draft PR #339. QA exact HEAD pending; no production merge. Final S2E4 Stage2 QA: GET/MIME/bytes/SHA PASS 31/31 webps (#44284472357 at 3ef8cae), bilingual anchors 62/62, reader/gallery/virtual split/typecheck/build/browser CI #44285018306 SUCCESS, Season 2 Tier A #44285018277 SUCCESS at SHA 299360e64933bb81adb1bf37b20b066cedbf9db8. Draft PR only; NO publication. 2026-11-19 integration checkpoint: 36/36 public WebPs verified by GitHub Actions #44462697595; source-locked bilingual 72 anchors, reading series, gallery and virtual splits + typecheck/build/browser PASS #44463569934 attempt 2 at c466b183; Tier A #44463569887 SUCCESS. Draft PR #348 only; other accepted images without public Storage remain not integrated, no merge/deploy. 2026-11-19: all accepted Stage2 assets in this episode uploaded and SHA-verified; RU/UZ reader, virtual-series boundaries and gallery tests PASS on exact code SHA adaa131 (Seven Roads #44466104408; Tier A #44466104403). Draft only, no Stage2 release."
     },
     {
       "season": 3,
@@ -578,10 +671,44 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 1,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_2_approved_uploaded_integrated_SHA_verified_QA_passed_in_Draft_PR_348_unpublished",
+      "asset_ids": [
+        "seven_roads_s3e4_old_passage_map_recollection_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E4-A01",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e4_old_passage_map_recollection_01_APPROVED",
+          "kind": "shared",
+          "phase": "post_choice_text",
+          "part_id": "story2_part_5_first_investigation",
+          "ru_after_text": "— Старый скотный проход у прежнего караванного двора.",
+          "uz_after_text": "— Eski karvonsaroydagi chorva o‘tish joyi.",
+          "acceptance": "owner_explicit_approved_corrected_temur_visual_reference_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E4/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E4/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E4/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.metadata.json",
+          "master_bytes": 2722202,
+          "master_sha256": "6e4d5008a1ca28f38672d8213111c5802af8d1a5fa31d018f09380bc7818e8d4",
+          "webp_bytes": 309568,
+          "webp_sha256": "3382fd3b75f81ef44557400dc3099df4057281fbc259daa2148e3a30dfd36079",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44465548262,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
+        }
+      ],
+      "notes": "2026-11-18: S3E4-A01 approved by owner after regenerating Temur closer to established face/costume reference; original accepted PNG, WebP derivative, SHA256 metadata preserved in Library. Single RU/UZ post-choice exact anchor in original P5 after the S3E3→S3E4 virtual reader split. No Supabase upload / public hash verification / runtime / QA yet. Old story, existing scene IDs and family progress unchanged. Separate Draft PR from Stage2 A (#338/#339). 2026-11-19: latest 5 owner-uploaded Stage2 WebPs confirmed exact public GET/MIME/bytes/SHA256 by CI #44465548262 at 3ac83c; added RU/UZ overlay in Draft PR #348 pending final QA; no deploy or main merge. 2026-11-19: all accepted Stage2 assets in this episode uploaded and SHA-verified; RU/UZ reader, virtual-series boundaries and gallery tests PASS on exact code SHA adaa131 (Seven Roads #44466104408; Tier A #44466104403). Draft only, no Stage2 release."
     },
     {
       "season": 3,
@@ -595,10 +722,76 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_2_approved_uploaded_integrated_SHA_verified_QA_passed_in_Draft_PR_348_unpublished",
+      "asset_ids": [
+        "seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED",
+        "seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E5-A01",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED",
+          "kind": "shared",
+          "part_id": "story2_part_7_samira_check_and_third_track",
+          "phase": "post_choice_text",
+          "ru_after_text": "Самира сидела на Булуте у входа во двор.",
+          "uz_after_text": "Samira Bulutda hovli kirishida turardi.",
+          "acceptance": "owner_explicit_approved_after_child_age_correction_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E5/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E5/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E5/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.metadata.json",
+          "master_bytes": 2727303,
+          "master_sha256": "1cfb8e7a407804ceedd123201d8e86b37c13300c70fe8d541704fdba3a05ce61",
+          "webp_bytes": 302450,
+          "webp_sha256": "84ccf7e58b48acff2495453846578a6a0bcfe47efb369836a885ad815dfd76c6",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44465548262,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
+        },
+        {
+          "candidate_id": "S3E5-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED",
+          "kind": "shared",
+          "part_id": "story2_part_7_samira_check_and_third_track",
+          "phase": "post_choice_text",
+          "ru_after_text": "Он показал Самире рисунок знака, который сделал у капитана.",
+          "uz_after_text": "Temur sardorning oldida chizib olgan qaroqchilar belgisini Samiraga ko‘rsatdi.",
+          "acceptance": "owner_explicit_approved_first_candidate_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E5/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E5/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E5/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.metadata.json",
+          "master_bytes": 2477611,
+          "master_sha256": "44c220c3025923c395bb6395a51afc2b46336466f0e075e7a2d77db723b3a4b4",
+          "webp_bytes": 234486,
+          "webp_sha256": "baafd722816ee46782929561017f516704ba750c8df053f80e1aece6531497f2",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44465548262,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
+        }
+      ],
+      "notes": "2026-11-18 Stage2 S3E5-A01: owner accepted second revised version of children Temur and Samira at Aras old yard after pointing out previous candidate looked too adult. Original approved PNG preserved byte-for-byte; WebP + SHA256 metadata stored in QISSA Library. Anchor is unique RU/UZ in original story2_part_7_samira_check_and_third_track post_choice_text, preceding S3E5/S3E6 virtual split; shared across both routes. Supabase upload, public GET/MIME/bytes/SHA and runtime QA pending. S3E5-A02 owner approved and Library stored as original PNG, WebP, JSON metadata; no Storage upload, runtime wiring or QA for either Stage2 S3E5 asset. No changes to authored RU/UZ literature, old images, choice/part IDs or family progress. 2026-11-19: latest 5 owner-uploaded Stage2 WebPs confirmed exact public GET/MIME/bytes/SHA256 by CI #44465548262 at 3ac83c; added RU/UZ overlay in Draft PR #348 pending final QA; no deploy or main merge. 2026-11-19: all accepted Stage2 assets in this episode uploaded and SHA-verified; RU/UZ reader, virtual-series boundaries and gallery tests PASS on exact code SHA adaa131 (Seven Roads #44466104408; Tier A #44466104403). Draft only, no Stage2 release."
     },
     {
       "season": 3,
@@ -658,10 +851,44 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 1,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_2_approved_uploaded_integrated_SHA_verified_QA_passed_in_Draft_PR_348_unpublished",
+      "asset_ids": [
+        "seven_roads_s3e7_captain_stops_writing_01_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E7-A01",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e7_captain_stops_writing_01_APPROVED",
+          "kind": "shared",
+          "part_id": "story2_part_9_interrogation_and_sarvan_token",
+          "phase": "story_text",
+          "ru_after_text": "Капитан перестал писать.",
+          "uz_after_text": "Sardor yozishni to‘xtatdi.",
+          "acceptance": "owner_explicit_approved_final_window_geography_revision_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E7/seven_roads_s3e7_captain_stops_writing_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E7/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E7/seven_roads_s3e7_captain_stops_writing_01_APPROVED.metadata.json",
+          "master_bytes": 2438971,
+          "master_sha256": "98b5a05ae14506d9f5e6f0175a68808446e66e4fa5b54bf830d691ff90bb54f1",
+          "webp_bytes": 239958,
+          "webp_sha256": "22e92a47aad3f49f3bc1c7c27d5814bcafdf7f6872b36bf6b1fb22a723c42d65",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44465548262,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
+        }
+      ],
+      "notes": "2026-11-18: owner explicitly approved second S3E7-A01 image after requested review/correction of guardroom-window exterior. Final accepted PNG byte-preserved in QISSA Library; WebP and SHA256 metadata stored. Unique shared RU/UZ story_text anchors in story2_part_9_interrogation_and_sarvan_token, after Nadir capture, pre-S3E8. Supabase upload/public hash/runtime/QA pending. No changes to literature, IDs, earlier frames or progress. 2026-11-19: latest 5 owner-uploaded Stage2 WebPs confirmed exact public GET/MIME/bytes/SHA256 by CI #44465548262 at 3ac83c; added RU/UZ overlay in Draft PR #348 pending final QA; no deploy or main merge. 2026-11-19: all accepted Stage2 assets in this episode uploaded and SHA-verified; RU/UZ reader, virtual-series boundaries and gallery tests PASS on exact code SHA adaa131 (Seven Roads #44466104408; Tier A #44466104403). Draft only, no Stage2 release."
     },
     {
       "season": 3,
@@ -692,10 +919,77 @@
       "stage_1_new_shared_scene_count": 0,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "not_started",
-      "asset_ids": [],
-      "exact_anchor_pairs": [],
-      "notes": ""
+      "artwork_acceptance": "stage_2_approved_uploaded_integrated_SHA_verified_QA_passed_in_Draft_PR_348_unpublished",
+      "asset_ids": [
+        "seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED",
+        "seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED"
+      ],
+      "exact_anchor_pairs": [
+        {
+          "candidate_id": "S3E9-A01",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED",
+          "kind": "shared",
+          "part_id": "story3_part_1_old_yard_niche",
+          "phase": "story_text",
+          "ru_after_text": "Булут шагнул поперёк.",
+          "uz_after_text": "Bulut uning yo‘lini to‘sib qo‘ydi.",
+          "acceptance": "owner_explicit_approved_third_candidate_realistic_horse_blocking_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.metadata.json",
+          "master_bytes": 2692950,
+          "master_sha256": "5e12c595462e3124f37d9b45606a83e8e4a60440797d54ab05bed76f4ae61894",
+          "webp_bytes": 297866,
+          "webp_sha256": "f3122c3122cc4b57eee23e3f032a28bd8dc06c4536bfb515e2f323e485ea9e34",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_metadata_verification": "2026-11-18 12:17 UTC: storage.objects image/webp, 297866 bytes",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44462697595_at_SHA_8f3da3070381af00c5e35747a703ec8c2aee2eb5",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44462697595,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
+        },
+        {
+          "candidate_id": "S3E9-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED",
+          "kind": "shared",
+          "part_id": "story3_part_1_old_yard_niche",
+          "phase": "story_text",
+          "ru_after_text": "Темур поднял лист и посмотрел сначала на рисунок, потом на настоящие ворота.",
+          "uz_after_text": "Temur varaqni ko‘tarib, avval rasmga, keyin haqiqiy darvozaga qaradi.",
+          "acceptance": "owner_explicit_approved_corrected_architecture_2026-11-18",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.metadata.json",
+          "master_bytes": 3041537,
+          "master_sha256": "63248b3921ca461fc2c80f6115a833e163513180b254ccd6fd5ac2ea5c0465e9",
+          "webp_bytes": 390878,
+          "webp_sha256": "19fec07e85c9a31b11fc09dfc78b13d3e246fb27f358e7bf24305d61b8127f8e",
+          "width": 1670,
+          "height": 942,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44462697595_at_SHA_8f3da3070381af00c5e35747a703ec8c2aee2eb5",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44462697595,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
+        }
+      ],
+      "notes": "2026-11-18 S3E9-A01 owner accepted final third version after correction of blotches and unrealistic startling pose. Bulut naturally blocks Shamol's access to trough while remaining relaxed; accepted exact PNG master preserved in QISSA Library with WebP/metadata. Verified unique shared RU/UZ story_text anchor in original story3_part_1_old_yard_niche before S3E9 choice. Storage public GET/SHA256, runtime and gallery QA NOT completed. S3E9-A02 remains planned only, not approved. Do not merge/deploy/publish without owner GO. 2026-11-18 Stage2 S3E9-A02: owner accepted corrected two-narrow-towers open-gateway sketch scene. Unchanged source PNG 1670x942, WebP and SHA256 metadata stored in Library. Exact unique shared RU/UZ source paragraph verified. A01 Storage metadata image/webp and 297866 bytes independently queried, public SHA pending; A02 upload pending, no runtime. No merge/deploy. 2026-11-19 integration checkpoint: 36/36 public WebPs verified by GitHub Actions #44462697595; source-locked bilingual 72 anchors, reading series, gallery and virtual splits + typecheck/build/browser PASS #44463569934 attempt 2 at c466b183; Tier A #44463569887 SUCCESS. Draft PR #348 only; other accepted images without public Storage remain not integrated, no merge/deploy. 2026-11-19: all accepted Stage2 assets in this episode uploaded and SHA-verified; RU/UZ reader, virtual-series boundaries and gallery tests PASS on exact code SHA adaa131 (Seven Roads #44466104408; Tier A #44466104403). Draft only, no Stage2 release."
     },
     {
       "season": 3,
@@ -860,9 +1154,10 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_2_approved_uploaded_integrated_SHA_verified_QA_passed_in_Draft_PR_348_unpublished",
       "asset_ids": [
-        "seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED"
+        "seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED",
+        "seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -891,9 +1186,40 @@
             "seven_roads_ci": 43868768235,
             "season2_tier_a_ci": 43868768338
           }
+        },
+        {
+          "candidate_id": "S4E1-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED",
+          "kind": "shared",
+          "part_id": "story4_part_1_false_notice_and_route_check",
+          "phase": "story_text",
+          "ru_after_text": "Капитан придвинул к ним рисунки.",
+          "uz_after_text": "Sardor rasmlarni ularning oldiga surdi.",
+          "acceptance": "owner_explicit_approved_corrected_no_orange_speckles_no_temur_sabre_2026-11-19",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E1/seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E1/seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E1/seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED.metadata.json",
+          "master_bytes": 2644704,
+          "master_sha256": "a430d5908df359abd7452b723ca690602b07e394499aa3cd308b1f7a0b670d08",
+          "webp_bytes": 265750,
+          "webp_sha256": "958575dc75613d497aa9101a87d4a7b520f38f77d7017da4b3ef886db9929fe1",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44462697595_at_SHA_8f3da3070381af00c5e35747a703ec8c2aee2eb5",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44462697595,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
         }
       ],
-      "notes": "2026-11-16: Stage1 S4E1-A01 departure storyboard prepared and bilingual anchors verified. First ImageGen candidate REJECTED: repeated S3E10 daytime guardhouse water trough with two standing children and young guard, not three mounted travelers departing Aras. No S4E1 Stage1 art accepted, stored or integrated. Current exact planned shared scene: morning road to Ordan, Temur rides Shamol nearly-black star/teal saddlecloth, Samira rides Bulut grey dapple/burgundy saddlecloth, one senior guard mounted at a distance, no road-post pillars or bay horse. Stage1 0/1, Stage2 1 planned. 2026-11-16 S4E1-A01 candidate #2 and #3 REJECTED: both depicted evening apples and horses at Samira's stable (S3E11 scene) instead of 3 mounted riders traveling at dawn; #3 also substituted a chestnut blaze horse for almost-black Shamol. No accepted artwork or runtime/storage, S4E1 Stage1 0/1. Isolate generation context before retrying. 2026-11-16 NEW S4E1-A01 IMAGE candidate road composition is correct: Temur mounted on near-black Shamol teal cloth, Samira mounted on WHITE Bulut burgundy cloth, third mounted guard, Aras behind at sunrise; but senior guard mismatches prior APPROVED S3E11 A01 (cloth turban/beard/clothing vs bronze helmet and armor). Candidate stored only REVIEW, NOT ACCEPTED: /QISSA/production/seven_roads/series30/review/S4E1/seven_roads_s4e1_dawn_road_three_riders_REVIEW_v1.png, 1672x941 sha256 221f6d73f9e294446e9a3801fd564cbf588535478653d71f098382695ac9a67e. Two isolated edit attempts REJECTED, one hallucinated a dashboard claiming unverified storage/CI and one replayed previous S3E11 apple scene. DO NOT TRUST IMAGE-GENERATED STATUS TEXT. No new S4E1 APPROVED, no WebP/storage/runtime. Fix ONLY the senior guard identity before reconsidering. 2026-11-16 owner explicitly APPROVED newly generated dawn road S4E1-A01 after correcting all horse coats: Temur on NEAR-BLACK Shamol with small white forehead star/teal saddlecloth, Samira on WHITE Bulut without star/maroon saddlecloth, helmeted older guard on PLAIN chestnut escort horse, all mounted, Aras behind at dawn. Replaces earlier REVIEW_v1 with mismatched unhelmeted escort; REVIEW_v1 stays unapproved. PNG 1672x941 sha256 31de773a6339d896436e25881d4ab20eecfb19cc0466b9965dcb5de6dc52e62b, optimized WebP 326202 bytes sha256 998a4ad57d178ef87439f253a0fb2ee005d54109b681ae9c7023738ad2090107, metadata in QISSA Library /QISSA/production/seven_roads/series30/stage1/S4E1/. User Storage upload required; no S4E1 runtime slot until independent remote SHA. Source RU/UZ, choices, IDs, prior art and saved progress unchanged. Stage1 1/1 artistically accepted, Stage2 still 1 planned. 2026-11-16 user uploaded the explicitly approved S4E1 A01 WebP. Exact Storage object verified 326202 bytes image/webp, independent GitHub Actions #43868285579 and #43868285540 SUCCESS (19/19 public WebP GET/MIME/bytes/SHA256). Additive S4E1 scene-only slot/asset URL and regression gallery order homecoming → morning departure → existing three pillars now wired on unpublished PR, reader/typecheck/build/browser CI pending. S4E1 Stage1 1/1 ART approved; Stage2 remains 1 planned. 2026-11-16 Stage1 FULLY COMPLETE S4E1 1/1: Seven Roads CI #43868768235 SUCCESS, Tier A Slot Check #43868768338 SUCCESS after retrying runner Chrome DevTools start failure (initial transient dbus connection issue). 19/19 public WebP SHA, 38/38 bilingual RU/UZ anchors, gallery homecoming → dawn road → pillars, no S4E2 spill, four-season browser, typecheck/build PASS. Stage2 quota of 1 more remains unchanged."
+      "notes": "2026-11-16: Stage1 S4E1-A01 departure storyboard prepared and bilingual anchors verified. First ImageGen candidate REJECTED: repeated S3E10 daytime guardhouse water trough with two standing children and young guard, not three mounted travelers departing Aras. No S4E1 Stage1 art accepted, stored or integrated. Current exact planned shared scene: morning road to Ordan, Temur rides Shamol nearly-black star/teal saddlecloth, Samira rides Bulut grey dapple/burgundy saddlecloth, one senior guard mounted at a distance, no road-post pillars or bay horse. Stage1 0/1, Stage2 1 planned. 2026-11-16 S4E1-A01 candidate #2 and #3 REJECTED: both depicted evening apples and horses at Samira's stable (S3E11 scene) instead of 3 mounted riders traveling at dawn; #3 also substituted a chestnut blaze horse for almost-black Shamol. No accepted artwork or runtime/storage, S4E1 Stage1 0/1. Isolate generation context before retrying. 2026-11-16 NEW S4E1-A01 IMAGE candidate road composition is correct: Temur mounted on near-black Shamol teal cloth, Samira mounted on WHITE Bulut burgundy cloth, third mounted guard, Aras behind at sunrise; but senior guard mismatches prior APPROVED S3E11 A01 (cloth turban/beard/clothing vs bronze helmet and armor). Candidate stored only REVIEW, NOT ACCEPTED: /QISSA/production/seven_roads/series30/review/S4E1/seven_roads_s4e1_dawn_road_three_riders_REVIEW_v1.png, 1672x941 sha256 221f6d73f9e294446e9a3801fd564cbf588535478653d71f098382695ac9a67e. Two isolated edit attempts REJECTED, one hallucinated a dashboard claiming unverified storage/CI and one replayed previous S3E11 apple scene. DO NOT TRUST IMAGE-GENERATED STATUS TEXT. No new S4E1 APPROVED, no WebP/storage/runtime. Fix ONLY the senior guard identity before reconsidering. 2026-11-16 owner explicitly APPROVED newly generated dawn road S4E1-A01 after correcting all horse coats: Temur on NEAR-BLACK Shamol with small white forehead star/teal saddlecloth, Samira on WHITE Bulut without star/maroon saddlecloth, helmeted older guard on PLAIN chestnut escort horse, all mounted, Aras behind at dawn. Replaces earlier REVIEW_v1 with mismatched unhelmeted escort; REVIEW_v1 stays unapproved. PNG 1672x941 sha256 31de773a6339d896436e25881d4ab20eecfb19cc0466b9965dcb5de6dc52e62b, optimized WebP 326202 bytes sha256 998a4ad57d178ef87439f253a0fb2ee005d54109b681ae9c7023738ad2090107, metadata in QISSA Library /QISSA/production/seven_roads/series30/stage1/S4E1/. User Storage upload required; no S4E1 runtime slot until independent remote SHA. Source RU/UZ, choices, IDs, prior art and saved progress unchanged. Stage1 1/1 artistically accepted, Stage2 still 1 planned. 2026-11-16 user uploaded the explicitly approved S4E1 A01 WebP. Exact Storage object verified 326202 bytes image/webp, independent GitHub Actions #43868285579 and #43868285540 SUCCESS (19/19 public WebP GET/MIME/bytes/SHA256). Additive S4E1 scene-only slot/asset URL and regression gallery order homecoming → morning departure → existing three pillars now wired on unpublished PR, reader/typecheck/build/browser CI pending. S4E1 Stage1 1/1 ART approved; Stage2 remains 1 planned. 2026-11-16 Stage1 FULLY COMPLETE S4E1 1/1: Seven Roads CI #43868768235 SUCCESS, Tier A Slot Check #43868768338 SUCCESS after retrying runner Chrome DevTools start failure (initial transient dbus connection issue). 19/19 public WebP SHA, 38/38 bilingual RU/UZ anchors, gallery homecoming → dawn road → pillars, no S4E2 spill, four-season browser, typecheck/build PASS. Stage2 quota of 1 more remains unchanged. 2026-11-19 Stage2 S4E1-A02: owner explicitly accepted corrected captain briefing artwork after orange dot cleanup and removal of Temur's sabre. Source 1672x941 PNG byte-for-byte preserved with WebP and checksum metadata in QISSA Library. Shared exact RU/UZ story_text anchor once each before S4E1/S4E2 virtual split. Supabase upload/public GET/MIME/size/SHA and reader integration/QA pending. Stage1 and authored RU/UZ source and all IDs unchanged; no merge or publication. 2026-11-19 integration checkpoint: 36/36 public WebPs verified by GitHub Actions #44462697595; source-locked bilingual 72 anchors, reading series, gallery and virtual splits + typecheck/build/browser PASS #44463569934 attempt 2 at c466b183; Tier A #44463569887 SUCCESS. Draft PR #348 only; other accepted images without public Storage remain not integrated, no merge/deploy. 2026-11-19: all accepted Stage2 assets in this episode uploaded and SHA-verified; RU/UZ reader, virtual-series boundaries and gallery tests PASS on exact code SHA adaa131 (Seven Roads #44466104408; Tier A #44466104403). Draft only, no Stage2 release."
     },
     {
       "season": 4,
@@ -907,11 +1233,13 @@
       "stage_1_new_shared_scene_count": 3,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 5,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_2_approved_uploaded_integrated_SHA_verified_QA_passed_in_Draft_PR_348_unpublished",
       "asset_ids": [
         "seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED",
         "seven_roads_s4e2_blue_triangle_merchants_02_APPROVED",
-        "seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED"
+        "seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED",
+        "seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED",
+        "seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -990,9 +1318,73 @@
             "seven_roads_ci": 43724832395,
             "season2_browser_ci": 43724832302
           }
+        },
+        {
+          "candidate_id": "S4E2-A04",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED",
+          "kind": "shared",
+          "part_id": "story4_part_1_false_notice_and_route_check",
+          "phase": "story_text",
+          "ru_after_text": "Во второй день он снова таскал тюки, носил воду и помогал у конюшен.",
+          "uz_after_text": "Ikkinchi kuni ham u yuk tashidi, suv olib keldi va otxonalarda yordam berdi.",
+          "acceptance": "owner_conditional_approved_after_real_pixel_reference_age_costume_review_2026-11-19",
+          "visual_review": "Compared actual approved S3E7 Nadir interrogation, S3E6 Nadir cart chase and final cleaned A04: curly dark hair, adolescent proportions, worn brown costume and burgundy scarf align; earlier speckled v1 not approved.",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.metadata.json",
+          "master_bytes": 2617865,
+          "master_sha256": "fb43bfeb937bae26c6adcd07ff2d1f3eea80de13529763f12ba54857d29f3a6f",
+          "webp_bytes": 262642,
+          "webp_sha256": "082c5bce29d694652d291dc976324539b27453ebe028b8b26d05ee3ffadedb3f",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44462697595_at_SHA_8f3da3070381af00c5e35747a703ec8c2aee2eb5",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44462697595,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
+        },
+        {
+          "candidate_id": "S4E2-A05",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED",
+          "kind": "shared",
+          "part_id": "story4_part_1_false_notice_and_route_check",
+          "phase": "story_text",
+          "ru_after_text": "Ордан встретил Темура и Самиру шумом тяжёлых колёс.",
+          "uz_after_text": "Ordan Temur bilan Samirani og‘ir g‘ildiraklarning shovqini bilan kutib oldi.",
+          "acceptance": "owner_explicit_approved_original_three_riders_scene_2026-11-19",
+          "acceptance_note": "Owner accepted first Ordan arrival candidate despite noted escort horse white forehead mark; attempts to correct re-generated Nadir and were rejected.",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.metadata.json",
+          "master_bytes": 2794411,
+          "master_sha256": "caec240c7738a5faae7d7806842d763676133925b0801c453d5d4a982376b059",
+          "webp_bytes": 321738,
+          "webp_sha256": "64f48cacfc600d50d2f8975c8b4c1af32242eb615b0c22a84239d6d4e33fdb0a",
+          "width": 1671,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_run_44465548262_at_SHA_3ac83c773cccb6981893a297e40490ef35a1c722",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44465548262,
+            "seven_roads_ci": 44466104408,
+            "season2_tier_a_ci": 44466104403
+          }
         }
       ],
-      "notes": "S4E2 stage 1 3/3 owner-accepted scenes: A01 final horse V2, A02 blue triangle and A03 Farid notices new Rider belts. All PNG/WebP/metadata stored in QISSA Library, all corresponding WebPs publicly hosted; GET/MIME/bytes/SHA256 6/6 pass and bilingual text anchor, virtual split, gallery lock and browser smoke CI pass (run 43724832395, 43724832302). All 3 integrated in draft PR only. Stage2 adds 2 further scenes later. No deploy/merge."
+      "notes": "S4E2 stage 1 3/3 owner-accepted scenes: A01 final horse V2, A02 blue triangle and A03 Farid notices new Rider belts. All PNG/WebP/metadata stored in QISSA Library, all corresponding WebPs publicly hosted; GET/MIME/bytes/SHA256 6/6 pass and bilingual text anchor, virtual split, gallery lock and browser smoke CI pass (run 43724832395, 43724832302). All 3 integrated in draft PR only. Stage2 adds 2 further scenes later. No deploy/merge. 2026-11-19 Stage2 S4E2-A04: owner conditional approval satisfied by inspecting original pixels against approved Nadir S3E7/S3E6 references (age, curls, worn brown costume, maroon scarf); accepted cleaned revision, not previous speckled first candidate. Accepted original PNG byte-preserved, WebP and SHA256 metadata stored in QISSA Library /stage2/S4E2/. RU/UZ story_text anchor unique in S4E2 before S4E3 virtual boundary. A05 planned, not owner-approved. Storage upload, remote SHA, runtime, QA pending. No literary/progress change or deployment. 2026-11-19 S4E2-A05 owner accepted first image as-is, immutable PNG/WebP/meta saved in QISSA Library; Storage not found, runtime blocked pending verified upload. 2026-11-19 integration checkpoint: 36/36 public WebPs verified by GitHub Actions #44462697595; source-locked bilingual 72 anchors, reading series, gallery and virtual splits + typecheck/build/browser PASS #44463569934 attempt 2 at c466b183; Tier A #44463569887 SUCCESS. Draft PR #348 only; other accepted images without public Storage remain not integrated, no merge/deploy. 2026-11-19: latest 5 owner-uploaded Stage2 WebPs confirmed exact public GET/MIME/bytes/SHA256 by CI #44465548262 at 3ac83c; added RU/UZ overlay in Draft PR #348 pending final QA; no deploy or main merge. 2026-11-19: all accepted Stage2 assets in this episode uploaded and SHA-verified; RU/UZ reader, virtual-series boundaries and gallery tests PASS on exact code SHA adaa131 (Seven Roads #44466104408; Tier A #44466104403). Draft only, no Stage2 release."
     },
     {
       "season": 4,
@@ -1052,10 +1444,12 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 4,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_2_A03_A04_owner_approved_library_stored_uploaded_public_SHA_verified_runtime_integrated_QA_passed_Draft_unpublished",
       "asset_ids": [
         "seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED",
-        "seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED"
+        "seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED",
+        "seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED",
+        "seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -1111,9 +1505,71 @@
             "seven_roads_ci": 44022908249,
             "season2_tier_a_ci": 44022908238
           }
+        },
+        {
+          "candidate_id": "S4E4-A03",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED",
+          "kind": "shared",
+          "part_id": "story4_part_2_nadir_red_hill_clue",
+          "phase": "post_choice_text",
+          "ru_after_text": "Только за дальним навесом, скрывшись за сложенными тюками, он развернул записку и прочитал сообщение.",
+          "uz_after_text": "Faqat uzoqdagi soyabon ortiga, taxlangan yuklar orasidagi pana joyga o‘tgach, u xatni ochib o‘qidi.",
+          "acceptance": "owner_explicit_approved_second_clean_review_2026-11-19",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E4/seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E4/seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E4/seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED.metadata.json",
+          "master_bytes": 2504504,
+          "master_sha256": "2c204b436a569ecbe36b30d34112366e94e67df49530dee16bd45e23d1e5fb36",
+          "webp_bytes": 227722,
+          "webp_sha256": "11d55a0731e289662c68df711e69e76598f4a82b9e55f57acd5250dd05cd325c",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_be310a4adff6b277d64eadcd63ebb9048ef4d112",
+          "qa_status": "RU_UZ_virtual_episodes_gallery_order_unlock_typecheck_build_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_44480510301_SHA_7fbb23c81b70faf128ebeb45c37e386e9440833a",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44480510301,
+            "season2_tier_a_ci": 44480912275,
+            "seven_roads_ci": 44480912363
+          }
+        },
+        {
+          "candidate_id": "S4E4-A04",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED",
+          "kind": "shared",
+          "part_id": "story4_part_2_nadir_red_hill_clue",
+          "phase": "post_choice_text",
+          "ru_after_text": "За воротами Орданы первым уже мчался гонец с предупреждением для Данияра.",
+          "uz_after_text": "Ordan darvozasidan avval Daniyarni ogohlantirishga ketgan chopar otilib chiqdi.",
+          "acceptance": "owner_explicit_approved_corrected_no_gate_fabric_2026-11-19",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E4/seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E4/seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E4/seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED.metadata.json",
+          "master_bytes": 2809929,
+          "master_sha256": "26e2b100bfa861c537eae7bd58b731b1ebc9ef33f918d1dbf37973003f78f700",
+          "webp_bytes": 303514,
+          "webp_sha256": "4251892ce76ba4741ca568dc8535bf6af218d53492b1c52d3fe6f847e92517c8",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_be310a4adff6b277d64eadcd63ebb9048ef4d112",
+          "qa_status": "RU_UZ_virtual_episodes_gallery_order_unlock_typecheck_build_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_44480510301_SHA_7fbb23c81b70faf128ebeb45c37e386e9440833a",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44480510301,
+            "season2_tier_a_ci": 44480912275,
+            "seven_roads_ci": 44480912363
+          }
         }
       ],
-      "notes": "2026-11-16 verified S4E4 stage1 two exact bilingual scenes and authored source; production storyboard docs/qissa/illustrations/series30/S4E4_RED_HILL_NADIR_STORYBOARD_2026-11-16.md. Stage1-A01 two-wooden-token inspection after exact RU/UZ story_text anchor, A02 after exact RU/UZ post_choice_text flask-left-rear-hook anchor; original Nadir contact already approved, preserve it, no new facial invention. First isolated ImageGen A01 candidate REJECTED: repeated S4E3 prison wagon with new unauthorized signpost/guards, no Nadyr/wooden tokens/buckets. No S4E4 art accepted/stored/integrated. Stage1 0/2; Stage2 2 planned. 2026-11-16 S4E4-A01 after S4E3 acceptance: TWO further isolated ImageGen attempts REJECTED. Both repeated S4E3 Danyar/prison wagon road fork scene, despite requiring a tight close-up of two wooden tokens and water buckets at Hamid caravan yard; second added unauthorized roadside three-pillar symbol/sign. No new S4E4 asset accepted/saved/registered and no new Storage/runtime. Total S4E4-A01 wrong attempts now three, first logged earlier. Avoid same generator context loop; require truly clean scene generation and visual comparison before status change. S4E4 Stage1 0/2; Stage2 2 still planned. 2026-11-17 one NEW original S4E4-A01 REVIEW candidate created, image generation id e119e63f-e0d2-4754-920e-1fa41b762f63, 1672x941 PNG 2533096 bytes sha256 f462f15fcd824b229846f489ad6dcba38f6850bca54e57aa52ae87efded8956e; visible two adult pairs of hands, two small wooden tokens, one twin-tower engraving, two water buckets, blurred caravan yard and no wagon/guards/road fork. Visual content passes preliminary scene check; exact painterly style fit and final owner artistic approval PENDING. This is not an APPROVED asset and is not uploaded/registered; Stage1 remains 0/2. 2026-11-17 owner EXPLICITLY APPROVED the current S4E4-A01 visual candidate e119e63f-e0d2-4754-920e-1fa41b762f63. Original PNG copied byte-for-byte to QISSA Library stage1/S4E4 and WebP produced lossily with quality 92 at unchanged 1672x941; master 2533096 bytes SHA256 f462f15fcd824b229846f489ad6dcba38f6850bca54e57aa52ae87efded8956e; WebP 346950 bytes SHA256 7ded6261bbb78d8dc94de6d922f238057a7cc54ea01e5f0fe37cc027fc3c45e6, metadata JSON saved. Owner art acceptance S4E4 1/2; total Stage1 21/29 ART accepted, 20/29 integrated. Supabase storage.objects exact object absent as of check; public GET/SHA, app runtime and gallery CI NOT done. Await owner/user upload of final WebP, then verify and wire S4E4 (not S4E3). Keep remaining S4E4-A02 unstarted; no merge/deploy/literary/progress edits. 2026-11-17 Supabase Storage verified exact object 346950 bytes image/webp (uploaded 04:10:31Z). Additive S4E4-A01 shared story_text overlay and hosted asset URL wired to Draft PR #334; independent public GET/SHA, gallery and browser CI pending. S4E4 Stage1 remains 1/2 accepted and 0/2 technically confirmed until CI; total Stage1 21/29 artistic accepted, 20/29 verified integrated until green. 2026-11-17 S4E4-A01 final verification successful: Seven Roads CI #44015567471 PASS with public WebP GET/MIME/346950 bytes/SHA256; remote approved images 21/21, 42 unique RU/UZ anchors, correct S4E4 gallery Nadir contact > wooden tokens, new token not in S4E3, gallery seen unlock and prior scenes spoiler-locked, four-seasons/reading-series/typecheck/build/browser PASS; Tier A #44015567549 SUCCESS. Stage1 21/29 ART approved and 21/29 technically integrated; S4E4 Stage1 partial 1/2 integrated, A02 not started. PR remains Draft, no merge/deploy. 2026-11-17 S4E4-A02 one new ImageGen candidate REVIEW_v1 (gen 299dc770-ef43-4b38-ad31-5a9b7d11652f) for Nadyr placing a corked leather flask on a rear-left hook of Hamid's ordinary loaded cargo wagon. 1672x941 PNG 2555139 bytes, SHA256 ee7b3bcf60a0194460621019fadc61435a0d1cf573cb23586155223451bc021c. Exact post_choice_text RU/UZ anchors checked 1/1 at paragraph 13, image assessed for cargo-cart, hidden note, no pickup/guards/prison wagon/road fork; final owner QA must confirm hook is unambiguously left rear and garment simplicity. Review PNG and metadata archived in QISSA Library /QISSA/production/seven_roads/series30/review/S4E4/. NOT APPROVED; no new asset_id in queue, no WebP/Storage/runtime, no count change. Stage1 remains 21/29 accepted and integrated; S4E4 Stage1 1/2. 2026-11-17 owner found previous S4E4-A02 REVIEW_v1 put flask on RIGHT rear side, so it is not canon-correct. Corrected REVIEW_v2 is precisely horizontal-mirrored v1, reversing wagon handedness; 1672x941 PNG 2431372 bytes SHA256 e7b72f74267cb7280a4a69b97c66e0f50c1c1500f8a46664a6a83031646812a8 in QISSA Library /QISSA/production/seven_roads/series30/review/S4E4/ with matching metadata. REVIEW_v2 shown to owner; approval pending, no WebP/Storage/runtime, no count change. Previous candidate v1 is superseded for art review, not approved. 2026-11-17 owner explicitly APPROVED corrected S4E4-A02 mirrored REVIEW_v2 after rejecting wrong-side v1. EXACT original PNG 1672x941 2431372 bytes SHA256 e7b72f74267cb7280a4a69b97c66e0f50c1c1500f8a46664a6a83031646812a8 retained as APPROVED master. WebP quality92 method6 369590 bytes SHA256 6a853a94b7600fa6750a34fbeb0f081c197169bab34401cb2308f3a882ffdc7b; PNG/WebP/metadata saved in permanent QISSA Library stage1/S4E4. Exact RU/UZ post_choice_text paragraph 13 anchors unchanged. Supabase storage.objects returned no matching object, so no hosted URL or runtime registration. S4E4 Stage1 2/2 ART accepted, only A01 1/2 integrated; overall Stage1 22/29 ART accepted, 21/29 integrated. Do not claim new CI integration; no merge/deploy/prose/progress changes. 2026-11-17 Supabase Storage confirmed exact S4E4-A02 approved WebP present image/webp 369590 bytes (05:06:48Z), pending independent remote SHA via GitHub CI. Added shared RU/UZ post-choice runtime overlay / registered hosted URL / gallery assertions. Stage1 art accepted 22/29, technically integrated remains 21/29 until successful new CI. No prose/progress edits. 2026-11-17 Seven Roads CI #44022908249 and Season 2 Tier A #44022908238 SUCCESS on code SHA 8df1ae48d5da0cb7741584f97d07b1c0d6bf831f, public WebP GET/MIME/369590 bytes/SHA 6a853a94b7600fa6750a34fbeb0f081c197169bab34401cb2308f3a882ffdc7b verified. 22/22 approved webp remote, 44/44 RU/UZ anchors, S4E4 gallery existing Nadir contact > wooden tokens > flask, no S4E3 leak, mark seen unlock only read scenes, 30-series, typecheck, build and browser smoke PASS. S4E4 Stage1 2/2 art accepted integrated complete; whole Stage1 22/29 artistic and technically integrated. No merge/deploy."
+      "notes": "2026-11-16 verified S4E4 stage1 two exact bilingual scenes and authored source; production storyboard docs/qissa/illustrations/series30/S4E4_RED_HILL_NADIR_STORYBOARD_2026-11-16.md. Stage1-A01 two-wooden-token inspection after exact RU/UZ story_text anchor, A02 after exact RU/UZ post_choice_text flask-left-rear-hook anchor; original Nadir contact already approved, preserve it, no new facial invention. First isolated ImageGen A01 candidate REJECTED: repeated S4E3 prison wagon with new unauthorized signpost/guards, no Nadyr/wooden tokens/buckets. No S4E4 art accepted/stored/integrated. Stage1 0/2; Stage2 2 planned. 2026-11-16 S4E4-A01 after S4E3 acceptance: TWO further isolated ImageGen attempts REJECTED. Both repeated S4E3 Danyar/prison wagon road fork scene, despite requiring a tight close-up of two wooden tokens and water buckets at Hamid caravan yard; second added unauthorized roadside three-pillar symbol/sign. No new S4E4 asset accepted/saved/registered and no new Storage/runtime. Total S4E4-A01 wrong attempts now three, first logged earlier. Avoid same generator context loop; require truly clean scene generation and visual comparison before status change. S4E4 Stage1 0/2; Stage2 2 still planned. 2026-11-17 one NEW original S4E4-A01 REVIEW candidate created, image generation id e119e63f-e0d2-4754-920e-1fa41b762f63, 1672x941 PNG 2533096 bytes sha256 f462f15fcd824b229846f489ad6dcba38f6850bca54e57aa52ae87efded8956e; visible two adult pairs of hands, two small wooden tokens, one twin-tower engraving, two water buckets, blurred caravan yard and no wagon/guards/road fork. Visual content passes preliminary scene check; exact painterly style fit and final owner artistic approval PENDING. This is not an APPROVED asset and is not uploaded/registered; Stage1 remains 0/2. 2026-11-17 owner EXPLICITLY APPROVED the current S4E4-A01 visual candidate e119e63f-e0d2-4754-920e-1fa41b762f63. Original PNG copied byte-for-byte to QISSA Library stage1/S4E4 and WebP produced lossily with quality 92 at unchanged 1672x941; master 2533096 bytes SHA256 f462f15fcd824b229846f489ad6dcba38f6850bca54e57aa52ae87efded8956e; WebP 346950 bytes SHA256 7ded6261bbb78d8dc94de6d922f238057a7cc54ea01e5f0fe37cc027fc3c45e6, metadata JSON saved. Owner art acceptance S4E4 1/2; total Stage1 21/29 ART accepted, 20/29 integrated. Supabase storage.objects exact object absent as of check; public GET/SHA, app runtime and gallery CI NOT done. Await owner/user upload of final WebP, then verify and wire S4E4 (not S4E3). Keep remaining S4E4-A02 unstarted; no merge/deploy/literary/progress edits. 2026-11-17 Supabase Storage verified exact object 346950 bytes image/webp (uploaded 04:10:31Z). Additive S4E4-A01 shared story_text overlay and hosted asset URL wired to Draft PR #334; independent public GET/SHA, gallery and browser CI pending. S4E4 Stage1 remains 1/2 accepted and 0/2 technically confirmed until CI; total Stage1 21/29 artistic accepted, 20/29 verified integrated until green. 2026-11-17 S4E4-A01 final verification successful: Seven Roads CI #44015567471 PASS with public WebP GET/MIME/346950 bytes/SHA256; remote approved images 21/21, 42 unique RU/UZ anchors, correct S4E4 gallery Nadir contact > wooden tokens, new token not in S4E3, gallery seen unlock and prior scenes spoiler-locked, four-seasons/reading-series/typecheck/build/browser PASS; Tier A #44015567549 SUCCESS. Stage1 21/29 ART approved and 21/29 technically integrated; S4E4 Stage1 partial 1/2 integrated, A02 not started. PR remains Draft, no merge/deploy. 2026-11-17 S4E4-A02 one new ImageGen candidate REVIEW_v1 (gen 299dc770-ef43-4b38-ad31-5a9b7d11652f) for Nadyr placing a corked leather flask on a rear-left hook of Hamid's ordinary loaded cargo wagon. 1672x941 PNG 2555139 bytes, SHA256 ee7b3bcf60a0194460621019fadc61435a0d1cf573cb23586155223451bc021c. Exact post_choice_text RU/UZ anchors checked 1/1 at paragraph 13, image assessed for cargo-cart, hidden note, no pickup/guards/prison wagon/road fork; final owner QA must confirm hook is unambiguously left rear and garment simplicity. Review PNG and metadata archived in QISSA Library /QISSA/production/seven_roads/series30/review/S4E4/. NOT APPROVED; no new asset_id in queue, no WebP/Storage/runtime, no count change. Stage1 remains 21/29 accepted and integrated; S4E4 Stage1 1/2. 2026-11-17 owner found previous S4E4-A02 REVIEW_v1 put flask on RIGHT rear side, so it is not canon-correct. Corrected REVIEW_v2 is precisely horizontal-mirrored v1, reversing wagon handedness; 1672x941 PNG 2431372 bytes SHA256 e7b72f74267cb7280a4a69b97c66e0f50c1c1500f8a46664a6a83031646812a8 in QISSA Library /QISSA/production/seven_roads/series30/review/S4E4/ with matching metadata. REVIEW_v2 shown to owner; approval pending, no WebP/Storage/runtime, no count change. Previous candidate v1 is superseded for art review, not approved. 2026-11-17 owner explicitly APPROVED corrected S4E4-A02 mirrored REVIEW_v2 after rejecting wrong-side v1. EXACT original PNG 1672x941 2431372 bytes SHA256 e7b72f74267cb7280a4a69b97c66e0f50c1c1500f8a46664a6a83031646812a8 retained as APPROVED master. WebP quality92 method6 369590 bytes SHA256 6a853a94b7600fa6750a34fbeb0f081c197169bab34401cb2308f3a882ffdc7b; PNG/WebP/metadata saved in permanent QISSA Library stage1/S4E4. Exact RU/UZ post_choice_text paragraph 13 anchors unchanged. Supabase storage.objects returned no matching object, so no hosted URL or runtime registration. S4E4 Stage1 2/2 ART accepted, only A01 1/2 integrated; overall Stage1 22/29 ART accepted, 21/29 integrated. Do not claim new CI integration; no merge/deploy/prose/progress changes. 2026-11-17 Supabase Storage confirmed exact S4E4-A02 approved WebP present image/webp 369590 bytes (05:06:48Z), pending independent remote SHA via GitHub CI. Added shared RU/UZ post-choice runtime overlay / registered hosted URL / gallery assertions. Stage1 art accepted 22/29, technically integrated remains 21/29 until successful new CI. No prose/progress edits. 2026-11-17 Seven Roads CI #44022908249 and Season 2 Tier A #44022908238 SUCCESS on code SHA 8df1ae48d5da0cb7741584f97d07b1c0d6bf831f, public WebP GET/MIME/369590 bytes/SHA 6a853a94b7600fa6750a34fbeb0f081c197169bab34401cb2308f3a882ffdc7b verified. 22/22 approved webp remote, 44/44 RU/UZ anchors, S4E4 gallery existing Nadir contact > wooden tokens > flask, no S4E3 leak, mark seen unlock only read scenes, 30-series, typecheck, build and browser smoke PASS. S4E4 Stage1 2/2 art accepted integrated complete; whole Stage1 22/29 artistic and technically integrated. No merge/deploy. 2026-11-19 Stage2 S4E4-A03: owner approved second clean candidate after rejecting speckled version and unrelated three-rider regen. Exact PNG preserved and WebP/metadata saved to QISSA Library. Unique RU/UZ source post-choice paragraph anchors. No Supabase upload, public GET/SHA, reader integration, gallery QA, merge or deployment. S4E4-A04 remains planned/unapproved. 2026-11-19 S4E4-A04 owner accepted corrected mounted courier emerging through Ordan gate with two fabric banners removed; original accepted PNG byte-identical and WebP/metadata stored in QISSA Library. Exact unique RU/UZ shared post-choice paragraph before virtual S4E4/S4E5 split. Supabase upload and public hash, runtime/QA pending. A03 unchanged, no literature or progress modifications, no release. 2026-11-19: owner uploaded both Stage2 S4E4 WebPs; independent public HTTP GET/MIME/exact bytes/SHA256 passed Seven Roads CI #44480510301 and Tier A #44480510349, both at SHA 7fbb23c. Two scene overlays in Draft PR #348; integration and gallery browser QA pending. Do not merge/deploy. 2026-11-19: Seven Roads CI #44480912363 and Tier A #44480912275 SUCCESS on SHA be310a4. 43 hosted illustrations / 86 bilingual anchors, virtual S4E4 story, 4 scene sequence contact → tokens → flask → note → courier, gallery locks, browser smoke, typecheck and build verified. Supabase remote GET/MIME/bytes/SHA for both A03/A04 verified #44480510301. Draft only; no production release."
     },
     {
       "season": 4,
@@ -1203,9 +1659,10 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_2_A02_approved_stored_uploaded_public_SHA_verified_runtime_integrated_QA_passed_Draft_unpublished",
       "asset_ids": [
-        "seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED"
+        "seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED",
+        "seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -1234,9 +1691,40 @@
             "seven_roads_ci": 44035389651,
             "season2_tier_a_ci": 44035389446
           }
+        },
+        {
+          "candidate_id": "S4E6-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED",
+          "kind": "shared",
+          "part_id": "story5_part_1_false_road",
+          "phase": "post_choice_text",
+          "ru_after_text": "Когда поднял голову, на свету стал заметен тонкий белый шрам от левой брови к виску.",
+          "uz_after_text": "Boshini ko‘targanda chap qoshidan chakkasigacha ketgan ingichka oq chandiq yorug‘likda ko‘rindi.",
+          "acceptance": "owner_explicit_approved_final_corrected_scar_short_hair_ruined_round_tower_2026-11-19",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.metadata.json",
+          "master_bytes": 2529975,
+          "master_sha256": "b44814f2e5d3363974d8f847f112a3453a7477afa14c3311d23a5b410bc57593",
+          "webp_bytes": 228042,
+          "webp_sha256": "d0707e808b2778f43ed02fbc3c320840afa0c23880386360ed254ebdfc559bf9",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_6b86bba69517781052fb06b7533e20643c7f3684",
+          "qa_status": "RU_UZ_both_routes_virtual_split_gallery_order_spoiler_lock_typecheck_build_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_44498390175_at_SHA_6ac508aab71fcfdde9988c8699f48a6353e8695e",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44498390175,
+            "season2_tier_a_ci": 44498806316,
+            "seven_roads_ci": 44498806353
+          }
         }
       ],
-      "notes": "2026-11-17 Stage1 S4E6-A01 new single image candidate owner REVIEW (not approved). From story5 falseRoad interactive-v4 RU/UZ at story5_part_1_false_road/story_text paragraph125, first paragraph after virtual S4E5/S4E6 split at paragraph124: RU \"Они уже находились по северную сторону Каменного гребня; Красный холм остался за ним и отсюда не был виден.\"; UZ \"Ular allaqachon Tosh tizmasining shimoliy tomonida edi; Qizil tepalik tizma ortida qolgan va bu yerdan ko‘rinmasdi.\"; both occur exactly once. Three riders Temur (dark bay Shamol, teal tack), Samira (dapple gray Bulut, burgundy blanket), Rahim on unnamed brown horse, backs, wide northern Stone Ridge and distant Eastern Forest with NO visible Red Hill, fork signpost, branch route consequence or invented attackers. ImageGen id 0c89ce6a-d5cd-4033-9bea-ba6b08bcd333; PNG 1671x941 3146922 bytes SHA256 8d1fbee37a7267c6678b970851ab2d1350413ffb205669e88608df336fe1556d. PNG and metadata in QISSA Library /QISSA/production/seven_roads/series30/review/S4E6/. Preliminary scene/canon check passed; owner art acceptance pending. Previous approved fork image remains at story_text \"— Они открыты. Выбирайте.\" and real reinforcements later post_choice. No approved S4E6 asset/Storage/runtime, stage1 accepted/integrated remains 24/29 art, 23/29 integrated. 2026-11-17 owner approved FINAL S4E6-A01 (ImageGen 30d91217-dc88-46a5-80b7-5bd2792e99b9), after rejecting earlier gray or fully-white-maned Bulut renderings. Light near-white, lightly dappled Bulut with charcoal-gray mane/tail, burgundy blanket; dark-bay Shamol with teal blanket; third horse, no Red Hill or signpost. Exact RU/UZ story_text paragraph125 after virtual S4E5/S4E6 split at124. Final unmodified PNG 1670x941 2903929 bytes SHA256 ac8e97a5eff85abb71ee2b23318c698eedd93c816d71358d6bc85f4e180842e6; q92 WebP 476610 bytes SHA256 685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816; PNG/WebP/metadata archived Library stage1/S4E6. No Supabase object (verified absence) nor runtime slot. S4E6 1/1 art accepted, 0/1 integrated. Overall Stage1 25/29 accepted, 23/29 verified integrated until CI S4E5 succeeds. 2026-11-17 owner-uploaded approved WebP found in Supabase storage.objects: image/webp 476610 bytes, created 06:56:10Z. Additive bilingual S4E6 reader slot, asset URL and gallery tests now in PR #334; independent public GET/bytes/SHA256/typecheck/build/browser CI pending. S4E6 technical integration not yet counted until checks pass. Stage1 25/29 artistic accepted, 24/29 fully integrated until CI green. S4E8-A01 is still unapproved and must not be wired. 2026-11-17 S4E6-A01 runtime CLOSED after Seven Roads CI #44035389651 and Tier A #44035389446 SUCCESS: public GET image/webp 476610 bytes exact SHA256 685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816, total 25/25 hosted images, 50/50 exact RU/UZ anchors; S4E6 gallery northern ridge → existing fork → real reinforcements, S4E5 no leak, seen/spoiler protection, typecheck/build/browser PASS. Total Stage1 25/29 art accepted AND integrated."
+      "notes": "2026-11-17 Stage1 S4E6-A01 new single image candidate owner REVIEW (not approved). From story5 falseRoad interactive-v4 RU/UZ at story5_part_1_false_road/story_text paragraph125, first paragraph after virtual S4E5/S4E6 split at paragraph124: RU \"Они уже находились по северную сторону Каменного гребня; Красный холм остался за ним и отсюда не был виден.\"; UZ \"Ular allaqachon Tosh tizmasining shimoliy tomonida edi; Qizil tepalik tizma ortida qolgan va bu yerdan ko‘rinmasdi.\"; both occur exactly once. Three riders Temur (dark bay Shamol, teal tack), Samira (dapple gray Bulut, burgundy blanket), Rahim on unnamed brown horse, backs, wide northern Stone Ridge and distant Eastern Forest with NO visible Red Hill, fork signpost, branch route consequence or invented attackers. ImageGen id 0c89ce6a-d5cd-4033-9bea-ba6b08bcd333; PNG 1671x941 3146922 bytes SHA256 8d1fbee37a7267c6678b970851ab2d1350413ffb205669e88608df336fe1556d. PNG and metadata in QISSA Library /QISSA/production/seven_roads/series30/review/S4E6/. Preliminary scene/canon check passed; owner art acceptance pending. Previous approved fork image remains at story_text \"— Они открыты. Выбирайте.\" and real reinforcements later post_choice. No approved S4E6 asset/Storage/runtime, stage1 accepted/integrated remains 24/29 art, 23/29 integrated. 2026-11-17 owner approved FINAL S4E6-A01 (ImageGen 30d91217-dc88-46a5-80b7-5bd2792e99b9), after rejecting earlier gray or fully-white-maned Bulut renderings. Light near-white, lightly dappled Bulut with charcoal-gray mane/tail, burgundy blanket; dark-bay Shamol with teal blanket; third horse, no Red Hill or signpost. Exact RU/UZ story_text paragraph125 after virtual S4E5/S4E6 split at124. Final unmodified PNG 1670x941 2903929 bytes SHA256 ac8e97a5eff85abb71ee2b23318c698eedd93c816d71358d6bc85f4e180842e6; q92 WebP 476610 bytes SHA256 685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816; PNG/WebP/metadata archived Library stage1/S4E6. No Supabase object (verified absence) nor runtime slot. S4E6 1/1 art accepted, 0/1 integrated. Overall Stage1 25/29 accepted, 23/29 verified integrated until CI S4E5 succeeds. 2026-11-17 owner-uploaded approved WebP found in Supabase storage.objects: image/webp 476610 bytes, created 06:56:10Z. Additive bilingual S4E6 reader slot, asset URL and gallery tests now in PR #334; independent public GET/bytes/SHA256/typecheck/build/browser CI pending. S4E6 technical integration not yet counted until checks pass. Stage1 25/29 artistic accepted, 24/29 fully integrated until CI green. S4E8-A01 is still unapproved and must not be wired. 2026-11-17 S4E6-A01 runtime CLOSED after Seven Roads CI #44035389651 and Tier A #44035389446 SUCCESS: public GET image/webp 476610 bytes exact SHA256 685129bc2ea5c18f575d8ef6e9253ae4c2e706b58a07d4cf67ade9e587cc9816, total 25/25 hosted images, 50/50 exact RU/UZ anchors; S4E6 gallery northern ridge → existing fork → real reinforcements, S4E5 no leak, seen/spoiler protection, typecheck/build/browser PASS. Total Stage1 25/29 art accepted AND integrated. 2026-11-19 Stage2 S4E6-A02: owner accepted final corrected image after two scar/geometry critiques; last PNG (not earlier draft) byte-preserved in QISSA Library with derived WebP/SHA256 metadata. Unique RU/UZ post_choice_text anchor in story5_part_1_false_road. Historical rejected variants do not count. No Supabase upload, remote hash, RU/UZ wiring or gallery QA. PR independent of Stage2 integration #348; no merge/deploy. 2026-11-19: owner uploaded S4E6-A02 WebP; 44/44 public GET/MIME/bytes/SHA verification passed CI #44498390175 and Tier A #44498390145. New additive post-choice runtime overlay in PR #348, QA pending. Stage1 preserved; no release. 2026-11-19: S4E6-A02 integrated QA SUCCESS at SHA 6b86bba (Seven Roads #44498806353, Tier A #44498806316): RU/UZ both routes, S4E6 post-choice scar scene after real reinforcement departure, S4E5 split, image gallery spoilers, typecheck/build/browser. No release."
     },
     {
       "season": 4,
@@ -1267,10 +1755,11 @@
       "stage_1_new_shared_scene_count": 2,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 3,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_1_complete_and_stage_2_a03_owner_accepted_library_stored",
       "asset_ids": [
         "seven_roads_s4e8_wall_two_fronts_reverse_view_01_APPROVED",
-        "seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED"
+        "seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED",
+        "seven_roads_s4e8_temur_trembling_palm_03_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -1328,9 +1817,50 @@
             "seven_roads_ci": 44238324799,
             "seven_roads_ci_state": "failure_at_independent_dev_dependency_npm_audit_all_picomatch_GHSA-fc5q-39xc-vjpf"
           }
+        },
+        {
+          "candidate_id": "S4E8-A03",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e8_temur_trembling_palm_03_APPROVED",
+          "kind": "shared",
+          "slot_id": "SERIES30-S4E8-A03",
+          "anchor_key": "series30_s4e8_temur_trembling_palm",
+          "story_id": "seven_roads_dve_podmogi",
+          "story_version": "interactive-v3",
+          "part_id": "story6_part_2_two_reinforcements",
+          "phase": "post_choice_text",
+          "ru_after_text": "Темур посмотрел на ладонь. Она немного дрожала.",
+          "uz_after_text": "Temur kaftiga qaradi. U biroz titrardi.",
+          "acceptance": "owner_conditional_acceptance_fulfilled_by_visual_ref_and_neighbor_scene_review_2026_11_20",
+          "art_scene": "Тихая забота после битвы: Темур (~12) смотрит на слегка дрожащую ладонь, Самира (~12) и Рахим рядом у низкой каменной стены после сражения; башня справа и закрытая повозка слева; без сабель и будущих открытий",
+          "imagegen_id": "3496082c-9c6d-4cd5-8c1d-04debb76d0b1",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E8/seven_roads_s4e8_temur_trembling_palm_03_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E8/seven_roads_s4e8_temur_trembling_palm_03_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E8/seven_roads_s4e8_temur_trembling_palm_03_APPROVED.metadata.json",
+          "master_dimensions": "1672x941",
+          "png_bytes": 2746961,
+          "master_sha256": "1b3d18ab2d59ea10d0671246c992fea63a7a7839b1632e628ed09aa7ebd3883d",
+          "webp_dimensions": "1672x941",
+          "webp_bytes": 389740,
+          "webp_sha256": "41d29e6b1b1868fa0873f3faef5ce99af7665786e5903f2d22fbb55e36201094",
+          "derivative_note": "No crop; immutable exact user-reviewed 1672x941 PNG copied, WebP q90 method6 derived. Visual compared actual approved Stage1 S4E8 battle and badge PNGs and character sheet. Separate earlier rejected variants are not approved.",
+          "source_ru_blob_sha": "3130df982b8f64ad756ef5e60c2794c066463ebf",
+          "source_uz_blob_sha": "70b48c7d84a2a63e0dba6977eb5fa98e9342fd22",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e8_temur_trembling_palm_03_APPROVED.webp",
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_354",
+          "qa_status": "RU_UZ_exact_anchor_both_choices_correct_S4E8_gallery_chronology_spoiler_locks_four_season_browser_CI_passed",
+          "notes": "Owner said 'если по рефам ок то принимаем'; exact visible image Тихая забота после битвы (not alternative Тёплое утешение) visually validated against 01_heroes_horses_approved and both current S4E8 Stage1 images: children ~12, short tousled Temur hair, single Samira braid and low burgundy embroidered band, Rahim next to children, correct wagon/tower sides and aftermath chronology. Exact PNG/WebP/metadata in Library. Storage absent; DO NOT register URL/hosted_verified before upload and independent CI. No main merge/deploy/publish. 2026-11-20 owner-uploaded exact WebP found in QISSA story-images storage.objects: image/webp, 389740 bytes, existing exact key. Added only additive hosted asset registry entry, shared post_choice RU+UZ overlay and remote SHA+gallery QA in same unpublished Draft PR #354. Public GET/MIME/bytes/SHA and browser CI not yet passed; do not claim hosted_verified or production. VERIFIED 2026-11-20 on exact code HEAD f1a3043aea0dbc4d6d95c118a2fdc8280535c258: Seven Roads CI #44676428470 SUCCESS and Tier A #44676428556 SUCCESS. Public WebP GET + image/webp + length 389740 + SHA 41d29e6... PASS; total 48/48 remote WebPs, 96/96 RU/UZ unique anchors, 136 authored routes, spoiler-locked/chronology browser, typecheck and build PASS. Stage2 19/19 ART and 19/19 TECH IN DRAFT PR ONLY; no main merge, production release, family data or paid providers.",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e8_temur_trembling_palm_03_APPROVED.webp",
+          "remote_sha256_verification": "passed_exact_SHA_GHA_44676428470",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44676428470,
+            "seven_roads_ci": 44676428470,
+            "season2_tier_a_ci": 44676428556
+          }
         }
       ],
-      "notes": "Current single-path image is choice-specific; ensure new shared shots do not reveal a branch before selection. 2026-11-17 owner has not approved S4E8-A01. PRELIMINARY visual REVIEW_v1 created at source story6 part2 story_text RU/UZ paragraph44 (after split paragraph41), ImageGen c6cd8adb-8410-4e87-953c-7134ded2000b; 1670x941 PNG 2672791 bytes SHA256 3c82306553819996fbc785836d2e89cb5338993bf16c031668835fcac8ad388f; archived PNG+metadata at QISSA Library /QISSA/production/seven_roads/series30/review/S4E8/. Scene children behind low stone wall, watchtower/wagon in background. SELF-QA CONCERNS: Rahim is crouching with children despite protecting entrance from attacker in text, small red flag in distant fight is unapproved/invented. Therefore not recommended for final artistic acceptance without revision. A second generation 79c92f43-8746-4bd7-8427-1a7337970b59 MISFIRED by repeating S4E6 riders; discard. No S4E8 approved asset, Storage or runtime. Stage1 remains 25/29 owner-art accepted, now 24/29 technically integrated after S4E5 CI. 2026-11-17 first S4E8-A01 review v1 correctly depicts children behind stone wall but self-QA rejected Rahim crouched alongside them and invented distant red banner. Two further ImageGen off-target S4E6 rider scenes rejected. New targeted S4E8-A01 REVIEW_v2 ImageGen c6c9f0f9-8455-4e9d-a362-10ea43eea5fc fixes original scene: Rahim stands defending opening in wall to the RIGHT with curved saber, children remain protected behind wall, no red flag. Old watchtower, locked prison wagon with two horses, no blood, children unarmed. 1672x941 PNG 2775968 bytes SHA256 0916df50adefe96552523c473faa7ffadf62f3cc5c038e6c6cdc03b1c2d3b87c; PNG and metadata uploaded to QISSA Library /QISSA/production/seven_roads/series30/review/S4E8/. OWNER ART REVIEW PENDING, no approved asset ID/WebP/Storage/runtime or S4E8 count change. Stage1 25/29 accepted and integrated. 2026-11-17 owner requested rigorous audit before/after S4E8-A01 and authorized acceptance if source-accurate or correction otherwise. RU/UZ source story6 part2 p35-51 checked: after real reinforcements arrive, kids led to low wall p41, Rahim parries attacker p43, kids dismount p44; from wall two fronts visible p45, RUSTAM/4 road guards vs 8 attackers near tower p46, DANIYAR/6 convoy guards defend locked wagon vs 7 attackers p47; kids only draw sabres at p48/50, choice later. REVIEW_v2 did not depict wagon defense; not accepted. New ImageGen v3 6f5229e7-cb77-44fd-9153-f07121b5e8fe shows distinct tower and wagon fights, one kneeling guard near wagon, Rahim holding wall opening, Temur and Samira behind wall unarmed, no invented banners/blood/branch outcome; refs watchtower, approved Story6 reveal + wagon scene + character sheet visually compared. On owner's conditional authority v3 ART ACCEPTED. Anchor changed to exact FULL p47 RU/UZ paragraph (not p44), so reader never spoils dual fronts prior to prose; no source JSON edited. PNG 1672x941 2886790 bytes SHA256 0fea21bb759fba2b6cbe34b08fa3ed6cbc05293180b99cd8b02f2ee87ebd7b52; WebP 495942 bytes SHA256 b0f240eb4cff9be19ecb12126859462f5c03abdf8490c3cd082bfe4a3ffb191f; PNG/WebP/metadata in QISSA Library stage1/S4E8. Storage absent; do NOT wire runtime until upload and public SHA. S4E8 1/2 artistic accepted and 0/2 integrated, total Stage1 26/29 artistic accepted and 25/29 fully integrated. PR Draft no merge/deploy/prose/progress changes. 2026-11-17 REVOKED S4E8-A01 v3 after explicit owner rejection. Earlier conditional art approval was wrong: human/horse scale and perspective inconsistent, guard/raider sides not legible, watchtower and prison-wagon props differ materially from previously approved Story6 reveal and choice-b wagon-door images, ambiguous coherent wall geography/line of combat. Any old files named *_APPROVED in QISSA Library stage1/S4E8 are now WITHDRAWN/REJECTED, historical quarantine only; must NEVER upload, wire or count them. No S4E8 Stage1 art accepted; total ART accepted reverts 25/29; runtime remains 25/29. Canon story_text §47 anchor retains its unique RU/UZ validity but is NOT registered as slot until new candidate accepted. User requested full spatial and adjacent-image re-review; new art must match real approved source images, realistic 1.4-1.6m horse withers vs ~1.7m adult and wagon scale, who fights whom, separate watchtower vs wagon fronts, children and Rahim at wall. No literary/ID/progress edits. 2026-11-17 attempted THREE fresh corrective generations AFTER owner rejected v3: c0827826-a739-44c8-87fe-a3e6cb3435de, 630d13c7-b357-4b3c-8426-ff84932c3363, 2c6a29b0-92fd-48d5-886e-cd13330a1ce1. Each FAILED independent visual continuity QA by largely repeating the same tower/horse/wagon geometry and weak guard-vs-bandit grouping. None is approved, uploaded to Storage, added to queue, or to be reused. Actual owner-approved-before/rejected-v3/approved-after comparison collage at Library /QISSA/production/seven_roads/series30/review/S4E8/S4E8_A01_approved_before_rejected_v3_approved_after_comparison.png, sha256 a8e830074595f70146e23152e1c967ac6e16eb3e301442488e26471e3f84e1b3. Stage1 remains 25/29 art accepted and integrated. 2026-11-17 LATEST OWNER DECISION: user explicitly accepted FINAL pictured transformation gen 9677db21-e48d-4b15-a5b4-f642f756bce7 (parent a084f567-fbd8-4b97-a0b8-549ba70b197b) after targeted fighter orientation/sabre/relative size review. Owner accepted THIS image only. New unique asset_id seven_roads_s4e8_wall_two_fronts_reverse_view_01_APPROVED (distinct from owner-REJECTED old *_children_watchtower_two_fronts_01_APPROVED). Exact original master PNG 1672x941 3354712 bytes SHA256 2a7876b0ac8773abf7ed7b4327ddfd721a2bec16528d70029f83f86b771e350b; WebP Q90 method6 611862 bytes SHA256 f09303958074b3c40e656bdf6b267b469633696a27a33c1b7192b477e488ea57; master+derivative+metadata archived in QISSA Library /QISSA/production/seven_roads/series30/stage1/S4E8/. Source RU/UZ at unique story_text full wagon defense paragraph after two fronts and before children draw sabres. Artistically accepted 28/29; technically integrated remains 27/29. Real pixel QA found both fronts, Rahim at passage, children sheathed, two harnessed horses in plausible scale; due occlusion 15 attackers+13 adult guards cannot all be independently enumerated in the wide scene; source numbers unchanged and not asserted as exact depicted. Supabase storage.objects exact target absent; no URL/overlay/runtime/CI until actual upload & independent bytes/SHA verify. S4E8-A02 remains NOT STARTED until A01 technical completion under owner gate. No literary/IDs/family progress/approved assets changes; no merge/deploy/publish. 2026-11-18 USER CONFIRMED upload of prior approved (not botched sabre edit) S4E8-A01. Actual Supabase storage.objects confirms image/webp 611862 bytes at exactly approved asset_id path. Draft PR #334 receives additive shared SERIE30-S4E8-A01 slot in RU/UZ virtual S4E8 after unique wagon-defense paragraph and before children's sabres, hosted URL registration, 28th WebP GET/MIME/bytes/SHA CI gate and gallery spoiler lock tests. Original RU/UZ JSON, choice IDs, family progress unchanged. Technical integration remains 27/29 until all CI passes. 2026-11-18 verification at code HEAD 2ed848d2e476cc9b22e268c647f1d8261f131c8a: [Season 2 Tier A Slot Check #44234050689] SUCCESS independently verified all 28 public WebP GET/MIME/byte lengths/SHA256, including this exact 611862-byte S4E8 image, 56 unique RU/UZ anchors, S4E7/S4E8 slot localization, unread gallery locks, typecheck, build, four-season browser smoke. Thus this specific art A01 technically integrated, Stage1 ART 28/29 and TECH 28/29 in Draft PR (no production release). [Seven Roads CI #44234050679] FAILURE at npm audit:all BEFORE scene tests due 5 high severity dev-tool dependency advisories in picomatch via fdir/tinyglobby/vite/plugin-react, production npm audit:prod reported 0; separate security gate remains OPEN and must not be bypassed. S4E8-A02 now only Stage1 missing, not started in accepted assets. No literary/IDs/progress/release changes. 2026-11-18 S4E8-A02 NEW OWNER ART ACCEPTANCE: user explicitly replied 'принимаем' to exact REVIEW_v1 PNG gen 60666b70-842e-47db-9a98-d5555f591722. Fresh distinct immutable asset ID seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED. Original approved PNG preserved byte-for-byte: 1672x941, 2197221 bytes, SHA256 df510e99cf88cf722c0708ee10548d1321515c5916c2792f58049603d1d95678. WebP Q90 method6: 211566 bytes, SHA256 514c8ad918280f0c3f174a1502a4b4e644ed123350ff9e4ca7ea02de17989fc9. Approved PNG/WebP/metadata saved in QISSA Library /QISSA/production/seven_roads/series30/stage1/S4E8/. Unique original source RU/UZ post_choice_text anchor directly after inspecting one counterfeit badge with no workshop mark; shared to both choices; no future true badge comparison. As of Supabase storage.objects check target asset ABSENT, so do not prematurely wire URL/runtime or upload binary via metadata SQL. Stage1 artistic accepted 29/29; technically integrated 28/29 in Draft PR, never deployed. Existing withdrawn older battle art remains prohibited; no literary RU/UZ/IDs/saved progress/merge/deploy. 2026-11-18 user reported approved S4E8-A02 WebP uploaded; actual project Supabase storage.objects confirms exact bucket/key MIME image/webp and 211566 bytes. Prepared additive SERIES30-S4E8-A02 post_choice_text shared slot for both choices and localized unique RU/UZ anchors, 29th asset URL/remote SHA CI gate, gallery chronology/lock test. Independent remote GET+SHA and Tier A CI pending; technical count not advanced until verified. No authored literary JSON/IDs/progress or merge/deploy/publish. 2026-11-18 FINAL Stage1 A02 integration VERIFIED on code HEAD ca71fb49a9830b245899200bb0f34141c0856c86. Tier A run #44238324637 SUCCESS after targeted retry due transient Chromium DevTools runner startup failure. 29/29 remote public WebP GET/MIME/bytes/SHA verified including 211566 byte A02 SHA256 514c8ad918280f0c3f174a1502a4b4e644ed123350ff9e4ca7ea02de17989fc9; 58/58 unique RU/UZ anchors, shared after-choice only after both resolutions, S4E7/S4E8 gallery chronology/locks, full four-season browser smoke, typecheck and build PASS. Stage1 29/29 owner-art accepted and 29/29 technically integrated IN DRAFT PR ONLY, not deployed or published. Seven Roads CI #44238324799 remains FAILURE due independent npm audit:all picomatch high dev-dependency advisory; release gate open, no bypass or forced upgrade. No edited RU/UZ literary JSON, old approved assets, choices/IDs, family progress, merge/deploy."
+      "notes": "Current single-path image is choice-specific; ensure new shared shots do not reveal a branch before selection. 2026-11-17 owner has not approved S4E8-A01. PRELIMINARY visual REVIEW_v1 created at source story6 part2 story_text RU/UZ paragraph44 (after split paragraph41), ImageGen c6cd8adb-8410-4e87-953c-7134ded2000b; 1670x941 PNG 2672791 bytes SHA256 3c82306553819996fbc785836d2e89cb5338993bf16c031668835fcac8ad388f; archived PNG+metadata at QISSA Library /QISSA/production/seven_roads/series30/review/S4E8/. Scene children behind low stone wall, watchtower/wagon in background. SELF-QA CONCERNS: Rahim is crouching with children despite protecting entrance from attacker in text, small red flag in distant fight is unapproved/invented. Therefore not recommended for final artistic acceptance without revision. A second generation 79c92f43-8746-4bd7-8427-1a7337970b59 MISFIRED by repeating S4E6 riders; discard. No S4E8 approved asset, Storage or runtime. Stage1 remains 25/29 owner-art accepted, now 24/29 technically integrated after S4E5 CI. 2026-11-17 first S4E8-A01 review v1 correctly depicts children behind stone wall but self-QA rejected Rahim crouched alongside them and invented distant red banner. Two further ImageGen off-target S4E6 rider scenes rejected. New targeted S4E8-A01 REVIEW_v2 ImageGen c6c9f0f9-8455-4e9d-a362-10ea43eea5fc fixes original scene: Rahim stands defending opening in wall to the RIGHT with curved saber, children remain protected behind wall, no red flag. Old watchtower, locked prison wagon with two horses, no blood, children unarmed. 1672x941 PNG 2775968 bytes SHA256 0916df50adefe96552523c473faa7ffadf62f3cc5c038e6c6cdc03b1c2d3b87c; PNG and metadata uploaded to QISSA Library /QISSA/production/seven_roads/series30/review/S4E8/. OWNER ART REVIEW PENDING, no approved asset ID/WebP/Storage/runtime or S4E8 count change. Stage1 25/29 accepted and integrated. 2026-11-17 owner requested rigorous audit before/after S4E8-A01 and authorized acceptance if source-accurate or correction otherwise. RU/UZ source story6 part2 p35-51 checked: after real reinforcements arrive, kids led to low wall p41, Rahim parries attacker p43, kids dismount p44; from wall two fronts visible p45, RUSTAM/4 road guards vs 8 attackers near tower p46, DANIYAR/6 convoy guards defend locked wagon vs 7 attackers p47; kids only draw sabres at p48/50, choice later. REVIEW_v2 did not depict wagon defense; not accepted. New ImageGen v3 6f5229e7-cb77-44fd-9153-f07121b5e8fe shows distinct tower and wagon fights, one kneeling guard near wagon, Rahim holding wall opening, Temur and Samira behind wall unarmed, no invented banners/blood/branch outcome; refs watchtower, approved Story6 reveal + wagon scene + character sheet visually compared. On owner's conditional authority v3 ART ACCEPTED. Anchor changed to exact FULL p47 RU/UZ paragraph (not p44), so reader never spoils dual fronts prior to prose; no source JSON edited. PNG 1672x941 2886790 bytes SHA256 0fea21bb759fba2b6cbe34b08fa3ed6cbc05293180b99cd8b02f2ee87ebd7b52; WebP 495942 bytes SHA256 b0f240eb4cff9be19ecb12126859462f5c03abdf8490c3cd082bfe4a3ffb191f; PNG/WebP/metadata in QISSA Library stage1/S4E8. Storage absent; do NOT wire runtime until upload and public SHA. S4E8 1/2 artistic accepted and 0/2 integrated, total Stage1 26/29 artistic accepted and 25/29 fully integrated. PR Draft no merge/deploy/prose/progress changes. 2026-11-17 REVOKED S4E8-A01 v3 after explicit owner rejection. Earlier conditional art approval was wrong: human/horse scale and perspective inconsistent, guard/raider sides not legible, watchtower and prison-wagon props differ materially from previously approved Story6 reveal and choice-b wagon-door images, ambiguous coherent wall geography/line of combat. Any old files named *_APPROVED in QISSA Library stage1/S4E8 are now WITHDRAWN/REJECTED, historical quarantine only; must NEVER upload, wire or count them. No S4E8 Stage1 art accepted; total ART accepted reverts 25/29; runtime remains 25/29. Canon story_text §47 anchor retains its unique RU/UZ validity but is NOT registered as slot until new candidate accepted. User requested full spatial and adjacent-image re-review; new art must match real approved source images, realistic 1.4-1.6m horse withers vs ~1.7m adult and wagon scale, who fights whom, separate watchtower vs wagon fronts, children and Rahim at wall. No literary/ID/progress edits. 2026-11-17 attempted THREE fresh corrective generations AFTER owner rejected v3: c0827826-a739-44c8-87fe-a3e6cb3435de, 630d13c7-b357-4b3c-8426-ff84932c3363, 2c6a29b0-92fd-48d5-886e-cd13330a1ce1. Each FAILED independent visual continuity QA by largely repeating the same tower/horse/wagon geometry and weak guard-vs-bandit grouping. None is approved, uploaded to Storage, added to queue, or to be reused. Actual owner-approved-before/rejected-v3/approved-after comparison collage at Library /QISSA/production/seven_roads/series30/review/S4E8/S4E8_A01_approved_before_rejected_v3_approved_after_comparison.png, sha256 a8e830074595f70146e23152e1c967ac6e16eb3e301442488e26471e3f84e1b3. Stage1 remains 25/29 art accepted and integrated. 2026-11-17 LATEST OWNER DECISION: user explicitly accepted FINAL pictured transformation gen 9677db21-e48d-4b15-a5b4-f642f756bce7 (parent a084f567-fbd8-4b97-a0b8-549ba70b197b) after targeted fighter orientation/sabre/relative size review. Owner accepted THIS image only. New unique asset_id seven_roads_s4e8_wall_two_fronts_reverse_view_01_APPROVED (distinct from owner-REJECTED old *_children_watchtower_two_fronts_01_APPROVED). Exact original master PNG 1672x941 3354712 bytes SHA256 2a7876b0ac8773abf7ed7b4327ddfd721a2bec16528d70029f83f86b771e350b; WebP Q90 method6 611862 bytes SHA256 f09303958074b3c40e656bdf6b267b469633696a27a33c1b7192b477e488ea57; master+derivative+metadata archived in QISSA Library /QISSA/production/seven_roads/series30/stage1/S4E8/. Source RU/UZ at unique story_text full wagon defense paragraph after two fronts and before children draw sabres. Artistically accepted 28/29; technically integrated remains 27/29. Real pixel QA found both fronts, Rahim at passage, children sheathed, two harnessed horses in plausible scale; due occlusion 15 attackers+13 adult guards cannot all be independently enumerated in the wide scene; source numbers unchanged and not asserted as exact depicted. Supabase storage.objects exact target absent; no URL/overlay/runtime/CI until actual upload & independent bytes/SHA verify. S4E8-A02 remains NOT STARTED until A01 technical completion under owner gate. No literary/IDs/family progress/approved assets changes; no merge/deploy/publish. 2026-11-18 USER CONFIRMED upload of prior approved (not botched sabre edit) S4E8-A01. Actual Supabase storage.objects confirms image/webp 611862 bytes at exactly approved asset_id path. Draft PR #334 receives additive shared SERIE30-S4E8-A01 slot in RU/UZ virtual S4E8 after unique wagon-defense paragraph and before children's sabres, hosted URL registration, 28th WebP GET/MIME/bytes/SHA CI gate and gallery spoiler lock tests. Original RU/UZ JSON, choice IDs, family progress unchanged. Technical integration remains 27/29 until all CI passes. 2026-11-18 verification at code HEAD 2ed848d2e476cc9b22e268c647f1d8261f131c8a: [Season 2 Tier A Slot Check #44234050689] SUCCESS independently verified all 28 public WebP GET/MIME/byte lengths/SHA256, including this exact 611862-byte S4E8 image, 56 unique RU/UZ anchors, S4E7/S4E8 slot localization, unread gallery locks, typecheck, build, four-season browser smoke. Thus this specific art A01 technically integrated, Stage1 ART 28/29 and TECH 28/29 in Draft PR (no production release). [Seven Roads CI #44234050679] FAILURE at npm audit:all BEFORE scene tests due 5 high severity dev-tool dependency advisories in picomatch via fdir/tinyglobby/vite/plugin-react, production npm audit:prod reported 0; separate security gate remains OPEN and must not be bypassed. S4E8-A02 now only Stage1 missing, not started in accepted assets. No literary/IDs/progress/release changes. 2026-11-18 S4E8-A02 NEW OWNER ART ACCEPTANCE: user explicitly replied 'принимаем' to exact REVIEW_v1 PNG gen 60666b70-842e-47db-9a98-d5555f591722. Fresh distinct immutable asset ID seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED. Original approved PNG preserved byte-for-byte: 1672x941, 2197221 bytes, SHA256 df510e99cf88cf722c0708ee10548d1321515c5916c2792f58049603d1d95678. WebP Q90 method6: 211566 bytes, SHA256 514c8ad918280f0c3f174a1502a4b4e644ed123350ff9e4ca7ea02de17989fc9. Approved PNG/WebP/metadata saved in QISSA Library /QISSA/production/seven_roads/series30/stage1/S4E8/. Unique original source RU/UZ post_choice_text anchor directly after inspecting one counterfeit badge with no workshop mark; shared to both choices; no future true badge comparison. As of Supabase storage.objects check target asset ABSENT, so do not prematurely wire URL/runtime or upload binary via metadata SQL. Stage1 artistic accepted 29/29; technically integrated 28/29 in Draft PR, never deployed. Existing withdrawn older battle art remains prohibited; no literary RU/UZ/IDs/saved progress/merge/deploy. 2026-11-18 user reported approved S4E8-A02 WebP uploaded; actual project Supabase storage.objects confirms exact bucket/key MIME image/webp and 211566 bytes. Prepared additive SERIES30-S4E8-A02 post_choice_text shared slot for both choices and localized unique RU/UZ anchors, 29th asset URL/remote SHA CI gate, gallery chronology/lock test. Independent remote GET+SHA and Tier A CI pending; technical count not advanced until verified. No authored literary JSON/IDs/progress or merge/deploy/publish. 2026-11-18 FINAL Stage1 A02 integration VERIFIED on code HEAD ca71fb49a9830b245899200bb0f34141c0856c86. Tier A run #44238324637 SUCCESS after targeted retry due transient Chromium DevTools runner startup failure. 29/29 remote public WebP GET/MIME/bytes/SHA verified including 211566 byte A02 SHA256 514c8ad918280f0c3f174a1502a4b4e644ed123350ff9e4ca7ea02de17989fc9; 58/58 unique RU/UZ anchors, shared after-choice only after both resolutions, S4E7/S4E8 gallery chronology/locks, full four-season browser smoke, typecheck and build PASS. Stage1 29/29 owner-art accepted and 29/29 technically integrated IN DRAFT PR ONLY, not deployed or published. Seven Roads CI #44238324799 remains FAILURE due independent npm audit:all picomatch high dev-dependency advisory; release gate open, no bypass or forced upgrade. No edited RU/UZ literary JSON, old approved assets, choices/IDs, family progress, merge/deploy. 2026-11-20 owner conditional accepted current S4E8-A03 after visual review against real Stage1 battle+badge assets and World Bible. Exact PNG SHA1b3d18ab... 2746961B; derived WebP SHA41d29e6... 389740B in Library stage2/S4E8. RU/UZ source post_choice_text 1/1; Storage NOT uploaded; no runtime registration, no CI remote, no publication. Earlier revoked S4E8 variants still forbidden. 2026-11-20 Stage2 S4E8-A03 file present in Supabase Storage image/webp 389740 bytes. Shared RU/UZ post_choice slot and public SHA validator pending CI at new #354 HEAD. Queue now records all 19 artistically accepted and final integration pending CI; no publication. 2026-11-20 exact SHA f1a3043 verified: 48/48 public WebP MIME/bytes/SHA, 96/96 RU/UZ anchors, and browser smoke PASS. S4E8-A03 now technically integrated in unpublished Draft PR #354. All 19 Stage2 accepted/integrated IN DRAFT, NOT released."
     },
     {
       "season": 4,
@@ -1344,9 +1874,10 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 1,
       "total_new_shared_scene_count": 2,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_2_A02_owner_approved_public_SHA_verified_runtime_integrated_QA_passed_Draft_unpublished",
       "asset_ids": [
-        "seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED"
+        "seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED",
+        "seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -1375,9 +1906,41 @@
             "seven_roads_ci": 44077007213,
             "season2_tier_a_ci": 44077007190
           }
+        },
+        {
+          "candidate_id": "S4E9-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED",
+          "kind": "shared",
+          "part_id": "story7_part_1_back_to_ordan",
+          "phase": "story_text",
+          "ru_after_text": "Надир сразу перестал улыбаться.",
+          "uz_after_text": "Nadir darrov kulmay qo‘ydi.",
+          "acceptance": "owner_explicit_approved_shown_original_candidate_2026-11-19",
+          "acceptance_note": "Accepted as shown despite previous assistant review noting Nadirs apparently older face and tiny stippled fabric. Do not silently substitute a regenerated image.",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E9/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E9/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E9/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.metadata.json",
+          "master_bytes": 2460212,
+          "master_sha256": "deb7aa9f50e5f2cab37d184880383efd215bf89e1a5effcf436b11bdc3143c81",
+          "webp_bytes": 200440,
+          "webp_sha256": "adf8f08d2e24f3e86137baf3e61684e8834a19d4f7887ee9f0d6e8a9daf1a10e",
+          "width": 1672,
+          "height": 941,
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_f25313f9f1c1da8078bc7ea7285cd7f9670ed6d8",
+          "qa_status": "RU_UZ_virtual_S4E9_gallery_order_spoiler_locks_typecheck_build_browser_CI_passed",
+          "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_CI_44506373339_on_SHA_1b6f1ebe9b6ed0fb891ecea429ac2047bd807658",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44506373339,
+            "seven_roads_ci": 44507175426,
+            "season2_tier_a_ci": 44507175488
+          }
         }
       ],
-      "notes": "2026-11-17 S4E9-A01 owner explicitly accepted REVIEW_v1. Canon and exact RU/UZ unique story_text anchor verified before S4E9/S4E10 virtual split. Master PNG/WebP/metadata stored in QISSA Library stage1/S4E9; user uploaded WebP and Supabase storage.objects confirmed correct object image/webp 350378 bytes. Additive RU/UZ reader slot, URL and CI remote SHA/gallery checks committed in Draft PR #334, CI pending. S4E8 remains 0/2 withdrawn and not wired. No authored text/IDs/saved progress/merge/deploy changed. 2026-11-17 final CI at exact HEAD 930d3fde58cd6a86b2b905b7fdc686ad0673a90f: Seven Roads CI #44077007213 SUCCESS on targeted Chrome-smoke rerun, Season2 Tier A #44077007190 SUCCESS. 26/26 remote public WebP GET/MIME/bytes/SHA verified; 52/52 RU/UZ exact anchors; S4E9 correct gallery order return→notice→morning horses, S4E10 seal comparison segregated, unread gallery remains spoiler-locked, typecheck/build/browser smoke passed. Stage1 total 26/29 art accepted and integrated."
+      "notes": "2026-11-17 S4E9-A01 owner explicitly accepted REVIEW_v1. Canon and exact RU/UZ unique story_text anchor verified before S4E9/S4E10 virtual split. Master PNG/WebP/metadata stored in QISSA Library stage1/S4E9; user uploaded WebP and Supabase storage.objects confirmed correct object image/webp 350378 bytes. Additive RU/UZ reader slot, URL and CI remote SHA/gallery checks committed in Draft PR #334, CI pending. S4E8 remains 0/2 withdrawn and not wired. No authored text/IDs/saved progress/merge/deploy changed. 2026-11-17 final CI at exact HEAD 930d3fde58cd6a86b2b905b7fdc686ad0673a90f: Seven Roads CI #44077007213 SUCCESS on targeted Chrome-smoke rerun, Season2 Tier A #44077007190 SUCCESS. 26/26 remote public WebP GET/MIME/bytes/SHA verified; 52/52 RU/UZ exact anchors; S4E9 correct gallery order return→notice→morning horses, S4E10 seal comparison segregated, unread gallery remains spoiler-locked, typecheck/build/browser smoke passed. Stage1 total 26/29 art accepted and integrated. 2026-11-19: S4E9-A02 owner explicitly accepted original S4E9 Nadir/Said witness dialogue image despite earlier noted style/age concern; original PNG byte-preserved, derivative WebP and metadata in QISSA Library. RU/UZ unique story_text paragraph anchors, still inside S4E9 before virtual cut at 'Ответ из Араса пришёл после полудня.' S4E10 not touched. No Supabase upload, remote hash, runtime, QA or release. 2026-11-19: S4E9-A02 owner-uploaded exact approved WebP 200440 bytes public SHA256 verified via CI #44506373339, additive RU/UZ scene overlaid in Draft PR #348, pending integrated CI, no release. 2026-11-19 integrated final accepted S4E9-A02: 45 public WebP hashes and 90 bilingual anchored illustrations validated. Seven Roads #44507175426 and Tier A #44507175488 SUCCESS on exact code SHA f25313f9; Gallery locked until viewed, no leak into S4E10. Only Draft PR #348, no release."
     },
     {
       "season": 4,
@@ -1391,9 +1954,11 @@
       "stage_1_new_shared_scene_count": 1,
       "stage_2_new_shared_scene_count": 2,
       "total_new_shared_scene_count": 3,
-      "artwork_acceptance": "stage_1_complete",
+      "artwork_acceptance": "stage_1_complete_and_stage_2_a02_a03_owner_accepted_library_stored",
       "asset_ids": [
-        "seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED"
+        "seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED",
+        "seven_roads_s4e10_three_gazes_two_letters_02_APPROVED",
+        "seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED"
       ],
       "exact_anchor_pairs": [
         {
@@ -1422,9 +1987,88 @@
             "seven_roads_ci": 44084019282,
             "season2_tier_a_ci": 44084019325
           }
+        },
+        {
+          "candidate_id": "S4E10-A02",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e10_three_gazes_two_letters_02_APPROVED",
+          "kind": "shared",
+          "story_id": "seven_roads_obratno_v_ordan",
+          "story_version": "interactive-v17-visible-inherited-defect",
+          "part_id": "story7_part_1_back_to_ordan",
+          "phase": "story_text",
+          "ru_after_text": "Рустам придвинул оба письма к окну, совместил красные круги краями и чуть повернул их. Боковой свет лёг по рельефу, и мелкие края стали заметнее.",
+          "uz_after_text": "Rustam ikki xatni derazaga yaqinroq surdi, qizil doiralarni chetlari bilan tenglashtirib, birini sal burdi. Yon tomondan tushgan yorug‘lik bo‘rtma izlarni ko‘rsatdi va mayda chetlar aniqroq ko‘rina boshladi.",
+          "acceptance": "owner_explicit_approved_corrected_version_2026_11_19",
+          "art_scene": "Три взгляда над двумя письмами; Рустам сравнивает две печати при боковом свете, Темур и Самира наблюдают; по одной красной печати на лист",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.metadata.json",
+          "master_dimensions": "1448x1086",
+          "png_bytes": 2214074,
+          "master_sha256": "317807395a9f4ab588ce3dfd6fff6c0bb8cb90d9623d643e82f21ba81a5f7783",
+          "webp_dimensions": "1672x941",
+          "webp_bytes": 240168,
+          "webp_sha256": "c7fce1d3e54d0d32ee886c8bac0526e5566242f279f629490f8e07a2ccb004cc",
+          "derivative_note": "16:9 WebP is a top-aligned technical crop of owner-approved 4:3 PNG, visually checked for retaining heads, documents and window; immutable PNG original preserved. Crop is not an independent owner acceptance.",
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_stacked_Draft_PR_353",
+          "qa_status": "RU_UZ_exact_anchor_gallery_order_spoiler_locks_browser_CI_passed",
+          "source_ru_blob_sha": "e5fde8ac773375a334ffab1c80fe621967674a3a",
+          "source_uz_blob_sha": "67101f138790269f3929f0c2ad3c4cd218242651",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.webp",
+          "notes": "Owner accepted corrected image in chat 2026-11-19. Prior rejected high Samira cap replaced with low burgundy embroidered cap/band, two letters each one seal. Stored immutable rendered PNG and technical 16:9 WebP in QISSA Library. No Supabase upload, public GET/SHA, runtime registration, CI or production. Reconcile this S4E10-only queue change with concurrent Draft PR #348; do not overwrite its unrelated stage2 episode records. 2026-11-19 owner uploaded to story-images exact storage object (SQL metadata confirms image/webp 240168); additive overlay and remote SHA CI proposed in stacked Draft PR, no publication. 2026-11-19 proof: Seven Roads #44523476279 SUCCESS on code SHA 3b2ffcdd8c736b1dbee179ab4f43d165f376dd2b; 46/46 public WebP remote GET/MIME/bytes/SHA, 92/92 RU/UZ unique anchors, browser gallery/spoiler and typecheck/build PASS. Tier A #44523476285 SUCCESS. No main merge/deploy.",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.webp",
+          "remote_sha256_verification": "passed_exact_SHA_CI_44523476279",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44523476279,
+            "seven_roads_ci": 44523476279,
+            "season2_tier_a_ci": 44523476285
+          }
+        },
+        {
+          "candidate_id": "S4E10-A03",
+          "stage": "stage_2",
+          "asset_id": "seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED",
+          "kind": "shared",
+          "slot_id": "SERIES30-S4E10-A03",
+          "anchor_key": "series30_s4e10_temur_shamol_stable_samira",
+          "story_id": "seven_roads_obratno_v_ordan",
+          "story_version": "interactive-v17-visible-inherited-defect",
+          "part_id": "story7_part_1_back_to_ordan",
+          "phase": "post_choice_text",
+          "ru_after_text": "Шамол потянулся к его рукаву.",
+          "uz_after_text": "Shamol uning yengiga cho‘zildi.",
+          "acceptance": "owner_explicitly_accepted_exact_final_image_2026_11_20",
+          "art_scene": "Перед дорогой домой: Темур и Самира возле конюшни Орданы, тёмно-гнедой Шамол высунул голову из стойла и потянулся к рукаву Темура; оба героя дети примерно 12 лет.",
+          "imagegen_id": "afddb54a-dc70-47d2-bc5c-2c523928a89a",
+          "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.png",
+          "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.webp",
+          "metadata_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.metadata.json",
+          "master_dimensions": "1672x941",
+          "png_bytes": 2554546,
+          "master_sha256": "c26761ca2cacf29854d82b62cba0153ede83b9ce053ed2bd73e032aa26568ca9",
+          "webp_dimensions": "1672x941",
+          "webp_bytes": 332388,
+          "webp_sha256": "ec1b05ca6e41c7b0bc7de66cecb44fef7e02eaed480c17e8a7d69f7a2a5f5877",
+          "derivative_note": "Original owner-approved 1672×941 image preserved byte-for-byte, q90 method6 WebP derived without cropping; source portrait, age, costume, hair, horse and sleeve interaction subject to owner image acceptance only.",
+          "source_ru_blob_sha": "e5fde8ac773375a334ffab1c80fe621967674a3a",
+          "source_uz_blob_sha": "67101f138790269f3929f0c2ad3c4cd218242651",
+          "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.webp",
+          "storage_status": "verified_public_GET_MIME_bytes_sha256",
+          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_354",
+          "qa_status": "RU_UZ_source_exact_gallery_chronology_spoiler_locks_browser_CI_passed",
+          "notes": "Owner approved this exact last S4E10-A03 image in chat after iterative corrections to youthful character faces, Temur hair/hands, Samira band and Shamol coat/sleeve contact. No approval of previous REVIEW variants implied. Accepted master PNG, 16:9 WebP and metadata saved in Library; Supabase Storage exact target still absent. Do not register runtime URL or count as hosted_verified until user uploads and independent GET/MIME/size/SHA matches. No main merge, production release or paid provider use authorized. 2026-11-20 owner upload exact bucket/key confirmed via QISSA Supabase storage.objects (image/webp, 332388B). Runtime asset URL and shared RU/UZ reader slot registered; independently confirm public GET and SHA + gallery browser CI on exact PR354 HEAD. 2026-11-20 independent public GET verification SUCCESS on code SHA f05f49e8dca8b143cf8a35365e0633e666ec7c88: Seven Roads #44674737640 and TierA #44674737612; all 47 public assets MIME/bytes/SHA and 94/94 unique RU/UZ anchors, spoiler-locked gallery and browser smoke pass. This is DRAFT, never merged/published.",
+          "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.webp",
+          "remote_sha256_verification": "passed_exact_sha_GHA_44674737640",
+          "qa_ci_runs": {
+            "remote_webp_verification": 44674737640,
+            "seven_roads_ci": 44674737640,
+            "season2_tier_a_ci": 44674737612
+          }
         }
       ],
-      "notes": "2026-11-17 S4E10-A01 proposed 'Взгляд через решётку' new 1672×941 2663911-byte PNG SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; ImageGen 71956e59-acac-4990-a0e4-1e4578354197; source post_choice_text full exact RU `Данияр остановился.` / UZ `Daniyar to‘xtadi.` unique 1/1 after literary choice. Farid (alias Kamran) in prison courtyard on low stone bench through barred window, Daniyar blue scarf outside. Real approved Kamran/Farid character sheet and S2E3 Farid arrest PNG inspected. Candidate is REVIEW only in QISSA Library /QISSA/production/seven_roads/series30/review/S4E10/; NO owner acceptance, WebP, storage, runtime, asset_id, counter update. 2026-11-17 NEWER CHECKPOINT: owner explicitly accepted S4E10-A01 v1 in conversation; approved asset_id seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.png. Original review candidate preserved EXACT bitstream SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; 2663911 bytes, 1672x941. WebP q90 m6 356286 bytes sha256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Master PNG + WebP + metadata in Library stage1/S4E10, separate from REVIEW. Direct read from project Supabase storage.objects shows target path ABSENT; current tools do not provide authenticated binary Supabase Storage upload. Therefore no hosted_verified slot/URL runtime or CI remote SHA until actual upload; code remains at 26/29 integrated, artistic accepted count now 27/29. Existing S4E8-A01/A02 0/2 withdrawn and blocked. No changes authored RU/UZ, IDs, saved progress, prior approved assets, merge/deploy/publish. 2026-11-17 owner-upload confirmation: Supabase storage.objects exact target name exists under story-images with MIME image/webp and size 356286. Additive S4E10-A01 runtime overlay, URL, 27th WebP SHA validator and bilingual reading-series/galleries QA added in Draft PR #334. Independent remote SHA+reader CI remains PENDING before count can be called technically complete; no authored RU/UZ/IDs/progress, merged or deployed. 2026-11-17 verified on exact code HEAD afd100545c3216d387aedcf27063f1bc5a7ca998: Seven Roads CI #44084019282 SUCCESS, Season2 TierA #44084019325 SUCCESS. Independent public GET verifies S4E10 WebP MIME image/webp, 356286 bytes and exact SHA256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Total 27/27 remote public WebP verified, 54/54 bilingual anchors; S4E10 gallery chronology seal comparison → prison-window scene → ending hook, S4E9 isolation, spoiler locks, typecheck, build and browser CI PASS. Overall Stage1 ART 27/29; TECH 27/29. No literary JSON/IDs/progress/merge/deploy changed. S4E8 remains revoked/unintegrated 0/2."
+      "notes": "2026-11-17 S4E10-A01 proposed 'Взгляд через решётку' new 1672×941 2663911-byte PNG SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; ImageGen 71956e59-acac-4990-a0e4-1e4578354197; source post_choice_text full exact RU `Данияр остановился.` / UZ `Daniyar to‘xtadi.` unique 1/1 after literary choice. Farid (alias Kamran) in prison courtyard on low stone bench through barred window, Daniyar blue scarf outside. Real approved Kamran/Farid character sheet and S2E3 Farid arrest PNG inspected. Candidate is REVIEW only in QISSA Library /QISSA/production/seven_roads/series30/review/S4E10/; NO owner acceptance, WebP, storage, runtime, asset_id, counter update. 2026-11-17 NEWER CHECKPOINT: owner explicitly accepted S4E10-A01 v1 in conversation; approved asset_id seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.png. Original review candidate preserved EXACT bitstream SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; 2663911 bytes, 1672x941. WebP q90 m6 356286 bytes sha256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Master PNG + WebP + metadata in Library stage1/S4E10, separate from REVIEW. Direct read from project Supabase storage.objects shows target path ABSENT; current tools do not provide authenticated binary Supabase Storage upload. Therefore no hosted_verified slot/URL runtime or CI remote SHA until actual upload; code remains at 26/29 integrated, artistic accepted count now 27/29. Existing S4E8-A01/A02 0/2 withdrawn and blocked. No changes authored RU/UZ, IDs, saved progress, prior approved assets, merge/deploy/publish. 2026-11-17 owner-upload confirmation: Supabase storage.objects exact target name exists under story-images with MIME image/webp and size 356286. Additive S4E10-A01 runtime overlay, URL, 27th WebP SHA validator and bilingual reading-series/galleries QA added in Draft PR #334. Independent remote SHA+reader CI remains PENDING before count can be called technically complete; no authored RU/UZ/IDs/progress, merged or deployed. 2026-11-17 verified on exact code HEAD afd100545c3216d387aedcf27063f1bc5a7ca998: Seven Roads CI #44084019282 SUCCESS, Season2 TierA #44084019325 SUCCESS. Independent public GET verifies S4E10 WebP MIME image/webp, 356286 bytes and exact SHA256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Total 27/27 remote public WebP verified, 54/54 bilingual anchors; S4E10 gallery chronology seal comparison → prison-window scene → ending hook, S4E9 isolation, spoiler locks, typecheck, build and browser CI PASS. Overall Stage1 ART 27/29; TECH 27/29. No literary JSON/IDs/progress/merge/deploy changed. S4E8 remains revoked/unintegrated 0/2. 2026-11-19 S4E10-A02 owner explicitly accepted corrected low-cap Samira and one seal per letter; exact 1448x1086 PNG 2214074 bytes sha317807... preserved in Library, cropped 16:9 WebP 240168 bytes shac7fce1... stored as technical derivative. RU/UZ unique source anchor confirmed in `seven_roads_obratno_v_ordan` story7 part1 story_text (not earlier story4). Storage upload/runtime/CI pending. Draft acceptance checkpoint isolated from #348; no release. 2026-11-19 integration branch based on PR #348 HEAD cb910999, isolated from PR #352. S4E10-A02 owner Storage metadata confirmed exact MIME/bytes; remote public SHA and bilingual/browser QA pending CI. Other Stage2 records from #348 preserved. 2026-11-19 new A02 remote validated, 46/46 art SHA and 92/92 bilingual anchors successful at code SHA 3b2ffcdd8c736b1dbee179ab4f43d165f376dd2b. PR #353 stacked on #348, not released; photo candidate A03 REVIEW only separate. 2026-11-20 S4E10-A03 exact final horse-stable image owner-approved (gen afddb54a...), immutable 1672x941 PNG SHA256 c26761ca... 2554546B and derived WebP SHA256 ec1b05ca... 332388B both stored in QISSA Library stage2/S4E10, with metadata; unique approved RU/UZ post_choice_text anchor (1 each). QISSA Storage object absent on read-only query, no public GET, no runtime, no CI art check, no release. Integrated count remains 17/19 on #353; artistically accepted count 18/19 pending final S4E8 stage2 scene. 2026-11-20 S4E10-A03 physical uploaded 332388B image/webp; runtime wiring introduced in #354, public SHA and bilingual/browsers pending exact CI. Stage2 artistic complete here, production release not approved. 2026-11-20 S4E10-A03 public SHA and reader/gallery verified on f05f49e8 after exact 47/47 and 94/94 in Seven Roads/TierA CI. Counts Stage2 technically integrated IN DRAFT PRs 18/19, not production."
     }
   ]
 }

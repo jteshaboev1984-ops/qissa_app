@@ -23,6 +23,195 @@ type Series30ApprovedScene = {
 
 export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
+    story_id: 'seven_roads_obratno_v_ordan',
+    part_id: 'story7_part_1_back_to_ordan',
+    slot_id: 'SERIES30-S4E9-A02',
+    anchor_key: 'series30_s4e9_a02',
+    asset_id: 'seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Надир сразу перестал улыбаться.',
+      uz: 'Nadir darrov kulmay qo‘ydi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_lozhnaya_doroga',
+    part_id: 'story5_part_1_false_road',
+    slot_id: 'SERIES30-S4E6-A02',
+    anchor_key: 'series30_s4e6_a02',
+    asset_id: 'seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {ru: 'Когда поднял голову, на свету стал заметен тонкий белый шрам от левой брови к виску.', uz: 'Boshini ko‘targanda chap qoshidan chakkasigacha ketgan ingichka oq chandiq yorug‘likda ko‘rindi.'},
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_2_nadir_red_hill_clue',
+    slot_id: 'SERIES30-S4E4-A03',
+    anchor_key: 'series30_s4e4_a03',
+    asset_id: 'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Только за дальним навесом, скрывшись за сложенными тюками, он развернул записку и прочитал сообщение.',
+      uz: 'Faqat uzoqdagi soyabon ortiga, taxlangan yuklar orasidagi pana joyga o‘tgach, u xatni ochib o‘qidi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_2_nadir_red_hill_clue',
+    slot_id: 'SERIES30-S4E4-A04',
+    anchor_key: 'series30_s4e4_a04',
+    asset_id: 'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'За воротами Орданы первым уже мчался гонец с предупреждением для Данияра.',
+      uz: 'Ordan darvozasidan avval Daniyarni ogohlantirishga ketgan chopar otilib chiqdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_5_first_investigation',
+    slot_id: 'SERIES30-S3E4-A01',
+    anchor_key: 'series30_s3e4_a01',
+    asset_id: 'seven_roads_s3e4_old_passage_map_recollection_01_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: '— Старый скотный проход у прежнего караванного двора.',
+      uz: '— Eski karvonsaroydagi chorva o‘tish joyi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_7_samira_check_and_third_track',
+    slot_id: 'SERIES30-S3E5-A01',
+    anchor_key: 'series30_s3e5_a01',
+    asset_id: 'seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Самира сидела на Булуте у входа во двор.',
+      uz: 'Samira Bulutda hovli kirishida turardi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_7_samira_check_and_third_track',
+    slot_id: 'SERIES30-S3E5-A02',
+    anchor_key: 'series30_s3e5_a02',
+    asset_id: 'seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Он показал Самире рисунок знака, который сделал у капитана.',
+      uz: 'Temur sardorning oldida chizib olgan qaroqchilar belgisini Samiraga ko‘rsatdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_tayna_vostochnogo_karavana',
+    part_id: 'story2_part_9_interrogation_and_sarvan_token',
+    slot_id: 'SERIES30-S3E7-A01',
+    anchor_key: 'series30_s3e7_a01',
+    asset_id: 'seven_roads_s3e7_captain_stops_writing_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Капитан перестал писать.',
+      uz: 'Sardor yozishni to‘xtatdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_1_false_notice_and_route_check',
+    slot_id: 'SERIES30-S4E2-A05',
+    anchor_key: 'series30_s4e2_a05',
+    asset_id: 'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Ордан встретил Темура и Самиру шумом тяжёлых колёс.',
+      uz: 'Ordan Temur bilan Samirani og‘ir g‘ildiraklarning shovqini bilan kutib oldi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_2_kamran_pursuit',
+    slot_id: 'SERIES30-S2E2-A02',
+    anchor_key: 'series30_s2e2_a02',
+    asset_id: 'seven_roads_s2e2_east_gate_messenger_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Когда он добрался до восточных ворот, начальник караула выслушал его и сразу отправил двух городских стражников дальше: одного — к внешнему караванному двору, второго — к старым скотным воротам.',
+      uz: 'U sharqiy darvozaga yetib borgach, qorovul boshlig‘i gapini eshitdi va darrov ikki shahar qo‘riqchisini oldinga yubordi: birini tashqi karvon hovlisiga, ikkinchisini eski chorva darvozasiga.',
+    },
+  },
+  {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_3_network_sign',
+    slot_id: 'SERIES30-S2E4-A03',
+    anchor_key: 'series30_s2e4_a03',
+    asset_id: 'seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Только теперь главарь встал.',
+      uz: 'Shundan keyingina boshliq o‘rnidan turdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_korolevskoe_serebro',
+    part_id: 'story1_part_3_network_sign',
+    slot_id: 'SERIES30-S2E4-A04',
+    anchor_key: 'series30_s2e4_a04',
+    asset_id: 'seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED',
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'К вечеру в логово приехала женщина на гнедой лошади. Она жила в Ордане и собирала для сети дорожные сведения у внешних дворов.',
+      uz: 'Kechga yaqin yashirin joyga jigarrang ot mingan ayol keldi. U Ordanda yashar va tashqi hovlilardagi yo‘l ma’lumotlarini tarmoq uchun yig‘ardi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_dve_bashni',
+    part_id: 'story3_part_1_old_yard_niche',
+    slot_id: 'SERIES30-S3E9-A01',
+    anchor_key: 'series30_s3e9_a01',
+    asset_id: 'seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Булут шагнул поперёк.',
+      uz: 'Bulut uning yo‘lini to‘sib qo‘ydi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_dve_bashni',
+    part_id: 'story3_part_1_old_yard_niche',
+    slot_id: 'SERIES30-S3E9-A02',
+    anchor_key: 'series30_s3e9_a02',
+    asset_id: 'seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Темур поднял лист и посмотрел сначала на рисунок, потом на настоящие ворота.',
+      uz: 'Temur varaqni ko‘tarib, avval rasmga, keyin haqiqiy darvozaga qaradi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_1_false_notice_and_route_check',
+    slot_id: 'SERIES30-S4E1-A02',
+    anchor_key: 'series30_s4e1_a02',
+    asset_id: 'seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Капитан придвинул к ним рисунки.',
+      uz: 'Sardor rasmlarni ularning oldiga surdi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_chelovek_kotorogo_zhdut',
+    part_id: 'story4_part_1_false_notice_and_route_check',
+    slot_id: 'SERIES30-S4E2-A04',
+    anchor_key: 'series30_s4e2_a04',
+    asset_id: 'seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Во второй день он снова таскал тюки, носил воду и помогал у конюшен.',
+      uz: 'Ikkinchi kuni ham u yuk tashidi, suv olib keldi va otxonalarda yordam berdi.',
+    },
+  },
+  {
     story_id: 'seven_roads_korolevskoe_serebro',
     part_id: 'story1_part_1_royal_silver_ambush',
     slot_id: 'SERIES30-S2E1-A01',
@@ -331,6 +520,18 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
     story_id: 'seven_roads_obratno_v_ordan',
     part_id: 'story7_part_1_back_to_ordan',
+    slot_id: 'SERIES30-S4E10-A02',
+    anchor_key: 'series30_s4e10_three_gazes_two_letters',
+    asset_id: 'seven_roads_s4e10_three_gazes_two_letters_02_APPROVED',
+    phase: 'story_text',
+    after_text: {
+      ru: 'Рустам придвинул оба письма к окну, совместил красные круги краями и чуть повернул их. Боковой свет лёг по рельефу, и мелкие края стали заметнее.',
+      uz: 'Rustam ikki xatni derazaga yaqinroq surdi, qizil doiralarni chetlari bilan tenglashtirib, birini sal burdi. Yon tomondan tushgan yorug‘lik bo‘rtma izlarni ko‘rsatdi va mayda chetlar aniqroq ko‘rina boshladi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_obratno_v_ordan',
+    part_id: 'story7_part_1_back_to_ordan',
     slot_id: 'SERIES30-S4E10-A01',
     anchor_key: 'series30_s4e10_farid_danyar_prison_window',
     asset_id: 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED',
@@ -339,6 +540,19 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     after_text: {
       ru: 'Данияр остановился.',
       uz: 'Daniyar to‘xtadi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_obratno_v_ordan',
+    part_id: 'story7_part_1_back_to_ordan',
+    slot_id: 'SERIES30-S4E10-A03',
+    anchor_key: 'series30_s4e10_temur_shamol_stable_samira',
+    asset_id: 'seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED',
+    // Owner-approved, shared post-choice scene. Shamol reaches Temur's sleeve at the stable.
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Шамол потянулся к его рукаву.',
+      uz: 'Shamol uning yengiga cho‘zildi.',
     },
   },
   {
@@ -351,6 +565,19 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     after_text: {
       ru: 'У повозки один конвойный опустился на колено после сильного удара. Другой отбивался от двух противников. Третий разбойник искал путь к задней двери.',
       uz: 'Arava yonida bir qo‘riqchi kuchli zarbadan so‘ng tiz cho‘kdi. Boshqasi ikki dushmanning zarbasini qaytarardi. Uchinchi bosqinchi orqa eshikka yo‘l izlar edi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_dve_podmogi',
+    part_id: 'story6_part_2_two_reinforcements',
+    slot_id: 'SERIES30-S4E8-A03',
+    anchor_key: 'series30_s4e8_temur_trembling_palm',
+    asset_id: 'seven_roads_s4e8_temur_trembling_palm_03_APPROVED',
+    // After both choices rejoin: quiet aftermath, before the badge inspection.
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Темур посмотрел на ладонь. Она немного дрожала.',
+      uz: 'Temur kaftiga qaradi. U biroz titrardi.',
     },
   },
   {

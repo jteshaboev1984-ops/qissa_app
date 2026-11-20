@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 29)
+assert.equal(series30ApprovedScenes.length, 48)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -50,7 +50,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story5FalseRoad',
     key: 'falseRoad',
-    expected: { 'SERIES30-S4E5-A01': 1, 'SERIES30-S4E5-A02': 1, 'SERIES30-S4E6-A01': 2 },
+    expected: { 'SERIES30-S4E5-A01': 1, 'SERIES30-S4E5-A02': 1, 'SERIES30-S4E6-A01': 2, 'SERIES30-S4E6-A02': 2 },
   },
   {
     base: 'src/data/authored/staging/season2Story1RoyalSilver',
@@ -59,37 +59,40 @@ const fixtures = [
       'SERIES30-S2E1-A01': 1,
       'SERIES30-S2E1-A02': 1,
       'SERIES30-S2E2-A01': 2,
+      'SERIES30-S2E2-A02': 2,
       'SERIES30-S2E3-A01': 3,
       'SERIES30-S2E3-A02': 3,
       'SERIES30-S2E3-A03': 3,
       'SERIES30-S2E4-A01': 4,
       'SERIES30-S2E4-A02': 4,
+      'SERIES30-S2E4-A03': 4,
+      'SERIES30-S2E4-A04': 4,
     },
   },
   {
     base: 'src/data/authored/taynaVostochnogoKaravanaV4',
     key: 'caravan',
-    expected: { 'SERIES30-S3E3-A01': 3, 'SERIES30-S3E3-A02': 3, 'SERIES30-S3E6-A01': 6 },
+    expected: { 'SERIES30-S3E3-A01': 3, 'SERIES30-S3E3-A02': 3, 'SERIES30-S3E4-A01': 4, 'SERIES30-S3E5-A01': 5, 'SERIES30-S3E5-A02': 5, 'SERIES30-S3E6-A01': 6, 'SERIES30-S3E7-A01': 7 },
   },
   {
     base: 'src/data/authored/staging/season2Story3TwoTowers',
     key: 'towers',
-    expected: { 'SERIES30-S3E10-A01': 2, 'SERIES30-S3E10-A02': 2, 'SERIES30-S3E11-A01': 3, 'SERIES30-S3E11-A02': 3 },
+    expected: { 'SERIES30-S3E9-A01': 1, 'SERIES30-S3E9-A02': 1, 'SERIES30-S3E10-A01': 2, 'SERIES30-S3E10-A02': 2, 'SERIES30-S3E11-A01': 3, 'SERIES30-S3E11-A02': 3 },
   },
   {
     base: 'src/data/authored/staging/season2Story4WaitedMan',
     key: 'waited',
-    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4 },
+    expected: { 'SERIES30-S4E1-A01': 1, 'SERIES30-S4E1-A02': 1, 'SERIES30-S4E2-A04': 2, 'SERIES30-S4E2-A05': 2, 'SERIES30-S4E2-A01': 2, 'SERIES30-S4E2-A02': 2, 'SERIES30-S4E2-A03': 2, 'SERIES30-S4E3-A01': 3, 'SERIES30-S4E4-A01': 4, 'SERIES30-S4E4-A02': 4, 'SERIES30-S4E4-A03': 4, 'SERIES30-S4E4-A04': 4 },
   },
   {
     base: 'src/data/authored/staging/season2Story7BackToOrdan',
     key: 'ordan',
-    expected: { 'SERIES30-S4E9-A01': 1, 'SERIES30-S4E10-A01': 2 },
+    expected: { 'SERIES30-S4E9-A01': 1, 'SERIES30-S4E9-A02': 1, 'SERIES30-S4E10-A01': 2, 'SERIES30-S4E10-A02': 2, 'SERIES30-S4E10-A03': 2 },
   },
   {
     base: 'src/data/authored/staging/season2Story6TwoReinforcements',
     key: 'reinforcements',
-    expected: { 'SERIES30-S4E8-A01': 2, 'SERIES30-S4E8-A02': 2 },
+    expected: { 'SERIES30-S4E8-A01': 2, 'SERIES30-S4E8-A02': 2, 'SERIES30-S4E8-A03': 2 },
   },
 ]
 
@@ -220,10 +223,25 @@ for (const fixture of fixtures) {
         language + ': badge discovery must be available after either choice')
       assert.equal(galleryBefore[0].items.some(item => item.assetId === badgeAsset), false,
         language + ': S4E8 post-choice badge leaked into S4E7')
+      const palmAsset = 'seven_roads_s4e8_temur_trembling_palm_03_APPROVED'
+      const palmSlot = badgePart.image_slots.find(slot => slot.slot_id === 'SERIES30-S4E8-A03')
+      assert.equal(palmSlot?.phase, 'post_choice_text',
+        language + ': S4E8 aftermath must follow the choice')
+      assert.equal(palmSlot?.kind, 'shared',
+        language + ': S4E8 aftermath must be common to both choices')
+      assert.equal(palmSlot?.after_text, language === 'ru'
+        ? 'Темур посмотрел на ладонь. Она немного дрожала.'
+        : 'Temur kaftiga qaradi. U biroz titrardi.',
+        language + ': S4E8 aftermath must follow the exact localized paragraph')
+      assert.equal(galleryBefore[0].items.some(item => item.assetId === palmAsset), false,
+        language + ': S4E8 aftermath leaked into S4E7')
       const a01Index = galleryBefore[1].items.findIndex(item => item.assetId === newAsset)
+      const a03Index = galleryBefore[1].items.findIndex(item => item.assetId === palmAsset)
       const a02Index = galleryBefore[1].items.findIndex(item => item.assetId === badgeAsset)
-      assert.ok(a01Index >= 0 && a02Index > a01Index,
-        language + ': S4E8 gallery must show battle before post-choice badge discovery')
+      assert.ok(a01Index >= 0 && a03Index > a01Index && a02Index > a03Index,
+        language + ': S4E8 gallery must show battle → trembling hand → badge')
+      assert.equal(galleryBefore[1].items[a03Index].unlocked, false,
+        language + ': unread S4E8 aftermath illustration leaked')
       assert.equal(galleryBefore[1].items[a02Index].unlocked, false,
         language + ': unread badge illustration leaked')
       authoredIllustrationDiscovery.markSeen(story, badgeAsset)
@@ -234,6 +252,19 @@ for (const fixture of fixtures) {
         language + ': post-choice badge image did not unlock after reading it')
       assert.equal(badgeSeenGallery[1].items[a01Index].unlocked, false,
         language + ': seeing badge incorrectly unlocked prior unread battle image')
+      assert.equal(badgeSeenGallery[1].items[a03Index].unlocked, false,
+        language + ': viewing badge must not unlock unseen earlier aftermath image')
+      authoredIllustrationDiscovery.clear(story)
+      authoredIllustrationDiscovery.markSeen(story, palmAsset)
+      const palmSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(palmSeenGallery[1].items[a03Index].unlocked, true,
+        language + ': S4E8 aftermath must unlock after viewing')
+      assert.equal(palmSeenGallery[1].items[a02Index].unlocked, false,
+        language + ': S4E8 aftermath must not unlock later forged badge')
+      assert.equal(palmSeenGallery[0].items.some(item => item.assetId === palmAsset), false,
+        language + ': S4E8 aftermath must never appear in S4E7')
       authoredIllustrationDiscovery.clear(story)
       // Show the common battle scene before the branch; neither branch choice is selected here.
       const sceneSlot = story.parts.flatMap(p => p.image_slots)
@@ -259,8 +290,9 @@ for (const fixture of fixtures) {
           'seven_roads_s2_story7_return_to_ordan_01_APPROVED',
           'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED',
           'seven_roads_s2_story7_morning_horses_01_APPROVED',
+          'seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED',
         ].join('|'),
-        language + ': S4E9 must show return → suspicious notice → morning horses',
+        language + ': S4E9 must show return → suspicious notice → morning horses → Nadir as witness',
       )
       assert.equal(
         galleryBefore[1].items.some(item => item.assetId === 'seven_roads_s2_story7_said_suspicious_road_notice_01_APPROVED'),
@@ -275,17 +307,33 @@ for (const fixture of fixtures) {
         false, language + ': S4E9 notice must be locked until seen',
       )
 
-      // Existing seal-comparison image is earlier in S4E10. The accepted Farid
-      // encounter follows the source post-choice text and precedes the ending hook.
+      const witness = 'seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED'
+      assert.equal(galleryBefore[0].items.find(item => item.assetId === witness)?.unlocked,
+        false, language + ': unread S4E9 witness scene unlocked')
+      assert.equal(galleryBefore[1].items.some(item => item.assetId === witness),
+        false, language + ': S4E9 witness scene leaked into S4E10')
+      authoredIllustrationDiscovery.markSeen(story, witness)
+      const witnessSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(witnessSeenGallery[0].items.find(item => item.assetId === witness)?.unlocked,
+        true, language + ': witness image should unlock after being seen')
+      assert.equal(witnessSeenGallery[1].items.find(item => item.assetId === 'seven_roads_s2_story7_aras_seal_comparison_01_APPROVED')?.unlocked,
+        false, language + ': witness image must not unlock future S4E10 seal scene')
+      authoredIllustrationDiscovery.clear(story)
+      // New close three-person view comes before the existing six-person seal-deduction image.
+      // Both precede the prison post-choice encounter and the existing ending hook.
       const s4e10Gallery = galleryBefore[1].items.map(item => item.assetId)
       assert.equal(
         s4e10Gallery.join('|'),
         [
+          'seven_roads_s4e10_three_gazes_two_letters_02_APPROVED',
           'seven_roads_s2_story7_aras_seal_comparison_01_APPROVED',
           'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED',
+          'seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED',
           'seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED',
         ].join('|'),
-        language + ': S4E10 gallery chronology must show seal → prison window → ending hook',
+        language + ': S4E10 gallery chronology must show three gazes → seal deduction → prison window → Shamol stable → ending hook',
       )
       assert.equal(
         galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED'),
@@ -295,6 +343,27 @@ for (const fixture of fixtures) {
         galleryBefore[1].items.find(item => item.assetId === 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED')?.unlocked,
         false, language + ': unread S4E10 prison encounter must stay locked',
       )
+      const letterAsset = 'seven_roads_s4e10_three_gazes_two_letters_02_APPROVED'
+      assert.equal(galleryBefore[0].items.some(item => item.assetId === letterAsset),
+        false, language + ': S4E10 A02 leaked into S4E9')
+      assert.equal(galleryBefore[1].items.find(item => item.assetId === letterAsset)?.unlocked,
+        false, language + ': unread S4E10 A02 must remain spoiler-locked')
+      const letterSlot = story.parts.flatMap(part => part.image_slots).find(slot =>
+        slot.slot_id === 'SERIES30-S4E10-A02')
+      assert.equal(letterSlot?.phase, 'story_text',
+        language + ': S4E10 letter comparison must be before the choice')
+      assert.equal(letterSlot?.kind, 'shared',
+        language + ': S4E10 letter comparison must be branch-neutral')
+      authoredIllustrationDiscovery.markSeen(story, letterAsset)
+      const lettersSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(lettersSeenGallery[1].items.find(item => item.assetId === letterAsset)?.unlocked,
+        true, language + ': S4E10 A02 must unlock once seen')
+      assert.equal(lettersSeenGallery[1].items.find(item =>
+        item.assetId === 'seven_roads_s2_story7_aras_seal_comparison_01_APPROVED')?.unlocked,
+        false, language + ': seeing A02 must not reveal the next seal-discovery illustration')
+      authoredIllustrationDiscovery.clear(story)
       const prisonSlot = story.parts.flatMap(part => part.image_slots).find(slot =>
         slot.slot_id === 'SERIES30-S4E10-A01')
       assert.equal(prisonSlot?.phase, 'post_choice_text',
@@ -314,6 +383,32 @@ for (const fixture of fixtures) {
           item.assetId === 'seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED')?.unlocked,
         false, language + ': reading prison scene prematurely unlocked future ending',
       )
+      authoredIllustrationDiscovery.clear(story)
+      const stableAsset = 'seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED'
+      const stableSlot = story.parts.flatMap(part => part.image_slots).find(slot =>
+        slot.slot_id === 'SERIES30-S4E10-A03')
+      assert.equal(stableSlot?.kind, 'shared',
+        language + ': S4E10 stable should follow either choice')
+      assert.equal(stableSlot?.phase, 'post_choice_text',
+        language + ': S4E10 stable must occur after the choice')
+      assert.equal(stableSlot?.after_text, language === 'ru'
+        ? 'Шамол потянулся к его рукаву.' : 'Shamol uning yengiga cho‘zildi.',
+        language + ': S4E10 stable must follow exact localized source')
+      assert.equal(galleryBefore[0].items.some(item => item.assetId === stableAsset),
+        false, language + ': S4E10 stable must not leak into S4E9')
+      assert.equal(galleryBefore[1].items.find(item => item.assetId === stableAsset)?.unlocked,
+        false, language + ': unread S4E10 stable must stay locked')
+      assert.equal(prisonSeenGallery[1].items.find(item => item.assetId === stableAsset)?.unlocked,
+        false, language + ': prison view must not unlock stable image')
+      authoredIllustrationDiscovery.markSeen(story, stableAsset)
+      const stableSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(stableSeenGallery[1].items.find(item => item.assetId === stableAsset)?.unlocked,
+        true, language + ': stable image should unlock when seen')
+      assert.equal(stableSeenGallery[1].items.find(item =>
+        item.assetId === 'seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED')?.unlocked,
+        false, language + ': stable image must not unlock later forest hook')
       authoredIllustrationDiscovery.clear(story)
     }
     if (fixture.key === 'waited') {
@@ -354,8 +449,10 @@ for (const fixture of fixtures) {
           'seven_roads_s2_story4_nadir_contact_01_APPROVED',
           'seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED',
           'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED',
+          'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED',
+          'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED',
         ].join('|'),
-        language + ': S4E4 gallery must keep Nadir contact → wooden tokens → rear-hook flask',
+        language + ': S4E4 gallery must show contact → tokens → flask → guard reads note → messenger leaves',
       )
       assert.equal(
         galleryBefore[2].items.some(item => item.assetId === 'seven_roads_s4e4_nadir_wooden_tokens_01_APPROVED'),
@@ -405,6 +502,22 @@ for (const fixture of fixtures) {
         true, language + ': viewing S4E4 flask must unlock it')
       assert.equal(galleryOnFlask[2].items.some(item => item.assetId === 'seven_roads_s4e4_nadir_flask_left_rear_hook_02_APPROVED'),
         false, language + ': S4E4 flask never appears in S4E3')
+      for (const asset of ['seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED', 'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED']) {
+        assert.equal(galleryBefore[3].items.find(item => item.assetId === asset)?.unlocked,
+          false, language + ': new Stage2 S4E4 image must remain spoiler-locked')
+        assert.equal(galleryOnFlask[3].items.find(item => item.assetId === asset)?.unlocked,
+          false, language + ': seeing the flask must not unlock the later note or messenger')
+        assert.equal(galleryBefore[2].items.some(item => item.assetId === asset),
+          false, language + ': S4E4 Stage2 image leaked backward into S4E3')
+      }
+      authoredIllustrationDiscovery.markSeen(story, 'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED')
+      const galleryOnNote = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(galleryOnNote[3].items.find(item => item.assetId === 'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED')?.unlocked,
+        true, language + ': reading the note must unlock only its own illustration')
+      assert.equal(galleryOnNote[3].items.find(item => item.assetId === 'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED')?.unlocked,
+        false, language + ': note should not unlock later messenger')
       authoredIllustrationDiscovery.clear(story)
     }
     if (fixture.key === 'falseRoad') {
@@ -436,6 +549,8 @@ for (const fixture of fixtures) {
       const northRidge = s4e6.indexOf('seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED')
       const fork = s4e6.indexOf('seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED')
       const realHelp = s4e6.indexOf('seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED')
+      const disguise = s4e6.indexOf('seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED')
+      assert.ok(disguise > realHelp, language + ': S4E6 disguise must follow real reinforcement departure')
       assert.ok(northRidge >= 0 && fork > northRidge && realHelp > fork,
         language + ': S4E6 gallery must show northern ridge → existing fork → real reinforcement')
       assert.equal(galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s4e6_north_stone_ridge_riders_01_APPROVED'),
@@ -455,6 +570,12 @@ for (const fixture of fixtures) {
         false, language + ': ridge cannot reveal later fork before it is read')
       assert.equal(ridgeSeen[1].items.find(item => item.assetId === 'seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED')?.unlocked,
         false, language + ': ridge cannot reveal future post-choice event')
+      assert.equal(galleryBefore[1].items.find(item => item.assetId === 'seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED')?.unlocked,
+        false, language + ': S4E6 later shared disguise must remain spoiler-locked')
+      assert.equal(ridgeSeen[1].items.find(item => item.assetId === 'seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED')?.unlocked,
+        false, language + ': reading S4E6 northern ridge must not unlock future disguise')
+      assert.ok(!galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED'),
+        language + ': S4E6 disguise leaked into S4E5')
       authoredIllustrationDiscovery.clear(story)
       assert.equal(galleryBefore[1].items.some(item => item.assetId === 'seven_roads_s4e5_nadir_scar_clue_briefing_01_APPROVED'),
         false, language + ': S4E5 scar clue must never leak into S4E6')
@@ -540,6 +661,29 @@ for (const fixture of fixtures) {
         language + ': S3E3 alarm leaked past investigation split into S3E4',
       )
     }
+    if (fixture.key === 'caravan') {
+      const a01 = 'seven_roads_s3e4_old_passage_map_recollection_01_APPROVED'
+      const reunion = 'seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED'
+      const drawing = 'seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED'
+      const interrogation = 'seven_roads_s3e7_captain_stops_writing_01_APPROVED'
+      assert.ok(galleryBefore[3].items.some(item => item.assetId === a01),
+        language + ': S3E4 old passage image missing')
+      assert.ok(!galleryBefore[2].items.some(item => item.assetId === a01),
+        language + ': S3E4 old passage leaked into S3E3')
+      const s3e5 = galleryBefore[4].items.map(item => item.assetId)
+      assert.ok(s3e5.indexOf(reunion) >= 0 && s3e5.indexOf(drawing) > s3e5.indexOf(reunion),
+        language + ': S3E5 reunion must precede the drawing')
+      assert.ok(!galleryBefore[5].items.some(item => item.assetId === drawing),
+        language + ': S3E5 drawing leaked across S3E6 split')
+      assert.ok(galleryBefore[6].items.some(item => item.assetId === interrogation),
+        language + ': S3E7 interrogation scene missing')
+      assert.ok(!galleryBefore[5].items.some(item => item.assetId === interrogation),
+        language + ': S3E7 interrogation leaked into S3E6')
+      for (const asset of [a01,reunion,drawing,interrogation]) {
+        const current = galleryBefore.flatMap(e => e.items).find(item => item.assetId === asset)
+        assert.equal(current?.unlocked, false, language + ': unseen Stage2 image unlocked early: ' + asset)
+      }
+    }
     if (fixture.key === 'silver') {
       const s2e1GalleryOrder = galleryBefore[0].items.map((entry) => entry.assetId)
       assert.equal(
@@ -547,6 +691,8 @@ for (const fixture of fixtures) {
         [
           'seven_roads_s2e4_missing_kamran_oak_01_APPROVED',
           'seven_roads_s2_story1_hidden_network_settlement_01_APPROVED',
+          'seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED',
+          'seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED',
           'seven_roads_s2e4_western_road_map_02_APPROVED',
         ].join('|'),
         language + ': S2E4 gallery must show the forest rendezvous before the hidden settlement',
@@ -555,6 +701,7 @@ for (const fixture of fixtures) {
         galleryBefore[1].items.map(item => item.assetId).join('|'),
         [
           'seven_roads_s2_story1_kamran_rescues_comrade_01_APPROVED',
+          'seven_roads_s2e2_east_gate_messenger_02_APPROVED',
           'seven_roads_s2_story1_danyar_pursuit_01_APPROVED',
           'seven_roads_s2e2_missing_dark_horse_01_APPROVED',
         ].join('|'),
@@ -569,6 +716,33 @@ for (const fixture of fixtures) {
         ].join('|'),
         language + ': S2E1 gallery must show dialogue, birds, then attack',
       )
+    }
+    if (fixture.key === 'waited') {
+      const e2 = galleryBefore[1].items.map(item => item.assetId)
+      const arrival = e2.indexOf('seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED')
+      const nadir = e2.indexOf('seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED')
+      const farid = e2.indexOf('seven_roads_s4e2_farid_rider_belts_glance_03_APPROVED')
+      assert.ok(nadir >= 0 && farid > nadir, language + ': S4E2 Nadir waiting must precede Farid encounter')
+      assert.ok(arrival > nadir && nadir >= 0,
+        language + ': S4E2 source order is Nadir second-day waiting then Temur and Samira arrive')
+      assert.ok(!galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED'),
+        language + ': S4E2 arrival leaked backward into S4E1')
+      assert.equal(galleryBefore[1].items.find(item => item.assetId === 'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED')?.unlocked,
+        false, language + ': unread S4E2 arrival must remain locked')
+      assert.equal(galleryBefore[2].items.some(item => item.assetId === 'seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED'), false,
+        language + ': S4E2 waiting must not leak into S4E3')
+      const e1 = galleryBefore[0].items.map(item => item.assetId)
+      assert.ok(e1.indexOf('seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED') >= 0 &&
+        e1.indexOf('seven_roads_s4e1_dawn_departure_to_ordan_01_APPROVED') > e1.indexOf('seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED'),
+        language + ': S4E1 captain briefing must precede departure')
+    }
+    if (fixture.key === 'towers') {
+      for (const asset of ['seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED','seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED']) {
+        assert.ok(galleryBefore[0].items.some(item => item.assetId === asset),
+          language + ': S3E9 scene missing from S3E9 gallery')
+        assert.ok(!galleryBefore[1].items.some(item => item.assetId === asset),
+          language + ': S3E9 scene leaked into S3E10')
+      }
     }
     for (const [id, expectedEpisode] of Object.entries(fixture.expected)) {
       const located = story.parts.flatMap((p, index) => p.image_slots
@@ -607,7 +781,7 @@ for (const fixture of fixtures) {
       assert.ok(galleryItem, id + '/' + language + ': missing from correct gallery episode')
       assert.equal(galleryItem.unlocked, false, 'new illustration spoiled before reading')
       assert.equal(item.slot.kind, 'shared')
-      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E10-A01'].includes(id) ? 'post_choice_text' : 'story_text')
+      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E5-A01', 'SERIES30-S3E5-A02', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E4-A03', 'SERIES30-S4E4-A04', 'SERIES30-S4E6-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E8-A03', 'SERIES30-S4E10-A01', 'SERIES30-S4E10-A03'].includes(id) ? 'post_choice_text' : 'story_text')
       assert.equal(pars(item.part[item.slot.phase]).filter((p) => p === item.slot.after_text).length, 1,
         id + '/' + language + ': anchor missing or repeated')
       assert.ok(assetsSource.includes("'" + item.slot.asset_id + "'"),
@@ -644,7 +818,11 @@ for (const scene of series30ApprovedScenes) {
     scene.slot_id.startsWith('SERIES30-S2E3-') ? e.season === 2 && e.episode === 3 :
     scene.slot_id.startsWith('SERIES30-S2E4-') ? e.season === 2 && e.episode === 4 :
     scene.slot_id.startsWith('SERIES30-S3E3-') ? e.season === 3 && e.episode === 3 :
+    scene.slot_id.startsWith('SERIES30-S3E4-') ? e.season === 3 && e.episode === 4 :
+    scene.slot_id.startsWith('SERIES30-S3E5-') ? e.season === 3 && e.episode === 5 :
     scene.slot_id.startsWith('SERIES30-S3E6-') ? e.season === 3 && e.episode === 6 :
+    scene.slot_id.startsWith('SERIES30-S3E7-') ? e.season === 3 && e.episode === 7 :
+    scene.slot_id.startsWith('SERIES30-S3E9-') ? e.season === 3 && e.episode === 9 :
     scene.slot_id.startsWith('SERIES30-S3E10-') ? e.season === 3 && e.episode === 10 :
     scene.slot_id.startsWith('SERIES30-S3E11-') ? e.season === 3 && e.episode === 11 :
     scene.slot_id.startsWith('SERIES30-S4E1-') ? e.season === 4 && e.episode === 1 :
@@ -663,9 +841,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 58)
-console.log('[series30-art] PASS: 29 owner-approved assets, 58 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x1 / S2E3 x3 / S2E4 x2 / S3E3 x2 / S3E6 x1 / S3E10 x2 / S3E11 x2 / S4E1 x1 / S4E2 x3 / S4E3 x1 / S4E4 x2 / S4E5 x2 / S4E6 x1 / S4E8 x2 / S4E9 x1 / S4E10 x1), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 96)
+console.log('[series30-art] PASS: 48 hosted, owner-approved assets, 96 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x4 / S4E5 x2 / S4E6 x2 / S4E8 x3 / S4E9 x2 / S4E10 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
