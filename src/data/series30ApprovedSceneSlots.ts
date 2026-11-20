@@ -543,6 +543,19 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     },
   },
   {
+    story_id: 'seven_roads_obratno_v_ordan',
+    part_id: 'story7_part_1_back_to_ordan',
+    slot_id: 'SERIES30-S4E10-A03',
+    anchor_key: 'series30_s4e10_temur_shamol_stable_samira',
+    asset_id: 'seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED',
+    // Owner-approved, shared post-choice scene. Shamol reaches Temur's sleeve at the stable.
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Шамол потянулся к его рукаву.',
+      uz: 'Shamol uning yengiga cho‘zildi.',
+    },
+  },
+  {
     story_id: 'seven_roads_dve_podmogi',
     part_id: 'story6_part_2_two_reinforcements',
     slot_id: 'SERIES30-S4E8-A01',
