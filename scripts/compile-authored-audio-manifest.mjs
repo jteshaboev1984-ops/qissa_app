@@ -43,7 +43,10 @@ if (!sourcePath || !sourcePath.endsWith('.json')) {
 }
 const sourceBytes = readFileSync(sourcePath)
 const story = JSON.parse(sourceBytes.toString('utf8'))
-if (!Array.isArray(story.parts)) {
+if (!Array.isArray(story.parts) ||
+  !story.source_literary_version ||
+  story.parts.some((part) => !Array.isArray(part.image_slots) ||
+    !Object.prototype.hasOwnProperty.call(part, 'post_choice_text'))) {
   throw new Error('Input is not a complete authored package; localize any UZ overlay first.')
 }
 
