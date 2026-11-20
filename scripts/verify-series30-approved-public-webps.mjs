@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto'
 // This runs only on CI, never during local/offline reading-series preflight.
 const base = 'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/'
 const assets = [
+  { name: 'seven_roads_s4e8_temur_trembling_palm_03_APPROVED.webp', size: 389740, sha256: '41d29e6b1b1868fa0873f3faef5ce99af7665786e5903f2d22fbb55e36201094' },
   { name: 'seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.webp', size: 332388, sha256: 'ec1b05ca6e41c7b0bc7de66cecb44fef7e02eaed480c17e8a7d69f7a2a5f5877' },
   { name: 'seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.webp', size: 240168, sha256: 'c7fce1d3e54d0d32ee886c8bac0526e5566242f279f629490f8e07a2ccb004cc' },
   { name: 'seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp', size: 200440, sha256: 'adf8f08d2e24f3e86137baf3e61684e8834a19d4f7887ee9f0d6e8a9daf1a10e' },
@@ -181,4 +182,4 @@ for (const asset of assets) {
   assert.equal(sha256, asset.sha256, `Remote WebP differs from approved master derivative: ${asset.name}`)
   console.log(`[series30-art-remote] OK ${asset.name} (${bytes.length} bytes)`)
 }
-console.log('[series30-art-remote] PASS 47/47 remote GET, MIME, byte lengths and SHA256')
+console.log('[series30-art-remote] PASS 48/48 remote GET, MIME, byte lengths and SHA256')
