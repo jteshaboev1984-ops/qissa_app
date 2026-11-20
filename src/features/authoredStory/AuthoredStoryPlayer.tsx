@@ -1,5 +1,6 @@
 import { Fragment, type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { ReaderSettingsPanel } from '../../components/ReaderSettingsPanel'
+import { AuthoredListeningControls, clearAuthoredAudioProgress } from './AuthoredListeningControls'
 import { authoredStoryPersistence } from '../../lib/authoredStoryPersistence'
 import { authoredReadingPosition } from '../../lib/authoredReadingPosition'
 import { authoredIllustrationDiscovery } from '../../lib/authoredIllustrationDiscovery'
@@ -403,6 +404,7 @@ export function AuthoredStoryPlayer({
   const restartStory = () => {
     authoredStoryPersistence.clear(story)
     authoredReadingPosition.clear(story)
+    clearAuthoredAudioProgress(story)
     restoredPartRef.current = null
     const fresh = createInitialAuthoredStoryProgress(story)
     setPreviewChoiceId(null)
@@ -620,6 +622,12 @@ export function AuthoredStoryPlayer({
           />
         </div>
       </header>
+
+      <AuthoredListeningControls
+        key={part.part_id}
+        story={story}
+        progress={progress}
+      />
 
       <article className={`px-1 py-1 ${readerTheme.text}`} style={readerTextStyle}>
         <StoryBlocks
