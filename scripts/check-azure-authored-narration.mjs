@@ -1,18 +1,17 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { build } from 'esbuild'
+import ts from 'typescript'
 
-const result = await build({
-  entryPoints: ['src/features/authoredStory/authoredAudioPlan.ts'],
-  bundle: true,
-  write: false,
-  format: 'esm',
-  platform: 'node',
-  target: 'node24',
-  logLevel: 'silent',
-})
-const moduleUrl = 'data:text/javascript;base64,' +
-  Buffer.from(result.outputFiles[0].contents).toString('base64')
+const transpile = (path) => ts.transpileModule(readFileSync(path, 'utf8'), {
+  fileName: path,
+  compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+}).outputText
+const engineUrl = 'data:text/javascript;base64,' + Buffer.from(
+  transpile('src/features/authoredStory/engine.ts'),
+).toString('base64')
+const plannerJs = transpile('src/features/authoredStory/authoredAudioPlan.ts')
+  .replace(/from ['"]\.\/engine['"]/, `from '${engineUrl}'`)
+const moduleUrl = 'data:text/javascript;base64,' + Buffer.from(plannerJs).toString('base64')
 const { buildAuthoredAudioPlan, chunkNarrationText, nextAuthoredAudioSegment } = await import(moduleUrl)
 const approved = JSON.parse(readFileSync('src/data/authored/prazdnikMuzhestvaV3.ru.json', 'utf8'))
 
