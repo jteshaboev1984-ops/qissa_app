@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "plan_id": "qissa-seven-roads-30-series-art-2026-11-14",
   "created_on": "2026-11-14",
-  "status": "owner_approved_plan_only_individual_art_not_approved",
+  "status": "stage_1_29_published_and_stage_2_19_owner_accepted_and_github_pages_published_2026_11_20",
   "source_snapshot": {
     "repo": "jteshaboev1984-ops/qissa_app",
     "pr_number": 334,
@@ -307,7 +307,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e2_east_gate_messenger_02_APPROVED.webp",
@@ -316,6 +316,14 @@
             "remote_webp_verification": 44462697595,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -508,7 +516,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_rescued_rider_reports_to_leader_03_APPROVED.webp",
@@ -517,6 +525,14 @@
             "remote_webp_verification": 44462697595,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         },
         {
@@ -538,7 +554,7 @@
           "width": 1671,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.webp",
@@ -547,6 +563,14 @@
             "remote_webp_verification": 44462697595,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -696,7 +720,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e4_old_passage_map_recollection_01_APPROVED.webp",
@@ -705,6 +729,14 @@
             "remote_webp_verification": 44465548262,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -748,7 +780,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp",
@@ -757,6 +789,14 @@
             "remote_webp_verification": 44465548262,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         },
         {
@@ -779,7 +819,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp",
@@ -788,6 +828,14 @@
             "remote_webp_verification": 44465548262,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -876,7 +924,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp",
@@ -885,6 +933,14 @@
             "remote_webp_verification": 44465548262,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -945,7 +1001,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_metadata_verification": "2026-11-18 12:17 UTC: storage.objects image/webp, 297866 bytes",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp",
@@ -955,6 +1011,14 @@
             "remote_webp_verification": 44462697595,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         },
         {
@@ -977,7 +1041,7 @@
           "width": 1670,
           "height": 942,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.webp",
@@ -986,6 +1050,14 @@
             "remote_webp_verification": 44462697595,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -1207,7 +1279,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED.webp",
@@ -1216,6 +1288,14 @@
             "remote_webp_verification": 44462697595,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -1340,7 +1420,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_nadir_waits_at_caravan_stables_04_APPROVED.webp",
@@ -1349,6 +1429,14 @@
             "remote_webp_verification": 44462697595,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         },
         {
@@ -1372,7 +1460,7 @@
           "width": 1671,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_adaa131400aa50561667f3551e6dd1a15721bb8d",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_reader_virtual_split_branch_and_gallery_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED.webp",
@@ -1381,6 +1469,14 @@
             "remote_webp_verification": 44465548262,
             "seven_roads_ci": 44466104408,
             "season2_tier_a_ci": 44466104403
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -1526,7 +1622,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_be310a4adff6b277d64eadcd63ebb9048ef4d112",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_virtual_episodes_gallery_order_unlock_typecheck_build_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED.webp",
@@ -1535,6 +1631,14 @@
             "remote_webp_verification": 44480510301,
             "season2_tier_a_ci": 44480912275,
             "seven_roads_ci": 44480912363
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         },
         {
@@ -1557,7 +1661,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_be310a4adff6b277d64eadcd63ebb9048ef4d112",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_virtual_episodes_gallery_order_unlock_typecheck_build_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED.webp",
@@ -1566,6 +1670,14 @@
             "remote_webp_verification": 44480510301,
             "season2_tier_a_ci": 44480912275,
             "seven_roads_ci": 44480912363
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -1712,7 +1824,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_6b86bba69517781052fb06b7533e20643c7f3684",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_both_routes_virtual_split_gallery_order_spoiler_lock_typecheck_build_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp",
@@ -1721,6 +1833,14 @@
             "remote_webp_verification": 44498390175,
             "season2_tier_a_ci": 44498806316,
             "seven_roads_ci": 44498806353
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -1848,7 +1968,7 @@
           "source_uz_blob_sha": "70b48c7d84a2a63e0dba6977eb5fa98e9342fd22",
           "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e8_temur_trembling_palm_03_APPROVED.webp",
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_354",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_exact_anchor_both_choices_correct_S4E8_gallery_chronology_spoiler_locks_four_season_browser_CI_passed",
           "notes": "Owner said 'если по рефам ок то принимаем'; exact visible image Тихая забота после битвы (not alternative Тёплое утешение) visually validated against 01_heroes_horses_approved and both current S4E8 Stage1 images: children ~12, short tousled Temur hair, single Samira braid and low burgundy embroidered band, Rahim next to children, correct wagon/tower sides and aftermath chronology. Exact PNG/WebP/metadata in Library. Storage absent; DO NOT register URL/hosted_verified before upload and independent CI. No main merge/deploy/publish. 2026-11-20 owner-uploaded exact WebP found in QISSA story-images storage.objects: image/webp, 389740 bytes, existing exact key. Added only additive hosted asset registry entry, shared post_choice RU+UZ overlay and remote SHA+gallery QA in same unpublished Draft PR #354. Public GET/MIME/bytes/SHA and browser CI not yet passed; do not claim hosted_verified or production. VERIFIED 2026-11-20 on exact code HEAD f1a3043aea0dbc4d6d95c118a2fdc8280535c258: Seven Roads CI #44676428470 SUCCESS and Tier A #44676428556 SUCCESS. Public WebP GET + image/webp + length 389740 + SHA 41d29e6... PASS; total 48/48 remote WebPs, 96/96 RU/UZ unique anchors, 136 authored routes, spoiler-locked/chronology browser, typecheck and build PASS. Stage2 19/19 ART and 19/19 TECH IN DRAFT PR ONLY; no main merge, production release, family data or paid providers.",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e8_temur_trembling_palm_03_APPROVED.webp",
@@ -1857,6 +1977,14 @@
             "remote_webp_verification": 44676428470,
             "seven_roads_ci": 44676428470,
             "season2_tier_a_ci": 44676428556
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -1928,7 +2056,7 @@
           "width": 1672,
           "height": 941,
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_348_at_SHA_f25313f9f1c1da8078bc7ea7285cd7f9670ed6d8",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_virtual_S4E9_gallery_order_spoiler_locks_typecheck_build_browser_CI_passed",
           "storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp",
@@ -1937,6 +2065,14 @@
             "remote_webp_verification": 44506373339,
             "seven_roads_ci": 44507175426,
             "season2_tier_a_ci": 44507175488
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
@@ -2012,7 +2148,7 @@
           "webp_sha256": "c7fce1d3e54d0d32ee886c8bac0526e5566242f279f629490f8e07a2ccb004cc",
           "derivative_note": "16:9 WebP is a top-aligned technical crop of owner-approved 4:3 PNG, visually checked for retaining heads, documents and window; immutable PNG original preserved. Crop is not an independent owner acceptance.",
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_stacked_Draft_PR_353",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_exact_anchor_gallery_order_spoiler_locks_browser_CI_passed",
           "source_ru_blob_sha": "e5fde8ac773375a334ffab1c80fe621967674a3a",
           "source_uz_blob_sha": "67101f138790269f3929f0c2ad3c4cd218242651",
@@ -2024,6 +2160,14 @@
             "remote_webp_verification": 44523476279,
             "seven_roads_ci": 44523476279,
             "season2_tier_a_ci": 44523476285
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         },
         {
@@ -2056,7 +2200,7 @@
           "source_uz_blob_sha": "67101f138790269f3929f0c2ad3c4cd218242651",
           "planned_storage_object": "seven-roads/season2_tier_a_v2/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.webp",
           "storage_status": "verified_public_GET_MIME_bytes_sha256",
-          "runtime_status": "wired_to_RU_UZ_reader_in_unpublished_Draft_PR_354",
+          "runtime_status": "published_github_pages_2026_11_20_main_SHA_622857c752f8738954a2edb4caee0dd7a1a5637c",
           "qa_status": "RU_UZ_source_exact_gallery_chronology_spoiler_locks_browser_CI_passed",
           "notes": "Owner approved this exact last S4E10-A03 image in chat after iterative corrections to youthful character faces, Temur hair/hands, Samira band and Shamol coat/sleeve contact. No approval of previous REVIEW variants implied. Accepted master PNG, 16:9 WebP and metadata saved in Library; Supabase Storage exact target still absent. Do not register runtime URL or count as hosted_verified until user uploads and independent GET/MIME/size/SHA matches. No main merge, production release or paid provider use authorized. 2026-11-20 owner upload exact bucket/key confirmed via QISSA Supabase storage.objects (image/webp, 332388B). Runtime asset URL and shared RU/UZ reader slot registered; independently confirm public GET and SHA + gallery browser CI on exact PR354 HEAD. 2026-11-20 independent public GET verification SUCCESS on code SHA f05f49e8dca8b143cf8a35365e0633e666ec7c88: Seven Roads #44674737640 and TierA #44674737612; all 47 public assets MIME/bytes/SHA and 94/94 unique RU/UZ anchors, spoiler-locked gallery and browser smoke pass. This is DRAFT, never merged/published.",
           "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.webp",
@@ -2065,10 +2209,53 @@
             "remote_webp_verification": 44674737640,
             "seven_roads_ci": 44674737640,
             "season2_tier_a_ci": 44674737612
+          },
+          "release_verification": {
+            "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+            "pages_run": 44677801258,
+            "pages_deployment": "success",
+            "public_webp_SHA_verified_pre_release": true,
+            "read_localized_browser_CI_verified_pre_release": true,
+            "independent_public_app_browser_verified": false
           }
         }
       ],
       "notes": "2026-11-17 S4E10-A01 proposed 'Взгляд через решётку' new 1672×941 2663911-byte PNG SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; ImageGen 71956e59-acac-4990-a0e4-1e4578354197; source post_choice_text full exact RU `Данияр остановился.` / UZ `Daniyar to‘xtadi.` unique 1/1 after literary choice. Farid (alias Kamran) in prison courtyard on low stone bench through barred window, Daniyar blue scarf outside. Real approved Kamran/Farid character sheet and S2E3 Farid arrest PNG inspected. Candidate is REVIEW only in QISSA Library /QISSA/production/seven_roads/series30/review/S4E10/; NO owner acceptance, WebP, storage, runtime, asset_id, counter update. 2026-11-17 NEWER CHECKPOINT: owner explicitly accepted S4E10-A01 v1 in conversation; approved asset_id seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.png. Original review candidate preserved EXACT bitstream SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; 2663911 bytes, 1672x941. WebP q90 m6 356286 bytes sha256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Master PNG + WebP + metadata in Library stage1/S4E10, separate from REVIEW. Direct read from project Supabase storage.objects shows target path ABSENT; current tools do not provide authenticated binary Supabase Storage upload. Therefore no hosted_verified slot/URL runtime or CI remote SHA until actual upload; code remains at 26/29 integrated, artistic accepted count now 27/29. Existing S4E8-A01/A02 0/2 withdrawn and blocked. No changes authored RU/UZ, IDs, saved progress, prior approved assets, merge/deploy/publish. 2026-11-17 owner-upload confirmation: Supabase storage.objects exact target name exists under story-images with MIME image/webp and size 356286. Additive S4E10-A01 runtime overlay, URL, 27th WebP SHA validator and bilingual reading-series/galleries QA added in Draft PR #334. Independent remote SHA+reader CI remains PENDING before count can be called technically complete; no authored RU/UZ/IDs/progress, merged or deployed. 2026-11-17 verified on exact code HEAD afd100545c3216d387aedcf27063f1bc5a7ca998: Seven Roads CI #44084019282 SUCCESS, Season2 TierA #44084019325 SUCCESS. Independent public GET verifies S4E10 WebP MIME image/webp, 356286 bytes and exact SHA256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Total 27/27 remote public WebP verified, 54/54 bilingual anchors; S4E10 gallery chronology seal comparison → prison-window scene → ending hook, S4E9 isolation, spoiler locks, typecheck, build and browser CI PASS. Overall Stage1 ART 27/29; TECH 27/29. No literary JSON/IDs/progress/merge/deploy changed. S4E8 remains revoked/unintegrated 0/2. 2026-11-19 S4E10-A02 owner explicitly accepted corrected low-cap Samira and one seal per letter; exact 1448x1086 PNG 2214074 bytes sha317807... preserved in Library, cropped 16:9 WebP 240168 bytes shac7fce1... stored as technical derivative. RU/UZ unique source anchor confirmed in `seven_roads_obratno_v_ordan` story7 part1 story_text (not earlier story4). Storage upload/runtime/CI pending. Draft acceptance checkpoint isolated from #348; no release. 2026-11-19 integration branch based on PR #348 HEAD cb910999, isolated from PR #352. S4E10-A02 owner Storage metadata confirmed exact MIME/bytes; remote public SHA and bilingual/browser QA pending CI. Other Stage2 records from #348 preserved. 2026-11-19 new A02 remote validated, 46/46 art SHA and 92/92 bilingual anchors successful at code SHA 3b2ffcdd8c736b1dbee179ab4f43d165f376dd2b. PR #353 stacked on #348, not released; photo candidate A03 REVIEW only separate. 2026-11-20 S4E10-A03 exact final horse-stable image owner-approved (gen afddb54a...), immutable 1672x941 PNG SHA256 c26761ca... 2554546B and derived WebP SHA256 ec1b05ca... 332388B both stored in QISSA Library stage2/S4E10, with metadata; unique approved RU/UZ post_choice_text anchor (1 each). QISSA Storage object absent on read-only query, no public GET, no runtime, no CI art check, no release. Integrated count remains 17/19 on #353; artistically accepted count 18/19 pending final S4E8 stage2 scene. 2026-11-20 S4E10-A03 physical uploaded 332388B image/webp; runtime wiring introduced in #354, public SHA and bilingual/browsers pending exact CI. Stage2 artistic complete here, production release not approved. 2026-11-20 S4E10-A03 public SHA and reader/gallery verified on f05f49e8 after exact 47/47 and 94/94 in Seven Roads/TierA CI. Counts Stage2 technically integrated IN DRAFT PRs 18/19, not production."
     }
-  ]
+  ],
+  "release_checkpoint": {
+    "phase": "Stage2 final released to GitHub Pages after owner authorization",
+    "owner_permission": "explicit 2026-11-20 conversation authorization to reconcile PRs and release",
+    "stage_1_published": 29,
+    "stage_2_owner_approved": 19,
+    "stage_2_technically_verified": 19,
+    "final_release_candidate_pr": 355,
+    "stacked_prs_merged_by_ancestry": [
+      348,
+      353,
+      354
+    ],
+    "candidate_sha": "7f9b9be47853761fe2b57d9ec4af8ca314ddf55a",
+    "main_merge_sha": "622857c752f8738954a2edb4caee0dd7a1a5637c",
+    "ci": {
+      "seven_roads": 44677530975,
+      "season2_tier_a": 44677530894
+    },
+    "released_pages_workflow_run": 44677801258,
+    "pages_workflow_status": "completed_success_build_and_deploy",
+    "release_url": "https://jteshaboev1984-ops.github.io/qissa_app/",
+    "independent_live_page_http_check": "unavailable_in_chat_environment_DNS_blocked_not_proven",
+    "hosted_asset_count_verified": 48,
+    "ru_uz_unique_image_anchors_verified": 96,
+    "authored_routes_checked": 136,
+    "security_advisory": "GHSA-fc5q-39xc-vjpf officially withdrawn 2026-11-18; full npm audit 0; unexceptioned audit:all in CI and deployment",
+    "superseded_stage2_review_images_remain_rejected": true,
+    "persistent_seven_roads_product_branch_not_modified": true,
+    "no_authored_story_json_or_child_data_changes": true,
+    "remaining_external_family_beta_gates": [
+      95,
+      101,
+      152
+    ]
+  }
 }
