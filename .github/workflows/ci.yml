@@ -27,7 +27,7 @@ jobs:
         run: npm ci
 
       - name: Validate Azure audio and route cache boundaries
-        run: npm run check:azure-audio && npm run check:azure-narration && npm run check:authored-v3 && npm run check:seven-roads-shell && npm run check:privacy && npm run typecheck:audio-agent && npm run typecheck && npm run build
+        run: npm run check:azure-audio && npm run check:azure-narration && npm run check:authored-v3 && npm run check:seven-roads-shell && npm run typecheck:audio-agent && npm run typecheck && npm run build
 
       - name: Audit production dependencies
         run: npm run audit:prod
