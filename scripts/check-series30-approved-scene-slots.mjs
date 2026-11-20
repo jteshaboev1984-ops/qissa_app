@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 47)
+assert.equal(series30ApprovedScenes.length, 48)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -92,7 +92,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story6TwoReinforcements',
     key: 'reinforcements',
-    expected: { 'SERIES30-S4E8-A01': 2, 'SERIES30-S4E8-A02': 2 },
+    expected: { 'SERIES30-S4E8-A01': 2, 'SERIES30-S4E8-A02': 2, 'SERIES30-S4E8-A03': 2 },
   },
 ]
 
@@ -223,10 +223,25 @@ for (const fixture of fixtures) {
         language + ': badge discovery must be available after either choice')
       assert.equal(galleryBefore[0].items.some(item => item.assetId === badgeAsset), false,
         language + ': S4E8 post-choice badge leaked into S4E7')
+      const palmAsset = 'seven_roads_s4e8_temur_trembling_palm_03_APPROVED'
+      const palmSlot = badgePart.image_slots.find(slot => slot.slot_id === 'SERIES30-S4E8-A03')
+      assert.equal(palmSlot?.phase, 'post_choice_text',
+        language + ': S4E8 aftermath must follow the choice')
+      assert.equal(palmSlot?.kind, 'shared',
+        language + ': S4E8 aftermath must be common to both choices')
+      assert.equal(palmSlot?.after_text, language === 'ru'
+        ? 'Темур посмотрел на ладонь. Она немного дрожала.'
+        : 'Temur kaftiga qaradi. U biroz titrardi.',
+        language + ': S4E8 aftermath must follow the exact localized paragraph')
+      assert.equal(galleryBefore[0].items.some(item => item.assetId === palmAsset), false,
+        language + ': S4E8 aftermath leaked into S4E7')
       const a01Index = galleryBefore[1].items.findIndex(item => item.assetId === newAsset)
+      const a03Index = galleryBefore[1].items.findIndex(item => item.assetId === palmAsset)
       const a02Index = galleryBefore[1].items.findIndex(item => item.assetId === badgeAsset)
-      assert.ok(a01Index >= 0 && a02Index > a01Index,
-        language + ': S4E8 gallery must show battle before post-choice badge discovery')
+      assert.ok(a01Index >= 0 && a03Index > a01Index && a02Index > a03Index,
+        language + ': S4E8 gallery must show battle → trembling hand → badge')
+      assert.equal(galleryBefore[1].items[a03Index].unlocked, false,
+        language + ': unread S4E8 aftermath illustration leaked')
       assert.equal(galleryBefore[1].items[a02Index].unlocked, false,
         language + ': unread badge illustration leaked')
       authoredIllustrationDiscovery.markSeen(story, badgeAsset)
@@ -237,6 +252,19 @@ for (const fixture of fixtures) {
         language + ': post-choice badge image did not unlock after reading it')
       assert.equal(badgeSeenGallery[1].items[a01Index].unlocked, false,
         language + ': seeing badge incorrectly unlocked prior unread battle image')
+      assert.equal(badgeSeenGallery[1].items[a03Index].unlocked, false,
+        language + ': viewing badge must not unlock unseen earlier aftermath image')
+      authoredIllustrationDiscovery.clear(story)
+      authoredIllustrationDiscovery.markSeen(story, palmAsset)
+      const palmSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(palmSeenGallery[1].items[a03Index].unlocked, true,
+        language + ': S4E8 aftermath must unlock after viewing')
+      assert.equal(palmSeenGallery[1].items[a02Index].unlocked, false,
+        language + ': S4E8 aftermath must not unlock later forged badge')
+      assert.equal(palmSeenGallery[0].items.some(item => item.assetId === palmAsset), false,
+        language + ': S4E8 aftermath must never appear in S4E7')
       authoredIllustrationDiscovery.clear(story)
       // Show the common battle scene before the branch; neither branch choice is selected here.
       const sceneSlot = story.parts.flatMap(p => p.image_slots)
@@ -753,7 +781,7 @@ for (const fixture of fixtures) {
       assert.ok(galleryItem, id + '/' + language + ': missing from correct gallery episode')
       assert.equal(galleryItem.unlocked, false, 'new illustration spoiled before reading')
       assert.equal(item.slot.kind, 'shared')
-      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E5-A01', 'SERIES30-S3E5-A02', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E4-A03', 'SERIES30-S4E4-A04', 'SERIES30-S4E6-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E10-A01', 'SERIES30-S4E10-A03'].includes(id) ? 'post_choice_text' : 'story_text')
+      assert.equal(item.slot.phase, ['SERIES30-S2E3-A03', 'SERIES30-S3E5-A01', 'SERIES30-S3E5-A02', 'SERIES30-S3E11-A02', 'SERIES30-S4E4-A02', 'SERIES30-S4E4-A03', 'SERIES30-S4E4-A04', 'SERIES30-S4E6-A02', 'SERIES30-S4E8-A02', 'SERIES30-S4E8-A03', 'SERIES30-S4E10-A01', 'SERIES30-S4E10-A03'].includes(id) ? 'post_choice_text' : 'story_text')
       assert.equal(pars(item.part[item.slot.phase]).filter((p) => p === item.slot.after_text).length, 1,
         id + '/' + language + ': anchor missing or repeated')
       assert.ok(assetsSource.includes("'" + item.slot.asset_id + "'"),
@@ -813,9 +841,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 94)
-console.log('[series30-art] PASS: 47 hosted, owner-approved assets, 94 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x4 / S4E5 x2 / S4E6 x2 / S4E8 x2 / S4E9 x2 / S4E10 x3), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 96)
+console.log('[series30-art] PASS: 48 hosted, owner-approved assets, 96 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x4 / S4E5 x2 / S4E6 x2 / S4E8 x3 / S4E9 x2 / S4E10 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
