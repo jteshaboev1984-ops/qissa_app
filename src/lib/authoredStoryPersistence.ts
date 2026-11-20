@@ -87,7 +87,7 @@ const clearAll = () => {
     const keys: string[] = []
     for (let index = 0; index < storage.length; index += 1) {
       const key = storage.key(index)
-      if (key?.startsWith(`${KEY_PREFIX}:`)) keys.push(key)
+      if (key?.startsWith(`${KEY_PREFIX}:`) || key?.startsWith('qissa:v1:authoredAudioProgress:')) keys.push(key)
     }
     keys.forEach((key) => storage.removeItem(key))
   } catch {
