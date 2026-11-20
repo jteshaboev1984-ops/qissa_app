@@ -232,6 +232,7 @@ export const validateAuthoredStoryPackage = (
   const decisionIds = new Set<string>()
   const choiceIds = new Set<string>()
   const assetIds = new Set<string>()
+  const conditionalIds = new Set<string>()
 
   if (!story.cover_illustration.asset_id.trim()) {
     errors.push('cover asset_id is required')
@@ -249,6 +250,22 @@ export const validateAuthoredStoryPackage = (
     const paragraphsByPhase: Record<AuthoredStoryPhase, string[]> = {
       story_text: paragraphsOf(part.story_text),
       post_choice_text: paragraphsOf(part.post_choice_text),
+    }
+
+    for (const conditional of part.conditional_segments ?? []) {
+      if (conditionalIds.has(conditional.segment_id)) {
+        errors.push(`duplicate conditional segment_id: ${conditional.segment_id}`)
+      }
+      conditionalIds.add(conditional.segment_id)
+      if (!conditional.text.trim() || !conditional.when.decision_id || !conditional.when.choice_id) {
+        errors.push(`${conditional.segment_id}: incomplete inherited choice segment`)
+      }
+      const matches = paragraphsByPhase[conditional.phase]?.filter(
+        (paragraph) => paragraph === conditional.after_text,
+      ).length ?? 0
+      if (matches !== 1) {
+        errors.push(`${conditional.segment_id}: inherited text anchor expected once, got ${matches}`)
+      }
     }
 
     for (const slot of part.image_slots) {
