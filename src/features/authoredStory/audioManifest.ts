@@ -47,6 +47,21 @@ const inheritedStatesForPart = (
 ): Record<string, string>[] => {
   const part = story.parts[partIndex]
   const currentDecisionId = part.decision?.decision_id ?? null
+  // A manifest must never silently omit malformed or unrecognized conditions.
+  for (const conditional of part.conditional_segments ?? []) {
+    if (conditional.phase !== 'story_text' && conditional.phase !== 'post_choice_text') {
+      throw new Error(`Unsupported conditional narration phase: ${conditional.segment_id}`)
+    }
+    const paragraphs = part[conditional.phase]
+      .split(/\\n\\n+/).map((text) => text.trim()).filter(Boolean)
+    if (paragraphs.filter((text) => text === conditional.after_text).length !== 1) {
+      throw new Error(`Missing or ambiguous conditional anchor: ${conditional.segment_id}`)
+    }
+    if (!allowedChoices(story, conditional.when.decision_id)
+      .includes(conditional.when.choice_id)) {
+      throw new Error(`Unknown choice for conditional: ${conditional.segment_id}`)
+    }
+  }
   const ids = [...new Set((part.conditional_segments ?? []).map(
     (segment) => segment.when.decision_id,
   ))].filter((decisionId) => decisionId !== currentDecisionId)
