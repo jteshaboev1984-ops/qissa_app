@@ -14,6 +14,25 @@ import ts from 'typescript'
 const root = process.argv[2]
 if (!root || root.startsWith('-')) throw new Error('Usage: check-azure-main-series30.mjs <read-only-main-checkout>')
 
+/**
+ * Optional OFFLINE-only preflight: --uz-voices 1|2 --max-uz-character-units N.
+ * This never calls Azure. The cap is deliberately provided by an operator
+ * and applies to the planned TTS input, not to Azure billing or free quotas.
+ */
+const parameter = (flag) => {
+  const i = process.argv.indexOf(flag)
+  return i < 0 ? null : process.argv[i+1] ?? null
+}
+const plannedUzVoices = Number(parameter('--uz-voices') ?? '1')
+const maxUzUnitsRaw = parameter('--max-uz-character-units')
+assert.ok(Number.isInteger(plannedUzVoices) && [1,2].includes(plannedUzVoices),
+  'UZ voice count must be 1 or 2')
+const maxUzUnits = maxUzUnitsRaw === null ? null : Number(maxUzUnitsRaw)
+if (maxUzUnits !== null) assert.ok(
+  Number.isSafeInteger(maxUzUnits) && maxUzUnits > 0,
+  'Invalid offline character cap',
+)
+
 const sources = [
   { key:'festival', number:5, ru:'src/data/authored/prazdnikMuzhestvaV3.ru.json', ruHash:'4e49f587ee2df3dc6c9f89fa74cca8c70b709e81', uz:'src/data/authored/prazdnikMuzhestvaV3.uz.json', uzHash:'a37cf8241c1f9b1a4de44f5ee2d9392f1d8e41eb' },
   { key:'silver', number:4, ru:'src/data/authored/staging/season2Story1RoyalSilver.ru.json', ruHash:'a3a1a43d1aa6f86c9a90fd97d1468ec3afd17430', uz:'src/data/authored/staging/season2Story1RoyalSilver.uz.json', uzHash:'81c08775a966c4a6db760e54a8df024ca72a3397' },
@@ -164,12 +183,17 @@ for (const item of uniqueAudio.values()) {
 assert.ok(charactersByLang.uz>0 && charactersByLang.ru>0)
 assert.ok(charactersByLang.uz<=inputCharacters.uz)
 assert.ok(charactersByLang.ru<=inputCharacters.ru)
+const plannedUzUnits = charactersByLang.uz * plannedUzVoices
+if (maxUzUnits !== null && plannedUzUnits > maxUzUnits) {
+  throw new Error('OFFLINE BUDGET STOP: planned Uzbek voice character units exceed the operator-supplied cap. No provider request was made.')
+}
 console.log('[azure-series30] PASS: 30 RU + 30 UZ reader episodes, all fully-selected source paths')
 console.log(JSON.stringify({
   episodesRu,episodesUz,paths,
   manifestSegmentEntries:entries,
   distinctSpokenTextsByLanguage:uniqueAssetsByLang,
   uniqueAzureCharacterUnitsOneVoice:charactersByLang,
+  uzPreflight:{plannedVoices:plannedUzVoices,plannedCharacterUnits:plannedUzUnits,operatorCap:maxUzUnits,providerCalled:false},
   allManifestCharacterUnits:inputCharacters,
   // Not a monetary quote. Azure billing depends on tier, region and provider policy.
   caveat:'Character units are UTF-16 JavaScript lengths, not guaranteed Azure billable characters or money.',
