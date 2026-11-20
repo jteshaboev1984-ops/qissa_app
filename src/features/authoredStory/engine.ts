@@ -187,17 +187,34 @@ export const advanceAuthoredStory = (
 export const buildAuthoredNarrativeBlocks = (
   part: AuthoredStoryPart,
   phase: AuthoredStoryPhase,
+  selectedChoices: Record<string, string> = {},
 ): AuthoredStoryNarrativeBlock[] => {
   const text = phase === 'story_text' ? part.story_text : part.post_choice_text
   const paragraphs = paragraphsOf(text)
   const slots = part.image_slots.filter((slot) => slot.phase === phase)
-  const byAnchor = new Map(slots.map((slot) => [slot.after_text, slot]))
+  const byAnchor = new Map<string, typeof slots>()
+  for (const slot of slots) {
+    const items = byAnchor.get(slot.after_text) ?? []
+    items.push(slot)
+    byAnchor.set(slot.after_text, items)
+  }
+
+  const conditional = (part.conditional_segments ?? []).filter((segment) => segment.phase === phase)
+  const conditionalByAnchor = new Map<string, typeof conditional>()
+  for (const segment of conditional) {
+    const items = conditionalByAnchor.get(segment.after_text) ?? []
+    items.push(segment)
+    conditionalByAnchor.set(segment.after_text, items)
+  }
 
   const blocks: AuthoredStoryNarrativeBlock[] = []
   for (const paragraph of paragraphs) {
     blocks.push({ kind: 'text', text: paragraph })
-    const slot = byAnchor.get(paragraph)
-    if (slot) blocks.push({ kind: 'image', slot })
+    for (const slot of byAnchor.get(paragraph) ?? []) blocks.push({ kind: 'image', slot })
+    for (const segment of conditionalByAnchor.get(paragraph) ?? []) {
+      if (selectedChoices[segment.when.decision_id] !== segment.when.choice_id) continue
+      for (const line of paragraphsOf(segment.text)) blocks.push({ kind: 'text', text: line })
+    }
   }
   return blocks
 }
