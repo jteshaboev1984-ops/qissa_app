@@ -44,3 +44,36 @@ The privacy and no-cloning MVP requirements remain unchanged. No child voice rec
 ## Verification note (2026-11-20 continuation)
 
 PR #357 remains Draft against `product/seven-roads`; the inherited-branch logic there is older than `main`, which has the later 30-series reader and UZ overlays. No main merge, migration, provider call, Storage upload, external beta or production changes were performed. Exact-SHA CI run `44744809450` verified the new contracts, approved RU choice route test, server and app TypeScript and build, while the **full overall CI failed** at the pre-existing development dependency audit (`vite`, `source-map-js`, `postcss-selector-parser`). Production dependency audit reported zero vulnerabilities. This is not a release-ready verdict.
+
+## Deterministic automatic source segmentation (2026-11-20)
+
+Owner asked if the narration stages can be identified **automatically from the text**. Yes, where the authored source is a valid structured package: the engine must use **existing editorial fields**, not infer semantic boundaries with an LLM.
+
+| Narration phase | Source in approved authored package | Playback rule |
+| --- | --- | --- |
+| Pre-choice | `part.story_text` | Read once; stop at the visible decision |
+| Selected consequence | `part.decision.choices[confirmed_choice_id].resolution_text` | Read only the confirmed branch; never the other resolution |
+| Shared continuation | `part.post_choice_text` | Read after selected resolution, or after the main text when there is no decision |
+| Inherited conditional passages | `part.conditional_segments` + `external_choice_context` + saved selected choices | Insert only matching paragraphs at their locked `after_text` anchors; a visible conditional continuation is NOT globally shared |
+
+If source fields are missing, a decision references an unknown choice, an inherited anchor is missing, or a decision depends on a future unconfirmed choice, the compiler must **fail closed**, not ask a model to guess or fabricate a new literary boundary. If an unstructured prose story has no explicit `decision` and `resolution_text`, automatic segmentation cannot be considered editorially reliable: propose a separate reviewable annotation, never modify the approved story automatically.
+
+### Automatic manifest preview (NO PROVIDER CALLS)
+
+- `audioManifest.ts` enumerates only combinations of inherited decisions actually used in each part, the unresolved choice pause, and the two possible confirmed resolutions; rejects unknown inherited choice IDs and uncontrolled combinatorial explosion.
+- `scripts/compile-authored-audio-manifest.mjs` derives audio chunks and SHA-256 values from a **complete** authored package, labels every row `is_approved=false`, `is_published=false` and `approvalStatus=review_required`, and never inserts into Supabase. The package SHA-256 is an **integrity checksum of that JSON input**, not a substitute for independent literary source approval.
+- A read-only summary (no story text written):
+  `npm run review:azure-audio-manifest -- --source src/data/authored/prazdnikMuzhestvaV3.ru.json`
+- An optional local review file (private, never committed blindly):
+  `npm run review:azure-audio-manifest -- --source <complete-package.json> --out <review-draft.json>`
+- The current product branch contains only the complete RU Story 1 package. The preview reported **15 part-level cases and 24 unique audio chunks** for that version. This is NOT an assertion that all 16 full-story route sequences or 30 series have been fully auditioned.
+- Uzbek `.uz.json` files on current `main` are localization **overlays**, not complete packages. They must first be composed with the exact approved RU base using the approved `localizeAuthoredStoryPackage` logic (with conditional segment anchors checked), then the **localized full package** must be compiled. Never feed the overlay alone as a released audio source.
+
+### Current main source cross-check (read only)
+
+- Season 2 historical Story 6, RU source `src/data/authored/staging/season2Story6TwoReinforcements.ru.json`, has one decision with two outcomes and two mutually exclusive conditional text insertions inherited from `story5_choice_1_road_post_approach`. The context explicitly enumerates forest-edge and open-ridge choices.
+- The UZ source `season2Story6TwoReinforcements.uz.json` supplies translated paragraphs and choices; it does not itself repeat the inherited structural condition list. That is expected for an overlay, but a raw overlay cannot be used as a full audio source.
+- Story 7 `season2Story7BackToOrdan.ru.json` has two outcomes; the UZ overlay carries its corresponding translated text. These packages on `main` are **not yet integrated into the old PR #357 product-branch runtime**.
+- The source architecture supports the requested **8 Story-6 routes plus 4 Story-7 routes** across RU/UZ once full localization, previous-choice inheritance and source-version reconciliation are complete. That statement is about **source structure**, not real audio acceptance.
+
+**No voice or source is automatically editorially approved.** Publication, SQL application, Azure generation/billing and production remain separate explicit owner gates.
