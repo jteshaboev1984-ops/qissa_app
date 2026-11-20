@@ -13,6 +13,7 @@ import {
 type LookupRequest = {
   storyId: string
   storyVersion: string
+  sourceLiteraryVersion: string
   language: 'ru' | 'uz' | 'kz'
   partId: string
   segmentId: string
@@ -29,12 +30,12 @@ const sourceHash = (value: unknown): value is string =>
 
 const parseLookup = (value: unknown): LookupRequest | null => {
   if (!isRecord(value)) return null
-  const { storyId, storyVersion, language, partId, segmentId, sourceTextHash, voicePresetId } = value
-  if (!identifier(storyId) || !identifier(storyVersion) || !identifier(partId) ||
+  const { storyId, storyVersion, sourceLiteraryVersion, language, partId, segmentId, sourceTextHash, voicePresetId } = value
+  if (!identifier(storyId) || !identifier(storyVersion) || !identifier(sourceLiteraryVersion) || !identifier(partId) ||
     !segmentIdentifier(segmentId) || !sourceHash(sourceTextHash) ||
     !isVoicePreset(voicePresetId) ||
     (language !== 'ru' && language !== 'uz' && language !== 'kz')) return null
-  return { storyId, storyVersion, language, partId, segmentId, sourceTextHash, voicePresetId }
+  return { storyId, storyVersion, sourceLiteraryVersion, language, partId, segmentId, sourceTextHash, voicePresetId }
 }
 
 /** Publicly released authored text only; never read family-owned story rows. */
@@ -48,6 +49,7 @@ const lookup = async (input: LookupRequest, origin: string | null): Promise<Resp
     .select('spoken_text,source_text_sha256,source_literary_version')
     .eq('story_id', input.storyId)
     .eq('story_version', input.storyVersion)
+    .eq('source_literary_version', input.sourceLiteraryVersion)
     .eq('language', input.language)
     .eq('part_id', input.partId)
     .eq('segment_id', input.segmentId)
