@@ -47,6 +47,9 @@ jobs:
       - name: Validate Seven Roads season product shell
         run: npm run check:seven-roads-shell
 
+      - name: Validate Azure audio and route cache boundaries
+        run: npm run check:azure-audio && npm run check:audio-agent && npm run typecheck:audio-agent
+
       - name: Typecheck app
         run: npm run typecheck
 
