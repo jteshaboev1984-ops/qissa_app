@@ -1,10 +1,10 @@
 /**
- * Azure Neural TTS adapter for the approved Uzbek narrator presets.
+ * Azure Neural TTS adapter for candidate Uzbek narrator voices (QA-gated in DB).
  * Only trusted Edge Functions call this module; the browser never sees the key.
  */
 export const AZURE_TTS_MODEL = 'azure-neural-v1'
 const AZURE_OUTPUT_FORMAT = 'audio-16khz-128kbitrate-mono-mp3'
-const APPROVED_UZ_AZURE_VOICES = new Set([
+const ALLOWED_UZ_AZURE_VOICES = new Set([
   'uz-UZ-MadinaNeural',
   'uz-UZ-SardorNeural',
 ])
