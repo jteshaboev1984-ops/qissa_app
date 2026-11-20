@@ -291,12 +291,12 @@ export function AuthoredStoryPlayer({
   const part = getCurrentAuthoredStoryPart(story, progress)
   const selectedChoice = getSelectedChoiceForPart(part, progress)
   const storyBlocks = useMemo(
-    () => buildAuthoredNarrativeBlocks(part, 'story_text'),
-    [part],
+    () => buildAuthoredNarrativeBlocks(part, 'story_text', progress.selected_choices),
+    [part, progress.selected_choices],
   )
   const postChoiceBlocks = useMemo(
-    () => buildAuthoredNarrativeBlocks(part, 'post_choice_text'),
-    [part],
+    () => buildAuthoredNarrativeBlocks(part, 'post_choice_text', progress.selected_choices),
+    [part, progress.selected_choices],
   )
 
   useEffect(() => {
