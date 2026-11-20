@@ -570,6 +570,19 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
   {
     story_id: 'seven_roads_dve_podmogi',
     part_id: 'story6_part_2_two_reinforcements',
+    slot_id: 'SERIES30-S4E8-A03',
+    anchor_key: 'series30_s4e8_temur_trembling_palm',
+    asset_id: 'seven_roads_s4e8_temur_trembling_palm_03_APPROVED',
+    // After both choices rejoin: quiet aftermath, before the badge inspection.
+    phase: 'post_choice_text',
+    after_text: {
+      ru: 'Темур посмотрел на ладонь. Она немного дрожала.',
+      uz: 'Temur kaftiga qaradi. U biroz titrardi.',
+    },
+  },
+  {
+    story_id: 'seven_roads_dve_podmogi',
+    part_id: 'story6_part_2_two_reinforcements',
     slot_id: 'SERIES30-S4E8-A02',
     anchor_key: 'series30_s4e8_rustam_unstamped_guard_badge',
     asset_id: 'seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED',
