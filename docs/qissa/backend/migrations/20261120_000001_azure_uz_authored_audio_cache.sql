@@ -58,6 +58,7 @@ create table if not exists public.authored_audio_assets (
   choice_id text null,
   source_text_sha256 text not null check (source_text_sha256 ~ '^[a-f0-9]{64}$'),
   voice_preset_id text not null references public.voice_presets(id) on delete restrict,
+  voice_provider_id text not null,
   provider_model text not null,
   status text not null default 'queued' check (status in ('queued','ready','failed')),
   storage_path text null unique,
@@ -65,7 +66,7 @@ create table if not exists public.authored_audio_assets (
   error_code text null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  unique (language, source_text_sha256, voice_preset_id, provider_model)
+  unique (language, source_text_sha256, voice_preset_id, voice_provider_id, provider_model)
 );
 
 create index if not exists idx_authored_audio_assets_status
