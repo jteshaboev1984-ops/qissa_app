@@ -19,6 +19,7 @@ if (!fixtureRoot || fixtureRoot.startsWith('-')) {
   throw new Error('Usage: check-azure-main-routes.mjs <read-only-main-checkout>')
 }
 const sourceFiles = {
+  readingLayout: ['src/data/sevenRoadsReadingSeries.ts', '05385936d2525362d47224043aee2b8d9fa2a648'],
   localizer: ['src/features/authoredStory/localizePackage.ts', 'd0e256d9e1523fbd6022f12a6d960893ece5909d'],
   e6ru: ['src/data/authored/staging/season2Story6TwoReinforcements.ru.json', '3130df982b8f64ad756ef5e60c2794c066463ebf'],
   e6uz: ['src/data/authored/staging/season2Story6TwoReinforcements.uz.json', '70b48c7d84a2a63e0dba6977eb5fa98e9342fd22'],
@@ -50,17 +51,21 @@ const manifestUrl = dataUrl(
     .replace(/from ['"]\.\/authoredAudioPlan['"]/, `from '${plannerUrl}'`),
 )
 const { localizeAuthoredStoryPackage } = await import(dataUrl(transpile(actualSources.localizer)))
+const { withReadingSeries } = await import(dataUrl(transpile(actualSources.readingLayout)))
 const { buildAuthoredAudioPlan, nextAuthoredAudioSegment } = await import(plannerUrl)
 const { compileDraftAuthoredAudioManifest } = await import(manifestUrl)
 
 const e6base = JSON.parse(actualSources.e6ru)
 const e7base = JSON.parse(actualSources.e7ru)
 const sources = [
-  { ep: 6, lang: 'ru', story: e6base },
-  { ep: 6, lang: 'uz', story: localizeAuthoredStoryPackage(e6base, JSON.parse(actualSources.e6uz)) },
-  { ep: 7, lang: 'ru', story: e7base },
-  { ep: 7, lang: 'uz', story: localizeAuthoredStoryPackage(e7base, JSON.parse(actualSources.e7uz)) },
-]
+  { ep: 6, lang: 'ru', original: e6base },
+  { ep: 6, lang: 'uz', original: localizeAuthoredStoryPackage(e6base, JSON.parse(actualSources.e6uz)) },
+  { ep: 7, lang: 'ru', original: e7base },
+  { ep: 7, lang: 'uz', original: localizeAuthoredStoryPackage(e7base, JSON.parse(actualSources.e7uz)) },
+].map(({ ep, lang, original }) => ({
+  ep, lang, original,
+  story: withReadingSeries(original, ep === 6 ? 'reinforcements' : 'ordan', ep === 6 ? 6 : 8).story,
+}))
 const progressFor = (story, index, chosen) => ({
   story_id: story.story_id,
   story_version: story.story_version,
@@ -74,8 +79,11 @@ const progressFor = (story, index, chosen) => ({
 const flatten = (segments) => segments.map((x) => x.text).join('\n\n').replace(/\s+/g, ' ').trim()
 let verifiedPaths = 0
 const counts = {}
-for (const { ep, lang, story } of sources) {
+for (const { ep, lang, original, story } of sources) {
   assert.equal(story.language, lang)
+  assert.equal(story.reader_layout?.version, 'series-30-v1')
+  assert.equal(story.parts.length, ep === 6 ? 3 : 2)
+  assert.equal(story.parts.length, story.reader_layout.source_part_by_part.length)
   assert.equal(story.parts.filter((part) => part.decision).length, 1)
   const partIndex = story.parts.findIndex((part) => part.decision)
   const choicePart = story.parts[partIndex]
@@ -85,7 +93,7 @@ for (const { ep, lang, story } of sources) {
   if (ep === 6) {
     assert.equal(inherited?.decision_id, 'story5_choice_1_road_post_approach')
     assert.equal(inherited.allowed_choice_ids.length, 2)
-    assert.equal(choicePart.conditional_segments?.length, 2)
+    assert.equal(story.parts.flatMap((part) => part.conditional_segments ?? []).length, 2)
   }
   const manifest = compileDraftAuthoredAudioManifest(story)
   assert.equal(manifest.isApproved, false)
@@ -99,14 +107,15 @@ for (const { ep, lang, story } of sources) {
     assert.equal(waiting.pauseForChoice, true)
     assert.ok(waiting.segments.length > 0)
     assert.ok(waiting.segments.every((s) => s.phase === 'before_choice'))
-    const waitingText = flatten(waiting.segments)
+    // A split reading episode can place the inherited scene in an earlier
+    // fragment, so include every preceding visible part before this choice.
+    const waitingText = flatten(story.parts.slice(0, partIndex + 1).flatMap((part, index) =>
+      buildAuthoredAudioPlan(story, progressFor(story, index, previouslySelected)).segments))
+
     if (ep === 6) {
-      const chosenConditional = choicePart.conditional_segments.find(
-        (s) => s.when.choice_id === e5choiceId,
-      )
-      const otherConditional = choicePart.conditional_segments.find(
-        (s) => s.when.choice_id !== e5choiceId,
-      )
+      const allConditional = story.parts.flatMap((part) => part.conditional_segments ?? [])
+      const chosenConditional = allConditional.find(s => s.when.choice_id === e5choiceId)
+      const otherConditional = allConditional.find(s => s.when.choice_id !== e5choiceId)
       assert.ok(chosenConditional && otherConditional)
       assert.ok(waitingText.includes(chosenConditional.text.replace(/\s+/g, ' ').trim()),
         'Expected exact inherited E5 paragraph in E6 listening')
@@ -141,7 +150,21 @@ for (const { ep, lang, story } of sources) {
       assert.ok(plan.segments.every(s =>
         s.text.length <= 2500 && available.get(s.segmentId) === s.text),
         'Exact playback chunks must exist in the unpublished source manifest')
-      if (ep === 6) assert.equal(firstAfterChoice.phase, 'choice_resolution')
+      // Prove the 30-series presentation split does not omit, change,
+      // repeat or reorder a single spoken word from the literary package.
+      const spokenWholeStory = (pkg) => flatten(pkg.parts.flatMap((part, index) => {
+        const selected = {
+          ...previouslySelected, [ownDecisionId]: selectedChoice.choice_id,
+        }
+        const progress = progressFor(pkg, index, selected)
+        if (part.decision) progress.shown_resolution_decisions = [part.decision.decision_id]
+        return buildAuthoredAudioPlan(pkg, progress).segments
+      }))
+      assert.equal(
+        spokenWholeStory(story),
+        spokenWholeStory(original),
+        '30-series reader layout must preserve exact ordered literary narration',
+      )
       verifiedPaths += 1
     }
   }
@@ -153,5 +176,5 @@ for (const { ep, lang, story } of sources) {
 }
 assert.equal(verifiedPaths, 12, 'Expected 8 E6 and 4 E7 RU/UZ paths')
 assert.deepEqual(Object.values(counts).map(c => c.routes), [4, 4, 2, 2])
-console.log('[azure-main-routes] PASS: 12 source-pinned RU/UZ E6/E7 listening paths')
+console.log('[azure-main-routes] PASS: 12 source-pinned RU/UZ E6/E7 reading-layout routes with exact text conservation')
 console.log(JSON.stringify({ paths: verifiedPaths, ...counts }, null, 2))
