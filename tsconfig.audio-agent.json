@@ -12,6 +12,7 @@
   "include": [
     "supabase/functions/audio-request/*.ts",
     "supabase/functions/audio-request/*.d.ts",
+    "supabase/functions/authored-audio/*.ts",
     "supabase/functions/story-state/*.ts"
   ]
 }
