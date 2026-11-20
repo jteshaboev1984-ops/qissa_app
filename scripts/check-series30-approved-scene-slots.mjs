@@ -24,7 +24,7 @@ const transpileExports = (file, globals = {}) => {
 const { series30ApprovedScenes, withSeries30ApprovedSceneSlots } =
   transpileExports('src/data/series30ApprovedSceneSlots.ts')
 const { withReadingSeries } = transpileExports('src/data/sevenRoadsReadingSeries.ts')
-assert.equal(series30ApprovedScenes.length, 46)
+assert.equal(series30ApprovedScenes.length, 47)
 assert.equal(typeof withSeries30ApprovedSceneSlots, 'function')
 assert.equal(typeof withReadingSeries, 'function')
 
@@ -87,7 +87,7 @@ const fixtures = [
   {
     base: 'src/data/authored/staging/season2Story7BackToOrdan',
     key: 'ordan',
-    expected: { 'SERIES30-S4E9-A01': 1, 'SERIES30-S4E9-A02': 1, 'SERIES30-S4E10-A01': 2, 'SERIES30-S4E10-A02': 2 },
+    expected: { 'SERIES30-S4E9-A01': 1, 'SERIES30-S4E9-A02': 1, 'SERIES30-S4E10-A01': 2, 'SERIES30-S4E10-A02': 2, 'SERIES30-S4E10-A03': 2 },
   },
   {
     base: 'src/data/authored/staging/season2Story6TwoReinforcements',
@@ -302,9 +302,10 @@ for (const fixture of fixtures) {
           'seven_roads_s4e10_three_gazes_two_letters_02_APPROVED',
           'seven_roads_s2_story7_aras_seal_comparison_01_APPROVED',
           'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED',
+          'seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED',
           'seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED',
         ].join('|'),
-        language + ': S4E10 gallery chronology must show three gazes → seal deduction → prison window → ending hook',
+        language + ': S4E10 gallery chronology must show three gazes → seal deduction → prison window → Shamol stable → ending hook',
       )
       assert.equal(
         galleryBefore[0].items.some(item => item.assetId === 'seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED'),
@@ -354,6 +355,32 @@ for (const fixture of fixtures) {
           item.assetId === 'seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED')?.unlocked,
         false, language + ': reading prison scene prematurely unlocked future ending',
       )
+      authoredIllustrationDiscovery.clear(story)
+      const stableAsset = 'seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED'
+      const stableSlot = story.parts.flatMap(part => part.image_slots).find(slot =>
+        slot.slot_id === 'SERIES30-S4E10-A03')
+      assert.equal(stableSlot?.kind, 'shared',
+        language + ': S4E10 stable should follow either choice')
+      assert.equal(stableSlot?.phase, 'post_choice_text',
+        language + ': S4E10 stable must occur after the choice')
+      assert.equal(stableSlot?.after_text, language === 'ru'
+        ? 'Шамол потянулся к его рукаву.' : 'Shamol uning yengiga cho‘zildi.',
+        language + ': S4E10 stable must follow exact localized source')
+      assert.equal(galleryBefore[0].items.some(item => item.assetId === stableAsset),
+        false, language + ': S4E10 stable must not leak into S4E9')
+      assert.equal(galleryBefore[1].items.find(item => item.assetId === stableAsset)?.unlocked,
+        false, language + ': unread S4E10 stable must stay locked')
+      assert.equal(prisonSeenGallery[1].items.find(item => item.assetId === stableAsset)?.unlocked,
+        false, language + ': prison view must not unlock stable image')
+      authoredIllustrationDiscovery.markSeen(story, stableAsset)
+      const stableSeenGallery = authoredIllustrationDiscovery.buildGalleryEpisodes(
+        story, episodes.map(e => e.title), null, episodeForPart,
+      )
+      assert.equal(stableSeenGallery[1].items.find(item => item.assetId === stableAsset)?.unlocked,
+        true, language + ': stable image should unlock when seen')
+      assert.equal(stableSeenGallery[1].items.find(item =>
+        item.assetId === 'seven_roads_s2_story7_ending_hook_network_leader_01_APPROVED')?.unlocked,
+        false, language + ': stable image must not unlock later forest hook')
       authoredIllustrationDiscovery.clear(story)
     }
     if (fixture.key === 'waited') {
@@ -786,9 +813,9 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-assert.equal(verifiedAnchors, 92)
-console.log('[series30-art] PASS: 46 hosted, owner-approved assets, 92 unique RU/UZ anchors')
-console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x4 / S4E5 x2 / S4E6 x2 / S4E8 x2 / S4E9 x2 / S4E10 x2), no prose/choice/ID drift')
+assert.equal(verifiedAnchors, 94)
+console.log('[series30-art] PASS: 47 hosted, owner-approved assets, 94 unique RU/UZ anchors')
+console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x4 / S4E5 x2 / S4E6 x2 / S4E8 x2 / S4E9 x2 / S4E10 x3), no prose/choice/ID drift')
 console.log('[series30-art] Old accepted images preserved; corrected horse v2 object registered')
 
 if (process.env.GITHUB_ACTIONS === 'true') {
