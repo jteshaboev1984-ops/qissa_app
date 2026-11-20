@@ -187,17 +187,34 @@ export const advanceAuthoredStory = (
 export const buildAuthoredNarrativeBlocks = (
   part: AuthoredStoryPart,
   phase: AuthoredStoryPhase,
+  selectedChoices: Record<string, string> = {},
 ): AuthoredStoryNarrativeBlock[] => {
   const text = phase === 'story_text' ? part.story_text : part.post_choice_text
   const paragraphs = paragraphsOf(text)
   const slots = part.image_slots.filter((slot) => slot.phase === phase)
-  const byAnchor = new Map(slots.map((slot) => [slot.after_text, slot]))
+  const byAnchor = new Map<string, typeof slots>()
+  for (const slot of slots) {
+    const items = byAnchor.get(slot.after_text) ?? []
+    items.push(slot)
+    byAnchor.set(slot.after_text, items)
+  }
+
+  const conditional = (part.conditional_segments ?? []).filter((segment) => segment.phase === phase)
+  const conditionalByAnchor = new Map<string, typeof conditional>()
+  for (const segment of conditional) {
+    const items = conditionalByAnchor.get(segment.after_text) ?? []
+    items.push(segment)
+    conditionalByAnchor.set(segment.after_text, items)
+  }
 
   const blocks: AuthoredStoryNarrativeBlock[] = []
   for (const paragraph of paragraphs) {
     blocks.push({ kind: 'text', text: paragraph })
-    const slot = byAnchor.get(paragraph)
-    if (slot) blocks.push({ kind: 'image', slot })
+    for (const slot of byAnchor.get(paragraph) ?? []) blocks.push({ kind: 'image', slot })
+    for (const segment of conditionalByAnchor.get(paragraph) ?? []) {
+      if (selectedChoices[segment.when.decision_id] !== segment.when.choice_id) continue
+      for (const line of paragraphsOf(segment.text)) blocks.push({ kind: 'text', text: line })
+    }
   }
   return blocks
 }
@@ -215,6 +232,7 @@ export const validateAuthoredStoryPackage = (
   const decisionIds = new Set<string>()
   const choiceIds = new Set<string>()
   const assetIds = new Set<string>()
+  const conditionalIds = new Set<string>()
 
   if (!story.cover_illustration.asset_id.trim()) {
     errors.push('cover asset_id is required')
@@ -232,6 +250,22 @@ export const validateAuthoredStoryPackage = (
     const paragraphsByPhase: Record<AuthoredStoryPhase, string[]> = {
       story_text: paragraphsOf(part.story_text),
       post_choice_text: paragraphsOf(part.post_choice_text),
+    }
+
+    for (const conditional of part.conditional_segments ?? []) {
+      if (conditionalIds.has(conditional.segment_id)) {
+        errors.push(`duplicate conditional segment_id: ${conditional.segment_id}`)
+      }
+      conditionalIds.add(conditional.segment_id)
+      if (!conditional.text.trim() || !conditional.when.decision_id || !conditional.when.choice_id) {
+        errors.push(`${conditional.segment_id}: incomplete inherited choice segment`)
+      }
+      const matches = paragraphsByPhase[conditional.phase]?.filter(
+        (paragraph) => paragraph === conditional.after_text,
+      ).length ?? 0
+      if (matches !== 1) {
+        errors.push(`${conditional.segment_id}: inherited text anchor expected once, got ${matches}`)
+      }
     }
 
     for (const slot of part.image_slots) {

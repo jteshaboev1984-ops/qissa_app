@@ -1,3 +1,4 @@
+import { azureTtsConfigured, isSupportedAzureVoice, synthesizeAzureMp3 } from './azure.ts'
 import { logEvent, rateLimitReached } from './context.ts'
 import {
   AUDIO_BUCKET,
@@ -11,6 +12,7 @@ import {
   openAiApiKey,
   ttsEnabled,
   ttsModel,
+  providerModelForVoice,
   type AudioSpeed,
   type JsonRecord,
   type OwnedEpisode,
@@ -71,8 +73,17 @@ export const generateAudio = async (
   origin: string | null,
 ) => {
   const providerVoiceId = typeof voice.provider_voice_id === 'string' ? voice.provider_voice_id : ''
-  if (!ttsEnabled || !openAiApiKey) return deviceFallback('tts_disabled', origin)
-  if (voice.provider !== 'openai' || !providerVoiceId) return deviceFallback('provider_voice_unavailable', origin)
+  const usingAzure = voice.provider === 'azure'
+  const usingOpenAi = voice.provider === 'openai'
+  const provider = usingAzure ? 'azure' : 'openai'
+  const providerModel = providerModelForVoice(voice)
+  if (!ttsEnabled) return deviceFallback('tts_disabled', origin)
+  if (!providerVoiceId || (!usingAzure && !usingOpenAi)) return deviceFallback('provider_voice_unavailable', origin)
+  if (usingOpenAi && (!ttsEnabled || !openAiApiKey)) return deviceFallback('tts_disabled', origin)
+  if (usingAzure && !isSupportedAzureVoice(owned.episode.language, providerVoiceId)) {
+    return deviceFallback('azure_voice_not_allowed', origin)
+  }
+  if (usingAzure && !azureTtsConfigured()) return deviceFallback('azure_not_configured', origin)
   if (owned.episode.story_text.length > MAX_TTS_TEXT_LENGTH) return deviceFallback('text_too_long', origin)
   if (await rateLimitReached(owned.profile.id)) return fail('audio_rate_limit_reached', 429, origin)
 
@@ -86,8 +97,8 @@ export const generateAudio = async (
       text_version: textVersion,
       speed: CANONICAL_RENDER_SPEED,
       requested_mode: owned.episode.mood,
-      provider: 'openai',
-      provider_model: ttsModel,
+      provider,
+      provider_model: providerModel,
     })
     .select('id,status,storage_path,duration_seconds,error_code')
     .single()
@@ -108,25 +119,29 @@ export const generateAudio = async (
   let uploadedStoragePath: string | null = null
 
   try {
-    const providerResponse = await fetch(OPENAI_SPEECH_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${openAiApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: ttsModel,
-        input: owned.episode.story_text,
-        voice: providerVoiceId,
-        instructions: speechInstructions(owned),
-        response_format: 'mp3',
-        speed: CANONICAL_RENDER_SPEED,
-      }),
-    })
-
-    if (!providerResponse.ok) throw new Error(`provider_http_${providerResponse.status}`)
-    const audioBytes = new Uint8Array(await providerResponse.arrayBuffer())
+    const audioBytes = usingAzure
+      ? await synthesizeAzureMp3(owned.episode.story_text, providerVoiceId)
+      : await (async () => {
+        const providerResponse = await fetch(OPENAI_SPEECH_URL, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${openAiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: ttsModel,
+            input: owned.episode.story_text,
+            voice: providerVoiceId,
+            instructions: speechInstructions(owned),
+            response_format: 'mp3',
+            speed: CANONICAL_RENDER_SPEED,
+          }),
+        })
+        if (!providerResponse.ok) throw new Error(`provider_http_${providerResponse.status}`)
+        return new Uint8Array(await providerResponse.arrayBuffer())
+      })()
     if (audioBytes.byteLength === 0) throw new Error('provider_empty_audio')
+    if (audioBytes.byteLength > 26214400) throw new Error('provider_audio_too_large')
 
     const storagePath = `${owned.profile.id}/${owned.episode.id}/${cacheKey}.mp3`
     const { error: uploadError } = await admin.storage
@@ -154,8 +169,8 @@ export const generateAudio = async (
       voice_preset_id: voice.id,
       requested_speed: requestedSpeed,
       render_speed: CANONICAL_RENDER_SPEED,
-      provider: 'openai',
-      model: ttsModel,
+      provider,
+      model: providerModel,
     })
 
     const audioUrl = await createSignedAudioUrl(storagePath)
@@ -170,7 +185,7 @@ export const generateAudio = async (
       fallbackMode: null,
       errorCode: null,
       requiresAiVoiceDisclosure: true,
-    }, 200, origin, { 'X-QISSA-Audio-Source': 'openai-generated' })
+    }, 200, origin, { 'X-QISSA-Audio-Source': usingAzure ? 'azure-generated' : 'openai-generated' })
   } catch (error) {
     const errorCode = error instanceof Error ? error.message.slice(0, 80) : 'audio_generation_failed'
     console.error('audio generation failed', { errorCode })

@@ -42,6 +42,23 @@ export interface AuthoredStoryDecision {
   merge_state: Record<string, string>
 }
 
+/** Additive inherited choice text, equivalent to main's authored route contract. */
+export interface AuthoredStoryConditionalSegment {
+  segment_id: string
+  phase: AuthoredStoryPhase
+  after_text: string
+  when: { decision_id: string; choice_id: string }
+  text: string
+}
+
+/** Explicit options of a decision made in an earlier authored story. */
+export interface AuthoredStoryExternalChoiceContext {
+  decision_id: string
+  allowed_choice_ids: string[]
+  source_story_id: string
+  source_story_version: string
+}
+
 export interface AuthoredStoryPart {
   part_id: string
   order: number
@@ -51,6 +68,7 @@ export interface AuthoredStoryPart {
   visual_state: string
   illustration_refs: string[]
   image_slots: AuthoredStoryImageSlot[]
+  conditional_segments?: AuthoredStoryConditionalSegment[]
   decision: AuthoredStoryDecision | null
   is_final: boolean
 }
@@ -97,6 +115,7 @@ export interface AuthoredStoryPackage {
   required_final_invariants: Record<string, string>
   illustration_plan: AuthoredStoryIllustrationPlan
   cover_illustration: AuthoredStoryCoverIllustration
+  external_choice_context?: AuthoredStoryExternalChoiceContext[]
   parts: AuthoredStoryPart[]
 }
 

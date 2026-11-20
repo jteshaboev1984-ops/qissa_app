@@ -26,6 +26,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate Azure audio and route cache boundaries
+        run: npm run check:azure-audio && npm run check:azure-narration && npm run check:azure-batch && npm run review:azure-audio-manifest -- --source src/data/authored/prazdnikMuzhestvaV3.ru.json && npm run check:authored-v3 && npm run check:seven-roads-shell && npm run typecheck:audio-agent && npm run typecheck && npm run build
+
+      # Read the newer 30-series sources only as external fixtures. This PR
+      # targets the older product branch; never copy canonical prose into it.
+      - name: Checkout main sources for pinned E6 E7 route verification
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          path: .qissa-main-fixtures
+          persist-credentials: false
+
+      - name: Verify 12 real RU UZ listening routes and remove external fixtures
+        run: |
+          npm run check:azure-main-routes -- .qissa-main-fixtures
+          npm run check:azure-main-series30 -- .qissa-main-fixtures --uz-voices 2 --max-uz-character-units 450000
+          rm -rf .qissa-main-fixtures
+
       - name: Audit production dependencies
         run: npm run audit:prod
 
