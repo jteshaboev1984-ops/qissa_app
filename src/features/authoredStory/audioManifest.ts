@@ -53,7 +53,7 @@ const inheritedStatesForPart = (
       throw new Error(`Unsupported conditional narration phase: ${conditional.segment_id}`)
     }
     const paragraphs = part[conditional.phase]
-      .split(/\\n\\n+/).map((text) => text.trim()).filter(Boolean)
+      .split(/\n\n+/).map((text) => text.trim()).filter(Boolean)
     if (paragraphs.filter((text) => text === conditional.after_text).length !== 1) {
       throw new Error(`Missing or ambiguous conditional anchor: ${conditional.segment_id}`)
     }
