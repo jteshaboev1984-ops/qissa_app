@@ -41,8 +41,8 @@ create table if not exists public.authored_audio_sources (
   story_id text not null,
   story_version text not null,
   source_literary_version text not null,
-  source_file_sha256 text not null
-    check (source_file_sha256 ~ '^[a-f0-9]{64}$'),
+  source_package_sha256 text not null
+    check (source_package_sha256 ~ '^[a-f0-9]{64}$'),
   language text not null check (language in ('ru', 'uz', 'kz')),
   part_id text not null,
   segment_id text not null,
