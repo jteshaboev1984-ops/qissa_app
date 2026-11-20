@@ -77,3 +77,19 @@ If source fields are missing, a decision references an unknown choice, an inheri
 - The source architecture supports the requested **8 Story-6 routes plus 4 Story-7 routes** across RU/UZ once full localization, previous-choice inheritance and source-version reconciliation are complete. That statement is about **source structure**, not real audio acceptance.
 
 **No voice or source is automatically editorially approved.** Publication, SQL application, Azure generation/billing and production remain separate explicit owner gates.
+
+## Exact main RU/UZ E6/E7 route + 30-series split regression (continuation)
+
+Added `scripts/check-azure-main-routes.mjs` and a read-only GitHub Actions checkout of current `main` as **external source fixture**, automatically removed after the test. The script pins Git blob hashes for the E6/E7 RU literary packages, UZ overlays, localization transformer and `src/data/sevenRoadsReadingSeries.ts`. If any source changes upstream, the test **fails closed** until the new content is explicitly reviewed: it must never silently rebind approved voice assets to edited literary text.
+
+The test performs two checks for each actual route:
+1. Resolve UZ overlay with `localizeAuthoredStoryPackage`, then build the app's `series-30-v1` presentation with `withReadingSeries`. For E6 enumerate both E5 inherited decisions × both E6 outcomes in RU and UZ (8 routes); for E7 enumerate both outcomes in RU and UZ (4 routes). The selected conditional paragraph must appear verbatim and the opposite paragraph must not; after selection the next fragment must be exactly the chosen resolution, not a replay of the intro. Every playback segment must match a draft manifest entry.
+2. Reconstruct the **complete** spoken literary text from the split 30-series reading presentation and independently reconstruct it from the unsplit original localized authored package for each route. Their normalized ordered text must match exactly. This guards against dropping or duplicating words when splitting an original authored part across displayed episodes.
+
+**Confirmed provider-free exact-SHA run `44751476552` (PR SHA `279a2df0258a49ad18206fc78f24091bb3aa47be`)**:
+- 12/12 real RU/UZ routes and exact 30-series spoken text conservation **PASS**.
+- 30-series-layout source segment totals: E6 RU **11**, E6 UZ **13**, E7 RU **7**, E7 UZ **8** (39 segment entries across four full localized story packages). These counts differ from the earlier unsplit 12+12+7+7 preview by design; they are not Azure MP3 files or publication authorizations.
+- Earlier Azure contract/manifest checks, automated authored-v3, app shell, backend and frontend typechecks, and build **PASS**. Production dependency audit reports 0 vulnerabilities.
+- **Overall CI FAILS** at the separate existing `audit:all` check for development dependencies (Vite / source-map-js high, postcss-selector-parser moderate). Security gate was not disabled.
+
+This is automated content and route correctness only. No claims of native Uzbek human literary acceptance, actual speech intelligibility, iOS/Android playback, Azure billing or live database operation. Do not merge to the divergent main/old product branch without coordinated release reconciliation.
