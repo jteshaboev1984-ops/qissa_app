@@ -1,5 +1,12 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { planOfflineAzureUzBatch, AZURE_UZ_DRAFT_MODEL } from './lib/azure-uz-offline-batch-plan.mjs'
+
+// These offline constants must stay identical to the server-only Azure adapter.
+const azureAdapter = readFileSync('supabase/functions/audio-request/azure.ts','utf8')
+assert.match(azureAdapter, /AZURE_TTS_MODEL = 'azure-neural-v1'/)
+assert.match(azureAdapter, /uz-UZ-MadinaNeural/)
+assert.match(azureAdapter, /uz-UZ-SardorNeural/)
 
 const segment = (partId, segmentId, text, choiceId=null) => ({
   partId, segmentId,
