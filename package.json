@@ -38,6 +38,7 @@
     "check:audio-agent": "node scripts/check-audio-agent-contract.mjs",
     "check:azure-audio": "node scripts/check-azure-audio-contract.mjs",
     "check:azure-narration": "node scripts/check-azure-authored-narration.mjs",
+    "check:azure-main-routes": "node scripts/check-azure-main-routes.mjs",
     "review:azure-audio-manifest": "node scripts/compile-authored-audio-manifest.mjs",
     "smoke:story-live": "node scripts/smoke-story-generate-live.mjs",
     "smoke:privacy-live": "node scripts/smoke-privacy-live.mjs",
