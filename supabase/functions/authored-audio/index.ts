@@ -92,6 +92,7 @@ const lookup = async (input: LookupRequest, origin: string | null): Promise<Resp
     .eq('language', input.language)
     .eq('source_text_sha256', source.source_text_sha256)
     .eq('voice_preset_id', voice.id)
+    .eq('voice_provider_id', voice.provider_voice_id)
     .eq('provider_model', AZURE_TTS_MODEL)
     .maybeSingle()
 
