@@ -3,7 +3,7 @@ import { getInstallationAuth, getInstallationId } from './installationIdentity'
 import type { NarrationSpeed } from './narrationPlan'
 import { getStoryProviderConfig } from './storyRemoteClient'
 
-export type AudioDeliverySource = 'cache' | 'openai-generated' | 'device-fallback' | null
+export type AudioDeliverySource = 'cache' | 'openai-generated' | 'azure-generated' | 'device-fallback' | null
 
 export type AudioAssetResponse = {
   audioStatus: 'ready' | 'queued' | 'failed'
@@ -136,8 +136,8 @@ export const requestAudio = async ({ seriesId, episodeId, voicePresetId, speed }
     fallbackMode: body.fallbackMode === 'device' ? 'device' : null,
     errorCode: typeof body.errorCode === 'string' ? body.errorCode : null,
     requiresAiVoiceDisclosure: body.requiresAiVoiceDisclosure === true,
-    source: (['cache', 'openai-generated', 'device-fallback'] as const).includes(
-      response.headers.get('x-qissa-audio-source') as 'cache' | 'openai-generated' | 'device-fallback',
+    source: (['cache', 'openai-generated', 'azure-generated', 'device-fallback'] as const).includes(
+      response.headers.get('x-qissa-audio-source') as 'cache' | 'openai-generated' | 'azure-generated' | 'device-fallback',
     )
       ? response.headers.get('x-qissa-audio-source') as AudioDeliverySource
       : null,
