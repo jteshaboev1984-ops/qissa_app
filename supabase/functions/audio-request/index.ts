@@ -12,7 +12,7 @@ import {
   isVoicePreset,
   json,
   sha256,
-  ttsModel,
+  providerModelForVoice,
   type AudioRequestInput,
   type OwnedEpisode,
 } from './shared.ts'
@@ -58,7 +58,7 @@ const requestAudio = async (input: AudioRequestInput, origin: string | null) => 
     owned.episode.language,
     voice.id,
     textVersion,
-    ttsModel,
+    providerModelForVoice(voice),
   ].join(':'))
 
   const { data: existing, error: cacheError } = await admin
