@@ -59,6 +59,7 @@ const requestAudio = async (input: AudioRequestInput, origin: string | null) => 
     voice.id,
     textVersion,
     providerModelForVoice(voice),
+    typeof voice.provider_voice_id === 'string' ? voice.provider_voice_id : '',
   ].join(':'))
 
   const { data: existing, error: cacheError } = await admin
