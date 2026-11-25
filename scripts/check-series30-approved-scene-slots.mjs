@@ -841,6 +841,18 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
+// Replacement versions change only the URL, never scene/slot IDs or anchors.
+const revision = queue.visual_replacement_2026_11_25
+assert.equal(revision.assets.length, 5)
+assert.equal(revision.assets.filter(a => a.disposition === 'draft_runtime_replacement').length, 4)
+assert.equal(revision.assets.filter(a => a.disposition === 'held_existing_anchor_timing').length, 1)
+for (const asset of revision.assets) {
+  const slot = series30ApprovedScenes.find(s => s.slot_id === asset.slot_id)
+  assert.equal(slot?.asset_id, asset.asset_id)
+  const expectedUrl = asset.disposition === 'draft_runtime_replacement' ? asset.public_url : asset.previous_public_url
+  assert.ok(assetsSource.includes("'" + asset.asset_id + "':\n    '" + expectedUrl + "'"), 'Incorrect replacement URL: ' + asset.slot_id)
+  if (asset.disposition === 'held_existing_anchor_timing') assert.ok(!assetsSource.includes(asset.public_url), 'Held image must not enter runtime')
+}
 assert.equal(verifiedAnchors, 96)
 console.log('[series30-art] PASS: 48 hosted, owner-approved assets, 96 unique RU/UZ anchors')
 console.log('[series30-art] Correct reader episodes (S2E1 x2 / S2E2 x2 / S2E3 x3 / S2E4 x4 / S3E3 x2 / S3E4 x1 / S3E5 x2 / S3E6 x1 / S3E7 x1 / S3E9 x2 / S3E10 x2 / S3E11 x2 / S4E1 x2 / S4E2 x5 / S4E3 x1 / S4E4 x4 / S4E5 x2 / S4E6 x2 / S4E8 x3 / S4E9 x2 / S4E10 x3), no prose/choice/ID drift')

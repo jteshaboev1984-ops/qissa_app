@@ -14,7 +14,7 @@ const productionAssets: AuthoredStoryAssetRegistry = {
   'seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_samira_bulut_old_yard_reunion_01_APPROVED.webp',
   'seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED':
-    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp',
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S3E5-A02_REVIEW_v6.webp',
   'seven_roads_s3e7_captain_stops_writing_01_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e7_captain_stops_writing_01_APPROVED.webp',
   'seven_roads_s4e2_ordan_east_gate_arrival_05_APPROVED':
@@ -26,7 +26,7 @@ const productionAssets: AuthoredStoryAssetRegistry = {
   'seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s2e4_ordan_informant_bay_horse_arrival_04_APPROVED.webp',
   'seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED':
-    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp',
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S3E9-A01_owner_accepted_v2.webp',
   'seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e9_gate_sketch_matches_two_towers_02_APPROVED.webp',
   'seven_roads_s4e1_captain_two_clue_sketches_02_APPROVED':
@@ -160,9 +160,9 @@ const series30ApprovedSceneAssets: AuthoredStoryAssetRegistry = {
   'seven_roads_s4e8_temur_trembling_palm_03_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e8_temur_trembling_palm_03_APPROVED.webp',
   'seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED':
-    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.webp',
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S4E10-A03_owner_accepted_v3.webp',
   'seven_roads_s4e10_three_gazes_two_letters_02_APPROVED':
-    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.webp',
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S4E10-A02_REVIEW_v4.webp',
   'seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e8_rustam_unstamped_guard_badge_02_APPROVED.webp',
   'seven_roads_s4e8_wall_two_fronts_reverse_view_01_APPROVED':
