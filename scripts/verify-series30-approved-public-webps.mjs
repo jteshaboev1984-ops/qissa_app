@@ -169,19 +169,17 @@ const assets = [
 
 const revision = JSON.parse(fs.readFileSync('docs/qissa/illustrations/series30/ART_QUEUE_2026-11-14.json', 'utf8')).visual_replacement_2026_11_25
 const active = revision.assets.filter(a => a.disposition === 'draft_runtime_replacement')
-const held = revision.assets.filter(a => a.disposition === 'held_existing_anchor_timing')
-assert.equal(active.length, 4)
-assert.equal(held.length, 1)
+assert.equal(active.length, 5)
+assert.equal(revision.assets.length, 5)
 const replacements = new Map(active.map(a => [a.previous_public_url.slice(base.length), a]))
-assert.equal(assets.filter(a => replacements.has(a.name)).length, 4)
+assert.equal(assets.filter(a => replacements.has(a.name)).length, 5)
 const runtimeAssets = assets.map(a => {
   const replacement = replacements.get(a.name)
   return replacement ? { name: replacement.public_url.slice(base.length), size: replacement.webp_bytes, sha256: replacement.webp_sha256 } : a
 })
 assert.equal(runtimeAssets.length, 48)
 assert.equal(new Set(runtimeAssets.map(a => a.name)).size, 48)
-const heldAssets = held.map(a => ({ name: a.public_url.slice(base.length), size: a.webp_bytes, sha256: a.webp_sha256 }))
-for (const asset of [...runtimeAssets, ...heldAssets]) {
+for (const asset of runtimeAssets) {
   const response = await fetch(base + asset.name, {
     cache: 'no-store',
     signal: AbortSignal.timeout(30000),
@@ -199,4 +197,4 @@ for (const asset of [...runtimeAssets, ...heldAssets]) {
   assert.equal(sha256, asset.sha256, `Remote WebP differs from approved master derivative: ${asset.name}`)
   console.log(`[series30-art-remote] OK ${asset.name} (${bytes.length} bytes, SHA256=${sha256})`)
 }
-console.log('[series30-art-remote] PASS 48/48 runtime assets + 1 held asset: remote GET, MIME, signature, byte lengths and SHA256')
+console.log('[series30-art-remote] PASS 48/48 runtime assets (5 updated): remote GET, MIME, signature, byte lengths and SHA256')

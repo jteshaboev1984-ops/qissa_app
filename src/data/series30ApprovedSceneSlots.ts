@@ -41,7 +41,7 @@ export const series30ApprovedScenes: readonly Series30ApprovedScene[] = [
     anchor_key: 'series30_s4e6_a02',
     asset_id: 'seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED',
     phase: 'post_choice_text',
-    after_text: {ru: 'Когда поднял голову, на свету стал заметен тонкий белый шрам от левой брови к виску.', uz: 'Boshini ko‘targanda chap qoshidan chakkasigacha ketgan ingichka oq chandiq yorug‘likda ko‘rindi.'},
+    after_text: {ru: 'С холма спустился ещё один всадник.', uz: 'Tepalikdan yana bir chavandoz tushib keldi.'},
   },
   {
     story_id: 'seven_roads_chelovek_kotorogo_zhdut',

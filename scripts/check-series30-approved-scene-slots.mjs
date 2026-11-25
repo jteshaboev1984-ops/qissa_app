@@ -550,6 +550,20 @@ for (const fixture of fixtures) {
       const fork = s4e6.indexOf('seven_roads_s2_story5_two_roads_blank_signpost_01_APPROVED')
       const realHelp = s4e6.indexOf('seven_roads_s2_story5_real_reinforcement_departure_01_APPROVED')
       const disguise = s4e6.indexOf('seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED')
+      const disguisePart = story.parts.find(p => p.image_slots.some(s => s.slot_id === 'SERIES30-S4E6-A02'))
+      assert.ok(disguisePart, language + ': disguise slot missing')
+      const disguiseSlot = disguisePart.image_slots.find(s => s.slot_id === 'SERIES30-S4E6-A02')
+      const scarReveal = language === 'ru' ? 'Когда поднял голову, на свету стал заметен тонкий белый шрам от левой брови к виску.' : 'Boshini ko‘targanda chap qoshidan chakkasigacha ketgan ingichka oq chandiq yorug‘likda ko‘rindi.'
+      const arrival = language === 'ru' ? 'С холма спустился ещё один всадник.' : 'Tepalikdan yana bir chavandoz tushib keldi.'
+      const saddling = language === 'ru' ? 'Рядом ещё несколько человек уже седлали лошадей.' : 'Yonida yana bir necha odam otlarni egarlayotgan edi.'
+      const afterChoice = pars(disguisePart.post_choice_text)
+      assert.equal(disguiseSlot.kind, 'shared')
+      assert.equal(disguiseSlot.phase, 'post_choice_text')
+      assert.equal(disguiseSlot.after_text, arrival, language + ': art must follow messenger arrival')
+      assert.equal(afterChoice.filter(p => p === arrival).length, 1)
+      assert.equal(afterChoice.indexOf(arrival), afterChoice.indexOf(scarReveal) + 2)
+      assert.equal(afterChoice[afterChoice.indexOf(arrival) - 1], saddling)
+      assert.ok(afterChoice[afterChoice.indexOf(arrival) + 1].startsWith(language === 'ru' ? '— Рахим из Араса' : '— Araslik Rahim'), language + ': art must precede report')
       assert.ok(disguise > realHelp, language + ': S4E6 disguise must follow real reinforcement departure')
       assert.ok(northRidge >= 0 && fork > northRidge && realHelp > fork,
         language + ': S4E6 gallery must show northern ridge → existing fork → real reinforcement')
@@ -841,17 +855,22 @@ for (const scene of series30ApprovedScenes) {
 
 assert.ok(assetsSource.includes('seven_roads_s4e2_bay_horse_roadside_escape_01_APPROVED_v2.webp'),
   'superseded horse WebP must never be selected instead of corrected v2')
-// Replacement versions change only the URL, never scene/slot IDs or anchors.
+// Five replacement URLs; only S4E6-A02 has an explicitly owner-approved later anchor.
 const revision = queue.visual_replacement_2026_11_25
 assert.equal(revision.assets.length, 5)
-assert.equal(revision.assets.filter(a => a.disposition === 'draft_runtime_replacement').length, 4)
-assert.equal(revision.assets.filter(a => a.disposition === 'held_existing_anchor_timing').length, 1)
+assert.equal(revision.assets.filter(a => a.disposition === 'draft_runtime_replacement').length, 5)
+assert.equal(revision.assets.filter(a => a.anchor_change).length, 1)
 for (const asset of revision.assets) {
   const slot = series30ApprovedScenes.find(s => s.slot_id === asset.slot_id)
   assert.equal(slot?.asset_id, asset.asset_id)
-  const expectedUrl = asset.disposition === 'draft_runtime_replacement' ? asset.public_url : asset.previous_public_url
-  assert.ok(assetsSource.includes("'" + asset.asset_id + "':\n    '" + expectedUrl + "'"), 'Incorrect replacement URL: ' + asset.slot_id)
-  if (asset.disposition === 'held_existing_anchor_timing') assert.ok(!assetsSource.includes(asset.public_url), 'Held image must not enter runtime')
+  assert.ok(assetsSource.includes("'" + asset.asset_id + "':\n    '" + asset.public_url + "'"), 'Incorrect replacement URL: ' + asset.slot_id)
+  assert.ok(!assetsSource.includes(asset.previous_public_url), 'Superseded URL remains registered: ' + asset.slot_id)
+  if (asset.anchor_change) {
+    assert.equal(asset.slot_id, 'SERIES30-S4E6-A02')
+    assert.equal(slot.phase, 'post_choice_text')
+    assert.equal(slot.part_id, asset.anchor_change.part_id)
+    for (const lang of ['ru', 'uz']) assert.equal(slot.after_text[lang], asset.anchor_change.approved_after_text[lang])
+  }
 }
 assert.equal(verifiedAnchors, 96)
 console.log('[series30-art] PASS: 48 hosted, owner-approved assets, 96 unique RU/UZ anchors')

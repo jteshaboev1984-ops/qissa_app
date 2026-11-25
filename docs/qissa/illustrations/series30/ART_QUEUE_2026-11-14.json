@@ -2224,11 +2224,11 @@
     }
   ],
   "visual_replacement_2026_11_25": {
-    "status": "draft_candidate_uploaded_metadata_checked_remote_bytes_and_ci_pending",
+    "status": "draft_all_five_replacements_owner_approved_anchor_ci_pending",
     "baseline_main": "b0714cfd305b9020ffa4cbf9835c4e8f1f717eb7",
     "owner_art_acceptance": "https://github.com/jteshaboev1984-ops/qissa_app/issues/318#issuecomment-7160101540",
     "preflight": "https://github.com/jteshaboev1984-ops/qissa_app/issues/318#issuecomment-7160430508",
-    "scope": "Four runtime URL replacements only; fifth uploaded asset held. Original episode records and release checkpoint are historical and retained. No release authorization.",
+    "scope": "Five runtime URL replacements; only S4E6-A02 moves two paragraphs later in RU/UZ with explicit owner approval. Original episode records and release checkpoint retained. No release authorization.",
     "assets": [
       {
         "candidate_id": "S3E5-A02",
@@ -2298,7 +2298,7 @@
         "candidate_id": "S4E6-A02",
         "asset_id": "seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED",
         "slot_id": "SERIES30-S4E6-A02",
-        "disposition": "held_existing_anchor_timing",
+        "disposition": "draft_runtime_replacement",
         "previous_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp",
         "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S4E6-A02_owner_accepted_new.webp",
         "storage_object": "seven-roads/season2_tier_a_v2/QISSA_S4E6-A02_owner_accepted_new.webp",
@@ -2308,7 +2308,24 @@
         "master_sha256": "2b36bf9763e0060c446c77392f9653b87fb9e12f76f5a1b3094584b1cf3b6f03",
         "dimensions": "1672x941",
         "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/QISSA_S4E6-A02_owner_accepted_new.png",
-        "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/QISSA_S4E6-A02_owner_accepted_new.webp"
+        "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/QISSA_S4E6-A02_owner_accepted_new.webp",
+        "anchor_change": {
+          "owner_approved_on": "2026-11-25",
+          "owner_decision": "ок. согласен. работай",
+          "source_story_version": "interactive-v4",
+          "source_ru_blob_sha": "787fcc6109f2f20758bea4a592090e55fe17c806",
+          "source_uz_blob_sha": "b9df7fb184e1230c0d07be8999ab5cacb1131e3a",
+          "part_id": "story5_part_1_false_road",
+          "phase": "post_choice_text",
+          "previous_after_text": {
+            "ru": "Когда поднял голову, на свету стал заметен тонкий белый шрам от левой брови к виску.",
+            "uz": "Boshini ko‘targanda chap qoshidan chakkasigacha ketgan ingichka oq chandiq yorug‘likda ko‘rindi."
+          },
+          "approved_after_text": {
+            "ru": "С холма спустился ещё один всадник.",
+            "uz": "Tepalikdan yana bir chavandoz tushib keldi."
+          }
+        }
       }
     ]
   },

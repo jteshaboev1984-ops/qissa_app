@@ -4,7 +4,7 @@ const productionAssets: AuthoredStoryAssetRegistry = {
   'seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e9_said_tells_nadir_stay_as_witness_02_APPROVED.webp',
   'seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED':
-    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp',
+    'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S4E6-A02_owner_accepted_new.webp',
   'seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED':
     'https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e4_undercover_guard_reads_nadir_note_03_APPROVED.webp',
   'seven_roads_s4e4_messenger_warns_danyar_ordan_gate_04_APPROVED':
