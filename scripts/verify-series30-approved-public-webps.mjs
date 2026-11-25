@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
+import fs from 'node:fs'
 
 // Remote byte-for-byte proof for user-uploaded, owner-approved illustrations.
 // This runs only on CI, never during local/offline reading-series preflight.
@@ -166,7 +167,19 @@ const assets = [
   },
 ]
 
-for (const asset of assets) {
+const revision = JSON.parse(fs.readFileSync('docs/qissa/illustrations/series30/ART_QUEUE_2026-11-14.json', 'utf8')).visual_replacement_2026_11_25
+const active = revision.assets.filter(a => a.disposition === 'draft_runtime_replacement')
+assert.equal(active.length, 5)
+assert.equal(revision.assets.length, 5)
+const replacements = new Map(active.map(a => [a.previous_public_url.slice(base.length), a]))
+assert.equal(assets.filter(a => replacements.has(a.name)).length, 5)
+const runtimeAssets = assets.map(a => {
+  const replacement = replacements.get(a.name)
+  return replacement ? { name: replacement.public_url.slice(base.length), size: replacement.webp_bytes, sha256: replacement.webp_sha256 } : a
+})
+assert.equal(runtimeAssets.length, 48)
+assert.equal(new Set(runtimeAssets.map(a => a.name)).size, 48)
+for (const asset of runtimeAssets) {
   const response = await fetch(base + asset.name, {
     cache: 'no-store',
     signal: AbortSignal.timeout(30000),
@@ -177,9 +190,11 @@ for (const asset of assets) {
     `Wrong content-type for ${asset.name}`,
   )
   const bytes = Buffer.from(await response.arrayBuffer())
+  assert.equal(bytes.toString('ascii', 0, 4), 'RIFF', asset.name)
+  assert.equal(bytes.toString('ascii', 8, 12), 'WEBP', asset.name)
   const sha256 = createHash('sha256').update(bytes).digest('hex')
   assert.equal(bytes.length, asset.size, `Wrong WebP byte count: ${asset.name}`)
   assert.equal(sha256, asset.sha256, `Remote WebP differs from approved master derivative: ${asset.name}`)
-  console.log(`[series30-art-remote] OK ${asset.name} (${bytes.length} bytes)`)
+  console.log(`[series30-art-remote] OK ${asset.name} (${bytes.length} bytes, SHA256=${sha256})`)
 }
-console.log('[series30-art-remote] PASS 48/48 remote GET, MIME, byte lengths and SHA256')
+console.log('[series30-art-remote] PASS 48/48 runtime assets (5 updated): remote GET, MIME, signature, byte lengths and SHA256')

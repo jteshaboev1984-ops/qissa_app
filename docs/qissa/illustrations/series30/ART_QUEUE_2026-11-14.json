@@ -2223,6 +2223,112 @@
       "notes": "2026-11-17 S4E10-A01 proposed 'Взгляд через решётку' new 1672×941 2663911-byte PNG SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; ImageGen 71956e59-acac-4990-a0e4-1e4578354197; source post_choice_text full exact RU `Данияр остановился.` / UZ `Daniyar to‘xtadi.` unique 1/1 after literary choice. Farid (alias Kamran) in prison courtyard on low stone bench through barred window, Daniyar blue scarf outside. Real approved Kamran/Farid character sheet and S2E3 Farid arrest PNG inspected. Candidate is REVIEW only in QISSA Library /QISSA/production/seven_roads/series30/review/S4E10/; NO owner acceptance, WebP, storage, runtime, asset_id, counter update. 2026-11-17 NEWER CHECKPOINT: owner explicitly accepted S4E10-A01 v1 in conversation; approved asset_id seven_roads_s2_story7_farid_danyar_prison_window_01_APPROVED.png. Original review candidate preserved EXACT bitstream SHA256 352de1d1a9a055824dc32080c286c0a4843b830adf46f8b496257d5f788fb33f; 2663911 bytes, 1672x941. WebP q90 m6 356286 bytes sha256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Master PNG + WebP + metadata in Library stage1/S4E10, separate from REVIEW. Direct read from project Supabase storage.objects shows target path ABSENT; current tools do not provide authenticated binary Supabase Storage upload. Therefore no hosted_verified slot/URL runtime or CI remote SHA until actual upload; code remains at 26/29 integrated, artistic accepted count now 27/29. Existing S4E8-A01/A02 0/2 withdrawn and blocked. No changes authored RU/UZ, IDs, saved progress, prior approved assets, merge/deploy/publish. 2026-11-17 owner-upload confirmation: Supabase storage.objects exact target name exists under story-images with MIME image/webp and size 356286. Additive S4E10-A01 runtime overlay, URL, 27th WebP SHA validator and bilingual reading-series/galleries QA added in Draft PR #334. Independent remote SHA+reader CI remains PENDING before count can be called technically complete; no authored RU/UZ/IDs/progress, merged or deployed. 2026-11-17 verified on exact code HEAD afd100545c3216d387aedcf27063f1bc5a7ca998: Seven Roads CI #44084019282 SUCCESS, Season2 TierA #44084019325 SUCCESS. Independent public GET verifies S4E10 WebP MIME image/webp, 356286 bytes and exact SHA256 b99316fbbd6d711ccf34c12e3f040bca0bc3ec2fae09b85da0242608c3f360d3. Total 27/27 remote public WebP verified, 54/54 bilingual anchors; S4E10 gallery chronology seal comparison → prison-window scene → ending hook, S4E9 isolation, spoiler locks, typecheck, build and browser CI PASS. Overall Stage1 ART 27/29; TECH 27/29. No literary JSON/IDs/progress/merge/deploy changed. S4E8 remains revoked/unintegrated 0/2. 2026-11-19 S4E10-A02 owner explicitly accepted corrected low-cap Samira and one seal per letter; exact 1448x1086 PNG 2214074 bytes sha317807... preserved in Library, cropped 16:9 WebP 240168 bytes shac7fce1... stored as technical derivative. RU/UZ unique source anchor confirmed in `seven_roads_obratno_v_ordan` story7 part1 story_text (not earlier story4). Storage upload/runtime/CI pending. Draft acceptance checkpoint isolated from #348; no release. 2026-11-19 integration branch based on PR #348 HEAD cb910999, isolated from PR #352. S4E10-A02 owner Storage metadata confirmed exact MIME/bytes; remote public SHA and bilingual/browser QA pending CI. Other Stage2 records from #348 preserved. 2026-11-19 new A02 remote validated, 46/46 art SHA and 92/92 bilingual anchors successful at code SHA 3b2ffcdd8c736b1dbee179ab4f43d165f376dd2b. PR #353 stacked on #348, not released; photo candidate A03 REVIEW only separate. 2026-11-20 S4E10-A03 exact final horse-stable image owner-approved (gen afddb54a...), immutable 1672x941 PNG SHA256 c26761ca... 2554546B and derived WebP SHA256 ec1b05ca... 332388B both stored in QISSA Library stage2/S4E10, with metadata; unique approved RU/UZ post_choice_text anchor (1 each). QISSA Storage object absent on read-only query, no public GET, no runtime, no CI art check, no release. Integrated count remains 17/19 on #353; artistically accepted count 18/19 pending final S4E8 stage2 scene. 2026-11-20 S4E10-A03 physical uploaded 332388B image/webp; runtime wiring introduced in #354, public SHA and bilingual/browsers pending exact CI. Stage2 artistic complete here, production release not approved. 2026-11-20 S4E10-A03 public SHA and reader/gallery verified on f05f49e8 after exact 47/47 and 94/94 in Seven Roads/TierA CI. Counts Stage2 technically integrated IN DRAFT PRs 18/19, not production."
     }
   ],
+  "visual_replacement_2026_11_25": {
+    "status": "draft_all_five_replacements_owner_approved_anchor_ci_pending",
+    "baseline_main": "b0714cfd305b9020ffa4cbf9835c4e8f1f717eb7",
+    "owner_art_acceptance": "https://github.com/jteshaboev1984-ops/qissa_app/issues/318#issuecomment-7160101540",
+    "preflight": "https://github.com/jteshaboev1984-ops/qissa_app/issues/318#issuecomment-7160430508",
+    "scope": "Five runtime URL replacements; only S4E6-A02 moves two paragraphs later in RU/UZ with explicit owner approval. Original episode records and release checkpoint retained. No release authorization.",
+    "assets": [
+      {
+        "candidate_id": "S3E5-A02",
+        "asset_id": "seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED",
+        "slot_id": "SERIES30-S3E5-A02",
+        "disposition": "draft_runtime_replacement",
+        "previous_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e5_temur_shows_bandit_sign_drawing_02_APPROVED.webp",
+        "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S3E5-A02_REVIEW_v6.webp",
+        "storage_object": "seven-roads/season2_tier_a_v2/QISSA_S3E5-A02_REVIEW_v6.webp",
+        "webp_bytes": 434060,
+        "webp_sha256": "12a1fe1942017122ec388798c55565f6d211d18ad6e51c994128a493afbf80a9",
+        "master_bytes": 2726437,
+        "master_sha256": "036434ea640303756c8e0ea3f12f383bc04de44baffcb03bcafb1169186bb65c",
+        "dimensions": "1672x941",
+        "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E5/QISSA_S3E5-A02_owner_accepted_v6.png",
+        "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E5/QISSA_S3E5-A02_owner_accepted_v6.webp"
+      },
+      {
+        "candidate_id": "S3E9-A01",
+        "asset_id": "seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED",
+        "slot_id": "SERIES30-S3E9-A01",
+        "disposition": "draft_runtime_replacement",
+        "previous_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s3e9_bulut_blocks_shamol_feeder_01_APPROVED.webp",
+        "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S3E9-A01_owner_accepted_v2.webp",
+        "storage_object": "seven-roads/season2_tier_a_v2/QISSA_S3E9-A01_owner_accepted_v2.webp",
+        "webp_bytes": 408362,
+        "webp_sha256": "1f7cc60bf421d03376ef59740ee6ae902a5274e5ec3645721ea52c505fbcc0c5",
+        "master_bytes": 2582186,
+        "master_sha256": "da5858002a7841c46e001466fa6da6d97a1463c5bdce80cbb24998c74aa318bb",
+        "dimensions": "1672x941",
+        "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/QISSA_S3E9-A01_owner_accepted_v2.png",
+        "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S3E9/QISSA_S3E9-A01_owner_accepted_v2.webp"
+      },
+      {
+        "candidate_id": "S4E10-A02",
+        "asset_id": "seven_roads_s4e10_three_gazes_two_letters_02_APPROVED",
+        "slot_id": "SERIES30-S4E10-A02",
+        "disposition": "draft_runtime_replacement",
+        "previous_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e10_three_gazes_two_letters_02_APPROVED.webp",
+        "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S4E10-A02_REVIEW_v4.webp",
+        "storage_object": "seven-roads/season2_tier_a_v2/QISSA_S4E10-A02_REVIEW_v4.webp",
+        "webp_bytes": 379468,
+        "webp_sha256": "31ec1c6a1852b61bb0ca52e9db8442bfd59b87d6e667d22614738d63d8c410db",
+        "master_bytes": 2586064,
+        "master_sha256": "28b22c984f1aef8c86ab42cc16605a95c3bdd0655fb1f56ad1c15192e679f99a",
+        "dimensions": "1672x941",
+        "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/QISSA_S4E10-A02_owner_accepted_v4.png",
+        "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/QISSA_S4E10-A02_owner_accepted_v4.webp"
+      },
+      {
+        "candidate_id": "S4E10-A03",
+        "asset_id": "seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED",
+        "slot_id": "SERIES30-S4E10-A03",
+        "disposition": "draft_runtime_replacement",
+        "previous_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e10_temur_shamol_stable_samira_03_APPROVED.webp",
+        "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S4E10-A03_owner_accepted_v3.webp",
+        "storage_object": "seven-roads/season2_tier_a_v2/QISSA_S4E10-A03_owner_accepted_v3.webp",
+        "webp_bytes": 484236,
+        "webp_sha256": "df0b18d5e9662ce5c3e6c44deb52203d1fd94c5e4904aa34faaaa212b3b57b78",
+        "master_bytes": 2849691,
+        "master_sha256": "cd2cc84e16e3382171427aadbf685e32acf6d348e657a5d9d309181d4c68a747",
+        "dimensions": "1672x941",
+        "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/QISSA_S4E10-A03_owner_accepted_v3.png",
+        "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E10/QISSA_S4E10-A03_owner_accepted_v3.webp"
+      },
+      {
+        "candidate_id": "S4E6-A02",
+        "asset_id": "seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED",
+        "slot_id": "SERIES30-S4E6-A02",
+        "disposition": "draft_runtime_replacement",
+        "previous_public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/seven_roads_s4e6_scarred_man_guard_disguise_02_APPROVED.webp",
+        "public_url": "https://phwakdpxxyncyslvnqht.supabase.co/storage/v1/object/public/story-images/seven-roads/season2_tier_a_v2/QISSA_S4E6-A02_owner_accepted_new.webp",
+        "storage_object": "seven-roads/season2_tier_a_v2/QISSA_S4E6-A02_owner_accepted_new.webp",
+        "webp_bytes": 498206,
+        "webp_sha256": "fe71ba6f0558d8c82c4c0cdf3716ee3e6bb52c4c3f32e0a5d26051cf5ff6a661",
+        "master_bytes": 2924955,
+        "master_sha256": "2b36bf9763e0060c446c77392f9653b87fb9e12f76f5a1b3094584b1cf3b6f03",
+        "dimensions": "1672x941",
+        "master_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/QISSA_S4E6-A02_owner_accepted_new.png",
+        "webp_library_path": "/QISSA/production/seven_roads/series30/stage2/S4E6/QISSA_S4E6-A02_owner_accepted_new.webp",
+        "anchor_change": {
+          "owner_approved_on": "2026-11-25",
+          "owner_decision": "ок. согласен. работай",
+          "source_story_version": "interactive-v4",
+          "source_ru_blob_sha": "787fcc6109f2f20758bea4a592090e55fe17c806",
+          "source_uz_blob_sha": "b9df7fb184e1230c0d07be8999ab5cacb1131e3a",
+          "part_id": "story5_part_1_false_road",
+          "phase": "post_choice_text",
+          "previous_after_text": {
+            "ru": "Когда поднял голову, на свету стал заметен тонкий белый шрам от левой брови к виску.",
+            "uz": "Boshini ko‘targanda chap qoshidan chakkasigacha ketgan ingichka oq chandiq yorug‘likda ko‘rindi."
+          },
+          "approved_after_text": {
+            "ru": "С холма спустился ещё один всадник.",
+            "uz": "Tepalikdan yana bir chavandoz tushib keldi."
+          }
+        }
+      }
+    ]
+  },
   "release_checkpoint": {
     "phase": "Stage2 final released to GitHub Pages after owner authorization",
     "owner_permission": "explicit 2026-11-20 conversation authorization to reconcile PRs and release",
